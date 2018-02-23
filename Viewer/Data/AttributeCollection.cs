@@ -7,6 +7,25 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
+    public interface IAttributeCollectionFactory
+    {
+        /// <summary>
+        /// Create an empty attribute collection from path to a file.
+        /// </summary>
+        /// <param name="path">Path to a file</param>
+        /// <returns>Attribute collection with filled metadata</returns>
+        AttributeCollection CreateFromPath(string path);
+    }
+
+    public class AttributeCollectionFactory : IAttributeCollectionFactory
+    {
+        public AttributeCollection CreateFromPath(string path)
+        {
+            var fi = new FileInfo(path);
+            return new AttributeCollection(path, fi.LastWriteTime, fi.LastAccessTime);
+        }
+    }
+
     public class AttributeCollection
     {
         private Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();

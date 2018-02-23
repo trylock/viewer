@@ -16,7 +16,7 @@ namespace ViewerTest.Data.Formats
         [TestMethod]
         public void ReadNext_EmptyInput()
         {
-            var input = new BinaryReader(new MemoryStream(new byte[0]));
+            var input = new MemoryByteReader(new byte[0]);
             var reader = new AttributeReader(input);
             Assert.IsNull(reader.ReadNext());
             Assert.IsNull(reader.ReadNext());
@@ -25,12 +25,12 @@ namespace ViewerTest.Data.Formats
         [TestMethod]
         public void ReadNext_SingleIntAttribute()
         {
-            var input = new BinaryReader(new MemoryStream(new byte[]
+            var input = new MemoryByteReader(new byte[]
             {
                 0x01, 0x00, // type
                 (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00, // name
                 0x78, 0x56, 0x34, 0x12 // value
-            }));
+            });
             var reader = new AttributeReader(input);
 
             var attr = reader.ReadNext();
@@ -45,12 +45,12 @@ namespace ViewerTest.Data.Formats
         public void ReadNext_SingleDoubleAttribute()
         {
             var bytes = BitConverter.GetBytes(0.32);
-            var input = new BinaryReader(new MemoryStream(new byte[]
+            var input = new MemoryByteReader(new byte[]
             {
                 0x02, 0x00, // type
                 (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00, // name
                 bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7] // value
-            }));
+            });
             var reader = new AttributeReader(input);
 
             var attr = reader.ReadNext();
@@ -77,7 +77,7 @@ namespace ViewerTest.Data.Formats
             inputMemoryStream.Write(valueBytes, 0, valueBytes.Length);
             inputMemoryStream.WriteByte(0);
             inputMemoryStream.Position = 0;
-            var input = new BinaryReader(inputMemoryStream);
+            var input = new MemoryByteReader(inputMemoryStream.ToArray());
             var reader = new AttributeReader(input);
 
             var attr = reader.ReadNext();
@@ -91,7 +91,7 @@ namespace ViewerTest.Data.Formats
         [TestMethod]
         public void ReadNext_TwoAttributes()
         {
-            var input = new BinaryReader(new MemoryStream(new byte[]
+            var input = new MemoryByteReader(new byte[]
             {
                 0x01, 0x00, // type int
                 (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00, // name
@@ -100,7 +100,7 @@ namespace ViewerTest.Data.Formats
                 0x03, 0x00, // type string
                 (byte)'t', (byte)'m', (byte)'p', 0x00, // name
                 (byte)'v', (byte)'a', (byte)'l', (byte)'u', (byte)'e', 0x00 // value
-            }));
+            });
             var reader = new AttributeReader(input);
 
             var attr = reader.ReadNext();
@@ -119,12 +119,12 @@ namespace ViewerTest.Data.Formats
         [TestMethod]
         public void ReadNext_UnicodeCharacters()
         {
-            var input = new BinaryReader(new MemoryStream(new byte[]
+            var input = new MemoryByteReader(new byte[]
             {
                 0x01, 0x00, // type
                 0xC4, 0x9B, 0xC5, 0xA1, 0xC4, 0x8D, 0xC5, 0x99, 0xC5, 0xBE, 0xC3, 0xBD, 0xC3, 0xA1, 0xC3, 0xAD, 0xC3, 0xA9, 0x00, // name
                 0x78, 0x56, 0x34, 0x12 // value
-            }));
+            });
             var reader = new AttributeReader(input);
 
             var attr = reader.ReadNext();
@@ -138,12 +138,12 @@ namespace ViewerTest.Data.Formats
         [TestMethod]
         public void ReadNext_4ByteUnicodeCharacter()
         {
-            var input = new BinaryReader(new MemoryStream(new byte[]
+            var input = new MemoryByteReader(new byte[]
             {
                 0x01, 0x00, // type
                 0xF0, 0x90, 0x8D, 0x88, 0x00, // name
                 0x78, 0x56, 0x34, 0x12 // value
-            }));
+            });
             var reader = new AttributeReader(input);
 
             var attr = reader.ReadNext();
@@ -158,10 +158,10 @@ namespace ViewerTest.Data.Formats
         [ExpectedException(typeof(InvalidDataFormatException))]
         public void ReadNext_UnexpectedEndInType()
         {
-            var input = new BinaryReader(new MemoryStream(new byte[]
+            var input = new MemoryByteReader(new byte[]
             {
                 0x01,
-            }));
+            });
             var reader = new AttributeReader(input);
             reader.ReadNext();
         }
@@ -170,11 +170,11 @@ namespace ViewerTest.Data.Formats
         [ExpectedException(typeof(InvalidDataFormatException))]
         public void ReadNext_UnexpectedEndInName()
         {
-            var input = new BinaryReader(new MemoryStream(new byte[]
+            var input = new MemoryByteReader(new byte[]
             {
                 0x01, 0x00, // type
                 (byte)'n'
-            }));
+            });
             var reader = new AttributeReader(input);
             reader.ReadNext();
         }
@@ -183,12 +183,12 @@ namespace ViewerTest.Data.Formats
         [ExpectedException(typeof(InvalidDataFormatException))]
         public void ReadNext_InvalidType()
         {
-            var input = new BinaryReader(new MemoryStream(new byte[]
+            var input = new MemoryByteReader(new byte[]
             {
                 0x00, 0x01, // type
                 (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00, // name
                 0x78, 0x56, 0x34, 0x12 // value
-            }));
+            });
             var reader = new AttributeReader(input);
             reader.ReadNext();
         }

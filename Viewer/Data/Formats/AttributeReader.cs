@@ -19,6 +19,18 @@ namespace Viewer.Data.Formats
         DateTime = 4
     }
 
+    public interface IAttributeReader : IDisposable
+    {
+        /// <summary>
+        /// Read next attribute in the input
+        /// </summary>
+        /// <exception cref="InvalidDataFormatException">
+        ///     Data format is invalid (invalid type, unexpected end of input)
+        /// </exception>
+        /// <returns>Next attribute or null if there is none</returns>
+        Attribute ReadNext();
+    }
+
     /// <summary>
     /// Read attributes in a binary format. 
     /// 
@@ -34,16 +46,16 @@ namespace Viewer.Data.Formats
     /// - name (String)
     /// - Value (int32, String, Double or DateTime - depends on the type value)
     /// </summary>
-    public class AttributeReader : IDisposable
+    public class AttributeReader : IAttributeReader
     {
         /// <summary>
         /// Format of a DateTime value in string
         /// </summary>
         public const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.szzz";
 
-        private readonly BinaryReader _reader;
+        private readonly IByteReader _reader;
 
-        public AttributeReader(BinaryReader reader)
+        public AttributeReader(IByteReader reader)
         {
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         }
@@ -59,7 +71,7 @@ namespace Viewer.Data.Formats
         /// </returns>
         public Attribute ReadNext()
         {
-            if (_reader.BaseStream.Position >= _reader.BaseStream.Length)
+            if (_reader.IsEnd)
             {
                 return null;
             }
@@ -67,7 +79,7 @@ namespace Viewer.Data.Formats
             try
             {
                 // read type and name
-                var typeOffset = _reader.BaseStream.Position;
+                var typeOffset = _reader.Position;
                 var type = _reader.ReadInt16();
                 var name = ReadStringUTF8();
 
@@ -93,7 +105,7 @@ namespace Viewer.Data.Formats
             }
             catch (EndOfStreamException e)
             {
-                throw new InvalidDataFormatException(_reader.BaseStream.Position, "Unexpected end of input", e);
+                throw new InvalidDataFormatException(_reader.Position, "Unexpected end of input", e);
             }
         }
 
@@ -101,7 +113,7 @@ namespace Viewer.Data.Formats
         {
             _reader.Dispose();
         }
-
+        
         private string ReadStringUTF8()
         {
             var buffer = new List<byte>();

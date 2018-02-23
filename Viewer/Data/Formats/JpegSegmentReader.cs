@@ -10,16 +10,19 @@ using MetadataExtractor.Formats.Jpeg;
 
 namespace Viewer.Data.Formats
 {
-    public interface IJpegSegmentReader
+    public interface IJpegSegmentReader : IDisposable
     {
         /// <summary>
         /// Read next JPEG segment in an input stream
         /// </summary>
+        /// <exception cref="InvalidDataFormatException">
+        ///     JPEG format of given data is invalid.
+        /// </exception>
         /// <returns>Next JPEG segment or null if there is none</returns>
         JpegSegment ReadNext();
     }
 
-    public class JpegSegmentReader : IJpegSegmentReader, IDisposable, IEnumerable<JpegSegment>
+    public class JpegSegmentReader : IJpegSegmentReader, IEnumerable<JpegSegment>
     {
         private readonly BinaryReader _reader;
         private bool _isEnd = false;

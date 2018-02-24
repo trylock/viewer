@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Viewer.Data
         }
     }
 
-    public class AttributeCollection
+    public class AttributeCollection : IEnumerable<Attribute>
     {
         private Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
@@ -97,6 +98,19 @@ namespace Viewer.Data
             {
                 _attrs.Add(attr.Name, attr);
             }
+        }
+
+        public IEnumerator<Attribute> GetEnumerator()
+        {
+            foreach (var pair in _attrs)
+            {
+                yield return pair.Value;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

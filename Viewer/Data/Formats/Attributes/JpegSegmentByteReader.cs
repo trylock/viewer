@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MetadataExtractor.Formats.Jpeg;
 
-namespace Viewer.Data.Formats
+namespace Viewer.Data.Formats.Attributes
 {
     /// <summary>
     /// JPEG segment byte reader reads bytes from multiple JPEG segments.
@@ -100,7 +100,7 @@ namespace Viewer.Data.Formats
             if (_segmentIndex < _segments.Count &&
                 _segmentOffset >= _segments[_segmentIndex].Bytes.Length)
             {
-                // it does not have enough bytes for the header
+                // invalid segment: it has to contain header
                 throw new InvalidDataFormatException(
                     Position,
                     "Invalid segment data. Segment does not contain header.");

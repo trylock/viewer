@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
 using Viewer.Data.Formats;
+using Viewer.Data.Formats.Attributes;
 
 namespace ViewerTest.Data.Formats
 {

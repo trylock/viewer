@@ -4,48 +4,51 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetadataExtractor.Formats.Jpeg;
+using Viewer.Data.Formats.Attributes;
+using Viewer.Data;
 
-namespace Viewer.Data.Formats
+namespace Viewer.Data.Formats.Attributes
 {
     /// <summary>
     /// Write attributes in a binary format.
     /// For more info on the format, see the <see cref="AttributeReader"/> class.
     /// </summary>
-    public class AttributeWriter : IDisposable
+    public class AttributeWriter : IAttributeWriter, IDisposable
     {
         private class WriterVisitor : IAttributeVisitor, IDisposable
         {
-            private readonly BinaryWriter _writer;
+            public JpegSegmentByteWriter Writer { get; }
 
-            public WriterVisitor(BinaryWriter writer)
+            public WriterVisitor(JpegSegmentByteWriter writer)
             {
-                _writer = writer ?? throw new ArgumentNullException(nameof(writer));
+                Writer = writer ?? throw new ArgumentNullException(nameof(writer));
             }
 
             public void Visit(IntAttribute attr)
             {
-                _writer.Write((ushort)AttributeType.Int);
+                Writer.WriteInt16((short)AttributeType.Int);
                 WriteString(attr.Name);
-                _writer.Write(attr.Value);
+                Writer.WriteInt32(attr.Value);
             }
 
             public void Visit(DoubleAttribute attr)
             {
-                _writer.Write((ushort)AttributeType.Double);
+                Writer.WriteInt16((short)AttributeType.Double);
                 WriteString(attr.Name);
-                _writer.Write(attr.Value);
+                Writer.WriteDouble(attr.Value);
             }
 
             public void Visit(StringAttribute attr)
             {
-                _writer.Write((ushort)AttributeType.String);
+                Writer.WriteInt16((short)AttributeType.String);
                 WriteString(attr.Name);
                 WriteString(attr.Value);
             }
 
             public void Visit(DateTimeAttribute attr)
             {
-                _writer.Write((ushort)AttributeType.String);
+                Writer.WriteInt16((short)AttributeType.DateTime);
                 WriteString(attr.Name);
                 WriteString(attr.Value.ToString(AttributeReader.DateTimeFormat));
             }
@@ -57,31 +60,49 @@ namespace Viewer.Data.Formats
 
             public void Dispose()
             {
-                _writer.Dispose();
             }
 
             private void WriteString(string value)
             {
-                _writer.Write(Encoding.UTF8.GetBytes(value));
-                _writer.Write((byte)0);
+                Writer.WriteBytes(Encoding.UTF8.GetBytes(value));
+                Writer.WriteByte(0);
             }
         }
 
         private readonly WriterVisitor _writer;
         
-        public AttributeWriter(BinaryWriter writer)
+        public AttributeWriter(JpegSegmentByteWriter writer)
         {
             _writer = new WriterVisitor(writer);
         }
 
         public void Write(Attribute attr)
         {
+            if (attr.Source != AttributeSource.Custom)
+            {
+                return;
+            }
+
             attr.Accept(_writer);
+        }
+
+        public List<JpegSegment> Finish()
+        {
+            return _writer.Writer.ToSegments();
         }
 
         public void Dispose()
         {
             _writer.Dispose();
+        }
+    }
+
+    public class AttributeWriterFactory : IAttributeWriterFactory
+    {
+        public IAttributeWriter Create()
+        {
+            var header = Encoding.UTF8.GetBytes(AttributeReader.JpegSegmentHeader);
+            return new AttributeWriter(new JpegSegmentByteWriter(header));
         }
     }
 }

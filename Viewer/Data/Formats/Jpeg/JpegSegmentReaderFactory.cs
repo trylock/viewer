@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer.Data.Formats
+namespace Viewer.Data.Formats.Jpeg
 {
     public interface IJpegSegmentReaderFactory
     {
@@ -23,7 +23,7 @@ namespace Viewer.Data.Formats
         {
             return new JpegSegmentReader(
                 new BinaryReader(
-                    new FileStream(filePath, FileMode.Open, FileAccess.Read)));
+                    new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete)));
         }
     }
 }

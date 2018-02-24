@@ -23,7 +23,7 @@ namespace Viewer.Data.Formats.Jpeg
         {
             return new JpegSegmentReader(
                 new BinaryReader(
-                    new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete)));
+                    new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete)));
         }
     }
 }

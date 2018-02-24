@@ -53,13 +53,27 @@
   <ItemGroup>
     <Compile Include="Data\Attribute.cs" />
     <Compile Include="Data\AttributeCollection.cs" />
-    <Compile Include="Data\Formats\AttributeReader.cs" />
-    <Compile Include="Data\Formats\AttributeWriter.cs" />
+    <Compile Include="Data\AttributeStorageFactory.cs" />
+    <Compile Include="Data\Formats\IAttributeReader.cs" />
+    <Compile Include="Data\Formats\IAttributeReaderFactory.cs" />
+    <Compile Include="Data\Formats\ExifAttributeReader.cs" />
+    <Compile Include="Data\Formats\Attributes\JpegSegmentByteReader.cs" />
+    <Compile Include="Data\Formats\Attributes\JpegSegmentByteWriter.cs" />
+    <Compile Include="Data\Formats\IAttributeWriter.cs" />
+    <Compile Include="Data\Formats\IAttributeWriterFactory.cs" />
+    <Compile Include="Data\Formats\Jpeg\JpegSegmentWriter.cs" />
+    <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterFactory.cs" />
+    <Compile Include="Data\IByteReader.cs" />
+    <Compile Include="Data\Formats\Attributes\AttributeReader.cs" />
+    <Compile Include="Data\Formats\Attributes\AttributeWriter.cs" />
+    <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderFactory.cs" />
     <Compile Include="Data\Formats\InvalidDataFormatException.cs" />
     <Compile Include="Data\IAttributeVisitor.cs" />
-    <Compile Include="Data\FileSystemAttributeProvider.cs" />
-    <Compile Include="Data\IAttributeProvider.cs" />
-    <Compile Include="Data\Formats\JpegSegmentReader.cs" />
+    <Compile Include="Data\FileSystemAttributeStorage.cs" />
+    <Compile Include="Data\IAttributeStorage.cs" />
+    <Compile Include="Data\Formats\Jpeg\JpegSegmentReader.cs" />
+    <Compile Include="Data\IByteWriter.cs" />
+    <Compile Include="Data\MemoryByteReader.cs" />
     <Compile Include="ViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>

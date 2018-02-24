@@ -56,7 +56,10 @@
   <ItemGroup>
     <Compile Include="Data\Formats\AttributeReaderTest.cs" />
     <Compile Include="Data\Formats\AttributeWriterTest.cs" />
+    <Compile Include="Data\Formats\JpegSegmentByteReaderTest.cs" />
     <Compile Include="Data\Formats\JpegSegmentReaderTest.cs" />
+    <Compile Include="Data\Formats\JpegSegmentWriterTest.cs" />
+    <Compile Include="Data\MemoryByteReaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

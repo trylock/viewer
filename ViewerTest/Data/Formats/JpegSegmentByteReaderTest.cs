@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using MetadataExtractor.Formats.Jpeg;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Viewer.Data.Formats;
+using Viewer.Data.Formats.Attributes;
 
 namespace ViewerTest.Data.Formats
 {

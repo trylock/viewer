@@ -28,7 +28,7 @@ namespace Viewer.Data
         public string Name { get; }
 
         /// <summary>
-        /// Determines location where is the attribute stored
+        /// Determines location where the attribute is stored
         /// </summary>
         public AttributeSource Source { get; }
 

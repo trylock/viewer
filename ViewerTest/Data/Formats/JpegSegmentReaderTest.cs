@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using MetadataExtractor.Formats.Jpeg;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data.Formats;
-using JpegSegmentReader = Viewer.Data.Formats.JpegSegmentReader;
+using JpegSegmentReader = Viewer.Data.Formats.Jpeg.JpegSegmentReader;
 
 namespace ViewerTest.Data.Formats
 {

@@ -25,11 +25,9 @@ namespace Viewer.Data
                 new ExifAttributeReaderFactory()
             };
             var attrWriterFactory = new AttributeWriterFactory();
-            var collectionFactory = new AttributeCollectionFactory();
             return new FileSystemAttributeStorage(
                 segmentReaderFactory, 
                 segmentWriterFactory, 
-                collectionFactory, 
                 attrWriterFactory, 
                 attrReaderFactories);
         }

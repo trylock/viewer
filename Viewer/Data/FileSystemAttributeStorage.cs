@@ -20,7 +20,6 @@ namespace Viewer.Data
     /// </summary>
     public class FileSystemAttributeStorage : IAttributeStorage
     {
-        private readonly IAttributeCollectionFactory _attrCollectionFactory;
         private readonly IJpegSegmentReaderFactory _segmentReaderFactory;
         private readonly IJpegSegmentWriterFactory _segmentWriterFactory;
         private readonly IAttributeWriterFactory _attrWriterFactory;
@@ -29,13 +28,11 @@ namespace Viewer.Data
         public FileSystemAttributeStorage(
             IJpegSegmentReaderFactory segmentReaderFactory, 
             IJpegSegmentWriterFactory segmentWriterFactory,
-            IAttributeCollectionFactory attrCollectionFactory,
             IAttributeWriterFactory attrWriterFactory,
             IList<IAttributeReaderFactory> attrReaderFactories)
         {
             _segmentReaderFactory = segmentReaderFactory;
             _segmentWriterFactory = segmentWriterFactory;
-            _attrCollectionFactory = attrCollectionFactory;
             _attrWriterFactory = attrWriterFactory;
             _attrReaderFactories = attrReaderFactories;
         }
@@ -60,7 +57,9 @@ namespace Viewer.Data
             var segments = new List<JpegSegment>();
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
             {
-                attrs = _attrCollectionFactory.CreateFromPath(path);
+                var fi = new FileInfo(path);
+                attrs = new AttributeCollection(path, fi.LastWriteTime, fi.LastAccessTime);
+
                 for (;;)
                 {
                     // read segment

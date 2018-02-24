@@ -5,8 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetadataExtractor.Formats.Jpeg;
+using Viewer.Data.Formats.Attributes;
+using Viewer.Data.Formats.Jpeg;
 
-namespace Viewer.Data.Formats
+namespace Viewer.Data.Formats.Attributes
 {
     /// <summary>
     /// Type numbers as in the binary format of attributes
@@ -17,18 +20,6 @@ namespace Viewer.Data.Formats
         Double = 2,
         String = 3,
         DateTime = 4
-    }
-
-    public interface IAttributeReader : IDisposable
-    {
-        /// <summary>
-        /// Read next attribute in the input
-        /// </summary>
-        /// <exception cref="InvalidDataFormatException">
-        ///     Data format is invalid (invalid type, unexpected end of input)
-        /// </exception>
-        /// <returns>Next attribute or null if there is none</returns>
-        Attribute ReadNext();
     }
 
     /// <summary>
@@ -48,6 +39,12 @@ namespace Viewer.Data.Formats
     /// </summary>
     public class AttributeReader : IAttributeReader
     {
+        /// <summary>
+        /// Name of a JPEG segment with attribute data.
+        /// It will be at the start of every attribute segment as an ASCII string.
+        /// </summary>
+        public const string JpegSegmentHeader = "Attr\0";
+
         /// <summary>
         /// Format of a DateTime value in string
         /// </summary>
@@ -126,6 +123,27 @@ namespace Viewer.Data.Formats
             }
 
             return Encoding.UTF8.GetString(buffer.ToArray());
+        }
+    }
+
+    /// <summary>
+    /// Create attribute reader of the custom attribute segments.
+    /// </summary>
+    public class AttributeReaderFactory : IAttributeReaderFactory
+    {
+        public IAttributeReader CreateFromSegments(IList<JpegSegment> segments)
+        {
+            var attrSegments = new List<JpegSegment>();
+            foreach (var segment in segments)
+            {
+                if (Encoding.UTF8.GetString(segment.Bytes, 0, AttributeReader.JpegSegmentHeader.Length) == AttributeReader.JpegSegmentHeader)
+                {
+                    attrSegments.Add(segment);
+                }
+            }
+
+            return new AttributeReader(
+                new JpegSegmentByteReader(attrSegments, AttributeReader.JpegSegmentHeader.Length));
         }
     }
 }

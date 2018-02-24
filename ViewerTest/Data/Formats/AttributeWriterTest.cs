@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetadataExtractor.Formats.Jpeg;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
 using Viewer.Data.Formats;
+using Viewer.Data.Formats.Attributes;
 
 namespace ViewerTest.Data.Formats
 {
@@ -16,123 +18,115 @@ namespace ViewerTest.Data.Formats
         [TestMethod]
         public void Write_IntAttriubte()
         {
-            var output = new MemoryStream();
-            var writer = new BinaryWriter(output);
-            var attrWriter = new AttributeWriter(writer);
+            var header = new byte[] { 0xBE, 0xEF };
+            var attrWriter = new AttributeWriter(new JpegSegmentByteWriter(header));
             attrWriter.Write(new IntAttribute("test", AttributeSource.Custom, 0x12345678));
 
-            var data = output.ToArray();
-            Assert.AreEqual(11, data.Length);
+            var segments = attrWriter.Finish();
+            Assert.AreEqual(1, segments.Count);
 
-            // type
-            Assert.AreEqual(0x01, data[0]);
-            Assert.AreEqual(0x00, data[1]);
+            var segment = segments[0];
 
-            // name
-            Assert.AreEqual((byte)'t', data[2]);
-            Assert.AreEqual((byte)'e', data[3]);
-            Assert.AreEqual((byte)'s', data[4]);
-            Assert.AreEqual((byte)'t', data[5]);
-            Assert.AreEqual(0, data[6]);
-
-            // value
-            Assert.AreEqual(0x78, data[7]);
-            Assert.AreEqual(0x56, data[8]);
-            Assert.AreEqual(0x34, data[9]);
-            Assert.AreEqual(0x12, data[10]);
+            Assert.AreEqual(JpegSegmentType.App1, segment.Type);
+            
+            CollectionAssert.AreEqual(new byte[]
+            {
+                // segment header
+                0xBE, 0xEF, 
+                // type
+                0x01, 0x00, 
+                // name
+                (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00, 
+                // value
+                0x78, 0x56, 0x34, 0x12, 
+            }, segment.Bytes);
         }
 
         [TestMethod]
         public void Write_DoubleAttriubte()
         {
-            var output = new MemoryStream();
-            var writer = new BinaryWriter(output);
-            var attrWriter = new AttributeWriter(writer);
+            var header = new byte[] { 0xBE, 0xEF };
+            var attrWriter = new AttributeWriter(new JpegSegmentByteWriter(header));
             attrWriter.Write(new DoubleAttribute("test", AttributeSource.Custom, 0.64));
 
-            var data = output.ToArray();
-            Assert.AreEqual(15, data.Length);
+            var segments = attrWriter.Finish();
+            Assert.AreEqual(1, segments.Count);
 
-            // type
-            Assert.AreEqual(0x02, data[0]);
-            Assert.AreEqual(0x00, data[1]);
+            var segment = segments[0];
 
-            // name
-            Assert.AreEqual((byte)'t', data[2]);
-            Assert.AreEqual((byte)'e', data[3]);
-            Assert.AreEqual((byte)'s', data[4]);
-            Assert.AreEqual((byte)'t', data[5]);
-            Assert.AreEqual(0, data[6]);
-
-            // value
+            Assert.AreEqual(JpegSegmentType.App1, segment.Type);
+            
             var bytes = BitConverter.GetBytes(0.64);
-            for (int i = 0; i < 8; ++i)
+            CollectionAssert.AreEqual(new byte[]
             {
-                Assert.AreEqual(bytes[i], data[7 + i]);
-            }
+                // segment header
+                0xBE, 0xEF, 
+                // type
+                0x02, 0x00, 
+                // name
+                (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00, 
+                // value
+                bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]
+            }, segment.Bytes);
         }
 
         [TestMethod]
         public void Write_StringAttriubte()
         {
-            var output = new MemoryStream();
-            var writer = new BinaryWriter(output);
-            var attrWriter = new AttributeWriter(writer);
+            var header = new byte[] { 0xBE, 0xEF };
+            var attrWriter = new AttributeWriter(new JpegSegmentByteWriter(header));
             attrWriter.Write(new StringAttribute("test", AttributeSource.Custom, "value"));
 
-            var data = output.ToArray();
-            Assert.AreEqual(13, data.Length);
+            var segments = attrWriter.Finish();
+            Assert.AreEqual(1, segments.Count);
 
-            // type
-            Assert.AreEqual(0x03, data[0]);
-            Assert.AreEqual(0x00, data[1]);
-
-            // name
-            Assert.AreEqual((byte)'t', data[2]);
-            Assert.AreEqual((byte)'e', data[3]);
-            Assert.AreEqual((byte)'s', data[4]);
-            Assert.AreEqual((byte)'t', data[5]);
-            Assert.AreEqual(0, data[6]);
-
-            // value
-            Assert.AreEqual((byte)'v', data[7]);
-            Assert.AreEqual((byte)'a', data[8]);
-            Assert.AreEqual((byte)'l', data[9]);
-            Assert.AreEqual((byte)'u', data[10]);
-            Assert.AreEqual((byte)'e', data[11]);
-            Assert.AreEqual((byte)0, data[12]);
+            var segment = segments[0];
+            Assert.AreEqual(JpegSegmentType.App1, segment.Type);
+            
+            CollectionAssert.AreEqual(new byte[]
+            {
+                // segment header
+                0xBE, 0xEF, 
+                // type
+                0x03, 0x00, 
+                // name
+                (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00, 
+                // value
+                (byte)'v', (byte)'a', (byte)'l', (byte)'u', (byte)'e', 0x00,
+            }, segment.Bytes);
         }
 
         [TestMethod]
         public void Write_DateTimeAttriubte()
         {
-            var output = new MemoryStream();
-            var writer = new BinaryWriter(output);
-            var attrWriter = new AttributeWriter(writer);
+            var header = new byte[] { 0xBE, 0xEF };
+            var attrWriter = new AttributeWriter(new JpegSegmentByteWriter(header));
             var attr = new DateTimeAttribute("test", AttributeSource.Custom, new DateTime(2018, 2, 11, 21, 20, 30));
             attrWriter.Write(attr);
 
-            var data = output.ToArray();
-            Assert.AreEqual(36, data.Length);
+            var segments = attrWriter.Finish();
+            Assert.AreEqual(1, segments.Count);
 
-            // type
-            Assert.AreEqual(0x03, data[0]);
-            Assert.AreEqual(0x00, data[1]);
-
-            // name
-            Assert.AreEqual((byte)'t', data[2]);
-            Assert.AreEqual((byte)'e', data[3]);
-            Assert.AreEqual((byte)'s', data[4]);
-            Assert.AreEqual((byte)'t', data[5]);
-            Assert.AreEqual(0, data[6]);
-
-            // value
-            var value = attr.Value.ToString(AttributeReader.DateTimeFormat);
-            for (int i = 0; i < value.Length; ++i)
+            var segment = segments[0];
+            Assert.AreEqual(JpegSegmentType.App1, segment.Type);
+            
+            var expectedValue = new List<byte>
             {
-                Assert.AreEqual((byte)value[i], data[7 + i]);
+                // segment header
+                0xBE, 0xEF, 
+                // type
+                0x04, 0x00, 
+                // name
+                (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00,
+            };
+            var dateTimeValue = attr.Value.ToString(AttributeReader.DateTimeFormat);
+            foreach (var val in dateTimeValue)
+            {
+                expectedValue.Add((byte)val);
             }
-            Assert.AreEqual(0, data[data.Length - 1]);
+            expectedValue.Add(0x00);
+
+            CollectionAssert.AreEqual(expectedValue, segment.Bytes);
         }
     }
 }

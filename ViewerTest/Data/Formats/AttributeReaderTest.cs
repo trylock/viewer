@@ -66,7 +66,7 @@ namespace ViewerTest.Data.Formats
         public void ReadNext_SingleDateTimeAttribute()
         {
             var valueDateTime = new DateTime(2018, 2, 11, 17, 50, 0);
-            var valueString = valueDateTime.ToString(AttributeReader.DateTimeFormat);
+            var valueString = valueDateTime.ToString(DateTimeAttribute.Format);
             var valueBytes = Encoding.UTF8.GetBytes(valueString);
             var headerBytes = new byte[]
             {

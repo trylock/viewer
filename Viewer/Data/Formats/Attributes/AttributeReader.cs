@@ -19,12 +19,15 @@ namespace Viewer.Data.Formats.Attributes
         Int = 1,
         Double = 2,
         String = 3,
-        DateTime = 4
+        DateTime = 4,
+        Image = 5
     }
 
     /// <summary>
     /// Read attributes in a binary format. 
+    /// </summary>
     /// 
+    /// <remarks>
     /// Types in the format:
     /// - uint16: unsigned 2 byte integer, little endian
     /// - int32: signed 4 byte integer, two's complement, little endian
@@ -36,7 +39,7 @@ namespace Viewer.Data.Formats.Attributes
     /// - type (uint16) <see cref="AttributeType"/>
     /// - name (String)
     /// - Value (int32, String, Double or DateTime - depends on the type value)
-    /// </summary>
+    /// </remarks>
     public class AttributeReader : IAttributeReader
     {
         /// <summary>
@@ -44,12 +47,7 @@ namespace Viewer.Data.Formats.Attributes
         /// It will be at the start of every attribute segment as an ASCII string.
         /// </summary>
         public const string JpegSegmentHeader = "Attr\0";
-
-        /// <summary>
-        /// Format of a DateTime value in string
-        /// </summary>
-        public const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.szzz";
-
+       
         private readonly IByteReader _reader;
 
         public AttributeReader(IByteReader reader)
@@ -94,7 +92,7 @@ namespace Viewer.Data.Formats.Attributes
                         return new StringAttribute(name, AttributeSource.Custom, valueString);
                     case AttributeType.DateTime:
                         var valueRaw = ReadStringUTF8();
-                        var valueDate = DateTime.ParseExact(valueRaw, DateTimeFormat, CultureInfo.InvariantCulture);
+                        var valueDate = DateTime.ParseExact(valueRaw, DateTimeAttribute.Format, CultureInfo.InvariantCulture);
                         return new DateTimeAttribute(name, AttributeSource.Custom, valueDate);
                     default:
                         throw new InvalidDataFormatException(typeOffset, $"Invalid type: 0x{type:X}");

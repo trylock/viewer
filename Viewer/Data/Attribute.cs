@@ -102,6 +102,11 @@ namespace Viewer.Data
     public sealed class DateTimeAttribute : Attribute
     {
         /// <summary>
+        /// Format of a DateTime value in string
+        /// </summary>
+        public const string Format = "yyyy-MM-ddTHH:mm:ss.szzz";
+
+        /// <summary>
         /// Value of the attribute
         /// </summary>
         public DateTime Value { get; }

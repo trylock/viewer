@@ -119,7 +119,7 @@ namespace ViewerTest.Data.Formats
                 // name
                 (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00,
             };
-            var dateTimeValue = attr.Value.ToString(AttributeReader.DateTimeFormat);
+            var dateTimeValue = attr.Value.ToString(DateTimeAttribute.Format);
             foreach (var val in dateTimeValue)
             {
                 expectedValue.Add((byte)val);

@@ -18,9 +18,16 @@ namespace Viewer.Data
         /// This is a blocking operation.
         /// </summary>
         /// <param name="path">Path to a file which contains some attributes</param>
-        /// <exception cref="FileNotFoundException">Given file was not found</exception>
-        /// <exception cref="InvalidDataFormatException">Attribute format is invalid</exception>
-        /// <returns>Collection of attributes found in given file</returns>
+        /// <exception cref="InvalidDataFormatException">
+        ///     Attribute format in the file is invalid
+        /// </exception>
+        /// <exception cref="FileNotFoundException">
+        ///     File was not found
+        /// </exception>
+        /// <returns>
+        ///     Collection of attributes found in given file.
+        ///     The collection will be empty if there are no attributes.
+        /// </returns>
         AttributeCollection Load(string path);
 
         /// <summary>
@@ -29,7 +36,9 @@ namespace Viewer.Data
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <param name="attrs">Attributes to store in this file</param>
-        /// <exception cref="FileNotFoundException">Given file was not found</exception>
+        /// <exception cref="FileNotFoundException">
+        ///     File was not found
+        /// </exception>
         void Store(string path, AttributeCollection attrs);
     }
 }

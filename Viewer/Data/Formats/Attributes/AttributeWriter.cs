@@ -50,7 +50,7 @@ namespace Viewer.Data.Formats.Attributes
             {
                 Writer.WriteInt16((short)AttributeType.DateTime);
                 WriteString(attr.Name);
-                WriteString(attr.Value.ToString(AttributeReader.DateTimeFormat));
+                WriteString(attr.Value.ToString(DateTimeAttribute.Format));
             }
 
             public void Visit(ImageAttribute attr)

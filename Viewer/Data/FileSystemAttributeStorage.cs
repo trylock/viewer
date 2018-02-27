@@ -57,8 +57,7 @@ namespace Viewer.Data
             var segments = new List<JpegSegment>();
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
             {
-                var fi = new FileInfo(path);
-                attrs = new AttributeCollection(path, fi.LastWriteTime, fi.LastAccessTime);
+                attrs = new AttributeCollection(path);
 
                 for (;;)
                 {
@@ -90,7 +89,7 @@ namespace Viewer.Data
 
             return attrs;
         }
-
+        
         public void Store(string path, AttributeCollection attrs)
         {
             string tmpFileName;

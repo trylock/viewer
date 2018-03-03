@@ -23,7 +23,7 @@ namespace Viewer.Data.Formats.Jpeg
         private Random _random = new Random();
 
         /// <summary>
-        /// Create temporary file for given file path
+        /// Create a temporary file for given file path
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="tmpFileName">Path to a file to which we write.</param>

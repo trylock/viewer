@@ -123,6 +123,10 @@ namespace Viewer.Data
             }
         }
 
+        /// <summary>
+        /// This visitor prepares given sql command for inserting a new attribute.
+        /// It adds the attribute name and value parameters for each possible value type.
+        /// </summary>
         private class InsertVisitor : IAttributeVisitor
         {
             private SQLiteCommand _command;

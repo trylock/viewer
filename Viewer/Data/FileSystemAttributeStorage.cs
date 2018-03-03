@@ -114,7 +114,7 @@ namespace Viewer.Data
                         segmentWriter.WriteSegment(segment);
                     }
 
-                    // write attributes
+                    // serialize attributes to JpegSegments
                     var attrWriter = _attrWriterFactory.Create();
                     foreach (var attr in attrs)
                     {

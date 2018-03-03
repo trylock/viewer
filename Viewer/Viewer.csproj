@@ -60,9 +60,12 @@
     <Compile Include="Data\AttributeCollection.cs" />
     <Compile Include="Data\AttributeStorageFactory.cs" />
     <Compile Include="Data\CachedAttributeStorage.cs" />
+    <Compile Include="Data\Formats\Exif\IExifAttributeParser.cs" />
+    <Compile Include="Data\Formats\Exif\Ifd0ExifAttributeParser.cs" />
+    <Compile Include="Data\Formats\Exif\ThumbnaiExifAttributeParser.cs" />
     <Compile Include="Data\Formats\IAttributeReader.cs" />
     <Compile Include="Data\Formats\IAttributeReaderFactory.cs" />
-    <Compile Include="Data\Formats\ExifAttributeReader.cs" />
+    <Compile Include="Data\Formats\Exif\ExifAttributeReader.cs" />
     <Compile Include="Data\Formats\Attributes\JpegSegmentByteReader.cs" />
     <Compile Include="Data\Formats\Attributes\JpegSegmentByteWriter.cs" />
     <Compile Include="Data\Formats\IAttributeWriter.cs" />
@@ -79,8 +82,10 @@
     <Compile Include="Data\IAttributeStorage.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReader.cs" />
     <Compile Include="Data\IByteWriter.cs" />
+    <Compile Include="Data\MemoryAttributeStorage.cs" />
     <Compile Include="Data\MemoryByteReader.cs" />
     <Compile Include="Data\SqliteAttributeStorage.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data.Formats;
 using Viewer.Data.Formats.Attributes;
+using Viewer.Data.Formats.Exif;
 using Viewer.Data.Formats.Jpeg;
 
 namespace Viewer.Data
@@ -22,7 +23,7 @@ namespace Viewer.Data
             var attrReaderFactories = new List<IAttributeReaderFactory>
             {
                 new AttributeReaderFactory(),
-                new ExifAttributeReaderFactory()
+                new ExifAttributeReaderFactory(Settings.Instance.ExifTags)
             };
             var attrWriterFactory = new AttributeWriterFactory();
             return new FileSystemAttributeStorage(

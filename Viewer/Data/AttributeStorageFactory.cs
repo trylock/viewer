@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,11 +27,16 @@ namespace Viewer.Data
                 new ExifAttributeReaderFactory(Settings.Instance.ExifTags)
             };
             var attrWriterFactory = new AttributeWriterFactory();
-            return new FileSystemAttributeStorage(
-                segmentReaderFactory, 
-                segmentWriterFactory, 
-                attrWriterFactory, 
+
+            var fileSystemStorage = new FileSystemAttributeStorage(
+                segmentReaderFactory,
+                segmentWriterFactory,
+                attrWriterFactory,
                 attrReaderFactories);
+            var sqliteStorage = new SqliteAttributeStorage(Settings.Instance.CacheConnection);
+            var cachedStorage = new CachedAttributeStorage(fileSystemStorage, sqliteStorage);
+
+            return cachedStorage;
         }
     }
 }

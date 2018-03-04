@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,17 @@ namespace Viewer
     {
         public static Settings Instance = new Settings();
 
+        /// <summary>
+        /// List of Exif tags to load from every image
+        /// </summary>
         public IList<IExifAttributeParser> ExifTags { get; }
 
-        public Settings()
+        /// <summary>
+        /// Connection to the cache DB
+        /// </summary>
+        public SQLiteConnection CacheConnection { get; }
+
+        private Settings()
         {
             ExifTags = new List<IExifAttributeParser>
             {
@@ -28,6 +37,9 @@ namespace Viewer
                 new Ifd0ExifAttributeParser("Make", ExifIfd0Directory.TagMake, AttributeType.String),
                 new ThumbnaiExifAttributeParser()
             };
+
+            CacheConnection = new SQLiteConnection($"Data Source={Environment.CurrentDirectory}/../../../cache.db;Version=3");
+            CacheConnection.Open();
         }
     }
 }

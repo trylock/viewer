@@ -12,7 +12,7 @@ namespace Viewer.Data
         /// <summary>
         /// Attribute is a custom attribute set by user
         /// </summary>
-        Custom,
+        Custom = 0,
 
         /// <summary>
         /// Attribute is a read-only attribute stored in the Exif metadata

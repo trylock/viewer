@@ -24,7 +24,7 @@ namespace Viewer.Data.Formats.Jpeg
         ///     JPEG format of given data is invalid.
         /// </exception>
         /// <returns>Next JPEG segment or null if there is none</returns>
-        JpegSegment ReadNext();
+        JpegSegment ReadSegment();
     }
 
     public class JpegSegmentReader : IJpegSegmentReader, IEnumerable<JpegSegment>
@@ -56,7 +56,7 @@ namespace Viewer.Data.Formats.Jpeg
         /// The Start of Scan segment won't have any data.
         /// </summary>
         /// <returns>Next JPEG segment or null if there is none</returns>
-        public JpegSegment ReadNext()
+        public JpegSegment ReadSegment()
         {
             if (_isEnd)
             {
@@ -143,7 +143,7 @@ namespace Viewer.Data.Formats.Jpeg
         {
             for (;;)
             {
-                var segment = ReadNext();
+                var segment = ReadSegment();
                 if (segment == null)
                     break;
                 yield return segment;

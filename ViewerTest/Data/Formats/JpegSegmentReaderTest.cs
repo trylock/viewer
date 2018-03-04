@@ -19,8 +19,8 @@ namespace ViewerTest.Data.Formats
         {
             var input = new BinaryReader(new MemoryStream(new byte[0]));
             var reader = new JpegSegmentReader(input);
-            Assert.IsNull(reader.ReadNext());
-            Assert.IsNull(reader.ReadNext());
+            Assert.IsNull(reader.ReadSegment());
+            Assert.IsNull(reader.ReadSegment());
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace ViewerTest.Data.Formats
             var input = new BinaryReader(new MemoryStream(new byte[] { 0xCC }));
             var reader = new JpegSegmentReader(input);
 
-            reader.ReadNext();
+            reader.ReadSegment();
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace ViewerTest.Data.Formats
             var input = new BinaryReader(new MemoryStream(new byte[] { 0xFF, 0x00 }));
             var reader = new JpegSegmentReader(input);
 
-            reader.ReadNext();
+            reader.ReadSegment();
         }
 
         [TestMethod]
@@ -54,17 +54,17 @@ namespace ViewerTest.Data.Formats
             }));
             var reader = new JpegSegmentReader(input);
 
-            var segment = reader.ReadNext();
+            var segment = reader.ReadSegment();
             Assert.AreEqual(JpegSegmentType.Soi, segment.Type);
             Assert.AreEqual(2, segment.Offset);
             Assert.AreEqual(0, segment.Bytes.Length);
 
-            segment = reader.ReadNext();
+            segment = reader.ReadSegment();
             Assert.AreEqual(JpegSegmentType.Sos, segment.Type);
             Assert.AreEqual(4, segment.Offset);
             Assert.AreEqual(0, segment.Bytes.Length);
 
-            segment = reader.ReadNext();
+            segment = reader.ReadSegment();
             Assert.IsNull(segment);
         }
 
@@ -80,12 +80,12 @@ namespace ViewerTest.Data.Formats
             }));
             var reader = new JpegSegmentReader(input);
 
-            var segment = reader.ReadNext();
+            var segment = reader.ReadSegment();
             Assert.AreEqual(JpegSegmentType.Soi, segment.Type);
             Assert.AreEqual(2, segment.Offset);
             Assert.AreEqual(0, segment.Bytes.Length);
 
-            segment = reader.ReadNext();
+            segment = reader.ReadSegment();
             Assert.AreEqual(JpegSegmentType.App1, segment.Type);
             Assert.AreEqual(6, segment.Offset);
             Assert.AreEqual(4, segment.Bytes.Length);
@@ -94,12 +94,12 @@ namespace ViewerTest.Data.Formats
             Assert.AreEqual(0x56, segment.Bytes[2]);
             Assert.AreEqual(0x78, segment.Bytes[3]);
             
-            segment = reader.ReadNext();
+            segment = reader.ReadSegment();
             Assert.AreEqual(JpegSegmentType.Sos, segment.Type);
             Assert.AreEqual(12, segment.Offset);
             Assert.AreEqual(0, segment.Bytes.Length);
 
-            segment = reader.ReadNext();
+            segment = reader.ReadSegment();
             Assert.IsNull(segment);
         }
 
@@ -113,8 +113,8 @@ namespace ViewerTest.Data.Formats
                 0xFF, 
             }));
             var reader = new JpegSegmentReader(input);
-            reader.ReadNext(); // start of input
-            reader.ReadNext();
+            reader.ReadSegment(); // start of input
+            reader.ReadSegment();
         }
 
         [TestMethod]
@@ -127,8 +127,8 @@ namespace ViewerTest.Data.Formats
                 0xFF, 0xE1, 0x12,
             }));
             var reader = new JpegSegmentReader(input);
-            reader.ReadNext(); // start of input
-            reader.ReadNext();
+            reader.ReadSegment(); // start of input
+            reader.ReadSegment();
         }
 
         [TestMethod]
@@ -141,8 +141,8 @@ namespace ViewerTest.Data.Formats
                 0xFF, 0xE1, 0x00, 0x03,
             }));
             var reader = new JpegSegmentReader(input);
-            reader.ReadNext(); // start of input
-            reader.ReadNext();
+            reader.ReadSegment(); // start of input
+            reader.ReadSegment();
         }
     }
 }

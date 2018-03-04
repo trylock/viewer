@@ -11,6 +11,22 @@ namespace Viewer.Data
     /// <summary>
     /// Facade for the attribute storage system. 
     /// </summary>
+    /// <example>
+    ///     This example loads attributes from file, changes them and stores them back to the file.
+    ///     <code>
+    ///         IAttributeStorage storage = ...;
+    ///         var attrs = storage.Load("C:/path.jpeg");
+    ///         attrs.Add(new IntAttribute("visited", 1));
+    ///         storage.Store(attrs);
+    ///     </code>
+    ///     The Load() method may introduce some write operations (e.g. to a cache). 
+    ///     Therefore you have to call the Flush() method after loading attributes from all files.
+    ///     <code>
+    ///         IAttributeStorage storage = ...;
+    ///         var result = { storage.Load(A), storage.Load(B) };
+    ///         storage.Flush();
+    ///     </code>
+    /// </example>
     public interface IAttributeStorage
     {
         /// <summary>
@@ -32,13 +48,14 @@ namespace Viewer.Data
 
         /// <summary>
         /// Store attributes to a path.
-        /// This is a blocking operation.
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <param name="attrs">Attributes to store in this file</param>
-        /// <exception cref="FileNotFoundException">
-        ///     File was not found
-        /// </exception>
         void Store(string path, AttributeCollection attrs);
+
+        /// <summary>
+        /// Finish all pending operations.
+        /// </summary>
+        void Flush();
     }
 }

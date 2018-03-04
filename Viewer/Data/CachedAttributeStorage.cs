@@ -19,6 +19,7 @@ namespace Viewer.Data
     {
         private IAttributeStorage _mainStorage;
         private IAttributeStorage _cacheStorage;
+        private Dictionary<string, AttributeCollection> _pending = new Dictionary<string, AttributeCollection>();
 
         /// <summary>
         /// Create cached attribute storage.
@@ -48,6 +49,7 @@ namespace Viewer.Data
             if (attrs == null)
             {
                 attrs = _mainStorage.Load(path);
+                AddPendingWrite(attrs);
             }
 
             return attrs;
@@ -67,6 +69,33 @@ namespace Viewer.Data
             if (!attrs.IsDirty)
             {
                 _mainStorage.Store(path, attrs);
+            }
+        }
+
+        /// <summary>
+        /// All pending attributes are written to the cache.
+        /// </summary>
+        public void Flush()
+        {
+            foreach (var pair in _pending)
+            {
+                var attrs = pair.Value;
+
+                // store the attributes in the cache
+                _cacheStorage.Store(attrs.Path, attrs);
+            }
+            _pending.Clear();
+        }
+
+        private void AddPendingWrite(AttributeCollection attrs)
+        {
+            if (_pending.ContainsKey(attrs.Path))
+            {
+                _pending[attrs.Path] = attrs;
+            }
+            else
+            {
+                _pending.Add(attrs.Path, attrs);
             }
         }
     }

@@ -100,7 +100,11 @@ namespace Viewer.Data
                 transaction.Commit();
             }
         }
-        
+
+        public void Flush()
+        {
+        }
+
         private void RemoveFile(string path)
         {
             using (var query = new SQLiteCommand(_connection))

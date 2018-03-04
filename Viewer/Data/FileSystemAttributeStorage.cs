@@ -137,6 +137,10 @@ namespace Viewer.Data
             }
         }
 
+        public void Flush()
+        {
+        }
+
         private bool IsAttributeSegment(JpegSegment segment)
         {
             const string header = AttributeReader.JpegSegmentHeader;

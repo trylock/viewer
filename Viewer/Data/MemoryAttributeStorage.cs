@@ -42,5 +42,9 @@ namespace Viewer.Data
                 _files.Add(path, attrs);
             }
         }
+
+        public void Flush()
+        {
+        }
     }
 }

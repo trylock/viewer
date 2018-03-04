@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -56,6 +57,8 @@ namespace Viewer.Data
                 var name = reader.GetString(0);
                 var source = reader.GetInt32(1);
                 var type = reader.GetInt32(2);
+                var valueSize = reader.GetInt64(4);
+
                 switch ((AttributeType)type)
                 {
                     case AttributeType.Int:
@@ -70,6 +73,12 @@ namespace Viewer.Data
                     case AttributeType.DateTime:
                         attrs.SetAttribute(new DateTimeAttribute(name, (AttributeSource)source, reader.GetDateTime(3)));
                         break;
+                    case AttributeType.Image:
+                        var buffer = new byte[valueSize];
+                        var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
+                        Debug.Assert(buffer.Length == length);
+                        var image = Image.FromStream(new MemoryStream(buffer));
+                        attrs.SetAttribute(new ImageAttribute(name, (AttributeSource)source, image));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -121,9 +130,9 @@ namespace Viewer.Data
             var fi = new FileInfo(path);
             using (var command = new SQLiteCommand(_connection))
             {
-                command.CommandText = "INSERT INTO files VALUES (:path, :lastModified)";
+                command.CommandText = "INSERT INTO files (path, lastWriteTime, lastAccessTime) VALUES (:path, :lastWriteTime, CURRENT_TIMESTAMP)";
                 command.Parameters.Add(new SQLiteParameter(":path", path));
-                command.Parameters.Add(new SQLiteParameter(":lastModified", fi.LastWriteTime));
+                command.Parameters.Add(new SQLiteParameter(":lastWriteTime", fi.LastWriteTime));
                 command.ExecuteNonQuery();
                 return _connection.LastInsertRowId;
             }

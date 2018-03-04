@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Drawing;
@@ -37,7 +37,7 @@ namespace Viewer.Data
             using (var query = new SQLiteCommand(_connection))
             {
                 query.CommandText = @"
-                SELECT a.name, a.type, a.value
+                SELECT a.name, a.source, a.type, a.value, length(a.value) as size
                 FROM files AS f
                     INNER JOIN attributes AS a 
                         ON (f.id = a.owner)
@@ -54,20 +54,22 @@ namespace Viewer.Data
             while (reader.Read())
             {
                 var name = reader.GetString(0);
-                var type = reader.GetInt32(1);
+                var source = reader.GetInt32(1);
+                var type = reader.GetInt32(2);
                 switch ((AttributeType)type)
                 {
                     case AttributeType.Int:
-                        attrs.SetAttribute(new IntAttribute(name, AttributeSource.Custom, reader.GetInt32(2)));
+                        attrs.SetAttribute(new IntAttribute(name, (AttributeSource)source, reader.GetInt32(3)));
                         break;
                     case AttributeType.Double:
-                        attrs.SetAttribute(new DoubleAttribute(name, AttributeSource.Custom, reader.GetDouble(2)));
+                        attrs.SetAttribute(new DoubleAttribute(name, (AttributeSource)source, reader.GetDouble(3)));
                         break;
                     case AttributeType.String:
-                        attrs.SetAttribute(new StringAttribute(name, AttributeSource.Custom, reader.GetString(2)));
+                        attrs.SetAttribute(new StringAttribute(name, (AttributeSource)source, reader.GetString(3)));
                         break;
                     case AttributeType.DateTime:
-                        attrs.SetAttribute(new DateTimeAttribute(name, AttributeSource.Custom, reader.GetDateTime(2)));
+                        attrs.SetAttribute(new DateTimeAttribute(name, (AttributeSource)source, reader.GetDateTime(3)));
+                        break;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -187,8 +189,9 @@ namespace Viewer.Data
         {
             using (var command = new SQLiteCommand(_connection))
             {
-                command.CommandText = "INSERT INTO attributes VALUES (:name, :type, :value, :owner)";
+                command.CommandText = "INSERT INTO attributes (name, source, type, value, owner) VALUES (:name, :source, :type, :value, :owner)";
                 command.Parameters.Add(new SQLiteParameter(":name", attr.Name));
+                command.Parameters.Add(new SQLiteParameter(":source", (int)attr.Source));
                 command.Parameters.Add(new SQLiteParameter(":owner", fileId));
                 var visitor = new InsertVisitor(command);
                 attr.Accept(visitor);

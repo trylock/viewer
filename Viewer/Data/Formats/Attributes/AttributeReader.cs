@@ -64,7 +64,7 @@ namespace Viewer.Data.Formats.Attributes
         /// <returns>
         ///     Next attriubte from the input or null if there is none
         /// </returns>
-        public Attribute ReadNext()
+        public Attribute Read()
         {
             if (_reader.IsEnd)
             {

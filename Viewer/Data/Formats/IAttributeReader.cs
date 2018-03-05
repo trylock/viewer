@@ -15,6 +15,6 @@ namespace Viewer.Data.Formats
         ///     Data format is invalid (invalid type, unexpected end of input etc)
         /// </exception>
         /// <returns>Next attribute or null if there is none</returns>
-        Attribute ReadNext();
+        Attribute Read();
     }
 }

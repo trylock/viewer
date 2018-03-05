@@ -50,7 +50,7 @@ namespace Viewer.Data.Formats.Exif
             _tags = tags;
         }
 
-        public Attribute ReadNext()
+        public Attribute Read()
         {
             if (_index >= _tags.Count)
             {

@@ -11,7 +11,7 @@ using Viewer.Data;
 namespace Viewer.Data.Formats.Attributes
 {
     /// <summary>
-    /// Write attributes in a binary format.
+    /// Write attributes to a binary format.
     /// For more info on the format, see the <see cref="AttributeReader"/> class.
     /// </summary>
     public class AttributeWriter : IAttributeWriter, IDisposable

@@ -19,8 +19,8 @@ namespace ViewerTest.Data.Formats
         {
             var input = new MemoryByteReader(new byte[0]);
             var reader = new AttributeReader(input);
-            Assert.IsNull(reader.ReadNext());
-            Assert.IsNull(reader.ReadNext());
+            Assert.IsNull(reader.Read());
+            Assert.IsNull(reader.Read());
         }
 
         [TestMethod]
@@ -34,12 +34,12 @@ namespace ViewerTest.Data.Formats
             });
             var reader = new AttributeReader(input);
 
-            var attr = reader.ReadNext();
+            var attr = reader.Read();
             Assert.IsInstanceOfType(attr, typeof(IntAttribute));
             Assert.AreEqual("test", attr.Name);
             Assert.AreEqual(0x12345678, ((IntAttribute)attr).Value);
 
-            Assert.IsNull(reader.ReadNext());
+            Assert.IsNull(reader.Read());
         }
 
         [TestMethod]
@@ -54,12 +54,12 @@ namespace ViewerTest.Data.Formats
             });
             var reader = new AttributeReader(input);
 
-            var attr = reader.ReadNext();
+            var attr = reader.Read();
             Assert.IsInstanceOfType(attr, typeof(DoubleAttribute));
             Assert.AreEqual("test", attr.Name);
             Assert.AreEqual(0.32, ((DoubleAttribute)attr).Value);
 
-            Assert.IsNull(reader.ReadNext());
+            Assert.IsNull(reader.Read());
         }
 
         [TestMethod]
@@ -81,12 +81,12 @@ namespace ViewerTest.Data.Formats
             var input = new MemoryByteReader(inputMemoryStream.ToArray());
             var reader = new AttributeReader(input);
 
-            var attr = reader.ReadNext();
+            var attr = reader.Read();
             Assert.IsInstanceOfType(attr, typeof(DateTimeAttribute));
             Assert.AreEqual("test", attr.Name);
             Assert.AreEqual(valueDateTime, ((DateTimeAttribute)attr).Value);
 
-            Assert.IsNull(reader.ReadNext());
+            Assert.IsNull(reader.Read());
         }
 
         [TestMethod]
@@ -104,17 +104,17 @@ namespace ViewerTest.Data.Formats
             });
             var reader = new AttributeReader(input);
 
-            var attr = reader.ReadNext();
+            var attr = reader.Read();
             Assert.IsInstanceOfType(attr, typeof(IntAttribute));
             Assert.AreEqual("test", attr.Name);
             Assert.AreEqual(0x12345678, ((IntAttribute)attr).Value);
 
-            attr = reader.ReadNext();
+            attr = reader.Read();
             Assert.IsInstanceOfType(attr, typeof(StringAttribute));
             Assert.AreEqual("tmp", attr.Name);
             Assert.AreEqual("value", ((StringAttribute)attr).Value);
 
-            Assert.IsNull(reader.ReadNext());
+            Assert.IsNull(reader.Read());
         }
 
         [TestMethod]
@@ -128,12 +128,12 @@ namespace ViewerTest.Data.Formats
             });
             var reader = new AttributeReader(input);
 
-            var attr = reader.ReadNext();
+            var attr = reader.Read();
             Assert.IsInstanceOfType(attr, typeof(IntAttribute));
             Assert.AreEqual("ěščřžýáíé", attr.Name);
             Assert.AreEqual(0x12345678, ((IntAttribute)attr).Value);
 
-            Assert.IsNull(reader.ReadNext());
+            Assert.IsNull(reader.Read());
         }
 
         [TestMethod]
@@ -147,12 +147,12 @@ namespace ViewerTest.Data.Formats
             });
             var reader = new AttributeReader(input);
 
-            var attr = reader.ReadNext();
+            var attr = reader.Read();
             Assert.IsInstanceOfType(attr, typeof(IntAttribute));
             Assert.AreEqual("𐍈", attr.Name);
             Assert.AreEqual(0x12345678, ((IntAttribute)attr).Value);
 
-            Assert.IsNull(reader.ReadNext());
+            Assert.IsNull(reader.Read());
         }
 
         [TestMethod]
@@ -164,7 +164,7 @@ namespace ViewerTest.Data.Formats
                 0x01,
             });
             var reader = new AttributeReader(input);
-            reader.ReadNext();
+            reader.Read();
         }
 
         [TestMethod]
@@ -177,7 +177,7 @@ namespace ViewerTest.Data.Formats
                 (byte)'n'
             });
             var reader = new AttributeReader(input);
-            reader.ReadNext();
+            reader.Read();
         }
 
         [TestMethod]
@@ -191,7 +191,7 @@ namespace ViewerTest.Data.Formats
                 0x78, 0x56, 0x34, 0x12 // value
             });
             var reader = new AttributeReader(input);
-            reader.ReadNext();
+            reader.Read();
         }
     }
 }

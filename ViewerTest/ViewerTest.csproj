@@ -54,10 +54,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Formats\AttributeReaderTest.cs" />
-    <Compile Include="Data\Formats\AttributeWriterTest.cs" />
+    <Compile Include="Data\Formats\Attributes\AttributeReaderTest.cs" />
+    <Compile Include="Data\Formats\Attributes\AttributeWriterTest.cs" />
+    <Compile Include="Data\Formats\Attributes\JpegSegmentByteWriterTest.cs" />
     <Compile Include="Data\Formats\Exif\ExifAttributeReader.cs" />
-    <Compile Include="Data\Formats\JpegSegmentByteReaderTest.cs" />
+    <Compile Include="Data\Formats\Attributes\JpegSegmentByteReaderTest.cs" />
     <Compile Include="Data\Formats\JpegSegmentReaderTest.cs" />
     <Compile Include="Data\Formats\JpegSegmentWriterTest.cs" />
     <Compile Include="Data\MemoryByteReaderTest.cs" />

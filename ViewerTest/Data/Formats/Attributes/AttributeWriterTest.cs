@@ -10,7 +10,7 @@ using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.Data.Formats.Attributes;
 
-namespace ViewerTest.Data.Formats
+namespace ViewerTest.Data.Formats.Attributes
 {
     [TestClass]
     public class AttributeWriterTest

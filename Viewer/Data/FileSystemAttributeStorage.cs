@@ -62,7 +62,7 @@ namespace Viewer.Data
                 for (;;)
                 {
                     // read segment
-                    var segment = segmentReader.ReadNext();
+                    var segment = segmentReader.ReadSegment();
                     if (segment == null)
                         break;
 
@@ -80,7 +80,7 @@ namespace Viewer.Data
                 var attrReader = factory.CreateFromSegments(segments);
                 for (;;)
                 {
-                    var attr = attrReader.ReadNext();
+                    var attr = attrReader.Read();
                     if (attr == null)
                         break;
                     attrs.SetAttribute(attr);
@@ -90,18 +90,18 @@ namespace Viewer.Data
             return attrs;
         }
         
-        public void Store(string path, AttributeCollection attrs)
+        public void Store(AttributeCollection attrs)
         {
             string tmpFileName;
 
-            using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
+            using (var segmentReader = _segmentReaderFactory.CreateFromPath(attrs.Path))
             {
-                using (var segmentWriter = _segmentWriterFactory.CreateFromPath(path, out tmpFileName))
+                using (var segmentWriter = _segmentWriterFactory.CreateFromPath(attrs.Path, out tmpFileName))
                 {
                     // copy all but attribute segments
                     for (;;)
                     {
-                        var segment = segmentReader.ReadNext();
+                        var segment = segmentReader.ReadSegment();
                         if (segment == null)
                             break;
 
@@ -133,7 +133,7 @@ namespace Viewer.Data
                 }
 
                 // replace the original file with the modified file
-                File.Replace(tmpFileName, path, null);
+                File.Replace(tmpFileName, attrs.Path, null);
             }
         }
 

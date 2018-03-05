@@ -31,15 +31,15 @@ namespace Viewer.Data
             return collection;
         }
 
-        public void Store(string path, AttributeCollection attrs)
+        public void Store(AttributeCollection attrs)
         {
-            if (_files.ContainsKey(path))
+            if (_files.ContainsKey(attrs.Path))
             {
-                _files[path] = attrs;
+                _files[attrs.Path] = attrs;
             }
             else
             {
-                _files.Add(path, attrs);
+                _files.Add(attrs.Path, attrs);
             }
         }
 

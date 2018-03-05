@@ -93,14 +93,14 @@ namespace Viewer.Data
             return attrs;
         }
 
-        public void Store(string path, AttributeCollection attrs)
+        public void Store(AttributeCollection attrs)
         {
             using (var transaction = _connection.BeginTransaction())
             {
                 // remove file (and transitively all attributes)
-                RemoveFile(path);
+                RemoveFile(attrs.Path);
                 
-                long id = StoreFile(path);
+                long id = StoreFile(attrs.Path);
 
                 // add new attributes
                 foreach (var attr in attrs)

@@ -49,9 +49,8 @@ namespace Viewer.Data
         /// <summary>
         /// Store attributes to a path.
         /// </summary>
-        /// <param name="path">Path to a file</param>
         /// <param name="attrs">Attributes to store in this file</param>
-        void Store(string path, AttributeCollection attrs);
+        void Store(AttributeCollection attrs);
 
         /// <summary>
         /// Finish all pending operations.

@@ -59,16 +59,15 @@ namespace Viewer.Data
         /// Store the attributes to both cache and the main storage.
         /// If the attributes are not dirty, they won't be written to the main storage.
         /// </summary>
-        /// <param name="path">Path to a file where the attributes will be stored</param>
         /// <param name="attrs">Attributes to store</param>
-        public void Store(string path, AttributeCollection attrs)
+        public void Store(AttributeCollection attrs)
         {
-            _cacheStorage.Store(path, attrs);
+            _cacheStorage.Store(attrs);
             
             // only write the attributes to the main storage if it's necessary
             if (!attrs.IsDirty)
             {
-                _mainStorage.Store(path, attrs);
+                _mainStorage.Store(attrs);
             }
         }
 
@@ -81,8 +80,8 @@ namespace Viewer.Data
             {
                 var attrs = pair.Value;
 
-                // store the attributes in the cache
-                _cacheStorage.Store(attrs.Path, attrs);
+                // store the attributes in cache
+                _cacheStorage.Store(attrs);
             }
             _pending.Clear();
         }

@@ -52,13 +52,15 @@ namespace Viewer.Data.Formats.Exif
 
         public Attribute Read()
         {
-            if (_index >= _tags.Count)
+            while (_index < _tags.Count)
             {
-                return null;
+                var tag = _tags[_index++];
+                var attr = tag.Parse(_exif);
+                if (attr != null)
+                    return attr;
             }
 
-            var tag = _tags[_index++];
-            return tag.Parse(_exif);
+            return null;
         }
 
         public void Dispose()

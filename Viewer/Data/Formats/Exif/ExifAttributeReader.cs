@@ -72,12 +72,14 @@ namespace Viewer.Data.Formats.Exif
     {
         private readonly IList<IExifAttributeParser> _tags;
 
+        private const string ExifHeader = "Exif\0\0";
+
         public ExifAttributeReaderFactory(IList<IExifAttributeParser> tags)
         {
             _tags = tags;
         }
 
-        public IAttributeReader CreateFromSegments(IList<JpegSegment> segments)
+        public IAttributeReader CreateFromSegments(IEnumerable<JpegSegment> segments)
         {
             var exifReader = new ExifReader();
             foreach (var segment in segments)
@@ -91,8 +93,6 @@ namespace Viewer.Data.Formats.Exif
             
             return new ExifAttributeReader(new ExifMetadata(null, null), _tags);
         }
-
-        private const string ExifHeader = "Exif\0\0";
 
         private bool IsExifSegment(JpegSegment segment)
         {

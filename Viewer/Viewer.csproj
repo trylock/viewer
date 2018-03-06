@@ -60,14 +60,13 @@
     <Compile Include="Data\AttributeCollection.cs" />
     <Compile Include="Data\AttributeStorageFactory.cs" />
     <Compile Include="Data\CachedAttributeStorage.cs" />
+    <Compile Include="Data\Formats\Attributes\JpegSegmentByteWriter.cs" />
     <Compile Include="Data\Formats\Exif\IExifAttributeParser.cs" />
     <Compile Include="Data\Formats\Exif\Ifd0ExifAttributeParser.cs" />
     <Compile Include="Data\Formats\Exif\ThumbnaiExifAttributeParser.cs" />
     <Compile Include="Data\Formats\IAttributeReader.cs" />
     <Compile Include="Data\Formats\IAttributeReaderFactory.cs" />
     <Compile Include="Data\Formats\Exif\ExifAttributeReader.cs" />
-    <Compile Include="Data\Formats\Attributes\JpegSegmentByteReader.cs" />
-    <Compile Include="Data\Formats\Attributes\JpegSegmentByteWriter.cs" />
     <Compile Include="Data\Formats\IAttributeWriter.cs" />
     <Compile Include="Data\Formats\IAttributeWriterFactory.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriter.cs" />

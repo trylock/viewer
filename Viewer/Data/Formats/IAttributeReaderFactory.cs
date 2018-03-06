@@ -14,6 +14,6 @@ namespace Viewer.Data.Formats
         /// </summary>
         /// <param name="segments">JPEG segments</param>
         /// <returns>Attribute reader of given segments</returns>
-        IAttributeReader CreateFromSegments(IList<JpegSegment> segments);
+        IAttributeReader CreateFromSegments(IEnumerable<JpegSegment> segments);
     }
 }

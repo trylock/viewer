@@ -88,16 +88,21 @@ namespace Viewer.Data.Formats.Jpeg
                     _isStart = false;
                 }
 
-                if (type == JpegSegmentType.Sos || type == JpegSegmentType.Eoi)
+                // handle special segments
+                if (type == JpegSegmentType.Eoi)
                 {
-                    Debug.Assert(type != JpegSegmentType.Eoi);
+                    throw new InvalidDataFormatException(
+                        PositionInImage - 1, 
+                        "Unexpected End of Image segment.");
+                }
+                else if (type == JpegSegmentType.Sos)
+                {
                     _isEnd = true;
                     return new JpegSegment(type, new byte[0], _reader.BaseStream.Position);
                 }
-
-                // some segments don't have data
-                if ((int) type >= 0xD0 && (int) type <= 0xDA)
+                else if ((int) type >= 0xD0 && (int) type <= 0xDA)
                 {
+                    // segment without data
                     return new JpegSegment(type, new byte[0], _reader.BaseStream.Position);
                 }
 

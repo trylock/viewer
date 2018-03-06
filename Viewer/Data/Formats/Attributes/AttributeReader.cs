@@ -129,19 +129,63 @@ namespace Viewer.Data.Formats.Attributes
     /// </summary>
     public class AttributeReaderFactory : IAttributeReaderFactory
     {
-        public IAttributeReader CreateFromSegments(IList<JpegSegment> segments)
+        /// <summary>
+        /// Extract data from attributes segment and copy them to 1 continuous block of memory.
+        /// </summary>
+        /// <param name="segments">JPEG segments</param>
+        /// <returns>Serialized attributes data in one array</returns>
+        public static byte[] ExtractAttributeData(IEnumerable<JpegSegment> segments)
         {
-            var attrSegments = new List<JpegSegment>();
+            // compute the exact size
+            long size = 0;
             foreach (var segment in segments)
             {
-                if (Encoding.UTF8.GetString(segment.Bytes, 0, AttributeReader.JpegSegmentHeader.Length) == AttributeReader.JpegSegmentHeader)
+                if (IsAttributeSegment(segment))
                 {
-                    attrSegments.Add(segment);
+                    size += segment.Bytes.Length - AttributeReader.JpegSegmentHeader.Length;
                 }
             }
 
-            return new AttributeReader(
-                new JpegSegmentByteReader(attrSegments, AttributeReader.JpegSegmentHeader.Length));
+            // copy segments
+            var buffer = new byte[size];
+            long bufferOffset = 0;
+            foreach (var segment in segments)
+            {
+                if (IsAttributeSegment(segment))
+                {
+                    var bytesToCopyCount = segment.Bytes.Length - AttributeReader.JpegSegmentHeader.Length;
+                    Array.Copy(
+                        segment.Bytes, 
+                        AttributeReader.JpegSegmentHeader.Length, 
+                        buffer, 
+                        bufferOffset,
+                        bytesToCopyCount);
+                }
+            }
+
+            return buffer;
+        }
+
+        public static bool IsAttributeSegment(JpegSegment segment)
+        {
+            if (segment.Type != JpegSegmentType.App1)
+            {
+                return false;
+            }
+
+            var segmentHeader = Encoding.UTF8.GetString(segment.Bytes, 0, AttributeReader.JpegSegmentHeader.Length);
+            return segmentHeader == AttributeReader.JpegSegmentHeader;
+        }
+
+        /// <summary>
+        /// Create attribute reader from list of 
+        /// </summary>
+        /// <param name="segments"></param>
+        /// <returns></returns>
+        public IAttributeReader CreateFromSegments(IEnumerable<JpegSegment> segments)
+        {
+            var data = ExtractAttributeData(segments);
+            return new AttributeReader(new MemoryByteReader(data));
         }
     }
 }

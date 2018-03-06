@@ -10,6 +10,12 @@ namespace Viewer.Data.Formats.Jpeg
     public static class JpegSegmentUtils
     {
         /// <summary>
+        /// Maximal number of bytes in a JPEG segment 
+        /// (not including the 2 size bytes and header)
+        /// </summary>
+        public const long MaxSegmentSize = 0x10000 - 2;
+
+        /// <summary>
         /// Copy segment data from multiple segments without header to a single array.
         /// </summary>
         /// <param name="segments">All segments</param>
@@ -50,6 +56,51 @@ namespace Viewer.Data.Formats.Jpeg
             }
 
             return buffer;
+        }
+        
+        /// <summary>
+        /// Split data array to segments of length at most <paramref name="maxSegmentSize"/> bytes
+        /// </summary>
+        /// <param name="data">Data to split</param>
+        /// <param name="type">Type of each JPEG segment</param>
+        /// <param name="header">
+        ///     Header of each JPEG segment. All characters have to be ASCII.
+        /// </param>
+        /// <param name="maxSegmentSize">
+        ///     Maximal size of the JPEG segment (excluding the 2 size bytes)
+        /// </param>
+        /// <returns>JPEG segments enumerator</returns>
+        public static IEnumerable<JpegSegment> SplitSegmentData(
+            byte[] data,
+            JpegSegmentType type,
+            string header,
+            long maxSegmentSize = MaxSegmentSize)
+        {
+            if (header.Length >= maxSegmentSize)
+            {
+                throw new ArgumentException(
+                    "Header must fit in the JPEG segmen with some data.");
+            }
+
+            long dataOffset = 0;
+            while (dataOffset < data.Length)
+            {
+                long bufferSize = Math.Min(
+                    data.Length - dataOffset,
+                    maxSegmentSize - header.Length);
+                var buffer = new byte[bufferSize + header.Length];
+
+                // copy header 
+                for (int i = 0; i < header.Length; ++i)
+                {
+                    buffer[i] = (byte) header[i];
+                }
+
+                // copy part of the data
+                Array.Copy(data, dataOffset, buffer, header.Length, bufferSize);
+                dataOffset += bufferSize;
+                yield return new JpegSegment(type, buffer, 0);
+            }
         }
 
         /// <summary>

@@ -93,5 +93,48 @@ namespace ViewerTest.Data.Formats.Jpeg
             var data = JpegSegmentUtils.CopySegmentData(segments, JpegSegmentType.App1, "Test\0");
             CollectionAssert.AreEqual(new byte[] { 0x12, 0x34, 0x56, 0x78, 0x9A }, data);
         }
+
+        [TestMethod]
+        public void SplitSegmentData_NoSegments()
+        {
+            var data = new byte[] { };
+            var segments = JpegSegmentUtils.SplitSegmentData(data, JpegSegmentType.App1, "T").ToList();
+            Assert.AreEqual(0, segments.Count);
+        }
+
+        [TestMethod]
+        public void SplitSegmentData_OneSegment()
+        {
+            var data = new byte[] { 0x12, 0x34 };
+            var segments = JpegSegmentUtils.SplitSegmentData(data, JpegSegmentType.App1, "T", 5).ToList();
+            Assert.AreEqual(1, segments.Count);
+
+            Assert.AreEqual(JpegSegmentType.App1, segments[0].Type);
+            CollectionAssert.AreEqual(new byte[]
+            {
+                (byte)'T', 0x12, 0x34
+            }, segments[0].Bytes);
+        }
+
+        [TestMethod]
+        public void SplitSegmentData_MultipleSegments()
+        {
+            var data = new byte[] { 0x12, 0x34, 0x56, 0x78, 0x9A };
+            var segments = JpegSegmentUtils.SplitSegmentData(data, JpegSegmentType.App1, "T", 5).ToList();
+
+            Assert.AreEqual(2, segments.Count);
+
+            Assert.AreEqual(JpegSegmentType.App1, segments[0].Type);
+            CollectionAssert.AreEqual(new byte[]
+            {
+                (byte)'T', 0x12, 0x34, 0x56, 0x78
+            }, segments[0].Bytes);
+
+            Assert.AreEqual(JpegSegmentType.App1, segments[1].Type);
+            CollectionAssert.AreEqual(new byte[]
+            {
+                (byte)'T', 0x9A
+            }, segments[1].Bytes);
+        }
     }
 }

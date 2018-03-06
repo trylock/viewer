@@ -22,7 +22,7 @@ namespace Viewer.Data.Formats.Jpeg
         /// <param name="type">Type of segments to copy</param>
         /// <param name="header">Header of the segments to copy (first bytes, ASCII characters only)</param>
         /// <returns></returns>
-        public static byte[] CopySegmentData(
+        public static byte[] JoinSegmentData(
             IEnumerable<JpegSegment> segments,
             JpegSegmentType type,
             string header)

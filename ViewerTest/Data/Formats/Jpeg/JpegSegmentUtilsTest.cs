@@ -47,19 +47,19 @@ namespace ViewerTest.Data.Formats.Jpeg
         }
 
         [TestMethod]
-        public void CopySegmentData_NoSegments()
+        public void JoinSegmentData_NoSegments()
         {
             var segments = new List<JpegSegment>
             {
                 new JpegSegment(JpegSegmentType.App0, new byte[0], 0),
                 new JpegSegment(JpegSegmentType.App1, new byte[] { 0x12, 0x34 }, 0),
             };
-            var data = JpegSegmentUtils.CopySegmentData(segments, JpegSegmentType.App1, "Test\0");
+            var data = JpegSegmentUtils.JoinSegmentData(segments, JpegSegmentType.App1, "Test\0");
             Assert.AreEqual(0, data.Length);
         }
 
         [TestMethod]
-        public void CopySegmentData_OneSegment()
+        public void JoinSegmentData_OneSegment()
         {
             var segments = new List<JpegSegment>
             {
@@ -70,12 +70,12 @@ namespace ViewerTest.Data.Formats.Jpeg
                 }, 0),
                 new JpegSegment(JpegSegmentType.App1, new byte[] { 0x12, 0x34 }, 0),
             };
-            var data = JpegSegmentUtils.CopySegmentData(segments, JpegSegmentType.App1, "Test\0");
+            var data = JpegSegmentUtils.JoinSegmentData(segments, JpegSegmentType.App1, "Test\0");
             CollectionAssert.AreEqual(new byte[]{ 0x12, 0x34 }, data);
         }
 
         [TestMethod]
-        public void CopySegmentData_MultipleSegments()
+        public void JoinSegmentData_MultipleSegments()
         {
             var segments = new List<JpegSegment>
             {
@@ -90,7 +90,7 @@ namespace ViewerTest.Data.Formats.Jpeg
                     (byte) 'T', (byte) 'e', (byte) 's', (byte) 't', 0x00, 0x56, 0x78, 0x9A
                 }, 0),
             };
-            var data = JpegSegmentUtils.CopySegmentData(segments, JpegSegmentType.App1, "Test\0");
+            var data = JpegSegmentUtils.JoinSegmentData(segments, JpegSegmentType.App1, "Test\0");
             CollectionAssert.AreEqual(new byte[] { 0x12, 0x34, 0x56, 0x78, 0x9A }, data);
         }
 

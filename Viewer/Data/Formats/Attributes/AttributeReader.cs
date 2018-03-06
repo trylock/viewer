@@ -136,7 +136,7 @@ namespace Viewer.Data.Formats.Attributes
         /// <returns></returns>
         public IAttributeReader CreateFromSegments(IEnumerable<JpegSegment> segments)
         {
-            var data = JpegSegmentUtils.CopySegmentData(segments, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
+            var data = JpegSegmentUtils.JoinSegmentData(segments, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
             return new AttributeReader(new MemoryByteReader(data));
         }
     }

@@ -69,6 +69,7 @@
     <Compile Include="Data\Formats\Exif\ExifAttributeReader.cs" />
     <Compile Include="Data\Formats\IAttributeWriter.cs" />
     <Compile Include="Data\Formats\IAttributeWriterFactory.cs" />
+    <Compile Include="Data\Formats\Jpeg\JpegSegmentUtils.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriter.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterFactory.cs" />
     <Compile Include="Data\IByteReader.cs" />

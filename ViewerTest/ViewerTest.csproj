@@ -58,6 +58,7 @@
     <Compile Include="Data\Formats\Attributes\AttributeWriterTest.cs" />
     <Compile Include="Data\Formats\Exif\ExifAttributeReader.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderTest.cs" />
+    <Compile Include="Data\Formats\Jpeg\JpegSegmentUtilsTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterTest.cs" />
     <Compile Include="Data\MemoryByteReaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

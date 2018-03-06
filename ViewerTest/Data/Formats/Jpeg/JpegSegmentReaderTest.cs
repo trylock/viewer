@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data.Formats;
 using JpegSegmentReader = Viewer.Data.Formats.Jpeg.JpegSegmentReader;
 
-namespace ViewerTest.Data.Formats
+namespace ViewerTest.Data.Formats.Jpeg
 {
     [TestClass]
     public class JpegSegmentReaderTest

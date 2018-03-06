@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data.Formats;
 using Viewer.Data.Formats.Jpeg;
 
-namespace ViewerTest.Data.Formats
+namespace ViewerTest.Data.Formats.Jpeg
 {
     [TestClass]
     public class JpegSegmentWriterTest

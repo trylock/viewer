@@ -122,6 +122,7 @@ namespace Viewer.Data
             {
                 query.CommandText = @"DELETE FROM files WHERE path = :path";
                 query.Parameters.Add(new SQLiteParameter(":path", path));
+                query.ExecuteNonQuery();
             }
         }
 

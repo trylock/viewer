@@ -159,6 +159,7 @@ namespace Viewer.Data
                 return false;
             }
 
+            IsDirty = true;
             _attrs.Remove(item.Name);
             return true;
         }

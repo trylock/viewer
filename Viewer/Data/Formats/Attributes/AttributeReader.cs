@@ -48,9 +48,9 @@ namespace Viewer.Data.Formats.Attributes
         /// </summary>
         public const string JpegSegmentHeader = "Attr\0";
        
-        private readonly IByteReader _reader;
+        private readonly BinaryReader _reader;
 
-        public AttributeReader(IByteReader reader)
+        public AttributeReader(BinaryReader reader)
         {
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         }
@@ -66,7 +66,7 @@ namespace Viewer.Data.Formats.Attributes
         /// </returns>
         public Attribute Read()
         {
-            if (_reader.IsEnd)
+            if (_reader.BaseStream.Position >= _reader.BaseStream.Length)
             {
                 return null;
             }
@@ -74,7 +74,7 @@ namespace Viewer.Data.Formats.Attributes
             try
             {
                 // read type and name
-                var typeOffset = _reader.Position;
+                var typeOffset = _reader.BaseStream.Position;
                 var type = _reader.ReadInt16();
                 var name = ReadStringUTF8();
 
@@ -100,7 +100,10 @@ namespace Viewer.Data.Formats.Attributes
             }
             catch (EndOfStreamException e)
             {
-                throw new InvalidDataFormatException(_reader.Position, "Unexpected end of input", e);
+                throw new InvalidDataFormatException(
+                    _reader.BaseStream.Position, 
+                    "Unexpected end of input", 
+                    e);
             }
         }
 
@@ -137,7 +140,7 @@ namespace Viewer.Data.Formats.Attributes
         public IAttributeReader CreateFromSegments(IEnumerable<JpegSegment> segments)
         {
             var data = JpegSegmentUtils.JoinSegmentData(segments, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
-            return new AttributeReader(new MemoryByteReader(data));
+            return new AttributeReader(new BinaryReader(new MemoryStream(data)));
         }
     }
 }

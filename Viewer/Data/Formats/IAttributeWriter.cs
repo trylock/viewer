@@ -14,11 +14,5 @@ namespace Viewer.Data.Formats
         /// </summary>
         /// <param name="attr">Attribute to write</param>
         void Write(Attribute attr);
-
-        /// <summary>
-        /// Finish writing attributes and return list of created JPEG segments
-        /// </summary>
-        /// <returns>Created JPEG segments</returns>
-        List<JpegSegment> Finish();
     }
 }

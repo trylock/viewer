@@ -40,6 +40,13 @@ namespace Viewer
 
             CacheConnection = new SQLiteConnection($"Data Source={Environment.CurrentDirectory}/../../../cache.db;Version=3");
             CacheConnection.Open();
+
+            // enforce foreign keys
+            using (var query = new SQLiteCommand(CacheConnection))
+            {
+                query.CommandText = "PRAGMA foreign_keys = 1";
+                query.ExecuteNonQuery();
+            }
         }
     }
 }

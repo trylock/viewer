@@ -65,7 +65,7 @@ namespace Viewer.Data
             _cacheStorage.Store(attrs);
             
             // only write the attributes to the main storage if it's necessary
-            if (!attrs.IsDirty)
+            if (attrs.IsDirty)
             {
                 _mainStorage.Store(attrs);
             }

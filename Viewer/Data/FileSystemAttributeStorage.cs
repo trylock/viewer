@@ -115,14 +115,10 @@ namespace Viewer.Data
                     }
 
                     // serialize attributes to JpegSegments
-                    var attrWriter = _attrWriterFactory.Create();
-                    foreach (var attr in attrs)
-                    {
-                        attrWriter.Write(attr);
-                    }
+                    var serialized = Serialize(attrs);
+                    var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
 
                     // write attribute segments
-                    var segments = attrWriter.Finish();
                     foreach (var segment in segments)
                     {
                         segmentWriter.WriteSegment(segment);
@@ -134,6 +130,20 @@ namespace Viewer.Data
 
                 // replace the original file with the modified file
                 File.Replace(tmpFileName, attrs.Path, null);
+            }
+        }
+
+        private byte[] Serialize(ICollection<Attribute> attrs)
+        {
+            using (var serialized = new MemoryStream())
+            {
+                var writer = _attrWriterFactory.Create(serialized);
+                foreach (var attr in attrs)
+                {
+                    writer.Write(attr);
+                }
+
+                return serialized.ToArray();
             }
         }
 

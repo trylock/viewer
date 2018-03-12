@@ -14,7 +14,7 @@ namespace Viewer.Data.Formats.Attributes
     /// Write attributes to a binary format.
     /// For more info on the format, see the <see cref="AttributeReader"/> class.
     /// </summary>
-    public class AttributeWriter : IAttributeWriter, IDisposable
+    public class AttributeWriter : IAttributeWriter
     {
         private class WriterVisitor : IAttributeVisitor, IDisposable
         {
@@ -60,6 +60,7 @@ namespace Viewer.Data.Formats.Attributes
 
             public void Dispose()
             {
+                Writer.Dispose();
             }
 
             private void WriteString(string value)

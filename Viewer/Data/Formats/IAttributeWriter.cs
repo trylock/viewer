@@ -7,7 +7,7 @@ using MetadataExtractor.Formats.Jpeg;
 
 namespace Viewer.Data.Formats
 {
-    public interface IAttributeWriter
+    public interface IAttributeWriter : IDisposable
     {
         /// <summary>
         /// Write attribute

@@ -154,8 +154,7 @@ namespace Viewer.Data
         private bool IsAttributeSegment(JpegSegment segment)
         {
             const string header = AttributeReader.JpegSegmentHeader;
-            return segment.Type == JpegSegmentType.App1 &&
-                   Encoding.UTF8.GetString(segment.Bytes, 0, header.Length) == header;
+            return JpegSegmentUtils.MatchSegment(segment, JpegSegmentType.App1, header);
         }
     }
 }

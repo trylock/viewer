@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\AttributeCollectionTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeReaderTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeWriterTest.cs" />
     <Compile Include="Data\Formats\Exif\ExifAttributeReader.cs" />

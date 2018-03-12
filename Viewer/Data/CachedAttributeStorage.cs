@@ -68,6 +68,7 @@ namespace Viewer.Data
             if (attrs.IsDirty)
             {
                 _mainStorage.Store(attrs);
+                attrs.Reset();
             }
         }
 

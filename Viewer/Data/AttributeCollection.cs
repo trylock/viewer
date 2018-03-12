@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -111,12 +111,12 @@ namespace Viewer.Data
         }
         
         /// <summary>
-        /// Add a new attribute or set an existing attribute
+        /// Call this after the collection has been stored in a file.
         /// </summary>
-        /// <param name="attr"></param>
-        public void Add(Attribute attr)
+        public void Reset()
         {
-            SetAttribute(attr);
+            IsDirty = false;
+            LastWriteTime = DateTime.Now;
         }
 
         #region IDictionary

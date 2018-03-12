@@ -18,7 +18,8 @@ namespace Viewer.Data.Formats.Jpeg
 
         /// <summary>
         /// Finish writing JPEG segment.
-        /// Copy image unchanged image data in dataStream and write End of Image 
+        /// Copy unchanged image data starting at current position in dataStream 
+        /// including the End of Image segment.
         /// segment after them.
         /// <param name="dataStream">Stream with image data</param>
         /// </summary>
@@ -59,7 +60,8 @@ namespace Viewer.Data.Formats.Jpeg
             _writer.Write((byte)0xFF);
             _writer.Write((byte)JpegSegmentType.Sos);
 
-            // write image data (this will copy the End of Image segment)
+            // write image data 
+            // this will also copy the End of Image segment (assuming correct file format)
             var buffer = new byte[_blockSize];
             for (;;)
             {

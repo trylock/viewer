@@ -32,7 +32,7 @@ namespace Viewer.Data
         /// </summary>
         public AttributeSource Source { get; }
 
-        protected Attribute(string name, AttributeSource source)
+        protected Attribute(string name, AttributeSource source)    
         {
             Name = name;
             Source = source;
@@ -43,10 +43,20 @@ namespace Viewer.Data
         public virtual void Dispose()
         {
         }
+
+        protected string FormatAttribute<T>(T value, string typeName)
+        {
+            return typeName + "(\"" + Name + "\", " + value + ")";
+        }
     }
 
     public class IntAttribute : Attribute
     {
+        /// <summary>
+        /// Name of this type
+        /// </summary>
+        public const string TypeName = "Int32";
+
         /// <summary>
         /// Value of the attribute
         /// </summary>
@@ -61,10 +71,20 @@ namespace Viewer.Data
         {
             visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return FormatAttribute(Value, TypeName);
+        }
     }
 
     public sealed class DoubleAttribute : Attribute
     {
+        /// <summary>
+        /// Name of this type
+        /// </summary>
+        public const string TypeName = "Double";
+
         /// <summary>
         /// Value of the attribute
         /// </summary>
@@ -79,10 +99,20 @@ namespace Viewer.Data
         {
             visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return FormatAttribute(Value, TypeName);
+        }
     }
 
     public sealed class StringAttribute : Attribute
     {
+        /// <summary>
+        /// Name of this type
+        /// </summary>
+        public const string TypeName = "String";
+
         /// <summary>
         /// Value of the attribute
         /// </summary>
@@ -97,10 +127,20 @@ namespace Viewer.Data
         {
             visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return FormatAttribute(Value, TypeName);
+        }
     }
 
     public sealed class DateTimeAttribute : Attribute
     {
+        /// <summary>
+        /// Name of this type
+        /// </summary>
+        public const string TypeName = "DateTime";
+
         /// <summary>
         /// Format of a DateTime value in string
         /// </summary>
@@ -120,10 +160,20 @@ namespace Viewer.Data
         {
             visitor.Visit(this);
         }
+
+        public override string ToString()
+        {
+            return FormatAttribute(Value.ToString(Format), TypeName);
+        }
     }
 
     public sealed class ImageAttribute : Attribute
     {
+        /// <summary>
+        /// Name of this type
+        /// </summary>
+        public const string TypeName = "Image";
+
         public Image Value { get; private set; }
 
         public ImageAttribute(string name, AttributeSource source, Image value) : base(name, source)
@@ -143,6 +193,11 @@ namespace Viewer.Data
                 Value.Dispose();
                 Value = null;
             }
+        }
+
+        public override string ToString()
+        {
+            return FormatAttribute(Value.Size, TypeName);
         }
     }
 }

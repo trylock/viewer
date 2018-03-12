@@ -1,16 +1,17 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    public class AttributeCollection : ICollection<Attribute>
+    public class AttributeCollection : IDictionary<string, Attribute>
     {
-        private Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
+        private IDictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
         /// <summary>
         /// Path to the file where the attributes are (or will be) stored
@@ -20,7 +21,7 @@ namespace Viewer.Data
         /// <summary>
         /// Last time these attributes were written to a file
         /// </summary>
-        public DateTime LastWriteTime { get; }
+        public DateTime LastWriteTime { get; private set; }
 
         /// <summary>
         /// Last time these attributes were accessed (read from a file)
@@ -32,7 +33,7 @@ namespace Viewer.Data
         ///          them back to a file
         /// </summary>
         public bool IsDirty { get; private set; }
-        
+
         /// <summary>
         /// Number or attributes in the collection
         /// </summary>
@@ -42,6 +43,16 @@ namespace Viewer.Data
         /// false, the collection is never read-only
         /// </summary>
         public bool IsReadOnly => false;
+
+        /// <summary>
+        /// Collection of attribute names
+        /// </summary>
+        public ICollection<string> Keys => _attrs.Keys;
+
+        /// <summary>
+        /// Collection of attributes
+        /// </summary>
+        public ICollection<Attribute> Values => _attrs.Values;
 
         public AttributeCollection(string path, DateTime lastWriteTime, DateTime lastAccessTime)
         {
@@ -108,73 +119,91 @@ namespace Viewer.Data
             SetAttribute(attr);
         }
 
-        /// <summary>
-        /// Remove all attributes in the collection
-        /// </summary>
+        #region IDictionary
+        
         public void Clear()
         {
+            if (Count != 0)
+            {
+                IsDirty = true;
+            }
             _attrs.Clear();
+        }
+
+        void ICollection<KeyValuePair<string, Attribute>>.Add(KeyValuePair<string, Attribute> item)
+        {
             IsDirty = true;
+            _attrs.Add(item);
         }
 
-        /// <summary>
-        /// Check whether there is an attribute
-        /// </summary>
-        /// <param name="attr"></param>
-        /// <returns>true iff given attribute is in the collection</returns>
-        public bool Contains(Attribute attr)
+        bool ICollection<KeyValuePair<string, Attribute>>.Contains(KeyValuePair<string, Attribute> item)
         {
-            if (!_attrs.TryGetValue(attr.Name, out Attribute attrInCollection))
-            {
-                return false;
-            }
-
-            return attr == attrInCollection;
+            return _attrs.Contains(item);
         }
 
-        /// <summary>
-        /// Copy the attributes to an array
-        /// </summary>
-        /// <param name="array">Array of attributes where the attributes will be copied</param>
-        /// <param name="arrayIndex">Index in the array at which copying begins</param>
-        public void CopyTo(Attribute[] array, int arrayIndex)
+        void ICollection<KeyValuePair<string, Attribute>>.CopyTo(KeyValuePair<string, Attribute>[] array, int arrayIndex)
         {
-            _attrs.Values.CopyTo(array, arrayIndex);
+            _attrs.CopyTo(array, arrayIndex);
         }
 
-        /// <summary>
-        /// Remove attribute with the same name and value
-        /// </summary>
-        /// <param name="item">Attribute</param>
-        /// <returns>true iff the attribute has been removed</returns>
-        public bool Remove(Attribute item)
+        bool ICollection<KeyValuePair<string, Attribute>>.Remove(KeyValuePair<string, Attribute> item)
         {
-            if (!_attrs.TryGetValue(item.Name, out Attribute attrInCollection))
+            if (_attrs.Remove(item))
             {
-                return false;
+                IsDirty = true;
+                return true;
             }
 
-            if (item != attrInCollection)
-            {
-                return false;
-            }
-
-            IsDirty = true;
-            _attrs.Remove(item.Name);
-            return true;
+            return false;
         }
 
-        public IEnumerator<Attribute> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, Attribute>> GetEnumerator()
         {
-            foreach (var pair in _attrs)
-            {
-                yield return pair.Value;
-            }
+            return _attrs.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
+
+        public bool ContainsKey(string key)
+        {
+            return _attrs.ContainsKey(key);
+        }
+
+        public void Add(string key, Attribute value)
+        {
+            IsDirty = true;
+            _attrs.Add(key, value);
+        }
+
+        public bool Remove(string key)
+        {
+            if (_attrs.Remove(key))
+            {
+                IsDirty = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool TryGetValue(string key, out Attribute value)
+        {
+            return _attrs.TryGetValue(key, out value);
+        }
+
+        public Attribute this[string key]
+        {
+            get => _attrs[key];
+            set
+            {
+                IsDirty = true;
+                _attrs[key] = value;
+            }
+        }
+
+        #endregion
     }
 }

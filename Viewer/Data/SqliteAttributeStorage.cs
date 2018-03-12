@@ -103,7 +103,7 @@ namespace Viewer.Data
                 long id = StoreFile(attrs.Path);
 
                 // add new attributes
-                foreach (var attr in attrs)
+                foreach (var attr in attrs.Values)
                 {
                     StoreAttribute(id, attr);
                 }

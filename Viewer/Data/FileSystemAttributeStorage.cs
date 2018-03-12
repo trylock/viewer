@@ -115,7 +115,7 @@ namespace Viewer.Data
                     }
 
                     // serialize attributes to JpegSegments
-                    var serialized = Serialize(attrs);
+                    var serialized = Serialize(attrs.Values);
                     var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
 
                     // write attribute segments

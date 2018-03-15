@@ -81,6 +81,12 @@
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReader.cs" />
     <Compile Include="Data\MemoryAttributeStorage.cs" />
     <Compile Include="Data\SqliteAttributeStorage.cs" />
+    <Compile Include="UI\DirectoryTreeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\DirectoryTreeControl.Designer.cs">
+      <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="UI\ThumbnailControl.cs">
       <SubType>UserControl</SubType>

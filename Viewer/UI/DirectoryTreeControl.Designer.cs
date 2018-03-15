@@ -33,9 +33,15 @@
             // 
             // TreeView
             // 
+            this.TreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.TreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TreeView.FullRowSelect = true;
+            this.TreeView.HotTracking = true;
+            this.TreeView.ItemHeight = 22;
             this.TreeView.Location = new System.Drawing.Point(0, 0);
             this.TreeView.Name = "TreeView";
+            this.TreeView.ShowLines = false;
+            this.TreeView.ShowPlusMinus = false;
             this.TreeView.Size = new System.Drawing.Size(457, 497);
             this.TreeView.TabIndex = 0;
             this.TreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);

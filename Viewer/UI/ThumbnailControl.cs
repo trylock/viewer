@@ -16,7 +16,7 @@ namespace Viewer.UI
     {
         private PictureBox _thumbnailPictureBox;
 
-        private Label _nameLabel;
+        private Label _nameLabel; 
 
         public ThumbnailControl()
         {

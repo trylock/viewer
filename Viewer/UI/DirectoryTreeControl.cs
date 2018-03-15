@@ -18,7 +18,7 @@ namespace Viewer.UI
         /// <summary>
         /// Directory with at least one of these flags will be hidden.
         /// </summary>
-        public FileAttributes HideFlags = FileAttributes.Hidden;
+        public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
 
         public DirectoryTreeControl()
         {
@@ -38,6 +38,7 @@ namespace Viewer.UI
 
         private void TreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
+            // toggle node
             if (e.Node.IsExpanded)
             {
                 e.Node.Collapse();

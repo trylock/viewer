@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,16 @@ namespace Viewer
         /// Connection to the cache DB
         /// </summary>
         public SQLiteConnection CacheConnection { get; }
+
+        /// <summary>
+        /// Name of the system file explorer process
+        /// </summary>
+        public string ExplorerProcessName { get; } = "explorer.exe";
+
+        /// <summary>
+        /// Command line argument for explorer to open given file path
+        /// </summary>
+        public string ExplorerOpenFileArg { get; } = "/select,";
 
         private Settings()
         {

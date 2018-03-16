@@ -141,8 +141,10 @@
   </data>
   <data name="ExplorerOpenFolderArguments" xml:space="preserve">
     <value>/select,"{0}"</value>
+    <comment>Command line argumnets for ExplorerProcessName which will open folder {0}</comment>
   </data>
   <data name="ExplorerProcessName" xml:space="preserve">
     <value>explorer.exe</value>
+    <comment>Name of the system file explorer program</comment>
   </data>
 </root>

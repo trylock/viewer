@@ -10,7 +10,6 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Viewer.IO;
 using Viewer.Properties;
 
 namespace Viewer.UI
@@ -123,6 +122,13 @@ namespace Viewer.UI
                 return fullPath + Path.DirectorySeparatorChar;
             }
             return fullPath;
+        }
+
+        private string GetSelectedNodePath()
+        {
+            if (TreeView.SelectedNode == null)
+                return null;
+            return GetPath(TreeView.SelectedNode);
         }
         
         #region TreeView Events
@@ -266,11 +272,29 @@ namespace Viewer.UI
 
         private void OpenInFileExplorerMenuItem_Click(object sender, EventArgs e)
         {
-            var node = TreeView.SelectedNode;
-            if (node == null)
-                return;
-            var path = GetPath(node);
-            _controller.OpenInExplorer(path);
+            var path = GetSelectedNodePath();
+            if (path != null)
+            {
+                _controller.OpenInExplorer(path);
+            }
+        }
+
+        private void CopyMenuItem_Click(object sender, EventArgs e)
+        {
+            var path = GetSelectedNodePath();
+            if (path != null)
+            {
+                _controller.CopyFileToClipboard(path);
+            }
+        }
+
+        private void CutMenuItem_Click(object sender, EventArgs e)
+        {
+            var path = GetSelectedNodePath();
+            if (path != null)
+            {
+                _controller.CutFileToClipboard(path);
+            }
         }
 
         #endregion

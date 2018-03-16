@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Viewer.Properties;
 
 namespace Viewer.UI
@@ -144,6 +146,40 @@ namespace Viewer.UI
             Process.Start(
                 Resources.ExplorerProcessName, 
                 string.Format(Resources.ExplorerOpenFolderArguments, path));
+        }
+
+        /// <summary>
+        /// Copy a file to clipboard
+        /// </summary>
+        /// <param name="path">Path to a file or a folder</param>
+        public void CopyFileToClipboard(string path)
+        {
+            AddFilesToClipboard(new[] { path }, DragDropEffects.Copy);
+        }
+
+        /// <summary>
+        /// Copy a file to clipboard
+        /// </summary>
+        /// <param name="path">Path to a file or a folder</param>
+        public void CutFileToClipboard(string path)
+        {
+            AddFilesToClipboard(new[] { path }, DragDropEffects.Move);
+        }
+
+        private void AddFilesToClipboard(IEnumerable<string> paths, DragDropEffects effect)
+        {
+            Clipboard.Clear();
+
+            var fileList = new StringCollection();
+            foreach (var path in paths)
+            {
+                fileList.Add(path);
+            }
+
+            var data = new DataObject();
+            data.SetFileDropList(fileList);
+            data.SetData("Preferred DropEffect", new MemoryStream(BitConverter.GetBytes((int)effect)));
+            Clipboard.SetDataObject(data, true);
         }
     }
 }

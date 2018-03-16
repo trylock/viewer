@@ -34,8 +34,8 @@
             this.ToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenInFileExplorerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,8 +73,8 @@
             this.ToggleMenuItem,
             this.OpenInFileExplorerMenuItem,
             this.toolStripSeparator3,
-            this.toolStripMenuItem1,
-            this.toolStripMenuItem2,
+            this.CutMenuItem,
+            this.CopyMenuItem,
             this.toolStripSeparator2,
             this.DeleteMenuItem,
             this.RenameMenuItem,
@@ -102,19 +102,21 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(213, 6);
             // 
-            // toolStripMenuItem1
+            // CutMenuItem
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(216, 24);
-            this.toolStripMenuItem1.Text = "Cut";
+            this.CutMenuItem.Name = "CutMenuItem";
+            this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.CutMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.CutMenuItem.Text = "Cut";
+            this.CutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
             // 
-            // toolStripMenuItem2
+            // CopyMenuItem
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(216, 24);
-            this.toolStripMenuItem2.Text = "Copy";
+            this.CopyMenuItem.Name = "CopyMenuItem";
+            this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.CopyMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.CopyMenuItem.Text = "Copy";
+            this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -171,8 +173,8 @@
         private System.Windows.Forms.ToolStripMenuItem DeleteMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem NewFolderMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem CutMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem CopyMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenInFileExplorerMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem ToggleMenuItem;

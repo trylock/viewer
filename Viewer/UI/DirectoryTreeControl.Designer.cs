@@ -39,7 +39,7 @@
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.newFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewFolderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FileContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,7 +54,6 @@
             this.TreeView.Location = new System.Drawing.Point(0, 0);
             this.TreeView.Name = "TreeView";
             this.TreeView.ShowLines = false;
-            this.TreeView.ShowPlusMinus = false;
             this.TreeView.Size = new System.Drawing.Size(236, 377);
             this.TreeView.TabIndex = 0;
             this.TreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
@@ -73,7 +72,7 @@
             this.DeleteMenuItem,
             this.RenameMenuItem,
             this.toolStripSeparator1,
-            this.newFolderToolStripMenuItem});
+            this.NewFolderMenuItem});
             this.FileContextMenu.Name = "FileContextMenu";
             this.FileContextMenu.Size = new System.Drawing.Size(217, 166);
             // 
@@ -128,12 +127,13 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
             // 
-            // newFolderToolStripMenuItem
+            // NewFolderMenuItem
             // 
-            this.newFolderToolStripMenuItem.Name = "newFolderToolStripMenuItem";
-            this.newFolderToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newFolderToolStripMenuItem.Size = new System.Drawing.Size(216, 24);
-            this.newFolderToolStripMenuItem.Text = "New Folder";
+            this.NewFolderMenuItem.Name = "NewFolderMenuItem";
+            this.NewFolderMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.NewFolderMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.NewFolderMenuItem.Text = "New Folder";
+            this.NewFolderMenuItem.Click += new System.EventHandler(this.NewFolderMenuItem_Click);
             // 
             // DirectoryTreeControl
             // 
@@ -155,7 +155,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem DeleteMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem newFolderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem NewFolderMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem openInFileExplorerToolStripMenuItem;

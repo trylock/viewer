@@ -17,10 +17,7 @@ namespace Viewer.UI
 {
     public partial class DirectoryTreeControl : UserControl
     {
-        /// <summary>
-        /// Directory with at least one of these flags will be hidden.
-        /// </summary>
-        public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
+        private DirectoryController _controller = new DirectoryController();
 
         private TextBox _renameTextBox;
 
@@ -31,12 +28,10 @@ namespace Viewer.UI
             // initialize the tree view with ready logical drives
             TreeView.Sorted = true;
             TreeView.BeginUpdate();
-            foreach (var drive in DriveInfo.GetDrives())
+            foreach (var drive in _controller.GetDrives())
             {
-                if (!drive.IsReady)
-                    continue;
-
-                TreeView.Nodes.Add(drive.Name.Remove(drive.Name.IndexOf(Path.DirectorySeparatorChar)), drive.Name);
+                var node = TreeView.Nodes.Add(drive, drive);
+                node.Expand();
             }
             TreeView.EndUpdate();
             
@@ -53,7 +48,7 @@ namespace Viewer.UI
         /// <param name="node">Node of the directory TreeView</param>
         private void UpdateSubdirectories(TreeNode node)
         {
-            var di = new DirectoryInfo(node.FullPath);
+            var path = node.FullPath;
 
             TreeView.BeginUpdate();
 
@@ -63,23 +58,20 @@ namespace Viewer.UI
             // add new subdirectories
             try
             {
-                foreach (var directory in di.EnumerateDirectories())
+                foreach (var directory in _controller.GetDirectories(path))
                 {
-                    if ((directory.Attributes & HideFlags) != 0)
-                        continue;
-
-                    node.Nodes.Add(directory.Name, directory.Name);
+                    node.Nodes.Add(directory, directory);
                 }
             }
             catch (UnauthorizedAccessException)
             {
-                UnauthorizedAccess(di.FullName);
+                UnauthorizedAccess(path);
             }
             catch (DirectoryNotFoundException)
             {
                 node.Remove();
                 node = null;
-                DirectoryNotFound(di.FullName);
+                DirectoryNotFound(path);
             }
 
             // make sure the node is expanded
@@ -87,7 +79,16 @@ namespace Viewer.UI
                 node.Expand();
             TreeView.EndUpdate();
         }
-        
+
+        private void EditName(TreeNode node)
+        {
+            _renameTextBox.Text = node.Text;
+            _renameTextBox.Location = node.Bounds.Location;
+            _renameTextBox.Show();
+            _renameTextBox.BringToFront();
+            _renameTextBox.Focus();
+        }
+
         private void UnauthorizedAccess(string path)
         {
             MessageBox.Show(
@@ -116,6 +117,8 @@ namespace Viewer.UI
                 TreeView.SelectedNode = e.Node;
                 return;
             }
+
+            return;
 
             // toggle node
             if (e.Node.IsExpanded)
@@ -152,13 +155,8 @@ namespace Viewer.UI
         #region Context Menu Events
 
         private void RenameMenuItem_Click(object sender, EventArgs e)
-        {
-            var node = TreeView.SelectedNode;
-            _renameTextBox.Text = node.Text;
-            _renameTextBox.Location = node.Bounds.Location;
-            _renameTextBox.Show();
-            _renameTextBox.BringToFront();
-            _renameTextBox.Focus();
+        { 
+            EditName(TreeView.SelectedNode);
         }
 
         private void DeleteMenuItem_Click(object sender, EventArgs e)
@@ -189,6 +187,18 @@ namespace Viewer.UI
                 }
             }
         }
+        
+        private void NewFolderMenuItem_Click(object sender, EventArgs e)
+        {
+            var parentNode = TreeView.SelectedNode;
+            _controller.CreateDirectory(parentNode.FullPath, "New Folder");
+
+            // add a new node for the directory
+            var node = parentNode.Nodes.Add("New Folder", "New Folder");
+            node.EnsureVisible();
+            TreeView.SelectedNode = node;
+            EditName(node);
+        }
 
         #endregion
 
@@ -205,38 +215,33 @@ namespace Viewer.UI
                     var node = TreeView.SelectedNode;
                     if (node == null)
                         return;
-
-                    // set new directory name in the UI
-                    var oldName = node.Name;
-                    var oldPath = node.FullPath;
-                    node.Text = _renameTextBox.Text;
-                    node.Name = _renameTextBox.Name;
-                    _renameTextBox.Hide();
-
+                    
                     // don't rename the directory if we haven't changed the name
-                    if (oldPath == node.FullPath)
+                    if (_renameTextBox.Text == node.Name)
                     {
+                        _renameTextBox.Hide();
                         return;
                     }
 
                     // rename the directory
                     try
                     {
-                        Directory.Move(oldPath, node.FullPath);
+                        _controller.Rename(node.FullPath, _renameTextBox.Text);
+
+                        // update the UI
+                        node.Text = _renameTextBox.Text;
+                        node.Name = _renameTextBox.Text;
+                        _renameTextBox.Hide();
                         TreeView.Sort();
                         node.EnsureVisible();
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        UnauthorizedAccess(oldPath);
-                        node.Text = oldName;
-                        node.Name = oldName;
+                        UnauthorizedAccess(node.FullPath);
                     }
                     catch (DirectoryNotFoundException)
                     {
-                        DirectoryNotFound(oldPath);
-                        node.Text = oldName;
-                        node.Name = oldName;
+                        DirectoryNotFound(node.FullPath);
                     }
 
                     break;

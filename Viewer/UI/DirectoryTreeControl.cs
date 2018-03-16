@@ -19,8 +19,6 @@ namespace Viewer.UI
     {
         private DirectoryController _controller = new DirectoryController();
 
-        private TextBox _renameTextBox;
-
         public DirectoryTreeControl()
         {
             InitializeComponent();
@@ -31,15 +29,12 @@ namespace Viewer.UI
             foreach (var drive in _controller.GetDrives())
             {
                 var node = TreeView.Nodes.Add(drive, drive);
-                node.Expand();
+                foreach (var folder in _controller.GetDirectories(node.FullPath))
+                {
+                    node.Nodes.Add(folder, folder);
+                }
             }
             TreeView.EndUpdate();
-            
-            // create text box for renaming files
-            _renameTextBox = new TextBox();
-            _renameTextBox.KeyDown += RenameTextBox_KeyDown;
-            _renameTextBox.Hide();
-            Controls.Add(_renameTextBox);
         }
         
         /// <summary>
@@ -60,7 +55,11 @@ namespace Viewer.UI
             {
                 foreach (var directory in _controller.GetDirectories(path))
                 {
-                    node.Nodes.Add(directory, directory);
+                    var subnode = node.Nodes.Add(directory, directory);
+                    foreach (var subdirectory in _controller.GetDirectories(subnode.FullPath))
+                    {
+                        subnode.Nodes.Add(subdirectory, subdirectory);
+                    }
                 }
             }
             catch (UnauthorizedAccessException)
@@ -78,15 +77,6 @@ namespace Viewer.UI
             if (node != null)
                 node.Expand();
             TreeView.EndUpdate();
-        }
-
-        private void EditName(TreeNode node)
-        {
-            _renameTextBox.Text = node.Text;
-            _renameTextBox.Location = node.Bounds.Location;
-            _renameTextBox.Show();
-            _renameTextBox.BringToFront();
-            _renameTextBox.Focus();
         }
 
         private void UnauthorizedAccess(string path)
@@ -111,26 +101,17 @@ namespace Viewer.UI
 
         private void TreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            // Open context menu for right click
             if (e.Button == MouseButtons.Right)
             {
                 TreeView.SelectedNode = e.Node;
-                return;
-            }
-
-            return;
-
-            // toggle node
-            if (e.Node.IsExpanded)
-            {
-                e.Node.Collapse();
-            }
-            else
-            {
-                UpdateSubdirectories(e.Node);
             }
         }
-        
+
+        private void TreeView_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            UpdateSubdirectories(e.Node);
+        }
+
         private void TreeView_MouseMove(object sender, MouseEventArgs e)
         {
             var info = TreeView.HitTest(e.Location);
@@ -155,8 +136,8 @@ namespace Viewer.UI
         #region Context Menu Events
 
         private void RenameMenuItem_Click(object sender, EventArgs e)
-        { 
-            EditName(TreeView.SelectedNode);
+        {
+            TreeView.SelectedNode.BeginEdit();
         }
 
         private void DeleteMenuItem_Click(object sender, EventArgs e)
@@ -197,54 +178,43 @@ namespace Viewer.UI
             var node = parentNode.Nodes.Add("New Folder", "New Folder");
             node.EnsureVisible();
             TreeView.SelectedNode = node;
-            EditName(node);
+            node.BeginEdit();
         }
 
         #endregion
 
-        private void RenameTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void TreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
-            switch (e.KeyCode)
+            var node = e.Node;
+            if (e.Label == null)
             {
-                case Keys.Escape:
-                    e.SuppressKeyPress = true;
-                    _renameTextBox.Hide();
-                    break;
-                case Keys.Enter:
-                    e.SuppressKeyPress = true;
-                    var node = TreeView.SelectedNode;
-                    if (node == null)
-                        return;
-                    
-                    // don't rename the directory if we haven't changed the name
-                    if (_renameTextBox.Text == node.Name)
-                    {
-                        _renameTextBox.Hide();
-                        return;
-                    }
+                return;
+            }
 
-                    // rename the directory
-                    try
-                    {
-                        _controller.Rename(node.FullPath, _renameTextBox.Text);
+            // don't rename the directory if we haven't changed the name
+            if (e.Label == node.Name)
+            {
+                e.CancelEdit = true;
+                return;
+            }
 
-                        // update the UI
-                        node.Text = _renameTextBox.Text;
-                        node.Name = _renameTextBox.Text;
-                        _renameTextBox.Hide();
-                        TreeView.Sort();
-                        node.EnsureVisible();
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        UnauthorizedAccess(node.FullPath);
-                    }
-                    catch (DirectoryNotFoundException)
-                    {
-                        DirectoryNotFound(node.FullPath);
-                    }
+            // rename the directory
+            try
+            {
+                _controller.Rename(node.FullPath, e.Label);
 
-                    break;
+                // update the UI
+                node.Name = e.Label;
+                node.Text = e.Label;
+                node.EndEdit(false);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                UnauthorizedAccess(node.FullPath);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                DirectoryNotFound(node.FullPath);
             }
         }
     }

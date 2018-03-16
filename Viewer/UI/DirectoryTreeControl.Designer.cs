@@ -51,11 +51,14 @@
             this.TreeView.FullRowSelect = true;
             this.TreeView.HotTracking = true;
             this.TreeView.ItemHeight = 22;
+            this.TreeView.LabelEdit = true;
             this.TreeView.Location = new System.Drawing.Point(0, 0);
             this.TreeView.Name = "TreeView";
             this.TreeView.ShowLines = false;
             this.TreeView.Size = new System.Drawing.Size(236, 377);
             this.TreeView.TabIndex = 0;
+            this.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
+            this.TreeView.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterExpand);
             this.TreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
             this.TreeView.MouseLeave += new System.EventHandler(this.TreeView_MouseLeave);
             this.TreeView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseMove);

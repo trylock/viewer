@@ -16,7 +16,8 @@ namespace Viewer.UI
 {
     public partial class DirectoryTreeControl : UserControl
     {
-        private DirectoryController _controller = new DirectoryController();
+        private DirectoryController _directoryController = new DirectoryController();
+        private ClipboardController _clipboardController = new ClipboardController();
         
         public DirectoryTreeControl()
         {
@@ -31,10 +32,10 @@ namespace Viewer.UI
             // initialize the tree view with ready logical drives
             TreeView.Sorted = true;
             TreeView.BeginUpdate();
-            foreach (var drive in _controller.GetDrives())
+            foreach (var drive in _directoryController.GetDrives())
             {
                 var node = TreeView.Nodes.Add(drive.Key, drive.Name);
-                foreach (var folder in _controller.GetDirectories(drive.Key))
+                foreach (var folder in _directoryController.GetDirectories(drive.Key))
                 {
                     node.Nodes.Add(folder, folder);
                 }
@@ -58,13 +59,13 @@ namespace Viewer.UI
             // add new subdirectories
             try
             {
-                foreach (var directory in _controller.GetDirectories(path))
+                foreach (var directory in _directoryController.GetDirectories(path))
                 {
                     var subnode = node.Nodes.Add(directory, directory);
                     try
                     {
                         var subdirectoryPath = path + Path.DirectorySeparatorChar + directory;
-                        foreach (var subdirectory in _controller.GetDirectories(subdirectoryPath))
+                        foreach (var subdirectory in _directoryController.GetDirectories(subdirectoryPath))
                         {
                             subnode.Nodes.Add(subdirectory, subdirectory);
                         }
@@ -178,7 +179,7 @@ namespace Viewer.UI
             // rename the directory
             try
             {
-                _controller.Rename(path, e.Label);
+                _directoryController.Rename(path, e.Label);
 
                 // update the UI
                 node.Name = e.Label;
@@ -253,7 +254,7 @@ namespace Viewer.UI
             var parentNode = TreeView.SelectedNode;
             var parentPath = GetPath(parentNode);
             parentNode.Expand();
-            _controller.CreateDirectory(parentPath, "New Folder");
+            _directoryController.CreateDirectory(parentPath, "New Folder");
 
             // add a new node for the directory
             var node = parentNode.Nodes.Add("New Folder", "New Folder");
@@ -275,7 +276,7 @@ namespace Viewer.UI
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                _controller.OpenInExplorer(path);
+                _directoryController.OpenInExplorer(path);
             }
         }
 
@@ -284,7 +285,7 @@ namespace Viewer.UI
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                _controller.CopyFileToClipboard(path);
+                _clipboardController.CopyFile(path);
             }
         }
 
@@ -293,7 +294,7 @@ namespace Viewer.UI
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                _controller.CutFileToClipboard(path);
+                _clipboardController.CutFile(path);
             }
         }
 

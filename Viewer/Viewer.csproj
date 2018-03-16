@@ -86,6 +86,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\ClipboardController.cs" />
     <Compile Include="UI\DirectoryController.cs" />
     <Compile Include="UI\DirectoryTreeControl.cs">
       <SubType>UserControl</SubType>

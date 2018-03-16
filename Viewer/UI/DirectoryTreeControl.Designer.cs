@@ -42,9 +42,11 @@
             this.TreeView.Name = "TreeView";
             this.TreeView.ShowLines = false;
             this.TreeView.ShowPlusMinus = false;
-            this.TreeView.Size = new System.Drawing.Size(457, 497);
+            this.TreeView.Size = new System.Drawing.Size(236, 377);
             this.TreeView.TabIndex = 0;
             this.TreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
+            this.TreeView.MouseLeave += new System.EventHandler(this.TreeView_MouseLeave);
+            this.TreeView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseMove);
             // 
             // DirectoryTreeControl
             // 
@@ -52,7 +54,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.TreeView);
             this.Name = "DirectoryTreeControl";
-            this.Size = new System.Drawing.Size(457, 497);
+            this.Size = new System.Drawing.Size(236, 377);
             this.ResumeLayout(false);
 
         }

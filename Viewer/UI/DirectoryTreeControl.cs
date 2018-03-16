@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -72,15 +73,42 @@ namespace Viewer.UI
             catch (UnauthorizedAccessException)
             {
                 MessageBox.Show(
-                    string.Format(Resources.UnauthorizedAccess_Message, di.Name), 
-                    Resources.UnauthorizedAccess_Label, 
-                    MessageBoxButtons.OK, 
+                    string.Format(Resources.UnauthorizedAccess_Message, di.Name),
+                    Resources.UnauthorizedAccess_Label,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                node.Remove();
+                MessageBox.Show(
+                    string.Format(Resources.DirectoryNotFound_Message, di.FullName),
+                    Resources.DirectoryNotFound_Label,
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }
 
             // make sure the node is expanded
             node.Expand();
             TreeView.EndUpdate();
+        }
+
+        private void TreeView_MouseMove(object sender, MouseEventArgs e)
+        {
+            var info = TreeView.HitTest(e.Location);
+            if (info.Node == null)
+            {
+                Cursor.Current = Cursors.Default;
+            }
+            else
+            {
+                Cursor.Current = Cursors.Hand;
+            }
+        }
+
+        private void TreeView_MouseLeave(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.Default;
         }
     }
 }

@@ -61,6 +61,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Directory Not Found.
+        /// </summary>
+        internal static string DirectoryNotFound_Label {
+            get {
+                return ResourceManager.GetString("DirectoryNotFound_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory {0} was not found..
+        /// </summary>
+        internal static string DirectoryNotFound_Message {
+            get {
+                return ResourceManager.GetString("DirectoryNotFound_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unauthorized access.
         /// </summary>
         internal static string UnauthorizedAccess_Label {

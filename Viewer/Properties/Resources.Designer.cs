@@ -107,6 +107,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /select,&quot;{0}&quot;.
+        /// </summary>
+        internal static string ExplorerOpenFolderArguments {
+            get {
+                return ResourceManager.GetString("ExplorerOpenFolderArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to explorer.exe.
+        /// </summary>
+        internal static string ExplorerProcessName {
+            get {
+                return ResourceManager.GetString("ExplorerProcessName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unauthorized access.
         /// </summary>
         internal static string UnauthorizedAccess_Label {

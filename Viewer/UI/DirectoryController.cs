@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Properties;
 
 namespace Viewer.UI
 {
@@ -141,8 +142,8 @@ namespace Viewer.UI
         public void OpenInExplorer(string path)
         {
             Process.Start(
-                Settings.Instance.ExplorerProcessName, 
-                Settings.Instance.ExplorerOpenFileArg + "\"" + path + "\"");
+                Resources.ExplorerProcessName, 
+                string.Format(Resources.ExplorerOpenFolderArguments, path));
         }
     }
 }

@@ -28,16 +28,6 @@ namespace Viewer
         /// </summary>
         public SQLiteConnection CacheConnection { get; }
 
-        /// <summary>
-        /// Name of the system file explorer process
-        /// </summary>
-        public string ExplorerProcessName { get; } = "explorer.exe";
-
-        /// <summary>
-        /// Command line argument for explorer to open given file path
-        /// </summary>
-        public string ExplorerOpenFileArg { get; } = "/select,";
-
         private Settings()
         {
             ExifTags = new List<IExifAttributeParser>

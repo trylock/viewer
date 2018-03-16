@@ -129,4 +129,10 @@
   <data name="DirectoryNotFound_Label" xml:space="preserve">
     <value>Directory Not Found</value>
   </data>
+  <data name="ConfirmDelete_Message" xml:space="preserve">
+    <value>Do you really want to delete {0}?</value>
+  </data>
+  <data name="ConfirmDelete_Label" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
 </root>

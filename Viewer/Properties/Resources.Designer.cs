@@ -61,6 +61,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Delete.
+        /// </summary>
+        internal static string ConfirmDelete_Label {
+            get {
+                return ResourceManager.GetString("ConfirmDelete_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete {0}?.
+        /// </summary>
+        internal static string ConfirmDelete_Message {
+            get {
+                return ResourceManager.GetString("ConfirmDelete_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Directory Not Found.
         /// </summary>
         internal static string DirectoryNotFound_Label {

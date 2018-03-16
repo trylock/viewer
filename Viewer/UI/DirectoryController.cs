@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,19 @@ namespace Viewer.UI
 {
     public class DirectoryController
     {
+        public struct DriveView
+        {
+            /// <summary>
+            /// Name in the file system without directory separator (e.g. "C:")
+            /// </summary>
+            public string Key;
+
+            /// <summary>
+            /// User readable name
+            /// </summary>
+            public string Name;
+        }
+
         /// <summary>
         /// Directory with at least one of these flags will be hidden.
         /// </summary>
@@ -27,15 +41,31 @@ namespace Viewer.UI
         /// Get list of ready drive names.
         /// </summary>
         /// <returns>Drive names</returns>
-        public IEnumerable<string> GetDrives()
+        public IEnumerable<DriveView> GetDrives()
         {
             foreach (var drive in DriveInfo.GetDrives())
             {
                 if (!drive.IsReady)
                     continue;
 
-                // remove directory separator
-                yield return drive.Name;
+                var name = drive.Name.Substring(0, drive.Name.IndexOfAny(DirectorySeparators));
+
+                if (drive.VolumeLabel != null && drive.VolumeLabel.Length > 0)
+                {
+                    yield return new DriveView
+                    {
+                        Key = name,
+                        Name = drive.VolumeLabel + " (" + name + ")",
+                    };
+                }
+                else
+                {
+                    yield return new DriveView
+                    {
+                        Key = name,
+                        Name = name,
+                    };
+                }
             }
         }
 
@@ -90,7 +120,7 @@ namespace Viewer.UI
             if (newName.IndexOfAny(DirectorySeparators) >= 0)
                 throw new ArgumentException("New name can't contain directory separators");
 
-            var basePath = fullPath.Substring(0, fullPath.LastIndexOfAny(DirectorySeparators) - 1); 
+            var basePath = fullPath.Substring(0, fullPath.LastIndexOfAny(DirectorySeparators)); 
             Directory.Move(fullPath, basePath + Path.DirectorySeparatorChar + newName);
         }
         
@@ -102,6 +132,17 @@ namespace Viewer.UI
         public void CreateDirectory(string fullPath, string dirName)
         {
             Directory.CreateDirectory(fullPath + Path.DirectorySeparatorChar + dirName);
+        }
+
+        /// <summary>
+        /// Open given file in system file explorer
+        /// </summary>
+        /// <param name="path">Paht to a file</param>
+        public void OpenInExplorer(string path)
+        {
+            Process.Start(
+                Settings.Instance.ExplorerProcessName, 
+                Settings.Instance.ExplorerOpenFileArg + "\"" + path + "\"");
         }
     }
 }

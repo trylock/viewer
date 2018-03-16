@@ -31,7 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.TreeView = new System.Windows.Forms.TreeView();
             this.FileContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.openInFileExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenInFileExplorerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,9 +49,11 @@
             this.TreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.TreeView.ContextMenuStrip = this.FileContextMenu;
             this.TreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TreeView.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.TreeView.FullRowSelect = true;
             this.TreeView.HotTracking = true;
-            this.TreeView.ItemHeight = 22;
+            this.TreeView.Indent = 10;
+            this.TreeView.ItemHeight = 24;
             this.TreeView.LabelEdit = true;
             this.TreeView.Location = new System.Drawing.Point(0, 0);
             this.TreeView.Name = "TreeView";
@@ -60,14 +63,15 @@
             this.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
             this.TreeView.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterExpand);
             this.TreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
-            this.TreeView.MouseLeave += new System.EventHandler(this.TreeView_MouseLeave);
+            this.TreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.TreeView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseMove);
             // 
             // FileContextMenu
             // 
             this.FileContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.FileContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openInFileExplorerToolStripMenuItem,
+            this.ToggleMenuItem,
+            this.OpenInFileExplorerMenuItem,
             this.toolStripSeparator3,
             this.toolStripMenuItem1,
             this.toolStripMenuItem2,
@@ -77,13 +81,21 @@
             this.toolStripSeparator1,
             this.NewFolderMenuItem});
             this.FileContextMenu.Name = "FileContextMenu";
-            this.FileContextMenu.Size = new System.Drawing.Size(217, 166);
+            this.FileContextMenu.Size = new System.Drawing.Size(217, 190);
             // 
-            // openInFileExplorerToolStripMenuItem
+            // ToggleMenuItem
             // 
-            this.openInFileExplorerToolStripMenuItem.Name = "openInFileExplorerToolStripMenuItem";
-            this.openInFileExplorerToolStripMenuItem.Size = new System.Drawing.Size(216, 24);
-            this.openInFileExplorerToolStripMenuItem.Text = "Open in File Explorer";
+            this.ToggleMenuItem.Name = "ToggleMenuItem";
+            this.ToggleMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.ToggleMenuItem.Text = "Toggle";
+            this.ToggleMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
+            // 
+            // OpenInFileExplorerMenuItem
+            // 
+            this.OpenInFileExplorerMenuItem.Name = "OpenInFileExplorerMenuItem";
+            this.OpenInFileExplorerMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.OpenInFileExplorerMenuItem.Text = "Open in File Explorer";
+            this.OpenInFileExplorerMenuItem.Click += new System.EventHandler(this.OpenInFileExplorerMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -161,7 +173,8 @@
         private System.Windows.Forms.ToolStripMenuItem NewFolderMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem openInFileExplorerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenInFileExplorerMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem ToggleMenuItem;
     }
 }

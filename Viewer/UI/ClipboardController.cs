@@ -17,7 +17,7 @@ namespace Viewer.UI
         /// <param name="path">Path to a file or a folder</param>
         public void CopyFile(string path)
         {
-            AddFilesToClipboard(new[] { path }, DragDropEffects.Copy);
+            AddFilesToClipboard(new StringCollection { path }, DragDropEffects.Copy);
         }
 
         /// <summary>
@@ -26,19 +26,25 @@ namespace Viewer.UI
         /// <param name="path">Path to a file or a folder</param>
         public void CutFile(string path)
         {
-            AddFilesToClipboard(new[] { path }, DragDropEffects.Move);
+            AddFilesToClipboard(new StringCollection { path }, DragDropEffects.Move);
         }
 
-        private void AddFilesToClipboard(IEnumerable<string> paths, DragDropEffects effect)
+        /// <summary>
+        /// If there are files in the sytem clipboard, they will be copied/moved 
+        /// to <paramref name="targetFolderPath"/>.
+        /// </summary>
+        /// <param name="targetFolderPath">
+        ///     Path to a folder where the files in clipboard will be moved/copies
+        /// </param>
+        public void PasteFiles(string targetFolderPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddFilesToClipboard(StringCollection fileList, DragDropEffects effect)
         {
             Clipboard.Clear();
-
-            var fileList = new StringCollection();
-            foreach (var path in paths)
-            {
-                fileList.Add(path);
-            }
-
+            
             var data = new DataObject();
             data.SetFileDropList(fileList);
             data.SetData("Preferred DropEffect", new MemoryStream(BitConverter.GetBytes((int)effect)));

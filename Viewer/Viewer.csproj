@@ -81,6 +81,12 @@
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReader.cs" />
     <Compile Include="Data\MemoryAttributeStorage.cs" />
     <Compile Include="Data\SqliteAttributeStorage.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DirectoryController.cs" />
     <Compile Include="UI\DirectoryTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -104,13 +110,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <EmbeddedResource Include="UI\DirectoryTreeControl.resx">
+      <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ThumbnailControl.resx">
+      <DependentUpon>ThumbnailControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewerForm.resx">
+      <DependentUpon>ViewerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -127,6 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Query\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Directory.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets')" />

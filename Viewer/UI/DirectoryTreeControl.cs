@@ -298,7 +298,17 @@ namespace Viewer.UI
             }
         }
 
-        #endregion
+        private void PasteMenuItem_Click(object sender, EventArgs e)
+        {
+            var path = GetSelectedNodePath();
+            if (path != null)
+            {
+                _clipboardController.PasteFiles(path);
+                UpdateSubdirectories(TreeView.SelectedNode);
+                TreeView.SelectedNode.Expand();
+            }
+        }
 
+        #endregion
     }
 }

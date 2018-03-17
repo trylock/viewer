@@ -36,12 +36,12 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PasteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.NewFolderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FileContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,14 +76,14 @@
             this.toolStripSeparator3,
             this.CutMenuItem,
             this.CopyMenuItem,
-            this.pasteToolStripMenuItem,
+            this.PasteMenuItem,
             this.toolStripSeparator2,
             this.DeleteMenuItem,
             this.RenameMenuItem,
             this.toolStripSeparator1,
             this.NewFolderMenuItem});
             this.FileContextMenu.Name = "FileContextMenu";
-            this.FileContextMenu.Size = new System.Drawing.Size(217, 242);
+            this.FileContextMenu.Size = new System.Drawing.Size(217, 214);
             // 
             // ToggleMenuItem
             // 
@@ -120,6 +120,14 @@
             this.CopyMenuItem.Text = "Copy";
             this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
             // 
+            // PasteMenuItem
+            // 
+            this.PasteMenuItem.Name = "PasteMenuItem";
+            this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.PasteMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.PasteMenuItem.Text = "Paste";
+            this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -154,13 +162,6 @@
             this.NewFolderMenuItem.Text = "New Folder";
             this.NewFolderMenuItem.Click += new System.EventHandler(this.NewFolderMenuItem_Click);
             // 
-            // pasteToolStripMenuItem
-            // 
-            this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(216, 24);
-            this.pasteToolStripMenuItem.Text = "Paste";
-            // 
             // DirectoryTreeControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -187,6 +188,6 @@
         private System.Windows.Forms.ToolStripMenuItem OpenInFileExplorerMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem ToggleMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem PasteMenuItem;
     }
 }

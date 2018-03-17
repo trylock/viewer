@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -68,6 +68,7 @@ namespace Viewer.UI
                         foreach (var subdirectory in _directoryController.GetDirectories(subdirectoryPath))
                         {
                             subnode.Nodes.Add(subdirectory, subdirectory);
+                            break;
                         }
                     }
                     catch (UnauthorizedAccessException)
@@ -305,7 +306,7 @@ namespace Viewer.UI
             {
                 try
                 {
-                _clipboardController.PasteFiles(path);
+                    _clipboardController.PasteFiles(path);
                 }
                 catch (DirectoryNotFoundException)
                 {

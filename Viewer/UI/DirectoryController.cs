@@ -120,11 +120,21 @@ namespace Viewer.UI
         /// <param name="newName">New name (just the directory, without any directory separators)</param>
         public void Rename(string fullPath, string newName)
         {
-            if (newName.IndexOfAny(DirectorySeparators) >= 0)
-                throw new ArgumentException("New name can't contain directory separators");
+            var invChars = Path.GetInvalidFileNameChars();
+            if (newName.IndexOfAny(invChars) >= 0)
+                throw new ArgumentException(
+                    "File name '{newName}' contains invalid characters. " +
+                    "Invalid characters are: " + string.Join(", ", invChars));
+            
+            var basePath = fullPath.Substring(0, fullPath.LastIndexOfAny(DirectorySeparators));
+            if (basePath.Length > 0 &&
+                basePath[basePath.Length - 1] != Path.DirectorySeparatorChar &&
+                basePath[basePath.Length - 1] != Path.AltDirectorySeparatorChar)
+            {
+                basePath += Path.DirectorySeparatorChar;
+            }
 
-            var basePath = fullPath.Substring(0, fullPath.LastIndexOfAny(DirectorySeparators)); 
-            Directory.Move(fullPath, basePath + Path.DirectorySeparatorChar + newName);
+            Directory.Move(fullPath, Path.Combine(basePath, newName));
         }
         
         /// <summary>
@@ -134,7 +144,7 @@ namespace Viewer.UI
         /// <param name="dirName">New directory name</param>
         public void CreateDirectory(string fullPath, string dirName)
         {
-            Directory.CreateDirectory(fullPath + Path.DirectorySeparatorChar + dirName);
+            Directory.CreateDirectory(Path.Combine(fullPath, dirName));
         }
 
         /// <summary>

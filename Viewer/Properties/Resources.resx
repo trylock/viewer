@@ -147,4 +147,11 @@
     <value>explorer.exe</value>
     <comment>Name of the system file explorer program</comment>
   </data>
+  <data name="InvalidFileName_Message" xml:space="preserve">
+    <value>"{0}" is not a valid file name. File name must not be empty and it must not contain characters: {1}</value>
+    <comment>{0} is the invalid name, {1} is a list of invalid characters that must not be used in a file name</comment>
+  </data>
+  <data name="InvalidFileName_Label" xml:space="preserve">
+    <value>Invalid File Name</value>
+  </data>
 </root>

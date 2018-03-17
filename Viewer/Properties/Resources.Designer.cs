@@ -125,6 +125,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid File Name.
+        /// </summary>
+        internal static string InvalidFileName_Label {
+            get {
+                return ResourceManager.GetString("InvalidFileName_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;{0}&quot; is not a valid file name. File name must not be empty and it must not contain characters: {1}.
+        /// </summary>
+        internal static string InvalidFileName_Message {
+            get {
+                return ResourceManager.GetString("InvalidFileName_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unauthorized access.
         /// </summary>
         internal static string UnauthorizedAccess_Label {

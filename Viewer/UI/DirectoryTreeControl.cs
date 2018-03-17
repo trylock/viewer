@@ -177,6 +177,18 @@ namespace Viewer.UI
                 return;
             }
 
+            // check whether the new name is valid
+            if (!_directoryController.IsValidFileName(e.Label))
+            {
+                e.CancelEdit = true;
+                MessageBox.Show(
+                    string.Format(Resources.InvalidFileName_Message, e.Label, _directoryController.GetInvalidFileCharacters()),
+                    Resources.InvalidFileName_Label, 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             // rename the directory
             try
             {

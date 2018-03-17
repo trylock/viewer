@@ -114,17 +114,61 @@ namespace Viewer.UI
         }
 
         /// <summary>
+        /// Check whether given string could be a valid file/folder name
+        /// </summary>
+        /// <param name="name">Name of a file</param>
+        /// <returns>true iff given value could be a valid file/folder name</returns>
+        public bool IsValidFileName(string name)
+        {
+            return !string.IsNullOrEmpty(name) && 
+                   name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
+        }
+        
+        /// <summary>
+        /// Get list of printable invalid file name characters in a string.
+        /// </summary>
+        /// <returns>String containing invalid file name characters separated by comma</returns>
+        public string GetInvalidFileCharacters()
+        {
+            var invalid = Path.GetInvalidFileNameChars();
+            var sb = new StringBuilder();
+            foreach (var c in invalid)
+            {
+                if (char.IsControl(c) && !char.IsWhiteSpace(c))
+                    continue;
+
+                if (c == '\n')
+                    sb.Append("\\n");
+                else if (c == '\t')
+                    sb.Append("\\t");
+                else if (c == '\r')
+                    sb.Append("\\r");
+                else 
+                    sb.Append(c);
+                sb.Append(", ");
+            }
+
+            if (sb.Length > 0)
+            {
+                sb.Remove(sb.Length - 3, 3); // remove the last separator
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
         /// Rename <paramref name="fullPath"/> directory to <paramref name="newName"/>.
         /// </summary>
         /// <param name="fullPath">Full path to a directory</param>
         /// <param name="newName">New name (just the directory, without any directory separators)</param>
         public void Rename(string fullPath, string newName)
         {
-            var invChars = Path.GetInvalidFileNameChars();
-            if (newName.IndexOfAny(invChars) >= 0)
-                throw new ArgumentException(
-                    "File name '{newName}' contains invalid characters. " +
-                    "Invalid characters are: " + string.Join(", ", invChars));
+            if (newName == null)
+                throw new ArgumentNullException(nameof(newName));
+            if (fullPath == null)
+                throw new ArgumentNullException(nameof(fullPath));
+            if (!IsValidFileName(newName))
+                throw new ArgumentException(nameof(newName) + " is not a valid file name.");
             
             var basePath = fullPath.Substring(0, fullPath.LastIndexOfAny(DirectorySeparators));
             if (basePath.Length > 0 &&

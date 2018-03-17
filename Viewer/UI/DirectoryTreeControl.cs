@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -303,7 +303,25 @@ namespace Viewer.UI
             var path = GetSelectedNodePath();
             if (path != null)
             {
+                try
+                {
                 _clipboardController.PasteFiles(path);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    // a directory in the clipboard was deleted
+                    // ignore the event as if it weren't in the clipboard
+                }
+                catch (FileNotFoundException)
+                {
+                    // a file in the clipboard was deleted
+                    // ignore the event as if it weren't in the clipboard
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    UnauthorizedAccess(path);
+                }
+
                 UpdateSubdirectories(TreeView.SelectedNode);
                 TreeView.SelectedNode.Expand();
             }

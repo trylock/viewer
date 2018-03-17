@@ -87,7 +87,7 @@ namespace Viewer.UI
         {
             if (parentDirPath == null)
                 throw new ArgumentNullException(nameof(parentDirPath));
-            
+           
             var di = new DirectoryInfo(parentDirPath);
             foreach (var directory in di.EnumerateDirectories())
             {

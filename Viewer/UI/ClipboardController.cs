@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.IO;
 
 namespace Viewer.UI
 {
@@ -55,7 +56,7 @@ namespace Viewer.UI
             foreach (var source in files)
             {
                 var sepIndex = source.LastIndexOfAny(DirectoryController.DirectorySeparators);
-                var target = targetFolderPath + Path.DirectorySeparatorChar + source.Substring(sepIndex + 1);
+                var target = Path.Combine(targetFolderPath, source.Substring(sepIndex + 1));
 
                 if ((effect & DragDropEffects.Move) != 0)
                 {
@@ -66,6 +67,17 @@ namespace Viewer.UI
                     else
                     {
                         Directory.Move(source, target);
+                    }
+                }
+                else if ((effect & DragDropEffects.Copy) != 0)
+                {
+                    if (File.Exists(source))
+                    {
+                        File.Copy(source, target);
+                    }
+                    else
+                    {
+                        DirectoryUtils.Copy(source, target);
                     }
                 }
             }

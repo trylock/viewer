@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    public class AttributeCollection : IDictionary<string, Attribute>
+    public class AttributeCollection : IDictionary<string, Attribute>, IDisposable
     {
         private IDictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
@@ -205,5 +205,13 @@ namespace Viewer.Data
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            foreach (var attr in _attrs)
+            {
+                attr.Value.Dispose();
+            }
+        }
     }
 }

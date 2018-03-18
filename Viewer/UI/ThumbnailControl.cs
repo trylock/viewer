@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Drawing.Drawing2D;
@@ -9,44 +8,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Data;
+using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI
 {
     public partial class ThumbnailControl : UserControl
     {
-        private PictureBox _thumbnailPictureBox;
-
-        private Label _nameLabel; 
-
         public ThumbnailControl()
         {
             InitializeComponent();
-            
-            _thumbnailPictureBox = new PictureBox();
-            _thumbnailPictureBox.Dock = DockStyle.Fill;
-            _thumbnailPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-            _thumbnailPictureBox.WaitOnLoad = false;
-            _thumbnailPictureBox.Paint += ThumbnailPictureBox_Paint;
-
-            _nameLabel = new Label();
-            _nameLabel.TextAlign = ContentAlignment.MiddleCenter;
-            _nameLabel.Dock = DockStyle.Fill;
-            
-            LayoutPanel.Controls.Add(_thumbnailPictureBox, 0, 0);
-            LayoutPanel.Controls.Add(_nameLabel, 0, 1);
         }
         
-        public void ShowFile(string path)
+        public void SetModel(AttributeCollection attrs)
         {
-            // load thumbnail
-            _thumbnailPictureBox.LoadAsync(path);
+            FileNameLabel.Text = Path.GetFileNameWithoutExtension(attrs.Path);
 
-            // show file name
-            var fi = new FileInfo(path);
-            _nameLabel.Text = fi.Name;
-
-            // redraw the component
-            Invalidate();
+            if (attrs.TryGetValue("thumbnail", out Attribute attr))
+            {
+                if (attr is ImageAttribute imageAttr)
+                {
+                    ThumbnailPictureBox.Image = imageAttr.Value;
+                }
+            }
         }
 
         private void ThumbnailPictureBox_Paint(object sender, PaintEventArgs e)
@@ -54,22 +38,22 @@ namespace Viewer.UI
             var g = e.Graphics;
             g.Clear(BackColor);
 
-            var image = _thumbnailPictureBox.Image;
+            var image = ThumbnailPictureBox.Image;
             if (image == null)
             {
                 return;
             }
 
             // compute thumbnail dimensions
-            var size = GetThumbnailSize(image.Size, _thumbnailPictureBox.Size);
+            var size = GetThumbnailSize(image.Size, ThumbnailPictureBox.Size);
 
             // draw the thumbnail
             g.InterpolationMode = InterpolationMode.Bicubic;
             g.DrawImage(image, 
                 // align the image vertically to the center
-                (_thumbnailPictureBox.Width - size.Width) / 2,
+                (ThumbnailPictureBox.Width - size.Width) / 2,
                 // align the image horizontaly to the bottom
-                (_thumbnailPictureBox.Height - size.Height),
+                (ThumbnailPictureBox.Height - size.Height),
                 size.Width,
                 size.Height);
         }
@@ -78,7 +62,7 @@ namespace Viewer.UI
         /// Calculate the largest image size such that it fits in <paramref name="thumbnailAreaSize"/> and 
         /// preserves the aspect ratio of <paramref name="originalSize"/>
         /// </summary>
-        /// <param name="originalSize">Atual size of the image</param>
+        /// <param name="originalSize">Actual size of the image</param>
         /// <param name="thumbnailAreaSize">Size of the area where the image will be drawn</param>
         /// <returns>
         ///     Size of the resized image s.t. it fits in <paramref name="thumbnailAreaSize"/> 

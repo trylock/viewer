@@ -50,7 +50,6 @@
             this.TreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.TreeView.ContextMenuStrip = this.FileContextMenu;
             this.TreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TreeView.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.TreeView.FullRowSelect = true;
             this.TreeView.HotTracking = true;
             this.TreeView.Indent = 10;

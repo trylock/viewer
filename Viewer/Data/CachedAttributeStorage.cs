@@ -62,14 +62,14 @@ namespace Viewer.Data
         /// <param name="attrs">Attributes to store</param>
         public void Store(AttributeCollection attrs)
         {
-            _cacheStorage.Store(attrs);
-            
             // only write the attributes to the main storage if it's necessary
             if (attrs.IsDirty)
             {
                 _mainStorage.Store(attrs);
                 attrs.Reset();
             }
+
+            _cacheStorage.Store(attrs);
         }
 
         /// <summary>

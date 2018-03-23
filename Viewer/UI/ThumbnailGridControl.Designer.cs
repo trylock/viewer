@@ -7,19 +7,6 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Component Designer generated code
 
         /// <summary> 
@@ -28,20 +15,35 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.GridPanel = new Viewer.UI.GridPanel();
             this.SuspendLayout();
+            // 
+            // GridPanel
+            // 
+            this.GridPanel.AutoScroll = true;
+            this.GridPanel.AutoScrollMinSize = new System.Drawing.Size(0, 200);
+            this.GridPanel.CellHeight = 200;
+            this.GridPanel.CellsCount = 0;
+            this.GridPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GridPanel.Location = new System.Drawing.Point(0, 0);
+            this.GridPanel.MinCellWidth = 200;
+            this.GridPanel.Name = "GridPanel";
+            this.GridPanel.Size = new System.Drawing.Size(753, 405);
+            this.GridPanel.TabIndex = 0;
             // 
             // ThumbnailGridControl
             // 
             this.AutoScroll = true;
+            this.Controls.Add(this.GridPanel);
             this.DoubleBuffered = true;
             this.Name = "ThumbnailGridControl";
-            this.Size = new System.Drawing.Size(774, 426);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.ThumbnailGridControl_Paint);
-            this.Resize += new System.EventHandler(this.ThumbnailGridControl_Resize);
+            this.Size = new System.Drawing.Size(753, 405);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private GridPanel GridPanel;
     }
 }

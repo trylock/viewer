@@ -97,13 +97,13 @@
       <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="UI\QueryResultController.cs" />
-    <Compile Include="UI\ThumbnailControl.cs">
+    <Compile Include="UI\GridPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ThumbnailControl.Designer.cs">
-      <DependentUpon>ThumbnailControl.cs</DependentUpon>
+    <Compile Include="UI\GridPanel.Designer.cs">
+      <DependentUpon>GridPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\QueryResultController.cs" />
     <Compile Include="UI\ThumbnailGridControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -126,8 +126,8 @@
     <EmbeddedResource Include="UI\DirectoryTreeControl.resx">
       <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ThumbnailControl.resx">
-      <DependentUpon>ThumbnailControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\GridPanel.resx">
+      <DependentUpon>GridPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ThumbnailGridControl.resx">
       <DependentUpon>ThumbnailGridControl.cs</DependentUpon>

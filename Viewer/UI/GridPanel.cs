@@ -57,7 +57,7 @@ namespace Viewer.UI
 
         #region Public Events
 
-        public class GridCellEventArgs
+        public class CellEventArgs
         {
             /// <summary>
             /// Index of an item to redraw
@@ -74,7 +74,7 @@ namespace Viewer.UI
             /// </summary>
             public int Column { get; }
 
-            public GridCellEventArgs(int index, int row, int column)
+            public CellEventArgs(int index, int row, int column)
             {
                 Index = index;
                 Row = row;
@@ -82,7 +82,7 @@ namespace Viewer.UI
             }
         }
 
-        public class CellRedrawEventArgs : GridCellEventArgs
+        public class CellRedrawEventArgs : CellEventArgs
         {
             /// <summary>
             /// Bounds of the grid cell
@@ -112,14 +112,14 @@ namespace Viewer.UI
         /// Event arguments describe grid cell which is currently active 
         /// (i.e. mouse cursor is above this cell)
         /// </summary>
-        public event EventHandler<GridCellEventArgs> CellMouseEnter;
+        public event EventHandler<CellEventArgs> CellMouseEnter;
 
         /// <summary>
         /// Event called when mouse cursors leaves a grid cell.
         /// Event arguments describe grid cell which is no longer active 
         /// (i.e. the mouse cursor is not above this cell)
         /// </summary>
-        public event EventHandler<GridCellEventArgs> CellMouseLeave;
+        public event EventHandler<CellEventArgs> CellMouseLeave;
         
         #endregion
 
@@ -241,10 +241,7 @@ namespace Viewer.UI
             var index = -1;
             if (cellIndex.Row >= 0 && cellIndex.Column >= 0)
             {
-                if (cellIndex.Index >= CellsCount)
-                {
-                    index = -1; // there is no cell
-                }
+                index = cellIndex.Index >= CellsCount ? -1 : cellIndex.Index;
             }
 
             if (index != _activeCellIndex)
@@ -252,7 +249,7 @@ namespace Viewer.UI
                 // trigger mouse leave
                 if (_activeCellIndex != -1 && CellMouseLeave != null)
                 {
-                    CellMouseLeave(this, new GridCellEventArgs(
+                    CellMouseLeave(this, new CellEventArgs(
                         _activeCellIndex, 
                         _activeCellIndex / ColumnsCount,
                         _activeCellIndex % ColumnsCount));
@@ -261,9 +258,12 @@ namespace Viewer.UI
                 // trigger mouse enter
                 if (index != -1 && CellMouseEnter != null)
                 {
-                    CellMouseEnter(this, new GridCellEventArgs(index, cellIndex.Row, cellIndex.Column));
+                    CellMouseEnter(this, new CellEventArgs(index, cellIndex.Row, cellIndex.Column));
                 }
             }
+
+            // update active cell index
+            _activeCellIndex = index;
         }
 
         #endregion

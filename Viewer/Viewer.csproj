@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -97,11 +97,18 @@
       <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="UI\QueryResultController.cs" />
     <Compile Include="UI\ThumbnailControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\ThumbnailControl.Designer.cs">
       <DependentUpon>ThumbnailControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ThumbnailGridControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\ThumbnailGridControl.Designer.cs">
+      <DependentUpon>ThumbnailGridControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewerForm.cs">
       <SubType>Form</SubType>
@@ -121,6 +128,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ThumbnailControl.resx">
       <DependentUpon>ThumbnailControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ThumbnailGridControl.resx">
+      <DependentUpon>ThumbnailGridControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ViewerForm.resx">
       <DependentUpon>ViewerForm.cs</DependentUpon>

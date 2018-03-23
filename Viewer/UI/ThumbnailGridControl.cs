@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,11 @@ namespace Viewer.UI
         /// Minimal width of a cell
         /// </summary>
         public int MinCellWidth { get; set; }
+
+        /// <summary>
+        /// Height of every cell
+        /// </summary>
+        public int CellHeight { get; set; }
 
         /// <summary>
         /// Number of cells in the grid
@@ -40,7 +46,7 @@ namespace Viewer.UI
         /// </summary>
         public Size CellSize => new Size(
             ClientSize.Width / ColumnsCount,
-            _controller.ThumbnailSize.Height
+            CellHeight
         );
 
         /// <summary>
@@ -51,8 +57,9 @@ namespace Viewer.UI
         public ThumbnailGridControl()
         {
             InitializeComponent();
-
+            
             MinCellWidth = _controller.ThumbnailSize.Width + 8;
+            CellHeight = _controller.ThumbnailSize.Height + 25;
         }
 
         private Point GetThumbnailLocation(int row, int column)
@@ -116,7 +123,7 @@ namespace Viewer.UI
         {
             // resize the scrollable area
             AutoScrollMinSize = new Size(
-                ClientSize.Width,
+                0, // we don't want to have horizontal scroll bar
                 RowsCount * CellSize.Height
             );
         }
@@ -143,14 +150,30 @@ namespace Viewer.UI
                     if (!item.TryGetValue("thumbnail", out var thumbnailAttr) ||
                         thumbnailAttr.GetType() != typeof(ImageAttribute))
                     {
+                        // TODO: load the "missing thumbnail image" instead
                         continue;
                     }
                     var image = ((ImageAttribute)thumbnailAttr).Value;
 
                     // draw the thumbnail
-                    var location = GetThumbnailLocation(row, column);
+                    var thumbnailLocation = GetThumbnailLocation(row, column);
                     var size = GetThumbnailSize(image.Size, _controller.ThumbnailSize);
-                    e.Graphics.DrawImage(image, new Rectangle(ProjectLocation(location), size));
+                    e.Graphics.DrawImage(image, new Rectangle(ProjectLocation(thumbnailLocation), size));
+
+                    // draw the item name
+                    var labelLocation = new Point(thumbnailLocation.X, thumbnailLocation.Y + size.Height + 2);
+                    var labelSize = new Size(size.Width, 25);
+                    var format = new StringFormat
+                    {
+                        LineAlignment = StringAlignment.Center,
+                        Alignment = StringAlignment.Center
+                    };
+                    e.Graphics.DrawString(
+                        _controller.GetName(item), 
+                        Font, 
+                        SystemBrushes.ControlText, 
+                        new Rectangle(ProjectLocation(labelLocation), labelSize),
+                        format);
                 }
             }
         }

@@ -82,6 +82,7 @@
     <Compile Include="Data\MemoryAttributeStorage.cs" />
     <Compile Include="Data\SqliteAttributeStorage.cs" />
     <Compile Include="IO\DirectoryUtils.cs" />
+    <Compile Include="MathUtils.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

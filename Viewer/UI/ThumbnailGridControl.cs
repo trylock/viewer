@@ -15,7 +15,19 @@ namespace Viewer.UI
     public partial class ThumbnailGridControl : UserControl
     {
         private QueryResultController _controller = new QueryResultController();
-        
+
+        #region Properties
+
+        /// <summary>
+        /// Height of the label for name
+        /// </summary>
+        public int NameHeight { get; set; } = 30;
+
+        /// <summary>
+        /// Padding between cell border and the thumbnail
+        /// </summary>
+        public Size CellPadding { get; set; } = new Size(8, 8);
+
         /// <summary>
         /// Minimal width of a cell
         /// </summary>
@@ -25,6 +37,8 @@ namespace Viewer.UI
         /// Height of every cell
         /// </summary>
         public int CellHeight { get; set; }
+        
+        #endregion
 
         /// <summary>
         /// Number of cells in the grid
@@ -58,8 +72,8 @@ namespace Viewer.UI
         {
             InitializeComponent();
             
-            MinCellWidth = _controller.ThumbnailSize.Width + 8;
-            CellHeight = _controller.ThumbnailSize.Height + 25;
+            MinCellWidth = _controller.ThumbnailSize.Width + CellPadding.Width;
+            CellHeight = _controller.ThumbnailSize.Height + NameHeight + CellPadding.Height;
         }
 
         private Point GetThumbnailLocation(int row, int column)
@@ -126,6 +140,7 @@ namespace Viewer.UI
                 0, // we don't want to have horizontal scroll bar
                 RowsCount * CellSize.Height
             );
+            Invalidate();
         }
 
         private void ThumbnailGridControl_Paint(object sender, PaintEventArgs e)

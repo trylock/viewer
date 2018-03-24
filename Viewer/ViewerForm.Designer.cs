@@ -65,7 +65,10 @@
             // 
             // thumbnailGridControl1
             // 
+            this.thumbnailGridControl1.AutoScroll = true;
             this.thumbnailGridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.thumbnailGridControl1.ItemPadding = new System.Drawing.Size(8, 8);
+            this.thumbnailGridControl1.ItemSize = new System.Drawing.Size(0, 0);
             this.thumbnailGridControl1.Location = new System.Drawing.Point(0, 0);
             this.thumbnailGridControl1.Name = "thumbnailGridControl1";
             this.thumbnailGridControl1.Size = new System.Drawing.Size(674, 593);

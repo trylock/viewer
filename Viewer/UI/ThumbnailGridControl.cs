@@ -12,43 +12,110 @@ using Viewer.Data;
 
 namespace Viewer.UI
 {
-    public partial class ThumbnailGridControl : UserControl
+    public partial class ThumbnailGridControl : UserControl, IQueryResultView
     {
-        private QueryResultController _controller = new QueryResultController();
+        public IReadOnlyList<ResultItem> Items
+        {
+            get => _items;
+            set
+            {
+                _items = value;
+                GridPanel.Grid.CellsCount = _items.Count;
+            }
+        }
+
+        public Size ItemSize
+        {
+            get => _itemSize;
+            set
+            {
+                _itemSize = value;
+                GridPanel.Grid.MinCellWidth = _itemSize.Width + ItemPadding.Width * 2;
+                GridPanel.Grid.CellHeight = _itemSize.Height + ItemPadding.Height * 2;
+            }
+        }
+
+        public event EventHandler SelectionChanged;
+
+        public IEnumerable<int> SelectedItems => _selectedItems;
 
         /// <summary>
         /// Padding between thumbnail
         /// </summary>
-        public Size ThumbnailPadding { get; set; } = new Size(8, 8);
+        public Size ItemPadding { get; set; } = new Size(8, 8);
+        
+        private HashSet<int> _selectedItems = new HashSet<int>();
+        private IReadOnlyList<ResultItem> _items;
+        private Size _itemSize;
 
-        private GridCell _activeCell;
+        #region Graphics settings
+
+        private Brush _highlightBrush;
+        private Pen _highlightBorderPen;
+        private int _highlightBorderSize = 1;
+
+        private Brush _selectionBrush;
+        private Pen _selectionBorderPen;
+        private int _selectionBorderSize = 1;
+
+        #endregion
+
+        private class RangeSelectionState
+        {
+            /// <summary>
+            /// true iff the user is currenlty selecting items with mouse
+            /// </summary>
+            public bool IsActive = false;
+
+            /// <summary>
+            /// First point of the range selection
+            /// </summary>
+            public Point StartPoint;
+
+            /// <summary>
+            /// Get selection boundign box given the end point of the selection
+            /// </summary>
+            /// <param name="endPoint">End point of the selection</param>
+            /// <returns>Bounding box</returns>
+            public Rectangle GetBounds(Point endPoint)
+            {
+                var minX = Math.Min(StartPoint.X, endPoint.X);
+                var maxX = Math.Max(StartPoint.X, endPoint.X);
+                var minY = Math.Min(StartPoint.Y, endPoint.Y);
+                var maxY = Math.Max(StartPoint.Y, endPoint.Y);
+                return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+            }
+        }
+
+        private RangeSelectionState _selectionState = new RangeSelectionState();
 
         public ThumbnailGridControl()
         {
             InitializeComponent();
 
-            _activeCell = GridPanel.InvalidCell;
+            _highlightBrush = new SolidBrush(Color.FromArgb(226, 241, 255));
+            _highlightBorderPen = new Pen(Color.FromArgb(221, 232, 248), _highlightBorderSize);
 
-            GridPanel.Grid.MinCellWidth = _controller.ThumbnailSize.Width + ThumbnailPadding.Width;
-            GridPanel.Grid.CellHeight = _controller.ThumbnailSize.Height + ThumbnailPadding.Height;
-            GridPanel.Grid.CellsCount = _controller.Result.Count;
+            _selectionBrush = new SolidBrush(Color.FromArgb(221, 232, 248));
+            _selectionBorderPen = new Pen(Color.FromArgb(210, 220, 236), _selectionBorderSize);
+
             GridPanel.CellRedraw += GridPanel_CellRedraw;
             GridPanel.CellMouseEnter += GridPanel_CellMouseEnter;
+            GridPanel.CellMouseLeave += GridPanel_CellMouseLeave;
         }
         
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
+        public void ClearSelection()
         {
-            if (disposing && (components != null))
+            // invalidate all cells in current selection
+            foreach (var index in _selectedItems)
             {
-                components.Dispose();
+                GridPanel.Invalidate(index);
             }
-            base.Dispose(disposing);
+
+            // clear current selection
+            _selectedItems.Clear();
         }
-        
+
         /// <summary>
         /// Calculate the largest image size such that it fits in <paramref name="thumbnailAreaSize"/> and 
         /// preserves the aspect ratio of <paramref name="originalSize"/>
@@ -86,41 +153,99 @@ namespace Viewer.UI
         {
             return new Point(
                 // align the thumbnail to the center horizontally
-                cellBounds.Location.X + (cellBounds.Width - _controller.ThumbnailSize.Width) / 2,
+                cellBounds.Location.X + (cellBounds.Width - ItemSize.Width) / 2,
                 // align the thumbnail to the bottom vertically
-                cellBounds.Location.Y + (cellBounds.Height - _controller.ThumbnailSize.Height - ThumbnailPadding.Height)
+                cellBounds.Location.Y + (cellBounds.Height - ItemSize.Height - ItemPadding.Height)
             );
         }
         
         private void GridPanel_CellRedraw(object sender, GridPanel.CellRedrawEventArgs e)
         {
             // find thumbnail
-            var item = _controller.Result[e.GridCell.Index];
-            if (!item.TryGetValue("thumbnail", out var thumbnailAttr) ||
-                thumbnailAttr.GetType() != typeof(ImageAttribute))
+            var item = Items[e.GridCell.Index];
+
+            e.Graphics.FillRectangle(Brushes.White, e.Bounds);
+
+            if (SelectedItems.Contains(e.GridCell.Index))
+            {
+                // draw selection 
+                e.Graphics.FillRectangle(_selectionBrush, e.Bounds.Shrink(_selectionBorderSize));
+                e.Graphics.DrawRectangle(_selectionBorderPen, e.Bounds.Shrink(_selectionBorderSize));
+            }
+            else if (e.GridCell.Index == GridPanel.ActiveCell.Index)
+            {
+                // draw highlight
+                e.Graphics.FillRectangle(_highlightBrush, e.Bounds.Shrink(_highlightBorderSize));
+                e.Graphics.DrawRectangle(_highlightBorderPen, e.Bounds.Shrink(_highlightBorderSize));
+            }
+            
+            // draw the thumbnail
+            var thumbnailSize = GetThumbnailSize(item.Thumbnail.Size, ItemSize);
+            var thumbnailLocation = GetThumbnailLocation(e.Bounds);
+            e.Graphics.DrawImage(item.Thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
+
+            // draw name
+            var nameLocation = new Point(
+                thumbnailLocation.X, 
+                thumbnailLocation.Y + thumbnailSize.Height + ItemPadding.Height);
+            var nameSize = new Size(ItemSize.Width, ItemSize.Height - thumbnailSize.Height - ItemPadding.Height * 2);
+            var nameForamt = new StringFormat
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
+            e.Graphics.DrawString(
+                item.Name, 
+                Font, 
+                SystemBrushes.ControlText, 
+                new Rectangle(nameLocation, nameSize),
+                nameForamt);
+        }
+
+        private void GridPanel_CellMouseLeave(object sender, GridPanel.CellChangeEventArgs e)
+        {
+            GridPanel.Invalidate(e.OldCell);
+        }
+
+        private void GridPanel_CellMouseEnter(object sender, GridPanel.CellChangeEventArgs e)
+        {
+            GridPanel.Invalidate(e.NewCell);
+        }
+
+        private void GridPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            ClearSelection();
+            _selectionState.IsActive = true;
+            _selectionState.StartPoint = GridPanel.UnprojectLocation(e.Location);
+        }
+
+        private void GridPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            _selectionState.IsActive = false;
+            if (SelectionChanged != null)
+            {
+                SelectionChanged(this, EventArgs.Empty);
+            }
+        }
+
+        private void GridPanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!_selectionState.IsActive)
             {
                 return;
             }
+            var endPoint = GridPanel.UnprojectLocation(e.Location);
 
-            var thumbnail = ((ImageAttribute) thumbnailAttr).Value;
+            // remove all items from selection and invalidate their location
+            ClearSelection();
 
-            // draw highlight
-            if (e.GridCell.Index == _activeCell.Index)
+            // add new cells to the selection
+            var bounds = _selectionState.GetBounds(endPoint);
+            foreach (var cell in GridPanel.Grid.GetCellsInBounds(bounds))
             {
-                e.Graphics.FillRectangle(SystemBrushes.Highlight, e.Bounds);
+                _selectedItems.Add(cell.Index);
+                GridPanel.Invalidate(cell);
             }
-
-            // draw the thumbnail
-            var thumbnailSize = GetThumbnailSize(thumbnail.Size, _controller.ThumbnailSize);
-            var thumbnailLocation = GetThumbnailLocation(e.Bounds);
-            e.Graphics.DrawImage(thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
-        }
-
-        private void GridPanel_CellMouseEnter(object sender, GridPanel.CellEventArgs e)
-        {
-            GridPanel.Invalidate(_activeCell);
-            _activeCell = e.GridCell;
-            GridPanel.Invalidate(e.GridCell);
         }
     }
 }

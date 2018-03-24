@@ -12,63 +12,6 @@ namespace Viewer.UI
 {
     public partial class GridPanel : UserControl
     {
-        #region Editable Public Properties
-
-        /// <summary>
-        /// Minimal width of a grid cell
-        /// </summary>
-        public int MinCellWidth
-        {
-            get => _grid.MinCellWidth;
-            set => _grid.MinCellWidth = value;
-        }
-
-        /// <summary>
-        /// Height of a grid cell
-        /// </summary>
-        public int CellHeight
-        {
-            get => _grid.CellHeight;
-            set => _grid.CellHeight = value;
-        }
-
-        /// <summary>
-        /// Number of cells in the grid
-        /// </summary>
-        public int CellsCount
-        {
-            get => _grid.CellsCount;
-            set => _grid.CellsCount = value;
-        }
-
-        #endregion
-
-        #region Computed Public Properties
-
-        /// <summary>
-        /// Number of columns in the grid.
-        /// This will always be >= 1.
-        /// </summary>
-        public int ColumnsCount => _grid.ColumnsCount;
-
-        /// <summary>
-        /// Number of rows in the grid.
-        /// This will always be >= 1.
-        /// </summary>
-        public int RowsCount => _grid.RowsCount;
-
-        /// <summary>
-        /// Actual size of each cell in the grid
-        /// </summary>
-        public Size CellSize => _grid.CellSize;
-
-        /// <summary>
-        /// Invalid grid cell
-        /// </summary>
-        public GridCell InvalidCell => new GridCell(_grid, -1, -1);
-
-        #endregion 
-
         #region Public Events
 
         public class CellEventArgs
@@ -123,8 +66,16 @@ namespace Viewer.UI
         public event EventHandler<CellEventArgs> CellMouseLeave;
         
         #endregion
-        
-        private Grid _grid = new Grid();
+
+        /// <summary>
+        /// Grid structure
+        /// </summary>
+        public Grid Grid { get; } = new Grid();
+
+        /// <summary>
+        /// Invalid grid cell
+        /// </summary>
+        public GridCell InvalidCell => new GridCell(Grid, -1, -1);
 
         /// <summary>
         /// Index of a grid cell above which is the mouse cursor.
@@ -186,12 +137,12 @@ namespace Viewer.UI
         private void GridPanel_Resize(object sender, EventArgs e)
         {
             // resize the grid
-            _grid.Resize(ClientSize.Width);
+            Grid.Resize(ClientSize.Width);
 
             // resize the scrollable area
             AutoScrollMinSize = new Size(
                 0, // we don't want to have horizontal scroll bar
-                RowsCount * CellSize.Height
+                Grid.RowsCount * Grid.CellSize.Height
             );
 
             // redraw the whole control
@@ -203,7 +154,7 @@ namespace Viewer.UI
             var bounds = new Rectangle(
                 UnprojectLocation(e.ClipRectangle.Location), 
                 e.ClipRectangle.Size);
-            foreach (var cell in _grid.GetCellsInBounds(bounds))
+            foreach (var cell in Grid.GetCellsInBounds(bounds))
             {
                 InvokeCellRedraw(e.Graphics, cell);
             }
@@ -211,7 +162,7 @@ namespace Viewer.UI
 
         private void GridPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            var cell = _grid.GetCellAt(UnprojectLocation(e.Location));
+            var cell = Grid.GetCellAt(UnprojectLocation(e.Location));
             if (cell.Index != _activeGridCell.Index)
             {
                 // trigger mouse leave

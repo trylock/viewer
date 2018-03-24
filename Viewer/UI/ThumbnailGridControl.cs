@@ -29,9 +29,9 @@ namespace Viewer.UI
 
             _activeCell = GridPanel.InvalidCell;
 
-            GridPanel.MinCellWidth = _controller.ThumbnailSize.Width + ThumbnailPadding.Width;
-            GridPanel.CellHeight = _controller.ThumbnailSize.Height + ThumbnailPadding.Height;
-            GridPanel.CellsCount = _controller.Result.Count;
+            GridPanel.Grid.MinCellWidth = _controller.ThumbnailSize.Width + ThumbnailPadding.Width;
+            GridPanel.Grid.CellHeight = _controller.ThumbnailSize.Height + ThumbnailPadding.Height;
+            GridPanel.Grid.CellsCount = _controller.Result.Count;
             GridPanel.CellRedraw += GridPanel_CellRedraw;
             GridPanel.CellMouseEnter += GridPanel_CellMouseEnter;
         }

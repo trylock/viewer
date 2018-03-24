@@ -222,5 +222,31 @@ namespace ViewerTest.UI
             Assert.AreEqual(1, cellsList[0].Index);
             Assert.AreEqual(4, cellsList[1].Index);
         }
+
+        [TestMethod]
+        public void GetCellsInBounds_IndivisibleWidth()
+        {
+            var grid = new Grid();
+            grid.MinCellWidth = 200;
+            grid.CellHeight = 200;
+            grid.CellsCount = 3;
+            grid.Resize(419);
+
+            var cells = grid.GetCellsInBounds(new Rectangle(
+                new Point(0, 0),
+                new Size(1000, 1000)));
+            var cellsList = cells.ToArray();
+            Assert.AreEqual(0, cellsList[0].Index);
+            Assert.AreEqual(0, cellsList[0].Row);
+            Assert.AreEqual(0, cellsList[0].Column);
+
+            Assert.AreEqual(1, cellsList[1].Index);
+            Assert.AreEqual(0, cellsList[1].Row);
+            Assert.AreEqual(1, cellsList[1].Column);
+
+            Assert.AreEqual(2, cellsList[2].Index);
+            Assert.AreEqual(1, cellsList[2].Row);
+            Assert.AreEqual(0, cellsList[2].Column);
+        }
     }
 }

@@ -124,7 +124,6 @@ namespace Viewer.UI
         {
             if (width < 0)
                 throw new ArgumentOutOfRangeException(nameof(width));
-
             _width = width;
         }
 
@@ -158,13 +157,13 @@ namespace Viewer.UI
         public IEnumerable<GridCell> GetCellsInBounds(Rectangle bounds)
         {
             // Compute intersection of bounds with the bounding box of the grid.
-            // We subtract -1 from the grid size because we want for each point 
-            // P in the grid rectangle to satisfy that P / CellSize is a valid 
-            // cell location.
+            // We subtract CellSize from the grid size because we want for each 
+            // point P in the grid rectangle to satisfy that P / CellSize is a 
+            // valid cell location.
             var minX = Math.Max(bounds.X, 0);
-            var maxX = Math.Min(bounds.X + bounds.Width, GridSize.Width - 1);
+            var maxX = Math.Min(bounds.X + bounds.Width, GridSize.Width - CellSize.Width);
             var minY = Math.Max(bounds.Y, 0);
-            var maxY = Math.Min(bounds.Y + bounds.Height, GridSize.Height - 1);
+            var maxY = Math.Min(bounds.Y + bounds.Height, GridSize.Height - CellSize.Height);
             if (minX > maxX || minY > maxY)
                 yield break; // the intersection is empty
 

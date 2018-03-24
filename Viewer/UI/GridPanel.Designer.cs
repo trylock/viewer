@@ -38,7 +38,10 @@
             this.DoubleBuffered = true;
             this.Name = "GridPanel";
             this.Size = new System.Drawing.Size(656, 349);
+            this.Click += new System.EventHandler(this.GridPanel_Click);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridPanel_Paint);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseDoubleClick);
+            this.MouseLeave += new System.EventHandler(this.GridPanel_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseMove);
             this.Resize += new System.EventHandler(this.GridPanel_Resize);
             this.ResumeLayout(false);

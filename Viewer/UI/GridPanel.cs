@@ -14,7 +14,7 @@ namespace Viewer.UI
     {
         #region Public Events
 
-        public class CellEventArgs
+        public class CellEventArgs : EventArgs
         {
             /// <summary>
             /// Grid cell
@@ -24,6 +24,25 @@ namespace Viewer.UI
             public CellEventArgs(GridCell gridCell)
             {
                 GridCell = gridCell;
+            }
+        }
+
+        public class CellChangeEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Get old cell value
+            /// </summary>
+            public GridCell OldCell { get; }
+
+            /// <summary>
+            /// Get new cell value
+            /// </summary>
+            public GridCell NewCell { get; }
+
+            public CellChangeEventArgs(GridCell oldCell, GridCell newCell)
+            {
+                OldCell = oldCell;
+                NewCell = newCell;
             }
         }
 
@@ -56,15 +75,25 @@ namespace Viewer.UI
         /// Event arguments describe grid cell which is currently active 
         /// (i.e. mouse cursor is above this cell)
         /// </summary>
-        public event EventHandler<CellEventArgs> CellMouseEnter;
+        public event EventHandler<CellChangeEventArgs> CellMouseEnter;
 
         /// <summary>
         /// Event called when mouse cursors leaves a grid cell.
         /// Event arguments describe grid cell which is no longer active 
         /// (i.e. the mouse cursor is not above this cell)
         /// </summary>
-        public event EventHandler<CellEventArgs> CellMouseLeave;
-        
+        public event EventHandler<CellChangeEventArgs> CellMouseLeave;
+
+        /// <summary>
+        /// Event called when the user clicked on a cell.
+        /// </summary>
+        public event EventHandler<CellEventArgs> CellClick;
+
+        /// <summary>
+        /// Event called when the user double clicked on a cell.
+        /// </summary>
+        public event EventHandler<CellEventArgs> CellDoubleClick;
+
         #endregion
 
         /// <summary>
@@ -81,13 +110,13 @@ namespace Viewer.UI
         /// Index of a grid cell above which is the mouse cursor.
         /// -1 if the mouse cursor is not above any grid cell
         /// </summary>
-        private GridCell _activeGridCell;
+        public GridCell ActiveCell { get; private set; }
 
         public GridPanel()
         {
             InitializeComponent();
 
-            _activeGridCell = InvalidCell;
+            ActiveCell = InvalidCell;
         }
 
         /// <summary>
@@ -97,21 +126,31 @@ namespace Viewer.UI
         public void Invalidate(GridCell cell)
         {
             var location = ProjectLocation(cell.Location);
-            Invalidate(new Rectangle(location, cell.Size));
+            var bounds = new Rectangle(location, cell.Size);
+            Invalidate(bounds);
+        }
+
+        /// <summary>
+        /// Invalidate single grid cell (i.e. only this cell will be redrawn)
+        /// </summary>
+        /// <param name="cellIndex">Index of a cell to invalidate</param>
+        public void Invalidate(int cellIndex)
+        {
+            Invalidate(new GridCell(Grid, cellIndex / Grid.ColumnsCount, cellIndex % Grid.ColumnsCount));
         }
 
         #region Utility conversion functions
 
         /// <summary>
-        /// Project UI location to visible area coordinates
+        /// Project UI location to clip area coordinates
         /// </summary>
         /// <param name="uiLocation">UI location</param>
         /// <returns>
-        ///     Location in visible area:
+        ///     Location in clip area:
         ///     [0, 0] is the top left corner of the visible area,
         ///     [ClientSize.Width, ClientSize.Height] is the bottom right corner of the visible area
         /// </returns>
-        private Point ProjectLocation(Point uiLocation)
+        public Point ProjectLocation(Point uiLocation)
         {
             return new Point(
                 uiLocation.X + AutoScrollPosition.X,
@@ -121,13 +160,13 @@ namespace Viewer.UI
         /// <summary>
         /// Compute inverse of ProjectLocation
         /// </summary>
-        /// <param name="visibleAreaLocation">Point in visible area coordinates</param>
+        /// <param name="clipAreaLocation">Point in clip area coordinates</param>
         /// <returns>Point in UI coordinates.</returns>
-        private Point UnprojectLocation(Point visibleAreaLocation)
+        public Point UnprojectLocation(Point clipAreaLocation)
         {
             return new Point(
-                visibleAreaLocation.X - AutoScrollPosition.X, 
-                visibleAreaLocation.Y - AutoScrollPosition.Y);
+                clipAreaLocation.X - AutoScrollPosition.X, 
+                clipAreaLocation.Y - AutoScrollPosition.Y);
         }
         
         #endregion
@@ -163,23 +202,52 @@ namespace Viewer.UI
         private void GridPanel_MouseMove(object sender, MouseEventArgs e)
         {
             var cell = Grid.GetCellAt(UnprojectLocation(e.Location));
-            if (cell.Index != _activeGridCell.Index)
+            if (cell.Index != ActiveCell.Index)
             {
                 // trigger mouse leave
-                if (_activeGridCell.Index != -1 && CellMouseLeave != null)
+                if (ActiveCell.Index != -1 && CellMouseLeave != null)
                 {
-                    CellMouseLeave(this, new CellEventArgs(_activeGridCell));
+                    CellMouseLeave(this, new CellChangeEventArgs(ActiveCell, cell));
                 }
 
                 // trigger mouse enter
                 if (cell.Index != -1 && CellMouseEnter != null)
                 {
-                    CellMouseEnter(this, new CellEventArgs(cell));
+                    CellMouseEnter(this, new CellChangeEventArgs(ActiveCell, cell));
                 }
             }
 
             // update active cell index
-            _activeGridCell = cell;
+            ActiveCell = cell;
+        }
+
+        private void GridPanel_MouseLeave(object sender, EventArgs e)
+        {
+            if (ActiveCell.Index >= 0 && CellMouseLeave != null)
+            {
+                CellMouseLeave(this, new CellChangeEventArgs(ActiveCell, InvalidCell));
+            }
+            ActiveCell = InvalidCell;
+        }
+
+        private void GridPanel_Click(object sender, EventArgs e)
+        {
+            if (ActiveCell.Index < 0 || CellClick == null)
+            {
+                return;
+            }
+
+            CellClick(this, new CellEventArgs(ActiveCell));
+        }
+
+        private void GridPanel_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (ActiveCell.Index < 0 || CellDoubleClick == null)
+            {
+                return;
+            }
+
+            CellDoubleClick(this, new CellEventArgs(ActiveCell));
         }
 
         #endregion

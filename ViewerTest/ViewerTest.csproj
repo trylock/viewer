@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="XmpCore, Version=5.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\XmpCore.5.1.3\lib\net35\XmpCore.dll</HintPath>
     </Reference>
@@ -63,6 +64,7 @@
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterTest.cs" />
     <Compile Include="IO\DirectoryUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\GridTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

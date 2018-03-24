@@ -21,14 +21,19 @@ namespace Viewer.UI
         /// </summary>
         public Size ThumbnailPadding { get; set; } = new Size(8, 8);
 
+        private GridCell _activeCell;
+
         public ThumbnailGridControl()
         {
             InitializeComponent();
+
+            _activeCell = GridPanel.InvalidCell;
 
             GridPanel.MinCellWidth = _controller.ThumbnailSize.Width + ThumbnailPadding.Width;
             GridPanel.CellHeight = _controller.ThumbnailSize.Height + ThumbnailPadding.Height;
             GridPanel.CellsCount = _controller.Result.Count;
             GridPanel.CellRedraw += GridPanel_CellRedraw;
+            GridPanel.CellMouseEnter += GridPanel_CellMouseEnter;
         }
         
         /// <summary> 
@@ -90,7 +95,7 @@ namespace Viewer.UI
         private void GridPanel_CellRedraw(object sender, GridPanel.CellRedrawEventArgs e)
         {
             // find thumbnail
-            var item = _controller.Result[e.Index];
+            var item = _controller.Result[e.GridCell.Index];
             if (!item.TryGetValue("thumbnail", out var thumbnailAttr) ||
                 thumbnailAttr.GetType() != typeof(ImageAttribute))
             {
@@ -99,10 +104,23 @@ namespace Viewer.UI
 
             var thumbnail = ((ImageAttribute) thumbnailAttr).Value;
 
+            // draw highlight
+            if (e.GridCell.Index == _activeCell.Index)
+            {
+                e.Graphics.FillRectangle(SystemBrushes.Highlight, e.Bounds);
+            }
+
             // draw the thumbnail
             var thumbnailSize = GetThumbnailSize(thumbnail.Size, _controller.ThumbnailSize);
             var thumbnailLocation = GetThumbnailLocation(e.Bounds);
             e.Graphics.DrawImage(thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
+        }
+
+        private void GridPanel_CellMouseEnter(object sender, GridPanel.CellEventArgs e)
+        {
+            GridPanel.Invalidate(_activeCell);
+            _activeCell = e.GridCell;
+            GridPanel.Invalidate(e.GridCell);
         }
     }
 }

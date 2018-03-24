@@ -17,17 +17,29 @@ namespace Viewer.UI
         /// <summary>
         /// Minimal width of a grid cell
         /// </summary>
-        public int MinCellWidth { get; set; } = 200;
+        public int MinCellWidth
+        {
+            get => _grid.MinCellWidth;
+            set => _grid.MinCellWidth = value;
+        }
 
         /// <summary>
         /// Height of a grid cell
         /// </summary>
-        public int CellHeight { get; set; } = 200;
+        public int CellHeight
+        {
+            get => _grid.CellHeight;
+            set => _grid.CellHeight = value;
+        }
 
         /// <summary>
         /// Number of cells in the grid
         /// </summary>
-        public int CellsCount { get; set; } = 0;
+        public int CellsCount
+        {
+            get => _grid.CellsCount;
+            set => _grid.CellsCount = value;
+        }
 
         #endregion
 
@@ -37,21 +49,23 @@ namespace Viewer.UI
         /// Number of columns in the grid.
         /// This will always be >= 1.
         /// </summary>
-        public int ColumnsCount => Math.Max(ClientSize.Width / MinCellWidth, 1);
+        public int ColumnsCount => _grid.ColumnsCount;
 
         /// <summary>
         /// Number of rows in the grid.
         /// This will always be >= 1.
         /// </summary>
-        public int RowsCount => Math.Max(MathUtils.RoundUpDiv(CellsCount, ColumnsCount), 1);
+        public int RowsCount => _grid.RowsCount;
 
         /// <summary>
         /// Actual size of each cell in the grid
         /// </summary>
-        public Size CellSize => new Size(
-            ClientSize.Width / ColumnsCount,
-            CellHeight
-        );
+        public Size CellSize => _grid.CellSize;
+
+        /// <summary>
+        /// Invalid grid cell
+        /// </summary>
+        public GridCell InvalidCell => new GridCell(_grid, -1, -1);
 
         #endregion 
 
@@ -60,25 +74,13 @@ namespace Viewer.UI
         public class CellEventArgs
         {
             /// <summary>
-            /// Index of an item to redraw
+            /// Grid cell
             /// </summary>
-            public int Index { get; }
+            public GridCell GridCell { get; }
 
-            /// <summary>
-            /// Row of the cell
-            /// </summary>
-            public int Row { get; }
-
-            /// <summary>
-            /// Column of the cell
-            /// </summary>
-            public int Column { get; }
-
-            public CellEventArgs(int index, int row, int column)
+            public CellEventArgs(GridCell gridCell)
             {
-                Index = index;
-                Row = row;
-                Column = column;
+                GridCell = gridCell;
             }
         }
 
@@ -94,8 +96,7 @@ namespace Viewer.UI
             /// </summary>
             public Graphics Graphics { get; }
 
-            public CellRedrawEventArgs(int index, int row, int column, Rectangle bounds, Graphics g) : 
-                base(index, row, column)
+            public CellRedrawEventArgs(GridCell gridCell, Rectangle bounds, Graphics g) : base(gridCell)
             {
                 Graphics = g;
                 Bounds = bounds;
@@ -122,16 +123,30 @@ namespace Viewer.UI
         public event EventHandler<CellEventArgs> CellMouseLeave;
         
         #endregion
+        
+        private Grid _grid = new Grid();
 
         /// <summary>
         /// Index of a grid cell above which is the mouse cursor.
         /// -1 if the mouse cursor is not above any grid cell
         /// </summary>
-        private int _activeCellIndex = -1;
+        private GridCell _activeGridCell;
 
         public GridPanel()
         {
             InitializeComponent();
+
+            _activeGridCell = InvalidCell;
+        }
+
+        /// <summary>
+        /// Invalidate single grid cell (i.e. only this cell will be redrawn)
+        /// </summary>
+        /// <param name="cell">Cell to invalidate</param>
+        public void Invalidate(GridCell cell)
+        {
+            var location = ProjectLocation(cell.Location);
+            Invalidate(new Rectangle(location, cell.Size));
         }
 
         #region Utility conversion functions
@@ -163,42 +178,16 @@ namespace Viewer.UI
                 visibleAreaLocation.X - AutoScrollPosition.X, 
                 visibleAreaLocation.Y - AutoScrollPosition.Y);
         }
-
-        private struct CellIndex
-        {
-            public int Row;
-            public int Column;
-
-            /// <summary>
-            /// Linearized (Row, Column) for convenience
-            /// </summary>
-            public int Index;
-        }
-
-        /// <summary>
-        /// Get cell index (row, column) at given location.
-        /// </summary>
-        /// <param name="visibleAreaLocation">Visible area location</param>
-        /// <returns>Cell index at this location</returns>
-        private CellIndex GetCellAt(Point visibleAreaLocation)
-        {
-            var uiLocation = UnprojectLocation(visibleAreaLocation);
-            var row = uiLocation.Y / CellSize.Height;
-            var column = uiLocation.X / CellSize.Width;
-            return new CellIndex
-            {
-                Row = row,
-                Column = column,
-                Index = row * ColumnsCount + column
-            };
-        }
-
+        
         #endregion
 
         #region Event Handlers
         
         private void GridPanel_Resize(object sender, EventArgs e)
         {
+            // resize the grid
+            _grid.Resize(ClientSize.Width);
+
             // resize the scrollable area
             AutoScrollMinSize = new Size(
                 0, // we don't want to have horizontal scroll bar
@@ -211,78 +200,48 @@ namespace Viewer.UI
 
         private void GridPanel_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.Clear(BackColor);
-
-            // iterate over visible grid cells
-            var row = -AutoScrollPosition.Y / CellSize.Height;
-            var lastRow = MathUtils.RoundUpDiv(-AutoScrollPosition.Y + ClientSize.Height, CellSize.Height);
-            for (; row < lastRow; ++row)
+            var bounds = new Rectangle(
+                UnprojectLocation(e.ClipRectangle.Location), 
+                e.ClipRectangle.Size);
+            foreach (var cell in _grid.GetCellsInBounds(bounds))
             {
-                // find number of valid columns in this row
-                var columnsCount = ColumnsCount;
-                if (row + 1 >= RowsCount && CellsCount % ColumnsCount != 0)
-                {
-                    columnsCount = CellsCount % ColumnsCount;
-                }
-
-                // draw all the items in this row
-                for (var column = 0; column < columnsCount; ++column)
-                {
-                    InvokeCellRedraw(e.Graphics, row, column);
-                }
+                InvokeCellRedraw(e.Graphics, cell);
             }
         }
 
         private void GridPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            var cellIndex = GetCellAt(e.Location);
-
-            // find index of a new active cell
-            var index = -1;
-            if (cellIndex.Row >= 0 && cellIndex.Column >= 0)
-            {
-                index = cellIndex.Index >= CellsCount ? -1 : cellIndex.Index;
-            }
-
-            if (index != _activeCellIndex)
+            var cell = _grid.GetCellAt(UnprojectLocation(e.Location));
+            if (cell.Index != _activeGridCell.Index)
             {
                 // trigger mouse leave
-                if (_activeCellIndex != -1 && CellMouseLeave != null)
+                if (_activeGridCell.Index != -1 && CellMouseLeave != null)
                 {
-                    CellMouseLeave(this, new CellEventArgs(
-                        _activeCellIndex, 
-                        _activeCellIndex / ColumnsCount,
-                        _activeCellIndex % ColumnsCount));
+                    CellMouseLeave(this, new CellEventArgs(_activeGridCell));
                 }
 
                 // trigger mouse enter
-                if (index != -1 && CellMouseEnter != null)
+                if (cell.Index != -1 && CellMouseEnter != null)
                 {
-                    CellMouseEnter(this, new CellEventArgs(index, cellIndex.Row, cellIndex.Column));
+                    CellMouseEnter(this, new CellEventArgs(cell));
                 }
             }
 
             // update active cell index
-            _activeCellIndex = index;
+            _activeGridCell = cell;
         }
 
         #endregion
 
-        private void InvokeCellRedraw(Graphics g, int row, int column)
+        private void InvokeCellRedraw(Graphics g, GridCell gridCell)
         {
             if (CellRedraw == null)
             {
                 return;
             }
-
-            var bounds = new Rectangle(
-                ProjectLocation(new Point(
-                    column * CellSize.Width,
-                    row * CellSize.Height
-                )),
-                CellSize
-            );
-            var args = new CellRedrawEventArgs(row * ColumnsCount + column, row, column, bounds, g);
+            
+            var bounds = new Rectangle(ProjectLocation(gridCell.Location), gridCell.Size);
+            var args = new CellRedrawEventArgs(gridCell, bounds, g);
             CellRedraw(this, args);
         }
     }

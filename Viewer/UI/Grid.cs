@@ -43,8 +43,9 @@ namespace Viewer.UI
         /// Get location of this cell
         /// </summary>
         public Point Location => new Point(
-                Column * _grid.CellSize.Width,
-                Row * _grid.CellSize.Height);
+            Column * _grid.CellSize.Width,
+            Row * _grid.CellSize.Height
+        );
 
         /// <summary>
         /// Get size of this cell
@@ -161,9 +162,9 @@ namespace Viewer.UI
             // point P in the grid rectangle to satisfy that P / CellSize is a 
             // valid cell location.
             var minX = Math.Max(bounds.X, 0);
-            var maxX = Math.Min(bounds.X + bounds.Width, GridSize.Width - CellSize.Width);
+            var maxX = Math.Min(bounds.X + bounds.Width - 1, GridSize.Width - CellSize.Width);
             var minY = Math.Max(bounds.Y, 0);
-            var maxY = Math.Min(bounds.Y + bounds.Height, GridSize.Height - CellSize.Height);
+            var maxY = Math.Min(bounds.Y + bounds.Height - 1, GridSize.Height - CellSize.Height);
             if (minX > maxX || minY > maxY)
                 yield break; // the intersection is empty
 

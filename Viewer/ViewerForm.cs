@@ -16,6 +16,7 @@ namespace Viewer
     public partial class ViewerForm : Form
     {
         private QueryResultPresenter _resultPresenter;
+        private DirectoryTreePresenter _treePresenter;
 
         public ViewerForm()
         {
@@ -23,6 +24,9 @@ namespace Viewer
 
             var factory = new AttributeStorageFactory();
             var storage = factory.Create();
+
+            _treePresenter = new DirectoryTreePresenter(directoryTreeControl1);
+            _treePresenter.UpdateRootDirectories();
 
             _resultPresenter = new QueryResultPresenter(thumbnailGridControl1, storage);
             _resultPresenter.LoadDirectory("C:/tmp");

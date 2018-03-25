@@ -88,8 +88,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\ClipboardController.cs" />
-    <Compile Include="UI\DirectoryController.cs" />
     <Compile Include="UI\DirectoryTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -97,6 +95,7 @@
       <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="UI\DirectoryTreePresenter.cs" />
     <Compile Include="UI\Grid.cs" />
     <Compile Include="UI\GridPanel.cs">
       <SubType>UserControl</SubType>
@@ -104,6 +103,7 @@
     <Compile Include="UI\GridPanel.Designer.cs">
       <DependentUpon>GridPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\IDirectoryTreeView.cs" />
     <Compile Include="UI\IQueryResultView.cs" />
     <Compile Include="UI\QueryResultPresenter.cs" />
     <Compile Include="UI\RectangleExtensions.cs" />

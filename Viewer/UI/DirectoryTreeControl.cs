@@ -14,11 +14,8 @@ using Viewer.Properties;
 
 namespace Viewer.UI
 {
-    public partial class DirectoryTreeControl : UserControl
+    public partial class DirectoryTreeControl : UserControl, IDirectoryTreeView
     {
-        private DirectoryController _directoryController = new DirectoryController();
-        private ClipboardController _clipboardController = new ClipboardController();
-        
         public DirectoryTreeControl()
         {
             InitializeComponent();
@@ -28,69 +25,39 @@ namespace Viewer.UI
 
             TreeView.ImageList = list;
             TreeView.ImageIndex = 0;
-
-            // initialize the tree view with ready logical drives
             TreeView.Sorted = true;
-            TreeView.BeginUpdate();
-            foreach (var drive in _directoryController.GetDrives())
-            {
-                var node = TreeView.Nodes.Add(drive.Key, drive.Name);
-                foreach (var folder in _directoryController.GetDirectories(drive.Key))
-                {
-                    node.Nodes.Add(folder, folder);
-                }
-            }
-            TreeView.EndUpdate();
         }
         
-        /// <summary>
-        /// Update subdirectories of given node.
-        /// </summary>
-        /// <param name="node">Node of the directory TreeView</param>
-        private void UpdateSubdirectories(TreeNode node)
+        #region View interface
+
+        public event EventHandler<DirectoryEventArgs> ExpandDirectory;
+        public event EventHandler<RenameDirectoryEventArgs> RenameDirectory;
+        public event EventHandler<DirectoryEventArgs> DeleteDirectory;
+        public event EventHandler<CreateDirectoryEventArgs> CreateDirectory;
+        public event EventHandler<DirectoryEventArgs> OpenInExplorer;
+        public event EventHandler<DirectoryEventArgs> CopyDirectory;
+        public event EventHandler<DirectoryEventArgs> CutDirectory;
+        public event EventHandler<DirectoryEventArgs> PasteToDirectory;
+
+        public void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories)
         {
-            var path = GetPath(node);
+            var nodes = GetChildrenNodeCollection(pathParts);
 
             TreeView.BeginUpdate();
-
-            // remove old subdirectories
-            node.Nodes.Clear();
-
-            // add new subdirectories
-            try
+            nodes.Clear();
+            foreach (var dir in subdirectories)
             {
-                foreach (var directory in _directoryController.GetDirectories(path))
+                var node = nodes.Add(dir.FileName, dir.UserName);
+                if (dir.HasChildren)
                 {
-                    var subnode = node.Nodes.Add(directory, directory);
-                    try
-                    {
-                        var subdirectoryPath = path + Path.DirectorySeparatorChar + directory;
-                        foreach (var subdirectory in _directoryController.GetDirectories(subdirectoryPath))
-                        {
-                            subnode.Nodes.Add(subdirectory, subdirectory);
-                            break;
-                        }
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        // skip folders
-                    }
+                    // add dummy child node so that the user is able to expand this node
+                    node.Nodes.Add("", "");
                 }
             }
-            catch (UnauthorizedAccessException)
-            {
-                UnauthorizedAccess(path);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                node.Remove();
-                DirectoryNotFound(path);
-            }
-            
             TreeView.EndUpdate();
         }
 
-        private void UnauthorizedAccess(string path)
+        public void UnauthorizedAccess(string path)
         {
             MessageBox.Show(
                 string.Format(Resources.UnauthorizedAccess_Message, path),
@@ -99,7 +66,7 @@ namespace Viewer.UI
                 MessageBoxIcon.Warning);
         }
 
-        private void DirectoryNotFound(string path)
+        public void DirectoryNotFound(string path)
         {
             MessageBox.Show(
                 string.Format(Resources.DirectoryNotFound_Message, path),
@@ -107,6 +74,28 @@ namespace Viewer.UI
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
+
+        public void InvalidFileName(string fileName, string invalidCharacters)
+        {
+            MessageBox.Show(
+                string.Format(Resources.InvalidFileName_Message, fileName, invalidCharacters),
+                Resources.InvalidFileName_Label,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+
+        public bool ConfirmDelete(string fullPath)
+        {
+            var result = MessageBox.Show(
+                string.Format(Resources.ConfirmDelete_Message, fullPath),
+                Resources.ConfirmDelete_Label,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2);
+            return result == DialogResult.Yes;
+        }
+
+        #endregion
 
         private string GetPath(TreeNode node)
         {
@@ -124,6 +113,29 @@ namespace Viewer.UI
                 return fullPath + Path.DirectorySeparatorChar;
             }
             return fullPath;
+        }
+
+        private TreeNodeCollection GetChildrenNodeCollection(IEnumerable<string> pathParts)
+        {
+            var collection = TreeView.Nodes;
+            foreach (var part in pathParts)
+            {
+                var found = false;
+                foreach (TreeNode child in collection)
+                {
+                    if (child.Name == part)
+                    {
+                        collection = child.Nodes;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    return null;
+            }
+
+            return collection;
         }
 
         private string GetSelectedNodePath()
@@ -158,7 +170,7 @@ namespace Viewer.UI
 
         private void TreeView_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            UpdateSubdirectories(e.Node);
+            ExpandDirectory?.Invoke(sender, new DirectoryEventArgs(GetPath(e.Node)));
         }
 
         private void TreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
@@ -177,36 +189,14 @@ namespace Viewer.UI
                 return;
             }
 
-            // check whether the new name is valid
-            if (!_directoryController.IsValidFileName(e.Label))
+            var args = new RenameDirectoryEventArgs(path, e.Label);
+            RenameDirectory?.Invoke(sender, args);
+            if (args.IsSuccessful)
             {
-                e.CancelEdit = true;
-                MessageBox.Show(
-                    string.Format(Resources.InvalidFileName_Message, e.Label, _directoryController.GetInvalidFileCharacters()),
-                    Resources.InvalidFileName_Label, 
-                    MessageBoxButtons.OK, 
-                    MessageBoxIcon.Warning);
-                return;
+                node.Name = args.NewName;
+                node.Text = args.NewName;
             }
-
-            // rename the directory
-            try
-            {
-                _directoryController.Rename(path, e.Label);
-
-                // update the UI
-                node.Name = e.Label;
-                node.Text = e.Label;
-                node.EndEdit(false);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                UnauthorizedAccess(path);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                DirectoryNotFound(path);
-            }
+            node.EndEdit(!args.IsSuccessful);
         }
         
         private void TreeView_KeyDown(object sender, KeyEventArgs e)
@@ -236,29 +226,11 @@ namespace Viewer.UI
         {
             var node = TreeView.SelectedNode;
             var path = GetPath(node);
-            var result = MessageBox.Show(
-                string.Format(Resources.ConfirmDelete_Message, path),
-                Resources.ConfirmDelete_Label,
-                MessageBoxButtons.YesNo, 
-                MessageBoxIcon.Question, 
-                MessageBoxDefaultButton.Button2);
-
-            if (result == DialogResult.Yes)
+            var args = new DirectoryEventArgs(path);
+            DeleteDirectory?.Invoke(sender, args);
+            if (args.IsSuccessful)
             {
-                try
-                {
-                    Directory.Delete(path, true);
-                    node.Remove();
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    node.Remove();
-                    DirectoryNotFound(path);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    UnauthorizedAccess(path);
-                }
+                node.Remove();
             }
         }
         
@@ -266,14 +238,18 @@ namespace Viewer.UI
         {
             var parentNode = TreeView.SelectedNode;
             var parentPath = GetPath(parentNode);
-            parentNode.Expand();
-            _directoryController.CreateDirectory(parentPath, "New Folder");
+            var args = new CreateDirectoryEventArgs(parentPath);
+            CreateDirectory?.Invoke(sender, args);
+            if (args.IsSuccessful)
+            {
+                parentNode.Expand();
 
-            // add a new node for the directory
-            var node = parentNode.Nodes.Add("New Folder", "New Folder");
-            node.EnsureVisible();
-            TreeView.SelectedNode = node;
-            node.BeginEdit();
+                // add a new node for the directory
+                var node = parentNode.Nodes.Add(args.NewName, args.NewName);
+                node.EnsureVisible();
+                TreeView.SelectedNode = node;
+                node.BeginEdit();
+            }
         }
 
         private void ToggleMenuItem_Click(object sender, EventArgs e)
@@ -289,7 +265,7 @@ namespace Viewer.UI
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                _directoryController.OpenInExplorer(path);
+                OpenInExplorer?.Invoke(sender, new DirectoryEventArgs(path));
             }
         }
 
@@ -298,7 +274,7 @@ namespace Viewer.UI
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                _clipboardController.CopyFile(path);
+                CopyDirectory?.Invoke(sender, new DirectoryEventArgs(path));
             }
         }
 
@@ -307,7 +283,7 @@ namespace Viewer.UI
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                _clipboardController.CutFile(path);
+                CutDirectory?.Invoke(sender, new DirectoryEventArgs(path));
             }
         }
 
@@ -316,26 +292,7 @@ namespace Viewer.UI
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                try
-                {
-                    _clipboardController.PasteFiles(path);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    // a directory in the clipboard was deleted
-                    // ignore the event as if it weren't in the clipboard
-                }
-                catch (FileNotFoundException)
-                {
-                    // a file in the clipboard was deleted
-                    // ignore the event as if it weren't in the clipboard
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    UnauthorizedAccess(path);
-                }
-
-                UpdateSubdirectories(TreeView.SelectedNode);
+                PasteToDirectory?.Invoke(sender, new DirectoryEventArgs(path));
                 TreeView.SelectedNode.Expand();
             }
         }

@@ -22,10 +22,12 @@ namespace Viewer
         {
             InitializeComponent();
 
+            var progressForm = new ProgressViewForm();
+
             var factory = new AttributeStorageFactory();
             var storage = factory.Create();
 
-            _treePresenter = new DirectoryTreePresenter(directoryTreeControl1);
+            _treePresenter = new DirectoryTreePresenter(directoryTreeControl1, progressForm);
             _treePresenter.UpdateRootDirectories();
 
             _resultPresenter = new QueryResultPresenter(thumbnailGridControl1, storage);

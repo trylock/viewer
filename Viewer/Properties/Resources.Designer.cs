@@ -79,6 +79,15 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copying files.
+        /// </summary>
+        internal static string CopyingFiles_Label {
+            get {
+                return ResourceManager.GetString("CopyingFiles_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Directory {

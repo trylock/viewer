@@ -10,23 +10,11 @@ namespace Viewer.IO
     public static class DirectoryUtils
     {
         /// <summary>
-        /// List of characters that could be used as a path separators
+        /// Function called when there is a progress done in copying a file
         /// </summary>
-        public static char[] PathSeparators =
-        {
-            Path.DirectorySeparatorChar,
-            Path.AltDirectorySeparatorChar
-        };
-
-        /// <summary>
-        /// Split filesystem path to parts (file and directory names)
-        /// </summary>
-        /// <param name="fullPath">Path to a directory/file</param>
-        /// <returns>Parts of the path</returns>
-        public static IEnumerable<string> SplitPath(string fullPath)
-        {
-            return fullPath.Split(PathSeparators, StringSplitOptions.RemoveEmptyEntries);
-        }
+        /// <param name="name">File name</param>
+        /// <remarks>true iff we should continue</remarks>
+        public delegate bool CopyCallback(string name);
 
         /// <summary>
         /// Copy <paramref name="sourceDirectory"/> and all its contents recursively 
@@ -37,13 +25,29 @@ namespace Viewer.IO
         /// <param name="overwrite">
         ///     true iff we should overwrite files in the <paramref name="targetDirectory"/>
         /// </param>
+        /// <param name="progressCallback">
+        ///     Function called before we start copying a file
+        /// </param>
         /// <exception cref="DirectoryNotFoundException">
         ///     <paramref name="sourceDirectory"/> was not found
         /// </exception>
         /// <exception cref="ArgumentException">
         ///     <paramref name="sourceDirectory"/> == <paramref name="targetDirectory"/>
         /// </exception>
-        public static void Copy(string sourceDirectory, string targetDirectory, bool overwrite = false)
+        public static void Copy(
+            string sourceDirectory, 
+            string targetDirectory, 
+            bool overwrite = false,
+            CopyCallback progressCallback = null)
+        {
+            CopyAux(sourceDirectory, targetDirectory, overwrite, progressCallback);
+        }
+
+        private static bool CopyAux(
+            string sourceDirectory,
+            string targetDirectory,
+            bool overwrite,
+            CopyCallback progressCallback)
         {
             var source = new DirectoryInfo(sourceDirectory);
             var target = new DirectoryInfo(targetDirectory);
@@ -61,29 +65,35 @@ namespace Viewer.IO
             foreach (var file in files)
             {
                 var targetFile = Path.Combine(targetDirectory, file.Name);
+                if (progressCallback != null)
+                {
+                    var shouldContinue = progressCallback.Invoke(file.FullName);
+                    if (!shouldContinue)
+                        return false;
+                }
+
                 file.CopyTo(targetFile, overwrite);
             }
+
 
             // recursively copy subdirectories
             var folders = source.GetDirectories();
             foreach (var folder in folders)
             {
                 var targetFolder = Path.Combine(targetDirectory, folder.Name);
-                Copy(folder.FullName, targetFolder, overwrite);
+                var shouldContinue = CopyAux(
+                    folder.FullName,
+                    targetFolder,
+                    overwrite,
+                    progressCallback);
+
+                if (!shouldContinue)
+                    return false;
             }
+
+            return true;
         }
         
-        /// <summary>
-        /// Check whether given string could be a valid file/folder name
-        /// </summary>
-        /// <param name="name">Name of a file</param>
-        /// <returns>true iff given value could be a valid file/folder name</returns>
-        public static bool IsValidName(string name)
-        {
-            return !string.IsNullOrEmpty(name) &&
-                   name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
-        }
-
         /// <summary>
         /// Rename <paramref name="fullPath"/> directory to <paramref name="newName"/>.
         /// </summary>
@@ -101,10 +111,10 @@ namespace Viewer.IO
                 throw new ArgumentNullException(nameof(newName));
             if (fullPath == null)
                 throw new ArgumentNullException(nameof(fullPath));
-            if (!IsValidName(newName))
+            if (!PathUtils.IsValidFileName(newName))
                 throw new ArgumentException(nameof(newName) + " is not a valid file name.");
 
-            var basePath = fullPath.Substring(0, fullPath.LastIndexOfAny(PathSeparators));
+            var basePath = fullPath.Substring(0, fullPath.LastIndexOfAny(PathUtils.PathSeparators));
             if (basePath.Length > 0 &&
                 basePath[basePath.Length - 1] != Path.DirectorySeparatorChar &&
                 basePath[basePath.Length - 1] != Path.AltDirectorySeparatorChar)
@@ -113,6 +123,28 @@ namespace Viewer.IO
             }
 
             Directory.Move(fullPath, Path.Combine(basePath, newName));
+        }
+
+        /// <summary>
+        /// Count files in directory
+        /// </summary>
+        /// <param name="fullPath">Path to a directory</param>
+        /// <param name="isRecursive">Should we recursively count files in subdirectories</param>
+        /// <returns>Number of files in the directory</returns>
+        public static long CountFiles(string fullPath, bool isRecursive)
+        {
+            long count = Directory.EnumerateFiles(fullPath).Count();
+            if (!isRecursive)
+            {
+                return count;
+            }
+
+            foreach (var dir in Directory.EnumerateDirectories(fullPath))
+            {
+                count += CountFiles(dir, true);
+            }
+
+            return count;
         }
     }
 }

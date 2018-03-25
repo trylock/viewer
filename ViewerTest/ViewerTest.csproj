@@ -63,6 +63,7 @@
     <Compile Include="Data\Formats\Jpeg\JpegSegmentUtilsTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterTest.cs" />
     <Compile Include="IO\DirectoryUtilsTest.cs" />
+    <Compile Include="IO\PathUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\GridTest.cs" />
   </ItemGroup>

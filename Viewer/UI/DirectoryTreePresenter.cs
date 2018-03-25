@@ -19,24 +19,26 @@ namespace Viewer.UI
         /// </summary>
         public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
 
-        private IDirectoryTreeView _view;
+        private IDirectoryTreeView _treeView;
+        private IProgressView _progressView;
 
-        public DirectoryTreePresenter(IDirectoryTreeView view)
+        public DirectoryTreePresenter(IDirectoryTreeView treeView, IProgressView progressView)
         {
-            _view = view;
-            _view.ExpandDirectory += OnExpandDirectory;
-            _view.RenameDirectory += OnRenameDirectory;
-            _view.DeleteDirectory += OnDeleteDirectory;
-            _view.CreateDirectory += OnCreateDirectory;
-            _view.OpenInExplorer += OnOpenInExplorer;
-            _view.CopyDirectory += OnCopyDirectory;
-            _view.CutDirectory += OnCutDirectory;
-            _view.PasteToDirectory += OnPasteToDirectory;
+            _progressView = progressView;
+            _treeView = treeView;
+            _treeView.ExpandDirectory += OnExpandDirectory;
+            _treeView.RenameDirectory += OnRenameDirectory;
+            _treeView.DeleteDirectory += OnDeleteDirectory;
+            _treeView.CreateDirectory += OnCreateDirectory;
+            _treeView.OpenInExplorer += OnOpenInExplorer;
+            _treeView.CopyDirectory += OnCopyDirectory;
+            _treeView.CutDirectory += OnCutDirectory;
+            _treeView.PasteToDirectory += OnPasteToDirectory;
         }
 
         public void UpdateRootDirectories()
         {
-            _view.LoadDirectories(new string[] { }, GetRoots());
+            _treeView.LoadDirectories(new string[] { }, GetRoots());
         }
         
         /// <summary>
@@ -88,7 +90,7 @@ namespace Viewer.UI
                 if (!drive.IsReady)
                     continue;
 
-                var name = drive.Name.Substring(0, drive.Name.IndexOfAny(DirectoryUtils.PathSeparators));
+                var name = drive.Name.Substring(0, drive.Name.IndexOfAny(PathUtils.PathSeparators));
 
                 if (!string.IsNullOrEmpty(drive.VolumeLabel))
                 {
@@ -129,11 +131,11 @@ namespace Viewer.UI
             }
             catch (UnauthorizedAccessException)
             {
-                _view.UnauthorizedAccess(fullPath);
+                _treeView.UnauthorizedAccess(fullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                _view.DirectoryNotFound(fullPath);
+                _treeView.DirectoryNotFound(fullPath);
             }
 
             return result;
@@ -141,17 +143,17 @@ namespace Viewer.UI
 
         private void OnExpandDirectory(object sender, DirectoryEventArgs e)
         {
-            _view.LoadDirectories(
-                DirectoryUtils.SplitPath(e.FullPath), 
+            _treeView.LoadDirectories(
+                PathUtils.Split(e.FullPath), 
                 GetValidSubdirectories(e.FullPath));
         }
         
         private void OnRenameDirectory(object sender, RenameDirectoryEventArgs e)
         {
-            if (!DirectoryUtils.IsValidName(e.NewName))
+            if (!PathUtils.IsValidFileName(e.NewName))
             {
                 e.Cancel();
-                _view.InvalidFileName(e.NewName, GetInvalidFileCharacters());
+                _treeView.InvalidFileName(e.NewName, GetInvalidFileCharacters());
                 return;
             }
 
@@ -162,18 +164,18 @@ namespace Viewer.UI
             catch (UnauthorizedAccessException)
             {
                 e.Cancel();
-                _view.UnauthorizedAccess(e.FullPath);
+                _treeView.UnauthorizedAccess(e.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
                 e.Cancel();
-                _view.DirectoryNotFound(e.FullPath);
+                _treeView.DirectoryNotFound(e.FullPath);
             }
         }
         
         private void OnDeleteDirectory(object sender, DirectoryEventArgs e)
         {
-            if (!_view.ConfirmDelete(e.FullPath))
+            if (!_treeView.ConfirmDelete(e.FullPath))
             {
                 e.Cancel();
                 return;
@@ -186,12 +188,12 @@ namespace Viewer.UI
             catch (DirectoryNotFoundException)
             {
                 // we don't want to cancel the operation as the delete was technically successful
-                _view.DirectoryNotFound(e.FullPath);
+                _treeView.DirectoryNotFound(e.FullPath);
             }
             catch (UnauthorizedAccessException)
             {
                 e.Cancel();
-                _view.UnauthorizedAccess(e.FullPath);
+                _treeView.UnauthorizedAccess(e.FullPath);
             }
         }
         
@@ -205,12 +207,12 @@ namespace Viewer.UI
             catch (UnauthorizedAccessException)
             {
                 e.Cancel();
-                _view.UnauthorizedAccess(e.FullPath);
+                _treeView.UnauthorizedAccess(e.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
                 e.Cancel();
-                _view.DirectoryNotFound(e.FullPath);
+                _treeView.DirectoryNotFound(e.FullPath);
             }
         }
 
@@ -251,8 +253,7 @@ namespace Viewer.UI
                 var files = Clipboard.GetFileDropList();
                 foreach (var source in files)
                 {
-                    var sepIndex = source.LastIndexOfAny(DirectoryUtils.PathSeparators);
-                    var target = Path.Combine(e.FullPath, source.Substring(sepIndex + 1));
+                    var target = Path.Combine(e.FullPath, PathUtils.GetLastPart(source));
 
                     if ((effect & DragDropEffects.Move) != 0)
                     {
@@ -273,7 +274,7 @@ namespace Viewer.UI
                         }
                         else
                         {
-                            DirectoryUtils.Copy(source, target);
+                            CopyDirectory(source, target);
                         }
                     }
                 }
@@ -291,13 +292,34 @@ namespace Viewer.UI
             catch (UnauthorizedAccessException)
             {
                 e.Cancel();
-                _view.UnauthorizedAccess(e.FullPath);
+                _treeView.UnauthorizedAccess(e.FullPath);
             }
 
             // update subdirectories in given path
-            _view.LoadDirectories(
-                DirectoryUtils.SplitPath(e.FullPath), 
+            _treeView.LoadDirectories(
+                PathUtils.Split(e.FullPath), 
                 GetValidSubdirectories(e.FullPath));
+        }
+
+        private void CopyDirectory(string source, string target)
+        {
+            var filesCount = (int)DirectoryUtils.CountFiles(source, true);
+            var isCanceled = false;
+            _progressView.CancelProgress += (o, args) => isCanceled = true;
+            _progressView.Show(Resources.CopyingFiles_Label, filesCount, () => {
+                DirectoryUtils.Copy(source, target, true,
+                    file =>
+                    {
+                        _progressView.StartWork(file);
+                        return !isCanceled;
+                    });
+                _progressView.Finish();
+            });
+
+            if (isCanceled)
+            {
+                Directory.Delete(target, true);
+            }
         }
     }
 }

@@ -82,6 +82,7 @@
     <Compile Include="Data\MemoryAttributeStorage.cs" />
     <Compile Include="Data\SqliteAttributeStorage.cs" />
     <Compile Include="IO\DirectoryUtils.cs" />
+    <Compile Include="IO\PathUtils.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -104,7 +105,14 @@
       <DependentUpon>GridPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IDirectoryTreeView.cs" />
+    <Compile Include="UI\IProgressView.cs" />
     <Compile Include="UI\IQueryResultView.cs" />
+    <Compile Include="UI\ProgressViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ProgressViewForm.Designer.cs">
+      <DependentUpon>ProgressViewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\QueryResultPresenter.cs" />
     <Compile Include="UI\RectangleExtensions.cs" />
     <Compile Include="UI\ThumbnailGridControl.cs">
@@ -131,6 +139,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\GridPanel.resx">
       <DependentUpon>GridPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ProgressViewForm.resx">
+      <DependentUpon>ProgressViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ThumbnailGridControl.resx">
       <DependentUpon>ThumbnailGridControl.cs</DependentUpon>

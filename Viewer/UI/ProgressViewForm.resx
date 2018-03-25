@@ -117,44 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UnauthorizedAccess_Message" xml:space="preserve">
-    <value>You don't have permission to access: {0}</value>
-  </data>
-  <data name="UnauthorizedAccess_Label" xml:space="preserve">
-    <value>Unauthorized access</value>
-  </data>
-  <data name="DirectoryNotFound_Message" xml:space="preserve">
-    <value>Directory {0} was not found.</value>
-  </data>
-  <data name="DirectoryNotFound_Label" xml:space="preserve">
-    <value>Directory Not Found</value>
-  </data>
-  <data name="ConfirmDelete_Message" xml:space="preserve">
-    <value>Do you really want to delete {0}?</value>
-  </data>
-  <data name="ConfirmDelete_Label" xml:space="preserve">
-    <value>Confirm Delete</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Directory" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Directory.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ExplorerOpenFolderArguments" xml:space="preserve">
-    <value>/select,"{0}"</value>
-    <comment>Command line argumnets for ExplorerProcessName which will open folder {0}</comment>
-  </data>
-  <data name="ExplorerProcessName" xml:space="preserve">
-    <value>explorer.exe</value>
-    <comment>Name of the system file explorer program</comment>
-  </data>
-  <data name="InvalidFileName_Message" xml:space="preserve">
-    <value>"{0}" is not a valid file name. File name must not be empty and it must not contain characters: {1}</value>
-    <comment>{0} is the invalid name, {1} is a list of invalid characters that must not be used in a file name</comment>
-  </data>
-  <data name="InvalidFileName_Label" xml:space="preserve">
-    <value>Invalid File Name</value>
-  </data>
-  <data name="CopyingFiles_Label" xml:space="preserve">
-    <value>Copying files</value>
-  </data>
 </root>

@@ -21,12 +21,6 @@ namespace Viewer.UI
 
         private IDirectoryTreeView _view;
 
-        public static char[] DirectorySeparators = 
-        {
-            Path.DirectorySeparatorChar,
-            Path.AltDirectorySeparatorChar
-        };
-
         public DirectoryTreePresenter(IDirectoryTreeView view)
         {
             _view = view;
@@ -43,22 +37,6 @@ namespace Viewer.UI
         public void UpdateRootDirectories()
         {
             _view.LoadDirectories(new string[] { }, GetRoots());
-        }
-
-        public IEnumerable<string> SplitPath(string fullPath)
-        {
-            return fullPath.Split(DirectorySeparators, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        /// <summary>
-        /// Check whether given string could be a valid file/folder name
-        /// </summary>
-        /// <param name="name">Name of a file</param>
-        /// <returns>true iff given value could be a valid file/folder name</returns>
-        public bool IsValidFileName(string name)
-        {
-            return !string.IsNullOrEmpty(name) &&
-                   name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
         }
         
         /// <summary>
@@ -92,31 +70,6 @@ namespace Viewer.UI
 
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Rename <paramref name="fullPath"/> directory to <paramref name="newName"/>.
-        /// </summary>
-        /// <param name="fullPath">Full path to a directory</param>
-        /// <param name="newName">New name (just the directory, without any directory separators)</param>
-        public void Rename(string fullPath, string newName)
-        {
-            if (newName == null)
-                throw new ArgumentNullException(nameof(newName));
-            if (fullPath == null)
-                throw new ArgumentNullException(nameof(fullPath));
-            if (!IsValidFileName(newName))
-                throw new ArgumentException(nameof(newName) + " is not a valid file name.");
-
-            var basePath = fullPath.Substring(0, fullPath.LastIndexOfAny(DirectorySeparators));
-            if (basePath.Length > 0 &&
-                basePath[basePath.Length - 1] != Path.DirectorySeparatorChar &&
-                basePath[basePath.Length - 1] != Path.AltDirectorySeparatorChar)
-            {
-                basePath += Path.DirectorySeparatorChar;
-            }
-
-            Directory.Move(fullPath, Path.Combine(basePath, newName));
-        }
         
         private void AddFilesToClipboard(StringCollection fileList, DragDropEffects effect)
         {
@@ -135,7 +88,7 @@ namespace Viewer.UI
                 if (!drive.IsReady)
                     continue;
 
-                var name = drive.Name.Substring(0, drive.Name.IndexOfAny(DirectorySeparators));
+                var name = drive.Name.Substring(0, drive.Name.IndexOfAny(DirectoryUtils.PathSeparators));
 
                 if (!string.IsNullOrEmpty(drive.VolumeLabel))
                 {
@@ -188,12 +141,14 @@ namespace Viewer.UI
 
         private void OnExpandDirectory(object sender, DirectoryEventArgs e)
         {
-            _view.LoadDirectories(SplitPath(e.FullPath), GetValidSubdirectories(e.FullPath));
+            _view.LoadDirectories(
+                DirectoryUtils.SplitPath(e.FullPath), 
+                GetValidSubdirectories(e.FullPath));
         }
         
         private void OnRenameDirectory(object sender, RenameDirectoryEventArgs e)
         {
-            if (!IsValidFileName(e.NewName))
+            if (!DirectoryUtils.IsValidName(e.NewName))
             {
                 e.Cancel();
                 _view.InvalidFileName(e.NewName, GetInvalidFileCharacters());
@@ -202,7 +157,7 @@ namespace Viewer.UI
 
             try
             {
-                Rename(e.FullPath, e.NewName);
+                DirectoryUtils.Rename(e.FullPath, e.NewName);
             }
             catch (UnauthorizedAccessException)
             {
@@ -296,7 +251,7 @@ namespace Viewer.UI
                 var files = Clipboard.GetFileDropList();
                 foreach (var source in files)
                 {
-                    var sepIndex = source.LastIndexOfAny(DirectorySeparators);
+                    var sepIndex = source.LastIndexOfAny(DirectoryUtils.PathSeparators);
                     var target = Path.Combine(e.FullPath, source.Substring(sepIndex + 1));
 
                     if ((effect & DragDropEffects.Move) != 0)
@@ -341,7 +296,7 @@ namespace Viewer.UI
 
             // update subdirectories in given path
             _view.LoadDirectories(
-                SplitPath(e.FullPath), 
+                DirectoryUtils.SplitPath(e.FullPath), 
                 GetValidSubdirectories(e.FullPath));
         }
     }

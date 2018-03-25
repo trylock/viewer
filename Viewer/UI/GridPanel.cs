@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Viewer.UI
 {
-    public partial class GridPanel : ScrollableControl
+    public partial class GridPanel : UserControl
     {
         #region Public Events
 

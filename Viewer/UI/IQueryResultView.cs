@@ -31,22 +31,7 @@ namespace Viewer.UI
     public interface IQueryResultView
     {
         /// <summary>
-        /// Result items
-        /// </summary>
-        IReadOnlyList<ResultItem> Items { get; set; }
-
-        /// <summary>
-        /// List of indicies of selected items
-        /// </summary>
-        IEnumerable<int> SelectedItems { get; }
-
-        /// <summary>
-        /// Size of each item
-        /// </summary>
-        Size ItemSize { get; set; }
-
-        /// <summary>
-        /// Event called when selection has been changed.
+        /// Event called when selection has changed.
         /// New selection is available in the SelectionItems property.
         /// </summary>
         event EventHandler SelectionChanged;
@@ -54,7 +39,22 @@ namespace Viewer.UI
         /// <summary>
         /// Event called when a user pressed a key.
         /// </summary>
-        event EventHandler<KeyEventArgs> HandleShortcuts; 
+        event EventHandler<KeyEventArgs> HandleShortcuts;
+
+        /// <summary>
+        /// Result items
+        /// </summary>
+        IReadOnlyList<ResultItem> Items { get; set; }
+        
+        /// <summary>
+        /// Size of each item
+        /// </summary>
+        Size ItemSize { get; set; }
+
+        /// <summary>
+        /// List of indicies of selected items
+        /// </summary>
+        IEnumerable<int> SelectedItems { get; }
 
         /// <summary>
         /// Remove all items from selection

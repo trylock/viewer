@@ -14,37 +14,6 @@ namespace Viewer.UI
 {
     public partial class ThumbnailGridControl : UserControl, IQueryResultView
     {
-        public IReadOnlyList<ResultItem> Items
-        {
-            get => _items;
-            set
-            {
-                _items = value;
-                if (_items == null)
-                {
-                    GridPanel.Grid.CellCount = 0;
-                    return;
-                }
-                GridPanel.Grid.CellCount = _items.Count;
-            }
-        }
-
-        public Size ItemSize
-        {
-            get => _itemSize;
-            set
-            {
-                _itemSize = value;
-                GridPanel.Grid.MinCellWidth = _itemSize.Width + ItemPadding.Width * 2;
-                GridPanel.Grid.CellHeight = _itemSize.Height + ItemPadding.Height * 2;
-            }
-        }
-
-        public event EventHandler SelectionChanged;
-        public event EventHandler<KeyEventArgs> HandleShortcuts;
-
-        public IEnumerable<int> SelectedItems => _selectedItems;
-
         /// <summary>
         /// Padding between thumbnail
         /// </summary>
@@ -109,7 +78,40 @@ namespace Viewer.UI
             GridPanel.CellMouseEnter += GridPanel_CellMouseEnter;
             GridPanel.CellMouseLeave += GridPanel_CellMouseLeave;
         }
+
+        #region View interface 
+
+        public event EventHandler SelectionChanged;
+        public event EventHandler<KeyEventArgs> HandleShortcuts;
+
+        public IReadOnlyList<ResultItem> Items
+        {
+            get => _items;
+            set
+            {
+                _items = value;
+                if (_items == null)
+                {
+                    GridPanel.Grid.CellCount = 0;
+                    return;
+                }
+                GridPanel.Grid.CellCount = _items.Count;
+            }
+        }
+
+        public Size ItemSize
+        {
+            get => _itemSize;
+            set
+            {
+                _itemSize = value;
+                GridPanel.Grid.MinCellWidth = _itemSize.Width + ItemPadding.Width * 2;
+                GridPanel.Grid.CellHeight = _itemSize.Height + ItemPadding.Height * 2;
+            }
+        }
         
+        public IEnumerable<int> SelectedItems => _selectedItems;
+
         public void ClearSelection()
         {
             // invalidate all cells in current selection
@@ -130,6 +132,8 @@ namespace Viewer.UI
                 GridPanel.Invalidate(item);
             }
         }
+
+        #endregion
 
         /// <summary>
         /// Calculate the largest image size such that it fits in <paramref name="thumbnailAreaSize"/> and 

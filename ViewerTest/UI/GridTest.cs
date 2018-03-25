@@ -20,9 +20,9 @@ namespace ViewerTest.UI
             grid.CellHeight = 200;
             grid.Resize(250);
 
-            Assert.AreEqual(0, grid.CellsCount);
-            Assert.AreEqual(2, grid.ColumnsCount);
-            Assert.AreEqual(0, grid.RowsCount);
+            Assert.AreEqual(0, grid.CellCount);
+            Assert.AreEqual(2, grid.ColumnCount);
+            Assert.AreEqual(0, grid.RowCount);
             Assert.AreEqual(125, grid.CellSize.Width);
             Assert.AreEqual(200, grid.CellSize.Height);
         }
@@ -33,12 +33,12 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 2;
+            grid.CellCount = 2;
             grid.Resize(350);
 
-            Assert.AreEqual(2, grid.CellsCount);
-            Assert.AreEqual(3, grid.ColumnsCount);
-            Assert.AreEqual(1, grid.RowsCount);
+            Assert.AreEqual(2, grid.CellCount);
+            Assert.AreEqual(3, grid.ColumnCount);
+            Assert.AreEqual(1, grid.RowCount);
             Assert.AreEqual(116, grid.CellSize.Width);
             Assert.AreEqual(200, grid.CellSize.Height);
         }
@@ -57,7 +57,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 0;
+            grid.CellCount = 0;
             grid.Resize(250);
 
             var cell = grid.GetCellAt(new Point(50, 25));
@@ -74,7 +74,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 128;
+            grid.CellCount = 128;
             grid.Resize(250);
 
             var cell = grid.GetCellAt(new Point(-50, 25));
@@ -91,7 +91,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 128;
+            grid.CellCount = 128;
             grid.Resize(250);
 
             var cell = grid.GetCellAt(new Point(50, -25));
@@ -108,7 +108,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 128;
+            grid.CellCount = 128;
             grid.Resize(250);
 
             var cell = grid.GetCellAt(new Point(260, 55));
@@ -125,7 +125,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 5;
+            grid.CellCount = 5;
             grid.Resize(375);
 
             var cell = grid.GetCellAt(new Point(150, 50));
@@ -144,7 +144,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 0;
+            grid.CellCount = 0;
             grid.Resize(250);
 
             var cells = grid.GetCellsInBounds(
@@ -159,7 +159,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 3;
+            grid.CellCount = 3;
             grid.Resize(250);
 
             var cells = grid.GetCellsInBounds(new Rectangle(
@@ -178,7 +178,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 3;
+            grid.CellCount = 3;
             grid.Resize(250);
 
             var cells = grid.GetCellsInBounds(new Rectangle(
@@ -193,7 +193,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 5;
+            grid.CellCount = 5;
             grid.Resize(300);
 
             var cells = grid.GetCellsInBounds(new Rectangle(
@@ -211,7 +211,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 100;
             grid.CellHeight = 200;
-            grid.CellsCount = 5;
+            grid.CellCount = 5;
             grid.Resize(300);
 
             var cells = grid.GetCellsInBounds(new Rectangle(
@@ -229,7 +229,7 @@ namespace ViewerTest.UI
             var grid = new Grid();
             grid.MinCellWidth = 200;
             grid.CellHeight = 200;
-            grid.CellsCount = 3;
+            grid.CellCount = 3;
             grid.Resize(419);
 
             var cells = grid.GetCellsInBounds(new Rectangle(

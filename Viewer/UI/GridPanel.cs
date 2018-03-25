@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Viewer.UI
 {
-    public partial class GridPanel : UserControl
+    public partial class GridPanel : ScrollableControl
     {
         #region Public Events
 
@@ -136,7 +136,7 @@ namespace Viewer.UI
         /// <param name="cellIndex">Index of a cell to invalidate</param>
         public void Invalidate(int cellIndex)
         {
-            Invalidate(new GridCell(Grid, cellIndex / Grid.ColumnsCount, cellIndex % Grid.ColumnsCount));
+            Invalidate(new GridCell(Grid, cellIndex / Grid.ColumnCount, cellIndex % Grid.ColumnCount));
         }
 
         #region Utility conversion functions
@@ -181,7 +181,7 @@ namespace Viewer.UI
             // resize the scrollable area
             AutoScrollMinSize = new Size(
                 0, // we don't want to have horizontal scroll bar
-                Grid.RowsCount * Grid.CellSize.Height
+                Grid.RowCount * Grid.CellSize.Height
             );
 
             // redraw the whole control

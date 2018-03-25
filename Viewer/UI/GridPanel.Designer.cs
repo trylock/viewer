@@ -32,8 +32,6 @@
             // 
             // GridPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.DoubleBuffered = true;
             this.Name = "GridPanel";

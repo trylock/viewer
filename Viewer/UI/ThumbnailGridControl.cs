@@ -20,7 +20,12 @@ namespace Viewer.UI
             set
             {
                 _items = value;
-                GridPanel.Grid.CellsCount = _items.Count;
+                if (_items == null)
+                {
+                    GridPanel.Grid.CellCount = 0;
+                    return;
+                }
+                GridPanel.Grid.CellCount = _items.Count;
             }
         }
 
@@ -36,6 +41,7 @@ namespace Viewer.UI
         }
 
         public event EventHandler SelectionChanged;
+        public event EventHandler<KeyEventArgs> HandleShortcuts;
 
         public IEnumerable<int> SelectedItems => _selectedItems;
 
@@ -114,6 +120,15 @@ namespace Viewer.UI
 
             // clear current selection
             _selectedItems.Clear();
+        }
+
+        public void AddToSelection(IEnumerable<int> items)
+        {
+            foreach (var item in items)
+            {
+                _selectedItems.Add(item);
+                GridPanel.Invalidate(item);
+            }
         }
 
         /// <summary>
@@ -245,6 +260,14 @@ namespace Viewer.UI
             {
                 _selectedItems.Add(cell.Index);
                 GridPanel.Invalidate(cell);
+            }
+        }
+
+        private void GridPanel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (HandleShortcuts != null)
+            {
+                HandleShortcuts(sender, e);
             }
         }
     }

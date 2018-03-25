@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Viewer.Data;
 
 namespace Viewer.UI
@@ -51,8 +52,20 @@ namespace Viewer.UI
         event EventHandler SelectionChanged;
 
         /// <summary>
+        /// Event called when a user pressed a key.
+        /// </summary>
+        event EventHandler<KeyEventArgs> HandleShortcuts; 
+
+        /// <summary>
         /// Remove all items from selection
         /// </summary>
         void ClearSelection();
+
+        /// <summary>
+        /// Add given items to selection.
+        /// Previous values will stay selected unless you call the ClearSelection method.
+        /// </summary>
+        /// <param name="items">List of items to add to selection</param>
+        void AddToSelection(IEnumerable<int> items);
     }
 }

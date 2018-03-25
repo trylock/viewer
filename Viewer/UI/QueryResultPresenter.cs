@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Viewer.Data;
 
 namespace Viewer.UI
@@ -13,11 +14,12 @@ namespace Viewer.UI
     {
         private IQueryResultView _view;
         private IAttributeStorage _storage;
-
+        
         public QueryResultPresenter(IQueryResultView view, IAttributeStorage storage)
         {
-            _view = view;
             _storage = storage;
+            _view = view;
+            _view.HandleShortcuts += HandleShortcuts;
         }
 
         /// <summary>
@@ -40,6 +42,14 @@ namespace Viewer.UI
                 from r in result
                 select new ResultItem(GetName(r), GetThumbnail(r))
             ).ToList();
+        }
+        
+        private void HandleShortcuts(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                _view.AddToSelection(Enumerable.Range(0, _view.Items.Count));
+            }
         }
 
         private Image GetThumbnail(AttributeCollection item)

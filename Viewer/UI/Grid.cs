@@ -29,8 +29,8 @@ namespace Viewer.UI
         {
             get
             {
-                var index = Row * _grid.ColumnsCount + Column;
-                if (Row < 0 || Column < 0 || index >= _grid.CellsCount)
+                var index = Row * _grid.ColumnCount + Column;
+                if (Row < 0 || Column < 0 || index >= _grid.CellCount)
                 {
                     index = -1;
                 }
@@ -79,7 +79,7 @@ namespace Viewer.UI
         /// <summary>
         /// Number of cells in the grid
         /// </summary>
-        public int CellsCount { get; set; } = 0;
+        public int CellCount { get; set; } = 0;
 
         #endregion
         
@@ -89,26 +89,26 @@ namespace Viewer.UI
         /// Number of columns in the grid.
         /// This will always be >= 1.
         /// </summary>
-        public int ColumnsCount => Math.Max(_width / MinCellWidth, 1);
+        public int ColumnCount => Math.Max(_width / MinCellWidth, 1);
 
         /// <summary>
         /// Number of rows in the grid.
         /// This will always be >= 0.
         /// </summary>
-        public int RowsCount => Math.Max(MathUtils.RoundUpDiv(CellsCount, ColumnsCount), 0);
+        public int RowCount => Math.Max(MathUtils.RoundUpDiv(CellCount, ColumnCount), 0);
 
         /// <summary>
         /// Actual size of each cell in the grid
         /// </summary>
         public Size CellSize => new Size(
-            _width / ColumnsCount,
+            _width / ColumnCount,
             CellHeight
         );
 
         /// <summary>
         /// Size of the entire grid
         /// </summary>
-        public Size GridSize => new Size(_width, RowsCount * CellHeight);
+        public Size GridSize => new Size(_width, RowCount * CellHeight);
 
         #endregion 
 
@@ -140,8 +140,8 @@ namespace Viewer.UI
         {
             var row = location.Y >= 0 ? location.Y / CellSize.Height : -1;
             var column = location.X >= 0 ? location.X / CellSize.Width : -1;
-            if (row < 0 || row >= RowsCount ||
-                column < 0 || column >= ColumnsCount)
+            if (row < 0 || row >= RowCount ||
+                column < 0 || column >= ColumnCount)
             {
                 // invalid grid cell
                 return new GridCell(this, -1, -1);
@@ -179,10 +179,10 @@ namespace Viewer.UI
             for (var row = beginRow; row < endRow; ++row)
             {
                 var lastColumn = endColumn;
-                if (row + 1 == RowsCount && CellsCount % ColumnsCount != 0)
+                if (row + 1 == RowCount && CellCount % ColumnCount != 0)
                 {
                     // this is the last row and it is not full
-                    lastColumn = Math.Min(CellsCount % ColumnsCount, endColumn);
+                    lastColumn = Math.Min(CellCount % ColumnCount, endColumn);
                 }
                 for (var column = beginColumn; column < lastColumn; ++column)
                 {

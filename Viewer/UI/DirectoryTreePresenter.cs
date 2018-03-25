@@ -313,7 +313,14 @@ namespace Viewer.UI
                         _progressView.StartWork(file);
                         return !isCanceled;
                     });
-                _progressView.Finish();
+                if (isCanceled)
+                {
+                    _progressView.Hide();
+                }
+                else
+                {
+                    _progressView.Finish();
+                }
             });
 
             if (isCanceled)

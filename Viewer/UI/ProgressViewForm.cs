@@ -13,6 +13,7 @@ namespace Viewer.UI
     public partial class ProgressViewForm : Form, IProgressView
     {
         private WorkDelegate _work;
+        private bool _isFinished;
 
         public ProgressViewForm()
         {
@@ -42,6 +43,7 @@ namespace Viewer.UI
 
         public void Finish()
         {
+            _isFinished = true;
             Hide();
         }
 
@@ -49,12 +51,42 @@ namespace Viewer.UI
 
         private void CancelProgressButton_Click(object sender, EventArgs e)
         {
-            CancelProgress?.Invoke(sender, e);
+            Hide();
         }
 
         private void ProgressViewForm_Shown(object sender, EventArgs e)
         {
-            _work?.Invoke();
+            try
+            {
+                _work?.Invoke();
+            }
+            finally
+            {
+                _work = null;
+            }
+        }
+
+        private void ProgressViewForm_VisibleChanged(object sender, EventArgs e)
+        {
+            if (!Visible && !_isFinished)
+            {
+                CancelProgress?.Invoke(sender, e);
+            }
+
+            if (!Visible)
+            {
+                CancelProgress = null;
+                _work = null;
+            }
+        }
+
+        private void ProgressViewForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
         }
     }
 }

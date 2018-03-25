@@ -57,6 +57,7 @@
             // 
             this.CancelProgressButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelProgressButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelProgressButton.Location = new System.Drawing.Point(395, 78);
             this.CancelProgressButton.Name = "CancelProgressButton";
             this.CancelProgressButton.Size = new System.Drawing.Size(75, 23);
@@ -69,14 +70,22 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelProgressButton;
             this.ClientSize = new System.Drawing.Size(482, 113);
             this.Controls.Add(this.CancelProgressButton);
             this.Controls.Add(this.CurrentTaskNameLabel);
             this.Controls.Add(this.Progress);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(500, 120);
             this.Name = "ProgressViewForm";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ProgressView";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProgressViewForm_FormClosing);
             this.Shown += new System.EventHandler(this.ProgressViewForm_Shown);
+            this.VisibleChanged += new System.EventHandler(this.ProgressViewForm_VisibleChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 

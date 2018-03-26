@@ -67,6 +67,7 @@
     <Compile Include="MathUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
+    <Compile Include="UI\Images\ThumbnailGeneratorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

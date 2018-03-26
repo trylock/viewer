@@ -42,21 +42,22 @@ namespace Viewer.UI.Images
         /// <exception cref="ArgumentOutOfRangeException">
         ///     Arguments contain negative size or <paramref name="originalSize"/>.Height is 0
         /// </exception>
-        private Size GetThumbnailSize(Size originalSize, Size thumbnailAreaSize)
+        public static Size GetThumbnailSize(Size originalSize, Size thumbnailAreaSize)
         {
             if (originalSize.Width < 0 || originalSize.Height <= 0)
                 throw new ArgumentOutOfRangeException(nameof(originalSize));
             if (thumbnailAreaSize.Width < 0 || thumbnailAreaSize.Height < 0)
                 throw new ArgumentOutOfRangeException(nameof(thumbnailAreaSize));
 
-            var aspectRatio = originalSize.Width / (double)originalSize.Height;
-            if (aspectRatio > 1)
+            var originalAspectRatio = originalSize.Width / (double)originalSize.Height;
+            var thumbnailAspectRatio = thumbnailAreaSize.Width / (double) thumbnailAreaSize.Height;
+            if (originalAspectRatio >= thumbnailAspectRatio)
             {
-                thumbnailAreaSize.Height = (int)(thumbnailAreaSize.Width / aspectRatio);
+                thumbnailAreaSize.Height = (int)(thumbnailAreaSize.Width / originalAspectRatio);
             }
             else
             {
-                thumbnailAreaSize.Width = (int)(thumbnailAreaSize.Height * aspectRatio);
+                thumbnailAreaSize.Width = (int)(thumbnailAreaSize.Height * originalAspectRatio);
             }
 
             return thumbnailAreaSize;

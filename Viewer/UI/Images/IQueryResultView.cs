@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,7 +9,7 @@ using Viewer.Data;
 
 namespace Viewer.UI.Images
 {
-    public class ResultItem
+    public class ResultItem : IDisposable
     {
         /// <summary>
         /// Name of the file which should be shown to the user
@@ -26,6 +26,11 @@ namespace Viewer.UI.Images
             Name = name;
             Thumbnail = thumbnail;
         }
+
+        public void Dispose()
+        {
+            Thumbnail?.Dispose();
+    }
     }
 
     public interface IQueryResultView

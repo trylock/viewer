@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -90,6 +90,16 @@ namespace Viewer.UI.Images
             get => _items;
             set
             {
+                // dispose old items
+                if (_items != null)
+                {
+                    foreach (var item in _items)
+                    {
+                        item.Dispose();
+                    }
+                }
+
+                // add new items
                 _items = value;
                 if (_items == null)
                 {
@@ -135,6 +145,24 @@ namespace Viewer.UI.Images
         }
 
         #endregion
+
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            Items = null; // dispose items
+            }
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
 
         /// <summary>
         /// Calculate the largest image size such that it fits in <paramref name="thumbnailAreaSize"/> and 

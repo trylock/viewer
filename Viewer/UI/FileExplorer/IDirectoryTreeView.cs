@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer.UI
+namespace Viewer.UI.FileExplorer
 {
     public class DirectoryView
     {

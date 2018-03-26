@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Viewer.UI
+namespace Viewer.UI.Images
 {
     public partial class GridPanel : UserControl
     {

@@ -1,4 +1,4 @@
-﻿namespace Viewer.UI
+﻿namespace Viewer.UI.Images
 {
     partial class ThumbnailGridControl
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.GridPanel = new Viewer.UI.GridPanel();
+            this.GridPanel = new Viewer.UI.Images.GridPanel();
             this.SuspendLayout();
             // 
             // GridPanel

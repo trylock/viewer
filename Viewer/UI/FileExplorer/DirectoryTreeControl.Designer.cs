@@ -1,4 +1,4 @@
-﻿namespace Viewer.UI
+﻿namespace Viewer.UI.FileExplorer
 {
     partial class DirectoryTreeControl
     {

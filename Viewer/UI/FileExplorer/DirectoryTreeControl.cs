@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Properties;
 
-namespace Viewer.UI
+namespace Viewer.UI.FileExplorer
 {
     public partial class DirectoryTreeControl : UserControl, IDirectoryTreeView
     {

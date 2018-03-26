@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 
-namespace Viewer.UI
+namespace Viewer.UI.Images
 {
     public class QueryResultPresenter
     {

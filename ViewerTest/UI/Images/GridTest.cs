@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Viewer.UI;
+using Viewer.UI.Images;
 
-namespace ViewerTest.UI
+namespace ViewerTest.UI.Images
 {
     [TestClass]
     public class GridTest

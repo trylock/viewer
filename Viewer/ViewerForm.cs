@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.UI;
+using Viewer.UI.Images;
+using Viewer.UI.FileExplorer;
 
 namespace Viewer
 {

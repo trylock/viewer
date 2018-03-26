@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.SplitContainer = new System.Windows.Forms.SplitContainer();
-            this.directoryTreeControl1 = new Viewer.UI.DirectoryTreeControl();
-            this.thumbnailGridControl1 = new Viewer.UI.ThumbnailGridControl();
+            this.directoryTreeControl1 = new Viewer.UI.FileExplorer.DirectoryTreeControl();
+            this.thumbnailGridControl1 = new Viewer.UI.Images.ThumbnailGridControl();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).BeginInit();
             this.SplitContainer.Panel1.SuspendLayout();
             this.SplitContainer.Panel2.SuspendLayout();
@@ -94,8 +94,8 @@
         #endregion
 
         private System.Windows.Forms.SplitContainer SplitContainer;
-        private UI.DirectoryTreeControl directoryTreeControl1;
-        private UI.ThumbnailGridControl thumbnailGridControl1;
+        private UI.FileExplorer.DirectoryTreeControl directoryTreeControl1;
+        private UI.Images.ThumbnailGridControl thumbnailGridControl1;
     }
 }
 

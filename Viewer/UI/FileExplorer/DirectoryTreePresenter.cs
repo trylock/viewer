@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Viewer.IO;
 using Viewer.Properties;
 
-namespace Viewer.UI
+namespace Viewer.UI.FileExplorer
 {
     public class DirectoryTreePresenter
     {

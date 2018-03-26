@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer.UI.FileExplorer
+namespace Viewer.UI.Explorer
 {
     public partial class DirectoryTreeControl : DockContent, IDirectoryTreeView
     {
@@ -31,6 +31,11 @@ namespace Viewer.UI.FileExplorer
         
         #region View interface
 
+        public event EventHandler CloseView
+        {
+            add => Closed += value;
+            remove => Closed -= value;
+        }
         public event EventHandler<DirectoryEventArgs> ExpandDirectory;
         public event EventHandler<RenameDirectoryEventArgs> RenameDirectory;
         public event EventHandler<DirectoryEventArgs> DeleteDirectory;

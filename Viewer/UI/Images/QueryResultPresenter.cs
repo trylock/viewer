@@ -19,9 +19,10 @@ namespace Viewer.UI.Images
         {
             _storage = storage;
             _view = view;
-            _view.HandleShortcuts += HandleShortcuts;
+            _view.HandleShortcuts += OnHandleShortcuts;
+            _view.CloseView += OnCloseView;
         }
-
+        
         /// <summary>
         /// Load given directory as a query result
         /// </summary>
@@ -44,12 +45,17 @@ namespace Viewer.UI.Images
             ).ToList();
         }
         
-        private void HandleShortcuts(object sender, KeyEventArgs e)
+        private void OnHandleShortcuts(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.A)
             {
                 _view.AddToSelection(Enumerable.Range(0, _view.Items.Count));
             }
+        }
+
+        private void OnCloseView(object sender, EventArgs eventArgs)
+        {
+            _view = null;
         }
 
         private Image GetThumbnail(AttributeCollection item)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -30,10 +30,10 @@ namespace Viewer.UI.Images
         public void Dispose()
         {
             Thumbnail?.Dispose();
-    }
+        }
     }
 
-    public interface IQueryResultView
+    public interface IQueryResultView : IView
     {
         /// <summary>
         /// Event called when selection has changed.

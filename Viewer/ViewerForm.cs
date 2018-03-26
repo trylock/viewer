@@ -12,16 +12,13 @@ using Viewer.Data;
 using Viewer.Properties;
 using Viewer.UI;
 using Viewer.UI.Images;
-using Viewer.UI.FileExplorer;
+using Viewer.UI.Explorer;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer
 {
     public partial class ViewerForm : Form
     {
-        private QueryResultPresenter _resultPresenter;
-        private DirectoryTreePresenter _treePresenter;
-
         private DockPanel _dockPanel;
 
         public ViewerForm()
@@ -29,30 +26,35 @@ namespace Viewer
             InitializeComponent();
 
             _dockPanel = new DockPanel();
+            _dockPanel.Theme = new VS2015LightTheme();
             _dockPanel.Dock = DockStyle.Fill;
             Controls.Add(_dockPanel);
 
             // models
             var factory = new AttributeStorageFactory();
             var storage = factory.Create();
-            
-            // views
-            var directoryTreeView = new DirectoryTreeControl();
-            directoryTreeView.Text = Resources.ExplorerWindowName;
-            directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
-            var queryResultView = new ThumbnailGridControl();
-            queryResultView.Text = Resources.QueryResultWindowName;
-            queryResultView.Show(_dockPanel, DockState.Document);
-
+            // UI
             var progressForm = new ProgressViewForm();
+            {
+                var directoryTreeView = new DirectoryTreeControl();
+                directoryTreeView.Text = Resources.ExplorerWindowName;
+                directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
-            // presenters
-            _treePresenter = new DirectoryTreePresenter(directoryTreeView, progressForm);
-            _treePresenter.UpdateRootDirectories();
-            
-            _resultPresenter = new QueryResultPresenter(queryResultView, storage);
-            _resultPresenter.LoadDirectory("C:/tmp");
+                var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressForm);
+                treePresenter.UpdateRootDirectories();
+            }
+
+            {
+                var queryResultView = new ThumbnailGridControl
+                {
+                    Text = Resources.QueryResultWindowName
+                };
+                queryResultView.Show(_dockPanel, DockState.Document);
+
+                var resultPresenter = new QueryResultPresenter(queryResultView, storage);
+                resultPresenter.LoadDirectory("C:/tmp");
+            }
         }
     }
 }

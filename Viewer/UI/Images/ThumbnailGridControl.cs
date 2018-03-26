@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -41,13 +41,33 @@ namespace Viewer.UI.Images
             /// <summary>
             /// true iff the user is currenlty selecting items with mouse
             /// </summary>
-            public bool IsActive = false;
+            public bool IsActive { get; private set; } = false;
 
             /// <summary>
             /// First point of the range selection
             /// </summary>
-            public Point StartPoint;
+            public Point StartPoint { get; private set; }
 
+            /// <summary>
+            /// Start new range selection
+            /// </summary>
+            /// <param name="startPoint"></param>
+            public void Start(Point startPoint)
+            {
+                IsActive = true;
+                StartPoint = startPoint;
+            }
+
+            /// <summary>
+            /// End current range selection
+            /// </summary>
+            public void End()
+            {
+                if (!IsActive)
+                    throw new InvalidOperationException();
+                IsActive = false;
+            }
+            
             /// <summary>
             /// Get selection boundign box given the end point of the selection
             /// </summary>
@@ -68,7 +88,7 @@ namespace Viewer.UI.Images
         public ThumbnailGridControl()
         {
             InitializeComponent();
-
+            
             _highlightBrush = new SolidBrush(Color.FromArgb(226, 241, 255));
             _highlightBorderPen = new Pen(Color.FromArgb(221, 232, 248), _highlightBorderSize);
 
@@ -82,6 +102,7 @@ namespace Viewer.UI.Images
 
         #region View interface 
 
+        public event EventHandler CloseView;
         public event EventHandler SelectionChanged;
         public event EventHandler<KeyEventArgs> HandleShortcuts;
 
@@ -145,7 +166,7 @@ namespace Viewer.UI.Images
         }
 
         #endregion
-
+        
         /// <summary> 
         /// Clean up any resources being used.
         /// </summary>
@@ -154,7 +175,7 @@ namespace Viewer.UI.Images
         {
             if (disposing)
             {
-            Items = null; // dispose items
+                Items = null; // dispose items
             }
             if (disposing && (components != null))
             {
@@ -263,17 +284,13 @@ namespace Viewer.UI.Images
         private void GridPanel_MouseDown(object sender, MouseEventArgs e)
         {
             ClearSelection();
-            _selectionState.IsActive = true;
-            _selectionState.StartPoint = GridPanel.UnprojectLocation(e.Location);
+            _selectionState.Start(GridPanel.UnprojectLocation(e.Location));
         }
 
         private void GridPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            _selectionState.IsActive = false;
-            if (SelectionChanged != null)
-            {
-                SelectionChanged(this, EventArgs.Empty);
-            }
+            _selectionState.End();
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void GridPanel_MouseMove(object sender, MouseEventArgs e)
@@ -283,12 +300,12 @@ namespace Viewer.UI.Images
                 return;
             }
             var endPoint = GridPanel.UnprojectLocation(e.Location);
+            var bounds = _selectionState.GetBounds(endPoint);
 
             // remove all items from selection and invalidate their location
             ClearSelection();
 
             // add new cells to the selection
-            var bounds = _selectionState.GetBounds(endPoint);
             foreach (var cell in GridPanel.Grid.GetCellsInBounds(bounds))
             {
                 _selectedItems.Add(cell.Index);
@@ -298,10 +315,13 @@ namespace Viewer.UI.Images
 
         private void GridPanel_KeyDown(object sender, KeyEventArgs e)
         {
-            if (HandleShortcuts != null)
-            {
-                HandleShortcuts(sender, e);
-            }
+            HandleShortcuts?.Invoke(sender, e);
+        }
+
+        private void ThumbnailGridControl_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DockHandler.DockPanel = null;
+            CloseView?.Invoke(sender, e);
         }
     }
 }

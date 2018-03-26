@@ -129,6 +129,26 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
+        /// Get grid cell in given row and column.
+        /// </summary>
+        /// <param name="row">Grid row</param>
+        /// <param name="column">Grid column</param>
+        /// <returns>
+        ///     Grid cell.
+        ///     If row or column is out of bounds of this grid, 
+        ///     the row and column in the result will be -1.
+        /// </returns>
+        public GridCell GetCell(int row, int column)
+        {
+            if (row < 0 || column < 0 ||
+                row >= RowCount || column >= ColumnCount)
+            {
+                return new GridCell(this, -1, -1);
+            }
+            return new GridCell(this, row, column);
+        }
+
+        /// <summary>
         /// Find cell location (row, column) and its index.
         /// </summary>
         /// <param name="location">Point in space</param>
@@ -140,14 +160,7 @@ namespace Viewer.UI.Images
         {
             var row = location.Y >= 0 ? location.Y / CellSize.Height : -1;
             var column = location.X >= 0 ? location.X / CellSize.Width : -1;
-            if (row < 0 || row >= RowCount ||
-                column < 0 || column >= ColumnCount)
-            {
-                // invalid grid cell
-                return new GridCell(this, -1, -1);
-            }
-
-            return new GridCell(this, row, column);
+            return GetCell(row, column);
         }
 
         /// <summary>

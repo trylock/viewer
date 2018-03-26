@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer.UI.FileExplorer
+namespace Viewer.UI.Explorer
 {
     public class DirectoryView
     {
@@ -75,7 +75,7 @@ namespace Viewer.UI.FileExplorer
         }
     }
 
-    public interface IDirectoryTreeView
+    public interface IDirectoryTreeView : IView
     {
         /// <summary>
         /// Event called when a directory is expanded

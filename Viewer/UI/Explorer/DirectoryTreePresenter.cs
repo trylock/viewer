@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Viewer.IO;
 using Viewer.Properties;
 
-namespace Viewer.UI.FileExplorer
+namespace Viewer.UI.Explorer
 {
     public class DirectoryTreePresenter
     {
@@ -90,7 +90,7 @@ namespace Viewer.UI.FileExplorer
                 if (!drive.IsReady)
                     continue;
 
-                var name = drive.Name.Substring(0, drive.Name.IndexOfAny(PathUtils.PathSeparators));
+                var name = PathUtils.GetLastPart(drive.Name);
 
                 if (!string.IsNullOrEmpty(drive.VolumeLabel))
                 {

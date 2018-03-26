@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -183,41 +184,7 @@ namespace Viewer.UI.Images
             }
             base.Dispose(disposing);
         }
-
-
-        /// <summary>
-        /// Calculate the largest image size such that it fits in <paramref name="thumbnailAreaSize"/> and 
-        /// preserves the aspect ratio of <paramref name="originalSize"/>
-        /// </summary>
-        /// <param name="originalSize">Actual size of the image</param>
-        /// <param name="thumbnailAreaSize">Size of the area where the image will be drawn</param>
-        /// <returns>
-        ///     Size of the resized image s.t. it fits in <paramref name="thumbnailAreaSize"/> 
-        ///     and preserves the aspect ratio of <paramref name="originalSize"/>
-        /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     Arguments contain negative size or <paramref name="originalSize"/>.Height is 0
-        /// </exception>
-        private Size GetThumbnailSize(Size originalSize, Size thumbnailAreaSize)
-        {
-            if (originalSize.Width < 0 || originalSize.Height <= 0)
-                throw new ArgumentOutOfRangeException(nameof(originalSize));
-            if (thumbnailAreaSize.Width < 0 || thumbnailAreaSize.Height < 0)
-                throw new ArgumentOutOfRangeException(nameof(thumbnailAreaSize));
-
-            var aspectRatio = originalSize.Width / (double)originalSize.Height;
-            if (aspectRatio > 1)
-            {
-                thumbnailAreaSize.Height = (int)(thumbnailAreaSize.Width / aspectRatio);
-            }
-            else
-            {
-                thumbnailAreaSize.Width = (int)(thumbnailAreaSize.Height * aspectRatio);
-            }
-
-            return thumbnailAreaSize;
-        }
-
+        
         private Point GetThumbnailLocation(Rectangle cellBounds)
         {
             return new Point(
@@ -249,8 +216,10 @@ namespace Viewer.UI.Images
             }
             
             // draw the thumbnail
-            var thumbnailSize = GetThumbnailSize(item.Thumbnail.Size, ItemSize);
+            var thumbnailSize = item.Thumbnail.Size;
             var thumbnailLocation = GetThumbnailLocation(e.Bounds);
+            // we don't really need an interpolation as we are drawing the image in its original size
+            e.Graphics.InterpolationMode = InterpolationMode.Low;
             e.Graphics.DrawImage(item.Thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
 
             // draw name

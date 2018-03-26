@@ -33,6 +33,7 @@ namespace Viewer
             // models
             var factory = new AttributeStorageFactory();
             var storage = factory.Create();
+            var thumbnailGenerator = new ThumbnailGenerator();
 
             // UI
             var progressForm = new ProgressViewForm();
@@ -52,7 +53,7 @@ namespace Viewer
                 };
                 queryResultView.Show(_dockPanel, DockState.Document);
 
-                var resultPresenter = new QueryResultPresenter(queryResultView, storage);
+                var resultPresenter = new QueryResultPresenter(queryResultView, storage, thumbnailGenerator);
                 resultPresenter.LoadDirectory("C:/tmp");
             }
         }

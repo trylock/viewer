@@ -111,6 +111,8 @@
       <DependentUpon>GridPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Explorer\IDirectoryTreeView.cs" />
+    <Compile Include="UI\Images\IThumbnailGenerator.cs" />
+    <Compile Include="UI\Images\ThumbnailGenerator.cs" />
     <Compile Include="UI\IProgressView.cs" />
     <Compile Include="UI\Images\IQueryResultView.cs" />
     <Compile Include="UI\IView.cs" />

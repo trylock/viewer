@@ -9,10 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {
-    public partial class ThumbnailGridControl : UserControl, IQueryResultView
+    public partial class ThumbnailGridControl : DockContent, IQueryResultView
     {
         /// <summary>
         /// Padding between thumbnail

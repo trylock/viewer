@@ -134,6 +134,15 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Explorer.
+        /// </summary>
+        internal static string ExplorerWindowName {
+            get {
+                return ResourceManager.GetString("ExplorerWindowName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid File Name.
         /// </summary>
         internal static string InvalidFileName_Label {
@@ -148,6 +157,15 @@ namespace Viewer.Properties {
         internal static string InvalidFileName_Message {
             get {
                 return ResourceManager.GetString("InvalidFileName_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Query result.
+        /// </summary>
+        internal static string QueryResultWindowName {
+            get {
+                return ResourceManager.GetString("QueryResultWindowName", resourceCulture);
             }
         }
         

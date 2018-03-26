@@ -9,9 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
+using Viewer.Properties;
 using Viewer.UI;
 using Viewer.UI.Images;
 using Viewer.UI.FileExplorer;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer
 {
@@ -20,19 +22,36 @@ namespace Viewer
         private QueryResultPresenter _resultPresenter;
         private DirectoryTreePresenter _treePresenter;
 
+        private DockPanel _dockPanel;
+
         public ViewerForm()
         {
             InitializeComponent();
 
-            var progressForm = new ProgressViewForm();
+            _dockPanel = new DockPanel();
+            _dockPanel.Dock = DockStyle.Fill;
+            Controls.Add(_dockPanel);
 
+            // models
             var factory = new AttributeStorageFactory();
             var storage = factory.Create();
+            
+            // views
+            var directoryTreeView = new DirectoryTreeControl();
+            directoryTreeView.Text = Resources.ExplorerWindowName;
+            directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
-            _treePresenter = new DirectoryTreePresenter(directoryTreeControl1, progressForm);
+            var queryResultView = new ThumbnailGridControl();
+            queryResultView.Text = Resources.QueryResultWindowName;
+            queryResultView.Show(_dockPanel, DockState.Document);
+
+            var progressForm = new ProgressViewForm();
+
+            // presenters
+            _treePresenter = new DirectoryTreePresenter(directoryTreeView, progressForm);
             _treePresenter.UpdateRootDirectories();
-
-            _resultPresenter = new QueryResultPresenter(thumbnailGridControl1, storage);
+            
+            _resultPresenter = new QueryResultPresenter(queryResultView, storage);
             _resultPresenter.LoadDirectory("C:/tmp");
         }
     }

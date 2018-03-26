@@ -11,10 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Properties;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.FileExplorer
 {
-    public partial class DirectoryTreeControl : UserControl, IDirectoryTreeView
+    public partial class DirectoryTreeControl : DockContent, IDirectoryTreeView
     {
         public DirectoryTreeControl()
         {

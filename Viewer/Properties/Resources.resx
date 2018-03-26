@@ -157,4 +157,10 @@
   <data name="CopyingFiles_Label" xml:space="preserve">
     <value>Copying files</value>
   </data>
+  <data name="ExplorerWindowName" xml:space="preserve">
+    <value>Explorer</value>
+  </data>
+  <data name="QueryResultWindowName" xml:space="preserve">
+    <value>Query result</value>
+  </data>
 </root>

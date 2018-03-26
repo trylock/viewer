@@ -17,11 +17,19 @@ namespace Viewer
         /// <returns>Result of the division rounded up</returns>
         public static int RoundUpDiv(int num, int denom)
         {
-            if (num < 0)
-                throw new ArgumentOutOfRangeException(nameof(num));
-            if (denom < 0)
-                throw new ArgumentOutOfRangeException(nameof(denom));
-            return (num + denom - 1) / denom;
+            if (num < 0 && denom < 0)
+            {
+                num = -num;
+                denom = -denom;
+            }
+
+            if (num >= 0 && denom >= 0)
+            {
+                return (num + denom - 1) / denom;
+            }
+
+            // at this point, exactly one is negative so the divison will be correct
+            return num / denom;
         }
     }
 }

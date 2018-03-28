@@ -191,7 +191,7 @@ namespace Viewer.UI.Images
             // resize the scrollable area
             AutoScrollMinSize = new Size(
                 0, // we don't want to have horizontal scroll bar
-                Grid.RowCount * Grid.CellSize.Height
+                Grid.GridSize.Height
             );
 
             // redraw the whole control

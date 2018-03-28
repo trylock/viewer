@@ -31,7 +31,7 @@ namespace Viewer.IO
 
         /// <summary>
         /// Get last part of given path (i.e. file/folder name).
-        /// Note: it will return an empty string if the path ends with a path separator
+        /// Note: if the last character is a directory separator, it will be removed
         /// </summary>
         /// <param name="path">Path to a file or folder</param>
         /// <returns>Last part of the path</returns>

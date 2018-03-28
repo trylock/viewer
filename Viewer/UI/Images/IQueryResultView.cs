@@ -9,7 +9,7 @@ using Viewer.Data;
 
 namespace Viewer.UI.Images
 {
-    public class ResultItem : IDisposable
+    public class ResultItemView : IDisposable
     {
         /// <summary>
         /// Name of the file which should be shown to the user
@@ -21,7 +21,7 @@ namespace Viewer.UI.Images
         /// </summary>
         public Image Thumbnail { get; }
 
-        public ResultItem(string name, Image thumbnail)
+        public ResultItemView(string name, Image thumbnail)
         {
             Name = name;
             Thumbnail = thumbnail;
@@ -33,44 +33,111 @@ namespace Viewer.UI.Images
         }
     }
 
+    public class FileMoveEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Full path to files to move
+        /// </summary>
+        public IEnumerable<string> FilePaths { get; }
+
+        public FileMoveEventArgs(IEnumerable<string> filePaths)
+        {
+            FilePaths = filePaths;
+        }
+    }
+
+    public class SelectionEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Set of items in selection
+        /// </summary>
+        public IEnumerable<int> Selection { get; }
+
+        public SelectionEventArgs(IEnumerable<int> selection)
+        {
+            Selection = selection;
+        }
+    }
+
+    public class ItemEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Index of items currently in selection
+        /// </summary>
+        public int Index { get; }
+
+        public ItemEventArgs(int item)
+        {
+            Index = item;
+        }
+    }
+
+    public class RenameItemEventArgs : ItemEventArgs
+    {
+        /// <summary>
+        /// New name of the item
+        /// </summary>
+        public string NewName { get; }
+
+        public RenameItemEventArgs(int index, string newName) : base(index)
+        {
+            NewName = newName;
+        }
+    }
+    
     public interface IQueryResultView : IView
     {
         /// <summary>
-        /// Event called when selection has changed.
-        /// New selection is available in the SelectionItems property.
+        /// Event called when selection of result items changes.
+        /// Event arguments contain list of indices of items currently in selection
         /// </summary>
-        event EventHandler SelectionChanged;
+        event EventHandler<SelectionEventArgs> SelectionChanged;
 
         /// <summary>
-        /// Event called when a user pressed a key.
+        /// Event called when a list of items to move changes.
+        /// For example: user tries to move selected files using mouse cursor.
         /// </summary>
-        event EventHandler<KeyEventArgs> HandleShortcuts;
+        event EventHandler<SelectionEventArgs> MoveListChanged;
 
         /// <summary>
-        /// Result items
+        /// Event called when user requests to open an item in the result.
         /// </summary>
-        IReadOnlyList<ResultItem> Items { get; set; }
-        
-        /// <summary>
-        /// Size of each item
-        /// </summary>
-        Size ItemSize { get; set; }
+        event EventHandler<ItemEventArgs> OpenItem;
 
         /// <summary>
-        /// List of indicies of selected items
+        /// Event called when user requests to rename item.
         /// </summary>
-        IEnumerable<int> SelectedItems { get; }
+        event EventHandler<RenameItemEventArgs> RenameItem;
 
         /// <summary>
-        /// Remove all items from selection
+        /// Event called when user requests to delete items in the result.
         /// </summary>
-        void ClearSelection();
+        event EventHandler<SelectionEventArgs> DeleteItems;
 
         /// <summary>
-        /// Add given items to selection.
-        /// Previous values will stay selected unless you call the ClearSelection method.
+        /// Show new items.
         /// </summary>
-        /// <param name="items">List of items to add to selection</param>
-        void AddToSelection(IEnumerable<int> items);
+        /// <param name="items">List of items to show</param>
+        void LoadItems(IEnumerable<ResultItemView> items);
+
+        /// <summary>
+        /// Set new item size
+        /// </summary>
+        /// <param name="itemSize">New item size</param>
+        void SetItemSize(Size itemSize);
+
+        /// <summary>
+        /// Manually change user selection.
+        /// Items currently in the selection will be removed from the selection.
+        /// This won't trigger the SelectionChanged event
+        /// </summary>
+        /// <param name="items">Indicies of items in new selection</param>
+        void SetItemsInSelection(IEnumerable<int> items);
+
+        /// <summary>
+        /// Cancel move last operation (removes all items from the move list)
+        /// This won't trigger the MoveListChanged event.
+        /// </summary>
+        void CancelMove();
     }
 }

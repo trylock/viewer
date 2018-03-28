@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -14,50 +15,49 @@ namespace Viewer.UI.Images
     public class QueryResultPresenter
     {
         private IQueryResultView _view;
+        private ISelection _selection;
         private IAttributeStorage _storage;
         private IThumbnailGenerator _thumbnailGenerator;
 
-        private Size _itemSize = new Size(100, 100);
+        private Size _itemSize = new Size(150, 100);
+        private List<AttributeCollection> _items = new List<AttributeCollection>();
         
-        public QueryResultPresenter(IQueryResultView view, IAttributeStorage storage, IThumbnailGenerator thumbnailGenerator)
+        public QueryResultPresenter(IQueryResultView view, IAttributeStorage storage, IThumbnailGenerator thumbnailGenerator, ISelection selection)
         {
             _thumbnailGenerator = thumbnailGenerator;
+            _selection = selection;
             _storage = storage;
             _view = view;
-            _view.CloseView += OnCloseView;
-            _view.HandleShortcuts += OnHandleShortcuts;
+            _view.CloseView += View_Closed;
+            _view.SelectionChanged += View_SelectionChanged;
         }
-        
+
         /// <summary>
         /// Load given directory as a query result
         /// </summary>
         /// <param name="fullPath">Full path to a directory</param>
         public void LoadDirectory(string fullPath)
         {
-            // update view
-            _view.ItemSize = _itemSize;
-            _view.Items = (
-                from file in Directory.EnumerateFiles(fullPath)
-                let attrs = _storage.Load(file)
-                select new ResultItem(GetName(attrs), GetThumbnail(attrs))
-            ).ToList();
+            // dispose old query
+            foreach (var item in _items)
+            {
+                item.Dispose();
+            }
+            _items.Clear();
 
+            // load new data
+            foreach (var file in Directory.EnumerateFiles(fullPath))
+            {
+                _items.Add(_storage.Load(file));
+            }
+            
             _storage.Flush();
+
+            // update view
+            _view.SetItemSize(_itemSize);
+            _view.LoadItems(_items.Select(attrs => new ResultItemView(GetName(attrs), GetThumbnail(attrs))));
         }
         
-        private void OnHandleShortcuts(object sender, KeyEventArgs e)
-        {
-            if (e.Control && e.KeyCode == Keys.A)
-            {
-                _view.AddToSelection(Enumerable.Range(0, _view.Items.Count));
-            }
-        }
-
-        private void OnCloseView(object sender, EventArgs eventArgs)
-        {
-            _view = null;
-        }
-
         private Image GetThumbnail(AttributeCollection item)
         {
             var image = ((ImageAttribute)item["thumbnail"]).Value;
@@ -74,6 +74,20 @@ namespace Viewer.UI.Images
         private string GetName(AttributeCollection item)
         {
             return Path.GetFileNameWithoutExtension(item.Path);
+        }
+
+        private void View_Closed(object sender, EventArgs eventArgs)
+        {
+            foreach (var item in _items)
+            {
+                item.Dispose();
+            }
+            _view = null;
+        }
+
+        private void View_SelectionChanged(object sender, SelectionEventArgs e)
+        {
+            _selection.Replace(e.Selection.Select(index => _items[index]));
         }
     }
 }

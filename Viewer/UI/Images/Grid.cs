@@ -38,6 +38,11 @@ namespace Viewer.UI.Images
                 return index;
             }
         }
+
+        /// <summary>
+        /// Check whether this grid cell is valid
+        /// </summary>
+        public bool IsValid => Index >= 0;
         
         /// <summary>
         /// Get location of this cell

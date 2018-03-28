@@ -85,6 +85,16 @@ namespace Viewer.UI.Images
         public event EventHandler<CellChangeEventArgs> CellMouseLeave;
 
         /// <summary>
+        /// Event called when mouse cursor is over a grid cell and a mouse button is pressed.
+        /// </summary>
+        public event EventHandler<CellEventArgs> CellMouseDown;
+
+        /// <summary>
+        /// Event called when mouse cursor is over a grid cell and a mouse button is released
+        /// </summary>
+        public event EventHandler<CellEventArgs> CellMouseUp;
+
+        /// <summary>
         /// Event called when the user clicked on a cell.
         /// </summary>
         public event EventHandler<CellEventArgs> CellClick;
@@ -248,6 +258,26 @@ namespace Viewer.UI.Images
             }
 
             CellDoubleClick(this, new CellEventArgs(ActiveCell));
+        }
+
+        private void GridPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (ActiveCell.Index < 0 || CellMouseDown == null)
+            {
+                return;
+            }
+
+            CellMouseDown(sender, new CellEventArgs(ActiveCell));
+        }
+
+        private void GridPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (ActiveCell.Index < 0 || CellMouseUp == null)
+            {
+                return;
+            }
+
+            CellMouseUp(sender, new CellEventArgs(ActiveCell));
         }
 
         #endregion

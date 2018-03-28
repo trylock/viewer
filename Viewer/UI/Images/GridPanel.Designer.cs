@@ -39,8 +39,10 @@
             this.Click += new System.EventHandler(this.GridPanel_Click);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridPanel_Paint);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseDoubleClick);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseDown);
             this.MouseLeave += new System.EventHandler(this.GridPanel_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseUp);
             this.Resize += new System.EventHandler(this.GridPanel_Resize);
             this.ResumeLayout(false);
 

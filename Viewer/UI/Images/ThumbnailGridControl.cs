@@ -62,7 +62,6 @@ namespace Viewer.UI.Images
         
         public event EventHandler CloseView;
         public event EventHandler<SelectionEventArgs> SelectionChanged;
-        public event EventHandler<SelectionEventArgs> MoveListChanged;
         public event EventHandler<ItemEventArgs> OpenItem;
         public event EventHandler<RenameItemEventArgs> RenameItem;
         public event EventHandler<SelectionEventArgs> DeleteItems;
@@ -89,12 +88,7 @@ namespace Viewer.UI.Images
         {
             SetSelection(items);
         }
-
-        public void CancelMove()
-        {
-            throw new NotImplementedException();
-        }
-
+        
         #endregion
         
         private void SetSelection(IEnumerable<int> items)
@@ -132,6 +126,13 @@ namespace Viewer.UI.Images
             {
                 InvokeSelectionChangedEvent();
             }
+        }
+        
+        private void MoveFilesInSelection()
+        {
+            var files = _selection.Select(index => _items[index].Path).ToArray();
+            var data = new DataObject(DataFormats.FileDrop, files);
+            DoDragDrop(data, DragDropEffects.Copy);
         }
 
         /// <summary> 
@@ -233,7 +234,7 @@ namespace Viewer.UI.Images
                     InvokeSelectionChangedEvent();
                 }
 
-                MoveListChanged?.Invoke(this, new SelectionEventArgs(_selection));
+                MoveFilesInSelection();
             }
             else
             {
@@ -269,7 +270,6 @@ namespace Viewer.UI.Images
 
         private void ThumbnailGridControl_FormClosed(object sender, FormClosedEventArgs e)
         {
-            DockHandler.DockPanel = null;
             CloseView?.Invoke(sender, e);
         }
     }

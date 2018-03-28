@@ -55,7 +55,7 @@ namespace Viewer.UI.Images
 
             // update view
             _view.SetItemSize(_itemSize);
-            _view.LoadItems(_items.Select(attrs => new ResultItemView(GetName(attrs), GetThumbnail(attrs))));
+            _view.LoadItems(_items.Select(attrs => new ResultItemView(GetName(attrs), attrs.Path, GetThumbnail(attrs))));
         }
         
         private Image GetThumbnail(AttributeCollection item)

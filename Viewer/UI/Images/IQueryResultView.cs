@@ -17,13 +17,19 @@ namespace Viewer.UI.Images
         public string Name { get; }
 
         /// <summary>
+        /// Path to a file
+        /// </summary>
+        public string Path { get; }
+
+        /// <summary>
         /// Image representation of the file
         /// </summary>
         public Image Thumbnail { get; }
 
-        public ResultItemView(string name, Image thumbnail)
+        public ResultItemView(string name, string path, Image thumbnail)
         {
             Name = name;
+            Path = path;
             Thumbnail = thumbnail;
         }
 
@@ -92,13 +98,7 @@ namespace Viewer.UI.Images
         /// Event arguments contain list of indices of items currently in selection
         /// </summary>
         event EventHandler<SelectionEventArgs> SelectionChanged;
-
-        /// <summary>
-        /// Event called when a list of items to move changes.
-        /// For example: user tries to move selected files using mouse cursor.
-        /// </summary>
-        event EventHandler<SelectionEventArgs> MoveListChanged;
-
+        
         /// <summary>
         /// Event called when user requests to open an item in the result.
         /// </summary>
@@ -133,11 +133,5 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="items">Indicies of items in new selection</param>
         void SetItemsInSelection(IEnumerable<int> items);
-
-        /// <summary>
-        /// Cancel move last operation (removes all items from the move list)
-        /// This won't trigger the MoveListChanged event.
-        /// </summary>
-        void CancelMove();
     }
 }

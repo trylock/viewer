@@ -130,6 +130,7 @@
     <Compile Include="UI\Images\ThumbnailGridControl.Designer.cs">
       <DependentUpon>ThumbnailGridControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Selection.cs" />
     <Compile Include="ViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>

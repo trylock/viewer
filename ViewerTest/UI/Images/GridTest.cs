@@ -226,10 +226,12 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void GetCellsInBounds_IndivisibleWidth()
         {
-            var grid = new Grid();
-            grid.MinCellWidth = 200;
-            grid.CellHeight = 200;
-            grid.CellCount = 3;
+            var grid = new Grid
+            {
+                MinCellWidth = 200,
+                CellHeight = 200,
+                CellCount = 3
+            };
             grid.Resize(419);
 
             var cells = grid.GetCellsInBounds(new Rectangle(
@@ -247,6 +249,57 @@ namespace ViewerTest.UI.Images
             Assert.AreEqual(2, cellsList[2].Index);
             Assert.AreEqual(1, cellsList[2].Row);
             Assert.AreEqual(0, cellsList[2].Column);
+        }
+
+        [TestMethod]
+        public void GetCellAt_GridWithMargin()
+        {
+            var grid = new Grid
+            {
+                MinCellWidth = 200,
+                CellHeight = 200,
+                CellCount = 10,
+                CellMargin = new Size(10, 0)
+            };
+            grid.Resize(620);
+
+            Assert.AreEqual(3, grid.ColumnCount);
+
+            var cell = grid.GetCellAt(new Point(205, 100));
+            Assert.IsFalse(cell.IsValid);
+
+            cell = grid.GetCellAt(new Point(200, 100));
+            Assert.IsTrue(cell.IsValid);
+            Assert.AreEqual(0, cell.Row);
+            Assert.AreEqual(0, cell.Column);
+
+            cell = grid.GetCellAt(new Point(210, 100));
+            Assert.IsTrue(cell.IsValid);
+            Assert.AreEqual(0, cell.Row);
+            Assert.AreEqual(1, cell.Column);
+        }
+
+        [TestMethod]
+        public void GetCellsInBounds_LocationInsideMargin()
+        {
+            var grid = new Grid
+            {
+                MinCellWidth = 200,
+                CellHeight = 200,
+                CellCount = 9,
+                CellMargin = new Size(10, 10)
+            };
+            grid.Resize(620);
+
+            var cells = grid.GetCellsInBounds(new Rectangle(205, 100, 210, 210)).ToArray();
+            Assert.AreEqual(2, cells.Length);
+            Assert.AreEqual(1, cells[0].Index);
+            Assert.AreEqual(0, cells[0].Row);
+            Assert.AreEqual(1, cells[0].Column);
+
+            Assert.AreEqual(4, cells[1].Index);
+            Assert.AreEqual(1, cells[1].Row);
+            Assert.AreEqual(1, cells[1].Column);
         }
     }
 }

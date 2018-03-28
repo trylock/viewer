@@ -46,6 +46,8 @@ namespace Viewer.UI.Images
         public ThumbnailGridControl()
         {
             InitializeComponent();
+
+            GridPanel.Grid.CellMargin = new Size(8, 8);
             
             _highlightBrush = new SolidBrush(Color.FromArgb(226, 241, 255));
             _highlightBorderPen = new Pen(Color.FromArgb(221, 232, 248), _highlightBorderSize);

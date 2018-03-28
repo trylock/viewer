@@ -45,11 +45,12 @@ namespace Viewer.UI.Images
         public bool IsValid => Index >= 0;
         
         /// <summary>
-        /// Get location of this cell
+        /// Get location of this cell.
+        /// This assumes that IsValid is true
         /// </summary>
         public Point Location => new Point(
-            Column * _grid.CellSize.Width,
-            Row * _grid.CellSize.Height
+            Column * (_grid.CellSize.Width + _grid.CellMargin.Width),
+            Row * (_grid.CellSize.Height + _grid.CellMargin.Height)
         );
 
         /// <summary>
@@ -86,6 +87,13 @@ namespace Viewer.UI.Images
         /// </summary>
         public int CellCount { get; set; } = 0;
 
+        /// <summary>
+        /// Empty space between grid cells.
+        /// Note: this does not apply to the space between grid cells and the grid edge 
+        ///       i.e. distance between a grid cell and an adjacent grid edge to the edge will still be 0
+        /// </summary>
+        public Size CellMargin { get; set; } = new Size(0, 0);
+
         #endregion
         
         #region Computed Public Properties
@@ -94,26 +102,29 @@ namespace Viewer.UI.Images
         /// Number of columns in the grid.
         /// This will always be >= 1.
         /// </summary>
-        public int ColumnCount => Math.Max(_width / MinCellWidth, 1);
+        public int ColumnCount => Math.Max((_width + CellMargin.Width) / (MinCellWidth + CellMargin.Width), 1);
 
         /// <summary>
         /// Number of rows in the grid.
         /// This will always be >= 0.
         /// </summary>
-        public int RowCount => Math.Max(MathUtils.RoundUpDiv(CellCount, ColumnCount), 0);
+        public int RowCount => MathUtils.RoundUpDiv(CellCount, ColumnCount);
 
         /// <summary>
         /// Actual size of each cell in the grid
         /// </summary>
         public Size CellSize => new Size(
-            _width / ColumnCount,
+            (_width + CellMargin.Width) / ColumnCount - CellMargin.Width,
             CellHeight
         );
 
         /// <summary>
         /// Size of the entire grid
         /// </summary>
-        public Size GridSize => new Size(_width, RowCount * CellHeight);
+        public Size GridSize => new Size(
+            _width,
+            RowCount == 0 ? 0 : RowCount * CellHeight + (RowCount - 1) * CellMargin.Height
+        );
 
         #endregion 
 
@@ -131,6 +142,38 @@ namespace Viewer.UI.Images
             if (width < 0)
                 throw new ArgumentOutOfRangeException(nameof(width));
             _width = width;
+        }
+
+        /// <summary>
+        /// Determine index of a cell or a gap.
+        /// 
+        /// The grid along given axis looks like this:
+        /// |---- cell ----|- gap -|---- cell ----|- gap -|---- cell ----|
+        /// 
+        /// This function computes an index of a cell or a gap from a location.
+        /// </summary>
+        /// <param name="location">Location along an axis</param>
+        /// <param name="axisCellSize">Cell size in this axis</param>
+        /// <param name="axisGapSize">Gap size in this axis</param>
+        /// <returns>
+        ///     Index of a cell or a gap.
+        ///     Even indices are cells, odd indices are gaps.
+        /// </returns>
+        private int FindCellInAxis(int location, int axisCellSize, int axisGapSize)
+        {
+            var index = location / (axisCellSize + axisGapSize);
+            var offset = location % (axisCellSize + axisGapSize);
+            return index * 2 + (offset > axisCellSize ? 1 : 0);
+        }
+
+        private int FindHorizontal(int x)
+        {
+            return FindCellInAxis(x, CellSize.Width, CellMargin.Width);
+        }
+
+        private int FindVertical(int y)
+        {
+            return FindCellInAxis(y, CellSize.Height, CellMargin.Height);
         }
 
         /// <summary>
@@ -154,7 +197,7 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Find cell location (row, column) and its index.
+        /// Given a point in space, find grid cell (row and comlumn)
         /// </summary>
         /// <param name="location">Point in space</param>
         /// <returns>
@@ -163,11 +206,23 @@ namespace Viewer.UI.Images
         /// </returns>
         public GridCell GetCellAt(Point location)
         {
-            var row = location.Y >= 0 ? location.Y / CellSize.Height : -1;
-            var column = location.X >= 0 ? location.X / CellSize.Width : -1;
-            return GetCell(row, column);
-        }
+            if (location.X < 0 || location.Y < 0)
+            {
+                return GetCell(-1, -1);
+            }
 
+            var row = FindVertical(location.Y);
+            var column = FindHorizontal(location.X);
+            if (row % 2 != 0 || column % 2 != 0)
+            {
+                // odd indicies are indices of gaps
+                return GetCell(-1, -1);
+            }
+
+            // we are interested in an index of a cell, not index of a cell or gap
+            return GetCell(row / 2, column / 2);
+        }
+        
         /// <summary>
         /// Iterate over grid cells in given area.
         /// </summary>
@@ -176,9 +231,9 @@ namespace Viewer.UI.Images
         public IEnumerable<GridCell> GetCellsInBounds(Rectangle bounds)
         {
             // Compute intersection of bounds with the bounding box of the grid.
-            // We subtract CellSize from the grid size because we want for each 
-            // point P in the grid rectangle to satisfy that P / CellSize is a 
-            // valid cell location.
+            // We subtract cell size from the grid size because we want for each 
+            // point P in the grid rectangle to satisfy that P / cell size is a 
+            // valid cell or gap location.
             var minX = Math.Max(bounds.X, 0);
             var maxX = Math.Min(bounds.X + bounds.Width - 1, GridSize.Width - CellSize.Width);
             var minY = Math.Max(bounds.Y, 0);
@@ -187,12 +242,12 @@ namespace Viewer.UI.Images
                 yield break; // the intersection is empty
 
             // find first column and column after the last column
-            var beginColumn = minX / CellSize.Width;
-            var endColumn = maxX / CellSize.Width + 1;
+            var beginColumn = MathUtils.RoundUpDiv(FindHorizontal(minX), 2);
+            var endColumn = FindHorizontal(maxX) / 2 + 1;
 
             // find first row and row after the last row
-            var beginRow = minY / CellSize.Height;
-            var endRow = maxY / CellSize.Height + 1;
+            var beginRow = MathUtils.RoundUpDiv(FindVertical(minY), 2);
+            var endRow = FindVertical(maxY) / 2 + 1;
 
             for (var row = beginRow; row < endRow; ++row)
             {

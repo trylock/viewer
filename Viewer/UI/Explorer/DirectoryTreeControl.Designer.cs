@@ -47,6 +47,7 @@
             // 
             // TreeView
             // 
+            this.TreeView.AllowDrop = true;
             this.TreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.TreeView.ContextMenuStrip = this.FileContextMenu;
             this.TreeView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -58,11 +59,14 @@
             this.TreeView.Location = new System.Drawing.Point(0, 0);
             this.TreeView.Name = "TreeView";
             this.TreeView.ShowLines = false;
-            this.TreeView.Size = new System.Drawing.Size(236, 377);
+            this.TreeView.Size = new System.Drawing.Size(218, 330);
             this.TreeView.TabIndex = 0;
             this.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
             this.TreeView.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterExpand);
+            this.TreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
             this.TreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
+            this.TreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.TreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
             this.TreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.TreeView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseMove);
             // 
@@ -165,9 +169,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(218, 330);
             this.Controls.Add(this.TreeView);
             this.Name = "DirectoryTreeControl";
-            this.Size = new System.Drawing.Size(236, 377);
             this.FileContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 

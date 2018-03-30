@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Viewer.UI.Explorer
 {
@@ -75,6 +76,25 @@ namespace Viewer.UI.Explorer
         }
     }
 
+    public class PasteEventArgs : DirectoryEventArgs
+    {
+        /// <summary>
+        /// Data to paste to the directory
+        /// </summary>
+        public IDataObject Data { get; }
+
+        /// <summary>
+        /// Determines how to paste the data (e.g. copy, move)
+        /// </summary>
+        public DragDropEffects Effect { get; }
+
+        public PasteEventArgs(string fullPath, IDataObject data, DragDropEffects effect) : base(fullPath)
+        {
+            Data = data;
+            Effect = effect;
+        }
+    }
+
     public interface IDirectoryTreeView : IView
     {
         /// <summary>
@@ -115,7 +135,7 @@ namespace Viewer.UI.Explorer
         /// <summary>
         /// Event called when user requests to paste files from clipborad to a directory
         /// </summary>
-        event EventHandler<DirectoryEventArgs> PasteToDirectory;
+        event EventHandler<PasteEventArgs> PasteToDirectory;
 
         /// <summary>
         /// Load subdirectories of given directory.

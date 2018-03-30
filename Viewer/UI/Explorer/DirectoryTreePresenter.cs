@@ -233,29 +233,19 @@ namespace Viewer.UI.Explorer
             AddFilesToClipboard(new StringCollection { e.FullPath }, DragDropEffects.Move);
         }
         
-        private void OnPasteToDirectory(object sender, DirectoryEventArgs e)
+        private void OnPasteToDirectory(object sender, PasteEventArgs e)
         {
             try
             {
-                if (!Clipboard.ContainsFileDropList())
-                    return;
-
-                // check whether we should copy or move
-                var effect = DragDropEffects.Copy;
-                var effectData = (MemoryStream)Clipboard.GetData("Preferred DropEffect");
-                if (effectData != null)
-                {
-                    var reader = new BinaryReader(effectData);
-                    effect = (DragDropEffects)reader.ReadInt32();
-                }
-
                 // copy/move all files in the clipboard
-                var files = Clipboard.GetFileDropList();
+                var files = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+                if (files == null)
+                    return;
                 foreach (var source in files)
                 {
                     var target = Path.Combine(e.FullPath, PathUtils.GetLastPart(source));
 
-                    if ((effect & DragDropEffects.Move) != 0)
+                    if ((e.Effect & DragDropEffects.Move) != 0)
                     {
                         if (File.Exists(source))
                         {
@@ -266,7 +256,7 @@ namespace Viewer.UI.Explorer
                             Directory.Move(source, target);
                         }
                     }
-                    else if ((effect & DragDropEffects.Copy) != 0)
+                    else if ((e.Effect & DragDropEffects.Copy) != 0)
                     {
                         if (File.Exists(source))
                         {
@@ -281,13 +271,13 @@ namespace Viewer.UI.Explorer
             }
             catch (DirectoryNotFoundException)
             {
-                // a directory in the clipboard was deleted
-                // ignore the event as if it weren't in the clipboard
+                // a directory in the data was deleted
+                // ignore the event 
             }
             catch (FileNotFoundException)
             {
-                // a file in the clipboard was deleted
-                // ignore the event as if it weren't in the clipboard
+                // a file in the data was deleted
+                // ignore the event 
             }
             catch (UnauthorizedAccessException)
             {
@@ -300,7 +290,7 @@ namespace Viewer.UI.Explorer
                 PathUtils.Split(e.FullPath), 
                 GetValidSubdirectories(e.FullPath));
         }
-
+        
         private void CopyDirectory(string source, string target)
         {
             var filesCount = (int)DirectoryUtils.CountFiles(source, true);

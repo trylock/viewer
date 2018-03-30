@@ -43,7 +43,7 @@ namespace Viewer.UI.Explorer
         public event EventHandler<DirectoryEventArgs> OpenInExplorer;
         public event EventHandler<DirectoryEventArgs> CopyDirectory;
         public event EventHandler<DirectoryEventArgs> CutDirectory;
-        public event EventHandler<DirectoryEventArgs> PasteToDirectory;
+        public event EventHandler<PasteEventArgs> PasteToDirectory;
 
         public void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories)
         {
@@ -216,7 +216,51 @@ namespace Viewer.UI.Explorer
                     break;
             }
         }
+
+        private void TreeView_DragDrop(object sender, DragEventArgs e)
+        {
+            var node = TreeView.GetNodeAt(TreeView.PointToClient(new Point(e.X, e.Y)));
+            if (node != null)
+            {
+                var path = GetPath(node);
+                var args = new PasteEventArgs(path, e.Data, e.Effect);
+                PasteToDirectory?.Invoke(sender, args);
+            }
+        }
+
+        private void TreeView_DragOver(object sender, DragEventArgs e)
+        {
+            TreeView.Focus();
+            TreeView.SelectedNode = TreeView.GetNodeAt(TreeView.PointToClient(new Point(e.X, e.Y)));
+            TreeView.Update();
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
+            {
+                if ((e.AllowedEffect & DragDropEffects.Move) != 0)
+                {
+                    e.Effect = DragDropEffects.Move;
+                }
+                else if ((e.AllowedEffect & DragDropEffects.Copy) != 0)
+                {
+                    e.Effect = DragDropEffects.Copy;
+                }
+                else
+                {
+                    e.Effect = DragDropEffects.None;
+                }
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
         
+        private void TreeView_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            var node = (TreeNode) e.Item;
+            var path = GetPath(node);
+            DoDragDrop(new DataObject(DataFormats.FileDrop, new[]{ path }), DragDropEffects.Copy);
+        }
+
         #endregion
 
 
@@ -298,7 +342,8 @@ namespace Viewer.UI.Explorer
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                PasteToDirectory?.Invoke(sender, new DirectoryEventArgs(path));
+                var args = new PasteEventArgs(path, Clipboard.GetDataObject(), ClipboardUtils.GetPreferredEffect());
+                PasteToDirectory?.Invoke(sender, args);
                 TreeView.SelectedNode.Expand();
             }
         }

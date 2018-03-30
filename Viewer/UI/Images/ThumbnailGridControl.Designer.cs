@@ -27,6 +27,7 @@
             this.GridPanel.Name = "GridPanel";
             this.GridPanel.Size = new System.Drawing.Size(735, 358);
             this.GridPanel.TabIndex = 0;
+            this.GridPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.GridPanel_Paint);
             this.GridPanel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GridPanel_KeyDown);
             this.GridPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseDown);
             this.GridPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseMove);

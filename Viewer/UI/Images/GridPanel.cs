@@ -136,7 +136,12 @@ namespace Viewer.UI.Images
         public void Invalidate(GridCell cell)
         {
             var location = ProjectLocation(cell.Location);
-            var bounds = new Rectangle(location, cell.Size);
+            location.X -= Grid.CellMargin.Width;
+            location.Y -= Grid.CellMargin.Height;
+            var size = cell.Size;
+            size.Width += Grid.CellMargin.Width * 2;
+            size.Height += Grid.CellMargin.Height * 2;
+            var bounds = new Rectangle(location, size);
             Invalidate(bounds);
         }
 
@@ -178,11 +183,31 @@ namespace Viewer.UI.Images
                 clipAreaLocation.X - AutoScrollPosition.X, 
                 clipAreaLocation.Y - AutoScrollPosition.Y);
         }
-        
+
+        /// <summary>
+        /// Project rectange in UI coordinates to clip coordinates
+        /// </summary>
+        /// <param name="uiBounds">Rectangle in UI coordinates</param>
+        /// <returns>Rectangle in clip coordinates</returns>
+        public Rectangle ProjectBounds(Rectangle uiBounds)
+        {
+            return new Rectangle(ProjectLocation(uiBounds.Location), uiBounds.Size);
+        }
+
+        /// <summary>
+        /// Inverse of ProjectBounds.
+        /// </summary>
+        /// <param name="clipBounds">Rectangle in clip coordinates</param>
+        /// <returns>Rectangle in UI coordinates</returns>
+        public Rectangle UnprojectBounds(Rectangle clipBounds)
+        {
+            return new Rectangle(UnprojectLocation(clipBounds.Location), clipBounds.Size);
+        }
+
         #endregion
 
         #region Event Handlers
-        
+
         private void GridPanel_Resize(object sender, EventArgs e)
         {
             // resize the grid

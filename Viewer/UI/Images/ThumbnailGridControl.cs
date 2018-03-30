@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -26,6 +26,9 @@ namespace Viewer.UI.Images
         private Pen _selectionBorderPen;
         private int _selectionBorderSize = 1;
 
+        private Brush _rangeSelectionFill;
+        private Pen _rangeSelectionStroke;
+
         #endregion
 
         /// <summary>
@@ -50,9 +53,19 @@ namespace Viewer.UI.Images
             public Point StartPoint { get; private set; }
 
             /// <summary>
+            /// Current end point of the selection
+            /// </summary>
+            public Point EndPoint { get; private set; }
+
+            /// <summary>
             /// true iff user is currently selecting itmes 
             /// </summary>
             public bool IsActive { get; private set; } = false;
+
+            /// <summary>
+            /// Get current bounding rectangle
+            /// </summary>
+            public Rectangle Bounds => GetBounds(EndPoint);
 
             /// <summary>
             /// Start a new selection
@@ -62,6 +75,16 @@ namespace Viewer.UI.Images
             {
                 IsActive = true;
                 StartPoint = point;
+                EndPoint = point;
+            }
+
+            /// <summary>
+            /// Move current end to <paramref name="endPoint"/>
+            /// </summary>
+            /// <param name="endPoint">New endpoint</param>
+            public void MoveTo(Point endPoint)
+            {
+                EndPoint = endPoint;
             }
 
             /// <summary>
@@ -98,6 +121,9 @@ namespace Viewer.UI.Images
 
             _selectionBrush = new SolidBrush(Color.FromArgb(221, 232, 248));
             _selectionBorderPen = new Pen(Color.FromArgb(210, 220, 236), _selectionBorderSize);
+
+            _rangeSelectionFill = new SolidBrush(Color.FromArgb(150, 79, 143, 247));
+            _rangeSelectionStroke = new Pen(Color.FromArgb(200, 79, 143, 247));
 
             GridPanel.CellRedraw += GridPanel_CellRedraw;
             GridPanel.CellMouseEnter += GridPanel_CellMouseEnter;
@@ -293,15 +319,22 @@ namespace Viewer.UI.Images
         {
             _rangeSelection.End();
             InvokeSelectionChangedEvent();
+            
+            // invalidate the selection 
+            GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
+            GridPanel.Update();
         }
 
         private void GridPanel_MouseMove(object sender, MouseEventArgs e)
         {
             if (_rangeSelection.IsActive)
             {
-                var endPoint = GridPanel.UnprojectLocation(e.Location);
-                var bounds = _rangeSelection.GetBounds(endPoint);
-                SetSelection(GridPanel.Grid.GetCellsInBounds(bounds).Select(cell => cell.Index));
+                _rangeSelection.MoveTo(GridPanel.UnprojectLocation(e.Location));
+                SetSelection(GridPanel.Grid.GetCellsInBounds(_rangeSelection.Bounds).Select(cell => cell.Index));
+                
+                // invalidate items in selection
+                GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
+                GridPanel.Update();
             }
         }
 
@@ -312,6 +345,16 @@ namespace Viewer.UI.Images
         private void ThumbnailGridControl_FormClosed(object sender, FormClosedEventArgs e)
         {
             CloseView?.Invoke(sender, e);
+        }
+
+        private void GridPanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (_rangeSelection.IsActive)
+            {
+                var bounds = GridPanel.ProjectBounds(_rangeSelection.Bounds);
+                e.Graphics.FillRectangle(_rangeSelectionFill, bounds.Shrink(1));
+                e.Graphics.DrawRectangle(_rangeSelectionStroke, bounds.Shrink(1));
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -40,8 +40,52 @@ namespace Viewer.UI.Images
 
         private List<ResultItemView> _items = new List<ResultItemView>();
         private HashSet<int> _selection = new HashSet<int>();
-        private bool _isRangeSelection = false;
-        private Point _rangeSelectionStart = Point.Empty;
+        private RangeSelection _rangeSelection = new RangeSelection();
+
+        private class RangeSelection
+        {
+            /// <summary>
+            /// Start point of the selection
+            /// </summary>
+            public Point StartPoint { get; private set; }
+
+            /// <summary>
+            /// true iff user is currently selecting itmes 
+            /// </summary>
+            public bool IsActive { get; private set; } = false;
+
+            /// <summary>
+            /// Start a new selection
+            /// </summary>
+            /// <param name="point">Point</param>
+            public void Start(Point point)
+            {
+                IsActive = true;
+                StartPoint = point;
+            }
+
+            /// <summary>
+            /// End range selection
+            /// </summary>
+            public void End()
+            {
+                IsActive = false;
+            }
+
+            /// <summary>
+            /// Get selection bounds
+            /// </summary>
+            /// <param name="endPoint">End point of the range selection</param>
+            /// <returns>Bounds of the selection</returns>
+            public Rectangle GetBounds(Point endPoint)
+            {
+                var minX = Math.Min(StartPoint.X, endPoint.X);
+                var maxX = Math.Max(StartPoint.X, endPoint.X);
+                var minY = Math.Min(StartPoint.Y, endPoint.Y);
+                var maxY = Math.Max(StartPoint.Y, endPoint.Y);
+                return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+            }
+        }
         
         public ThumbnailGridControl()
         {
@@ -241,27 +285,22 @@ namespace Viewer.UI.Images
             else
             {
                 // start the range selection
-                _isRangeSelection = true;
-                _rangeSelectionStart = GridPanel.UnprojectLocation(e.Location);
+                _rangeSelection.Start(GridPanel.UnprojectLocation(e.Location));
             }
         }
 
         private void GridPanel_MouseUp(object sender, MouseEventArgs e)
         {
-            _isRangeSelection = false;
+            _rangeSelection.End();
             InvokeSelectionChangedEvent();
         }
 
         private void GridPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_isRangeSelection)
+            if (_rangeSelection.IsActive)
             {
                 var endPoint = GridPanel.UnprojectLocation(e.Location);
-                var minX = Math.Min(_rangeSelectionStart.X, endPoint.X);
-                var maxX = Math.Max(_rangeSelectionStart.X, endPoint.X);
-                var minY = Math.Min(_rangeSelectionStart.Y, endPoint.Y);
-                var maxY = Math.Max(_rangeSelectionStart.Y, endPoint.Y);
-                var bounds = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+                var bounds = _rangeSelection.GetBounds(endPoint);
                 SetSelection(GridPanel.Grid.GetCellsInBounds(bounds).Select(cell => cell.Index));
             }
         }

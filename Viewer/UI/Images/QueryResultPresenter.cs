@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -87,6 +87,14 @@ namespace Viewer.UI.Images
                 item.Dispose();
             }
             _view = null;
+        }
+
+        private void View_ExecuteShortcuts(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.A)
+            { 
+                _view.SetItemsInSelection(Enumerable.Range(0, _items.Count - 1));
+            }
         }
 
         private void View_SelectionChanged(object sender, SelectionEventArgs e)

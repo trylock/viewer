@@ -98,7 +98,12 @@ namespace Viewer.UI.Images
         /// Event arguments contain list of indices of items currently in selection
         /// </summary>
         event EventHandler<SelectionEventArgs> SelectionChanged;
-        
+
+        /// <summary>
+        /// Event called when user presses down a key
+        /// </summary>
+        event EventHandler<KeyEventArgs> ExecuteShortcuts;
+
         /// <summary>
         /// Event called when user requests to open an item in the result.
         /// </summary>

@@ -133,6 +133,7 @@ namespace Viewer.UI.Images
         #region View interface 
         
         public event EventHandler CloseView;
+        public event EventHandler<KeyEventArgs> ExecuteShortcuts;
         public event EventHandler<SelectionEventArgs> SelectionChanged;
         public event EventHandler<ItemEventArgs> OpenItem;
         public event EventHandler<RenameItemEventArgs> RenameItem;
@@ -323,11 +324,9 @@ namespace Viewer.UI.Images
         {
             _rangeSelection.End();
             InvokeSelectionChangedEvent();
-
+            
             // change selection
             SetSelection(GetRangeSelection());
-
-            // invalidate the selection 
             GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
             GridPanel.Update();
         }
@@ -338,8 +337,6 @@ namespace Viewer.UI.Images
             {
                 _rangeSelection.MoveTo(GridPanel.UnprojectLocation(e.Location));
                 SetSelection(GetRangeSelection());
-                
-                // invalidate items in selection
                 GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
                 GridPanel.Update();
             }
@@ -347,6 +344,7 @@ namespace Viewer.UI.Images
 
         private void GridPanel_KeyDown(object sender, KeyEventArgs e)
         {
+            ExecuteShortcuts?.Invoke(sender, e);
         }
 
         private void ThumbnailGridControl_FormClosed(object sender, FormClosedEventArgs e)

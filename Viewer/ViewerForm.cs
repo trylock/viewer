@@ -30,10 +30,12 @@ namespace Viewer
             _dockPanel.Dock = DockStyle.Fill;
             Controls.Add(_dockPanel);
 
-            // models
             var factory = new AttributeStorageFactory();
+
+            // models
             var storage = factory.Create();
             var selection = new Selection();
+            var clipboard = new ClipboardService();
             var thumbnailGenerator = new ThumbnailGenerator();
 
             // UI
@@ -43,7 +45,7 @@ namespace Viewer
                 directoryTreeView.Text = Resources.ExplorerWindowName;
                 directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
-                var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressForm);
+                var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressForm, clipboard);
                 treePresenter.UpdateRootDirectories();
             }
 

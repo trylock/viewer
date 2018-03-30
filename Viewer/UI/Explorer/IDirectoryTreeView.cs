@@ -128,14 +128,14 @@ namespace Viewer.UI.Explorer
         event EventHandler<DirectoryEventArgs> CopyDirectory;
 
         /// <summary>
-        /// Event called when user requests to cut a directory
+        /// Event called when user requests to paste specified files to a directory
         /// </summary>
-        event EventHandler<DirectoryEventArgs> CutDirectory;
+        event EventHandler<PasteEventArgs> PasteToDirectory;
 
         /// <summary>
         /// Event called when user requests to paste files from clipborad to a directory
         /// </summary>
-        event EventHandler<PasteEventArgs> PasteToDirectory;
+        event EventHandler<DirectoryEventArgs> PasteClipboardToDirectory;
 
         /// <summary>
         /// Load subdirectories of given directory.

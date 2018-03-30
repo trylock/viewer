@@ -42,8 +42,8 @@ namespace Viewer.UI.Explorer
         public event EventHandler<CreateDirectoryEventArgs> CreateDirectory;
         public event EventHandler<DirectoryEventArgs> OpenInExplorer;
         public event EventHandler<DirectoryEventArgs> CopyDirectory;
-        public event EventHandler<DirectoryEventArgs> CutDirectory;
         public event EventHandler<PasteEventArgs> PasteToDirectory;
+        public event EventHandler<DirectoryEventArgs> PasteClipboardToDirectory;
 
         public void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories)
         {
@@ -223,8 +223,7 @@ namespace Viewer.UI.Explorer
             if (node != null)
             {
                 var path = GetPath(node);
-                var args = new PasteEventArgs(path, e.Data, e.Effect);
-                PasteToDirectory?.Invoke(sender, args);
+                PasteToDirectory?.Invoke(sender, new PasteEventArgs(path, e.Data, e.Effect));
             }
         }
 
@@ -327,23 +326,13 @@ namespace Viewer.UI.Explorer
                 CopyDirectory?.Invoke(sender, new DirectoryEventArgs(path));
             }
         }
-
-        private void CutMenuItem_Click(object sender, EventArgs e)
-        {
-            var path = GetSelectedNodePath();
-            if (path != null)
-            {
-                CutDirectory?.Invoke(sender, new DirectoryEventArgs(path));
-            }
-        }
-
+        
         private void PasteMenuItem_Click(object sender, EventArgs e)
         {
             var path = GetSelectedNodePath();
             if (path != null)
             {
-                var args = new PasteEventArgs(path, Clipboard.GetDataObject(), ClipboardUtils.GetPreferredEffect());
-                PasteToDirectory?.Invoke(sender, args);
+                PasteClipboardToDirectory?.Invoke(sender, new DirectoryEventArgs(path));
                 TreeView.SelectedNode.Expand();
             }
         }

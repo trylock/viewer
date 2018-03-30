@@ -19,21 +19,24 @@ namespace Viewer.UI.Explorer
         /// </summary>
         public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
 
+        private IClipboardService _clipboard;
         private IDirectoryTreeView _treeView;
         private IProgressView _progressView;
 
-        public DirectoryTreePresenter(IDirectoryTreeView treeView, IProgressView progressView)
+        public DirectoryTreePresenter(IDirectoryTreeView treeView, IProgressView progressView, IClipboardService clipboard)
         {
+            _clipboard = clipboard;
+
             _progressView = progressView;
             _treeView = treeView;
-            _treeView.ExpandDirectory += OnExpandDirectory;
-            _treeView.RenameDirectory += OnRenameDirectory;
-            _treeView.DeleteDirectory += OnDeleteDirectory;
-            _treeView.CreateDirectory += OnCreateDirectory;
-            _treeView.OpenInExplorer += OnOpenInExplorer;
-            _treeView.CopyDirectory += OnCopyDirectory;
-            _treeView.CutDirectory += OnCutDirectory;
-            _treeView.PasteToDirectory += OnPasteToDirectory;
+            _treeView.ExpandDirectory += View_ExpandDirectory;
+            _treeView.RenameDirectory += View_RenameDirectory;
+            _treeView.DeleteDirectory += View_DeleteDirectory;
+            _treeView.CreateDirectory += View_CreateDirectory;
+            _treeView.OpenInExplorer += View_OpenInExplorer;
+            _treeView.CopyDirectory += View_CopyDirectory;
+            _treeView.PasteToDirectory += View_PasteToDirectory;
+            _treeView.PasteClipboardToDirectory += View_PasteClipboardToDirectory;
         }
 
         public void UpdateRootDirectories()
@@ -71,16 +74,6 @@ namespace Viewer.UI.Explorer
             }
 
             return sb.ToString();
-        }
-        
-        private void AddFilesToClipboard(StringCollection fileList, DragDropEffects effect)
-        {
-            Clipboard.Clear();
-
-            var data = new DataObject();
-            data.SetFileDropList(fileList);
-            data.SetData("Preferred DropEffect", new MemoryStream(BitConverter.GetBytes((int)effect)));
-            Clipboard.SetDataObject(data, true);
         }
 
         private IEnumerable<DirectoryView> GetRoots()
@@ -141,14 +134,14 @@ namespace Viewer.UI.Explorer
             return result;
         }
 
-        private void OnExpandDirectory(object sender, DirectoryEventArgs e)
+        private void View_ExpandDirectory(object sender, DirectoryEventArgs e)
         {
             _treeView.LoadDirectories(
                 PathUtils.Split(e.FullPath), 
                 GetValidSubdirectories(e.FullPath));
         }
         
-        private void OnRenameDirectory(object sender, RenameDirectoryEventArgs e)
+        private void View_RenameDirectory(object sender, RenameDirectoryEventArgs e)
         {
             if (!PathUtils.IsValidFileName(e.NewName))
             {
@@ -173,7 +166,7 @@ namespace Viewer.UI.Explorer
             }
         }
         
-        private void OnDeleteDirectory(object sender, DirectoryEventArgs e)
+        private void View_DeleteDirectory(object sender, DirectoryEventArgs e)
         {
             if (!_treeView.ConfirmDelete(e.FullPath))
             {
@@ -197,7 +190,7 @@ namespace Viewer.UI.Explorer
             }
         }
         
-        private void OnCreateDirectory(object sender, CreateDirectoryEventArgs e)
+        private void View_CreateDirectory(object sender, CreateDirectoryEventArgs e)
         {
             try
             {
@@ -216,36 +209,48 @@ namespace Viewer.UI.Explorer
             }
         }
 
-        private void OnOpenInExplorer(object sender, DirectoryEventArgs e)
+        private void View_OpenInExplorer(object sender, DirectoryEventArgs e)
         {
             Process.Start(
                 Resources.ExplorerProcessName,
                 string.Format(Resources.ExplorerOpenFolderArguments, e.FullPath));
         }
 
-        private void OnCopyDirectory(object sender, DirectoryEventArgs e)
+        private void View_CopyDirectory(object sender, DirectoryEventArgs e)
         {
-            AddFilesToClipboard(new StringCollection { e.FullPath }, DragDropEffects.Copy);
-        }
-
-        private void OnCutDirectory(object sender, DirectoryEventArgs e)
-        {
-            AddFilesToClipboard(new StringCollection { e.FullPath }, DragDropEffects.Move);
+            _clipboard.SetFiles(new[] { e.FullPath });
+            _clipboard.SetPreferredEffect(DragDropEffects.Copy);
         }
         
-        private void OnPasteToDirectory(object sender, PasteEventArgs e)
+        private void View_PasteToDirectory(object sender, PasteEventArgs e)
+        {
+            var files = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+            if (files == null)
+            {
+                return;
+            }
+
+            if (!PasteFiles(e.FullPath, files, e.Effect))
+            {
+                e.Cancel();
+            }
+        }
+
+        private void View_PasteClipboardToDirectory(object sender, DirectoryEventArgs e)
+        {
+            PasteFiles(e.FullPath, _clipboard.GetFiles(), _clipboard.GetPreferredEffect());
+        }
+
+        private bool PasteFiles(string destinationDirectory, IEnumerable<string> files, DragDropEffects effect)
         {
             try
             {
                 // copy/move all files in the clipboard
-                var files = e.Data.GetData(DataFormats.FileDrop, true) as string[];
-                if (files == null)
-                    return;
                 foreach (var source in files)
                 {
-                    var target = Path.Combine(e.FullPath, PathUtils.GetLastPart(source));
+                    var target = Path.Combine(destinationDirectory, PathUtils.GetLastPart(source));
 
-                    if ((e.Effect & DragDropEffects.Move) != 0)
+                    if ((effect & DragDropEffects.Move) != 0)
                     {
                         if (File.Exists(source))
                         {
@@ -256,7 +261,7 @@ namespace Viewer.UI.Explorer
                             Directory.Move(source, target);
                         }
                     }
-                    else if ((e.Effect & DragDropEffects.Copy) != 0)
+                    else if ((effect & DragDropEffects.Copy) != 0)
                     {
                         if (File.Exists(source))
                         {
@@ -281,14 +286,15 @@ namespace Viewer.UI.Explorer
             }
             catch (UnauthorizedAccessException)
             {
-                e.Cancel();
-                _treeView.UnauthorizedAccess(e.FullPath);
+                _treeView.UnauthorizedAccess(destinationDirectory);
+                return false;
             }
 
             // update subdirectories in given path
             _treeView.LoadDirectories(
-                PathUtils.Split(e.FullPath), 
-                GetValidSubdirectories(e.FullPath));
+                PathUtils.Split(destinationDirectory),
+                GetValidSubdirectories(destinationDirectory));
+            return true;
         }
         
         private void CopyDirectory(string source, string target)

@@ -34,7 +34,6 @@
             this.ToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenInFileExplorerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PasteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -77,7 +76,6 @@
             this.ToggleMenuItem,
             this.OpenInFileExplorerMenuItem,
             this.toolStripSeparator3,
-            this.CutMenuItem,
             this.CopyMenuItem,
             this.PasteMenuItem,
             this.toolStripSeparator2,
@@ -86,7 +84,7 @@
             this.toolStripSeparator1,
             this.NewFolderMenuItem});
             this.FileContextMenu.Name = "FileContextMenu";
-            this.FileContextMenu.Size = new System.Drawing.Size(217, 214);
+            this.FileContextMenu.Size = new System.Drawing.Size(217, 218);
             // 
             // ToggleMenuItem
             // 
@@ -106,14 +104,6 @@
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(213, 6);
-            // 
-            // CutMenuItem
-            // 
-            this.CutMenuItem.Name = "CutMenuItem";
-            this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.CutMenuItem.Size = new System.Drawing.Size(216, 24);
-            this.CutMenuItem.Text = "Cut";
-            this.CutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
             // 
             // CopyMenuItem
             // 
@@ -186,7 +176,6 @@
         private System.Windows.Forms.ToolStripMenuItem DeleteMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem NewFolderMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem CutMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CopyMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenInFileExplorerMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;

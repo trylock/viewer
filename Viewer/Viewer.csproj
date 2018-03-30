@@ -95,7 +95,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\ClipboardUtils.cs" />
+    <Compile Include="UI\ClipboardService.cs" />
     <Compile Include="UI\Explorer\DirectoryTreeControl.cs">
       <SubType>Form</SubType>
     </Compile>

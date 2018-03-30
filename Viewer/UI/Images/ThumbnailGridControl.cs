@@ -18,16 +18,16 @@ namespace Viewer.UI.Images
     {
         #region Graphics settings
 
-        private Brush _highlightBrush;
-        private Pen _highlightBorderPen;
-        private int _highlightBorderSize = 1;
+        private readonly Brush _highlightedItemFill;
+        private readonly Pen _highlightedItemStroke;
+        private readonly int _highlightedItemBorderSize = 1;
 
-        private Brush _selectionBrush;
-        private Pen _selectionBorderPen;
-        private int _selectionBorderSize = 1;
+        private readonly Brush _selectedItemFill;
+        private readonly Pen _selectedItemStroke;
+        private readonly int _selectedItemBorderSize = 1;
 
-        private Brush _rangeSelectionFill;
-        private Pen _rangeSelectionStroke;
+        private readonly Brush _rangeSelectionFill;
+        private readonly Pen _rangeSelectionStroke;
 
         #endregion
 
@@ -116,14 +116,14 @@ namespace Viewer.UI.Images
 
             GridPanel.Grid.CellMargin = new Size(8, 8);
             
-            _highlightBrush = new SolidBrush(Color.FromArgb(226, 241, 255));
-            _highlightBorderPen = new Pen(Color.FromArgb(221, 232, 248), _highlightBorderSize);
+            _highlightedItemFill = new SolidBrush(Color.FromArgb(226, 241, 255));
+            _highlightedItemStroke = new Pen(Color.FromArgb(221, 232, 248), _highlightedItemBorderSize);
 
-            _selectionBrush = new SolidBrush(Color.FromArgb(221, 232, 248));
-            _selectionBorderPen = new Pen(Color.FromArgb(210, 220, 236), _selectionBorderSize);
+            _selectedItemFill = new SolidBrush(Color.FromArgb(221, 232, 248));
+            _selectedItemStroke = new Pen(Color.FromArgb(210, 220, 236), _selectedItemBorderSize);
 
             _rangeSelectionFill = new SolidBrush(Color.FromArgb(150, 79, 143, 247));
-            _rangeSelectionStroke = new Pen(Color.FromArgb(200, 79, 143, 247));
+            _rangeSelectionStroke = new Pen(Color.FromArgb(255, 79, 143, 247));
 
             GridPanel.CellRedraw += GridPanel_CellRedraw;
             GridPanel.CellMouseEnter += GridPanel_CellMouseEnter;
@@ -182,7 +182,7 @@ namespace Viewer.UI.Images
         {
             SelectionChanged?.Invoke(this, new SelectionEventArgs(_selection));
         }
-
+        
         private void ClearItems()
         {
             foreach (var item in _items)
@@ -191,7 +191,6 @@ namespace Viewer.UI.Images
             }
             _items.Clear();
 
-            // clear selection
             var wasSelectionEmpty = _selection.Count == 0;
             _selection.Clear();
             if (!wasSelectionEmpty)
@@ -246,14 +245,14 @@ namespace Viewer.UI.Images
             if (_selection.Contains(e.GridCell.Index))
             {
                 // draw selection 
-                e.Graphics.FillRectangle(_selectionBrush, e.Bounds.Shrink(_selectionBorderSize));
-                e.Graphics.DrawRectangle(_selectionBorderPen, e.Bounds.Shrink(_selectionBorderSize));
+                e.Graphics.FillRectangle(_selectedItemFill, e.Bounds.Shrink(_selectedItemBorderSize));
+                e.Graphics.DrawRectangle(_selectedItemStroke, e.Bounds.Shrink(_selectedItemBorderSize));
             }
             else if (e.GridCell.Index == GridPanel.ActiveCell.Index)
             {
                 // draw highlight
-                e.Graphics.FillRectangle(_highlightBrush, e.Bounds.Shrink(_highlightBorderSize));
-                e.Graphics.DrawRectangle(_highlightBorderPen, e.Bounds.Shrink(_highlightBorderSize));
+                e.Graphics.FillRectangle(_highlightedItemFill, e.Bounds.Shrink(_highlightedItemBorderSize));
+                e.Graphics.DrawRectangle(_highlightedItemStroke, e.Bounds.Shrink(_highlightedItemBorderSize));
             }
             
             // draw the thumbnail
@@ -311,6 +310,7 @@ namespace Viewer.UI.Images
             else
             {
                 // start the range selection
+                SetSelection(Enumerable.Empty<int>());
                 _rangeSelection.Start(GridPanel.UnprojectLocation(e.Location));
             }
         }

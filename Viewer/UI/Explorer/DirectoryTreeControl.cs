@@ -231,7 +231,7 @@ namespace Viewer.UI.Explorer
         {
             TreeView.Focus();
             TreeView.SelectedNode = TreeView.GetNodeAt(TreeView.PointToClient(new Point(e.X, e.Y)));
-            TreeView.Update();
+            //TreeView.Update();
             if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
                 if ((e.AllowedEffect & DragDropEffects.Move) != 0)

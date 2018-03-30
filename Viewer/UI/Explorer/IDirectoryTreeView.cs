@@ -95,7 +95,7 @@ namespace Viewer.UI.Explorer
         }
     }
 
-    public interface IDirectoryTreeView : IView
+    public interface IDirectoryTreeView : IWindowView
     {
         /// <summary>
         /// Event called when a directory is expanded

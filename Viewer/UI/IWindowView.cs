@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viewer.UI
 {
-    public interface IView
+    public interface IWindowView
     {
         /// <summary>
         /// Event called after the view closed.

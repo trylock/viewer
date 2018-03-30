@@ -116,7 +116,7 @@
     <Compile Include="UI\Images\ThumbnailGenerator.cs" />
     <Compile Include="UI\IProgressView.cs" />
     <Compile Include="UI\Images\IQueryResultView.cs" />
-    <Compile Include="UI\IView.cs" />
+    <Compile Include="UI\IWindowView.cs" />
     <Compile Include="UI\ProgressViewForm.cs">
       <SubType>Form</SubType>
     </Compile>

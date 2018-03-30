@@ -91,7 +91,7 @@ namespace Viewer.UI.Images
         }
     }
     
-    public interface IQueryResultView : IView
+    public interface IQueryResultView : IWindowView
     {
         /// <summary>
         /// Event called when selection of result items changes.

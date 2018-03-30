@@ -41,9 +41,13 @@ namespace Viewer.UI.Images
         /// </summary>
         public Size GridCellPadding { get; } = new Size(5, 5);
 
+        #region Control state
+
         private List<ResultItemView> _items = new List<ResultItemView>();
-        private HashSet<int> _selection = new HashSet<int>();
+        private ISet<int> _selection = new HashSet<int>();
         private RangeSelection _rangeSelection = new RangeSelection();
+
+        #endregion
 
         private class RangeSelection
         {
@@ -133,11 +137,21 @@ namespace Viewer.UI.Images
         #region View interface 
         
         public event EventHandler CloseView;
-        public event EventHandler<KeyEventArgs> ExecuteShortcuts;
+        public event EventHandler<SelectionEventArgs> SelectionStart;
         public event EventHandler<SelectionEventArgs> SelectionChanged;
         public event EventHandler<ItemEventArgs> OpenItem;
         public event EventHandler<RenameItemEventArgs> RenameItem;
         public event EventHandler<SelectionEventArgs> DeleteItems;
+        public event KeyEventHandler HandleKeyDown
+        {
+            add => GridPanel.KeyDown += value;
+            remove => GridPanel.KeyDown -= value;
+        }
+        public event KeyEventHandler HandleKeyUp
+        {
+            add => GridPanel.KeyUp += value;
+            remove => GridPanel.KeyUp -= value;
+        }
 
         public void LoadItems(IEnumerable<ResultItemView> items)
         {
@@ -159,7 +173,20 @@ namespace Viewer.UI.Images
 
         public void SetItemsInSelection(IEnumerable<int> items)
         {
-            SetSelection(items);
+            // invalidate old selection
+            foreach (var item in _selection)
+            {
+                GridPanel.Invalidate(item);
+            }
+
+            _selection.Clear();
+            _selection.UnionWith(items);
+
+            // invalidate new selection
+            foreach (var item in _selection)
+            {
+                GridPanel.Invalidate(item);
+            }
         }
         
         #endregion
@@ -169,26 +196,6 @@ namespace Viewer.UI.Images
             return GridPanel.Grid.GetCellsInBounds(_rangeSelection.Bounds).Select(cell => cell.Index);
         }
         
-        private void SetSelection(IEnumerable<int> items)
-        {
-            foreach (var item in _selection)
-            {
-                GridPanel.Invalidate(item);
-            }
-            _selection.Clear();
-
-            foreach (var item in items)
-            {
-                _selection.Add(item);
-                GridPanel.Invalidate(item);
-            }
-        }
-
-        private void InvokeSelectionChangedEvent()
-        {
-            SelectionChanged?.Invoke(this, new SelectionEventArgs(_selection));
-        }
-        
         private void ClearItems()
         {
             foreach (var item in _items)
@@ -196,13 +203,7 @@ namespace Viewer.UI.Images
                 item.Dispose();
             }
             _items.Clear();
-
-            var wasSelectionEmpty = _selection.Count == 0;
             _selection.Clear();
-            if (!wasSelectionEmpty)
-            {
-                InvokeSelectionChangedEvent();
-            }
         }
         
         private void MoveFilesInSelection()
@@ -302,20 +303,28 @@ namespace Viewer.UI.Images
             var activeCell = GridPanel.ActiveCell;
             if (activeCell.IsValid)
             {
-                // begin the move operation
                 if (!_selection.Contains(activeCell.Index))
                 {
-                    // active cell is not in the selection 
-                    // make sure it is now the only element in the selection
-                    SetSelection(Enumerable.Repeat(activeCell.Index, 1));
-                    InvokeSelectionChangedEvent();
+                    // invalidate old selection
+                    foreach (var item in _selection)
+                    {
+                        GridPanel.Invalidate(item);
+                    }
+
+                    // make this the only item in selection
+                    SelectionStart?.Invoke(sender, new SelectionEventArgs(_selection));
+                    _selection.Clear();
+                    _selection.Add(activeCell.Index);
+                    SelectionChanged?.Invoke(sender, new SelectionEventArgs(_selection));
                 }
 
+                // begin the move operation on files in selection
                 MoveFilesInSelection();
             }
             else
             {
-                // start the range selection
+                // start a new selection
+                SelectionStart?.Invoke(sender, new SelectionEventArgs(_selection));
                 _rangeSelection.Start(GridPanel.UnprojectLocation(e.Location));
             }
         }
@@ -323,10 +332,8 @@ namespace Viewer.UI.Images
         private void GridPanel_MouseUp(object sender, MouseEventArgs e)
         {
             _rangeSelection.End();
-            InvokeSelectionChangedEvent();
-            
-            // change selection
-            SetSelection(GetRangeSelection());
+
+            // invalidate range selection
             GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
             GridPanel.Update();
         }
@@ -340,19 +347,14 @@ namespace Viewer.UI.Images
 
                 // change selection
                 _rangeSelection.MoveTo(GridPanel.UnprojectLocation(e.Location));
-                SetSelection(GetRangeSelection());
+                SelectionChanged?.Invoke(sender, new SelectionEventArgs(GetRangeSelection()));
 
                 // invalidate new selection
                 GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
                 GridPanel.Update();
             }
         }
-
-        private void GridPanel_KeyDown(object sender, KeyEventArgs e)
-        {
-            ExecuteShortcuts?.Invoke(sender, e);
-        }
-
+        
         private void ThumbnailGridControl_FormClosed(object sender, FormClosedEventArgs e)
         {
             CloseView?.Invoke(sender, e);

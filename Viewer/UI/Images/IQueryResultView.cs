@@ -58,7 +58,7 @@ namespace Viewer.UI.Images
         /// Set of items in selection
         /// </summary>
         public IEnumerable<int> Selection { get; }
-
+        
         public SelectionEventArgs(IEnumerable<int> selection)
         {
             Selection = selection;
@@ -94,15 +94,26 @@ namespace Viewer.UI.Images
     public interface IQueryResultView : IWindowView
     {
         /// <summary>
-        /// Event called when selection of result items changes.
-        /// Event arguments contain list of indices of items currently in selection
+        /// Event called when a new selection starts.
+        /// Selection is a list of items currently in selection.
+        /// </summary>
+        event EventHandler<SelectionEventArgs> SelectionStart;
+
+        /// <summary>
+        /// Event called when user modifies current selection.
+        /// Selection is a list of items in the new selection.
         /// </summary>
         event EventHandler<SelectionEventArgs> SelectionChanged;
 
         /// <summary>
         /// Event called when user presses down a key
         /// </summary>
-        event EventHandler<KeyEventArgs> ExecuteShortcuts;
+        event KeyEventHandler HandleKeyDown;
+
+        /// <summary>
+        /// Event called when user releases a key
+        /// </summary>
+        event KeyEventHandler HandleKeyUp;
 
         /// <summary>
         /// Event called when user requests to open an item in the result.

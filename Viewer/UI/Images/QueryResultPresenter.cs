@@ -21,6 +21,10 @@ namespace Viewer.UI.Images
 
         private Size _itemSize = new Size(150, 100);
         private List<AttributeCollection> _items = new List<AttributeCollection>();
+        private List<int> _previousSelection = new List<int>();
+        private HashSet<int> _currentSelection = new HashSet<int>();
+        private bool _isControl = false;
+        private bool _isShift = false;
         
         public QueryResultPresenter(IQueryResultView view, IAttributeStorage storage, IThumbnailGenerator thumbnailGenerator)
         {
@@ -28,8 +32,11 @@ namespace Viewer.UI.Images
             _storage = storage;
             _view = view;
             _view.CloseView += View_Closed;
-            _view.ExecuteShortcuts += View_ExecuteShortcuts;
+            _view.SelectionStart += View_SelectionStart;
             _view.SelectionChanged += View_SelectionChanged;
+            _view.HandleKeyDown += View_HandleShortcuts;
+            _view.HandleKeyDown += View_CaptureControlKeyState;
+            _view.HandleKeyUp += View_CaptureControlKeyState;
         }
 
         /// <summary>
@@ -89,16 +96,44 @@ namespace Viewer.UI.Images
             _view = null;
         }
 
-        private void View_ExecuteShortcuts(object sender, KeyEventArgs e)
+        private void View_HandleShortcuts(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.A)
-            { 
-                _view.SetItemsInSelection(Enumerable.Range(0, _items.Count));
+            {
+                _currentSelection.UnionWith(Enumerable.Range(0, _items.Count));
+                _view.SetItemsInSelection(_currentSelection);
             }
+        }
+
+        private void View_CaptureControlKeyState(object sender, KeyEventArgs e)
+        {
+            _isControl = e.Control;
+            _isShift = e.Shift;
+        }
+        
+        private void View_SelectionStart(object sender, SelectionEventArgs e)
+        {
+            _previousSelection.Clear();
+            _previousSelection.AddRange(e.Selection);
+
+            _currentSelection.Clear();
+            _currentSelection.UnionWith(e.Selection);
         }
 
         private void View_SelectionChanged(object sender, SelectionEventArgs e)
         {
+            _currentSelection.Clear();
+            _currentSelection.UnionWith(e.Selection);
+
+            if (_isControl) // symetric difference
+            {
+                _currentSelection.SymmetricExceptWith(_previousSelection);
+            }
+            else if (_isShift) // union
+            {
+                _currentSelection.UnionWith(_previousSelection);
+            }
+            _view.SetItemsInSelection(_currentSelection);
         }
     }
 }

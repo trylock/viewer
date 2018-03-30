@@ -231,23 +231,26 @@ namespace Viewer.UI.Images
         public IEnumerable<GridCell> GetCellsInBounds(Rectangle bounds)
         {
             // Compute intersection of bounds with the bounding box of the grid.
-            // We subtract cell size from the grid size because we want for each 
-            // point P in the grid rectangle to satisfy that P / cell size is a 
-            // valid cell or gap location.
             var minX = Math.Max(bounds.X, 0);
-            var maxX = Math.Min(bounds.X + bounds.Width - 1, GridSize.Width - CellSize.Width);
+            var maxX = Math.Min(bounds.X + bounds.Width - 1, GridSize.Width);
             var minY = Math.Max(bounds.Y, 0);
-            var maxY = Math.Min(bounds.Y + bounds.Height - 1, GridSize.Height - CellSize.Height);
+            var maxY = Math.Min(bounds.Y + bounds.Height - 1, GridSize.Height);
             if (minX > maxX || minY > maxY)
                 yield break; // the intersection is empty
 
             // find first column and column after the last column
             var beginColumn = MathUtils.RoundUpDiv(FindHorizontal(minX), 2);
-            var endColumn = FindHorizontal(maxX) / 2 + 1;
+            var endColumn = Math.Min(
+                FindHorizontal(maxX) / 2 + 1,
+                ColumnCount
+            );
 
             // find first row and row after the last row
             var beginRow = MathUtils.RoundUpDiv(FindVertical(minY), 2);
-            var endRow = FindVertical(maxY) / 2 + 1;
+            var endRow = Math.Min(
+                FindVertical(maxY) / 2 + 1,
+                RowCount
+            );
 
             for (var row = beginRow; row < endRow; ++row)
             {

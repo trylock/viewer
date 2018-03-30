@@ -190,10 +190,12 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void GetCellsInBounds_FirstColumn()
         {
-            var grid = new Grid();
-            grid.MinCellWidth = 100;
-            grid.CellHeight = 200;
-            grid.CellCount = 5;
+            var grid = new Grid
+            {
+                MinCellWidth = 100,
+                CellHeight = 200,
+                CellCount = 5
+            };
             grid.Resize(300);
 
             var cells = grid.GetCellsInBounds(new Rectangle(
@@ -203,6 +205,30 @@ namespace ViewerTest.UI.Images
             Assert.AreEqual(2, cellsList.Length);
             Assert.AreEqual(0, cellsList[0].Index);
             Assert.AreEqual(3, cellsList[1].Index);
+        }
+
+        [TestMethod]
+        public void GetCellsInBounds_LastColumn()
+        {
+            var grid = new Grid
+            {
+                MinCellWidth = 200,
+                CellHeight = 200,
+                CellCount = 9,
+                CellMargin = new Size(10, 10)
+            };
+            grid.Resize(620);
+
+            var cells = grid.GetCellsInBounds(new Rectangle(450, 205, 200, 500)).ToArray();
+            Assert.AreEqual(2, cells.Length);
+
+            Assert.AreEqual(5, cells[0].Index);
+            Assert.AreEqual(1, cells[0].Row);
+            Assert.AreEqual(2, cells[0].Column);
+
+            Assert.AreEqual(8, cells[1].Index);
+            Assert.AreEqual(2, cells[1].Row);
+            Assert.AreEqual(2, cells[1].Column);
         }
 
         [TestMethod]

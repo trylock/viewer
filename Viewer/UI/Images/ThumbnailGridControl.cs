@@ -162,6 +162,11 @@ namespace Viewer.UI.Images
         }
         
         #endregion
+
+        private IEnumerable<int> GetRangeSelection()
+        {
+            return GridPanel.Grid.GetCellsInBounds(_rangeSelection.Bounds).Select(cell => cell.Index);
+        }
         
         private void SetSelection(IEnumerable<int> items)
         {
@@ -310,7 +315,6 @@ namespace Viewer.UI.Images
             else
             {
                 // start the range selection
-                SetSelection(Enumerable.Empty<int>());
                 _rangeSelection.Start(GridPanel.UnprojectLocation(e.Location));
             }
         }
@@ -319,7 +323,10 @@ namespace Viewer.UI.Images
         {
             _rangeSelection.End();
             InvokeSelectionChangedEvent();
-            
+
+            // change selection
+            SetSelection(GetRangeSelection());
+
             // invalidate the selection 
             GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
             GridPanel.Update();
@@ -330,7 +337,7 @@ namespace Viewer.UI.Images
             if (_rangeSelection.IsActive)
             {
                 _rangeSelection.MoveTo(GridPanel.UnprojectLocation(e.Location));
-                SetSelection(GridPanel.Grid.GetCellsInBounds(_rangeSelection.Bounds).Select(cell => cell.Index));
+                SetSelection(GetRangeSelection());
                 
                 // invalidate items in selection
                 GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));

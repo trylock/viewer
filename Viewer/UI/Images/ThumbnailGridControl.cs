@@ -335,8 +335,14 @@ namespace Viewer.UI.Images
         {
             if (_rangeSelection.IsActive)
             {
+                // invalidate old selection
+                GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
+
+                // change selection
                 _rangeSelection.MoveTo(GridPanel.UnprojectLocation(e.Location));
                 SetSelection(GetRangeSelection());
+
+                // invalidate new selection
                 GridPanel.Invalidate(GridPanel.ProjectBounds(_rangeSelection.Bounds));
                 GridPanel.Update();
             }

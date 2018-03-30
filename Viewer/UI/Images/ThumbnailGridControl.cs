@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -319,7 +319,10 @@ namespace Viewer.UI.Images
                 }
 
                 // begin the move operation on files in selection
+                if ((e.Button & MouseButtons.Left) != 0)
+                {
                 MoveFilesInSelection();
+            }
             }
             else
             {

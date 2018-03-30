@@ -93,7 +93,7 @@ namespace Viewer.UI.Images
         {
             if (e.Control && e.KeyCode == Keys.A)
             { 
-                _view.SetItemsInSelection(Enumerable.Range(0, _items.Count - 1));
+                _view.SetItemsInSelection(Enumerable.Range(0, _items.Count));
             }
         }
 

@@ -34,7 +34,6 @@ namespace Viewer
 
             // models
             var storage = factory.Create();
-            var selection = new Selection();
             var clipboard = new ClipboardService();
             var thumbnailGenerator = new ThumbnailGenerator();
 
@@ -56,7 +55,7 @@ namespace Viewer
                 };
                 queryResultView.Show(_dockPanel, DockState.Document);
 
-                var resultPresenter = new QueryResultPresenter(queryResultView, storage, thumbnailGenerator, selection);
+                var resultPresenter = new QueryResultPresenter(queryResultView, storage, thumbnailGenerator);
                 resultPresenter.LoadDirectory("C:/tmp");
             }
         }

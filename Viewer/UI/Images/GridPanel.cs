@@ -225,9 +225,11 @@ namespace Viewer.UI.Images
 
         private void GridPanel_Paint(object sender, PaintEventArgs e)
         {
-            var bounds = new Rectangle(
-                UnprojectLocation(e.ClipRectangle.Location), 
-                e.ClipRectangle.Size);
+            // clear invalidated area
+            e.Graphics.FillRectangle(Brushes.White, e.ClipRectangle);
+
+            // paint cells
+            var bounds = UnprojectBounds(e.ClipRectangle);
             foreach (var cell in Grid.GetCellsInBounds(bounds))
             {
                 InvokeCellRedraw(e.Graphics, cell);

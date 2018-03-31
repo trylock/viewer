@@ -35,7 +35,7 @@ namespace Viewer.UI.Images
 
             _imagesView.UpdateSize();
         }
-
+        
         public void LoadDirectory(string path)
         {
             // dispose old query

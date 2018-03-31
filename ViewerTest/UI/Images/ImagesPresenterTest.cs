@@ -41,7 +41,7 @@ namespace ViewerTest.UI.Images
             viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
             Assert.IsTrue(viewMock.CurrentSelection.IsEmpty);
             
-            CollectionAssert.AreEqual(new[]{ 5, 6 }, presenter.Selection.ToArray());
+            CollectionAssert.AreEqual(new[]{ 5, 6 }, presenter.Selection.OrderBy(x => x).ToArray());
 
             // make sure we have updated just the selection items
             var index = 0;
@@ -81,7 +81,7 @@ namespace ViewerTest.UI.Images
             viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
             Assert.IsTrue(viewMock.CurrentSelection.IsEmpty);
 
-            CollectionAssert.AreEqual(new[] { 5, 6 }, presenter.Selection.ToArray());
+            CollectionAssert.AreEqual(new[] { 5, 6 }, presenter.Selection.OrderBy(x => x).ToArray());
 
             // make sure we have updated just the selection items
             var index = 0;
@@ -91,6 +91,123 @@ namespace ViewerTest.UI.Images
                 {
                     Assert.IsTrue(item.IsUpdated);
                     Assert.AreEqual(ResultItemState.Selected, item.State);
+                }
+                else
+                {
+                    Assert.IsFalse(item.IsUpdated);
+                    Assert.AreEqual(ResultItemState.None, item.State);
+                }
+                ++index;
+            }
+        }
+
+        [TestMethod]
+        public void Selection_UnionWithPreviousSelection()
+        {
+            var viewMock = new ImagesViewMock();
+            var storage = new MemoryAttributeStorage();
+            var thumbnailGenerator = new NullThumbnailGeneratorMock();
+            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
+
+            // first selection
+            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
+            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
+
+            // second selection (union)
+            viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Shift));
+            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 0, 0));
+            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 6, 0, 0));
+
+            CollectionAssert.AreEqual(new[] { 3, 5 }, presenter.Selection.OrderBy(x => x).ToArray());
+
+            var index = 0;
+            foreach (var item in viewMock.Items)
+            {
+                if (index == 5 || index == 3)
+                {
+                    Assert.IsTrue(item.IsUpdated);
+                    Assert.AreEqual(ResultItemState.Selected, item.State);
+                }
+                else
+                {
+                    Assert.IsFalse(item.IsUpdated);
+                    Assert.AreEqual(ResultItemState.None, item.State);
+                }
+                ++index;
+            }
+        }
+
+        [TestMethod]
+        public void Selection_SymetricDifferenceWithPreviousSelection()
+        {
+            var viewMock = new ImagesViewMock();
+            var storage = new MemoryAttributeStorage();
+            var thumbnailGenerator = new NullThumbnailGeneratorMock();
+            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
+
+            // first selection
+            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
+            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
+
+            // second selection (symetric difference)
+            viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Control));
+            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 2, 0));
+            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 0, 2, 0));
+
+            CollectionAssert.AreEqual(new[] { 4, 6 }, presenter.Selection.OrderBy(x => x).ToArray());
+
+            var index = 0;
+            foreach (var item in viewMock.Items)
+            {
+                if (index == 4 || index == 6)
+                {
+                    Assert.IsTrue(item.IsUpdated);
+                    Assert.AreEqual(ResultItemState.Selected, item.State);
+                }
+                else if (index == 5)
+                {
+                    Assert.IsTrue(item.IsUpdated);
+                    Assert.AreEqual(ResultItemState.None, item.State);
+                }
+                else
+                {
+                    Assert.IsFalse(item.IsUpdated);
+                    Assert.AreEqual(ResultItemState.None, item.State);
+                }
+                ++index;
+            }
+        }
+
+        [TestMethod]
+        public void Selection_Reset()
+        {
+            var viewMock = new ImagesViewMock();
+            var storage = new MemoryAttributeStorage();
+            var thumbnailGenerator = new NullThumbnailGeneratorMock();
+            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
+
+            // first selection
+            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
+            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
+
+            // reset the selection
+            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0));
+
+            CollectionAssert.AreEqual(new[] { 0 }, presenter.Selection.ToArray());
+
+            var index = 0;
+            foreach (var item in viewMock.Items)
+            {
+                if (index == 0)
+                {
+                    Assert.IsTrue(item.IsUpdated);
+                    Assert.AreEqual(ResultItemState.Selected, item.State);
+                }
+                else if (index == 5 || index == 6)
+                {
+                    Assert.IsTrue(item.IsUpdated);
+                    Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 else
                 {

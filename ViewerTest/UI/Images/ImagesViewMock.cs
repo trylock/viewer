@@ -66,6 +66,11 @@ namespace ViewerTest.UI.Images
             HandleMouseMove?.Invoke(this, args);
         }
 
+        public void TriggerKeyDown(KeyEventArgs args)
+        {
+            HandleKeyDown?.Invoke(this, args);
+        }
+
         // mocked interface
         public void UpdateSize()
         {
@@ -114,7 +119,7 @@ namespace ViewerTest.UI.Images
 
         public IEnumerable<int> GetItemsIn(Rectangle bounds)
         {
-            if (bounds.Width == 0 || bounds.Y == 0)
+            if (bounds.Width == 0 && bounds.Height == 0)
                 yield break;
 
             for (int x = bounds.X; x <= bounds.X + bounds.Width; ++x)

@@ -58,7 +58,10 @@ namespace Viewer.UI.Images
         }
 
         #region Grid view
-        
+
+        public event EventHandler BeginEditItemName;
+        public event EventHandler CancelEditItemName;
+        public event EventHandler<RenameEventArgs> RenameItem;
         public event MouseEventHandler HandleMouseDown;
         public event MouseEventHandler HandleMouseUp;
         public event MouseEventHandler HandleMouseMove;
@@ -95,6 +98,12 @@ namespace Viewer.UI.Images
             {
                 UpdateItem(index);
             }
+        }
+
+        public void RemoveItems(Predicate<ResultItemView> predicate)
+        {
+            _items.RemoveAll(predicate);
+            Refresh();
         }
 
         public void UpdateItem(int index)
@@ -141,6 +150,26 @@ namespace Viewer.UI.Images
             return _grid.GetCellAt(location).Index;
         }
 
+        public void ShowItemEditForm(int index)
+        {
+            if (index < 0 || index >= _items.Count)
+                return;
+
+            var item = _items[index];
+            var cell = _grid.GetCell(index);
+
+            NameTextBox.Visible = true;
+            NameTextBox.Text = item.Name;
+            NameTextBox.Location = ProjectLocation(GetNameLocation(cell.Bounds));
+            NameTextBox.Size = GetNameSize(cell.Bounds);
+            NameTextBox.Focus();
+        }
+
+        public void HideItemEditForm()
+        {
+            NameTextBox.Visible = false;
+        }
+
         public void UpdateSize()
         {
             // update grid size
@@ -156,7 +185,7 @@ namespace Viewer.UI.Images
 
             Refresh();
         }
-        
+
         #endregion
 
         #region Utility conversion functions
@@ -319,7 +348,35 @@ namespace Viewer.UI.Images
         {
             HandleMouseMove?.Invoke(sender, ConvertMouseEventArgs(e));
         }
-        
+
         #endregion
+
+        #region Context menu
+
+        private void RenameMenuItem_Click(object sender, EventArgs e)
+        {
+            BeginEditItemName?.Invoke(sender, e);
+        }
+
+        #endregion
+
+        private void NameTextBox_Leave(object sender, EventArgs e)
+        {
+            CancelEditItemName?.Invoke(sender, e);
+        }
+
+        private void NameTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.SuppressKeyPress = true;
+                CancelEditItemName?.Invoke(sender, e);
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                RenameItem?.Invoke(sender, new RenameEventArgs(NameTextBox.Text));
+            }
+        }
     }
 }

@@ -48,6 +48,12 @@ namespace Viewer.UI.Explorer
         /// <param name="sourcePath">Source path</param>
         /// <param name="destinationPath">Destination path</param>
         void FailedToMove(string sourcePath, string destinationPath);
+
+        /// <summary>
+        /// Specified path was too long
+        /// </summary>
+        /// <param name="path">Path which caused the error</param>
+        void PathTooLong(string path);
     }
 
     public class FileSystemErrorView : IFileSystemErrorView
@@ -95,7 +101,17 @@ namespace Viewer.UI.Explorer
             MessageBox.Show(
                 string.Format(Resources.FailedToMove_Message, sourcePath, destinationPath),
                 Resources.FailedToMove_Label,
-                MessageBoxButtons.OK);
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+
+        public void PathTooLong(string path)
+        {
+            MessageBox.Show(
+                string.Format(Resources.PathTooLong_Message, path), 
+                Resources.PathTooLong_Label, 
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
         }
 
         public void FileNotFound(string filePath)
@@ -103,7 +119,8 @@ namespace Viewer.UI.Explorer
             MessageBox.Show(
                 string.Format(Resources.FileNotFound_Message, filePath),
                 Resources.FileNotFound_Label,
-                MessageBoxButtons.OK);
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
         }
     }
 }

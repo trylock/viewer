@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
+using Viewer.IO;
+using Viewer.UI.Explorer;
 
 namespace Viewer.UI.Images
 {
@@ -14,6 +16,7 @@ namespace Viewer.UI.Images
     {
         // dependencies
         private readonly IImagesView _imagesView;
+        private readonly IFileSystemErrorView _dialogView;
         private readonly IAttributeStorage _storage;
         private readonly IThumbnailGenerator _thumbnailGenerator;
 
@@ -21,10 +24,17 @@ namespace Viewer.UI.Images
         private Size _itemSize = new Size(150, 100);
         private readonly List<AttributeCollection> _items = new List<AttributeCollection>();
 
-        public ImagesPresenter(IImagesView imagesView, IAttributeStorage storage, IThumbnailGenerator thumbnailGenerator)
+        public ImagesPresenter(
+            IImagesView imagesView, 
+            IFileSystemErrorView dialogView,
+            IAttributeStorage storage, 
+            IThumbnailGenerator thumbnailGenerator)
         {
             _storage = storage;
             _thumbnailGenerator = thumbnailGenerator;
+
+            _dialogView = dialogView;
+
             _imagesView = imagesView;
             _imagesView.HandleMouseDown += View_MouseDown;
             _imagesView.HandleMouseUp += View_MouseUp;
@@ -32,11 +42,14 @@ namespace Viewer.UI.Images
             _imagesView.HandleKeyDown += View_HandleShortcuts;
             _imagesView.HandleKeyDown += View_CaptureControlKeys;
             _imagesView.HandleKeyUp += View_CaptureControlKeys;
+            _imagesView.BeginEditItemName += View_BeginEditItemName;
+            _imagesView.CancelEditItemName += View_CancelEditItemName;
+            _imagesView.RenameItem += View_RenameItem;
             _imagesView.Resize += View_Resize;
 
             _imagesView.UpdateSize();
         }
-        
+
         public void AddItemsInternal(IEnumerable<AttributeCollection> items)
         {
             _items.AddRange(items);
@@ -185,30 +198,24 @@ namespace Viewer.UI.Images
 
         private void View_MouseDown(object sender, MouseEventArgs e)
         {
-            // activate the view
+            var index = _imagesView.GetItemAt(e.Location);
+
+            // update view
             _imagesView.MakeActive();
+            _imagesView.HideItemEditForm();
+
+            // udpate focused item
+            FocusedItem = index;
 
             // update selection
-            var index = _imagesView.GetItemAt(e.Location);
             if (index >= 0)
             {
                 if (!_currentSelection.Contains(index))
                 {
                     // make the active item the only item in selection
-                    _previousSelection.Clear();
-                    _previousSelection.AddRange(_currentSelection);
-
-                    _currentSelection.Clear();
-                    _currentSelection.Add(index);
-
-                    // update item states
-                    foreach (var item in _previousSelection)
-                    {
-                        _imagesView.SetState(item, ResultItemState.None);
-                    }
-                    _imagesView.SetState(index, ResultItemState.Selected);
-                    _imagesView.UpdateItems(_previousSelection);
-                    _imagesView.UpdateItems(_currentSelection);
+                    ChangeSelection(
+                        Enumerable.Repeat(index, 1), 
+                        SelectionStrategy.None);
                 }
 
                 // begin the move operation on files in selection
@@ -227,7 +234,10 @@ namespace Viewer.UI.Images
 
         private void View_MouseUp(object sender, MouseEventArgs e)
         {
-            EndSelection(e.Location);
+            if (_isSelectionActive)
+            {
+                EndSelection(e.Location);
+            }
         }
 
         private void View_MouseMove(object sender, MouseEventArgs e)
@@ -249,6 +259,13 @@ namespace Viewer.UI.Images
                 }
 
                 ActiveItem = item;
+            }
+
+            // update focused item
+            if ((e.Button & MouseButtons.Left) != 0 ||
+                (e.Button & MouseButtons.Right) != 0)
+            {
+                FocusedItem = item;
             }
 
             // update selection
@@ -274,6 +291,75 @@ namespace Viewer.UI.Images
             if (e.Control && e.KeyCode == Keys.A)
             {
                 ChangeSelection(Enumerable.Range(0, _items.Count), SelectionStrategy.None);
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                _imagesView.HideItemEditForm();
+            }
+        }
+        
+        private void View_BeginEditItemName(object sender, EventArgs e)
+        {
+            var index = FocusedItem;
+            if (index < 0)
+            {
+                return;
+            }
+
+            _imagesView.ShowItemEditForm(index);
+        }
+
+        private void View_CancelEditItemName(object sender, EventArgs e)
+        {
+            _imagesView.HideItemEditForm();
+        }
+
+        private void View_RenameItem(object sender, RenameEventArgs e)
+        {
+            var index = FocusedItem;
+            if (index < 0)
+            {
+                return;
+            }
+
+            // check the new file name
+            if (!PathUtils.IsValidFileName(e.NewName))
+            {
+                _dialogView.InvalidFileName(e.NewName, PathUtils.GetInvalidFileCharacters());
+                return;
+            }
+
+            // construct the new file path
+            var item = _items[index];
+            var basePath = item.Path.Substring(0, item.Path.LastIndexOfAny(PathUtils.PathSeparators));
+            var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.Path));
+
+            // rename the file
+            try
+            {
+                File.Move(item.Path, newPath);
+                item.Path = newPath;
+                _imagesView.UpdateItem(index);
+            }
+            catch (PathTooLongException ex)
+            {
+                _dialogView.PathTooLong(newPath);
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                _dialogView.DirectoryNotFound(ex.Message);
+            }
+            catch (IOException)
+            {
+                _dialogView.FailedToMove(item.Path, newPath);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _dialogView.UnauthorizedAccess(newPath);
+            }
+            finally
+            {
+                _imagesView.HideItemEditForm();
             }
         }
 

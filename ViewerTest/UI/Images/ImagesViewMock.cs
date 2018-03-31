@@ -15,6 +15,12 @@ namespace ViewerTest.UI.Images
         public ResultItemState State { get; set; }
     }
 
+    /// <summary>
+    /// Images view mock.
+    /// This mock models the images view as a grid.
+    /// Each position in even row AND even column is a cell.
+    /// Each position in odd row OR odd column is an empty space.
+    /// </summary>
     public class ImagesViewMock : IImagesView
     {
         public event EventHandler CloseView;
@@ -24,6 +30,10 @@ namespace ViewerTest.UI.Images
         public event EventHandler Resize;
         public event KeyEventHandler HandleKeyDown;
         public event KeyEventHandler HandleKeyUp;
+        public event ScrollEventHandler HandleScroll;
+        public event EventHandler BeginEditItemName;
+        public event EventHandler CancelEditItemName;
+        public event EventHandler<RenameEventArgs> RenameItem;
 
         public Size ItemSize { get; set; } = new Size(1, 1);
         public Size ItemPadding { get; set; } = new Size(0, 0);
@@ -31,6 +41,7 @@ namespace ViewerTest.UI.Images
         public Rectangle CurrentSelection { get; private set; } = Rectangle.Empty;
         public Size ViewSize { get; } = new Size(8, 8);
         public bool IsActive { get; private set; } = false;
+        public int EditIndex { get; private set; } = -1;
 
         // mock interface
         public ImagesViewMock(int width, int height)
@@ -74,6 +85,16 @@ namespace ViewerTest.UI.Images
             HandleKeyDown?.Invoke(this, args);
         }
 
+        public void TriggerBeginEditItemName()
+        {
+            BeginEditItemName?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void TriggerCancelEditItemName()
+        {
+            CancelEditItemName?.Invoke(this, EventArgs.Empty);
+        }
+
         // mocked interface
         public void UpdateSize()
         {
@@ -94,6 +115,11 @@ namespace ViewerTest.UI.Images
             {
                 UpdateItem(item);
             }
+        }
+
+        public void RemoveItems(Predicate<ResultItemView> predicate)
+        {
+            throw new NotImplementedException();
         }
 
         public void UpdateItem(int index)
@@ -148,6 +174,16 @@ namespace ViewerTest.UI.Images
             if (location.X % 2 != 0 || location.Y % 2 != 0)
                 return -1;
             return (location.Y / 2) * (ViewSize.Width / 2) + (location.X / 2);
+        }
+
+        public void ShowItemEditForm(int index)
+        {
+            EditIndex = index;
+        }
+
+        public void HideItemEditForm()
+        {
+            EditIndex = -1;
         }
 
         public void BeginDragDrop(IDataObject data, DragDropEffects effect)

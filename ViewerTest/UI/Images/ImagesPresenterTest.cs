@@ -22,29 +22,37 @@ namespace ViewerTest.UI.Images
     [TestClass]
     public class ImagesPresenterTest
     {
+        private ImagesViewMock _viewMock;
+        private ImagesPresenter _presenter;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _viewMock = new ImagesViewMock(8, 8);
+            var storage = new MemoryAttributeStorage();
+            var thumbnailGenerator = new NullThumbnailGeneratorMock();
+            _presenter = new ImagesPresenter(_viewMock, null, storage, thumbnailGenerator);
+            _presenter.AddItemsInternal(Enumerable.Repeat<AttributeCollection>(null, 16));
+        }
+
         [TestMethod]
         public void Selection_EndPointIsToTheRight()
         {
-            var viewMock = new ImagesViewMock(8, 8);
-            var storage = new MemoryAttributeStorage();
-            var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
-            
-            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
-            viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
-            Assert.AreEqual(1, viewMock.CurrentSelection.X);
-            Assert.AreEqual(1, viewMock.CurrentSelection.Y);
-            Assert.AreEqual(3, viewMock.CurrentSelection.Width);
-            Assert.AreEqual(1, viewMock.CurrentSelection.Height);
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
+            _viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
+            Assert.AreEqual(1, _viewMock.CurrentSelection.X);
+            Assert.AreEqual(1, _viewMock.CurrentSelection.Y);
+            Assert.AreEqual(3, _viewMock.CurrentSelection.Width);
+            Assert.AreEqual(1, _viewMock.CurrentSelection.Height);
 
-            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
-            Assert.IsTrue(viewMock.CurrentSelection.IsEmpty);
+            _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
+            Assert.IsTrue(_viewMock.CurrentSelection.IsEmpty);
             
-            CollectionAssert.AreEqual(new[]{ 5, 6 }, presenter.Selection.OrderBy(x => x).ToArray());
+            CollectionAssert.AreEqual(new[]{ 5, 6 }, _presenter.Selection.OrderBy(x => x).ToArray());
 
             // make sure we have updated just the selection items
             var index = 0;
-            foreach (var item in viewMock.Items)
+            foreach (var item in _viewMock.Items)
             {
                 if (index == 5 || index == 6)
                 {
@@ -63,28 +71,23 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_EndPointIsToTheLeft()
         {
-            var viewMock = new ImagesViewMock(8, 8);
-            var storage = new MemoryAttributeStorage();
-            var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
-            
-            Assert.AreEqual(16, viewMock.Items.Count);
+            Assert.AreEqual(16, _viewMock.Items.Count);
 
-            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 3, 0));
-            viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
-            Assert.AreEqual(2, viewMock.CurrentSelection.X);
-            Assert.AreEqual(2, viewMock.CurrentSelection.Y);
-            Assert.AreEqual(3, viewMock.CurrentSelection.Width);
-            Assert.AreEqual(1, viewMock.CurrentSelection.Height);
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 3, 0));
+            _viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
+            Assert.AreEqual(2, _viewMock.CurrentSelection.X);
+            Assert.AreEqual(2, _viewMock.CurrentSelection.Y);
+            Assert.AreEqual(3, _viewMock.CurrentSelection.Width);
+            Assert.AreEqual(1, _viewMock.CurrentSelection.Height);
 
-            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
-            Assert.IsTrue(viewMock.CurrentSelection.IsEmpty);
+            _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
+            Assert.IsTrue(_viewMock.CurrentSelection.IsEmpty);
 
-            CollectionAssert.AreEqual(new[] { 5, 6 }, presenter.Selection.OrderBy(x => x).ToArray());
+            CollectionAssert.AreEqual(new[] { 5, 6 }, _presenter.Selection.OrderBy(x => x).ToArray());
 
             // make sure we have updated just the selection items
             var index = 0;
-            foreach (var item in viewMock.Items)
+            foreach (var item in _viewMock.Items)
             {
                 if (index == 5 || index == 6)
                 {
@@ -103,24 +106,19 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_UnionWithPreviousSelection()
         {
-            var viewMock = new ImagesViewMock(8, 8);
-            var storage = new MemoryAttributeStorage();
-            var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
-
             // first selection
-            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
-            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
+            _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
 
             // second selection (union)
-            viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Shift));
-            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 0, 0));
-            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 6, 0, 0));
+            _viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Shift));
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 0, 0));
+            _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 6, 0, 0));
 
-            CollectionAssert.AreEqual(new[] { 3, 5 }, presenter.Selection.OrderBy(x => x).ToArray());
+            CollectionAssert.AreEqual(new[] { 3, 5 }, _presenter.Selection.OrderBy(x => x).ToArray());
 
             var index = 0;
-            foreach (var item in viewMock.Items)
+            foreach (var item in _viewMock.Items)
             {
                 if (index == 5 || index == 3)
                 {
@@ -139,24 +137,19 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_SymetricDifferenceWithPreviousSelection()
         {
-            var viewMock = new ImagesViewMock(8, 8);
-            var storage = new MemoryAttributeStorage();
-            var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
-
             // first selection
-            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
-            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
+            _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
 
             // second selection (symetric difference)
-            viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Control));
-            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 2, 0));
-            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 0, 2, 0));
+            _viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Control));
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 2, 0));
+            _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 0, 2, 0));
 
-            CollectionAssert.AreEqual(new[] { 4, 6 }, presenter.Selection.OrderBy(x => x).ToArray());
+            CollectionAssert.AreEqual(new[] { 4, 6 }, _presenter.Selection.OrderBy(x => x).ToArray());
 
             var index = 0;
-            foreach (var item in viewMock.Items)
+            foreach (var item in _viewMock.Items)
             {
                 if (index == 4 || index == 6)
                 {
@@ -180,23 +173,18 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_Reset()
         {
-            var viewMock = new ImagesViewMock(8, 8);
-            var storage = new MemoryAttributeStorage();
-            var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
-
             // first selection
-            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
-            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
+            _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
 
             // reset the selection
-            viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
-            viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0));
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+            _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0));
 
-            CollectionAssert.AreEqual(new[] { 0 }, presenter.Selection.ToArray());
+            CollectionAssert.AreEqual(new[] { 0 }, _presenter.Selection.ToArray());
 
             var index = 0;
-            foreach (var item in viewMock.Items)
+            foreach (var item in _viewMock.Items)
             {
                 if (index == 0)
                 {
@@ -220,19 +208,13 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_SelectAllWithCtrlA()
         {
-            var viewMock = new ImagesViewMock(8, 8);
-            var storage = new MemoryAttributeStorage();
-            var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
-            presenter.AddItemsInternal(Enumerable.Repeat<AttributeCollection>(null, 16));
-
-            viewMock.TriggerKeyDown(new KeyEventArgs(Keys.A | Keys.Control));
+            _viewMock.TriggerKeyDown(new KeyEventArgs(Keys.A | Keys.Control));
 
             CollectionAssert.AreEqual(
                 Enumerable.Range(0, 16).ToArray(), 
-                presenter.Selection.OrderBy(x => x).ToArray());
+                _presenter.Selection.OrderBy(x => x).ToArray());
 
-            foreach (var item in viewMock.Items)
+            foreach (var item in _viewMock.Items)
             {
                 Assert.IsTrue(item.IsUpdated);
                 Assert.AreEqual(ResultItemState.Selected, item.State);
@@ -242,26 +224,21 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void ActiveItem_OnlyOneItemCanBeActive()
         {
-            var viewMock = new ImagesViewMock(8, 8);
-            var storage = new MemoryAttributeStorage();
-            var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
-
             // move with mouse between items
-            viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 1, 1, 0));
-            Assert.AreEqual(-1, presenter.ActiveItem);
-            foreach (var item in viewMock.Items)
+            _viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 1, 1, 0));
+            Assert.AreEqual(-1, _presenter.ActiveItem);
+            foreach (var item in _viewMock.Items)
             {
                 Assert.IsFalse(item.IsUpdated);
                 Assert.AreEqual(ResultItemState.None, item.State);
             }
-            viewMock.ResetMock();
+            _viewMock.ResetMock();
 
             // select an item
-            viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 2, 2, 0));
-            Assert.AreEqual(5, presenter.ActiveItem);
+            _viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 2, 2, 0));
+            Assert.AreEqual(5, _presenter.ActiveItem);
             var index = 0;
-            foreach (var item in viewMock.Items)
+            foreach (var item in _viewMock.Items)
             {
                 if (index == 5)
                 {
@@ -275,13 +252,13 @@ namespace ViewerTest.UI.Images
                 }
                 ++index;
             }
-            viewMock.ResetMock();
+            _viewMock.ResetMock();
 
             // change an item
-            viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 4, 2, 0));
-            Assert.AreEqual(6, presenter.ActiveItem);
+            _viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 4, 2, 0));
+            Assert.AreEqual(6, _presenter.ActiveItem);
             index = 0;
-            foreach (var item in viewMock.Items)
+            foreach (var item in _viewMock.Items)
             {
                 if (index == 5)
                 {
@@ -300,6 +277,60 @@ namespace ViewerTest.UI.Images
                 }
                 ++index;
             }
+        }
+
+        [TestMethod]
+        public void NameEditForm_HideWithEscape()
+        {
+            // make sure we have an item selected
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Right, 0, 2, 2, 0));
+
+            // begin editing its name
+            Assert.AreEqual(-1, _viewMock.EditIndex);
+            _viewMock.TriggerBeginEditItemName();
+            Assert.AreEqual(5, _viewMock.EditIndex);
+
+            // cancel edit with escape
+            _viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Escape));
+            Assert.AreEqual(-1, _viewMock.EditIndex);
+        }
+
+        [TestMethod]
+        public void NameEditForm_HideWithLostOfFocus()
+        {
+            // make sure we have an item selected
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Right, 0, 2, 2, 0));
+
+            // begin editing its name
+            Assert.AreEqual(-1, _viewMock.EditIndex);
+            _viewMock.TriggerBeginEditItemName();
+            Assert.AreEqual(5, _viewMock.EditIndex);
+
+            // cancel edit with clicking at other items
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Right, 0, 1, 1, 0));
+        }
+
+        [TestMethod]
+        public void NameEditForm_NoItem()
+        {
+            Assert.AreEqual(-1, _presenter.FocusedItem);
+            _viewMock.TriggerBeginEditItemName();
+            Assert.AreEqual(-1, _presenter.FocusedItem);
+        }
+
+        [TestMethod]
+        public void NameEditForm_UserCanCancelTheEdit()
+        {
+            // make sure we have an item selected
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Right, 0, 2, 2, 0));
+
+            // begin editing its name
+            Assert.AreEqual(-1, _viewMock.EditIndex);
+            _viewMock.TriggerBeginEditItemName();
+            Assert.AreEqual(5, _viewMock.EditIndex);
+
+            _viewMock.TriggerCancelEditItemName();
+            Assert.AreEqual(-1, _viewMock.EditIndex);
         }
     }
 }

@@ -177,4 +177,12 @@
   <data name="FailedToMove_Label" xml:space="preserve">
     <value>Failed to Move</value>
   </data>
+  <data name="PathTooLong_Message" xml:space="preserve">
+    <value>Path is too long:
+
+{0}</value>
+  </data>
+  <data name="PathTooLong_Label" xml:space="preserve">
+    <value>Path too long.</value>
+  </data>
 </root>

@@ -54,6 +54,19 @@ namespace Viewer.UI.Images
         }
     }
 
+    public class RenameEventArgs : EventArgs
+    {
+        /// <summary>
+        /// New name of the file (just the name without directory separators and file extension)
+        /// </summary>
+        public string NewName { get; }
+
+        public RenameEventArgs(string newName)
+        {
+            NewName = newName;
+        }
+    }
+
     public interface IImagesView : IWindowView
     {
         event MouseEventHandler HandleMouseDown;
@@ -62,6 +75,21 @@ namespace Viewer.UI.Images
         event EventHandler Resize;
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;
+
+        /// <summary>
+        /// Event called when user requests to edit file name
+        /// </summary>
+        event EventHandler BeginEditItemName;
+
+        /// <summary>
+        /// Event called when user requests to cancel file name edit.
+        /// </summary>
+        event EventHandler CancelEditItemName;
+
+        /// <summary>
+        /// Event called when user requests to rename file
+        /// </summary>
+        event EventHandler<RenameEventArgs> RenameItem;
 
         Size ItemSize { get; set; }
         Size ItemPadding { get; set; }
@@ -133,5 +161,17 @@ namespace Viewer.UI.Images
         ///     If there is no item at given location, it will return -1.
         /// </returns>
         int GetItemAt(Point location);
+
+        /// <summary>
+        /// Show edit form for given item.
+        /// Noop, if <paramref name="index"/> is out of range.
+        /// </summary>
+        /// <param name="index">Index of an item</param>
+        void ShowItemEditForm(int index);
+
+        /// <summary>
+        /// Hide item edit form.
+        /// </summary>
+        void HideItemEditForm();
     }
 }

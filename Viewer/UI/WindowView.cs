@@ -8,7 +8,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI
 {
-    public abstract class WindowView : DockContent, IWindowView
+    public class WindowView : DockContent, IWindowView
     {
         public event EventHandler CloseView;
         
@@ -24,7 +24,7 @@ namespace Viewer.UI
         {
             Activate();
         }
-
+        
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
             CloseView?.Invoke(sender, e);

@@ -199,6 +199,26 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Path too long..
+        /// </summary>
+        internal static string PathTooLong_Label {
+            get {
+                return ResourceManager.GetString("PathTooLong_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path is too long:
+        ///
+        ///{0}.
+        /// </summary>
+        internal static string PathTooLong_Message {
+            get {
+                return ResourceManager.GetString("PathTooLong_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Query result.
         /// </summary>
         internal static string QueryResultWindowName {

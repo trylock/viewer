@@ -66,16 +66,72 @@ namespace Viewer.UI.Images
         Size ItemSize { get; set; }
         Size ItemPadding { get; set; }
 
+        /// <summary>
+        /// Update gird size
+        /// </summary>
         void UpdateSize();
+
+        /// <summary>
+        /// Discard old items and load new.
+        /// </summary>
+        /// <param name="items">New items to show in the view</param>
         void LoadItems(IEnumerable<ResultItemView> items);
+
+        /// <summary>
+        /// Update items in the view.
+        /// </summary>
+        /// <param name="itemIndices">Indicies of items to update</param>
         void UpdateItems(IEnumerable<int> itemIndices);
+
+        /// <summary>
+        /// Update a single item in the view.
+        /// Noop, if the <paramref name="index"/> is not a valid index of any item.
+        /// </summary>
+        /// <param name="index">Index of an item</param>
         void UpdateItem(int index);
+
+        /// <summary>
+        /// Set state of an item.
+        /// Noop, if the <paramref name="index"/> is not a valid index of any item.
+        /// Note: use the UpdateItem(index) method to force the item to redraw.
+        /// </summary>
+        /// <param name="index">Index of an item</param>
+        /// <param name="state">New state of the item</param>
         void SetState(int index, ResultItemState state);
+
+        /// <summary>
+        /// Draw rectangular selection area.
+        /// </summary>
+        /// <param name="bounds">Area of the selection</param>
         void ShowSelection(Rectangle bounds);
+
+        /// <summary>
+        /// Hide current rectengular selection.
+        /// </summary>
         void HideSelection();
+
+        /// <summary>
+        /// Begin drag&amp;drop operation.
+        /// </summary>
+        /// <param name="data">Data to drag</param>
+        /// <param name="effect">Drop effect (e.g. copy, move)</param>
         void BeginDragDrop(IDataObject data, DragDropEffects effect);
 
+        /// <summary>
+        /// Get items in given rectangle.
+        /// </summary>
+        /// <param name="bounds">Query area</param>
+        /// <returns>Indicies of items in this area</returns>
         IEnumerable<int> GetItemsIn(Rectangle bounds);
+
+        /// <summary>
+        /// Get index of an item at <paramref name="location"/>.
+        /// </summary>
+        /// <param name="location">Query location</param>
+        /// <returns>
+        ///     Index of an item at <paramref name="location"/>.
+        ///     If there is no item at given location, it will return -1.
+        /// </returns>
         int GetItemAt(Point location);
     }
 }

@@ -21,12 +21,18 @@ namespace Viewer.UI.Explorer
 
         private IClipboardService _clipboard;
         private IDirectoryTreeView _treeView;
+        private IFileSystemErrorView _errorView;
         private IProgressView _progressView;
 
-        public DirectoryTreePresenter(IDirectoryTreeView treeView, IProgressView progressView, IClipboardService clipboard)
+        public DirectoryTreePresenter(
+            IDirectoryTreeView treeView, 
+            IProgressView progressView, 
+            IFileSystemErrorView errorView,
+            IClipboardService clipboard)
         {
             _clipboard = clipboard;
 
+            _errorView = errorView;
             _progressView = progressView;
             _treeView = treeView;
             _treeView.ExpandDirectory += View_ExpandDirectory;
@@ -44,38 +50,6 @@ namespace Viewer.UI.Explorer
             _treeView.LoadDirectories(new string[] { }, GetRoots());
         }
         
-        /// <summary>
-        /// Get list of printable invalid file name characters in a string.
-        /// </summary>
-        /// <returns>String containing invalid file name characters separated by comma</returns>
-        public string GetInvalidFileCharacters()
-        {
-            var invalid = Path.GetInvalidFileNameChars();
-            var sb = new StringBuilder();
-            foreach (var c in invalid)
-            {
-                if (char.IsControl(c) && !char.IsWhiteSpace(c))
-                    continue;
-
-                if (c == '\n')
-                    sb.Append("\\n");
-                else if (c == '\t')
-                    sb.Append("\\t");
-                else if (c == '\r')
-                    sb.Append("\\r");
-                else
-                    sb.Append(c);
-                sb.Append(", ");
-            }
-
-            if (sb.Length > 0)
-            {
-                sb.Remove(sb.Length - 3, 3); // remove the last separator
-            }
-
-            return sb.ToString();
-        }
-
         private IEnumerable<DirectoryView> GetRoots()
         {
             foreach (var drive in DriveInfo.GetDrives())
@@ -124,11 +98,11 @@ namespace Viewer.UI.Explorer
             }
             catch (UnauthorizedAccessException)
             {
-                _treeView.UnauthorizedAccess(fullPath);
+                _errorView.UnauthorizedAccess(fullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                _treeView.DirectoryNotFound(fullPath);
+                _errorView.DirectoryNotFound(fullPath);
             }
 
             return result;
@@ -146,7 +120,7 @@ namespace Viewer.UI.Explorer
             if (!PathUtils.IsValidFileName(e.NewName))
             {
                 e.Cancel();
-                _treeView.InvalidFileName(e.NewName, GetInvalidFileCharacters());
+                _errorView.InvalidFileName(e.NewName, PathUtils.GetInvalidFileCharacters());
                 return;
             }
 
@@ -157,18 +131,18 @@ namespace Viewer.UI.Explorer
             catch (UnauthorizedAccessException)
             {
                 e.Cancel();
-                _treeView.UnauthorizedAccess(e.FullPath);
+                _errorView.UnauthorizedAccess(e.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
                 e.Cancel();
-                _treeView.DirectoryNotFound(e.FullPath);
+                _errorView.DirectoryNotFound(e.FullPath);
             }
         }
         
         private void View_DeleteDirectory(object sender, DirectoryEventArgs e)
         {
-            if (!_treeView.ConfirmDelete(e.FullPath))
+            if (!_errorView.ConfirmDelete(e.FullPath))
             {
                 e.Cancel();
                 return;
@@ -181,12 +155,12 @@ namespace Viewer.UI.Explorer
             catch (DirectoryNotFoundException)
             {
                 // we don't want to cancel the operation as the delete was technically successful
-                _treeView.DirectoryNotFound(e.FullPath);
+                _errorView.DirectoryNotFound(e.FullPath);
             }
             catch (UnauthorizedAccessException)
             {
                 e.Cancel();
-                _treeView.UnauthorizedAccess(e.FullPath);
+                _errorView.UnauthorizedAccess(e.FullPath);
             }
         }
         
@@ -200,12 +174,12 @@ namespace Viewer.UI.Explorer
             catch (UnauthorizedAccessException)
             {
                 e.Cancel();
-                _treeView.UnauthorizedAccess(e.FullPath);
+                _errorView.UnauthorizedAccess(e.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
                 e.Cancel();
-                _treeView.DirectoryNotFound(e.FullPath);
+                _errorView.DirectoryNotFound(e.FullPath);
             }
         }
 
@@ -286,7 +260,7 @@ namespace Viewer.UI.Explorer
             }
             catch (UnauthorizedAccessException)
             {
-                _treeView.UnauthorizedAccess(destinationDirectory);
+                _errorView.UnauthorizedAccess(destinationDirectory);
                 return false;
             }
 

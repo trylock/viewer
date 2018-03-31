@@ -143,31 +143,5 @@ namespace Viewer.UI.Explorer
         /// <param name="pathParts">List of directory names which composes path to a directory</param>
         /// <param name="subdirectories">Subdirectories in given directory</param>
         void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories);
-
-        /// <summary>
-        /// Show the unauthorized access error message to the user.
-        /// </summary>
-        /// <param name="path">Path to a file/directory</param>
-        void UnauthorizedAccess(string path);
-
-        /// <summary>
-        /// Show the directory not found error message to the user.
-        /// </summary>
-        /// <param name="path">Path to a directory</param>
-        void DirectoryNotFound(string path);
-
-        /// <summary>
-        /// Show the invalid file name error message to the user
-        /// </summary>
-        /// <param name="fileName">Invalid file name</param>
-        /// <param name="invalidCharacters">Invalid characters in file name</param>
-        void InvalidFileName(string fileName, string invalidCharacters);
-
-        /// <summary>
-        /// Show confirm dialog of directory deletion. 
-        /// </summary>
-        /// <param name="fileName">Full directory path</param>
-        /// <returns>true iff user confirmed that he/she wants to delete the directory</returns>
-        bool ConfirmDelete(string fileName);
     }
 }

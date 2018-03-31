@@ -63,43 +63,6 @@ namespace Viewer.UI.Explorer
             TreeView.EndUpdate();
         }
 
-        public void UnauthorizedAccess(string path)
-        {
-            MessageBox.Show(
-                string.Format(Resources.UnauthorizedAccess_Message, path),
-                Resources.UnauthorizedAccess_Label,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        }
-
-        public void DirectoryNotFound(string path)
-        {
-            MessageBox.Show(
-                string.Format(Resources.DirectoryNotFound_Message, path),
-                Resources.DirectoryNotFound_Label,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        }
-
-        public void InvalidFileName(string fileName, string invalidCharacters)
-        {
-            MessageBox.Show(
-                string.Format(Resources.InvalidFileName_Message, fileName, invalidCharacters),
-                Resources.InvalidFileName_Label,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-        }
-
-        public bool ConfirmDelete(string fullPath)
-        {
-            var result = MessageBox.Show(
-                string.Format(Resources.ConfirmDelete_Message, fullPath),
-                Resources.ConfirmDelete_Label,
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question,
-                MessageBoxDefaultButton.Button2);
-            return result == DialogResult.Yes;
-        }
 
         #endregion
 

@@ -58,6 +58,11 @@ namespace Viewer.UI.Images
         /// </summary>
         public Size Size => _grid.CellSize;
 
+        /// <summary>
+        /// Get bounding box of this cell
+        /// </summary>
+        public Rectangle Bounds => new Rectangle(Location, Size);
+
         private Grid _grid;
         
         public GridCell(Grid grid, int row, int column)
@@ -131,7 +136,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Current with of the grid
         /// </summary>
-        private int _width;
+        private int _width = 200;
        
         /// <summary>
         /// Resize the grid area.
@@ -194,6 +199,36 @@ namespace Viewer.UI.Images
                 return new GridCell(this, -1, -1);
             }
             return new GridCell(this, row, column);
+        }
+
+        /// <summary>
+        /// Get cell at given index
+        /// </summary>
+        /// <param name="index">Index of a cell</param>
+        /// <returns></returns>
+        public GridCell GetCell(int index)
+        {
+            if (index < 0 || index >= CellCount)
+                return GetCell(-1, -1);
+            return GetCell(index / ColumnCount, index % ColumnCount);
+        }
+        
+        /// <summary>
+        /// Align given rectangle to cell boundaries.
+        /// Location of the aligned rectangle will be a top left corner of a cell.
+        /// Size of the aligned rectangle will be a multiple of cell size + margin size.
+        /// </summary>
+        /// <param name="bounds">Rectangle to align</param>
+        /// <returns>Aligned rectangle</returns>
+        public Rectangle AlignToCellBoundaries(Rectangle bounds)
+        {
+            var width = CellSize.Width + CellMargin.Width;
+            var height = CellSize.Height + CellMargin.Height;
+            bounds.X = (bounds.X / width) * width;
+            bounds.Y = (bounds.Y / height) * height;
+            bounds.Width = (MathUtils.RoundUpDiv(bounds.X, width) * width) - bounds.X;
+            bounds.Height = (MathUtils.RoundUpDiv(bounds.Y, height) * height) - bounds.Y;
+            return bounds;
         }
 
         /// <summary>

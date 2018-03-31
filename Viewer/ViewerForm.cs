@@ -38,25 +38,24 @@ namespace Viewer
             var thumbnailGenerator = new ThumbnailGenerator();
 
             // UI
+            var fileSystemErrorView = new FileSystemErrorView();
+
             var progressForm = new ProgressViewForm();
             {
                 var directoryTreeView = new DirectoryTreeControl();
                 directoryTreeView.Text = Resources.ExplorerWindowName;
                 directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
-                var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressForm, clipboard);
+                var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressForm, fileSystemErrorView, clipboard);
                 treePresenter.UpdateRootDirectories();
             }
 
             {
-                var queryResultView = new ThumbnailGridControl
-                {
-                    Text = Resources.QueryResultWindowName
-                };
-                queryResultView.Show(_dockPanel, DockState.Document);
+                var imagesView = new GridControl();
+                imagesView.Show(_dockPanel, DockState.Document);
 
-                var resultPresenter = new QueryResultPresenter(queryResultView, storage, thumbnailGenerator);
-                resultPresenter.LoadDirectory("C:/tmp");
+                var imagesPresenter = new ImagesPresenter(imagesView, storage, thumbnailGenerator);
+                imagesPresenter.LoadDirectory("C:/tmp");
             }
         }
     }

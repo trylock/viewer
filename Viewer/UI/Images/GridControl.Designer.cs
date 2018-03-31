@@ -1,6 +1,6 @@
 ﻿namespace Viewer.UI.Images
 {
-    partial class GridPanel
+    partial class GridControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,20 +30,18 @@
         {
             this.SuspendLayout();
             // 
-            // GridPanel
+            // GridControl
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(835, 434);
             this.DoubleBuffered = true;
-            this.Name = "GridPanel";
-            this.Size = new System.Drawing.Size(656, 349);
-            this.Click += new System.EventHandler(this.GridPanel_Click);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridPanel_Paint);
-            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseDoubleClick);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseDown);
-            this.MouseLeave += new System.EventHandler(this.GridPanel_MouseLeave);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseMove);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridPanel_MouseUp);
-            this.Resize += new System.EventHandler(this.GridPanel_Resize);
+            this.Name = "GridControl";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridControl_Paint);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseUp);
             this.ResumeLayout(false);
 
         }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -106,17 +106,18 @@
     <Compile Include="UI\Explorer\DirectoryTreePresenter.cs" />
     <Compile Include="UI\Explorer\FileSystemErrorView.cs" />
     <Compile Include="UI\Images\Grid.cs" />
-    <Compile Include="UI\Images\GridPanel.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="UI\Images\GridControl.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Images\GridPanel.Designer.cs">
-      <DependentUpon>GridPanel.cs</DependentUpon>
+    <Compile Include="UI\Images\GridControl.Designer.cs">
+      <DependentUpon>GridControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Explorer\IDirectoryTreeView.cs" />
+    <Compile Include="UI\Images\ImagesPresenter.cs" />
+    <Compile Include="UI\Images\IImagesView.cs" />
     <Compile Include="UI\Images\IThumbnailGenerator.cs" />
     <Compile Include="UI\Images\ThumbnailGenerator.cs" />
     <Compile Include="UI\IProgressView.cs" />
-    <Compile Include="UI\Images\IQueryResultView.cs" />
     <Compile Include="UI\IWindowView.cs" />
     <Compile Include="UI\ProgressViewForm.cs">
       <SubType>Form</SubType>
@@ -124,14 +125,7 @@
     <Compile Include="UI\ProgressViewForm.Designer.cs">
       <DependentUpon>ProgressViewForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Images\QueryResultPresenter.cs" />
     <Compile Include="UI\RectangleExtensions.cs" />
-    <Compile Include="UI\Images\ThumbnailGridControl.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Images\ThumbnailGridControl.Designer.cs">
-      <DependentUpon>ThumbnailGridControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="ViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,14 +142,11 @@
     <EmbeddedResource Include="UI\Explorer\DirectoryTreeControl.resx">
       <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Images\GridPanel.resx">
-      <DependentUpon>GridPanel.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Images\GridControl.resx">
+      <DependentUpon>GridControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ProgressViewForm.resx">
       <DependentUpon>ProgressViewForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Images\ThumbnailGridControl.resx">
-      <DependentUpon>ThumbnailGridControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ViewerForm.resx">
       <DependentUpon>ViewerForm.cs</DependentUpon>

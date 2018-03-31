@@ -116,14 +116,25 @@ namespace Viewer.UI.Images
 
         private enum SelectionStrategy
         {
-            None,
+            /// <summary>
+            /// Previous selection will be replaced with the new selection.
+            /// </summary>
+            Replace,
+
+            /// <summary>
+            /// Compute union with the old selection.
+            /// </summary>
             Union,
+
+            /// <summary>
+            /// Compute symetric difference with the previous selection.
+            /// </summary>
             SymetricDifference,
         }
 
         private void UpdateSelection(Point endPoint)
         {
-            var selectionStrategy = SelectionStrategy.None;
+            var selectionStrategy = SelectionStrategy.Replace;
             if (_isShift)
             {
                 selectionStrategy = SelectionStrategy.Union;
@@ -140,7 +151,7 @@ namespace Viewer.UI.Images
             _imagesView.ShowSelection(bounds);
         }
 
-        private void ChangeSelection(IEnumerable<int> newSelection, SelectionStrategy selection)
+        private void ChangeSelection(IEnumerable<int> newSelection, SelectionStrategy strategy)
         {
             // reset state of items in current selection
             foreach (var item in _currentSelection)
@@ -152,7 +163,7 @@ namespace Viewer.UI.Images
             // update current selection 
             _currentSelection.Clear();
             _currentSelection.UnionWith(newSelection);
-            switch (selection)
+            switch (strategy)
             {
                 case SelectionStrategy.Union:
                     _currentSelection.UnionWith(_previousSelection);

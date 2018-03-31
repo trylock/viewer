@@ -14,5 +14,10 @@ namespace Viewer.UI
         ///       (i.e. it might just hide itself or it might actually close its form)
         /// </summary>
         event EventHandler CloseView;
+
+        /// <summary>
+        /// Make this window active
+        /// </summary>
+        void MakeActive();
     }
 }

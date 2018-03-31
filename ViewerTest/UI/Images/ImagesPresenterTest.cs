@@ -218,6 +218,28 @@ namespace ViewerTest.UI.Images
         }
 
         [TestMethod]
+        public void Selection_SelectAllWithCtrlA()
+        {
+            var viewMock = new ImagesViewMock(8, 8);
+            var storage = new MemoryAttributeStorage();
+            var thumbnailGenerator = new NullThumbnailGeneratorMock();
+            var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
+            presenter.AddItemsInternal(Enumerable.Repeat<AttributeCollection>(null, 16));
+
+            viewMock.TriggerKeyDown(new KeyEventArgs(Keys.A | Keys.Control));
+
+            CollectionAssert.AreEqual(
+                Enumerable.Range(0, 16).ToArray(), 
+                presenter.Selection.OrderBy(x => x).ToArray());
+
+            foreach (var item in viewMock.Items)
+            {
+                Assert.IsTrue(item.IsUpdated);
+                Assert.AreEqual(ResultItemState.Selected, item.State);
+            }
+        }
+
+        [TestMethod]
         public void ActiveItem_OnlyOneItemCanBeActive()
         {
             var viewMock = new ImagesViewMock(8, 8);

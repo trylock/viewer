@@ -29,6 +29,7 @@ namespace Viewer.UI.Images
             _imagesView.HandleMouseDown += View_MouseDown;
             _imagesView.HandleMouseUp += View_MouseUp;
             _imagesView.HandleMouseMove += View_MouseMove;
+            _imagesView.HandleKeyDown += View_HandleShortcuts;
             _imagesView.HandleKeyDown += View_CaptureControlKeys;
             _imagesView.HandleKeyUp += View_CaptureControlKeys;
             _imagesView.Resize += View_Resize;
@@ -36,6 +37,11 @@ namespace Viewer.UI.Images
             _imagesView.UpdateSize();
         }
         
+        public void AddItemsInternal(IEnumerable<AttributeCollection> items)
+        {
+            _items.AddRange(items);
+        }
+
         public void LoadDirectory(string path)
         {
             // dispose old query
@@ -95,7 +101,33 @@ namespace Viewer.UI.Images
             return new Rectangle(minX, minY, maxX - minX, maxY - minY);
         }
 
+        private enum SelectionStrategy
+        {
+            None,
+            Union,
+            SymetricDifference,
+        }
+
         private void UpdateSelection(Point endPoint)
+        {
+            var selectionStrategy = SelectionStrategy.None;
+            if (_isShift)
+            {
+                selectionStrategy = SelectionStrategy.Union;
+            }
+            else if (_isControl)
+            {
+                selectionStrategy = SelectionStrategy.SymetricDifference;
+            }
+
+            var bounds = GetSelectionBounds(endPoint);
+            var newSelection = _imagesView.GetItemsIn(bounds);
+            ChangeSelection(newSelection, selectionStrategy);
+
+            _imagesView.ShowSelection(bounds);
+        }
+
+        private void ChangeSelection(IEnumerable<int> newSelection, SelectionStrategy selection)
         {
             // reset state of items in current selection
             foreach (var item in _currentSelection)
@@ -104,26 +136,25 @@ namespace Viewer.UI.Images
             }
             _imagesView.UpdateItems(_currentSelection);
 
-            // update current selection
-            var bounds = GetSelectionBounds(endPoint);
+            // update current selection 
             _currentSelection.Clear();
-            _currentSelection.UnionWith(_imagesView.GetItemsIn(bounds));
-            if (_isControl) // symetric difference
+            _currentSelection.UnionWith(newSelection);
+            switch (selection)
             {
-                _currentSelection.SymmetricExceptWith(_previousSelection);
-            }
-            else if (_isShift) // union
-            {
-                _currentSelection.UnionWith(_previousSelection);
+                case SelectionStrategy.Union:
+                    _currentSelection.UnionWith(_previousSelection);
+                    break;
+                case SelectionStrategy.SymetricDifference:
+                    _currentSelection.SymmetricExceptWith(_previousSelection);
+                    break;
             }
 
-            // update new selection
+            // set state of items in current selection
             foreach (var item in _currentSelection)
             {
                 _imagesView.SetState(item, ResultItemState.Selected);
             }
             _imagesView.UpdateItems(_currentSelection);
-            _imagesView.ShowSelection(bounds);
         }
 
         #region User input
@@ -141,6 +172,11 @@ namespace Viewer.UI.Images
         /// or -1 if no item is active.
         /// </summary>
         public int ActiveItem { get; private set; } = -1;
+
+        /// <summary>
+        /// Index of an item with focus or -1 it there is no such item.
+        /// </summary>
+        public int FocusedItem { get; private set; } = -1;
 
         /// <summary>
         /// List of items currently in selection
@@ -231,6 +267,14 @@ namespace Viewer.UI.Images
         {
             _isControl = e.Control;
             _isShift = e.Shift;
+        }
+
+        private void View_HandleShortcuts(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.A)
+            {
+                ChangeSelection(Enumerable.Range(0, _items.Count), SelectionStrategy.None);
+            }
         }
 
         #endregion

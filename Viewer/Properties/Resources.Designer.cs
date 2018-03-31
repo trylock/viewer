@@ -143,6 +143,44 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to Move.
+        /// </summary>
+        internal static string FailedToMove_Label {
+            get {
+                return ResourceManager.GetString("FailedToMove_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Faild to move {0} to {1}. 
+        ///
+        ///{0} was not found or {1} aready exists..
+        /// </summary>
+        internal static string FailedToMove_Message {
+            get {
+                return ResourceManager.GetString("FailedToMove_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Not Found.
+        /// </summary>
+        internal static string FileNotFound_Label {
+            get {
+                return ResourceManager.GetString("FileNotFound_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File {0} was not found..
+        /// </summary>
+        internal static string FileNotFound_Message {
+            get {
+                return ResourceManager.GetString("FileNotFound_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid File Name.
         /// </summary>
         internal static string InvalidFileName_Label {

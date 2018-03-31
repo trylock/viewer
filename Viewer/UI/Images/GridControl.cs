@@ -12,7 +12,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {
-    public partial class GridControl : DockContent, IImagesView
+    public partial class GridControl : WindowView, IImagesView
     {
         #region Graphics settings
 
@@ -38,9 +38,11 @@ namespace Viewer.UI.Images
         private Rectangle _selection = Rectangle.Empty;
         private List<ResultItemView> _items = new List<ResultItemView>();
 
-        public GridControl()
+        public GridControl(string name)
         {
             InitializeComponent();
+
+            Text = name;
 
             _grid = new Grid();
             _grid.CellMargin = new Size(5, 5);
@@ -56,7 +58,7 @@ namespace Viewer.UI.Images
         }
 
         #region Grid view
-
+        
         public event MouseEventHandler HandleMouseDown;
         public event MouseEventHandler HandleMouseUp;
         public event MouseEventHandler HandleMouseMove;
@@ -154,7 +156,7 @@ namespace Viewer.UI.Images
 
             Refresh();
         }
-
+        
         #endregion
 
         #region Utility conversion functions
@@ -317,7 +319,7 @@ namespace Viewer.UI.Images
         {
             HandleMouseMove?.Invoke(sender, ConvertMouseEventArgs(e));
         }
-
+        
         #endregion
     }
 }

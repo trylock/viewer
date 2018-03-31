@@ -54,7 +54,7 @@ namespace Viewer.UI.Images
         }
     }
 
-    public interface IImagesView
+    public interface IImagesView : IWindowView
     {
         event MouseEventHandler HandleMouseDown;
         event MouseEventHandler HandleMouseUp;

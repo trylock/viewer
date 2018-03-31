@@ -149,6 +149,10 @@ namespace Viewer.UI.Images
 
         private void View_MouseDown(object sender, MouseEventArgs e)
         {
+            // activate the view
+            _imagesView.MakeActive();
+
+            // update selection
             var index = _imagesView.GetItemAt(e.Location);
             if (index >= 0)
             {
@@ -181,7 +185,6 @@ namespace Viewer.UI.Images
             }
             else
             {
-                // start a new selection
                 StartSelection(e.Location);
             }
         }

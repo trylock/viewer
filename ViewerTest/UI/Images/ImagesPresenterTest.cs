@@ -11,7 +11,6 @@ using Viewer.UI.Images;
 
 namespace ViewerTest.UI.Images
 {
-
     public class NullThumbnailGeneratorMock : IThumbnailGenerator
     {
         public Image GetThumbnail(Image original, Size thumbnailArea)
@@ -26,7 +25,7 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_EndPointIsToTheRight()
         {
-            var viewMock = new ImagesViewMock();
+            var viewMock = new ImagesViewMock(8, 8);
             var storage = new MemoryAttributeStorage();
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
@@ -64,7 +63,7 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_EndPointIsToTheLeft()
         {
-            var viewMock = new ImagesViewMock();
+            var viewMock = new ImagesViewMock(8, 8);
             var storage = new MemoryAttributeStorage();
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
@@ -104,7 +103,7 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_UnionWithPreviousSelection()
         {
-            var viewMock = new ImagesViewMock();
+            var viewMock = new ImagesViewMock(8, 8);
             var storage = new MemoryAttributeStorage();
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
@@ -140,7 +139,7 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_SymetricDifferenceWithPreviousSelection()
         {
-            var viewMock = new ImagesViewMock();
+            var viewMock = new ImagesViewMock(8, 8);
             var storage = new MemoryAttributeStorage();
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
@@ -181,7 +180,7 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_Reset()
         {
-            var viewMock = new ImagesViewMock();
+            var viewMock = new ImagesViewMock(8, 8);
             var storage = new MemoryAttributeStorage();
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);
@@ -221,7 +220,7 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void ActiveItem_OnlyOneItemCanBeActive()
         {
-            var viewMock = new ImagesViewMock();
+            var viewMock = new ImagesViewMock(8, 8);
             var storage = new MemoryAttributeStorage();
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             var presenter = new ImagesPresenter(viewMock, storage, thumbnailGenerator);

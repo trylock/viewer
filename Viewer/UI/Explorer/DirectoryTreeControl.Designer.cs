@@ -84,7 +84,7 @@
             this.toolStripSeparator1,
             this.NewFolderMenuItem});
             this.FileContextMenu.Name = "FileContextMenu";
-            this.FileContextMenu.Size = new System.Drawing.Size(217, 218);
+            this.FileContextMenu.Size = new System.Drawing.Size(217, 190);
             // 
             // ToggleMenuItem
             // 

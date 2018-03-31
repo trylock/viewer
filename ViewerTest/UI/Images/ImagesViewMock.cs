@@ -17,6 +17,7 @@ namespace ViewerTest.UI.Images
 
     public class ImagesViewMock : IImagesView
     {
+        public event EventHandler CloseView;
         public event MouseEventHandler HandleMouseDown;
         public event MouseEventHandler HandleMouseUp;
         public event MouseEventHandler HandleMouseMove;
@@ -29,10 +30,12 @@ namespace ViewerTest.UI.Images
         public List<ItemMock> Items { get; } = new List<ItemMock>();
         public Rectangle CurrentSelection { get; private set; } = Rectangle.Empty;
         public Size ViewSize { get; } = new Size(8, 8);
+        public bool IsActive { get; private set; } = false;
 
         // mock interface
-        public ImagesViewMock()
+        public ImagesViewMock(int width, int height)
         {
+            ViewSize = new Size(width, height);
             for (int i = 0; i < ViewSize.Width / 2; ++i)
             {
                 for (int j = 0; j < ViewSize.Height / 2; ++j)
@@ -150,6 +153,11 @@ namespace ViewerTest.UI.Images
         public void BeginDragDrop(IDataObject data, DragDropEffects effect)
         {
             throw new NotImplementedException();
+        }
+
+        public void MakeActive()
+        {
+            IsActive = true;
         }
     }
 }

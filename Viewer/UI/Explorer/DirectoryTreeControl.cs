@@ -15,7 +15,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Explorer
 {
-    public partial class DirectoryTreeControl : DockContent, IDirectoryTreeView
+    public partial class DirectoryTreeControl : WindowView, IDirectoryTreeView
     {
         public DirectoryTreeControl()
         {
@@ -30,12 +30,7 @@ namespace Viewer.UI.Explorer
         }
         
         #region View interface
-
-        public event EventHandler CloseView
-        {
-            add => Closed += value;
-            remove => Closed -= value;
-        }
+        
         public event EventHandler<DirectoryEventArgs> ExpandDirectory;
         public event EventHandler<RenameDirectoryEventArgs> RenameDirectory;
         public event EventHandler<DirectoryEventArgs> DeleteDirectory;
@@ -44,7 +39,7 @@ namespace Viewer.UI.Explorer
         public event EventHandler<DirectoryEventArgs> CopyDirectory;
         public event EventHandler<PasteEventArgs> PasteToDirectory;
         public event EventHandler<DirectoryEventArgs> PasteClipboardToDirectory;
-
+        
         public void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories)
         {
             var nodes = GetChildrenNodeCollection(pathParts);
@@ -194,7 +189,6 @@ namespace Viewer.UI.Explorer
         {
             TreeView.Focus();
             TreeView.SelectedNode = TreeView.GetNodeAt(TreeView.PointToClient(new Point(e.X, e.Y)));
-            //TreeView.Update();
             if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
                 if ((e.AllowedEffect & DragDropEffects.Move) != 0)

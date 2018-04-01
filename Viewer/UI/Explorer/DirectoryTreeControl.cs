@@ -42,13 +42,17 @@ namespace Viewer.UI.Explorer
         
         public void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories)
         {
-            var nodes = GetChildrenNodeCollection(pathParts);
+            var result = FindNode(pathParts);
+            if (!result.IsFound)
+            {
+                return;
+            }
 
             TreeView.BeginUpdate();
-            nodes.Clear();
+            result.Children.Clear();
             foreach (var dir in subdirectories)
             {
-                var node = nodes.Add(dir.FileName, dir.UserName);
+                var node = result.Children.Add(dir.FileName, dir.UserName);
                 if (dir.HasChildren)
                 {
                     // add dummy child node so that the user is able to expand this node
@@ -58,9 +62,67 @@ namespace Viewer.UI.Explorer
             TreeView.EndUpdate();
         }
 
+        public void RemoveDirectory(IEnumerable<string> pathParts)
+        {
+            var result = FindNode(pathParts);
+            if (result.Node == null)
+            {
+                return;
+            }
+
+            result.Node.Remove();
+        }
+
+        public void AddDirectory(IEnumerable<string> parentPath, DirectoryView newDir)
+        {
+            var result = FindNode(parentPath);
+            if (!result.IsFound)
+            {
+                return;
+            }
+
+            result.Children.Add(newDir.FileName, newDir.UserName);
+        }
+
+        public void SetDirectory(IEnumerable<string> path, DirectoryView newDir)
+        {
+            var result = FindNode(path);
+            if (result.Node == null)
+            {
+                return;
+            }
+
+            result.Node.Text = newDir.UserName;
+            result.Node.Name = newDir.FileName;
+        }
+
+        public void SelectDirectory(IEnumerable<string> path)
+        {
+            var result = FindNode(path);
+            if (result.Node == null)
+            {
+                return;
+            }
+
+            result.Node.EnsureVisible();
+            TreeView.SelectedNode = result.Node;
+        }
+
+        public void BeginEditDirectory(IEnumerable<string> path)
+        {
+            var result = FindNode(path);
+            if (result.Node == null)
+            {
+                return;
+            }
+
+            result.Node.EnsureVisible();
+            result.Node.BeginEdit();
+            TreeView.SelectedNode = result.Node;
+        }
 
         #endregion
-
+        
         private string GetPath(TreeNode node)
         {
             var parts = new List<string>();
@@ -79,8 +141,27 @@ namespace Viewer.UI.Explorer
             return fullPath;
         }
 
-        private TreeNodeCollection GetChildrenNodeCollection(IEnumerable<string> pathParts)
+        private struct TreeSearchResult
         {
+            /// <summary>
+            /// Parent node or 
+            /// null if IsFound == false or 
+            /// null if we have found a list of top level nodes
+            /// </summary>
+            public TreeNode Node;
+
+            /// <summary>
+            /// Children of the found node.
+            /// null if we haven't found any node in the tree
+            /// </summary>
+            public TreeNodeCollection Children;
+
+            public bool IsFound => Children != null;
+        }
+        
+        private TreeSearchResult FindNode(IEnumerable<string> pathParts)
+        {
+            TreeNode node = null;
             var collection = TreeView.Nodes;
             foreach (var part in pathParts)
             {
@@ -90,16 +171,23 @@ namespace Viewer.UI.Explorer
                     if (child.Name == part)
                     {
                         collection = child.Nodes;
+                        node = child;
                         found = true;
                         break;
                     }
                 }
 
                 if (!found)
-                    return null;
+                {
+                    return new TreeSearchResult();
+                }
             }
 
-            return collection;
+            return new TreeSearchResult
+            {
+                Node = node,
+                Children = collection
+            };
         }
 
         private string GetSelectedNodePath()
@@ -152,15 +240,8 @@ namespace Viewer.UI.Explorer
                 e.CancelEdit = true;
                 return;
             }
-
-            var args = new RenameDirectoryEventArgs(path, e.Label);
-            RenameDirectory?.Invoke(sender, args);
-            if (args.IsSuccessful)
-            {
-                node.Name = args.NewName;
-                node.Text = args.NewName;
-            }
-            node.EndEdit(!args.IsSuccessful);
+            
+            RenameDirectory?.Invoke(sender, new RenameDirectoryEventArgs(path, e.Label));
         }
         
         private void TreeView_KeyDown(object sender, KeyEventArgs e)
@@ -232,30 +313,14 @@ namespace Viewer.UI.Explorer
         {
             var node = TreeView.SelectedNode;
             var path = GetPath(node);
-            var args = new DirectoryEventArgs(path);
-            DeleteDirectory?.Invoke(sender, args);
-            if (args.IsSuccessful)
-            {
-                node.Remove();
-            }
+            DeleteDirectory?.Invoke(sender, new DirectoryEventArgs(path));
         }
         
         private void NewFolderMenuItem_Click(object sender, EventArgs e)
         {
             var parentNode = TreeView.SelectedNode;
             var parentPath = GetPath(parentNode);
-            var args = new CreateDirectoryEventArgs(parentPath);
-            CreateDirectory?.Invoke(sender, args);
-            if (args.IsSuccessful)
-            {
-                parentNode.Expand();
-
-                // add a new node for the directory
-                var node = parentNode.Nodes.Add(args.NewName, args.NewName);
-                node.EnsureVisible();
-                TreeView.SelectedNode = node;
-                node.BeginEdit();
-            }
+            CreateDirectory?.Invoke(sender, new CreateDirectoryEventArgs(parentPath));
         }
 
         private void ToggleMenuItem_Click(object sender, EventArgs e)

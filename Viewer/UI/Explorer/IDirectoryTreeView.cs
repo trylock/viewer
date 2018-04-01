@@ -31,23 +31,10 @@ namespace Viewer.UI.Explorer
         /// Full path to a expanded directory
         /// </summary>
         public string FullPath { get; }
-
-        /// <summary>
-        /// true iff the operation was successful
-        /// </summary>
-        public bool IsSuccessful { get; private set; } = true;
-
+        
         public DirectoryEventArgs(string fullPath)
         {
             FullPath = fullPath;
-        }
-
-        /// <summary>
-        /// Cancel the event
-        /// </summary>
-        public void Cancel()
-        {
-            IsSuccessful = false;
         }
     }
 
@@ -143,5 +130,37 @@ namespace Viewer.UI.Explorer
         /// <param name="pathParts">List of directory names which composes path to a directory</param>
         /// <param name="subdirectories">Subdirectories in given directory</param>
         void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories);
+
+        /// <summary>
+        /// Remove directory from the tree.
+        /// </summary>
+        /// <param name="pathParts">Path to the directory</param>
+        void RemoveDirectory(IEnumerable<string> pathParts);
+
+        /// <summary>
+        /// Add directory
+        /// </summary>
+        /// <param name="parentPath">Path to a parent</param>
+        /// <param name="newDirectory">New directory to add</param>
+        void AddDirectory(IEnumerable<string> parentPath, DirectoryView newDirectory);
+
+        /// <summary>
+        /// Set new directory view (e.g. after a rename operation)
+        /// </summary>
+        /// <param name="path">Path to old directory</param>
+        /// <param name="directory">New directory view</param>
+        void SetDirectory(IEnumerable<string> path, DirectoryView directory);
+
+        /// <summary>
+        /// Make sure given directory is visible and make it the selected directory.
+        /// </summary>
+        /// <param name="path">Path to a directory</param>
+        void SelectDirectory(IEnumerable<string> path);
+
+        /// <summary>
+        /// Make sure given directory is visible and begin editing its name.
+        /// </summary>
+        /// <param name="path">Path to a directory</param>
+        void BeginEditDirectory(IEnumerable<string> path);
     }
 }

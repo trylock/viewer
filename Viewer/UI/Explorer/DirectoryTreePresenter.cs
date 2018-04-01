@@ -119,7 +119,6 @@ namespace Viewer.UI.Explorer
         {
             if (!PathUtils.IsValidFileName(e.NewName))
             {
-                e.Cancel();
                 _errorView.InvalidFileName(e.NewName, PathUtils.GetInvalidFileCharacters());
                 return;
             }
@@ -127,15 +126,18 @@ namespace Viewer.UI.Explorer
             try
             {
                 DirectoryUtils.Rename(e.FullPath, e.NewName);
+                _treeView.SetDirectory(PathUtils.Split(e.FullPath), new DirectoryView
+                {
+                    FileName = e.NewName,
+                    UserName = e.NewName,
+                });
             }
             catch (UnauthorizedAccessException)
             {
-                e.Cancel();
                 _errorView.UnauthorizedAccess(e.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                e.Cancel();
                 _errorView.DirectoryNotFound(e.FullPath);
             }
         }
@@ -144,22 +146,22 @@ namespace Viewer.UI.Explorer
         {
             if (!_errorView.ConfirmDelete(e.FullPath))
             {
-                e.Cancel();
                 return;
             }
 
             try
             {
                 Directory.Delete(e.FullPath, true);
+                _treeView.RemoveDirectory(PathUtils.Split(e.FullPath));
             }
             catch (DirectoryNotFoundException)
             {
-                // we don't want to cancel the operation as the delete was technically successful
                 _errorView.DirectoryNotFound(e.FullPath);
+                // we stil want to remove the directory from the view
+                _treeView.RemoveDirectory(PathUtils.Split(e.FullPath));
             }
             catch (UnauthorizedAccessException)
             {
-                e.Cancel();
                 _errorView.UnauthorizedAccess(e.FullPath);
             }
         }
@@ -169,16 +171,21 @@ namespace Viewer.UI.Explorer
             try
             {
                 e.NewName = "New Folder";
-                Directory.CreateDirectory(Path.Combine(e.FullPath, e.NewName));
+                var directoryPath = Path.Combine(e.FullPath, e.NewName);
+                Directory.CreateDirectory(directoryPath);
+                _treeView.AddDirectory(PathUtils.Split(e.FullPath), new DirectoryView
+                {
+                    UserName = e.NewName,
+                    FileName = e.NewName
+                });
+                _treeView.BeginEditDirectory(PathUtils.Split(directoryPath));
             }
             catch (UnauthorizedAccessException)
             {
-                e.Cancel();
                 _errorView.UnauthorizedAccess(e.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                e.Cancel();
                 _errorView.DirectoryNotFound(e.FullPath);
             }
         }
@@ -204,10 +211,7 @@ namespace Viewer.UI.Explorer
                 return;
             }
 
-            if (!PasteFiles(e.FullPath, files, e.Effect))
-            {
-                e.Cancel();
-            }
+            PasteFiles(e.FullPath, files, e.Effect);
         }
 
         private void View_PasteClipboardToDirectory(object sender, DirectoryEventArgs e)
@@ -215,7 +219,7 @@ namespace Viewer.UI.Explorer
             PasteFiles(e.FullPath, _clipboard.GetFiles(), _clipboard.GetPreferredEffect());
         }
 
-        private bool PasteFiles(string destinationDirectory, IEnumerable<string> files, DragDropEffects effect)
+        private void PasteFiles(string destinationDirectory, IEnumerable<string> files, DragDropEffects effect)
         {
             try
             {
@@ -261,14 +265,12 @@ namespace Viewer.UI.Explorer
             catch (UnauthorizedAccessException)
             {
                 _errorView.UnauthorizedAccess(destinationDirectory);
-                return false;
             }
 
             // update subdirectories in given path
             _treeView.LoadDirectories(
                 PathUtils.Split(destinationDirectory),
                 GetValidSubdirectories(destinationDirectory));
-            return true;
         }
         
         private void CopyDirectory(string source, string target)

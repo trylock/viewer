@@ -79,6 +79,17 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you really want to permanently delete all these files:
+        ///    
+        ///{0}.
+        /// </summary>
+        internal static string ConfirmDeleteAll_Message {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteAll_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copying files.
         /// </summary>
         internal static string CopyingFiles_Label {
@@ -159,6 +170,24 @@ namespace Viewer.Properties {
         internal static string FailedToMove_Message {
             get {
                 return ResourceManager.GetString("FailedToMove_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File In Use.
+        /// </summary>
+        internal static string FileInUse_Label {
+            get {
+                return ResourceManager.GetString("FileInUse_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File {0} is open in another application..
+        /// </summary>
+        internal static string FileInUse_Message {
+            get {
+                return ResourceManager.GetString("FileInUse_Message", resourceCulture);
             }
         }
         

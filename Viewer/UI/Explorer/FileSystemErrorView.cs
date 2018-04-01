@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,6 +61,12 @@ namespace Viewer.UI.Explorer
         /// </summary>
         /// <param name="path">Path which caused the error</param>
         void PathTooLong(string path);
+
+        /// <summary>
+        /// Specified file is in use.
+        /// </summary>
+        /// <param name="path">Path to a file</param>
+        void FileInUse(string path);
     }
 
     public class FileSystemErrorView : IFileSystemErrorView
@@ -138,6 +144,15 @@ namespace Viewer.UI.Explorer
             MessageBox.Show(
                 string.Format(Resources.FileNotFound_Message, filePath),
                 Resources.FileNotFound_Label,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+
+        public void FileInUse(string filePath)
+        {
+            MessageBox.Show(
+                string.Format(Resources.FileInUse_Message, filePath),
+                Resources.FileInUse_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }

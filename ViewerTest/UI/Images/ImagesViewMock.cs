@@ -30,18 +30,20 @@ namespace ViewerTest.UI.Images
         public event EventHandler Resize;
         public event KeyEventHandler HandleKeyDown;
         public event KeyEventHandler HandleKeyUp;
-        public event ScrollEventHandler HandleScroll;
         public event EventHandler BeginEditItemName;
         public event EventHandler CancelEditItemName;
         public event EventHandler<RenameEventArgs> RenameItem;
+        public event EventHandler CopyItems;
+        public event EventHandler DeleteItems;
 
         public Size ItemSize { get; set; } = new Size(1, 1);
         public Size ItemPadding { get; set; } = new Size(0, 0);
-        public List<ItemMock> Items { get; } = new List<ItemMock>();
+        public IList<ResultItemView> Items { get; set; } = new List<ResultItemView>();
         public Rectangle CurrentSelection { get; private set; } = Rectangle.Empty;
         public Size ViewSize { get; } = new Size(8, 8);
         public bool IsActive { get; private set; } = false;
         public int EditIndex { get; private set; } = -1;
+        public ISet<int> UpdatedItems { get; } = new HashSet<int>();
 
         // mock interface
         public ImagesViewMock(int width, int height)
@@ -51,7 +53,7 @@ namespace ViewerTest.UI.Images
             {
                 for (int j = 0; j < ViewSize.Height / 2; ++j)
                 {
-                    Items.Add(new ItemMock());
+                    Items.Add(new ResultItemView(null, null));
                 }
             }
         }
@@ -61,8 +63,8 @@ namespace ViewerTest.UI.Images
             foreach (var item in Items)
             {
                 item.State = ResultItemState.None;
-                item.IsUpdated = false;
             }
+            UpdatedItems.Clear();
         }
 
         public void TriggerMouseDown(MouseEventArgs args)
@@ -100,13 +102,8 @@ namespace ViewerTest.UI.Images
         {
         }
 
-        public void LoadItems(IEnumerable<ResultItemView> items)
+        public void UpdateItems()
         {
-            Items.Clear();
-            foreach (var item in items)
-            {
-                Items.Add(new ItemMock());
-            }
         }
 
         public void UpdateItems(IEnumerable<int> itemIndices)
@@ -116,26 +113,14 @@ namespace ViewerTest.UI.Images
                 UpdateItem(item);
             }
         }
-
-        public void RemoveItems(Predicate<ResultItemView> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public void UpdateItem(int index)
         {
             if (index < 0 || index >= Items.Count)
                 return;
-            Items[index].IsUpdated = true;
+            UpdatedItems.Add(index);
         }
-
-        public void SetState(int index, ResultItemState state)
-        {
-            if (index < 0 || index >= Items.Count)
-                return;
-            Items[index].State = state;
-        }
-
+        
         public void ShowSelection(Rectangle bounds)
         {
             CurrentSelection = bounds;

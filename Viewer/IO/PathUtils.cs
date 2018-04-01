@@ -77,7 +77,7 @@ namespace Viewer.IO
         /// <returns>true iff given value could be a valid file/folder name</returns>
         public static bool IsValidFileName(string name)
         {
-            return !String.IsNullOrEmpty(name) &&
+            return !string.IsNullOrEmpty(name) &&
                    name.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
         }
 

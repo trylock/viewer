@@ -18,6 +18,7 @@ namespace Viewer.UI.Images
         private readonly IImagesView _imagesView;
         private readonly IFileSystemErrorView _dialogView;
         private readonly IAttributeStorage _storage;
+        private readonly IClipboardService _clipboard;
         private readonly IThumbnailGenerator _thumbnailGenerator;
 
         // current state
@@ -28,9 +29,11 @@ namespace Viewer.UI.Images
             IImagesView imagesView, 
             IFileSystemErrorView dialogView,
             IAttributeStorage storage, 
+            IClipboardService clipboard,
             IThumbnailGenerator thumbnailGenerator)
         {
             _storage = storage;
+            _clipboard = clipboard;
             _thumbnailGenerator = thumbnailGenerator;
 
             _dialogView = dialogView;
@@ -44,12 +47,14 @@ namespace Viewer.UI.Images
             _imagesView.HandleKeyUp += View_CaptureControlKeys;
             _imagesView.BeginEditItemName += View_BeginEditItemName;
             _imagesView.CancelEditItemName += View_CancelEditItemName;
+            _imagesView.DeleteItems += View_DeleteItems;
             _imagesView.RenameItem += View_RenameItem;
+            _imagesView.CopyItems += View_CopyItems;
             _imagesView.Resize += View_Resize;
 
             _imagesView.UpdateSize();
         }
-
+        
         public void AddItemsInternal(IEnumerable<AttributeCollection> items)
         {
             _items.AddRange(items);
@@ -74,7 +79,8 @@ namespace Viewer.UI.Images
             _storage.Flush();
 
             // update view
-            _imagesView.LoadItems(_items.Select(attrs => new ResultItemView(attrs, GetThumbnail(attrs))));
+            _imagesView.Items = _items.Select(attrs => new ResultItemView(attrs, GetThumbnail(attrs))).ToList();
+            _imagesView.UpdateItems();
         }
 
         private Image GetThumbnail(AttributeCollection item)
@@ -147,16 +153,15 @@ namespace Viewer.UI.Images
             var bounds = GetSelectionBounds(endPoint);
             var newSelection = _imagesView.GetItemsIn(bounds);
             ChangeSelection(newSelection, selectionStrategy);
-
             _imagesView.ShowSelection(bounds);
         }
-
+        
         private void ChangeSelection(IEnumerable<int> newSelection, SelectionStrategy strategy)
         {
             // reset state of items in current selection
             foreach (var item in _currentSelection)
             {
-                _imagesView.SetState(item, ResultItemState.None);
+                _imagesView.Items[item].State = ResultItemState.None;
             }
             _imagesView.UpdateItems(_currentSelection);
 
@@ -176,7 +181,7 @@ namespace Viewer.UI.Images
             // set state of items in current selection
             foreach (var item in _currentSelection)
             {
-                _imagesView.SetState(item, ResultItemState.Selected);
+                _imagesView.Items[item].State = ResultItemState.Selected;
             }
             _imagesView.UpdateItems(_currentSelection);
         }
@@ -226,7 +231,7 @@ namespace Viewer.UI.Images
                     // make the active item the only item in selection
                     ChangeSelection(
                         Enumerable.Repeat(index, 1), 
-                        SelectionStrategy.None);
+                        SelectionStrategy.Replace);
                 }
 
                 // begin the move operation on files in selection
@@ -257,15 +262,15 @@ namespace Viewer.UI.Images
             var item = _imagesView.GetItemAt(e.Location);
             if (item != ActiveItem)
             {
-                if (!_currentSelection.Contains(item))
+                if (item >= 0 && !_currentSelection.Contains(item))
                 {
-                    _imagesView.SetState(item, ResultItemState.Active);
+                    _imagesView.Items[item].State = ResultItemState.Active;
                     _imagesView.UpdateItem(item);
                 }
 
-                if (!_currentSelection.Contains(ActiveItem))
+                if (ActiveItem >= 0 && !_currentSelection.Contains(ActiveItem))
                 {
-                    _imagesView.SetState(ActiveItem, ResultItemState.None);
+                    _imagesView.Items[ActiveItem].State = ResultItemState.None;
                     _imagesView.UpdateItem(ActiveItem);
                 }
 
@@ -301,7 +306,7 @@ namespace Viewer.UI.Images
         {
             if (e.Control && e.KeyCode == Keys.A)
             {
-                ChangeSelection(Enumerable.Range(0, _items.Count), SelectionStrategy.None);
+                ChangeSelection(Enumerable.Range(0, _items.Count), SelectionStrategy.Replace);
             }
             else if (e.KeyCode == Keys.Escape)
             {
@@ -352,7 +357,7 @@ namespace Viewer.UI.Images
                 item.Path = newPath;
                 _imagesView.UpdateItem(index);
             }
-            catch (PathTooLongException ex)
+            catch (PathTooLongException)
             {
                 _dialogView.PathTooLong(newPath);
             }
@@ -372,6 +377,67 @@ namespace Viewer.UI.Images
             {
                 _imagesView.HideItemEditForm();
             }
+        }
+
+        private void View_CopyItems(object sender, EventArgs e)
+        {
+            _clipboard.SetFiles(_currentSelection.Select(index => _items[index].Path));
+            _clipboard.SetPreferredEffect(DragDropEffects.Copy);
+        }
+
+        private void View_DeleteItems(object sender, EventArgs e)
+        {
+            if (_currentSelection.Count <= 0)
+            {
+                return;
+            }
+
+            // confirm delete
+            var filesToDelete = _currentSelection.Select(index => _items[index].Path);
+            if (!_dialogView.ConfirmDelete(filesToDelete))
+            {
+                return;
+            }
+
+            // delete files 
+            var actuallyDeleted = new HashSet<string>();
+            foreach (var index in _currentSelection)
+            {
+                var item = _items[index];
+                try
+                {
+                    File.Delete(item.Path);
+                    _imagesView.Items[index].Dispose();
+                    actuallyDeleted.Add(item.Path);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    _dialogView.UnauthorizedAccess(item.Path);
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    _dialogView.DirectoryNotFound(ex.Message);
+                }
+                catch (PathTooLongException)
+                {
+                    _dialogView.PathTooLong(item.Path);
+                }
+                catch (IOException)
+                {
+                    _dialogView.FileInUse(item.Path);
+                }
+            }
+
+            // remove deleted items from the view
+            _imagesView.Items = (
+                from item in _imagesView.Items
+                where !actuallyDeleted.Contains(item.FullPath)
+                select item
+            ).ToList();
+            _imagesView.UpdateItems();
+
+            // remove deleted items from the result
+            _items.RemoveAll(item => actuallyDeleted.Contains(item.Path));
         }
 
         #endregion

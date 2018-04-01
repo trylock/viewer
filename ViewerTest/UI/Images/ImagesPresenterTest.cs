@@ -23,15 +23,17 @@ namespace ViewerTest.UI.Images
     public class ImagesPresenterTest
     {
         private ImagesViewMock _viewMock;
+        private ClipboardServiceMock _clipboardMock;
         private ImagesPresenter _presenter;
 
         [TestInitialize]
         public void Setup()
         {
             _viewMock = new ImagesViewMock(8, 8);
+            _clipboardMock = new ClipboardServiceMock();
             var storage = new MemoryAttributeStorage();
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            _presenter = new ImagesPresenter(_viewMock, null, storage, thumbnailGenerator);
+            _presenter = new ImagesPresenter(_viewMock, null, storage, _clipboardMock, thumbnailGenerator);
             _presenter.AddItemsInternal(Enumerable.Repeat<AttributeCollection>(null, 16));
         }
 
@@ -56,12 +58,12 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 5 || index == 6)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.Selected, item.State);
                 }
                 else
                 {
-                    Assert.IsFalse(item.IsUpdated);
+                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -91,12 +93,12 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 5 || index == 6)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.Selected, item.State);
                 }
                 else
                 {
-                    Assert.IsFalse(item.IsUpdated);
+                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -122,12 +124,12 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 5 || index == 3)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.Selected, item.State);
                 }
                 else
                 {
-                    Assert.IsFalse(item.IsUpdated);
+                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -153,17 +155,17 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 4 || index == 6)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.Selected, item.State);
                 }
                 else if (index == 5)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 else
                 {
-                    Assert.IsFalse(item.IsUpdated);
+                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -188,17 +190,17 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 0)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.Selected, item.State);
                 }
                 else if (index == 5 || index == 6)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 else
                 {
-                    Assert.IsFalse(item.IsUpdated);
+                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -214,10 +216,12 @@ namespace ViewerTest.UI.Images
                 Enumerable.Range(0, 16).ToArray(), 
                 _presenter.Selection.OrderBy(x => x).ToArray());
 
+            var index = 0;
             foreach (var item in _viewMock.Items)
             {
-                Assert.IsTrue(item.IsUpdated);
+                Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                 Assert.AreEqual(ResultItemState.Selected, item.State);
+                ++index;
             }
         }
 
@@ -227,27 +231,30 @@ namespace ViewerTest.UI.Images
             // move with mouse between items
             _viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 1, 1, 0));
             Assert.AreEqual(-1, _presenter.ActiveItem);
+
+            var index = 0;
             foreach (var item in _viewMock.Items)
             {
-                Assert.IsFalse(item.IsUpdated);
+                Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                 Assert.AreEqual(ResultItemState.None, item.State);
+                ++index;
             }
             _viewMock.ResetMock();
 
             // select an item
             _viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 2, 2, 0));
             Assert.AreEqual(5, _presenter.ActiveItem);
-            var index = 0;
+            index = 0;
             foreach (var item in _viewMock.Items)
             {
                 if (index == 5)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.Active, item.State);
                 }
                 else
                 {
-                    Assert.IsFalse(item.IsUpdated);
+                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -262,17 +269,17 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 5)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 else if (index == 6)
                 {
-                    Assert.IsTrue(item.IsUpdated);
+                    Assert.IsTrue(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.Active, item.State);
                 }
                 else
                 {
-                    Assert.IsFalse(item.IsUpdated);
+                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;

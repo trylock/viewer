@@ -91,8 +91,23 @@ namespace Viewer.UI.Images
         /// </summary>
         event EventHandler<RenameEventArgs> RenameItem;
 
+        /// <summary>
+        /// Event called when user requests to copy items
+        /// </summary>
+        event EventHandler CopyItems;
+
+        /// <summary>
+        /// Event called when user requests to delete items
+        /// </summary>
+        event EventHandler DeleteItems;
+
         Size ItemSize { get; set; }
         Size ItemPadding { get; set; }
+
+        /// <summary>
+        /// List of items to show 
+        /// </summary>
+        IList<ResultItemView> Items { get; set; }
 
         /// <summary>
         /// Update gird size
@@ -100,32 +115,22 @@ namespace Viewer.UI.Images
         void UpdateSize();
 
         /// <summary>
-        /// Discard old items and load new.
+        /// Notify the view that the Items collection has changed.
         /// </summary>
-        /// <param name="items">New items to show in the view</param>
-        void LoadItems(IEnumerable<ResultItemView> items);
+        void UpdateItems();
 
         /// <summary>
         /// Update items in the view.
         /// </summary>
         /// <param name="itemIndices">Indicies of items to update</param>
         void UpdateItems(IEnumerable<int> itemIndices);
-
+        
         /// <summary>
         /// Update a single item in the view.
         /// Noop, if the <paramref name="index"/> is not a valid index of any item.
         /// </summary>
         /// <param name="index">Index of an item</param>
         void UpdateItem(int index);
-
-        /// <summary>
-        /// Set state of an item.
-        /// Noop, if the <paramref name="index"/> is not a valid index of any item.
-        /// Note: use the UpdateItem(index) method to force the item to redraw.
-        /// </summary>
-        /// <param name="index">Index of an item</param>
-        /// <param name="state">New state of the item</param>
-        void SetState(int index, ResultItemState state);
 
         /// <summary>
         /// Draw rectangular selection area.

@@ -36,7 +36,6 @@ namespace Viewer.UI.Images
 
         private Grid _grid = new Grid();
         private Rectangle _selection = Rectangle.Empty;
-        private List<ResultItemView> _items = new List<ResultItemView>();
 
         public GridControl(string name)
         {
@@ -59,9 +58,6 @@ namespace Viewer.UI.Images
 
         #region Grid view
 
-        public event EventHandler BeginEditItemName;
-        public event EventHandler CancelEditItemName;
-        public event EventHandler<RenameEventArgs> RenameItem;
         public event MouseEventHandler HandleMouseDown;
         public event MouseEventHandler HandleMouseUp;
         public event MouseEventHandler HandleMouseMove;
@@ -75,20 +71,31 @@ namespace Viewer.UI.Images
             add => KeyUp += value;
             remove => KeyUp -= value;
         }
+        public event EventHandler CopyItems
+        {
+            add => CopyMenuItem.Click += value;
+            remove => CopyMenuItem.Click -= value;
+        }
+        public event EventHandler DeleteItems
+        {
+            add => DeleteMenuItem.Click += value;
+            remove => DeleteMenuItem.Click -= value;
+        }
+        public event EventHandler CancelEditItemName;
+        public event EventHandler<RenameEventArgs> RenameItem;
+        public event EventHandler BeginEditItemName
+        {
+            add => RenameMenuItem.Click += value;
+            remove => RenameMenuItem.Click -= value;
+        }
 
         public Size ItemSize { get; set; } = new Size(150, 100);
         public Size ItemPadding { get; set; } = new Size(8, 8);
+        public IList<ResultItemView> Items { get; set; }
 
-        public void LoadItems(IEnumerable<ResultItemView> items)
+        public void UpdateItems()
         {
-            foreach (var item in _items)
-            {
-                item.Dispose();
-            }
-            _items.Clear();
-            _items.AddRange(items);
-            _grid.CellCount = _items.Count;
-
+            _grid.CellCount = Items.Count;
             Refresh();
         }
 
@@ -99,29 +106,16 @@ namespace Viewer.UI.Images
                 UpdateItem(index);
             }
         }
-
-        public void RemoveItems(Predicate<ResultItemView> predicate)
-        {
-            _items.RemoveAll(predicate);
-            Refresh();
-        }
-
+        
         public void UpdateItem(int index)
         {
-            if (index < 0 || index >= _items.Count)
+            if (index < 0 || index >= Items.Count)
                 return;
             var cell = _grid.GetCell(index);
             var bounds = cell.Bounds;
             Invalidate(ProjectBounds(bounds));
         }
-
-        public void SetState(int index, ResultItemState state)
-        {
-            if (index < 0 || index >= _items.Count)
-                return;
-            _items[index].State = state;
-        }
-
+        
         public void ShowSelection(Rectangle bounds)
         {
             Invalidate(ProjectBounds(_selection));
@@ -152,10 +146,10 @@ namespace Viewer.UI.Images
 
         public void ShowItemEditForm(int index)
         {
-            if (index < 0 || index >= _items.Count)
+            if (index < 0 || index >= Items.Count)
                 return;
 
-            var item = _items[index];
+            var item = Items[index];
             var cell = _grid.GetCell(index);
 
             NameTextBox.Visible = true;
@@ -272,7 +266,7 @@ namespace Viewer.UI.Images
             );
         }
 
-        #region Events
+        #region GridControl Events
 
         private void GridControl_Paint(object sender, PaintEventArgs e)
         {
@@ -296,7 +290,7 @@ namespace Viewer.UI.Images
         private void PaintItem(Graphics graphics, GridCell cell)
         {
             // find thumbnail
-            var item = _items[cell.Index];
+            var item = Items[cell.Index];
             var bounds = ProjectBounds(cell.Bounds);
 
             // clear grid cell area
@@ -350,16 +344,7 @@ namespace Viewer.UI.Images
         }
 
         #endregion
-
-        #region Context menu
-
-        private void RenameMenuItem_Click(object sender, EventArgs e)
-        {
-            BeginEditItemName?.Invoke(sender, e);
-        }
-
-        #endregion
-
+        
         private void NameTextBox_Leave(object sender, EventArgs e)
         {
             CancelEditItemName?.Invoke(sender, e);

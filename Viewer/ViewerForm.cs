@@ -54,7 +54,7 @@ namespace Viewer
                 var imagesView = new GridControl(Resources.QueryResultWindowName);
                 imagesView.Show(_dockPanel, DockState.Document);
 
-                var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, storage, thumbnailGenerator);
+                var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, storage, clipboard, thumbnailGenerator);
                 imagesPresenter.LoadDirectory("C:/tmp");
             }
         }

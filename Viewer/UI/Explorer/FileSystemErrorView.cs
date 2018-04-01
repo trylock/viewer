@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,11 +36,18 @@ namespace Viewer.UI.Explorer
         void InvalidFileName(string fileName, string invalidCharacters);
 
         /// <summary>
-        /// Show confirm dialog of directory deletion. 
+        /// Show confirm dialog of file deletion. 
         /// </summary>
         /// <param name="fileName">Full directory path</param>
-        /// <returns>true iff user confirmed that he/she wants to delete the directory</returns>
+        /// <returns>true iff user confirmed that he/she wants to delete the file</returns>
         bool ConfirmDelete(string fileName);
+
+        /// <summary>
+        /// Show confirm dialog of deletion of a list of files
+        /// </summary>
+        /// <param name="fileName">List of files to delete</param>
+        /// <returns>true iff user confirmed that he/she wants to delete all the files</returns>
+        bool ConfirmDelete(IEnumerable<string> fileName);
 
         /// <summary>
         /// Show error message: failed to move from <paramref name="sourcePath"/> to <paramref name="destinationPath"/>
@@ -89,6 +96,18 @@ namespace Viewer.UI.Explorer
         {
             var result = MessageBox.Show(
                 string.Format(Resources.ConfirmDelete_Message, fullPath),
+                Resources.ConfirmDelete_Label,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2);
+            return result == DialogResult.Yes;
+        }
+
+        public bool ConfirmDelete(IEnumerable<string> fileName)
+        {
+            var files = string.Join(Environment.NewLine, fileName);
+            var result = MessageBox.Show(
+                string.Format(Resources.ConfirmDeleteAll_Message, files),
                 Resources.ConfirmDelete_Label,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question,

@@ -67,6 +67,7 @@
     <Compile Include="IO\PathUtilsTest.cs" />
     <Compile Include="MathUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ClipboardServiceMock.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
     <Compile Include="UI\Images\ImagesPresenterTest.cs" />
     <Compile Include="UI\Images\ImagesViewMock.cs" />

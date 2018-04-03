@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.IO;
@@ -19,21 +20,24 @@ namespace Viewer.UI.Explorer
         /// </summary>
         public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
 
+        private IFileSystem _fileSystem;
         private IClipboardService _clipboard;
         private IDirectoryTreeView _treeView;
         private IFileSystemErrorView _errorView;
-        private IProgressView _progressView;
+        private IProgressViewFactory _progressViewFactory;
 
         public DirectoryTreePresenter(
             IDirectoryTreeView treeView, 
-            IProgressView progressView, 
+            IProgressViewFactory progressViewFactory, 
             IFileSystemErrorView errorView,
+            IFileSystem fileSystem,
             IClipboardService clipboard)
         {
             _clipboard = clipboard;
+            _fileSystem = fileSystem;
 
             _errorView = errorView;
-            _progressView = progressView;
+            _progressViewFactory = progressViewFactory;
             _treeView = treeView;
             _treeView.ExpandDirectory += View_ExpandDirectory;
             _treeView.RenameDirectory += View_RenameDirectory;
@@ -125,7 +129,8 @@ namespace Viewer.UI.Explorer
 
             try
             {
-                DirectoryUtils.Rename(e.FullPath, e.NewName);
+                var newPath = Path.Combine(Path.GetDirectoryName(e.FullPath), e.NewName);
+                _fileSystem.MoveDirectory(e.FullPath, newPath);
                 _treeView.SetDirectory(PathUtils.Split(e.FullPath), new DirectoryView
                 {
                     FileName = e.NewName,
@@ -151,7 +156,7 @@ namespace Viewer.UI.Explorer
 
             try
             {
-                Directory.Delete(e.FullPath, true);
+                _fileSystem.DeleteDirectory(e.FullPath, true);
                 _treeView.RemoveDirectory(PathUtils.Split(e.FullPath));
             }
             catch (DirectoryNotFoundException)
@@ -164,19 +169,23 @@ namespace Viewer.UI.Explorer
             {
                 _errorView.UnauthorizedAccess(e.FullPath);
             }
+            catch (IOException)
+            {
+                _errorView.FileInUse(e.FullPath);
+            }
         }
         
-        private void View_CreateDirectory(object sender, CreateDirectoryEventArgs e)
+        private void View_CreateDirectory(object sender, DirectoryEventArgs e)
         {
             try
             {
-                e.NewName = "New Folder";
-                var directoryPath = Path.Combine(e.FullPath, e.NewName);
-                Directory.CreateDirectory(directoryPath);
+                var newName = "New Folder";
+                var directoryPath = Path.Combine(e.FullPath, newName);
+                _fileSystem.CreateDirectory(directoryPath);
                 _treeView.AddDirectory(PathUtils.Split(e.FullPath), new DirectoryView
                 {
-                    UserName = e.NewName,
-                    FileName = e.NewName
+                    UserName = newName,
+                    FileName = newName
                 });
                 _treeView.BeginEditDirectory(PathUtils.Split(directoryPath));
             }
@@ -219,86 +228,129 @@ namespace Viewer.UI.Explorer
             PasteFiles(e.FullPath, _clipboard.GetFiles(), _clipboard.GetPreferredEffect());
         }
 
+        private class CopyHandle
+        {
+            private IFileSystem _fileSystem;
+            private IProgressView _progressView;
+            private IFileSystemErrorView _dialogView;
+            private string _baseDir;
+            private string _destDir;
+            private CancellationTokenSource _cancellation;
+
+            public CopyHandle(
+                IFileSystem fileSystem, 
+                string baseDir, 
+                string desDir, 
+                IProgressView progressView, 
+                IFileSystemErrorView dialogView,
+                CancellationTokenSource cancellation)
+            {
+                _fileSystem = fileSystem;
+                _baseDir = baseDir;
+                _destDir = desDir;
+                _dialogView = dialogView;
+                _progressView = progressView;
+                _progressView.CancelProgress += OnCanceled;
+                _cancellation = cancellation;
+            }
+
+            private void OnCanceled(object sender, EventArgs eventArgs)
+            {
+                _cancellation.Cancel();
+            }
+
+            private string GetDestinationPath(string path)
+            {
+                var partialPath = path.Substring(_baseDir.Length + 1);
+                return Path.Combine(_destDir, partialPath);
+            }
+
+            private void CancelIfRequested()
+            {
+                _cancellation.Token.ThrowIfCancellationRequested();
+            }
+
+            public SearchControl CopyDirectory(string path)
+            {
+                CancelIfRequested();
+                var destDir = GetDestinationPath(path);
+                _fileSystem.CreateDirectory(destDir);
+                return SearchControl.Visit;
+            }
+
+            public SearchControl CopyFile(string path)
+            {
+                CancelIfRequested();
+                var destPath = GetDestinationPath(path);
+                _progressView.StartWork(path);
+                try
+                {
+                    _fileSystem.CopyFile(path, destPath);
+                }
+                catch (DirectoryNotFoundException e)
+                {
+                    _dialogView.DirectoryNotFound(e.Message);
+                }
+                finally
+                {
+                    _progressView.FinishWork();
+                }
+
+                return SearchControl.None;
+            }
+
+            public SearchControl MoveFile(string path)
+            {
+                CancelIfRequested();
+                var destPath = GetDestinationPath(path);
+                _progressView.StartWork(path);
+                try
+                {
+                    _fileSystem.MoveFile(path, destPath);
+                }
+                catch (DirectoryNotFoundException e)
+                {
+                    _dialogView.DirectoryNotFound(e.Message);
+                }
+                finally
+                {
+                    _progressView.FinishWork();
+                }
+
+                return SearchControl.None;
+            }
+        }
+
         private void PasteFiles(string destinationDirectory, IEnumerable<string> files, DragDropEffects effect)
         {
-            try
+            // copy files
+            var fileCount = (int)_fileSystem.CountFiles(files, true);
+            var progressView = _progressViewFactory.Create();
+            progressView.Show(Resources.CopyingFiles_Label, fileCount, () =>
             {
-                // copy/move all files in the clipboard
-                foreach (var source in files)
+                var cancellation = new CancellationTokenSource();
+                Task.Run(() =>
                 {
-                    var target = Path.Combine(destinationDirectory, PathUtils.GetLastPart(source));
-
-                    if ((effect & DragDropEffects.Move) != 0)
+                    foreach (var file in files)
                     {
-                        if (File.Exists(source))
-                        {
-                            File.Move(source, target);
-                        }
+                        cancellation.Token.ThrowIfCancellationRequested();
+                        var baseDir = PathUtils.GetBasePath(file);
+                        var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, progressView, _errorView, cancellation);
+                        if ((effect & DragDropEffects.Move) != 0)
+                            _fileSystem.Search(file, copy.CopyDirectory, copy.MoveFile);
                         else
-                        {
-                            Directory.Move(source, target);
-                        }
+                            _fileSystem.Search(file, copy.CopyDirectory, copy.CopyFile);
                     }
-                    else if ((effect & DragDropEffects.Copy) != 0)
-                    {
-                        if (File.Exists(source))
-                        {
-                            File.Copy(source, target);
-                        }
-                        else
-                        {
-                            CopyDirectory(source, target);
-                        }
-                    }
-                }
-            }
-            catch (DirectoryNotFoundException)
-            {
-                // a directory in the data was deleted
-                // ignore the event 
-            }
-            catch (FileNotFoundException)
-            {
-                // a file in the data was deleted
-                // ignore the event 
-            }
-            catch (UnauthorizedAccessException)
-            {
-                _errorView.UnauthorizedAccess(destinationDirectory);
-            }
+                }, cancellation.Token);
+            });
+            
+            // This assumes that the progress view creates a custom message loop and
+            // won't yield execution until it is closed.
 
             // update subdirectories in given path
             _treeView.LoadDirectories(
                 PathUtils.Split(destinationDirectory),
                 GetValidSubdirectories(destinationDirectory));
-        }
-        
-        private void CopyDirectory(string source, string target)
-        {
-            var filesCount = (int)DirectoryUtils.CountFiles(source, true);
-            var isCanceled = false;
-            _progressView.CancelProgress += (o, args) => isCanceled = true;
-            _progressView.Show(Resources.CopyingFiles_Label, filesCount, () => {
-                DirectoryUtils.Copy(source, target, true,
-                    file =>
-                    {
-                        _progressView.StartWork(file);
-                        return !isCanceled;
-                    });
-                if (isCanceled)
-                {
-                    _progressView.Hide();
-                }
-                else
-                {
-                    _progressView.Finish();
-                }
-            });
-
-            if (isCanceled)
-            {
-                Directory.Delete(target, true);
-            }
         }
     }
 }

@@ -37,19 +37,7 @@ namespace Viewer.UI.Explorer
             FullPath = fullPath;
         }
     }
-
-    public class CreateDirectoryEventArgs : DirectoryEventArgs
-    {
-        /// <summary>
-        /// Name of the new directory
-        /// </summary>
-        public string NewName { get; set; }
-
-        public CreateDirectoryEventArgs(string fullPath) : base(fullPath)
-        {
-        }
-    }
-
+    
     public class RenameDirectoryEventArgs : DirectoryEventArgs
     {
         /// <summary>
@@ -102,7 +90,7 @@ namespace Viewer.UI.Explorer
         /// <summary>
         /// Event called when user requests to create a new directory
         /// </summary>
-        event EventHandler<CreateDirectoryEventArgs> CreateDirectory;
+        event EventHandler<DirectoryEventArgs> CreateDirectory;
 
         /// <summary>
         /// Event called when user requests to open a directory in system file explorer

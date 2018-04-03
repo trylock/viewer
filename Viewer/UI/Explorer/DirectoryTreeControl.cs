@@ -34,7 +34,7 @@ namespace Viewer.UI.Explorer
         public event EventHandler<DirectoryEventArgs> ExpandDirectory;
         public event EventHandler<RenameDirectoryEventArgs> RenameDirectory;
         public event EventHandler<DirectoryEventArgs> DeleteDirectory;
-        public event EventHandler<CreateDirectoryEventArgs> CreateDirectory;
+        public event EventHandler<DirectoryEventArgs> CreateDirectory;
         public event EventHandler<DirectoryEventArgs> OpenInExplorer;
         public event EventHandler<DirectoryEventArgs> CopyDirectory;
         public event EventHandler<PasteEventArgs> PasteToDirectory;
@@ -320,7 +320,7 @@ namespace Viewer.UI.Explorer
         {
             var parentNode = TreeView.SelectedNode;
             var parentPath = GetPath(parentNode);
-            CreateDirectory?.Invoke(sender, new CreateDirectoryEventArgs(parentPath));
+            CreateDirectory?.Invoke(sender, new DirectoryEventArgs(parentPath));
         }
 
         private void ToggleMenuItem_Click(object sender, EventArgs e)

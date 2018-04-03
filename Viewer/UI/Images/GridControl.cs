@@ -96,6 +96,7 @@ namespace Viewer.UI.Images
         public void UpdateItems()
         {
             _grid.CellCount = Items.Count;
+            UpdateSize();
             Refresh();
         }
 

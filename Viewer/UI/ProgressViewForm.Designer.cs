@@ -85,7 +85,6 @@
             this.Text = "ProgressView";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProgressViewForm_FormClosing);
             this.Shown += new System.EventHandler(this.ProgressViewForm_Shown);
-            this.VisibleChanged += new System.EventHandler(this.ProgressViewForm_VisibleChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 

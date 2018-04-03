@@ -26,19 +26,28 @@ namespace Viewer.UI
         /// <summary>
         /// Close this progress view
         /// </summary>
-        void Hide();
+        /// <remarks>Can be called from multiple threads</remarks>
+        /// <param name="canceled">true iff the operation was canceled</param>
+        void CloseView(bool canceled);
 
         /// <summary>
         /// Begin a new operation.
         /// It is assumed that the previous operation has been done 
         /// (i.e. a single unit of work has been done).
         /// </summary>
+        /// <remarks>Can be called from multiple threads</remarks>
         /// <param name="name">Name of the task</param>
         void StartWork(string name);
 
         /// <summary>
-        /// Called when all the work has been done
+        /// Can be called from multiple threads
         /// </summary>
-        void Finish();
+        /// <remarks>Can be called from multiple threads</remarks>
+        void FinishWork();
+    }
+
+    public interface IProgressViewFactory
+    {
+        IProgressView Create();
     }
 }

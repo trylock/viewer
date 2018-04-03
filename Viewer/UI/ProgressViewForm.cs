@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,7 +15,6 @@ namespace Viewer.UI
     public partial class ProgressViewForm : Form, IProgressView
     {
         private WorkDelegate _work;
-        private bool _isFinished;
 
         public ProgressViewForm()
         {
@@ -23,7 +24,10 @@ namespace Viewer.UI
         #region View interface
 
         public event EventHandler CancelProgress;
-
+        
+        private ReaderWriterLockSlim _closeLock = new ReaderWriterLockSlim();
+        private bool _isFinished = false;
+        
         public void Show(string name, int maximum, WorkDelegate work)
         {
             Text = name;
@@ -36,56 +40,87 @@ namespace Viewer.UI
 
         public void StartWork(string name)
         {
-            CurrentTaskNameLabel.Text = name;
-            Progress.PerformStep();
-            Application.DoEvents();
+            _closeLock.EnterReadLock();
+            try
+            {
+                if (_isFinished)
+                {
+                    return;
+                }
+
+                BeginInvoke(new Action(() =>
+                {
+                    CurrentTaskNameLabel.Text = name;
+                }));
+            }
+            finally
+            {
+                _closeLock.ExitReadLock();
+            }
         }
 
-        public void Finish()
+        public void FinishWork()
         {
-            _isFinished = true;
-            Hide();
+            _closeLock.EnterReadLock();
+            try
+            {
+                if (_isFinished)
+                {
+                    return;
+                }
+
+                BeginInvoke(new Action(() =>
+                {
+                    Progress.PerformStep();
+                    if (Progress.Value >= Progress.Maximum)
+                    {
+                        CloseView();
+                    }
+                }));
+            }
+            finally
+            {
+                _closeLock.ExitReadLock();
+            }
+        }
+
+        public void CloseView(bool canceled = false)
+        {
+            _closeLock.EnterWriteLock();
+            try
+            {
+                _isFinished = true;
+                if (canceled)
+                {
+                    CancelProgress?.Invoke(this, EventArgs.Empty);
+                }
+
+                Hide();
+            }
+            finally
+            {
+                _closeLock.ExitWriteLock();
+            }
         }
 
         #endregion
 
         private void CancelProgressButton_Click(object sender, EventArgs e)
         {
-            Hide();
+            CloseView(true);
         }
 
         private void ProgressViewForm_Shown(object sender, EventArgs e)
         {
-            try
-            {
-                _work?.Invoke();
-            }
-            finally
-            {
-                _work = null;
-            }
+            _work?.Invoke();
         }
-
-        private void ProgressViewForm_VisibleChanged(object sender, EventArgs e)
-        {
-            if (!Visible && !_isFinished)
-            {
-                CancelProgress?.Invoke(sender, e);
-            }
-
-            if (!Visible)
-            {
-                CancelProgress = null;
-                _work = null;
-            }
-        }
-
+        
         private void ProgressViewForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
+                CloseView(true);
                 e.Cancel = true;
-                Hide();
             }
         }
     }

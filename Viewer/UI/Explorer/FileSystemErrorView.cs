@@ -109,11 +109,27 @@ namespace Viewer.UI.Explorer
             return result == DialogResult.Yes;
         }
 
-        public bool ConfirmDelete(IEnumerable<string> fileName)
+        public bool ConfirmDelete(IEnumerable<string> files)
         {
-            var files = string.Join(Environment.NewLine, fileName);
+            var count = 0;
+            string first = null;
+            foreach (var file in files)
+            {
+                if (first == null)
+                {
+                    first = file;
+                }
+
+                ++count;
+            }
+
+            if (count == 1)
+            {
+                return ConfirmDelete(first);
+            }
+
             var result = MessageBox.Show(
-                string.Format(Resources.ConfirmDeleteAll_Message, files),
+                string.Format(Resources.ConfirmDeleteAll_Message, count),
                 Resources.ConfirmDelete_Label,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question,

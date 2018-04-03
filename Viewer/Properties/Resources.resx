@@ -186,9 +186,7 @@
     <value>Path too long.</value>
   </data>
   <data name="ConfirmDeleteAll_Message" xml:space="preserve">
-    <value>Do you really want to permanently delete all these files:
-    
-{0}</value>
+    <value>All {0} files will be permanently deleted. Do you want to continue?</value>
   </data>
   <data name="FileInUse_Message" xml:space="preserve">
     <value>File {0} is open in another application.</value>

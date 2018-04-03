@@ -16,7 +16,7 @@ namespace Viewer.UI.Images
     public class ImagesPresenter
     {
         // dependencies
-        private readonly IImagesView _imagesView;
+        private IImagesView _imagesView;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
         private readonly IEntityManager _entities;
@@ -54,6 +54,7 @@ namespace Viewer.UI.Images
             _imagesView.RenameItem += View_RenameItem;
             _imagesView.CopyItems += View_CopyItems;
             _imagesView.Resize += View_Resize;
+            _imagesView.CloseView += View_CloseView;
 
             _imagesView.UpdateSize();
         }
@@ -470,7 +471,18 @@ namespace Viewer.UI.Images
             }
 
             _imagesView.UpdateItems();
-            
+        }
+        
+        private void View_CloseView(object sender, EventArgs eventArgs)
+        {
+            foreach (var item in _imagesView.Items)
+            {
+                item.Dispose();
+            }
+
+            _imagesView.Items.Clear();
+            _imagesView = null;
+            _entities.Clear();
         }
 
         #endregion

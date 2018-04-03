@@ -26,6 +26,7 @@ namespace ViewerTest.UI.Images
         private ImagesViewMock _viewMock;
         private SelectionMock _selectionMock;
         private ClipboardServiceMock _clipboardMock;
+        private EntityManager _entitiesMock;
         private ImagesPresenter _presenter;
 
         [TestInitialize]
@@ -34,15 +35,15 @@ namespace ViewerTest.UI.Images
             _viewMock = new ImagesViewMock(8, 8);
             _clipboardMock = new ClipboardServiceMock();
             var storage = new MemoryAttributeStorage();
-            var entities = new EntityManager(storage);
+            _entitiesMock = new EntityManager(storage);
             for (int i = 0; i < 16; ++i)
             {
-                entities.AddEntity(new Entity(i.ToString()));
+                _entitiesMock.AddEntity(new Entity(i.ToString()));
             }
 
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             _selectionMock = new SelectionMock();
-            _presenter = new ImagesPresenter(_viewMock, null, entities, _clipboardMock, _selectionMock, thumbnailGenerator);
+            _presenter = new ImagesPresenter(_viewMock, null, _entitiesMock, _clipboardMock, _selectionMock, thumbnailGenerator);
             _presenter.LoadFromEntityManager();
         }
 
@@ -336,6 +337,18 @@ namespace ViewerTest.UI.Images
 
             _viewMock.TriggerCancelEditItemName();
             Assert.AreEqual(-1, _viewMock.EditIndex);
+        }
+
+        [TestMethod]
+        public void Close_ReleaseAllItems()
+        {
+            Assert.IsTrue(_viewMock.Items.Count > 0);
+            Assert.IsTrue(_entitiesMock.ToList().Count > 0);
+
+            _viewMock.TriggerCloseView();
+            
+            Assert.AreEqual(0, _viewMock.Items.Count);
+            Assert.AreEqual(0, _entitiesMock.ToList().Count);
         }
     }
 }

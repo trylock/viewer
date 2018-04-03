@@ -9,12 +9,6 @@ using Viewer.UI.Images;
 
 namespace ViewerTest.UI.Images
 {
-    public class ItemMock
-    {
-        public bool IsUpdated { get; set; }
-        public ResultItemState State { get; set; }
-    }
-
     /// <summary>
     /// Images view mock.
     /// This mock models the images view as a grid.
@@ -95,6 +89,11 @@ namespace ViewerTest.UI.Images
         public void TriggerCancelEditItemName()
         {
             CancelEditItemName?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void TriggerCloseView()
+        {
+            CloseView?.Invoke(this, EventArgs.Empty);
         }
 
         // mocked interface

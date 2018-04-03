@@ -9,8 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
+using Viewer.IO;
 using Viewer.Properties;
 using Viewer.UI;
+using Viewer.UI.Attributes;
 using Viewer.UI.Images;
 using Viewer.UI.Explorer;
 using WeifenLuo.WinFormsUI.Docking;
@@ -34,19 +36,22 @@ namespace Viewer
 
             // models
             var storage = factory.Create();
+            var selection = new Selection();
             var clipboard = new ClipboardService();
+            var fileSystem = new FileSystem();
+            var entityManager = new EntityManager(storage);
             var thumbnailGenerator = new ThumbnailGenerator();
 
             // UI
             var fileSystemErrorView = new FileSystemErrorView();
 
-            var progressForm = new ProgressViewForm();
+            var progressViewFactory = new ProgressViewFactory();
             {
                 var directoryTreeView = new DirectoryTreeControl();
                 directoryTreeView.Text = Resources.ExplorerWindowName;
                 directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
-                var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressForm, fileSystemErrorView, clipboard);
+                var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressViewFactory, fileSystemErrorView, fileSystem, clipboard);
                 treePresenter.UpdateRootDirectories();
             }
 
@@ -54,8 +59,15 @@ namespace Viewer
                 var imagesView = new GridControl(Resources.QueryResultWindowName);
                 imagesView.Show(_dockPanel, DockState.Document);
 
-                var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, storage, clipboard, thumbnailGenerator);
-                imagesPresenter.LoadDirectory("C:/tmp");
+                var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, entityManager, clipboard, selection, thumbnailGenerator);
+                imagesPresenter.LoadDirectory("D:/tmp");
+            }
+
+            {
+                var attributesView = new AttributeTableControl();
+                attributesView.Show(_dockPanel, DockState.DockRight);
+
+                var attributesPresenter = new AttributesPresenter(attributesView, selection);
             }
         }
     }

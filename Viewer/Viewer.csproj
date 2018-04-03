@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -96,7 +96,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Attributes\AttributesPresenter.cs" />
+    <Compile Include="UI\Attributes\AttributeTableControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Attributes\AttributeTableControl.Designer.cs">
+      <DependentUpon>AttributeTableControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Attributes\DateTimeCell.cs" />
+    <Compile Include="UI\Attributes\IAttributeView.cs" />
     <Compile Include="UI\ClipboardService.cs" />
+    <Compile Include="UI\ProgressViewFactory.cs" />
     <Compile Include="UI\Selection.cs" />
     <Compile Include="UI\WindowView.cs">
       <SubType>Form</SubType>
@@ -143,6 +153,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Attributes\AttributeTableControl.resx">
+      <DependentUpon>AttributeTableControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Explorer\DirectoryTreeControl.resx">
       <DependentUpon>DirectoryTreeControl.cs</DependentUpon>

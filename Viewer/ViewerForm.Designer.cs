@@ -34,7 +34,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(967, 593);
+            this.ClientSize = new System.Drawing.Size(1210, 586);
             this.IsMdiContainer = true;
             this.Name = "ViewerForm";
             this.Text = "Viewer";

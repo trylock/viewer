@@ -79,9 +79,7 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you really want to permanently delete all these files:
-        ///    
-        ///{0}.
+        ///   Looks up a localized string similar to All {0} files will be permanently deleted. Do you want to continue?.
         /// </summary>
         internal static string ConfirmDeleteAll_Message {
             get {

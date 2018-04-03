@@ -14,7 +14,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void SetAttribute_NewAttribute()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             Assert.IsFalse(attrs.IsDirty);
             Assert.IsFalse(attrs.ContainsKey("test"));
             Assert.AreEqual(0, attrs.Count);
@@ -29,7 +29,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void SetAttribute_ExistingAttribute()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
 
             attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 24));
             Assert.IsTrue(attrs.IsDirty);
@@ -47,14 +47,14 @@ namespace ViewerTest.Data
         [ExpectedException(typeof(ArgumentNullException))]
         public void SetAttribute_NullAttributeName()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs.SetAttribute(new IntAttribute(null, AttributeSource.Custom, 42));
         }
 
         [TestMethod]
         public void GetAttribute_NonExitentAttribute()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             Assert.IsNull(attrs.GetAttribute("test"));
             Assert.IsNull(attrs.GetAttribute(""));
             Assert.IsFalse(attrs.IsDirty);
@@ -63,7 +63,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void GetAttribute_IntAttribute()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
             attrs.Reset();
             Assert.IsFalse(attrs.IsDirty);
@@ -77,14 +77,14 @@ namespace ViewerTest.Data
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetAttribute_NullAttributeName()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs.GetAttribute(null);
         }
 
         [TestMethod]
         public void Remove_NonExitentKey()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             Assert.IsFalse(attrs.IsDirty);
             var result = attrs.Remove("test");
             Assert.IsFalse(result);
@@ -94,7 +94,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void Remove_OneKey()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
             attrs.Reset();
             Assert.IsFalse(attrs.IsDirty);
@@ -107,7 +107,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void Indexer_SetValue()
         {
-            var attrs = new AttributeCollection("test", DateTime.Now, DateTime.Now);
+            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
             attrs.Reset();
             Assert.IsFalse(attrs.IsDirty);

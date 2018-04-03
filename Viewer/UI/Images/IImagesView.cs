@@ -28,7 +28,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Path to a file
         /// </summary>
-        public string FullPath => _data.Path;
+        public string FullPath => Data.Path;
 
         /// <summary>
         /// Current state of the item
@@ -40,11 +40,11 @@ namespace Viewer.UI.Images
         /// </summary>
         public Image Thumbnail { get; }
 
-        private AttributeCollection _data;
+        public Entity Data { get; }
 
-        public ResultItemView(AttributeCollection data, Image thumbnail)
+        public ResultItemView(Entity data, Image thumbnail)
         {
-            _data = data;
+            Data = data;
             Thumbnail = thumbnail;
         }
 

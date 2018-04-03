@@ -104,6 +104,11 @@ namespace ViewerTest.UI.Images
 
         public void UpdateItems()
         {
+            UpdatedItems.Clear();
+            for (int i = 0; i < Items.Count; ++i)
+            {
+                UpdatedItems.Add(i);
+            }
         }
 
         public void UpdateItems(IEnumerable<int> itemIndices)

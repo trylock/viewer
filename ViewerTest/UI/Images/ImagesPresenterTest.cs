@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
+using Viewer.UI;
 using Viewer.UI.Images;
 
 namespace ViewerTest.UI.Images
@@ -23,6 +24,7 @@ namespace ViewerTest.UI.Images
     public class ImagesPresenterTest
     {
         private ImagesViewMock _viewMock;
+        private SelectionMock _selectionMock;
         private ClipboardServiceMock _clipboardMock;
         private ImagesPresenter _presenter;
 
@@ -32,9 +34,16 @@ namespace ViewerTest.UI.Images
             _viewMock = new ImagesViewMock(8, 8);
             _clipboardMock = new ClipboardServiceMock();
             var storage = new MemoryAttributeStorage();
+            var entities = new EntityManager(storage);
+            for (int i = 0; i < 16; ++i)
+            {
+                entities.AddEntity(new Entity(i.ToString()));
+            }
+
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
-            _presenter = new ImagesPresenter(_viewMock, null, storage, _clipboardMock, thumbnailGenerator);
-            _presenter.AddItemsInternal(Enumerable.Repeat<AttributeCollection>(null, 16));
+            _selectionMock = new SelectionMock();
+            _presenter = new ImagesPresenter(_viewMock, null, entities, _clipboardMock, _selectionMock, thumbnailGenerator);
+            _presenter.LoadFromEntityManager();
         }
 
         [TestMethod]
@@ -50,8 +59,6 @@ namespace ViewerTest.UI.Images
             _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
             Assert.IsTrue(_viewMock.CurrentSelection.IsEmpty);
             
-            CollectionAssert.AreEqual(new[]{ 5, 6 }, _presenter.Selection.OrderBy(x => x).ToArray());
-
             // make sure we have updated just the selection items
             var index = 0;
             foreach (var item in _viewMock.Items)
@@ -63,7 +70,6 @@ namespace ViewerTest.UI.Images
                 }
                 else
                 {
-                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -84,9 +90,7 @@ namespace ViewerTest.UI.Images
 
             _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
             Assert.IsTrue(_viewMock.CurrentSelection.IsEmpty);
-
-            CollectionAssert.AreEqual(new[] { 5, 6 }, _presenter.Selection.OrderBy(x => x).ToArray());
-
+            
             // make sure we have updated just the selection items
             var index = 0;
             foreach (var item in _viewMock.Items)
@@ -98,7 +102,6 @@ namespace ViewerTest.UI.Images
                 }
                 else
                 {
-                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -108,6 +111,8 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_UnionWithPreviousSelection()
         {
+            _viewMock.ResetMock();
+
             // first selection
             _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
             _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
@@ -116,9 +121,7 @@ namespace ViewerTest.UI.Images
             _viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Shift));
             _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 0, 0));
             _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 6, 0, 0));
-
-            CollectionAssert.AreEqual(new[] { 3, 5 }, _presenter.Selection.OrderBy(x => x).ToArray());
-
+            
             var index = 0;
             foreach (var item in _viewMock.Items)
             {
@@ -139,6 +142,8 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_SymetricDifferenceWithPreviousSelection()
         {
+            _viewMock.ResetMock();
+
             // first selection
             _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 1, 1, 0));
             _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 2, 2, 0));
@@ -147,9 +152,7 @@ namespace ViewerTest.UI.Images
             _viewMock.TriggerKeyDown(new KeyEventArgs(Keys.Control));
             _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Left, 0, 5, 2, 0));
             _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 0, 2, 0));
-
-            CollectionAssert.AreEqual(new[] { 4, 6 }, _presenter.Selection.OrderBy(x => x).ToArray());
-
+            
             var index = 0;
             foreach (var item in _viewMock.Items)
             {
@@ -182,9 +185,7 @@ namespace ViewerTest.UI.Images
             // reset the selection
             _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
             _viewMock.TriggerMouseUp(new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0));
-
-            CollectionAssert.AreEqual(new[] { 0 }, _presenter.Selection.ToArray());
-
+            
             var index = 0;
             foreach (var item in _viewMock.Items)
             {
@@ -200,7 +201,6 @@ namespace ViewerTest.UI.Images
                 }
                 else
                 {
-                    Assert.IsFalse(_viewMock.UpdatedItems.Contains(index));
                     Assert.AreEqual(ResultItemState.None, item.State);
                 }
                 ++index;
@@ -211,11 +211,7 @@ namespace ViewerTest.UI.Images
         public void Selection_SelectAllWithCtrlA()
         {
             _viewMock.TriggerKeyDown(new KeyEventArgs(Keys.A | Keys.Control));
-
-            CollectionAssert.AreEqual(
-                Enumerable.Range(0, 16).ToArray(), 
-                _presenter.Selection.OrderBy(x => x).ToArray());
-
+            
             var index = 0;
             foreach (var item in _viewMock.Items)
             {
@@ -228,6 +224,8 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void ActiveItem_OnlyOneItemCanBeActive()
         {
+            _viewMock.ResetMock();
+
             // move with mouse between items
             _viewMock.TriggerMouseMove(new MouseEventArgs(MouseButtons.None, 0, 1, 1, 0));
             Assert.AreEqual(-1, _presenter.ActiveItem);

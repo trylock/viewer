@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    public class AttributeCollection : IDictionary<string, Attribute>, IDisposable
+    public class Entity : IDictionary<string, Attribute>, IDisposable
     {
         private IDictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
@@ -54,14 +54,14 @@ namespace Viewer.Data
         /// </summary>
         public ICollection<Attribute> Values => _attrs.Values;
 
-        public AttributeCollection(string path, DateTime lastWriteTime, DateTime lastAccessTime)
+        public Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
         {
             Path = path;
             LastWriteTime = lastWriteTime;
             LastAccessTime = lastAccessTime;
         }
 
-        public AttributeCollection(string path) 
+        public Entity(string path) 
         {
             var fi = new FileInfo(path);
             Path = path;
@@ -117,6 +117,14 @@ namespace Viewer.Data
         {
             IsDirty = false;
             LastWriteTime = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Make this entity dirty
+        /// </summary>
+        public void SetDirty()
+        {
+            IsDirty = true;
         }
 
         #region IDictionary

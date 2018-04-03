@@ -8,9 +8,9 @@ namespace Viewer.Data
 {
     public class MemoryAttributeStorage : IAttributeStorage
     {
-        private Dictionary<string, AttributeCollection> _files = new Dictionary<string, AttributeCollection>();
+        private Dictionary<string, Entity> _files = new Dictionary<string, Entity>();
 
-        public IEnumerable<AttributeCollection> Files
+        public IEnumerable<Entity> Files
         {
             get
             {
@@ -21,17 +21,17 @@ namespace Viewer.Data
             }
         }
 
-        public AttributeCollection Load(string path)
+        public Entity Load(string path)
         {
-            if (!_files.TryGetValue(path, out AttributeCollection collection))
+            if (!_files.TryGetValue(path, out Entity collection))
             {
-                return new AttributeCollection(path, DateTime.Now, DateTime.Now);
+                return new Entity(path, DateTime.Now, DateTime.Now);
             }
 
             return collection;
         }
 
-        public void Store(AttributeCollection attrs)
+        public void Store(Entity attrs)
         {
             if (_files.ContainsKey(attrs.Path))
             {
@@ -41,6 +41,23 @@ namespace Viewer.Data
             {
                 _files.Add(attrs.Path, attrs);
             }
+        }
+
+        public void Remove(string path)
+        {
+            _files.Remove(path);
+        }
+
+        public void Move(string oldPath, string newPath)
+        {
+            if (!_files.TryGetValue(oldPath, out Entity entity))
+            {
+                return;
+            }
+
+            entity.Path = newPath;
+            _files.Remove(oldPath);
+            _files.Add(newPath, entity);
         }
 
         public void Flush()

@@ -19,7 +19,7 @@ namespace Viewer.Data
     {
         private IAttributeStorage _mainStorage;
         private IAttributeStorage _cacheStorage;
-        private Dictionary<string, AttributeCollection> _pending = new Dictionary<string, AttributeCollection>();
+        private Dictionary<string, Entity> _pending = new Dictionary<string, Entity>();
 
         /// <summary>
         /// Create cached attribute storage.
@@ -43,7 +43,7 @@ namespace Viewer.Data
         /// </summary>
         /// <param name="path">Path to a file with attributes</param>
         /// <returns>Collection of attributes in the file</returns>
-        public AttributeCollection Load(string path)
+        public Entity Load(string path)
         {
             var attrs = _cacheStorage.Load(path);
             if (attrs == null)
@@ -60,7 +60,7 @@ namespace Viewer.Data
         /// If the attributes are not dirty, they won't be written to the main storage.
         /// </summary>
         /// <param name="attrs">Attributes to store</param>
-        public void Store(AttributeCollection attrs)
+        public void Store(Entity attrs)
         {
             // only write the attributes to the main storage if it's necessary
             if (attrs.IsDirty)
@@ -70,6 +70,18 @@ namespace Viewer.Data
             }
 
             _cacheStorage.Store(attrs);
+        }
+        
+        public void Remove(string path)
+        {
+            _mainStorage.Remove(path);
+            _cacheStorage.Remove(path);
+        }
+
+        public void Move(string oldPath, string newPath)
+        {
+            _mainStorage.Move(oldPath, newPath);
+            _cacheStorage.Move(oldPath, newPath);
         }
 
         /// <summary>
@@ -87,7 +99,7 @@ namespace Viewer.Data
             _pending.Clear();
         }
 
-        private void AddPendingWrite(AttributeCollection attrs)
+        private void AddPendingWrite(Entity attrs)
         {
             if (_pending.ContainsKey(attrs.Path))
             {

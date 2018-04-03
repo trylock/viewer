@@ -29,9 +29,9 @@ namespace Viewer.Data
         /// <returns>
         ///     Valid attributes of the file or null if the attributes in cache are not valid.
         /// </returns>
-        public AttributeCollection Load(string path)
+        public Entity Load(string path)
         {
-            var attrs = new AttributeCollection(path);
+            var attrs = new Entity(path);
             
             // load valid attributes
             SQLiteDataReader reader;
@@ -90,10 +90,11 @@ namespace Viewer.Data
                 return null;
             }
 
+            attrs.Reset();
             return attrs;
         }
 
-        public void Store(AttributeCollection attrs)
+        public void Store(Entity attrs)
         {
             using (var transaction = _connection.BeginTransaction())
             {
@@ -112,8 +113,18 @@ namespace Viewer.Data
             }
         }
 
+        public void Move(string oldPath, string newPath)
+        {
+            MoveFile(oldPath, newPath);
+        }
+
         public void Flush()
         {
+        }
+
+        public void Remove(string path)
+        {
+            RemoveFile(path);
         }
 
         private void RemoveFile(string path)
@@ -122,6 +133,17 @@ namespace Viewer.Data
             {
                 query.CommandText = @"DELETE FROM files WHERE path = :path";
                 query.Parameters.Add(new SQLiteParameter(":path", path));
+                query.ExecuteNonQuery();
+            }
+        }
+
+        private void MoveFile(string oldPath, string newPath)
+        {
+            using (var query = new SQLiteCommand(_connection))
+            {
+                query.CommandText = @"UPDATE files SET path = :newPath WHERE path = :oldPath";
+                query.Parameters.Add(new SQLiteParameter(":oldPath", oldPath));
+                query.Parameters.Add(new SQLiteParameter(":newPath", newPath));
                 query.ExecuteNonQuery();
             }
         }

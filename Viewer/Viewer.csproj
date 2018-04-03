@@ -97,6 +97,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\ClipboardService.cs" />
+    <Compile Include="UI\Selection.cs" />
     <Compile Include="UI\WindowView.cs">
       <SubType>Form</SubType>
     </Compile>

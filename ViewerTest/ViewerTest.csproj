@@ -63,7 +63,6 @@
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentUtilsTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterTest.cs" />
-    <Compile Include="IO\DirectoryUtilsTest.cs" />
     <Compile Include="IO\PathUtilsTest.cs" />
     <Compile Include="MathUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,6 +72,8 @@
     <Compile Include="UI\Images\ImagesViewMock.cs" />
     <Compile Include="UI\Images\ThumbnailGeneratorTest.cs" />
     <Compile Include="UI\RectangleExtensionsTest.cs" />
+    <Compile Include="UI\SelectionMock.cs" />
+    <Compile Include="UI\SelectionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

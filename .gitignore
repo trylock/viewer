@@ -4,5 +4,6 @@ bin
 packages
 TestResults
 *.vspx
+*.vsp
 *.user
 cache.db

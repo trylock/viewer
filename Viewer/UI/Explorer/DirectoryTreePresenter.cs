@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -39,14 +39,8 @@ namespace Viewer.UI.Explorer
             _errorView = errorView;
             _progressViewFactory = progressViewFactory;
             _treeView = treeView;
-            _treeView.ExpandDirectory += View_ExpandDirectory;
-            _treeView.RenameDirectory += View_RenameDirectory;
-            _treeView.DeleteDirectory += View_DeleteDirectory;
-            _treeView.CreateDirectory += View_CreateDirectory;
-            _treeView.OpenInExplorer += View_OpenInExplorer;
-            _treeView.CopyDirectory += View_CopyDirectory;
-            _treeView.PasteToDirectory += View_PasteToDirectory;
-            _treeView.PasteClipboardToDirectory += View_PasteClipboardToDirectory;
+            
+            PresenterUtils.SubscribeTo(_treeView, this, "View");
         }
 
         public void UpdateRootDirectories()

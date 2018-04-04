@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
@@ -59,21 +59,9 @@ namespace Viewer.UI.Images
             _dialogView = dialogView;
 
             _imagesView = imagesView;
-            _imagesView.HandleMouseDown += View_MouseDown;
-            _imagesView.HandleMouseUp += View_MouseUp;
-            _imagesView.HandleMouseMove += View_MouseMove;
-            _imagesView.HandleKeyDown += View_HandleShortcuts;
-            _imagesView.HandleKeyDown += View_CaptureControlKeys;
-            _imagesView.HandleKeyUp += View_CaptureControlKeys;
-            _imagesView.BeginEditItemName += View_BeginEditItemName;
-            _imagesView.CancelEditItemName += View_CancelEditItemName;
-            _imagesView.DeleteItems += View_DeleteItems;
-            _imagesView.RenameItem += View_RenameItem;
-            _imagesView.CopyItems += View_CopyItems;
-            _imagesView.Resize += View_Resize;
-            _imagesView.CloseView += View_CloseView;
-
             _imagesView.UpdateSize();
+
+            var result = PresenterUtils.SubscribeTo(_imagesView, this, "View");
         }
 
         public void LoadFromEntityManager()
@@ -228,7 +216,7 @@ namespace Viewer.UI.Images
         }
 
         #region User input
-
+        
         private void View_HandleMouseDown(object sender, MouseEventArgs e)
         {
             var index = _imagesView.GetItemAt(e.Location);
@@ -310,7 +298,7 @@ namespace Viewer.UI.Images
         {
             _imagesView.UpdateSize();
         }
-        
+         
         private void View_HandleKeyDown(object sender, KeyEventArgs e)
         {
             _isControl = e.Control;

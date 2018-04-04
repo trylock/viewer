@@ -106,6 +106,7 @@
     <Compile Include="UI\Attributes\DateTimeCell.cs" />
     <Compile Include="UI\Attributes\IAttributeView.cs" />
     <Compile Include="UI\ClipboardService.cs" />
+    <Compile Include="UI\PresenterUtils.cs" />
     <Compile Include="UI\ProgressViewFactory.cs" />
     <Compile Include="UI\Selection.cs" />
     <Compile Include="UI\WindowView.cs">

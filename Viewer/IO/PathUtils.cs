@@ -72,17 +72,19 @@ namespace Viewer.IO
 
         public static string GetDirectoryPath(string path)
         {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
             if (path.Length == 0)
-            {
                 return "";
-            }
 
+            // if the last character is a path separator, ignore it
             var index = path.Length - 1;
             if (PathSeparators.Contains(path[index]))
             {
                 --index;
             }
 
+            // find the next path separator
             for (; index >= 0; --index)
             {
                 if (PathSeparators.Contains(path[index]))

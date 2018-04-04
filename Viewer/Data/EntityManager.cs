@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Viewer.Data
 {
     /// <summary>
-    /// Entity manager manages all entities loaded in memory.
+    /// Entity manager manages entities when they are loaded in memory.
     /// </summary>
     public interface IEntityManager : IDisposable, IEnumerable<Entity>
     {
@@ -122,6 +122,11 @@ namespace Viewer.Data
             }
 
             entity = _storage.Load(path);
+            if (entity == null)
+            {
+                return null;
+            }
+
             _entities.Add(entity.Path, entity);
             return entity;
         }

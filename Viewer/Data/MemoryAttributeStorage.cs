@@ -25,7 +25,7 @@ namespace Viewer.Data
         {
             if (!_files.TryGetValue(path, out Entity collection))
             {
-                return new Entity(path, DateTime.Now, DateTime.Now);
+                return null;
             }
 
             return collection;
@@ -62,6 +62,11 @@ namespace Viewer.Data
 
         public void Flush()
         {
+        }
+
+        public void Add(Entity entity)
+        {
+            _files.Add(entity.Path, entity);
         }
     }
 }

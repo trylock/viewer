@@ -57,7 +57,7 @@ namespace Viewer.Data
             var segments = new List<JpegSegment>();
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
             {
-                attrs = new Entity(path);
+                attrs = Entity.CreateFromFile(path);
 
                 for (;;)
                 {

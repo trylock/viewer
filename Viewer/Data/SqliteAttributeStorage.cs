@@ -31,7 +31,7 @@ namespace Viewer.Data
         /// </returns>
         public IEntity Load(string path)
         {
-            var attrs = new Entity(path);
+            var attrs = Entity.CreateFromFile(path);
             
             // load valid attributes
             SQLiteDataReader reader;

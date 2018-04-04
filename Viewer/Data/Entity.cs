@@ -110,6 +110,12 @@ namespace Viewer.Data
             LastWriteTime = DateTime.Now;
             LastAccessTime = DateTime.Now;
         }
+
+        public static Entity CreateFromFile(string path)
+        {
+            var fileInfo = new FileInfo(path);
+            return new Entity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
+        }
         
         /// <summary>
         /// Find attribute in the collection

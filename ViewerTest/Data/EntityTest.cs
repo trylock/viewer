@@ -65,7 +65,7 @@ namespace ViewerTest.Data
         {
             var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
-            attrs.Reset();
+            attrs.ResetDirty();
             Assert.IsFalse(attrs.IsDirty);
 
             var attr = (IntAttribute) attrs.GetAttribute("test");
@@ -96,7 +96,7 @@ namespace ViewerTest.Data
         {
             var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
-            attrs.Reset();
+            attrs.ResetDirty();
             Assert.IsFalse(attrs.IsDirty);
 
             var result = attrs.Remove("test");
@@ -109,7 +109,7 @@ namespace ViewerTest.Data
         {
             var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
-            attrs.Reset();
+            attrs.ResetDirty();
             Assert.IsFalse(attrs.IsDirty);
 
             attrs["test"] = new StringAttribute("test", AttributeSource.Custom, "value");

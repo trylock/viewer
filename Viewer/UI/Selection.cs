@@ -8,7 +8,7 @@ using Viewer.Data;
 
 namespace Viewer.UI
 {
-    public interface ISelection : IEnumerable<Entity>
+    public interface ISelection : IEnumerable<IEntity>
     {
         /// <summary>
         /// Event called when the selection changes
@@ -21,14 +21,14 @@ namespace Viewer.UI
         /// Replace current selection with <paramref name="newSelection"/>
         /// </summary>
         /// <param name="newSelection">Newly selection items</param>
-        void Replace(IEnumerable<Entity> newSelection);
+        void Replace(IEnumerable<IEntity> newSelection);
         
         /// <summary>
         /// Check whether given item is in selection
         /// </summary>
         /// <param name="item"></param>
         /// <returns>true iff <paramref name="item"/> is in selection</returns>
-        bool Contains(Entity item);
+        bool Contains(IEntity item);
 
         /// <summary>
         /// Remove all items from the selection and call the Changed event.
@@ -38,13 +38,13 @@ namespace Viewer.UI
 
     public class Selection : ISelection
     {
-        private ISet<Entity> _currentSelection = new HashSet<Entity>();
+        private ISet<IEntity> _currentSelection = new HashSet<IEntity>();
 
         public event EventHandler Changed;
 
         public int Count => _currentSelection.Count;
 
-        public IEnumerator<Entity> GetEnumerator()
+        public IEnumerator<IEntity> GetEnumerator()
         {
             return _currentSelection.GetEnumerator();
         }
@@ -54,7 +54,7 @@ namespace Viewer.UI
             return GetEnumerator();
         }
 
-        public void Replace(IEnumerable<Entity> newSelection)
+        public void Replace(IEnumerable<IEntity> newSelection)
         {
             _currentSelection.Clear();
             _currentSelection.UnionWith(newSelection);
@@ -63,7 +63,7 @@ namespace Viewer.UI
             Changed?.Invoke(this, EventArgs.Empty);
         }
 
-        public bool Contains(Entity item)
+        public bool Contains(IEntity item)
         {
             return _currentSelection.Contains(item);
         }

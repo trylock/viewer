@@ -9,7 +9,50 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    public class Entity : IDictionary<string, Attribute>, IDisposable
+    public interface IEntity : IEnumerable<Attribute>, IDisposable
+    {
+        /// <summary>
+        /// Path to the entity
+        /// </summary>
+        string Path { get; set; }
+
+        /// <summary>
+        /// true iff there are some unsaved changes (i.g. the entity should be written back to a file)
+        /// </summary>
+        bool IsDirty { get; }
+
+        /// <summary>
+        /// Find attribute in the collection
+        /// </summary>
+        /// <param name="name">Name of the attribute</param>
+        /// <returns>Found attribute or null if it does not exist</returns>
+        Attribute GetAttribute(string name);
+
+        /// <summary>
+        /// Set attribute value
+        /// </summary>
+        /// <param name="attr">Attribute to set</param>
+        void SetAttribute(Attribute attr);
+
+        /// <summary>
+        /// Remove attribute with given name.
+        /// It won't trown an exception if there is no attribute with given name
+        /// </summary>
+        /// <param name="name">Name of an attribute to remove.</param>
+        void RemoveAttribute(string name);
+
+        /// <summary>
+        /// Reset the dirty flag
+        /// </summary>
+        void ResetDirty();
+
+        /// <summary>
+        /// Set the dirty flag
+        /// </summary>
+        void SetDirty();
+    }
+
+    public class Entity : IEntity, IDictionary<string, Attribute>
     {
         private IDictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
@@ -63,22 +106,11 @@ namespace Viewer.Data
 
         public Entity(string path) 
         {
-            var fi = new FileInfo(path);
             Path = path;
-            LastWriteTime = fi.LastWriteTime;
-            LastAccessTime = fi.LastAccessTime;
+            LastWriteTime = DateTime.Now;
+            LastAccessTime = DateTime.Now;
         }
-
-        /// <summary>
-        /// Check whether the attributes are valid (same as in their file)
-        /// </summary>
-        /// <returns>true iff the attributes are valid</returns>
-        public bool CheckValidity()
-        {
-            var fi = new FileInfo(Path);
-            return fi.LastWriteTime != LastWriteTime;
-        }
-
+        
         /// <summary>
         /// Find attribute in the collection
         /// </summary>
@@ -109,11 +141,20 @@ namespace Viewer.Data
                 _attrs.Add(attr.Name, attr);
             }
         }
-        
+
+        /// <summary>
+        /// Remove attribute
+        /// </summary>
+        /// <param name="name">Name of an attribute to remove</param>
+        public void RemoveAttribute(string name)
+        {
+            _attrs.Remove(name);
+        }
+
         /// <summary>
         /// Call this after the collection has been stored in a file.
         /// </summary>
-        public void Reset()
+        public void ResetDirty()
         {
             IsDirty = false;
             LastWriteTime = DateTime.Now;
@@ -163,6 +204,11 @@ namespace Viewer.Data
             }
 
             return false;
+        }
+
+        IEnumerator<Attribute> IEnumerable<Attribute>.GetEnumerator()
+        {
+            return Values.GetEnumerator();
         }
 
         public IEnumerator<KeyValuePair<string, Attribute>> GetEnumerator()

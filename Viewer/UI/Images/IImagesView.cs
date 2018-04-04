@@ -40,9 +40,9 @@ namespace Viewer.UI.Images
         /// </summary>
         public Image Thumbnail { get; }
 
-        public Entity Data { get; }
+        public IEntity Data { get; }
 
-        public ResultItemView(Entity data, Image thumbnail)
+        public ResultItemView(IEntity data, Image thumbnail)
         {
             Data = data;
             Thumbnail = thumbnail;

@@ -100,9 +100,10 @@ namespace Viewer.UI.Images
             LoadFromEntityManager();
         }
 
-        private Image GetThumbnail(Entity item)
+        private Image GetThumbnail(IEntity item)
         {
-            if (item.TryGetValue("thumbnail", out Attribute attr))
+            var attr = item.GetAttribute("thumbnail");
+            if (attr != null)
             {
                 var image = ((ImageAttribute) attr).Value;
                 return _thumbnailGenerator.GetThumbnail(image, _itemSize);

@@ -29,7 +29,7 @@ namespace Viewer.Data
         /// <returns>
         ///     Valid attributes of the file or null if the attributes in cache are not valid.
         /// </returns>
-        public Entity Load(string path)
+        public IEntity Load(string path)
         {
             var attrs = new Entity(path);
             
@@ -90,11 +90,11 @@ namespace Viewer.Data
                 return null;
             }
 
-            attrs.Reset();
+            attrs.ResetDirty();
             return attrs;
         }
 
-        public void Store(Entity attrs)
+        public void Store(IEntity attrs)
         {
             using (var transaction = _connection.BeginTransaction())
             {
@@ -104,7 +104,7 @@ namespace Viewer.Data
                 long id = StoreFile(attrs.Path);
 
                 // add new attributes
-                foreach (var attr in attrs.Values)
+                foreach (var attr in attrs)
                 {
                     StoreAttribute(id, attr);
                 }

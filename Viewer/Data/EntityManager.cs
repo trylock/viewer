@@ -11,7 +11,7 @@ namespace Viewer.Data
     /// <summary>
     /// Entity manager manages entities when they are loaded in memory.
     /// </summary>
-    public interface IEntityManager : IDisposable, IEnumerable<Entity>
+    public interface IEntityManager : IDisposable, IEnumerable<IEntity>
     {
         /// <summary>
         /// Make sure all changed entities loaded in the manager are saved on a disk.
@@ -32,7 +32,7 @@ namespace Viewer.Data
         /// <returns>Loaded entity or null if it was not found</returns>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="path"/> is not a valid path</exception>
-        Entity GetEntity(string path);
+        IEntity GetEntity(string path);
 
         /// <summary>
         /// Add a new entity to the manager.
@@ -40,7 +40,7 @@ namespace Viewer.Data
         /// IsDirty flag will be set.
         /// </summary>
         /// <param name="entity">New entity</param>
-        void AddEntity(Entity entity);
+        void AddEntity(IEntity entity);
 
         /// <summary>
         /// Permanently delete an entity and all its attributes.
@@ -65,7 +65,7 @@ namespace Viewer.Data
 
     public class EntityManager : IEntityManager
     {
-        private Dictionary<string, Entity> _entities = new Dictionary<string, Entity>();
+        private Dictionary<string, IEntity> _entities = new Dictionary<string, IEntity>();
 
         private IAttributeStorage _storage;
 
@@ -83,7 +83,7 @@ namespace Viewer.Data
             _entities.Clear();
         }
 
-        public IEnumerator<Entity> GetEnumerator()
+        public IEnumerator<IEntity> GetEnumerator()
         {
             return _entities.Values.GetEnumerator();
         }
@@ -114,9 +114,9 @@ namespace Viewer.Data
             Dispose();
         }
 
-        public Entity GetEntity(string path)
+        public IEntity GetEntity(string path)
         {
-            if (_entities.TryGetValue(path, out Entity entity))
+            if (_entities.TryGetValue(path, out IEntity entity))
             {
                 return entity;
             }
@@ -131,7 +131,7 @@ namespace Viewer.Data
             return entity;
         }
 
-        public void AddEntity(Entity entity)
+        public void AddEntity(IEntity entity)
         {
             entity.SetDirty();
             if (_entities.ContainsKey(entity.Path))
@@ -143,7 +143,7 @@ namespace Viewer.Data
 
         public void DeleteEntity(string path)
         {
-            if (_entities.TryGetValue(path, out Entity entity))
+            if (_entities.TryGetValue(path, out IEntity entity))
             {
                 entity.Dispose();
                 _entities.Remove(path);
@@ -154,7 +154,7 @@ namespace Viewer.Data
 
         public void MoveEntity(string oldPath, string newPath)
         {
-            if (_entities.TryGetValue(oldPath, out Entity entity))
+            if (_entities.TryGetValue(oldPath, out IEntity entity))
             {
                 _entities.Remove(oldPath);
                 entity.Path = newPath;

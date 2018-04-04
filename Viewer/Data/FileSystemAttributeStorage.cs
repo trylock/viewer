@@ -50,7 +50,7 @@ namespace Viewer.Data
         ///     Format of attributes in some segment is invalid.
         /// </exception>
         /// <returns>Collection of attributes read from the file</returns>
-        public Entity Load(string path)
+        public IEntity Load(string path)
         {
             // read all JPEG segments to memory
             Entity attrs;
@@ -87,11 +87,11 @@ namespace Viewer.Data
                 }
             }
             
-            attrs.Reset();
+            attrs.ResetDirty();
             return attrs;
         }
         
-        public void Store(Entity attrs)
+        public void Store(IEntity attrs)
         {
             string tmpFileName;
 
@@ -116,7 +116,7 @@ namespace Viewer.Data
                     }
 
                     // serialize attributes to JpegSegments
-                    var serialized = Serialize(attrs.Values);
+                    var serialized = Serialize(attrs);
                     var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
 
                     // write attribute segments
@@ -144,7 +144,7 @@ namespace Viewer.Data
             File.Move(oldPath, newPath);
         }
 
-        private byte[] Serialize(ICollection<Attribute> attrs)
+        private byte[] Serialize(IEnumerable<Attribute> attrs)
         {
             using (var serialized = new MemoryStream())
             {

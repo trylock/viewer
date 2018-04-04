@@ -44,13 +44,13 @@ namespace Viewer.Data
         ///     Collection of attributes found in given file.
         ///     The collection will be empty if there are no attributes.
         /// </returns>
-        Entity Load(string path);
+        IEntity Load(string path);
 
         /// <summary>
         /// Store attributes to a path.
         /// </summary>
         /// <param name="attrs">Attributes to store in this file</param>
-        void Store(Entity attrs);
+        void Store(IEntity attrs);
 
         /// <summary>
         /// Permanently remove entity at given path

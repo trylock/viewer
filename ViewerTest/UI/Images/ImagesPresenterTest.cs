@@ -350,5 +350,24 @@ namespace ViewerTest.UI.Images
             Assert.AreEqual(0, _viewMock.Items.Count);
             Assert.AreEqual(0, _entitiesMock.ToList().Count);
         }
+
+        [TestMethod]
+        public void Rename_SelectedItem()
+        {
+            var entity = _entitiesMock.GetEntity("5");
+            Assert.IsNotNull(entity);
+
+            _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Right, 1, 2, 2, 0));
+            _viewMock.TriggerRenameItem("test");
+            
+            var newEntity = _entitiesMock.GetEntity("test");
+            Assert.IsNotNull(newEntity);
+
+            var oldEntity = _entitiesMock.GetEntity("5");
+            Assert.IsNull(oldEntity);
+
+            Assert.AreEqual(entity, newEntity);
+        }
+        
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,6 +25,23 @@ namespace Viewer.UI.Images
 
         // current state
         private Size _itemSize = new Size(150, 100);
+        private readonly List<int> _previousSelection = new List<int>();
+        private readonly HashSet<int> _currentSelection = new HashSet<int>();
+        private Point _selectionStartPoint;
+        private bool _isSelectionActive = false;
+        private bool _isControl = false;
+        private bool _isShift = false;
+
+        /// <summary>
+        /// Index of an active item (item over which is a mouse cursor) 
+        /// or -1 if no item is active.
+        /// </summary>
+        public int ActiveItem { get; private set; } = -1;
+
+        /// <summary>
+        /// Index of an item with focus or -1 it there is no such item.
+        /// </summary>
+        public int FocusedItem { get; private set; } = -1;
 
         public ImagesPresenter(
             IImagesView imagesView, 
@@ -212,26 +229,7 @@ namespace Viewer.UI.Images
 
         #region User input
 
-        // presenter UI state 
-        private readonly List<int> _previousSelection = new List<int>();
-        private readonly HashSet<int> _currentSelection = new HashSet<int>();
-        private Point _selectionStartPoint;
-        private bool _isSelectionActive = false;
-        private bool _isControl = false;
-        private bool _isShift = false;
-
-        /// <summary>
-        /// Index of an active item (item over which is a mouse cursor) 
-        /// or -1 if no item is active.
-        /// </summary>
-        public int ActiveItem { get; private set; } = -1;
-
-        /// <summary>
-        /// Index of an item with focus or -1 it there is no such item.
-        /// </summary>
-        public int FocusedItem { get; private set; } = -1;
-        
-        private void View_MouseDown(object sender, MouseEventArgs e)
+        private void View_HandleMouseDown(object sender, MouseEventArgs e)
         {
             var index = _imagesView.GetItemAt(e.Location);
 
@@ -245,7 +243,7 @@ namespace Viewer.UI.Images
             // update selection
             if (index >= 0)
             {
-                if (!_selection.Contains(_imagesView.Items[index].Data))
+                if (!_currentSelection.Contains(index))
                 {
                     // make the active item the only item in selection
                     ChangeSelection(Enumerable.Repeat(index, 1), SelectionStrategy.Replace);
@@ -254,7 +252,7 @@ namespace Viewer.UI.Images
                 // begin the move operation on files in selection
                 if ((e.Button & MouseButtons.Left) != 0)
                 {
-                    var dragFiles = _selection.Select(item => item.Path).ToArray();
+                    var dragFiles = _currentSelection.Select(elem => _imagesView.Items[elem].FullPath).ToArray();
                     var data = new DataObject(DataFormats.FileDrop, dragFiles);
                     _imagesView.BeginDragDrop(data, DragDropEffects.Copy);
                 }
@@ -265,7 +263,7 @@ namespace Viewer.UI.Images
             }
         }
 
-        private void View_MouseUp(object sender, MouseEventArgs e)
+        private void View_HandleMouseUp(object sender, MouseEventArgs e)
         {
             if (_isSelectionActive)
             {
@@ -273,19 +271,19 @@ namespace Viewer.UI.Images
             }
         }
 
-        private void View_MouseMove(object sender, MouseEventArgs e)
+        private void View_HandleMouseMove(object sender, MouseEventArgs e)
         {
             // update active item
             var item = _imagesView.GetItemAt(e.Location);
             if (item != ActiveItem)
             {
-                if (item >= 0 && !_selection.Contains(_imagesView.Items[item].Data))
+                if (item >= 0 && !_currentSelection.Contains(item))
                 {
                     _imagesView.Items[item].State = ResultItemState.Active;
                     _imagesView.UpdateItem(item);
                 }
 
-                if (ActiveItem >= 0 && !_selection.Contains(_imagesView.Items[ActiveItem].Data))
+                if (ActiveItem >= 0 && !_currentSelection.Contains(ActiveItem))
                 {
                     _imagesView.Items[ActiveItem].State = ResultItemState.None;
                     _imagesView.UpdateItem(ActiveItem);
@@ -313,14 +311,11 @@ namespace Viewer.UI.Images
             _imagesView.UpdateSize();
         }
         
-        private void View_CaptureControlKeys(object sender, KeyEventArgs e)
+        private void View_HandleKeyDown(object sender, KeyEventArgs e)
         {
             _isControl = e.Control;
             _isShift = e.Shift;
-        }
 
-        private void View_HandleShortcuts(object sender, KeyEventArgs e)
-        {
             if (e.Control && e.KeyCode == Keys.A)
             {
                 ChangeSelection(Enumerable.Range(0, _imagesView.Items.Count), SelectionStrategy.Replace);
@@ -331,6 +326,12 @@ namespace Viewer.UI.Images
             }
         }
         
+        private void View_HandleKeyUp(object sender, KeyEventArgs e)
+        {
+            _isControl = e.Control;
+            _isShift = e.Shift;
+        }
+
         private void View_BeginEditItemName(object sender, EventArgs e)
         {
             var index = FocusedItem;
@@ -364,7 +365,7 @@ namespace Viewer.UI.Images
 
             // construct the new file path
             var item = _imagesView.Items[index].Data;
-            var basePath = item.Path.Substring(0, item.Path.LastIndexOfAny(PathUtils.PathSeparators));
+            var basePath = PathUtils.GetDirectoryPath(item.Path);
             var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.Path));
 
             // rename the file
@@ -479,7 +480,6 @@ namespace Viewer.UI.Images
             {
                 item.Dispose();
             }
-
             _imagesView.Items.Clear();
             _imagesView = null;
             _entities.Clear();

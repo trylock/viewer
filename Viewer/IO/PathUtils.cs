@@ -75,6 +75,35 @@ namespace Viewer.IO
             return path.Substring(0, path.LastIndexOfAny(PathSeparators));
         }
 
+        public static string GetDirectoryPath(string path)
+        {
+            if (path.Length == 0)
+            {
+                return "";
+            }
+
+            var index = path.Length - 1;
+            if (PathSeparators.Contains(path[index]))
+            {
+                --index;
+            }
+
+            for (; index >= 0; --index)
+            {
+                if (PathSeparators.Contains(path[index]))
+                {
+                    break;
+                }
+            }
+
+            if (index < 0)
+            {
+                return "";
+            }
+
+            return path.Substring(0, index);
+        }
+
         /// <summary>
         /// Check whether given string could be a valid file/folder name
         /// </summary>

@@ -96,6 +96,11 @@ namespace ViewerTest.UI.Images
             CloseView?.Invoke(this, EventArgs.Empty);
         }
 
+        public void TriggerRenameItem(string newName)
+        {
+            RenameItem?.Invoke(this, new RenameEventArgs(newName));
+        }
+
         // mocked interface
         public void UpdateSize()
         {
@@ -183,6 +188,10 @@ namespace ViewerTest.UI.Images
         public void MakeActive()
         {
             IsActive = true;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

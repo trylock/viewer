@@ -70,11 +70,6 @@ namespace Viewer.IO
             return path.Substring(separatorIndex + 1, lastPartLength);
         }
 
-        public static string GetBasePath(string path)
-        {
-            return path.Substring(0, path.LastIndexOfAny(PathSeparators));
-        }
-
         public static string GetDirectoryPath(string path)
         {
             if (path.Length == 0)

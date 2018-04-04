@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -334,7 +334,7 @@ namespace Viewer.UI.Explorer
                     foreach (var file in files)
                     {
                         cancellation.Token.ThrowIfCancellationRequested();
-                        var baseDir = PathUtils.GetBasePath(file);
+                        var baseDir = PathUtils.GetDirectoryPath(file);
                         var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, progressView, _errorView, cancellation);
                         if ((effect & DragDropEffects.Move) != 0)
                             _fileSystem.Search(file, copy.CopyDirectory, copy.MoveFile);

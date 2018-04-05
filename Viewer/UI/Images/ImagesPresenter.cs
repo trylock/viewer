@@ -469,8 +469,8 @@ namespace Viewer.UI.Images
             {
                 item.Dispose();
             }
+            _selection.Replace(Enumerable.Empty<IEntity>());
             _imagesView.Items.Clear();
-            _imagesView = null;
             _entities.Clear();
         }
 

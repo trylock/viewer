@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -38,8 +38,20 @@ namespace Viewer.Data
             Source = source;
         }
         
+        /// <summary>
+        /// Accept visitor without a return value
+        /// </summary>
+        /// <param name="visitor">Visitor</param>
         public abstract void Accept(IAttributeVisitor visitor);
         
+        /// <summary>
+        /// Accept visitor with a return value
+        /// </summary>
+        /// <typeparam name="T">Return value of the visitor</typeparam>
+        /// <param name="visitor">visitor</param>
+        /// <returns>Value returned by the visitor</returns>
+        public abstract T Accept<T>(IAttributeVisitor<T> visitor);
+
         public virtual void Dispose()
         {
         }
@@ -72,6 +84,11 @@ namespace Viewer.Data
             visitor.Visit(this);
         }
 
+        public override T Accept<T>(IAttributeVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
+
         public override string ToString()
         {
             return FormatAttribute(Value, TypeName);
@@ -100,6 +117,11 @@ namespace Viewer.Data
             visitor.Visit(this);
         }
 
+        public override T Accept<T>(IAttributeVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
+
         public override string ToString()
         {
             return FormatAttribute(Value, TypeName);
@@ -126,6 +148,11 @@ namespace Viewer.Data
         public override void Accept(IAttributeVisitor visitor)
         {
             visitor.Visit(this);
+        }
+
+        public override T Accept<T>(IAttributeVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
 
         public override string ToString()
@@ -161,6 +188,11 @@ namespace Viewer.Data
             visitor.Visit(this);
         }
 
+        public override T Accept<T>(IAttributeVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
+
         public override string ToString()
         {
             return FormatAttribute(Value.ToString(Format), TypeName);
@@ -184,6 +216,11 @@ namespace Viewer.Data
         public override void Accept(IAttributeVisitor visitor)
         {
             visitor.Visit(this);
+        }
+
+        public override T Accept<T>(IAttributeVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
 
         public override void Dispose()

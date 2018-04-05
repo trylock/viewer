@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Viewer.Data
         Exif,
     }
 
-    public abstract class Attribute : IDisposable
+    public abstract class Attribute : IDisposable, IEquatable<Attribute>
     {
         /// <summary>
         /// Name of the attribute
@@ -43,7 +43,7 @@ namespace Viewer.Data
         /// </summary>
         /// <param name="visitor">Visitor</param>
         public abstract void Accept(IAttributeVisitor visitor);
-        
+
         /// <summary>
         /// Accept visitor with a return value
         /// </summary>
@@ -59,6 +59,43 @@ namespace Viewer.Data
         protected string FormatAttribute<T>(T value, string typeName)
         {
             return typeName + "(\"" + Name + "\", " + value + ")";
+        }
+
+        /// <summary>
+        /// Check whether 2 attribute have the same type and represent the same value.
+        /// </summary>
+        /// <param name="other">Other attribute</param>
+        /// <returns>true iff the attributes have the same type and represent the same value</returns>
+        public virtual bool Equals(Attribute other)
+        {
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            if (other.GetType() != GetType())
+                return false;
+            if (Name != other.Name || Source != other.Source)
+                return false;
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((Attribute) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (int) Source;
+            }
         }
     }
 
@@ -87,6 +124,13 @@ namespace Viewer.Data
         public override T Accept<T>(IAttributeVisitor<T> visitor)
         {
             return visitor.Visit(this);
+        }
+
+        public override bool Equals(Attribute other)
+        {
+            if (!base.Equals(other))
+                return false;
+            return Value == ((IntAttribute) other).Value;
         }
 
         public override string ToString()
@@ -122,6 +166,13 @@ namespace Viewer.Data
             return visitor.Visit(this);
         }
 
+        public override bool Equals(Attribute other)
+        {
+            if (!base.Equals(other))
+                return false;
+            return Value == ((DoubleAttribute)other).Value;
+        }
+
         public override string ToString()
         {
             return FormatAttribute(Value, TypeName);
@@ -153,6 +204,13 @@ namespace Viewer.Data
         public override T Accept<T>(IAttributeVisitor<T> visitor)
         {
             return visitor.Visit(this);
+        }
+
+        public override bool Equals(Attribute other)
+        {
+            if (!base.Equals(other))
+                return false;
+            return Value == ((StringAttribute)other).Value;
         }
 
         public override string ToString()
@@ -193,6 +251,13 @@ namespace Viewer.Data
             return visitor.Visit(this);
         }
 
+        public override bool Equals(Attribute other)
+        {
+            if (!base.Equals(other))
+                return false;
+            return Value == ((DateTimeAttribute)other).Value;
+        }
+
         public override string ToString()
         {
             return FormatAttribute(Value.ToString(Format), TypeName);
@@ -221,6 +286,12 @@ namespace Viewer.Data
         public override T Accept<T>(IAttributeVisitor<T> visitor)
         {
             return visitor.Visit(this);
+        }
+
+        public override bool Equals(Attribute other)
+        {
+            // image value is unique to the attribute
+            return ReferenceEquals(this, other);
         }
 
         public override void Dispose()

@@ -61,6 +61,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty Attribute Name.
+        /// </summary>
+        internal static string AttributeNameEmpty_Label {
+            get {
+                return ResourceManager.GetString("AttributeNameEmpty_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attribute name must not be empty.
+        /// </summary>
+        internal static string AttributeNameEmpty_Message {
+            get {
+                return ResourceManager.GetString("AttributeNameEmpty_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Delete.
         /// </summary>
         internal static string ConfirmDelete_Label {
@@ -121,6 +139,24 @@ namespace Viewer.Properties {
         internal static string DirectoryNotFound_Message {
             get {
                 return ResourceManager.GetString("DirectoryNotFound_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate attribute name.
+        /// </summary>
+        internal static string DuplicateAttributeName_Label {
+            get {
+                return ResourceManager.GetString("DuplicateAttributeName_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate attribute name: {0}.
+        /// </summary>
+        internal static string DuplicateAttributeName_Message {
+            get {
+                return ResourceManager.GetString("DuplicateAttributeName_Message", resourceCulture);
             }
         }
         

@@ -194,4 +194,16 @@
   <data name="FileInUse_Label" xml:space="preserve">
     <value>File In Use</value>
   </data>
+  <data name="DuplicateAttributeName_Message" xml:space="preserve">
+    <value>Duplicate attribute name: {0}</value>
+  </data>
+  <data name="DuplicateAttributeName_Label" xml:space="preserve">
+    <value>Duplicate attribute name</value>
+  </data>
+  <data name="AttributeNameEmpty_Message" xml:space="preserve">
+    <value>Attribute name must not be empty</value>
+  </data>
+  <data name="AttributeNameEmpty_Label" xml:space="preserve">
+    <value>Empty Attribute Name</value>
+  </data>
 </root>

@@ -33,10 +33,8 @@ namespace Viewer.Data
                 segmentWriterFactory,
                 attrWriterFactory,
                 attrReaderFactories);
-            var sqliteStorage = new SqliteAttributeStorage(Settings.Instance.CacheConnection);
-            var cachedStorage = new CachedAttributeStorage(fileSystemStorage, sqliteStorage);
 
-            return cachedStorage;
+            return fileSystemStorage;
         }
     }
 }

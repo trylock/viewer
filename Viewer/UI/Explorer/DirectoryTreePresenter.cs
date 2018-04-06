@@ -319,8 +319,7 @@ namespace Viewer.UI.Explorer
         {
             // copy files
             var fileCount = (int)_fileSystem.CountFiles(files, true);
-            var progressView = _progressViewFactory.Create();
-            progressView.Show(Resources.CopyingFiles_Label, fileCount, () =>
+            _progressViewFactory.Create().Show(Resources.CopyingFiles_Label, fileCount, view =>
             {
                 var cancellation = new CancellationTokenSource();
                 Task.Run(() =>
@@ -329,7 +328,7 @@ namespace Viewer.UI.Explorer
                     {
                         cancellation.Token.ThrowIfCancellationRequested();
                         var baseDir = PathUtils.GetDirectoryPath(file);
-                        var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, progressView, _errorView, cancellation);
+                        var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _errorView, cancellation);
                         if ((effect & DragDropEffects.Move) != 0)
                             _fileSystem.Search(file, copy.CopyDirectory, copy.MoveFile);
                         else

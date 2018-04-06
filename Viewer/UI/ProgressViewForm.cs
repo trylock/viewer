@@ -112,7 +112,7 @@ namespace Viewer.UI
 
         private void ProgressViewForm_Shown(object sender, EventArgs e)
         {
-            _work?.Invoke();
+            _work?.Invoke(this);
         }
         
         private void ProgressViewForm_FormClosing(object sender, FormClosingEventArgs e)

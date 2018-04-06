@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viewer.UI
 {
-    public delegate void WorkDelegate();
+    public delegate void WorkDelegate(IProgressView view);
 
     public interface IProgressView
     {

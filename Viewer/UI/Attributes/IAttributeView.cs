@@ -73,7 +73,7 @@ namespace Viewer.UI.Attributes
         event EventHandler<AttributeDeletedEventArgs> AttributeDeleted;
 
         /// <summary>
-        /// true iff it is enables to edit and add attributes
+        /// true iff it is enabled to edit and add attributes
         /// </summary>
         bool EditingEnabled { get; set; }
 

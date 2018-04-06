@@ -11,12 +11,13 @@ namespace Viewer.Data
     /// <summary>
     /// Entity manager manages entities when they are loaded in memory.
     /// </summary>
-    public interface IEntityManager : IDisposable, IEnumerable<IEntity>
+    public interface IEntityManager : IEnumerable<IEntity>
     {
         /// <summary>
-        /// Make sure all changed entities loaded in the manager are saved on a disk.
+        /// Save given entity to its file 
         /// </summary>
-        void Persist();
+        /// <param name="entity"></param>
+        void Save(IEntity entity);
 
         /// <summary>
         /// Free all entities from memory.
@@ -73,16 +74,7 @@ namespace Viewer.Data
         {
             _storage = storage;
         }
-
-        public void Dispose()
-        {
-            foreach (var pair in _entities)
-            {
-                pair.Value.Dispose();
-            }
-            _entities.Clear();
-        }
-
+        
         public IEnumerator<IEntity> GetEnumerator()
         {
             return _entities.Values.GetEnumerator();
@@ -102,16 +94,18 @@ namespace Viewer.Data
             foreach (var pair in _entities)
             {
                 var entity = pair.Value;
-                if (entity.IsDirty)
-                {
-                    _storage.Store(entity);
-                }
+                _storage.Store(entity);
             }
+        }
+
+        public void Save(IEntity entity)
+        {
+            _storage.Store(entity);
         }
 
         public void Clear()
         {
-            Dispose();
+            _entities.Clear();
         }
 
         public IEntity GetEntity(string path)
@@ -133,7 +127,6 @@ namespace Viewer.Data
 
         public void AddEntity(IEntity entity)
         {
-            entity.SetDirty();
             if (_entities.ContainsKey(entity.Path))
             {
                 _entities.Remove(entity.Path);
@@ -145,7 +138,6 @@ namespace Viewer.Data
         {
             if (_entities.TryGetValue(path, out IEntity entity))
             {
-                entity.Dispose();
                 _entities.Remove(path);
             }
             
@@ -156,8 +148,8 @@ namespace Viewer.Data
         {
             if (_entities.TryGetValue(oldPath, out IEntity entity))
             {
+                entity = entity.ChangePath(newPath);
                 _entities.Remove(oldPath);
-                entity.Path = newPath;
                 _entities.Add(entity.Path, entity);
             }
 

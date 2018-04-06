@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    public interface IEntity : IEnumerable<Attribute>, IDisposable
+    public interface IEntity : IEnumerable<Attribute>
     {
         /// <summary>
         /// Path to the entity
         /// </summary>
-        string Path { get; set; }
+        string Path { get; }
 
         /// <summary>
-        /// true iff there are some unsaved changes (i.g. the entity should be written back to a file)
+        /// Number of attributes
         /// </summary>
-        bool IsDirty { get; }
+        int Count { get; }
 
         /// <summary>
         /// Find attribute in the collection
@@ -32,51 +33,42 @@ namespace Viewer.Data
         /// Set attribute value
         /// </summary>
         /// <param name="attr">Attribute to set</param>
-        void SetAttribute(Attribute attr);
+        IEntity SetAttribute(Attribute attr);
 
         /// <summary>
         /// Remove attribute with given name.
         /// It won't trown an exception if there is no attribute with given name
         /// </summary>
         /// <param name="name">Name of an attribute to remove.</param>
-        void RemoveAttribute(string name);
+        IEntity RemoveAttribute(string name);
 
         /// <summary>
-        /// Reset the dirty flag
+        /// Change path of the entity
         /// </summary>
-        void ResetDirty();
-
-        /// <summary>
-        /// Set the dirty flag
-        /// </summary>
-        void SetDirty();
+        /// <param name="path">New path</param>
+        /// <returns></returns>
+        IEntity ChangePath(string path);
     }
 
-    public class Entity : IEntity, IDictionary<string, Attribute>
+    public class Entity : IEntity
     {
-        private IDictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
+        private ImmutableDictionary<string, Attribute> _attrs = ImmutableDictionary<string, Attribute>.Empty;
 
         /// <summary>
         /// Path to the file where the attributes are (or will be) stored
         /// </summary>
-        public string Path { get; set; }
+        public string Path { get; }
 
         /// <summary>
         /// Last time these attributes were written to a file
         /// </summary>
-        public DateTime LastWriteTime { get; private set; }
+        public DateTime LastWriteTime { get; }
 
         /// <summary>
         /// Last time these attributes were accessed (read from a file)
         /// </summary>
         public DateTime LastAccessTime { get; }
-
-        /// <summary>
-        /// true iff the attributes have changed and it is neccessary to write 
-        ///          them back to a file
-        /// </summary>
-        public bool IsDirty { get; private set; }
-
+        
         /// <summary>
         /// Number or attributes in the collection
         /// </summary>
@@ -90,38 +82,31 @@ namespace Viewer.Data
         /// <summary>
         /// Collection of attribute names
         /// </summary>
-        public ICollection<string> Keys => _attrs.Keys;
+        public IEnumerable<string> Keys => _attrs.Keys;
 
         /// <summary>
         /// Collection of attributes
         /// </summary>
-        public ICollection<Attribute> Values => _attrs.Values;
+        public IEnumerable<Attribute> Values => _attrs.Values;
 
         public Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
+            : this(path, lastWriteTime, lastAccessTime, ImmutableDictionary<string, Attribute>.Empty)
+        {
+        }
+
+        public Entity(string path)
+            : this(path, DateTime.Now, DateTime.Now, ImmutableDictionary<string, Attribute>.Empty)
+        {
+        }
+
+        private Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime, ImmutableDictionary<string, Attribute> attrs)
         {
             Path = path;
             LastWriteTime = lastWriteTime;
             LastAccessTime = lastAccessTime;
-        }
-
-        public Entity(string path) 
-        {
-            Path = path;
-            LastWriteTime = DateTime.Now;
-            LastAccessTime = DateTime.Now;
-        }
-
-        public static Entity CreateFromFile(string path)
-        {
-            var fileInfo = new FileInfo(path);
-            return new Entity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
+            _attrs = attrs;
         }
         
-        /// <summary>
-        /// Find attribute in the collection
-        /// </summary>
-        /// <param name="name">Name of the attribute</param>
-        /// <returns>Found attribute or null if it does not exist</returns>
         public Attribute GetAttribute(string name)
         {
             if (!_attrs.TryGetValue(name, out Attribute attr))
@@ -130,148 +115,34 @@ namespace Viewer.Data
             }
             return attr;
         }
-
-        /// <summary>
-        /// Set attribute value
-        /// </summary>
-        /// <param name="attr">Attribute to set</param>
-        public void SetAttribute(Attribute attr)
-        {
-            IsDirty = true;
-            if (_attrs.ContainsKey(attr.Name))
-            {
-                _attrs[attr.Name] = attr;
-            }
-            else
-            {
-                _attrs.Add(attr.Name, attr);
-            }
-        }
-
-        /// <summary>
-        /// Remove attribute
-        /// </summary>
-        /// <param name="name">Name of an attribute to remove</param>
-        public void RemoveAttribute(string name)
-        {
-            _attrs.Remove(name);
-        }
-
-        /// <summary>
-        /// Call this after the collection has been stored in a file.
-        /// </summary>
-        public void ResetDirty()
-        {
-            IsDirty = false;
-            LastWriteTime = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Make this entity dirty
-        /// </summary>
-        public void SetDirty()
-        {
-            IsDirty = true;
-        }
-
-        #region IDictionary
         
-        public void Clear()
+        public IEntity SetAttribute(Attribute attr)
         {
-            if (Count != 0)
-            {
-                IsDirty = true;
-            }
-            _attrs.Clear();
+            var attrs = _attrs.SetItem(attr.Name, attr);
+            return new Entity(Path, LastWriteTime, LastAccessTime, attrs);
+        }
+        
+        public IEntity RemoveAttribute(string name)
+        {
+            var attrs = _attrs.Remove(name);
+            if (ReferenceEquals(attrs, _attrs))
+                return this;
+            return new Entity(Path, LastWriteTime, LastAccessTime, attrs);
         }
 
-        void ICollection<KeyValuePair<string, Attribute>>.Add(KeyValuePair<string, Attribute> item)
+        public IEntity ChangePath(string path)
         {
-            IsDirty = true;
-            _attrs.Add(item);
+            return new Entity(path, LastWriteTime, LastAccessTime, _attrs);
         }
 
-        bool ICollection<KeyValuePair<string, Attribute>>.Contains(KeyValuePair<string, Attribute> item)
-        {
-            return _attrs.Contains(item);
-        }
-
-        void ICollection<KeyValuePair<string, Attribute>>.CopyTo(KeyValuePair<string, Attribute>[] array, int arrayIndex)
-        {
-            _attrs.CopyTo(array, arrayIndex);
-        }
-
-        bool ICollection<KeyValuePair<string, Attribute>>.Remove(KeyValuePair<string, Attribute> item)
-        {
-            if (_attrs.Remove(item))
-            {
-                IsDirty = true;
-                return true;
-            }
-
-            return false;
-        }
-
-        IEnumerator<Attribute> IEnumerable<Attribute>.GetEnumerator()
+        public IEnumerator<Attribute> GetEnumerator()
         {
             return Values.GetEnumerator();
-        }
-
-        public IEnumerator<KeyValuePair<string, Attribute>> GetEnumerator()
-        {
-            return _attrs.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-
-        public bool ContainsKey(string key)
-        {
-            return _attrs.ContainsKey(key);
-        }
-
-        public void Add(string key, Attribute value)
-        {
-            IsDirty = true;
-            _attrs.Add(key, value);
-        }
-
-        public bool Remove(string key)
-        {
-            if (_attrs.Remove(key))
-            {
-                IsDirty = true;
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool TryGetValue(string key, out Attribute value)
-        {
-            return _attrs.TryGetValue(key, out value);
-        }
-
-        public Attribute this[string key]
-        {
-            get => _attrs[key];
-            set
-            {
-                IsDirty = true;
-                _attrs[key] = value;
-            }
-        }
-
-        #endregion
-
-        public void Dispose()
-        {
-            foreach (var attr in _attrs)
-            {
-                attr.Value.Dispose();
-            }
         }
     }
 }

@@ -14,33 +14,29 @@ namespace ViewerTest.Data
         [TestMethod]
         public void SetAttribute_NewAttribute()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            Assert.IsFalse(attrs.IsDirty);
-            Assert.IsFalse(attrs.ContainsKey("test"));
+            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            Assert.IsNull(attrs.GetAttribute("test"));
             Assert.AreEqual(0, attrs.Count);
 
-            attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
-            Assert.IsTrue(attrs.IsDirty);
-            Assert.IsTrue(attrs.ContainsKey("test"));
+            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
+            Assert.IsNotNull(attrs.GetAttribute("test"));
             Assert.AreEqual(1, attrs.Count);
-            Assert.AreEqual(42, ((IntAttribute)attrs["test"]).Value);
+            Assert.AreEqual(42, ((IntAttribute)attrs.GetAttribute("test")).Value);
         }
 
         [TestMethod]
         public void SetAttribute_ExistingAttribute()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
 
-            attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 24));
-            Assert.IsTrue(attrs.IsDirty);
-            Assert.IsTrue(attrs.ContainsKey("test"));
+            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 24));
+            Assert.IsNotNull(attrs.GetAttribute("test"));
             Assert.AreEqual(1, attrs.Count);
 
-            attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
-            Assert.IsTrue(attrs.IsDirty);
-            Assert.IsTrue(attrs.ContainsKey("test"));
+            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
+            Assert.IsNotNull(attrs.GetAttribute("test"));
             Assert.AreEqual(1, attrs.Count);
-            Assert.AreEqual(42, ((IntAttribute)attrs["test"]).Value);
+            Assert.AreEqual(42, ((IntAttribute)attrs.GetAttribute("test")).Value);
         }
 
         [TestMethod]
@@ -57,19 +53,15 @@ namespace ViewerTest.Data
             var attrs = new Entity("test", DateTime.Now, DateTime.Now);
             Assert.IsNull(attrs.GetAttribute("test"));
             Assert.IsNull(attrs.GetAttribute(""));
-            Assert.IsFalse(attrs.IsDirty);
         }
 
         [TestMethod]
         public void GetAttribute_IntAttribute()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
-            attrs.ResetDirty();
-            Assert.IsFalse(attrs.IsDirty);
+            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
 
             var attr = (IntAttribute) attrs.GetAttribute("test");
-            Assert.IsFalse(attrs.IsDirty);
             Assert.AreEqual(42, attr.Value);
         }
 
@@ -84,37 +76,30 @@ namespace ViewerTest.Data
         [TestMethod]
         public void Remove_NonExitentKey()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            Assert.IsFalse(attrs.IsDirty);
-            var result = attrs.Remove("test");
-            Assert.IsFalse(result);
-            Assert.IsFalse(attrs.IsDirty);
+            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            var newAttrs = attrs.RemoveAttribute("test");
+            Assert.AreEqual(newAttrs, attrs);
         }
 
         [TestMethod]
         public void Remove_OneKey()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
-            attrs.ResetDirty();
-            Assert.IsFalse(attrs.IsDirty);
+            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
+            Assert.IsNotNull(attrs.GetAttribute("test"));
 
-            var result = attrs.Remove("test");
-            Assert.IsTrue(result);
-            Assert.IsTrue(attrs.IsDirty);
+            attrs = attrs.RemoveAttribute("test");
+            Assert.IsNull(attrs.GetAttribute("test"));
         }
 
         [TestMethod]
         public void Indexer_SetValue()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
-            attrs.ResetDirty();
-            Assert.IsFalse(attrs.IsDirty);
+            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
 
-            attrs["test"] = new StringAttribute("test", AttributeSource.Custom, "value");
-            Assert.IsTrue(attrs.IsDirty);
-            Assert.AreEqual("value", ((StringAttribute)attrs["test"]).Value);
+            attrs = attrs.SetAttribute(new StringAttribute("test", AttributeSource.Custom, "value"));
+            Assert.AreEqual("value", ((StringAttribute)attrs.GetAttribute("test")).Value);
         }
     }
 }

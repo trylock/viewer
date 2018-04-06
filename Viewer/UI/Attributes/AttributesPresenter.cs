@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
 using Attribute = Viewer.Data.Attribute;
@@ -13,26 +14,22 @@ namespace Viewer.UI.Attributes
     {
         private IAttributeView _attrView;
         private ISelection _selection;
+        private IEntityManager _entities;
+        private IProgressViewFactory _progressViewFactory;
 
-        public AttributesPresenter(IAttributeView attrView, ISelection selection)
+        public AttributesPresenter(IAttributeView attrView, IProgressViewFactory progressViewFactory, ISelection selection, IEntityManager entities)
         {
+            _entities = entities;
             _selection = selection;
             _selection.Changed += Selection_Changed;
+
+            _progressViewFactory = progressViewFactory;
 
             _attrView = attrView;
             _attrView.EditingEnabled = false;
             PresenterUtils.SubscribeTo(_attrView, this, "View");
         }
-
-        /// <summary>
-        /// Check whether there are some unsaved entities.
-        /// </summary>
-        /// <returns>true iff there are some unsaved entities</returns>
-        public bool IsUnsaved()
-        {
-            return _selection.Any(item => item.IsDirty);
-        }
-
+        
         private void Selection_Changed(object sender, EventArgs eventArgs)
         {
             // find all attributes in the selection
@@ -149,6 +146,10 @@ namespace Viewer.UI.Attributes
             {
                 EditAttribute(e.Index, e.OldValue, e.NewValue);
             }
+        }
+
+        private void View_SaveAttributes(object sender, EventArgs e)
+        {
         }
 
         #endregion

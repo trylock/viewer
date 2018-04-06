@@ -95,8 +95,7 @@ namespace Viewer.UI.Images
             {
                 _entities.GetEntity(file);
             }
-
-            _entities.Persist();
+            
             LoadFromEntityManager();
         }
 
@@ -361,7 +360,7 @@ namespace Viewer.UI.Images
             try
             {
                 _entities.MoveEntity(item.Path, newPath);
-                item.Path = newPath;
+                item = item.ChangePath(newPath);
                 _imagesView.UpdateItem(index);
             }
             catch (PathTooLongException)

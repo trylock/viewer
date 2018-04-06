@@ -53,11 +53,12 @@ namespace Viewer.Data
         public IEntity Load(string path)
         {
             // read all JPEG segments to memory
-            Entity attrs;
+            IEntity attrs;
             var segments = new List<JpegSegment>();
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
             {
-                attrs = Entity.CreateFromFile(path);
+                var fileInfo = new FileInfo(path);
+                attrs = new Entity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
 
                 for (;;)
                 {
@@ -83,11 +84,10 @@ namespace Viewer.Data
                     var attr = attrReader.Read();
                     if (attr == null)
                         break;
-                    attrs.SetAttribute(attr);
+                    attrs = attrs.SetAttribute(attr);
                 }
             }
             
-            attrs.ResetDirty();
             return attrs;
         }
         

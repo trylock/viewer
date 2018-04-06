@@ -365,9 +365,6 @@ namespace ViewerTest.UI.Images
 
             var oldEntity = _entitiesMock.GetEntity("5");
             Assert.IsNull(oldEntity);
-
-            Assert.AreEqual(entity, newEntity);
         }
-        
     }
 }

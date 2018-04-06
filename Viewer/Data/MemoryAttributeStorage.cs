@@ -55,7 +55,7 @@ namespace Viewer.Data
                 return;
             }
 
-            entity.Path = newPath;
+            entity = entity.ChangePath(newPath);
             _files.Remove(oldPath);
             _files.Add(newPath, entity);
         }

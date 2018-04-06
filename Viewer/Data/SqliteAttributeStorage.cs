@@ -31,7 +31,8 @@ namespace Viewer.Data
         /// </returns>
         public IEntity Load(string path)
         {
-            var attrs = Entity.CreateFromFile(path);
+            var fileInfo = new FileInfo(path);
+            IEntity attrs = new Entity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
             
             // load valid attributes
             SQLiteDataReader reader;
@@ -47,7 +48,7 @@ namespace Viewer.Data
                     f.lastWriteTime >= :lastWriteTime";
 
                 query.Parameters.Add(new SQLiteParameter(":path", path));
-                query.Parameters.Add(new SQLiteParameter(":lastWriteTime", attrs.LastWriteTime));
+                query.Parameters.Add(new SQLiteParameter(":lastWriteTime", fileInfo.LastWriteTime));
                 reader = query.ExecuteReader();
             }
             
@@ -62,23 +63,23 @@ namespace Viewer.Data
                 switch ((AttributeType)type)
                 {
                     case AttributeType.Int:
-                        attrs.SetAttribute(new IntAttribute(name, (AttributeSource)source, reader.GetInt32(3)));
+                        attrs = attrs.SetAttribute(new IntAttribute(name, (AttributeSource)source, reader.GetInt32(3)));
                         break;
                     case AttributeType.Double:
-                        attrs.SetAttribute(new DoubleAttribute(name, (AttributeSource)source, reader.GetDouble(3)));
+                        attrs = attrs.SetAttribute(new DoubleAttribute(name, (AttributeSource)source, reader.GetDouble(3)));
                         break;
                     case AttributeType.String:
-                        attrs.SetAttribute(new StringAttribute(name, (AttributeSource)source, reader.GetString(3)));
+                        attrs = attrs.SetAttribute(new StringAttribute(name, (AttributeSource)source, reader.GetString(3)));
                         break;
                     case AttributeType.DateTime:
-                        attrs.SetAttribute(new DateTimeAttribute(name, (AttributeSource)source, reader.GetDateTime(3)));
+                        attrs = attrs.SetAttribute(new DateTimeAttribute(name, (AttributeSource)source, reader.GetDateTime(3)));
                         break;
                     case AttributeType.Image:
                         var buffer = new byte[valueSize];
                         var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
                         Debug.Assert(buffer.Length == length);
                         var image = Image.FromStream(new MemoryStream(buffer));
-                        attrs.SetAttribute(new ImageAttribute(name, (AttributeSource)source, image));
+                        attrs = attrs.SetAttribute(new ImageAttribute(name, (AttributeSource)source, image));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -89,8 +90,7 @@ namespace Viewer.Data
             {
                 return null;
             }
-
-            attrs.ResetDirty();
+            
             return attrs;
         }
 

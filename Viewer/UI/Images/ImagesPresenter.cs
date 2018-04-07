@@ -196,7 +196,7 @@ namespace Viewer.UI.Images
             }
 
             // set global selection
-            _selection.Replace(_currentSelection.Select(index => _imagesView.Items[index].Data));
+            _selection.Replace(_currentSelection.Select(index => _imagesView.Items[index].Data.Path));
             
             // reset state of items in previous selection
             foreach (var item in oldSelection)
@@ -387,7 +387,7 @@ namespace Viewer.UI.Images
 
         private void View_CopyItems(object sender, EventArgs e)
         {
-            _clipboard.SetFiles(_selection.Select(item => item.Path));
+            _clipboard.SetFiles(_selection);
             _clipboard.SetPreferredEffect(DragDropEffects.Copy);
         }
 
@@ -399,7 +399,7 @@ namespace Viewer.UI.Images
             }
 
             // confirm delete
-            var filesToDelete = _selection.Select(item => item.Path);
+            var filesToDelete = _selection.ToArray();
             if (!_dialogView.ConfirmDelete(filesToDelete))
             {
                 return;
@@ -410,11 +410,11 @@ namespace Viewer.UI.Images
             {
                 try
                 {
-                    _entities.DeleteEntity(item.Path);
+                    _entities.DeleteEntity(item);
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    _dialogView.UnauthorizedAccess(item.Path);
+                    _dialogView.UnauthorizedAccess(item);
                 }
                 catch (DirectoryNotFoundException ex)
                 {
@@ -422,11 +422,11 @@ namespace Viewer.UI.Images
                 }
                 catch (PathTooLongException)
                 {
-                    _dialogView.PathTooLong(item.Path);
+                    _dialogView.PathTooLong(item);
                 }
                 catch (IOException)
                 {
-                    _dialogView.FileInUse(item.Path);
+                    _dialogView.FileInUse(item);
                 }
             }
 
@@ -434,7 +434,7 @@ namespace Viewer.UI.Images
             var newViewItems = new List<ResultItemView>();
             foreach (var item in _imagesView.Items)
             {
-                if (_selection.Contains(item.Data))
+                if (_selection.Contains(item.Data.Path))
                 {
                     item.Dispose();
                 }
@@ -468,7 +468,7 @@ namespace Viewer.UI.Images
             {
                 item.Dispose();
             }
-            _selection.Replace(Enumerable.Empty<IEntity>());
+            _selection.Replace(Enumerable.Empty<string>());
             _imagesView.Items.Clear();
             _entities.Clear();
         }

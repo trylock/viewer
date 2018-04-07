@@ -14,16 +14,15 @@ namespace ViewerTest.UI
         {
             var entities = new[]
             {
-                new Entity("1", DateTime.Now, DateTime.Now),
-                new Entity("2", DateTime.Now, DateTime.Now),
+                "1", "2"
             };
 
             var selection = new Selection();
             selection.Replace(entities);
             
             Assert.AreEqual(2, selection.Count);
-            Assert.IsTrue(selection.Contains(entities[0]));
-            Assert.IsTrue(selection.Contains(entities[1]));
+            Assert.IsTrue(selection.Contains("1"));
+            Assert.IsTrue(selection.Contains("2"));
         }
 
         [TestMethod]
@@ -32,7 +31,7 @@ namespace ViewerTest.UI
             var counter = 0;
             var selection = new Selection();
             selection.Changed += (sender, args) => { ++counter; };
-            selection.Replace(Enumerable.Empty<Entity>());
+            selection.Replace(Enumerable.Empty<string>());
             Assert.AreEqual(1, counter);
             Assert.AreEqual(0, selection.Count);
         }
@@ -42,14 +41,12 @@ namespace ViewerTest.UI
         {
             var oldSelection = new[]
             {
-                new Entity("1", DateTime.Now, DateTime.Now),
-                new Entity("2", DateTime.Now, DateTime.Now),
+                "1", "2"
             };
 
             var newSelection = new[]
             {
-                new Entity("3", DateTime.Now, DateTime.Now),
-                new Entity("4", DateTime.Now, DateTime.Now),
+                "3", "4"
             };
 
             var selection = new Selection();

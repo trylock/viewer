@@ -38,7 +38,7 @@ namespace ViewerTest.UI.Images
             _entitiesMock = new EntityManager(storage);
             for (int i = 0; i < 16; ++i)
             {
-                _entitiesMock.AddEntity(new Entity(i.ToString()));
+                _entitiesMock.SetEntity(new Entity(i.ToString()));
             }
 
             var thumbnailGenerator = new NullThumbnailGeneratorMock();

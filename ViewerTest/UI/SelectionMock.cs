@@ -11,12 +11,17 @@ namespace ViewerTest.UI
 {
     public class SelectionMock : ISelection
     {
-        private ISet<IEntity> _selection = new HashSet<IEntity>();
+        public void TriggerChanged()
+        {
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
+
+        private ISet<string> _selection = new HashSet<string>();
 
         public event EventHandler Changed;
         public int Count => _selection.Count;
 
-        public IEnumerator<IEntity> GetEnumerator()
+        public IEnumerator<string> GetEnumerator()
         {
             return _selection.GetEnumerator();
         }
@@ -26,13 +31,13 @@ namespace ViewerTest.UI
             return GetEnumerator();
         }
 
-        public void Replace(IEnumerable<IEntity> newSelection)
+        public void Replace(IEnumerable<string> newSelection)
         {
             _selection.Clear();
             _selection.UnionWith(newSelection);
         }
 
-        public bool Contains(IEntity item)
+        public bool Contains(string item)
         {
             return _selection.Contains(item);
         }

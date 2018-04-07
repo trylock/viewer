@@ -63,23 +63,23 @@ namespace Viewer.Data
                 switch ((AttributeType)type)
                 {
                     case AttributeType.Int:
-                        attrs = attrs.SetAttribute(new IntAttribute(name, (AttributeSource)source, reader.GetInt32(3)));
+                        attrs = attrs.SetAttribute(new IntAttribute(name, reader.GetInt32(3), (AttributeFlags)source));
                         break;
                     case AttributeType.Double:
-                        attrs = attrs.SetAttribute(new DoubleAttribute(name, (AttributeSource)source, reader.GetDouble(3)));
+                        attrs = attrs.SetAttribute(new DoubleAttribute(name, reader.GetDouble(3), (AttributeFlags)source));
                         break;
                     case AttributeType.String:
-                        attrs = attrs.SetAttribute(new StringAttribute(name, (AttributeSource)source, reader.GetString(3)));
+                        attrs = attrs.SetAttribute(new StringAttribute(name, reader.GetString(3), (AttributeFlags)source));
                         break;
                     case AttributeType.DateTime:
-                        attrs = attrs.SetAttribute(new DateTimeAttribute(name, (AttributeSource)source, reader.GetDateTime(3)));
+                        attrs = attrs.SetAttribute(new DateTimeAttribute(name, reader.GetDateTime(3), (AttributeFlags)source));
                         break;
                     case AttributeType.Image:
                         var buffer = new byte[valueSize];
                         var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
                         Debug.Assert(buffer.Length == length);
                         var image = Image.FromStream(new MemoryStream(buffer));
-                        attrs = attrs.SetAttribute(new ImageAttribute(name, (AttributeSource)source, image));
+                        attrs = attrs.SetAttribute(new ImageAttribute(name, image, (AttributeFlags)source));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -219,7 +219,7 @@ namespace Viewer.Data
             {
                 command.CommandText = "INSERT INTO attributes (name, source, type, value, owner) VALUES (:name, :source, :type, :value, :owner)";
                 command.Parameters.Add(new SQLiteParameter(":name", attr.Name));
-                command.Parameters.Add(new SQLiteParameter(":source", (int)attr.Source));
+                command.Parameters.Add(new SQLiteParameter(":source", (int)attr.Flags));
                 command.Parameters.Add(new SQLiteParameter(":owner", fileId));
                 var visitor = new InsertVisitor(command);
                 attr.Accept(visitor);

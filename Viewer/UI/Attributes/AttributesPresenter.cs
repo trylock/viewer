@@ -40,7 +40,7 @@ namespace Viewer.UI.Attributes
         {
             return new AttributeView
             {
-                Data = new StringAttribute("", AttributeSource.Custom, ""),
+                Data = new StringAttribute("", ""),
                 IsMixed = false
             };
         }

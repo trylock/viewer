@@ -29,7 +29,7 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void SetAttribute_EmptySelection()
         {
-            _attributes.SetAttribute("test", new StringAttribute("test", AttributeSource.Custom, "value"));
+            _attributes.SetAttribute("test", new StringAttribute("test", "value"));
 
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(0, attrs.Count);
@@ -44,12 +44,12 @@ namespace ViewerTest.UI.Attributes
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(0, attrs.Count);
 
-            _attributes.SetAttribute("attr", new StringAttribute("attr", AttributeSource.Custom, "value"));
+            _attributes.SetAttribute("attr", new StringAttribute("attr", "value"));
             
             attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsFalse(attrs[0].IsMixed);
-            Assert.AreEqual(new StringAttribute("attr", AttributeSource.Custom, "value"), attrs[0].Data);
+            Assert.AreEqual(new StringAttribute("attr", "value"), attrs[0].Data);
         }
 
         [TestMethod]
@@ -62,12 +62,12 @@ namespace ViewerTest.UI.Attributes
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(0, attrs.Count);
 
-            _attributes.SetAttribute("attr", new StringAttribute("attr", AttributeSource.Custom, "value"));
+            _attributes.SetAttribute("attr", new StringAttribute("attr", "value"));
 
             attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsFalse(attrs[0].IsMixed);
-            Assert.AreEqual(new StringAttribute("attr", AttributeSource.Custom, "value"), attrs[0].Data);
+            Assert.AreEqual(new StringAttribute("attr", "value"), attrs[0].Data);
         }
 
         [TestMethod]
@@ -88,8 +88,8 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void RemoveAttribute_MultipleEntitiesWithDifferentValue()
         {
-            var entity1 = new Entity("test1").SetAttribute(new StringAttribute("attr", AttributeSource.Custom, "value"));
-            var entity2 = new Entity("test2").SetAttribute(new IntAttribute("attr", AttributeSource.Custom, 42));
+            var entity1 = new Entity("test1").SetAttribute(new StringAttribute("attr", "value"));
+            var entity2 = new Entity("test2").SetAttribute(new IntAttribute("attr", 42));
 
             _storageMock.Add(entity1);
             _storageMock.Add(entity2);

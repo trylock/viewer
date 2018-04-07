@@ -37,7 +37,7 @@ namespace Viewer.Data.Formats.Exif
             // we have to add 6 for the segment header "Exif\0\0"
             Array.Copy(exif.Segment.Bytes, offset + 6, buffer, 0, length); 
             var value = Image.FromStream(new MemoryStream(buffer));
-            return new ImageAttribute("thumbnail", AttributeSource.Exif, value);
+            return new ImageAttribute("thumbnail", value, AttributeFlags.ReadOnly);
         }
     }
 }

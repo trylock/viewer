@@ -20,7 +20,7 @@ namespace ViewerTest.Data.Formats.Attributes
         {
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new IntAttribute("test", AttributeSource.Custom, 0x12345678));
+            attrWriter.Write(new IntAttribute("test", 0x12345678));
 
             var actualData = output.ToArray();
             CollectionAssert.AreEqual(new byte[]
@@ -41,7 +41,7 @@ namespace ViewerTest.Data.Formats.Attributes
 
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new DoubleAttribute("test", AttributeSource.Custom, value));
+            attrWriter.Write(new DoubleAttribute("test", value));
 
             var bytes = BitConverter.GetBytes(value);
             var actualData = output.ToArray();
@@ -61,7 +61,7 @@ namespace ViewerTest.Data.Formats.Attributes
         {
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new StringAttribute("test", AttributeSource.Custom, "value"));
+            attrWriter.Write(new StringAttribute("test", "value"));
 
             var actualData = output.ToArray();
             CollectionAssert.AreEqual(new byte[]
@@ -82,7 +82,7 @@ namespace ViewerTest.Data.Formats.Attributes
 
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new DateTimeAttribute("test", AttributeSource.Custom, value));
+            attrWriter.Write(new DateTimeAttribute("test", value));
 
             var actualData = output.ToArray();
             var expectedValue = new List<byte>

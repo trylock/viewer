@@ -65,7 +65,7 @@ namespace ViewerTest.Data
             var manager = new EntityManager(storage);
             manager.GetEntity("test");
             var newEntity = new Entity("test", DateTime.Now, DateTime.Now);
-            newEntity.SetAttribute(new IntAttribute("attr", AttributeSource.Custom, 1));
+            newEntity.SetAttribute(new IntAttribute("attr", 1));
             manager.SetEntity(newEntity);
             
             // changes were not written to a file yet

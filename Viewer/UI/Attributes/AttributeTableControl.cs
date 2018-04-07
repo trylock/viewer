@@ -198,13 +198,13 @@ namespace Viewer.UI.Attributes
             switch (type)
             {
                 case AttributeType.Int:
-                    return new IntAttribute(name, AttributeSource.Custom, value as int? ?? 0);
+                    return new IntAttribute(name, value as int? ?? 0);
                 case AttributeType.Double:
-                    return new DoubleAttribute(name, AttributeSource.Custom, value as double? ?? 0.0);
+                    return new DoubleAttribute(name, value as double? ?? 0.0);
                 case AttributeType.String:
-                    return new StringAttribute(name, AttributeSource.Custom, value as string ?? "");
+                    return new StringAttribute(name, value as string ?? "");
                 case AttributeType.DateTime:
-                    return new DateTimeAttribute(name, AttributeSource.Custom, value as DateTime? ?? DateTime.Now);
+                    return new DateTimeAttribute(name, value as DateTime? ?? DateTime.Now);
                 case null:
                     return null;
                 default:

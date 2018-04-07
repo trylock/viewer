@@ -38,12 +38,12 @@ namespace ViewerTest.Data.Formats.Exif
         {
             var reader = new ExifAttributeReader(null, new List<IExifAttributeParser>
             {
-                new AttributeParserMock(new IntAttribute("test", AttributeSource.Custom, 1)),
+                new AttributeParserMock(new IntAttribute("test", 1)),
             });
 
             var attr = (IntAttribute)reader.Read();
             Assert.AreEqual("test", attr.Name);
-            Assert.AreEqual(AttributeSource.Custom, attr.Source);
+            Assert.AreEqual(AttributeFlags.None, attr.Flags);
             Assert.AreEqual(1, attr.Value);
 
             Assert.IsNull(reader.Read());
@@ -54,20 +54,20 @@ namespace ViewerTest.Data.Formats.Exif
         {
             var reader = new ExifAttributeReader(null, new List<IExifAttributeParser>
             {
-                new AttributeParserMock(new IntAttribute("test1", AttributeSource.Custom, 1)),
+                new AttributeParserMock(new IntAttribute("test1", 1)),
                 new AttributeParserMock(null),
-                new AttributeParserMock(new IntAttribute("test3", AttributeSource.Custom, 3)),
+                new AttributeParserMock(new IntAttribute("test3",  3)),
             });
 
             var attr = (IntAttribute)reader.Read();
             Assert.AreEqual("test1", attr.Name);
-            Assert.AreEqual(AttributeSource.Custom, attr.Source);
+            Assert.AreEqual(AttributeFlags.None, attr.Flags);
             Assert.AreEqual(1, attr.Value);
 
             // it will skip the null attribute
             attr = (IntAttribute)reader.Read();
             Assert.AreEqual("test3", attr.Name);
-            Assert.AreEqual(AttributeSource.Custom, attr.Source);
+            Assert.AreEqual(AttributeFlags.None, attr.Flags);
             Assert.AreEqual(3, attr.Value);
 
             Assert.IsNull(reader.Read());

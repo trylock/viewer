@@ -83,17 +83,17 @@ namespace Viewer.Data.Formats.Attributes
                 {
                     case AttributeType.Int:
                         var valueInt = _reader.ReadInt32();
-                        return new IntAttribute(name, AttributeSource.Custom, valueInt);
+                        return new IntAttribute(name, valueInt);
                     case AttributeType.Double:
                         var valueDouble = _reader.ReadDouble();
-                        return new DoubleAttribute(name, AttributeSource.Custom, valueDouble);
+                        return new DoubleAttribute(name, valueDouble);
                     case AttributeType.String:
                         var valueString = ReadStringUTF8();
-                        return new StringAttribute(name, AttributeSource.Custom, valueString);
+                        return new StringAttribute(name, valueString);
                     case AttributeType.DateTime:
                         var valueRaw = ReadStringUTF8();
                         var valueDate = DateTime.ParseExact(valueRaw, DateTimeAttribute.Format, CultureInfo.InvariantCulture);
-                        return new DateTimeAttribute(name, AttributeSource.Custom, valueDate);
+                        return new DateTimeAttribute(name, valueDate);
                     default:
                         throw new InvalidDataFormatException(typeOffset, $"Invalid type: 0x{type:X}");
                 }

@@ -64,7 +64,7 @@ namespace Viewer.UI.Attributes
                 var entity = _entities.GetEntity(item);
                 foreach (var attr in entity)
                 {
-                    if (attr.Source != AttributeSource.Custom)
+                    if (attr.Flags.HasFlag(AttributeFlags.ReadOnly))
                         continue;
 
                     if (attrs.TryGetValue(attr.Name, out AttributeView attrView))

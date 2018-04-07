@@ -9,14 +9,14 @@ using Viewer.Data.Formats;
 namespace Viewer.Data
 {
     /// <summary>
-    /// Facade for the attribute storage system. 
+    /// Attribute storage manages loading and storing attributes.
     /// </summary>
     /// <example>
     ///     This example loads attributes from file, changes them and stores them back to the file.
     ///     <code>
     ///         IAttributeStorage storage = ...;
     ///         var attrs = storage.Load("C:/path.jpeg");
-    ///         attrs.Add(new IntAttribute("visited", 1));
+    ///         attrs = attrs.SetAttribute(new IntAttribute("visited", 1));
     ///         storage.Store(attrs);
     ///     </code>
     /// </example>

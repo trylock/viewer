@@ -40,12 +40,12 @@ namespace ViewerTest.UI.Attributes
             // add a new attribute
             var oldValue = new AttributeView
             {
-                Data = new StringAttribute("", AttributeSource.Custom, ""),
+                Data = new StringAttribute("", ""),
                 IsMixed = false
             };
             var newValue = new AttributeView
             {
-                Data = new StringAttribute("", AttributeSource.Custom, "value")
+                Data = new StringAttribute("", "value")
             };
             _attrViewMock.TriggerAttributeChanges(0, oldValue, newValue);
 
@@ -53,7 +53,7 @@ namespace ViewerTest.UI.Attributes
             Assert.IsNull(_attrViewMock.LastError);
             Assert.AreEqual(1, _attrViewMock.Attributes.Count);
             Assert.AreEqual(
-                new StringAttribute("", AttributeSource.Custom, ""),
+                new StringAttribute("", ""),
                 _attrViewMock.Attributes[0].Data);
         }
 
@@ -67,12 +67,12 @@ namespace ViewerTest.UI.Attributes
             // add a new attribute
             var oldValue = new AttributeView
             {
-                Data = new StringAttribute("", AttributeSource.Custom, ""),
+                Data = new StringAttribute("",""),
                 IsMixed = false
             };
             var newValue = new AttributeView
             {
-                Data = new StringAttribute("test", AttributeSource.Custom, "value")
+                Data = new StringAttribute("test", "value")
             };
             _attrViewMock.TriggerAttributeChanges(0, oldValue, newValue);
 
@@ -81,10 +81,10 @@ namespace ViewerTest.UI.Attributes
             Assert.IsNull(_attrViewMock.LastError);
             Assert.AreEqual(2, _attrViewMock.Attributes.Count);
             Assert.AreEqual(
-                new StringAttribute("test", AttributeSource.Custom, "value"), 
+                new StringAttribute("test", "value"), 
                 _attrViewMock.Attributes[0].Data);
             Assert.AreEqual(
-                new StringAttribute("", AttributeSource.Custom, ""), 
+                new StringAttribute("", ""), 
                 _attrViewMock.Attributes[1].Data);
         }
 
@@ -93,17 +93,17 @@ namespace ViewerTest.UI.Attributes
         {
             var attr1 = new AttributeView
             {
-                Data = new StringAttribute("test", AttributeSource.Custom, "value"),
+                Data = new StringAttribute("test", "value"),
                 IsMixed = false
             };
             var attr2 = new AttributeView
             {
-                Data = new IntAttribute("test2", AttributeSource.Custom, 42),
+                Data = new IntAttribute("test2", 42),
                 IsMixed = false
             };
             var attr3 = new AttributeView
             {
-                Data = new StringAttribute("", AttributeSource.Custom, ""),
+                Data = new StringAttribute("", ""),
                 IsMixed = false
             };
 
@@ -115,7 +115,7 @@ namespace ViewerTest.UI.Attributes
             // add attribute with an existing name
             _attrViewMock.TriggerAttributeChanges(2, _attrViewMock.Attributes[2], new AttributeView
             {
-                Data = new StringAttribute("test2", AttributeSource.Custom, "value2"),
+                Data = new StringAttribute("test2", "value2"),
                 IsMixed = false
             });
             

@@ -18,7 +18,7 @@ namespace ViewerTest.Data
             Assert.IsNull(attrs.GetAttribute("test"));
             Assert.AreEqual(0, attrs.Count);
 
-            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
+            attrs = attrs.SetAttribute(new IntAttribute("test", 42));
             Assert.IsNotNull(attrs.GetAttribute("test"));
             Assert.AreEqual(1, attrs.Count);
             Assert.AreEqual(42, ((IntAttribute)attrs.GetAttribute("test")).Value);
@@ -29,11 +29,11 @@ namespace ViewerTest.Data
         {
             IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
 
-            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 24));
+            attrs = attrs.SetAttribute(new IntAttribute("test", 24));
             Assert.IsNotNull(attrs.GetAttribute("test"));
             Assert.AreEqual(1, attrs.Count);
 
-            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
+            attrs = attrs.SetAttribute(new IntAttribute("test", 42));
             Assert.IsNotNull(attrs.GetAttribute("test"));
             Assert.AreEqual(1, attrs.Count);
             Assert.AreEqual(42, ((IntAttribute)attrs.GetAttribute("test")).Value);
@@ -44,7 +44,7 @@ namespace ViewerTest.Data
         public void SetAttribute_NullAttributeName()
         {
             var attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            attrs.SetAttribute(new IntAttribute(null, AttributeSource.Custom, 42));
+            attrs.SetAttribute(new IntAttribute(null, 42));
         }
 
         [TestMethod]
@@ -59,7 +59,7 @@ namespace ViewerTest.Data
         public void GetAttribute_IntAttribute()
         {
             IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
+            attrs = attrs.SetAttribute(new IntAttribute("test", 42));
 
             var attr = (IntAttribute) attrs.GetAttribute("test");
             Assert.AreEqual(42, attr.Value);
@@ -85,7 +85,7 @@ namespace ViewerTest.Data
         public void Remove_OneKey()
         {
             IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
+            attrs = attrs.SetAttribute(new IntAttribute("test", 42));
             Assert.IsNotNull(attrs.GetAttribute("test"));
 
             attrs = attrs.RemoveAttribute("test");
@@ -96,9 +96,9 @@ namespace ViewerTest.Data
         public void Indexer_SetValue()
         {
             IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
-            attrs = attrs.SetAttribute(new IntAttribute("test", AttributeSource.Custom, 42));
+            attrs = attrs.SetAttribute(new IntAttribute("test", 42));
 
-            attrs = attrs.SetAttribute(new StringAttribute("test", AttributeSource.Custom, "value"));
+            attrs = attrs.SetAttribute(new StringAttribute("test", "value"));
             Assert.AreEqual("value", ((StringAttribute)attrs.GetAttribute("test")).Value);
         }
     }

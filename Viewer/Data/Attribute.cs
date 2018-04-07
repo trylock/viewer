@@ -7,17 +7,15 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    public enum AttributeSource
+    [Flags]
+    public enum AttributeFlags
     {
-        /// <summary>
-        /// Attribute is a custom attribute set by user
-        /// </summary>
-        Custom = 0,
+        None = 0x0,
 
         /// <summary>
-        /// Attribute is a read-only attribute stored in the Exif metadata
+        /// Attribute can't be changed
         /// </summary>
-        Exif,
+        ReadOnly = 0x1,
     }
 
     public abstract class Attribute : IDisposable, IEquatable<Attribute>
@@ -30,12 +28,12 @@ namespace Viewer.Data
         /// <summary>
         /// Determines location where the attribute is stored
         /// </summary>
-        public AttributeSource Source { get; }
+        public AttributeFlags Flags { get; }
 
-        protected Attribute(string name, AttributeSource source)    
+        protected Attribute(string name, AttributeFlags flags)    
         {
             Name = name;
-            Source = source;
+            Flags = flags;
         }
         
         /// <summary>
@@ -74,7 +72,7 @@ namespace Viewer.Data
                 return true;
             if (other.GetType() != GetType())
                 return false;
-            if (Name != other.Name || Source != other.Source)
+            if (Name != other.Name || Flags != other.Flags)
                 return false;
             return true;
         }
@@ -94,7 +92,7 @@ namespace Viewer.Data
         {
             unchecked
             {
-                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (int) Source;
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (int) Flags;
             }
         }
     }
@@ -111,7 +109,7 @@ namespace Viewer.Data
         /// </summary>
         public int Value { get; }
 
-        public IntAttribute(string name, AttributeSource source, int value) : base(name, source)
+        public IntAttribute(string name, int value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
         {
             Value = value;
         }
@@ -151,7 +149,7 @@ namespace Viewer.Data
         /// </summary>
         public double Value { get; }
 
-        public DoubleAttribute(string name, AttributeSource source, double value) : base(name, source)
+        public DoubleAttribute(string name, double value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
         {
             Value = value;
         }
@@ -191,7 +189,7 @@ namespace Viewer.Data
         /// </summary>
         public string Value { get; }
 
-        public StringAttribute(string name, AttributeSource source, string value) : base(name, source)
+        public StringAttribute(string name, string value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
         {
             Value = value;
         }
@@ -236,7 +234,7 @@ namespace Viewer.Data
         /// </summary>
         public DateTime Value { get; }
 
-        public DateTimeAttribute(string name, AttributeSource source, DateTime value) : base(name, source)
+        public DateTimeAttribute(string name, DateTime value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
         {
             Value = value;
         }
@@ -273,7 +271,7 @@ namespace Viewer.Data
 
         public Image Value { get; private set; }
 
-        public ImageAttribute(string name, AttributeSource source, Image value) : base(name, source)
+        public ImageAttribute(string name, Image value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
         {
             Value = value;
         }

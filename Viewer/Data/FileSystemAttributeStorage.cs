@@ -157,11 +157,7 @@ namespace Viewer.Data
                 return serialized.ToArray();
             }
         }
-
-        public void Flush()
-        {
-        }
-
+        
         private bool IsAttributeSegment(JpegSegment segment)
         {
             const string header = AttributeReader.JpegSegmentHeader;

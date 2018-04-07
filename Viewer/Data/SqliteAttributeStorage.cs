@@ -118,10 +118,6 @@ namespace Viewer.Data
             MoveFile(oldPath, newPath);
         }
 
-        public void Flush()
-        {
-        }
-
         public void Remove(string path)
         {
             RemoveFile(path);

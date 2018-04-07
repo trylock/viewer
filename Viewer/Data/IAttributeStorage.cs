@@ -19,13 +19,6 @@ namespace Viewer.Data
     ///         attrs.Add(new IntAttribute("visited", 1));
     ///         storage.Store(attrs);
     ///     </code>
-    ///     The Load() method may introduce some write operations (e.g. to a cache). 
-    ///     Therefore you have to call the Flush() method after loading attributes from all files.
-    ///     <code>
-    ///         IAttributeStorage storage = ...;
-    ///         var result = { storage.Load(A), storage.Load(B) };
-    ///         storage.Flush();
-    ///     </code>
     /// </example>
     public interface IAttributeStorage
     {
@@ -64,10 +57,5 @@ namespace Viewer.Data
         /// <param name="oldPath">Old path of an entity</param>
         /// <param name="newPath">New path to entity</param>
         void Move(string oldPath, string newPath);
-
-        /// <summary>
-        /// Finish all pending operations.
-        /// </summary>
-        void Flush();
     }
 }

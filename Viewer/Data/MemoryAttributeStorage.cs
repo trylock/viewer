@@ -59,11 +59,7 @@ namespace Viewer.Data
             _files.Remove(oldPath);
             _files.Add(newPath, entity);
         }
-
-        public void Flush()
-        {
-        }
-
+        
         public void Add(IEntity entity)
         {
             _files.Add(entity.Path, entity);

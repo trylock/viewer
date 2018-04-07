@@ -98,6 +98,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesPresenter.cs" />
     <Compile Include="UI\Attributes\AttributeTableControl.cs">
       <SubType>Form</SubType>

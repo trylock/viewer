@@ -43,7 +43,7 @@ namespace Viewer.UI.Attributes
             }
         }
 
-        public IList<AttributeView> Attributes { get; set; } = new List<AttributeView>();
+        public List<AttributeView> Attributes { get; set; } = new List<AttributeView>();
 
         private bool _suspendUpdateEvent = false;
 
@@ -76,7 +76,8 @@ namespace Viewer.UI.Attributes
             _suspendUpdateEvent = true;
             try
             {
-                GridView.Rows.RemoveAt(index);
+                if (index < GridView.Rows.Count)
+                    GridView.Rows.RemoveAt(index);
                 GridView.Rows.Insert(index, row);
             }
             finally
@@ -220,30 +221,39 @@ namespace Viewer.UI.Attributes
             var newValue = TryParseRow(row);
             if (newValue == null)
                 return;
-
-            AttributeView oldAttributeView = null;
-            if (e.RowIndex < Attributes.Count)
-            {
-                oldAttributeView = Attributes[e.RowIndex];
-            }
-
-            var newAttributeView = new AttributeView
-            {
-                Data = newValue,
-                IsMixed = false,
-            };
-
+            
             AttributeChanged?.Invoke(sender, new AttributeChangedEventArgs
             {
                 Index = e.RowIndex,
-                OldValue = oldAttributeView,
-                NewValue = newAttributeView
+                OldValue = Attributes[e.RowIndex],
+                NewValue = new AttributeView { IsMixed = false, Data = newValue }
             });
         }
 
         private void GridView_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
             e.Row.Cells[TypeColumnIndex].Value = AttributeType.String;
+        }
+
+        private void GridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.S)
+            {
+                SaveAttributes?.Invoke(sender, e);
+            }
+            else if (e.KeyCode == Keys.Delete)
+            {
+                var deleted = new List<int>();
+                foreach (DataGridViewCell cell in GridView.SelectedCells)
+                {
+                    deleted.Add(cell.RowIndex);
+                }
+
+                AttributeDeleted?.Invoke(sender, new AttributeDeletedEventArgs
+                {
+                    Deleted = deleted
+                });
+            }
         }
     }
 }

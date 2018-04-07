@@ -40,6 +40,7 @@
             // 
             // GridView
             // 
+            this.GridView.AllowUserToAddRows = false;
             this.GridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.GridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.GridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -55,6 +56,7 @@
             this.GridView.TabIndex = 0;
             this.GridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridView_CellValueChanged);
             this.GridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.GridView_DefaultValuesNeeded);
+            this.GridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GridView_KeyDown);
             // 
             // NameColumn
             // 

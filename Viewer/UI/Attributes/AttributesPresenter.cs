@@ -13,16 +13,22 @@ namespace Viewer.UI.Attributes
     public class AttributesPresenter
     {
         private IAttributeView _attrView;
+        private IProgressViewFactory _progressViewFactory;
         private ISelection _selection;
         private IEntityManager _entities;
-        private IProgressViewFactory _progressViewFactory;
-
-        public AttributesPresenter(IAttributeView attrView, IProgressViewFactory progressViewFactory, ISelection selection, IEntityManager entities)
+        private IAttributeManager _attributes;
+        
+        public AttributesPresenter(
+            IAttributeView attrView, 
+            IProgressViewFactory progressViewFactory,
+            ISelection selection,
+            IEntityManager entities,
+            IAttributeManager attributes)
         {
-            _entities = entities;
             _selection = selection;
             _selection.Changed += Selection_Changed;
-
+            _entities = entities;
+            _attributes = attributes;
             _progressViewFactory = progressViewFactory;
 
             _attrView = attrView;
@@ -30,126 +36,129 @@ namespace Viewer.UI.Attributes
             PresenterUtils.SubscribeTo(_attrView, this, "View");
         }
         
+        private AttributeView CreateAddAttributeView()
+        {
+            return new AttributeView
+            {
+                Data = new StringAttribute("", AttributeSource.Custom, ""),
+                IsMixed = false
+            };
+        }
+        
         private void Selection_Changed(object sender, EventArgs eventArgs)
         {
-            // find all attributes in the selection
-            var views = new Dictionary<string, AttributeView>();
-            foreach (var entity in _selection)
-            {
-                foreach (var attr in entity)
-                {
-                    if (attr.Source != AttributeSource.Custom)
-                        continue;
-
-                    if (views.TryGetValue(attr.Name, out AttributeView attrView))
-                    {
-                        if (attrView.Data.Equals(attr))
-                        {
-                            continue; // both entities have the same attribute
-                        }
-                        attrView.IsMixed = true;
-                    }
-                    else
-                    {
-                        views.Add(attr.Name, new AttributeView
-                        {
-                            Data = attr,
-                            IsMixed = false
-                        });
-                    }
-                }
-            }
-
-            // update attributes view
-            _attrView.Attributes = views.Values.ToList();
-            _attrView.EditingEnabled = _selection.Count > 0;
-            _attrView.UpdateAttributes();
+            ViewAttributes();
         }
 
         private bool HasAttribute(string name)
         {
-            return _selection.Any(entity => entity.GetAttribute(name) != null);
+            return _attrView.Attributes.Any(attr => attr.Data.Name == name);
         }
 
-        private void AddAttribute(int id, AttributeView attr)
+        private void ViewAttributes()
         {
-            if (string.IsNullOrEmpty(attr.Data.Name))
-            {
-                return; // wait for the user to add attribute name
-            }
+            // add existing attributes + an empty row for a new attribute
+            _attrView.Attributes = _attributes.GetSelectedAttributes().ToList();
+            _attrView.Attributes.Add(CreateAddAttributeView());
 
-            if (HasAttribute(attr.Data.Name))
-            {
-                _attrView.AttributeNameIsNotUnique(attr.Data.Name);
-                
-                _attrView.Attributes.Add(new AttributeView
-                {
-                    Data = attr.Data
-                });
-                _attrView.UpdateAttribute(id);
-            }
-            else
-            {
-                foreach (var entity in _selection)
-                {
-                    entity.SetAttribute(attr.Data);
-                }
-
-                _attrView.Attributes.Add(new AttributeView
-                {
-                    Data = attr.Data,
-                });
-                _attrView.UpdateAttribute(id);
-            }
-        }
-
-        private void EditAttribute(int id, AttributeView oldValue, AttributeView newValue)
-        {
-            if (oldValue.Data.Name != newValue.Data.Name) // edit name
-            {
-                if (string.IsNullOrEmpty(newValue.Data.Name))
-                {
-                    _attrView.AttributeNameIsEmpty();
-                    _attrView.Attributes[id] = oldValue;
-                    _attrView.UpdateAttribute(id);
-                    return;
-                }
-
-                if (HasAttribute(newValue.Data.Name))
-                {
-                    _attrView.AttributeNameIsNotUnique(newValue.Data.Name);
-                    _attrView.Attributes[id] = oldValue;
-                    _attrView.UpdateAttribute(id);
-                    return;
-                }
-            }
-
-            foreach (var entity in _selection)
-            {
-                entity.RemoveAttribute(oldValue.Data.Name);
-                entity.SetAttribute(newValue.Data);
-            }
-
-            _attrView.Attributes[id] = newValue;
-            _attrView.UpdateAttribute(id);
+            // update attributes view
+            _attrView.EditingEnabled = _selection.Count > 0;
+            _attrView.UpdateAttributes();
         }
 
         #region View
 
         private void View_AttributeChanged(object sender, AttributeChangedEventArgs e)
         {
-            if (e.OldValue == null) // add a new attribute
+            var oldAttr = e.OldValue.Data;
+            var newAttr = e.NewValue.Data;
+            if (oldAttr.Name == "") // add a new attribute
             {
-                AddAttribute(e.Index, e.NewValue);
+                if (string.IsNullOrEmpty(newAttr.Name))
+                {
+                    return; // wait for the user to add a name
+                }
             }
-            else // edit an existing attribute
+            
+            if (oldAttr.Name != newAttr.Name) // edit name
             {
-                EditAttribute(e.Index, e.OldValue, e.NewValue);
+                if (string.IsNullOrEmpty(newAttr.Name))
+                {
+                    _attrView.AttributeNameIsEmpty();
+
+                    // revert changes
+                    _attrView.Attributes[e.Index] = e.OldValue;
+                    _attrView.UpdateAttribute(e.Index);
+                    return;
+                }
+
+                if (HasAttribute(newAttr.Name))
+                {
+                    _attrView.AttributeNameIsNotUnique(newAttr.Name);
+
+                    // revert changes
+                    _attrView.Attributes[e.Index] = e.OldValue;
+                    _attrView.UpdateAttribute(e.Index);
+                    return;
+                }
             }
+
+            _attributes.SetAttribute(oldAttr.Name, newAttr);
+
+            // if we added a new attribute, add a new empty row
+            if (oldAttr.Name == "")
+            {
+                _attrView.Attributes.Add(CreateAddAttributeView());
+                _attrView.UpdateAttribute(_attrView.Attributes.Count - 1);
+            }
+
+            // show changes
+            _attrView.Attributes[e.Index] = e.NewValue;
+            _attrView.UpdateAttribute(e.Index);
+        }
+
+
+        private void View_AttributeDeleted(object sender, AttributeDeletedEventArgs e)
+        {
+            var namesToDelete = e.Deleted.Select(index => _attrView.Attributes[index].Data.Name);
+            foreach (var name in namesToDelete)
+            {
+                _attributes.RemoveAttribute(name);
+            }
+
+            ViewAttributes();
         }
 
         private void View_SaveAttributes(object sender, EventArgs e)
         {
+            if (_attributes.Unsaved.Count <= 0)
+            {
+                return;
+            }
+
+            _progressViewFactory
+                .Create()
+                .Show("Saving Changes", _attributes.Unsaved.Count, view =>
+                {
+                    var cancellation = new CancellationTokenSource();
+
+                    view.CancelProgress += (s, args) =>
+                    {
+                        cancellation.Cancel();
+                    }; 
+
+                    Task.Run(() =>
+                    {
+                        foreach (var entity in _attributes.Unsaved)
+                        {
+                            cancellation.Token.ThrowIfCancellationRequested();
+                            view.StartWork(entity.Path);
+                            _entities.Save(entity);
+                            view.FinishWork();
+                        }
+                        _attributes.Unsaved.Clear();
+                    }, cancellation.Token);
+                });
         }
 
         #endregion

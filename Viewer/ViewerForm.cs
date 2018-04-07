@@ -40,6 +40,7 @@ namespace Viewer
             var clipboard = new ClipboardService();
             var fileSystem = new FileSystem();
             var entityManager = new EntityManager(storage);
+            var attributeManager = new AttributeManager(entityManager, selection);
             var thumbnailGenerator = new ThumbnailGenerator();
 
             // UI
@@ -67,7 +68,7 @@ namespace Viewer
                 var attributesView = new AttributeTableControl();
                 attributesView.Show(_dockPanel, DockState.DockRight);
 
-                var attributesPresenter = new AttributesPresenter(attributesView, selection);
+                var attributesPresenter = new AttributesPresenter(attributesView, progressViewFactory, selection, entityManager, attributeManager);
             }
         }
     }

@@ -29,9 +29,9 @@ namespace Viewer.UI.Attributes
     public class AttributeDeletedEventArgs : EventArgs
     {
         /// <summary>
-        /// Deleted attribute
+        /// Deleted indices
         /// </summary>
-        public Attribute Value { get; set; }
+        public IEnumerable<int> Deleted { get; set; }
     }
 
     public enum AttributeType
@@ -48,7 +48,7 @@ namespace Viewer.UI.Attributes
         /// Actual attribute the view represents
         /// </summary>
         public Attribute Data { get; set; }
-        
+
         /// <summary>
         /// true iff value of this attribute is mixed (i.e. multiple entities have different value)
         /// </summary>
@@ -80,7 +80,7 @@ namespace Viewer.UI.Attributes
         /// <summary>
         /// Attributes shown in the view
         /// </summary>
-        IList<AttributeView> Attributes { get; set; }
+        List<AttributeView> Attributes { get; set; }
 
         /// <summary>
         /// Update all attributes

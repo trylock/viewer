@@ -38,10 +38,9 @@ namespace Viewer.Data
         /// <summary>
         /// Add a new entity to the manager.
         /// If an entity with the same path already exists, it will be replaced.
-        /// IsDirty flag will be set.
         /// </summary>
         /// <param name="entity">New entity</param>
-        void AddEntity(IEntity entity);
+        void SetEntity(IEntity entity);
 
         /// <summary>
         /// Permanently delete an entity and all its attributes.
@@ -84,20 +83,7 @@ namespace Viewer.Data
         {
             return GetEnumerator();
         }
-
-        public void Persist()
-        {
-            // perform all pending writes
-            _storage.Flush();
-
-            // write all changed attributes
-            foreach (var pair in _entities)
-            {
-                var entity = pair.Value;
-                _storage.Store(entity);
-            }
-        }
-
+        
         public void Save(IEntity entity)
         {
             _storage.Store(entity);
@@ -125,22 +111,14 @@ namespace Viewer.Data
             return entity;
         }
 
-        public void AddEntity(IEntity entity)
+        public void SetEntity(IEntity entity)
         {
-            if (_entities.ContainsKey(entity.Path))
-            {
-                _entities.Remove(entity.Path);
-            }
-            _entities.Add(entity.Path, entity);
+            _entities[entity.Path] = entity;
         }
 
         public void DeleteEntity(string path)
         {
-            if (_entities.TryGetValue(path, out IEntity entity))
-            {
-                _entities.Remove(path);
-            }
-            
+            _entities.Remove(path);
             _storage.Remove(path);
         }
 

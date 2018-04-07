@@ -49,9 +49,9 @@ namespace ViewerTest.Data
             var storage = new MemoryAttributeStorage();
             var manager = new EntityManager(storage);
             var entity = new Entity("test", DateTime.Now, DateTime.Now);
-            manager.AddEntity(entity);
+            manager.SetEntity(entity);
             Assert.IsNull(storage.Load("test"));
-            manager.Persist();
+            manager.Save(entity);
             Assert.AreEqual(entity, storage.Load("test"));
         }
 
@@ -66,13 +66,13 @@ namespace ViewerTest.Data
             manager.GetEntity("test");
             var newEntity = new Entity("test", DateTime.Now, DateTime.Now);
             newEntity.SetAttribute(new IntAttribute("attr", AttributeSource.Custom, 1));
-            manager.AddEntity(newEntity);
+            manager.SetEntity(newEntity);
             
             // changes were not written to a file yet
             Assert.AreEqual(entity, storage.Load("test"));
             Assert.AreEqual(newEntity, manager.GetEntity("test"));
-
-            manager.Persist();
+            
+            manager.Save(newEntity);
 
             Assert.AreEqual(newEntity, storage.Load("test"));
             Assert.AreEqual(newEntity, manager.GetEntity("test"));
@@ -92,7 +92,7 @@ namespace ViewerTest.Data
             var storage = new MemoryAttributeStorage();
             var manager = new EntityManager(storage);
             var entity = new Entity("test", DateTime.Now, DateTime.Now);
-            manager.AddEntity(entity);
+            manager.SetEntity(entity);
 
             Assert.AreEqual(entity, manager.GetEntity("test"));
             Assert.IsNull(storage.Load("test"));

@@ -229,7 +229,7 @@ namespace Viewer.UI.Explorer
             private IFileSystemErrorView _dialogView;
             private string _baseDir;
             private string _destDir;
-            private CancellationTokenSource _cancellation;
+            private CancellationToken _cancellation;
 
             public CopyHandle(
                 IFileSystem fileSystem, 
@@ -237,22 +237,16 @@ namespace Viewer.UI.Explorer
                 string desDir, 
                 IProgressView progressView, 
                 IFileSystemErrorView dialogView,
-                CancellationTokenSource cancellation)
+                CancellationToken cancellation)
             {
                 _fileSystem = fileSystem;
                 _baseDir = baseDir;
                 _destDir = desDir;
                 _dialogView = dialogView;
                 _progressView = progressView;
-                _progressView.CancelProgress += OnCanceled;
                 _cancellation = cancellation;
             }
-
-            private void OnCanceled(object sender, EventArgs eventArgs)
-            {
-                _cancellation.Cancel();
-            }
-
+            
             private string GetDestinationPath(string path)
             {
                 var partialPath = path.Substring(_baseDir.Length + 1);
@@ -261,7 +255,7 @@ namespace Viewer.UI.Explorer
 
             private void CancelIfRequested()
             {
-                _cancellation.Token.ThrowIfCancellationRequested();
+                _cancellation.ThrowIfCancellationRequested();
             }
 
             public SearchControl CopyDirectory(string path)
@@ -321,20 +315,19 @@ namespace Viewer.UI.Explorer
             var fileCount = (int)_fileSystem.CountFiles(files, true);
             _progressViewFactory.Create().Show(Resources.CopyingFiles_Label, fileCount, view =>
             {
-                var cancellation = new CancellationTokenSource();
                 Task.Run(() =>
                 {
                     foreach (var file in files)
                     {
-                        cancellation.Token.ThrowIfCancellationRequested();
+                        view.CancellationToken.ThrowIfCancellationRequested();
                         var baseDir = PathUtils.GetDirectoryPath(file);
-                        var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _errorView, cancellation);
+                        var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _errorView, view.CancellationToken);
                         if ((effect & DragDropEffects.Move) != 0)
                             _fileSystem.Search(file, copy.CopyDirectory, copy.MoveFile);
                         else
                             _fileSystem.Search(file, copy.CopyDirectory, copy.CopyFile);
                     }
-                }, cancellation.Token).ContinueWith(task =>
+                }, view.CancellationToken).ContinueWith(task =>
                 {
                     // update subdirectories in given path
                     _treeView.LoadDirectories(

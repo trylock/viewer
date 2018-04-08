@@ -139,24 +139,17 @@ namespace Viewer.UI.Attributes
                 .Create()
                 .Show("Saving Changes", _attributes.Unsaved.Count, view =>
                 {
-                    var cancellation = new CancellationTokenSource();
-
-                    view.CancelProgress += (s, args) =>
-                    {
-                        cancellation.Cancel();
-                    }; 
-
                     Task.Run(() =>
                     {
                         foreach (var entity in _attributes.Unsaved)
                         {
-                            cancellation.Token.ThrowIfCancellationRequested();
+                            view.CancellationToken.ThrowIfCancellationRequested();
                             view.StartWork(entity.Path);
                             _entities.Save(entity);
                             view.FinishWork();
                         }
                         _attributes.Unsaved.Clear();
-                    }, cancellation.Token);
+                    }, view.CancellationToken);
                 });
         }
 

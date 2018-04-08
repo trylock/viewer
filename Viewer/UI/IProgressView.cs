@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Viewer.UI
@@ -14,7 +15,12 @@ namespace Viewer.UI
         /// Event called when user requests to cancel the operation.
         /// </summary>
         event EventHandler CancelProgress;
-        
+
+        /// <summary>
+        /// Get cancellation token of this view
+        /// </summary>
+        CancellationToken CancellationToken { get; }
+
         /// <summary>
         /// Open a new progress view.
         /// </summary>

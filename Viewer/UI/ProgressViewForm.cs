@@ -19,15 +19,20 @@ namespace Viewer.UI
         public ProgressViewForm()
         {
             InitializeComponent();
+
+            CancelProgress += (sender, e) => _cancellation.Cancel();
         }
 
         #region View interface
 
         public event EventHandler CancelProgress;
+
+        public CancellationToken CancellationToken => _cancellation.Token;
         
+        private CancellationTokenSource _cancellation = new CancellationTokenSource();
         private ReaderWriterLockSlim _closeLock = new ReaderWriterLockSlim();
         private bool _isFinished = false;
-        
+
         public void Show(string name, int maximum, WorkDelegate work)
         {
             Text = name;

@@ -15,13 +15,6 @@ namespace Viewer.UI.Attributes
     public interface IAttributeManager
     {
         /// <summary>
-        /// Collection of unsaved entities.
-        /// An entity is put into this collection if the user sets an attribute or 
-        /// deletes an attribute on an entity in selection.
-        /// </summary>
-        ICollection<IEntity> Unsaved { get; }
-
-        /// <summary>
         /// Set attribute to all entities in selection
         /// </summary>
         /// <param name="oldName">Old name of the attribute</param>
@@ -39,6 +32,14 @@ namespace Viewer.UI.Attributes
         /// </summary>
         /// <returns></returns>
         IEnumerable<AttributeView> GetSelectedAttributes();
+
+        /// <summary>
+        /// Get a list of changed entities at the moment.
+        /// Entities in this list won't change even if user introduces new changes.
+        /// The caller is fully responsible for saving the changes. This function will 
+        /// remove all returned entities from an internal collection of unsaved files.
+        /// </summary>
+        IReadOnlyList<IEntity> ConsumeChanged();
     }
 
     public class AttributeManager : IAttributeManager
@@ -47,8 +48,6 @@ namespace Viewer.UI.Attributes
         private ISelection _selection;
         private Dictionary<string, IEntity> _changed = new Dictionary<string, IEntity>();
         
-        public ICollection<IEntity> Unsaved => _changed.Values;
-
         public AttributeManager(IEntityManager entities, ISelection selection)
         {
             _entities = entities;
@@ -109,6 +108,13 @@ namespace Viewer.UI.Attributes
                 _entities.SetEntity(updated);
                 _changed[updated.Path] = updated;
             }
+        }
+
+        public IReadOnlyList<IEntity> ConsumeChanged()
+        {
+            var changed =  _changed.Values.ToList();
+            _changed.Clear();
+            return changed;
         }
     }
 }

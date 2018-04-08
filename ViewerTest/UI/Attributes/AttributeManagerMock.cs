@@ -13,9 +13,7 @@ namespace ViewerTest.UI.Attributes
     {
         private Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
         private Dictionary<string, IEntity> _unsaved = new Dictionary<string, IEntity>();
-
-        public ICollection<IEntity> Unsaved => _unsaved.Values;
-
+        
         public void SetAttribute(string oldName, Attribute attr)
         {
             _attrs.Remove(oldName);
@@ -34,6 +32,13 @@ namespace ViewerTest.UI.Attributes
                 Data = attr,
                 IsMixed = false
             });
+        }
+
+        public IReadOnlyList<IEntity> ConsumeChanged()
+        {
+            var changed = _unsaved.Values.ToList();
+            _unsaved.Clear();
+            return changed;
         }
     }
 }

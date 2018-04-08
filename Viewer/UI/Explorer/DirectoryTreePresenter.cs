@@ -334,16 +334,14 @@ namespace Viewer.UI.Explorer
                         else
                             _fileSystem.Search(file, copy.CopyDirectory, copy.CopyFile);
                     }
-                }, cancellation.Token);
+                }, cancellation.Token).ContinueWith(task =>
+                {
+                    // update subdirectories in given path
+                    _treeView.LoadDirectories(
+                        PathUtils.Split(destinationDirectory),
+                        GetValidSubdirectories(destinationDirectory));
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             });
-            
-            // This assumes that the progress view creates a custom message loop and
-            // won't yield execution until it is closed.
-
-            // update subdirectories in given path
-            _treeView.LoadDirectories(
-                PathUtils.Split(destinationDirectory),
-                GetValidSubdirectories(destinationDirectory));
         }
     }
 }

@@ -116,8 +116,7 @@ namespace Viewer.UI.Attributes
             _attrView.Attributes[e.Index] = e.NewValue;
             _attrView.UpdateAttribute(e.Index);
         }
-
-
+        
         private void View_AttributeDeleted(object sender, AttributeDeletedEventArgs e)
         {
             var namesToDelete = e.Deleted.Select(index => _attrView.Attributes[index].Data.Name);

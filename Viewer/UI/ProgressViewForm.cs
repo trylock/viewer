@@ -35,7 +35,7 @@ namespace Viewer.UI
             Progress.Maximum = maximum;
             Progress.Step = 1;
             _work = work;
-            ShowDialog();
+            Show();
         }
 
         public void StartWork(string name)

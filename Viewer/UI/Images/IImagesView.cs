@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
+using Viewer.Properties;
 
 namespace Viewer.UI.Images
 {
@@ -41,6 +42,7 @@ namespace Viewer.UI.Images
         public Image Thumbnail { get; }
 
         public IEntity Data { get; set; }
+        
 
         public ResultItemView(IEntity data, Image thumbnail)
         {
@@ -178,5 +180,8 @@ namespace Viewer.UI.Images
         /// Hide item edit form.
         /// </summary>
         void HideItemEditForm();
+
+
+        IAsyncResult BeginInvoke(Delegate action);
     }
 }

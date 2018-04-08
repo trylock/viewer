@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.IO;
+using Viewer.Properties;
 using Viewer.UI.Explorer;
 using Attribute = Viewer.Data.Attribute;
 
@@ -66,17 +67,7 @@ namespace Viewer.UI.Images
 
         public void LoadFromEntityManager()
         {
-            // dispose old items
-            if (_imagesView.Items == null)
-            {
-                _imagesView.Items = new List<ResultItemView>();
-            }
-
-            foreach (var item in _imagesView.Items)
-            {
-                item.Dispose();
-            }
-            _imagesView.Items.Clear();
+            DisposeViewData();
 
             // load new data
             foreach (var entity in _entities)
@@ -88,15 +79,60 @@ namespace Viewer.UI.Images
             _imagesView.UpdateItems();
         }
 
-        public void LoadDirectory(string path)
+        public async void LoadDirectory(string path)
         {
-            // load new data
-            foreach (var file in Directory.EnumerateFiles(path))
+            DisposeViewData();
+
+            // get the default thumbnail
+            var defaultThumbnail = _thumbnailGenerator.GetThumbnail(Resources.DefaultThumbnail, _itemSize);
+
+            // find files
+            var result = await Task.Run(() =>
             {
-                _entities.GetEntity(file);
-            }
+                var items = new List<ResultItemView>();
+                foreach (var file in Directory.EnumerateFiles(path))
+                {
+                    items.Add(new ResultItemView(new Entity(file), defaultThumbnail));
+                }
+
+                return items;
+            });
             
-            LoadFromEntityManager();
+            // show files with default thumbnails
+            _imagesView.Items = result;
+            _imagesView.UpdateItems();
+
+            // load thumbnails from image metadata
+            await Task.Run(() =>
+            {
+                for (int i = 0; i < _imagesView.Items.Count; ++i)
+                {
+                    var entityPath = _imagesView.Items[i].Data.Path;
+                    var entity = _entities.GetEntity(entityPath);
+                    var thumbnail = GetThumbnail(entity);
+                    var updatedView = new ResultItemView(entity, thumbnail);
+                    var index = i;
+                    _imagesView.BeginInvoke(new Action(() =>
+                    {
+                        _imagesView.Items[index] = updatedView;
+                        _imagesView.UpdateItem(index);
+                    }));
+                }
+            });
+        }
+
+        private void DisposeViewData()
+        {
+            if (_imagesView.Items == null)
+            {
+                _imagesView.Items = new List<ResultItemView>();
+            }
+
+            foreach (var item in _imagesView.Items)
+            {
+                item.Dispose();
+            }
+            _imagesView.Items.Clear();
         }
 
         private Image GetThumbnail(IEntity item)

@@ -164,7 +164,7 @@ namespace Viewer.UI.Images
         {
             NameTextBox.Visible = false;
         }
-
+        
         public void UpdateSize()
         {
             // update grid size

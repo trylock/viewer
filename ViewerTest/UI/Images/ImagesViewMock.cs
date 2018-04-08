@@ -180,6 +180,11 @@ namespace ViewerTest.UI.Images
             EditIndex = -1;
         }
 
+        public IAsyncResult BeginInvoke(Delegate action)
+        {
+            throw new NotImplementedException();
+        }
+
         public void BeginDragDrop(IDataObject data, DragDropEffects effect)
         {
             throw new NotImplementedException();

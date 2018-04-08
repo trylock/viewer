@@ -104,8 +104,11 @@ namespace Viewer.UI.Images
             var attr = item.GetAttribute("thumbnail");
             if (attr != null)
             {
-                var image = ((ImageAttribute) attr).Value;
-                return _thumbnailGenerator.GetThumbnail(image, _itemSize);
+                var imageData = ((ImageAttribute) attr).Value;
+                using (var image = Image.FromStream(new MemoryStream(imageData)))
+                {
+                    return _thumbnailGenerator.GetThumbnail(image, _itemSize);
+                }
             }
 
             return null;

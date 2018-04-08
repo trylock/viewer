@@ -78,8 +78,7 @@ namespace Viewer.Data
                         var buffer = new byte[valueSize];
                         var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
                         Debug.Assert(buffer.Length == length);
-                        var image = Image.FromStream(new MemoryStream(buffer));
-                        attrs = attrs.SetAttribute(new ImageAttribute(name, image, (AttributeFlags)source));
+                        attrs = attrs.SetAttribute(new ImageAttribute(name, buffer, (AttributeFlags)source));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -200,16 +199,7 @@ namespace Viewer.Data
             public void Visit(ImageAttribute attr)
             {
                 _command.Parameters.Add(new SQLiteParameter(TypeName, (int)AttributeType.Image));
-                _command.Parameters.Add(new SQLiteParameter(ValueName, ImageToByteArray(attr.Value)));
-            }
-
-            private byte[] ImageToByteArray(Image img)
-            {
-                using (var imageDataStream = new MemoryStream())
-                {
-                    img.Save(imageDataStream, ImageFormat.Jpeg);
-                    return imageDataStream.ToArray();
-                }
+                _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
             }
         }
 

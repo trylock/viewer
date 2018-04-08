@@ -18,7 +18,7 @@ namespace Viewer.Data
         ReadOnly = 0x1,
     }
 
-    public abstract class Attribute : IDisposable, IEquatable<Attribute>
+    public abstract class Attribute : IEquatable<Attribute>
     {
         /// <summary>
         /// Name of the attribute
@@ -49,11 +49,7 @@ namespace Viewer.Data
         /// <param name="visitor">visitor</param>
         /// <returns>Value returned by the visitor</returns>
         public abstract T Accept<T>(IAttributeVisitor<T> visitor);
-
-        public virtual void Dispose()
-        {
-        }
-
+        
         protected string FormatAttribute<T>(T value, string typeName)
         {
             return typeName + "(\"" + Name + "\", " + value + ")";
@@ -269,9 +265,9 @@ namespace Viewer.Data
         /// </summary>
         public const string TypeName = "Image";
 
-        public Image Value { get; private set; }
+        public byte[] Value { get; }
 
-        public ImageAttribute(string name, Image value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
+        public ImageAttribute(string name, byte[] value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
         {
             Value = value;
         }
@@ -291,19 +287,10 @@ namespace Viewer.Data
             // image value is unique to the attribute
             return ReferenceEquals(this, other);
         }
-
-        public override void Dispose()
-        {
-            if (Value != null)
-            {
-                Value.Dispose();
-                Value = null;
-            }
-        }
-
+        
         public override string ToString()
         {
-            return FormatAttribute(Value.Size, TypeName);
+            return FormatAttribute(Value.Length, TypeName);
         }
     }
 }

@@ -359,6 +359,8 @@ namespace ViewerTest.UI.Images
 
             _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Right, 1, 2, 2, 0));
             _viewMock.TriggerRenameItem("test");
+
+            Assert.AreEqual("test", _viewMock.Items[5].Data.Path);
             
             var newEntity = _entitiesMock.GetEntity("test");
             Assert.IsNotNull(newEntity);

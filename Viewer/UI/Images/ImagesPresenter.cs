@@ -260,6 +260,14 @@ namespace Viewer.UI.Images
             {
                 EndSelection(e.Location);
             }
+            else
+            {
+                var index = _imagesView.GetItemAt(e.Location);
+                if (index >= 0)
+                {
+                    ChangeSelection(Enumerable.Repeat(index, 1), SelectionStrategy.Replace);
+                }
+            }
         }
 
         private void View_HandleMouseMove(object sender, MouseEventArgs e)
@@ -363,7 +371,7 @@ namespace Viewer.UI.Images
             try
             {
                 _entities.MoveEntity(item.Path, newPath);
-                item = item.ChangePath(newPath);
+                _imagesView.Items[index].Data = item.ChangePath(newPath);
                 _imagesView.UpdateItem(index);
             }
             catch (PathTooLongException)

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.UI.Tasks;
 using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
@@ -130,25 +131,25 @@ namespace Viewer.UI.Attributes
 
         private void View_SaveAttributes(object sender, EventArgs e)
         {
-            if (_attributes.Unsaved.Count <= 0)
+            var unsaved = _attributes.ConsumeChanged();
+            if (unsaved.Count <= 0)
             {
                 return;
             }
 
             _progressViewFactory
                 .Create()
-                .Show("Saving Changes", _attributes.Unsaved.Count, view =>
+                .Show("Saving Changes", unsaved.Count, view =>
                 {
                     Task.Run(() =>
                     {
-                        foreach (var entity in _attributes.Unsaved)
+                        foreach (var entity in unsaved)
                         {
                             view.CancellationToken.ThrowIfCancellationRequested();
                             view.StartWork(entity.Path);
                             _entities.Save(entity);
                             view.FinishWork();
                         }
-                        _attributes.Unsaved.Clear();
                     }, view.CancellationToken);
                 });
         }

@@ -15,6 +15,7 @@ using Viewer.UI;
 using Viewer.UI.Attributes;
 using Viewer.UI.Images;
 using Viewer.UI.Explorer;
+using Viewer.UI.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer
@@ -46,7 +47,10 @@ namespace Viewer
             // UI
             var fileSystemErrorView = new FileSystemErrorView();
 
-            var progressViewFactory = new ProgressViewFactory();
+            var tasksView = new TasksView();
+            tasksView.Show(_dockPanel, DockState.DockBottom);
+
+            var progressViewFactory = new ProgressViewFactory(tasksView);
             {
                 var directoryTreeView = new DirectoryTreeControl();
                 directoryTreeView.Text = Resources.ExplorerWindowName;

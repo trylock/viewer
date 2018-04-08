@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.IO;
 using Viewer.Properties;
+using Viewer.UI.Tasks;
 
 namespace Viewer.UI.Explorer
 {

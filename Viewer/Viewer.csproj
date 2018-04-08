@@ -110,8 +110,14 @@
     <Compile Include="UI\Attributes\IAttributeView.cs" />
     <Compile Include="UI\ClipboardService.cs" />
     <Compile Include="UI\PresenterUtils.cs" />
-    <Compile Include="UI\ProgressViewFactory.cs" />
+    <Compile Include="UI\Tasks\ProgressViewFactory.cs" />
     <Compile Include="UI\Selection.cs" />
+    <Compile Include="UI\Tasks\TasksView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Tasks\TasksView.Designer.cs">
+      <DependentUpon>TasksView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\WindowView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,13 +142,13 @@
     <Compile Include="UI\Images\IImagesView.cs" />
     <Compile Include="UI\Images\IThumbnailGenerator.cs" />
     <Compile Include="UI\Images\ThumbnailGenerator.cs" />
-    <Compile Include="UI\IProgressView.cs" />
+    <Compile Include="UI\Tasks\IProgressView.cs" />
     <Compile Include="UI\IWindowView.cs" />
-    <Compile Include="UI\ProgressViewForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="UI\Tasks\ProgressView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ProgressViewForm.Designer.cs">
-      <DependentUpon>ProgressViewForm.cs</DependentUpon>
+    <Compile Include="UI\Tasks\ProgressView.Designer.cs">
+      <DependentUpon>ProgressView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\RectangleExtensions.cs" />
     <Compile Include="ViewerForm.cs">
@@ -167,8 +173,11 @@
     <EmbeddedResource Include="UI\Images\GridControl.resx">
       <DependentUpon>GridControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ProgressViewForm.resx">
-      <DependentUpon>ProgressViewForm.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Tasks\ProgressView.resx">
+      <DependentUpon>ProgressView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Tasks\TasksView.resx">
+      <DependentUpon>TasksView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ViewerForm.resx">
       <DependentUpon>ViewerForm.cs</DependentUpon>

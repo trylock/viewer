@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Viewer.UI
+namespace Viewer.UI.Tasks
 {
     public delegate void WorkDelegate(IProgressView view);
 

@@ -9,14 +9,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Properties;
 
-namespace Viewer.UI
+namespace Viewer.UI.Tasks
 {
-    public partial class ProgressViewForm : Form, IProgressView
+    public partial class ProgressView : UserControl, IProgressView
     {
-        private WorkDelegate _work;
-
-        public ProgressViewForm()
+        public ProgressView()
         {
             InitializeComponent();
 
@@ -39,8 +38,8 @@ namespace Viewer.UI
             Progress.Value = 0;
             Progress.Maximum = maximum;
             Progress.Step = 1;
-            _work = work;
-            Show();
+
+            work(this);
         }
 
         public void StartWork(string name)
@@ -77,6 +76,9 @@ namespace Viewer.UI
                 BeginInvoke(new Action(() =>
                 {
                     Progress.PerformStep();
+
+                    var currentProgress = (int)((Progress.Value / (double) Progress.Maximum) * 100);
+                    ProgressLabel.Text = string.Format(Resources.Progress_Label, currentProgress);
                     if (Progress.Value >= Progress.Maximum)
                     {
                         CloseView();
@@ -95,12 +97,17 @@ namespace Viewer.UI
             try
             {
                 _isFinished = true;
+
                 if (canceled)
                 {
                     CancelProgress?.Invoke(this, EventArgs.Empty);
                 }
 
-                Hide();
+                BeginInvoke(new Action(() =>
+                {
+                    // remove the control from its parent
+                    Parent = null;
+                }));
             }
             finally
             {
@@ -113,20 +120,6 @@ namespace Viewer.UI
         private void CancelProgressButton_Click(object sender, EventArgs e)
         {
             CloseView(true);
-        }
-
-        private void ProgressViewForm_Shown(object sender, EventArgs e)
-        {
-            _work?.Invoke(this);
-        }
-        
-        private void ProgressViewForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                CloseView(true);
-                e.Cancel = true;
-            }
         }
     }
 }

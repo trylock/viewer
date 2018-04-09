@@ -48,7 +48,7 @@ namespace Viewer.Data
         /// </summary>
         public AttributeFlags Flags { get; }
 
-        protected Attribute(string name, AttributeFlags flags)    
+        protected Attribute(string name, AttributeFlags flags)
         {
             Name = name;
             Flags = flags;

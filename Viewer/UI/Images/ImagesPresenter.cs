@@ -72,7 +72,7 @@ namespace Viewer.UI.Images
             // load new data
             foreach (var entity in _entities)
             {
-                _imagesView.Items.Add(new ResultItemView(entity, GetThumbnail(entity)));
+                _imagesView.Items.Add(new EntityView(entity, GetThumbnail(entity)));
             }
 
             // update view
@@ -89,10 +89,10 @@ namespace Viewer.UI.Images
             // find files
             var result = await Task.Run(() =>
             {
-                var items = new List<ResultItemView>();
+                var items = new List<EntityView>();
                 foreach (var file in Directory.EnumerateFiles(path))
                 {
-                    items.Add(new ResultItemView(new Entity(file), defaultThumbnail));
+                    items.Add(new EntityView(new Entity(file), defaultThumbnail));
                 }
 
                 return items;
@@ -110,7 +110,7 @@ namespace Viewer.UI.Images
                     var entityPath = _imagesView.Items[i].Data.Path;
                     var entity = _entities.GetEntity(entityPath);
                     var thumbnail = GetThumbnail(entity);
-                    var updatedView = new ResultItemView(entity, thumbnail);
+                    var updatedView = new EntityView(entity, thumbnail);
                     var index = i;
                     _imagesView.BeginInvoke(new Action(() =>
                     {
@@ -125,7 +125,7 @@ namespace Viewer.UI.Images
         {
             if (_imagesView.Items == null)
             {
-                _imagesView.Items = new List<ResultItemView>();
+                _imagesView.Items = new List<EntityView>();
             }
 
             foreach (var item in _imagesView.Items)
@@ -478,7 +478,7 @@ namespace Viewer.UI.Images
             }
 
             // remove deleted items from the view
-            var newViewItems = new List<ResultItemView>();
+            var newViewItems = new List<EntityView>();
             foreach (var item in _imagesView.Items)
             {
                 if (_selection.Contains(item.Data.Path))

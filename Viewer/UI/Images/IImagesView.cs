@@ -19,7 +19,7 @@ namespace Viewer.UI.Images
         Selected = 0x2,
     }
 
-    public class ResultItemView : IDisposable
+    public class EntityView : IDisposable
     {
         /// <summary>
         /// Name of the file which should be shown to the user
@@ -43,8 +43,7 @@ namespace Viewer.UI.Images
 
         public IEntity Data { get; set; }
         
-
-        public ResultItemView(IEntity data, Image thumbnail)
+        public EntityView(IEntity data, Image thumbnail)
         {
             Data = data;
             Thumbnail = thumbnail;
@@ -109,7 +108,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// List of items to show 
         /// </summary>
-        IList<ResultItemView> Items { get; set; }
+        IList<EntityView> Items { get; set; }
 
         /// <summary>
         /// Update gird size

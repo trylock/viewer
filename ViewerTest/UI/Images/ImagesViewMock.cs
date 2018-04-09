@@ -32,7 +32,7 @@ namespace ViewerTest.UI.Images
 
         public Size ItemSize { get; set; } = new Size(1, 1);
         public Size ItemPadding { get; set; } = new Size(0, 0);
-        public IList<ResultItemView> Items { get; set; } = new List<ResultItemView>();
+        public IList<EntityView> Items { get; set; } = new List<EntityView>();
         public Rectangle CurrentSelection { get; private set; } = Rectangle.Empty;
         public Size ViewSize { get; } = new Size(8, 8);
         public bool IsActive { get; private set; } = false;
@@ -47,7 +47,7 @@ namespace ViewerTest.UI.Images
             {
                 for (int j = 0; j < ViewSize.Height / 2; ++j)
                 {
-                    Items.Add(new ResultItemView(null, null));
+                    Items.Add(new EntityView(null, null));
                 }
             }
         }

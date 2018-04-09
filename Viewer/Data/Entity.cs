@@ -73,12 +73,7 @@ namespace Viewer.Data
         /// Number or attributes in the collection
         /// </summary>
         public int Count => _attrs.Count;
-
-        /// <summary>
-        /// false, the collection is never read-only
-        /// </summary>
-        public bool IsReadOnly => false;
-
+        
         /// <summary>
         /// Collection of attribute names
         /// </summary>

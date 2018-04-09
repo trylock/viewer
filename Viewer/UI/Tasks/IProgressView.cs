@@ -50,6 +50,15 @@ namespace Viewer.UI.Tasks
         /// </summary>
         /// <remarks>Can be called from multiple threads</remarks>
         void FinishWork();
+
+        /// <summary>
+        /// Create a progress object which will update the view
+        /// </summary>
+        /// <typeparam name="T">Type of the progress value</typeparam>
+        /// <param name="finishedPredicate">Function which returns true iff we have finished a unit of work</param>
+        /// <param name="taskNameGetter">Function will set current task name</param>
+        /// <returns>Progress object</returns>
+        IProgress<T> CreateProgress<T>(Func<T, bool> finishedPredicate, Func<T, string> taskNameGetter);
     }
 
     public interface IProgressViewFactory

@@ -91,6 +91,39 @@ namespace Viewer.UI.Tasks
             }
         }
 
+        private class ProgressController<T> : IProgress<T>
+        {
+            private Func<T, bool> _finishedPredicate;
+            private Func<T, string> _taskNameGetter;
+            private IProgressView _view;
+
+            public ProgressController(IProgressView view, Func<T, bool> finishedPredicate, Func<T, string> taskNameGetter)
+            {
+                _view = view;
+                _finishedPredicate = finishedPredicate;
+                _taskNameGetter = taskNameGetter;
+            }
+
+            public void Report(T value)
+            {
+                if (_finishedPredicate(value))
+                {
+                    _view.FinishWork();
+                }
+
+                var name = _taskNameGetter(value);
+                if (name != null)
+                {
+                    _view.StartWork(name);
+                }
+            }
+        }
+
+        public IProgress<T> CreateProgress<T>(Func<T, bool> finishedPredicate, Func<T, string> taskNameGetter)
+        {
+            return new ProgressController<T>(this, finishedPredicate, taskNameGetter);
+        }
+
         public void CloseView(bool canceled = false)
         {
             _closeLock.EnterWriteLock();

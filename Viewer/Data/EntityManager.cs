@@ -137,7 +137,10 @@ namespace Viewer.Data
         public void Clear()
         {
             _entities.Clear();
-            _staged.Clear();
+            lock (_staged)
+            {
+                _staged.Clear();
+            }
         }
 
         public IEntity GetEntity(string path)
@@ -187,24 +190,33 @@ namespace Viewer.Data
             _entities[entity.Path] = entity;
 
             // add it to the staged area
-            _staged[entity.Path] = entity;
+            lock (_staged)
+            {
+                _staged[entity.Path] = entity;
+            }
         }
 
         public bool TryStage(IEntity entity)
         {
-            if (_staged.ContainsKey(entity.Path))
+            lock (_staged)
             {
-                return false;
-            }
+                if (_staged.ContainsKey(entity.Path))
+                {
+                    return false;
+                }
 
-            _entities[entity.Path] = entity;
-            _staged[entity.Path] = entity;
-            return true;
+                _entities[entity.Path] = entity;
+                _staged[entity.Path] = entity;
+                return true;
+            }
         }
 
         public void Unstage(string path)
         {
-            _staged.Remove(path);
+            lock (_staged)
+            {
+                _staged.Remove(path);
+            }
         }
 
         private class StagedSnapshot : IEntityStageSnapshot
@@ -249,7 +261,7 @@ namespace Viewer.Data
                     throw new AggregateException(errors);
                 }
             }
-
+            
             public IEnumerator<IEntity> GetEnumerator()
             {
                 return _snapshot.GetEnumerator();
@@ -263,9 +275,12 @@ namespace Viewer.Data
 
         public IEntityStageSnapshot ConsumeStaged()
         {
-            var snapshot = _staged.Values.ToArray();
-            _staged.Clear();
-            return new StagedSnapshot(this, snapshot);
+            lock (_staged)
+            {
+                var snapshot = _staged.Values.ToArray();
+                _staged.Clear();
+                return new StagedSnapshot(this, snapshot);
+            }
         }
     }
 }

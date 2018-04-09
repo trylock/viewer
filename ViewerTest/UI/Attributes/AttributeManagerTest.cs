@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
+using Viewer.Data.Storage;
 using Viewer.UI.Attributes;
 
 namespace ViewerTest.UI.Attributes

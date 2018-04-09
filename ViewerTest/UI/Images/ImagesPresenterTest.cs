@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
+using Viewer.Data.Storage;
 using Viewer.UI;
 using Viewer.UI.Images;
 

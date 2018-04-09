@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
+using Viewer.Data.Storage;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.UI;
@@ -65,7 +66,7 @@ namespace Viewer
                 imagesView.Show(_dockPanel, DockState.Document);
 
                 var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, entityManager, clipboard, selection, thumbnailGenerator);
-                imagesPresenter.LoadDirectory("D:/tmp");
+                imagesPresenter.LoadDirectoryAsync("D:/tmp");
             }
 
             {

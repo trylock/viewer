@@ -79,7 +79,7 @@ namespace Viewer.UI.Images
             _imagesView.UpdateItems();
         }
 
-        public async void LoadDirectory(string path)
+        public async void LoadDirectoryAsync(string path)
         {
             DisposeViewData();
 

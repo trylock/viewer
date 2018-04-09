@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data.Formats;
 
-namespace Viewer.Data
+namespace Viewer.Data.Storage
 {
     /// <summary>
     /// Attribute storage manages loading and storing attributes.

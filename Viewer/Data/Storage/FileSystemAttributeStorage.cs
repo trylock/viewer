@@ -13,7 +13,7 @@ using Viewer.Data.Formats.Attributes;
 using Viewer.Data.Formats.Jpeg;
 using Directory = MetadataExtractor.Directory;
 
-namespace Viewer.Data
+namespace Viewer.Data.Storage
 {
     /// <summary>
     /// Attribute storage which stores attributes directly in JPEG files.

@@ -9,7 +9,7 @@ using Viewer.Data.Formats.Attributes;
 using Viewer.Data.Formats.Exif;
 using Viewer.Data.Formats.Jpeg;
 
-namespace Viewer.Data
+namespace Viewer.Data.Storage
 {
     public class AttributeStorageFactory
     {

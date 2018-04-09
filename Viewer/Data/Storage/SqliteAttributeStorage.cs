@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data.Formats.Attributes;
 
-namespace Viewer.Data
+namespace Viewer.Data.Storage
 {
     public class SqliteAttributeStorage : IAttributeStorage
     {

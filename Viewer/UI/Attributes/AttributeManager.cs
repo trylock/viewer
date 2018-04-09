@@ -32,22 +32,13 @@ namespace Viewer.UI.Attributes
         /// </summary>
         /// <returns></returns>
         IEnumerable<AttributeView> GetSelectedAttributes();
-
-        /// <summary>
-        /// Get a list of changed entities at the moment.
-        /// Entities in this list won't change even if user introduces new changes.
-        /// The caller is fully responsible for saving the changes. This function will 
-        /// remove all returned entities from an internal collection of unsaved files.
-        /// </summary>
-        IReadOnlyList<IEntity> ConsumeChanged();
     }
 
     public class AttributeManager : IAttributeManager
     {
         private IEntityManager _entities;
         private ISelection _selection;
-        private Dictionary<string, IEntity> _changed = new Dictionary<string, IEntity>();
-        
+
         public AttributeManager(IEntityManager entities, ISelection selection)
         {
             _entities = entities;
@@ -87,16 +78,14 @@ namespace Viewer.UI.Attributes
 
             return attrs.Values;
         }
-
+        
         public void SetAttribute(string oldName, Attribute attr)
         {
             foreach (var item in _selection)
             {
-                var updated = _entities.GetEntity(item)
-                    .RemoveAttribute(oldName)
-                    .SetAttribute(attr);
-                _entities.SetEntity(updated);
-                _changed[updated.Path] = updated;
+                var entity = _entities.GetEntity(item);
+                var updated = entity.RemoveAttribute(oldName).SetAttribute(attr);
+                _entities.Stage(updated);
             }
         }
 
@@ -104,17 +93,10 @@ namespace Viewer.UI.Attributes
         {
             foreach (var item in _selection)
             {
-                var updated = _entities.GetEntity(item).RemoveAttribute(name);
-                _entities.SetEntity(updated);
-                _changed[updated.Path] = updated;
+                var entity = _entities.GetEntity(item);
+                var updated = entity.RemoveAttribute(name);
+                _entities.Stage(updated);
             }
-        }
-
-        public IReadOnlyList<IEntity> ConsumeChanged()
-        {
-            var changed =  _changed.Values.ToList();
-            _changed.Clear();
-            return changed;
         }
     }
 }

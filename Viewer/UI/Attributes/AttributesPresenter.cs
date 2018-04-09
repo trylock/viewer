@@ -18,7 +18,7 @@ namespace Viewer.UI.Attributes
         private ISelection _selection;
         private IEntityManager _entities;
         private IAttributeManager _attributes;
-        
+
         public AttributesPresenter(
             IAttributeView attrView, 
             IProgressViewFactory progressViewFactory,
@@ -131,7 +131,7 @@ namespace Viewer.UI.Attributes
 
         private void View_SaveAttributes(object sender, EventArgs e)
         {
-            var unsaved = _attributes.ConsumeChanged();
+            var unsaved = _entities.ConsumeStaged();
             if (unsaved.Count <= 0)
             {
                 return;
@@ -141,16 +141,10 @@ namespace Viewer.UI.Attributes
                 .Create()
                 .Show("Saving Changes", unsaved.Count, view =>
                 {
-                    Task.Run(() =>
-                    {
-                        foreach (var entity in unsaved)
-                        {
-                            view.CancellationToken.ThrowIfCancellationRequested();
-                            view.StartWork(entity.Path);
-                            _entities.Save(entity);
-                            view.FinishWork();
-                        }
-                    }, view.CancellationToken);
+                    var progress = view.CreateProgress<CommitProgress>(
+                        commit => commit.IsFinished, 
+                        commit => commit.Entity.Path);
+                    Task.Run(() => unsaved.Commit(view.CancellationToken, progress), view.CancellationToken);
                 });
         }
 

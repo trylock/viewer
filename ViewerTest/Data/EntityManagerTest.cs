@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
@@ -50,9 +51,9 @@ namespace ViewerTest.Data
             var storage = new MemoryAttributeStorage();
             var manager = new EntityManager(storage);
             var entity = new Entity("test", DateTime.Now, DateTime.Now);
-            manager.SetEntity(entity);
+            manager.Stage(entity);
             Assert.IsNull(storage.Load("test"));
-            manager.Save(entity);
+            manager.ConsumeStaged().Commit(CancellationToken.None, null);
             Assert.AreEqual(entity, storage.Load("test"));
         }
 
@@ -67,13 +68,13 @@ namespace ViewerTest.Data
             manager.GetEntity("test");
             var newEntity = new Entity("test", DateTime.Now, DateTime.Now);
             newEntity.SetAttribute(new IntAttribute("attr", 1));
-            manager.SetEntity(newEntity);
+            manager.Stage(newEntity);
             
             // changes were not written to a file yet
             Assert.AreEqual(entity, storage.Load("test"));
             Assert.AreEqual(newEntity, manager.GetEntity("test"));
             
-            manager.Save(newEntity);
+            manager.ConsumeStaged().Commit(CancellationToken.None, null);
 
             Assert.AreEqual(newEntity, storage.Load("test"));
             Assert.AreEqual(newEntity, manager.GetEntity("test"));
@@ -93,7 +94,7 @@ namespace ViewerTest.Data
             var storage = new MemoryAttributeStorage();
             var manager = new EntityManager(storage);
             var entity = new Entity("test", DateTime.Now, DateTime.Now);
-            manager.SetEntity(entity);
+            manager.Stage(entity);
 
             Assert.AreEqual(entity, manager.GetEntity("test"));
             Assert.IsNull(storage.Load("test"));

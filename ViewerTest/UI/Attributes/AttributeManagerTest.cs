@@ -91,19 +91,23 @@ namespace ViewerTest.UI.Attributes
         {
             var entity1 = new Entity("test1").SetAttribute(new StringAttribute("attr", "value"));
             var entity2 = new Entity("test2").SetAttribute(new IntAttribute("attr", 42));
-
             _storageMock.Add(entity1);
             _storageMock.Add(entity2);
-            _selectionMock.Replace(new[] { entity1.Path, entity2.Path });
+            _selectionMock.Replace(new[] { "test1", "test2" });
 
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsTrue(attrs[0].IsMixed);
 
             _attributes.RemoveAttribute("attr");
-
+            
             attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(0, attrs.Count);
+            
+            var staged = _entitiesMock.ConsumeStaged().ToList();
+            Assert.AreEqual(2, staged.Count);
+            Assert.AreEqual(0, staged[0].ToList().Count);
+            Assert.AreEqual(0, staged[1].ToList().Count);
         }
     }
 }

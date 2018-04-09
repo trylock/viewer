@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data.Storage;
 
@@ -15,18 +16,6 @@ namespace Viewer.Data
     public interface IEntityManager : IEnumerable<IEntity>
     {
         /// <summary>
-        /// Save given entity to its file 
-        /// </summary>
-        /// <param name="entity"></param>
-        void Save(IEntity entity);
-
-        /// <summary>
-        /// Free all entities from memory.
-        /// All unsaved changes will be lost.
-        /// </summary>
-        void Clear();
-
-        /// <summary>
         /// Try to get entity at given path.
         /// If it is not loaded, load it into the manager.
         /// </summary>
@@ -35,14 +24,7 @@ namespace Viewer.Data
         /// <exception cref="ArgumentNullException"><paramref name="path"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="path"/> is not a valid path</exception>
         IEntity GetEntity(string path);
-
-        /// <summary>
-        /// Add a new entity to the manager.
-        /// If an entity with the same path already exists, it will be replaced.
-        /// </summary>
-        /// <param name="entity">New entity</param>
-        void SetEntity(IEntity entity);
-
+        
         /// <summary>
         /// Permanently delete an entity and all its attributes.
         /// No exception is thrown if no entity was not found at given path.
@@ -62,11 +44,78 @@ namespace Viewer.Data
         /// <param name="oldPath">Old path of an entity</param>
         /// <param name="newPath">New path to entity</param>
         void MoveEntity(string oldPath, string newPath);
+
+        /// <summary>
+        /// Remove all entities from memory.
+        /// All unsaved changes will be lost.
+        /// </summary>
+        void Clear();
+
+        /// <summary>
+        /// Mark entity as changed. 
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        void Stage(IEntity entity);
+
+        /// <summary>
+        /// Try to stage entity. 
+        /// If there is an entity with given path, it won't be replaced.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns>true iff the entity was staged</returns>
+        bool TryStage(IEntity entity);
+
+        /// <summary>
+        /// Remove entity from the staged area.
+        /// </summary>
+        /// <param name="path">Entity to remove</param>
+        void Unstage(string path);
+
+        /// <summary>
+        /// Move all staged entities to given snapshot.
+        /// </summary>
+        /// <returns></returns>
+        IEntityStageSnapshot ConsumeStaged();
+    }
+    
+    public class CommitProgress
+    {
+        public IEntity Entity { get; }
+
+        /// <summary>
+        /// true iff the save operation finished (successfully or otherwise)
+        /// </summary>
+        public bool IsFinished { get; }
+
+        public CommitProgress(IEntity entity, bool isFinished)
+        {
+            Entity = entity;
+            IsFinished = isFinished;
+        }
+    }
+
+    public interface IEntityStageSnapshot : IEnumerable<IEntity>
+    {
+        /// <summary>
+        /// Get number of entities in the snapshot
+        /// </summary>
+        int Count { get; }
+
+        /// <summary>
+        /// Commit the snapshot (save the entities to their files). 
+        /// If an exception occurs during a save operation (this includes the progress report function) 
+        /// and the entity was not changed, it will be put back into the stage.
+        /// This method is thread-safe.
+        /// </summary>
+        /// <param name="cancellationToken">The token will be queried before we try to save an entity</param>
+        /// <param name="progress">Report commit progress. Can be null.</param>
+        void Commit(CancellationToken cancellationToken, IProgress<CommitProgress> progress);
     }
 
     public class EntityManager : IEntityManager
     {
         private Dictionary<string, IEntity> _entities = new Dictionary<string, IEntity>();
+        private Dictionary<string, IEntity> _staged = new Dictionary<string, IEntity>();
 
         private IAttributeStorage _storage;
 
@@ -85,14 +134,10 @@ namespace Viewer.Data
             return GetEnumerator();
         }
         
-        public void Save(IEntity entity)
-        {
-            _storage.Store(entity);
-        }
-
         public void Clear()
         {
             _entities.Clear();
+            _staged.Clear();
         }
 
         public IEntity GetEntity(string path)
@@ -111,14 +156,10 @@ namespace Viewer.Data
             _entities.Add(entity.Path, entity);
             return entity;
         }
-
-        public void SetEntity(IEntity entity)
-        {
-            _entities[entity.Path] = entity;
-        }
-
+        
         public void DeleteEntity(string path)
         {
+            Unstage(path);
             _entities.Remove(path);
             _storage.Remove(path);
         }
@@ -133,6 +174,98 @@ namespace Viewer.Data
             }
 
             _storage.Move(oldPath, newPath);
+        }
+
+        private void SaveEntity(IEntity entity)
+        {
+            _storage.Store(entity);
+        }
+
+        public void Stage(IEntity entity)
+        {
+            // update the entity in manager
+            _entities[entity.Path] = entity;
+
+            // add it to the staged area
+            _staged[entity.Path] = entity;
+        }
+
+        public bool TryStage(IEntity entity)
+        {
+            if (_staged.ContainsKey(entity.Path))
+            {
+                return false;
+            }
+
+            _entities[entity.Path] = entity;
+            _staged[entity.Path] = entity;
+            return true;
+        }
+
+        public void Unstage(string path)
+        {
+            _staged.Remove(path);
+        }
+
+        private class StagedSnapshot : IEntityStageSnapshot
+        {
+            public int Count => _snapshot.Count;
+
+            private EntityManager _manager;
+            private IList<IEntity> _snapshot;
+
+            public StagedSnapshot(EntityManager manager, IList<IEntity> snapshot)
+            {
+                _manager = manager;
+                _snapshot = snapshot;
+            }
+
+            public void Commit(CancellationToken cancellationToken, IProgress<CommitProgress> progress)
+            {
+                // save all changed entities
+                var errors = new List<Exception>();
+                foreach (var entity in _snapshot)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    try
+                    {
+                        progress?.Report(new CommitProgress(entity, false));
+                        _manager.SaveEntity(entity);
+                    }
+                    catch (Exception e)
+                    {
+                        // put the entity back to the stage if it wasn't changed during the commit
+                        _manager.TryStage(entity);
+                        errors.Add(e);
+                    }
+                    finally
+                    {
+                        progress?.Report(new CommitProgress(entity, true));
+                    }
+                }
+
+                if (errors.Count > 0)
+                {
+                    throw new AggregateException(errors);
+                }
+            }
+
+            public IEnumerator<IEntity> GetEnumerator()
+            {
+                return _snapshot.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
+
+        public IEntityStageSnapshot ConsumeStaged()
+        {
+            var snapshot = _staged.Values.ToArray();
+            _staged.Clear();
+            return new StagedSnapshot(this, snapshot);
         }
     }
 }

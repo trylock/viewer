@@ -36,7 +36,7 @@ namespace Viewer
                 new Ifd0ExifAttributeParser("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
                 new Ifd0ExifAttributeParser("Model", ExifIfd0Directory.TagModel, AttributeType.String),
                 new Ifd0ExifAttributeParser("Make", ExifIfd0Directory.TagMake, AttributeType.String),
-                new ThumbnaiExifAttributeParser()
+                new ThumbnaiExifAttributeParser("thumbnail")
             };
 
             CacheConnection = new SQLiteConnection($"Data Source={Environment.CurrentDirectory}/../../../cache.db;Version=3");

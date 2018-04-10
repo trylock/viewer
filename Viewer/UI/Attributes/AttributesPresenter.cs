@@ -19,6 +19,8 @@ namespace Viewer.UI.Attributes
         private IEntityManager _entities;
         private IAttributeManager _attributes;
 
+        public Func<AttributeGroup, bool> AttributePredicate { get; set; } = attr => true;
+
         private SortColumn _currentSortColumn = SortColumn.None;
         private SortDirection _currentSortDirection = SortDirection.Ascending;
 
@@ -34,7 +36,7 @@ namespace Viewer.UI.Attributes
             _entities = entities;
             _attributes = attributes;
             _progressViewFactory = progressViewFactory;
-
+            
             _attrView = attrView;
             _attrView.EditingEnabled = false;
             PresenterUtils.SubscribeTo(_attrView, this, "View");
@@ -55,15 +57,20 @@ namespace Viewer.UI.Attributes
             ViewAttributes();
         }
 
+        private IEnumerable<AttributeGroup> GetSelectedAttributes()
+        {
+            return _attributes.GetSelectedAttributes().Where(AttributePredicate);
+        }
+
         private bool HasAttribute(string name)
         {
-            return _attributes.GetSelectedAttributes().Any(attr => attr.Data.Name == name);
+            return GetSelectedAttributes().Any(attr => attr.Data.Name == name);
         }
 
         private void ViewAttributes()
         {
             // add existing attributes + an empty row for a new attribute
-            _attrView.Attributes = _attributes.GetSelectedAttributes().ToList();
+            _attrView.Attributes = GetSelectedAttributes().ToList();
             if (_selection.Count > 0)
             {
                 _attrView.Attributes.Add(CreateAddAttributeView());
@@ -155,20 +162,7 @@ namespace Viewer.UI.Attributes
                     Task.Run(() => unsaved.Commit(view.CancellationToken, progress), view.CancellationToken);
                 });
         }
-
-        private Func<AttributeGroup, string> GetSortKeySelector<TKey>(SortColumn column)
-        {
-            return attr =>
-            {
-                if (column == SortColumn.Name)
-                    return attr.Data.Name;
-                else if (column == SortColumn.Type)
-                    return attr.Data.GetType().Name;
-                else // if (e.Column == SortColumn.Value)
-                    return attr.Data.ToString();
-            };
-        }
-
+        
         private void View_SortAttributes(object sender, SortEventArgs e)
         {
             if (_attrView.Attributes.Count <= 0)
@@ -191,7 +185,7 @@ namespace Viewer.UI.Attributes
                     return attr.Data.ToString();
             }
 
-            // sort the values byt given column
+            // sort the values by given column
             if (e.Column != SortColumn.None)
             {
                 if (_currentSortColumn != e.Column || _currentSortDirection == SortDirection.Descending)
@@ -220,7 +214,7 @@ namespace Viewer.UI.Attributes
                 return;
             }
 
-            var attrs = _attributes.GetSelectedAttributes();
+            var attrs = GetSelectedAttributes();
             var lastRow = _attrView.Attributes.Last();
             if (e.FilterText.Length == 0)
             {

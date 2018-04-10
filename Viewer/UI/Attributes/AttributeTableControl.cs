@@ -21,11 +21,18 @@ namespace Viewer.UI.Attributes
         /// </summary>
         private readonly Color _globalBackColor = Color.AliceBlue;
 
+        /// <summary>
+        /// Background color of a read only attribute
+        /// </summary>
+        private readonly Color _readOnlyBackColor = Color.LightGray;
+
         private const int TypeColumnIndex = 2;
         
-        public AttributeTableControl()
+        public AttributeTableControl(string name)
         {
             InitializeComponent();
+
+            Text = name;
 
             // add types column
             var typeColumn = GridView.Columns[TypeColumnIndex] as DataGridViewComboBoxColumn;
@@ -160,7 +167,6 @@ namespace Viewer.UI.Attributes
 
             public void Visit(ImageAttribute attr)
             {
-                throw new NotImplementedException();
             }
 
             private void AddTypeColumn(AttributeType type)
@@ -196,6 +202,13 @@ namespace Viewer.UI.Attributes
                 {
                     row.DefaultCellStyle.BackColor = _globalBackColor;
                 }
+            }
+
+            // disable editing if the attribute is readonly
+            if ((attr.Data.Flags & AttributeFlags.ReadOnly) != 0)
+            {
+                row.ReadOnly = true;
+                row.DefaultCellStyle.BackColor = _readOnlyBackColor;
             }
 
             return row;

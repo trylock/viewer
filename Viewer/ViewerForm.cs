@@ -58,8 +58,12 @@ namespace Viewer
             imagesView.Show(_dockPanel, DockState.Document);
                 
             // attributes
-            var attributesView = new AttributeTableControl();
+            var attributesView = new AttributeTableControl("Attributes");
             attributesView.Show(_dockPanel, DockState.DockRight);
+
+            // exif attributes
+            var exifAttributesView = new AttributeTableControl("Exif");
+            exifAttributesView.Show(_dockPanel, DockState.DockRight);
 
             var tasksView = new TasksView();
             tasksView.Show(attributesView.Pane, DockAlignment.Bottom, 0.4);
@@ -67,10 +71,13 @@ namespace Viewer
             var progressViewFactory = new ProgressViewFactory(tasksView);
 
             // presenters
-            var attributesPresenter = new AttributesPresenter(attributesView, progressViewFactory, selection, entityManager, attributeManager);
+            var attrPresenter = new AttributesPresenter(attributesView, progressViewFactory, selection, entityManager, attributeManager);
+            attrPresenter.AttributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
+            var exifAttrPresenter = new AttributesPresenter(exifAttributesView, progressViewFactory, selection, entityManager, attributeManager);
+            exifAttrPresenter.AttributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
 
             var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, entityManager, clipboard, selection, thumbnailGenerator);
-            imagesPresenter.LoadDirectoryAsync("D:/tmp");
+            imagesPresenter.LoadDirectoryAsync("D:/dataset/large");
 
             var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressViewFactory, fileSystemErrorView, fileSystem, clipboard);
             treePresenter.UpdateRootDirectories();

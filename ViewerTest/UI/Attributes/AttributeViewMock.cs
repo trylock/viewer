@@ -35,6 +35,7 @@ namespace ViewerTest.UI.Attributes
         public event EventHandler SaveAttributes;
         public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
         public event EventHandler<AttributeDeletedEventArgs> AttributeDeleted;
+        public event EventHandler<SortEventArgs> SortAttributes;
 
         public bool EditingEnabled { get; set; }
 

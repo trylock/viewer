@@ -32,6 +32,7 @@ namespace Viewer.UI.Attributes
         public event EventHandler SaveAttributes;
         public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
         public event EventHandler<AttributeDeletedEventArgs> AttributeDeleted;
+        public event EventHandler<SortEventArgs> SortAttributes;
 
         public bool EditingEnabled
         {
@@ -39,7 +40,6 @@ namespace Viewer.UI.Attributes
             set
             {
                 GridView.Enabled = value;
-                NoSelectionLabel.Visible = !value;
             }
         }
 
@@ -254,6 +254,30 @@ namespace Viewer.UI.Attributes
                     Deleted = deleted
                 });
             }
+        }
+
+        private void GridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            SortColumn column = SortColumn.Name;
+            switch (e.ColumnIndex)
+            {
+                case 0:
+                    column = SortColumn.Name;
+                    break;
+                case 1:
+                    column = SortColumn.Value;
+                    break;
+                case 2:
+                    column = SortColumn.Type;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(e));
+            }
+
+            SortAttributes?.Invoke(sender, new SortEventArgs
+            {
+                Column = column
+            });
         }
     }
 }

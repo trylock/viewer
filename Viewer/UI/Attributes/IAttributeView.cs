@@ -34,6 +34,28 @@ namespace Viewer.UI.Attributes
         public IEnumerable<int> Deleted { get; set; }
     }
 
+    public class SortEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Column by which we should sort the values
+        /// </summary>
+        public SortColumn Column { get; set; }
+    }
+
+    public enum SortColumn
+    {
+        None,
+        Name,
+        Value,
+        Type
+    }
+
+    public enum SortDirection
+    {
+        Ascending,
+        Descending
+    }
+
     public enum AttributeType
     {
         Int,
@@ -71,6 +93,11 @@ namespace Viewer.UI.Attributes
         /// Event called when an attribute has been removed.
         /// </summary>
         event EventHandler<AttributeDeletedEventArgs> AttributeDeleted;
+
+        /// <summary>
+        /// Event called when user requests to sort attributes byt given column
+        /// </summary>
+        event EventHandler<SortEventArgs> SortAttributes; 
 
         /// <summary>
         /// true iff it is enabled to edit and add attributes

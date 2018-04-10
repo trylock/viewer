@@ -19,6 +19,9 @@ namespace Viewer.UI.Attributes
         private IEntityManager _entities;
         private IAttributeManager _attributes;
 
+        private SortColumn _currentSortColumn = SortColumn.None;
+        private SortDirection _currentSortDirection = SortDirection.Ascending;
+
         public AttributesPresenter(
             IAttributeView attrView, 
             IProgressViewFactory progressViewFactory,
@@ -146,6 +149,58 @@ namespace Viewer.UI.Attributes
                         commit => commit.Entity.Path);
                     Task.Run(() => unsaved.Commit(view.CancellationToken, progress), view.CancellationToken);
                 });
+        }
+
+        private Func<AttributeView, string> GetSortKeySelector<TKey>(SortColumn column)
+        {
+            return attr =>
+            {
+                if (column == SortColumn.Name)
+                    return attr.Data.Name;
+                else if (column == SortColumn.Type)
+                    return attr.Data.GetType().Name;
+                else // if (e.Column == SortColumn.Value)
+                    return attr.Data.ToString();
+            };
+        }
+
+        private void View_SortAttributes(object sender, SortEventArgs e)
+        {
+            // remove the new row temporarily 
+            var lastRow = _attrView.Attributes[_attrView.Attributes.Count - 1];
+            _attrView.Attributes.RemoveAt(_attrView.Attributes.Count - 1);
+
+            // function which retrieves a key to sort the attributes by
+            string KeySelector(AttributeView attr)
+            {
+                if (e.Column == SortColumn.Name)
+                    return attr.Data.Name;
+                else if (e.Column == SortColumn.Type)
+                    return attr.Data.GetType().Name;
+                else // if (e.Column == SortColumn.Value)
+                    return attr.Data.ToString();
+            }
+
+            // sort the values byt given column
+            if (e.Column != SortColumn.None)
+            {
+                if (_currentSortColumn != e.Column || _currentSortDirection == SortDirection.Descending)
+                {
+                    _attrView.Attributes = _attrView.Attributes.OrderBy(KeySelector).ToList();
+                    _currentSortDirection = SortDirection.Ascending;
+                }
+                else
+                {
+                    _attrView.Attributes = _attrView.Attributes.OrderByDescending(KeySelector).ToList();
+                    _currentSortDirection = SortDirection.Descending;
+                }
+            }
+
+            _currentSortColumn = e.Column;
+
+            // add back the last row and update the view
+            _attrView.Attributes.Add(lastRow);
+            _attrView.UpdateAttributes();
         }
 
         #endregion

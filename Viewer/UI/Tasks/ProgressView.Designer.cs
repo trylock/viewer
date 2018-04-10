@@ -94,8 +94,7 @@ namespace Viewer.UI.Tasks
         }
 
         #endregion
-
-        private Button CancelButton;
+        
         private System.Windows.Forms.ProgressBar Progress;
         private System.Windows.Forms.Label CurrentTaskNameLabel;
         private System.Windows.Forms.Button CancelProgressButton;

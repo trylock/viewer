@@ -56,7 +56,7 @@ namespace Viewer.UI.Attributes
 
         private bool HasAttribute(string name)
         {
-            return _attrView.Attributes.Any(attr => attr.Data.Name == name);
+            return _attributes.GetSelectedAttributes().Any(attr => attr.Data.Name == name);
         }
 
         private void ViewAttributes()
@@ -199,6 +199,23 @@ namespace Viewer.UI.Attributes
             _currentSortColumn = e.Column;
 
             // add back the last row and update the view
+            _attrView.Attributes.Add(lastRow);
+            _attrView.UpdateAttributes();
+        }
+
+        private void View_FilterAttributes(object sender, FilterEventArgs e)
+        {
+            var attrs = _attributes.GetSelectedAttributes();
+            var lastRow = _attrView.Attributes.Last();
+            if (e.FilterText.Length == 0)
+            {
+                _attrView.Attributes = attrs.ToList();
+            }
+            else
+            {
+                var filter = e.FilterText.ToLower();
+                _attrView.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().StartsWith(filter)).ToList();
+            }
             _attrView.Attributes.Add(lastRow);
             _attrView.UpdateAttributes();
         }

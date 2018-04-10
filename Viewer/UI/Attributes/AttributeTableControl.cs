@@ -33,6 +33,7 @@ namespace Viewer.UI.Attributes
         public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
         public event EventHandler<AttributeDeletedEventArgs> AttributeDeleted;
         public event EventHandler<SortEventArgs> SortAttributes;
+        public event EventHandler<FilterEventArgs> FilterAttributes;
 
         public bool EditingEnabled
         {
@@ -239,7 +240,11 @@ namespace Viewer.UI.Attributes
         {
             if (e.Control && e.KeyCode == Keys.S)
             {
-                SaveAttributes?.Invoke(sender, e);
+                SaveButton_Click(sender, e);
+            }
+            else if (e.Control && e.KeyCode == Keys.F)
+            {
+                SearchTextBox.Focus();
             }
             else if (e.KeyCode == Keys.Delete)
             {
@@ -278,6 +283,28 @@ namespace Viewer.UI.Attributes
             {
                 Column = column
             });
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            SaveAttributes?.Invoke(sender, e);
+        }
+
+        private void SearchTextBox_TextChanged(object sender, EventArgs e)
+        {
+            FilterAttributes?.Invoke(sender, new FilterEventArgs
+            {
+                FilterText = SearchTextBox.Text
+            });
+        }
+
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.SuppressKeyPress = true;
+                SearchTextBox.Text = ""; // reset the filter
+            }
         }
     }
 }

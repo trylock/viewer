@@ -42,6 +42,14 @@ namespace Viewer.UI.Attributes
         public SortColumn Column { get; set; }
     }
 
+    public class FilterEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Text of the filter
+        /// </summary>
+        public string FilterText { get; set; }
+    }
+
     public enum SortColumn
     {
         None,
@@ -97,7 +105,12 @@ namespace Viewer.UI.Attributes
         /// <summary>
         /// Event called when user requests to sort attributes byt given column
         /// </summary>
-        event EventHandler<SortEventArgs> SortAttributes; 
+        event EventHandler<SortEventArgs> SortAttributes;
+
+        /// <summary>
+        /// Filter attributes by name
+        /// </summary>
+        event EventHandler<FilterEventArgs> FilterAttributes;
 
         /// <summary>
         /// true iff it is enabled to edit and add attributes

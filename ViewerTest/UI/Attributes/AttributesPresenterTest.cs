@@ -109,6 +109,8 @@ namespace ViewerTest.UI.Attributes
             };
 
             // add some default attributes
+            _attributeManagerMock.SetAttribute(attr1.Data.Name, attr1.Data);
+            _attributeManagerMock.SetAttribute(attr2.Data.Name, attr2.Data);
             _attrViewMock.Attributes.Add(attr1);
             _attrViewMock.Attributes.Add(attr2);
             _attrViewMock.Attributes.Add(attr3);

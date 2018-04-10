@@ -179,8 +179,5 @@ namespace Viewer.UI.Images
         /// Hide item edit form.
         /// </summary>
         void HideItemEditForm();
-
-
-        IAsyncResult BeginInvoke(Delegate action);
     }
 }

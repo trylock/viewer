@@ -47,34 +47,33 @@ namespace Viewer
 
             // UI
             var fileSystemErrorView = new FileSystemErrorView();
+            
+            // explorer
+            var directoryTreeView = new DirectoryTreeControl();
+            directoryTreeView.Text = Resources.ExplorerWindowName;
+            directoryTreeView.Show(_dockPanel, DockState.DockLeft);
+
+            // images
+            var imagesView = new GridControl(Resources.QueryResultWindowName);
+            imagesView.Show(_dockPanel, DockState.Document);
+                
+            // attributes
+            var attributesView = new AttributeTableControl();
+            attributesView.Show(_dockPanel, DockState.DockRight);
 
             var tasksView = new TasksView();
-            tasksView.Show(_dockPanel, DockState.DockBottom);
+            tasksView.Show(attributesView.Pane, DockAlignment.Bottom, 0.4);
 
             var progressViewFactory = new ProgressViewFactory(tasksView);
-            {
-                var directoryTreeView = new DirectoryTreeControl();
-                directoryTreeView.Text = Resources.ExplorerWindowName;
-                directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
-                var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressViewFactory, fileSystemErrorView, fileSystem, clipboard);
-                treePresenter.UpdateRootDirectories();
-            }
+            // presenters
+            var attributesPresenter = new AttributesPresenter(attributesView, progressViewFactory, selection, entityManager, attributeManager);
 
-            {
-                var imagesView = new GridControl(Resources.QueryResultWindowName);
-                imagesView.Show(_dockPanel, DockState.Document);
+            var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, entityManager, clipboard, selection, thumbnailGenerator);
+            imagesPresenter.LoadDirectoryAsync("D:/tmp");
 
-                var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, entityManager, clipboard, selection, thumbnailGenerator);
-                imagesPresenter.LoadDirectoryAsync("D:/tmp");
-            }
-
-            {
-                var attributesView = new AttributeTableControl();
-                attributesView.Show(_dockPanel, DockState.DockRight);
-
-                var attributesPresenter = new AttributesPresenter(attributesView, progressViewFactory, selection, entityManager, attributeManager);
-            }
+            var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressViewFactory, fileSystemErrorView, fileSystem, clipboard);
+            treePresenter.UpdateRootDirectories();
         }
     }
 }

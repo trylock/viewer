@@ -19,5 +19,12 @@ namespace Viewer.UI
         /// Make this window active
         /// </summary>
         void MakeActive();
+
+        /// <summary>
+        /// Execute <paramref name="method"/> on the thread of this view.
+        /// </summary>
+        /// <param name="method">Method to execute</param>
+        /// <returns></returns>
+        IAsyncResult BeginInvoke(Delegate method);
     }
 }

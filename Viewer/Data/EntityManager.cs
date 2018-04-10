@@ -59,7 +59,7 @@ namespace Viewer.Data
 
         /// <summary>
         /// Try to stage entity. 
-        /// If there is an entity with given path, it won't be replaced.
+        /// If an entity with the same path has been staged before this call, it won't be replaced.
         /// </summary>
         /// <param name="entity"></param>
         /// <returns>true iff the entity was staged</returns>

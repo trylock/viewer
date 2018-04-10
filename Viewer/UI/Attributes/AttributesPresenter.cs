@@ -63,7 +63,10 @@ namespace Viewer.UI.Attributes
         {
             // add existing attributes + an empty row for a new attribute
             _attrView.Attributes = _attributes.GetSelectedAttributes().ToList();
-            _attrView.Attributes.Add(CreateAddAttributeView());
+            if (_selection.Count > 0)
+            {
+                _attrView.Attributes.Add(CreateAddAttributeView());
+            }
 
             // update attributes view
             _attrView.EditingEnabled = _selection.Count > 0;
@@ -166,6 +169,11 @@ namespace Viewer.UI.Attributes
 
         private void View_SortAttributes(object sender, SortEventArgs e)
         {
+            if (_attrView.Attributes.Count <= 0)
+            {
+                return;
+            }
+
             // remove the new row temporarily 
             var lastRow = _attrView.Attributes[_attrView.Attributes.Count - 1];
             _attrView.Attributes.RemoveAt(_attrView.Attributes.Count - 1);
@@ -205,6 +213,11 @@ namespace Viewer.UI.Attributes
 
         private void View_FilterAttributes(object sender, FilterEventArgs e)
         {
+            if (_attrView.Attributes.Count <= 0)
+            {
+                return;
+            }
+
             var attrs = _attributes.GetSelectedAttributes();
             var lastRow = _attrView.Attributes.Last();
             if (e.FilterText.Length == 0)

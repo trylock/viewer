@@ -50,6 +50,7 @@ namespace ViewerTest.UI.Attributes
             attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsFalse(attrs[0].IsMixed);
+            Assert.IsTrue(attrs[0].IsGlobal);
             Assert.AreEqual(new StringAttribute("attr", "value"), attrs[0].Data);
         }
 
@@ -68,6 +69,7 @@ namespace ViewerTest.UI.Attributes
             attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsFalse(attrs[0].IsMixed);
+            Assert.IsTrue(attrs[0].IsGlobal);
             Assert.AreEqual(new StringAttribute("attr", "value"), attrs[0].Data);
         }
 
@@ -98,6 +100,7 @@ namespace ViewerTest.UI.Attributes
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsTrue(attrs[0].IsMixed);
+            Assert.IsTrue(attrs[0].IsGlobal);
 
             _attributes.RemoveAttribute("attr");
             
@@ -108,6 +111,22 @@ namespace ViewerTest.UI.Attributes
             Assert.AreEqual(2, staged.Count);
             Assert.AreEqual(0, staged[0].ToList().Count);
             Assert.AreEqual(0, staged[1].ToList().Count);
+        }
+
+        [TestMethod]
+        public void GetSelectedEntities_MissingAttributeOnAnEntity()
+        {
+            var entity1 = new Entity("test1").SetAttribute(new IntAttribute("attr", 42));
+            var entity2 = new Entity("test2");
+
+            _storageMock.Add(entity1);
+            _storageMock.Add(entity2);
+            _selectionMock.Replace(new []{ "test1", "test2" });
+
+            var attrs = _attributes.GetSelectedAttributes().ToList();
+            Assert.AreEqual(1, attrs.Count);
+            Assert.IsFalse(attrs[0].IsMixed);
+            Assert.IsFalse(attrs[0].IsGlobal);
         }
     }
 }

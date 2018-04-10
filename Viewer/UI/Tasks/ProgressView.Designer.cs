@@ -41,7 +41,7 @@ namespace Viewer.UI.Tasks
             this.Progress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.Progress.Location = new System.Drawing.Point(12, 35);
             this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(417, 25);
+            this.Progress.Size = new System.Drawing.Size(206, 25);
             this.Progress.TabIndex = 0;
             // 
             // CurrentTaskNameLabel
@@ -59,7 +59,7 @@ namespace Viewer.UI.Tasks
             // 
             this.CancelProgressButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.CancelProgressButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelProgressButton.Location = new System.Drawing.Point(435, 35);
+            this.CancelProgressButton.Location = new System.Drawing.Point(224, 35);
             this.CancelProgressButton.Name = "CancelProgressButton";
             this.CancelProgressButton.Size = new System.Drawing.Size(62, 25);
             this.CancelProgressButton.TabIndex = 2;
@@ -85,9 +85,9 @@ namespace Viewer.UI.Tasks
             this.Controls.Add(this.CancelProgressButton);
             this.Controls.Add(this.CurrentTaskNameLabel);
             this.Controls.Add(this.Progress);
-            this.MinimumSize = new System.Drawing.Size(500, 100);
+            this.MinimumSize = new System.Drawing.Size(150, 100);
             this.Name = "ProgressView";
-            this.Size = new System.Drawing.Size(500, 100);
+            this.Size = new System.Drawing.Size(289, 100);
             this.ResumeLayout(false);
             this.PerformLayout();
 

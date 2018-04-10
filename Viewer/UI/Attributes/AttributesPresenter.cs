@@ -40,12 +40,13 @@ namespace Viewer.UI.Attributes
             PresenterUtils.SubscribeTo(_attrView, this, "View");
         }
         
-        private AttributeView CreateAddAttributeView()
+        private AttributeGroup CreateAddAttributeView()
         {
-            return new AttributeView
+            return new AttributeGroup
             {
                 Data = new StringAttribute("", ""),
-                IsMixed = false
+                IsMixed = false,
+                IsGlobal = true
             };
         }
         
@@ -120,6 +121,7 @@ namespace Viewer.UI.Attributes
             }
 
             // show changes
+            e.NewValue.IsGlobal = true;
             _attrView.Attributes[e.Index] = e.NewValue;
             _attrView.UpdateAttribute(e.Index);
         }
@@ -154,7 +156,7 @@ namespace Viewer.UI.Attributes
                 });
         }
 
-        private Func<AttributeView, string> GetSortKeySelector<TKey>(SortColumn column)
+        private Func<AttributeGroup, string> GetSortKeySelector<TKey>(SortColumn column)
         {
             return attr =>
             {
@@ -179,7 +181,7 @@ namespace Viewer.UI.Attributes
             _attrView.Attributes.RemoveAt(_attrView.Attributes.Count - 1);
 
             // function which retrieves a key to sort the attributes by
-            string KeySelector(AttributeView attr)
+            string KeySelector(AttributeGroup attr)
             {
                 if (e.Column == SortColumn.Name)
                     return attr.Data.Name;

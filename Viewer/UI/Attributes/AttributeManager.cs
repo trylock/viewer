@@ -31,7 +31,7 @@ namespace Viewer.UI.Attributes
         /// Find selected attributes.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<AttributeView> GetSelectedAttributes();
+        IEnumerable<AttributeGroup> GetSelectedAttributes();
     }
 
     public class AttributeManager : IAttributeManager
@@ -45,10 +45,10 @@ namespace Viewer.UI.Attributes
             _selection = selection;
         }
 
-        public IEnumerable<AttributeView> GetSelectedAttributes()
+        public IEnumerable<AttributeGroup> GetSelectedAttributes()
         {
             // find all attributes in the selection
-            var attrs = new Dictionary<string, AttributeView>();
+            var attrs = new Dictionary<string, AttributeGroup>();
             foreach (var item in _selection)
             {
                 var entity = _entities.GetEntity(item);
@@ -57,8 +57,9 @@ namespace Viewer.UI.Attributes
                     if (attr.Flags.HasFlag(AttributeFlags.ReadOnly))
                         continue;
 
-                    if (attrs.TryGetValue(attr.Name, out AttributeView attrView))
+                    if (attrs.TryGetValue(attr.Name, out AttributeGroup attrView))
                     {
+                        ++attrView.EntityCount;
                         if (attrView.Data.Equals(attr))
                         {
                             continue; // both entities have the same attribute
@@ -67,13 +68,19 @@ namespace Viewer.UI.Attributes
                     }
                     else
                     {
-                        attrs.Add(attr.Name, new AttributeView
+                        attrs.Add(attr.Name, new AttributeGroup
                         {
                             Data = attr,
-                            IsMixed = false
+                            IsMixed = false,
+                            EntityCount = 1
                         });
                     }
                 }
+            }
+
+            foreach (var pair in attrs)
+            {
+                pair.Value.IsGlobal = pair.Value.EntityCount == _selection.Count;
             }
 
             return attrs.Values;

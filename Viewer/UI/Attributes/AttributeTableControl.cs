@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
+using Viewer.Data.Storage;
 using Viewer.Properties;
 using Attribute = Viewer.Data.Attribute;
 
@@ -15,6 +16,11 @@ namespace Viewer.UI.Attributes
 {
     public partial class AttributeTableControl : WindowView, IAttributeView
     {
+        /// <summary>
+        /// Background color of an attribute which is not set in all entities in selection
+        /// </summary>
+        private readonly Color _globalBackColor = Color.AliceBlue;
+
         private const int TypeColumnIndex = 2;
         
         public AttributeTableControl()
@@ -44,7 +50,7 @@ namespace Viewer.UI.Attributes
             }
         }
 
-        public List<AttributeView> Attributes { get; set; } = new List<AttributeView>();
+        public List<AttributeGroup> Attributes { get; set; } = new List<AttributeGroup>();
 
         private bool _suspendUpdateEvent = false;
 
@@ -168,7 +174,7 @@ namespace Viewer.UI.Attributes
             }
         }
 
-        private DataGridViewRow CreateAttributeView(AttributeView attr)
+        private DataGridViewRow CreateAttributeView(AttributeGroup attr)
         {
             var row = new DataGridViewRow { Tag = attr };
             row.Cells.Add(new DataGridViewTextBoxCell { ValueType = typeof(string), Value = attr.Data.Name });
@@ -185,6 +191,11 @@ namespace Viewer.UI.Attributes
             else
             {
                 attr.Data.Accept(new RowAttributeVisitor(row));
+
+                if (!attr.IsGlobal)
+                {
+                    row.DefaultCellStyle.BackColor = _globalBackColor;
+                }
             }
 
             return row;
@@ -227,7 +238,7 @@ namespace Viewer.UI.Attributes
             {
                 Index = e.RowIndex,
                 OldValue = Attributes[e.RowIndex],
-                NewValue = new AttributeView { IsMixed = false, Data = newValue }
+                NewValue = new AttributeGroup { IsMixed = false, Data = newValue }
             });
         }
 

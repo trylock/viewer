@@ -109,9 +109,10 @@ namespace Viewer.UI.Explorer
 
         private void View_ExpandDirectory(object sender, DirectoryEventArgs e)
         {
+            var directories = GetValidSubdirectories(e.FullPath);
             _treeView.LoadDirectories(
-                PathUtils.Split(e.FullPath), 
-                GetValidSubdirectories(e.FullPath));
+                PathUtils.Split(e.FullPath),
+                directories);
         }
         
         private void View_RenameDirectory(object sender, RenameDirectoryEventArgs e)

@@ -21,13 +21,13 @@ namespace ViewerTest.UI.Attributes
         /// </summary>
         public string LastError = null;
 
-        public void TriggerAttributeChanges(int index, AttributeView oldView, AttributeView newView)
+        public void TriggerAttributeChanges(int index, AttributeGroup oldGroup, AttributeGroup newGroup)
         {
             AttributeChanged?.Invoke(this, new AttributeChangedEventArgs
             {
                 Index = index,
-                OldValue = oldView,
-                NewValue = newView
+                OldValue = oldGroup,
+                NewValue = newGroup
             });
         }
 
@@ -40,7 +40,7 @@ namespace ViewerTest.UI.Attributes
 
         public bool EditingEnabled { get; set; }
 
-        public List<AttributeView> Attributes { get; set; } = new List<AttributeView>();
+        public List<AttributeGroup> Attributes { get; set; } = new List<AttributeGroup>();
 
         public void UpdateAttributes()
         {

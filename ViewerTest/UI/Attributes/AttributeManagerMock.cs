@@ -25,9 +25,9 @@ namespace ViewerTest.UI.Attributes
             _attrs.Remove(name);
         }
 
-        public IEnumerable<AttributeView> GetSelectedAttributes()
+        public IEnumerable<AttributeGroup> GetSelectedAttributes()
         {
-            return _attrs.Values.Select(attr => new AttributeView
+            return _attrs.Values.Select(attr => new AttributeGroup
             {
                 Data = attr,
                 IsMixed = false

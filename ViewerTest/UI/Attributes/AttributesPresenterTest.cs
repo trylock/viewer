@@ -39,12 +39,12 @@ namespace ViewerTest.UI.Attributes
             _selectionMock.TriggerChanged();
 
             // add a new attribute
-            var oldValue = new AttributeView
+            var oldValue = new AttributeGroup
             {
                 Data = new StringAttribute("", ""),
                 IsMixed = false
             };
-            var newValue = new AttributeView
+            var newValue = new AttributeGroup
             {
                 Data = new StringAttribute("", "value")
             };
@@ -66,12 +66,12 @@ namespace ViewerTest.UI.Attributes
             _selectionMock.TriggerChanged();
 
             // add a new attribute
-            var oldValue = new AttributeView
+            var oldValue = new AttributeGroup
             {
                 Data = new StringAttribute("",""),
                 IsMixed = false
             };
-            var newValue = new AttributeView
+            var newValue = new AttributeGroup
             {
                 Data = new StringAttribute("test", "value")
             };
@@ -92,17 +92,17 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void AttributesChanged_NonUniqueName()
         {
-            var attr1 = new AttributeView
+            var attr1 = new AttributeGroup
             {
                 Data = new StringAttribute("test", "value"),
                 IsMixed = false
             };
-            var attr2 = new AttributeView
+            var attr2 = new AttributeGroup
             {
                 Data = new IntAttribute("test2", 42),
                 IsMixed = false
             };
-            var attr3 = new AttributeView
+            var attr3 = new AttributeGroup
             {
                 Data = new StringAttribute("", ""),
                 IsMixed = false
@@ -116,7 +116,7 @@ namespace ViewerTest.UI.Attributes
             _attrViewMock.Attributes.Add(attr3);
 
             // add attribute with an existing name
-            _attrViewMock.TriggerAttributeChanges(2, _attrViewMock.Attributes[2], new AttributeView
+            _attrViewMock.TriggerAttributeChanges(2, _attrViewMock.Attributes[2], new AttributeGroup
             {
                 Data = new StringAttribute("test2", "value2"),
                 IsMixed = false

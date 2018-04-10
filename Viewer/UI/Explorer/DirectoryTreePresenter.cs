@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -85,17 +86,39 @@ namespace Viewer.UI.Explorer
             try
             {
                 var di = new DirectoryInfo(fullPath);
-                result.AddRange(
-                    from item in di.EnumerateDirectories()
-                    where (item.Attributes & HideFlags) == 0
-                    select new DirectoryView
+                foreach (var item in di.EnumerateDirectories())
+                {
+                    if ((item.Attributes & HideFlags) != 0)
+                        continue;
+
+                    // Find out if the subdirectory has any children.
+                    // If user is not authorized to read this directory, don't add 
+                    // the option to expand it in the view.
+                    var hasChildren = false;
+                    try
+                    {
+                        hasChildren = item.EnumerateDirectories().Any();
+                    }
+                    catch (SecurityException)
+                    {
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                    }
+
+                    result.Add(new DirectoryView
                     {
                         UserName = item.Name,
                         FileName = item.Name,
-                        HasChildren = item.EnumerateDirectories().Any()
+                        HasChildren = hasChildren
                     });
+                }
             }
             catch (UnauthorizedAccessException)
+            {
+                _errorView.UnauthorizedAccess(fullPath);
+            }
+            catch (SecurityException)
             {
                 _errorView.UnauthorizedAccess(fullPath);
             }

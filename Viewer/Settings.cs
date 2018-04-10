@@ -32,11 +32,18 @@ namespace Viewer
         {
             ExifTags = new List<IExifAttributeParser>
             {
+                // image metadata
                 new Ifd0ExifAttributeParser("ImageWidth", ExifIfd0Directory.TagImageWidth, AttributeType.Int),
                 new Ifd0ExifAttributeParser("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
-                new Ifd0ExifAttributeParser("Model", ExifIfd0Directory.TagModel, AttributeType.String),
-                new Ifd0ExifAttributeParser("Make", ExifIfd0Directory.TagMake, AttributeType.String),
-                new ThumbnaiExifAttributeParser("thumbnail")
+                new Ifd0ExifAttributeParser("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
+                new ThumbnaiExifAttributeParser("thumbnail"),
+
+                // camera metadata
+                new Ifd0ExifAttributeParser("CameraModel", ExifIfd0Directory.TagModel, AttributeType.String),
+                new Ifd0ExifAttributeParser("CameraMaker", ExifIfd0Directory.TagMake, AttributeType.String),
+                new Ifd0ExifAttributeParser("ExposureTime", ExifIfd0Directory.TagExposureTime, AttributeType.String),
+                new Ifd0ExifAttributeParser("FStop", ExifIfd0Directory.TagFNumber, AttributeType.String),
+                new Ifd0ExifAttributeParser("ExposureBias", ExifIfd0Directory.TagExposureBias, AttributeType.String),
             };
 
             CacheConnection = new SQLiteConnection($"Data Source={Environment.CurrentDirectory}/../../../cache.db;Version=3");

@@ -33,17 +33,19 @@ namespace Viewer
             ExifTags = new List<IExifAttributeParser>
             {
                 // image metadata
-                new Ifd0ExifAttributeParser("ImageWidth", ExifIfd0Directory.TagImageWidth, AttributeType.Int),
-                new Ifd0ExifAttributeParser("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
-                new Ifd0ExifAttributeParser("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
+                new ExifAttributeParser<ExifIfd0Directory>("ImageWidth", ExifIfd0Directory.TagImageWidth, AttributeType.Int),
+                new ExifAttributeParser<ExifIfd0Directory>("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
+                new ExifAttributeParser<ExifIfd0Directory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
                 new ThumbnaiExifAttributeParser("thumbnail"),
 
                 // camera metadata
-                new Ifd0ExifAttributeParser("CameraModel", ExifIfd0Directory.TagModel, AttributeType.String),
-                new Ifd0ExifAttributeParser("CameraMaker", ExifIfd0Directory.TagMake, AttributeType.String),
-                new Ifd0ExifAttributeParser("ExposureTime", ExifIfd0Directory.TagExposureTime, AttributeType.String),
-                new Ifd0ExifAttributeParser("FStop", ExifIfd0Directory.TagFNumber, AttributeType.String),
-                new Ifd0ExifAttributeParser("ExposureBias", ExifIfd0Directory.TagExposureBias, AttributeType.String),
+                new ExifAttributeParser<ExifIfd0Directory>("CameraModel", ExifIfd0Directory.TagModel, AttributeType.String),
+                new ExifAttributeParser<ExifIfd0Directory>("CameraMaker", ExifIfd0Directory.TagMake, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("ExposureTime", ExifIfd0Directory.TagExposureTime, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("FStop", ExifIfd0Directory.TagFNumber, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("ExposureBias", ExifIfd0Directory.TagExposureBias, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("FocalLength", ExifIfd0Directory.TagFocalLength, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("MaxAperture", ExifIfd0Directory.TagMaxAperture, AttributeType.String),
             };
 
             CacheConnection = new SQLiteConnection($"Data Source={Environment.CurrentDirectory}/../../../cache.db;Version=3");

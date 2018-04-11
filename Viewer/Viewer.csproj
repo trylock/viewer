@@ -70,7 +70,7 @@
     <Compile Include="Data\Storage\AttributeStorageFactory.cs" />
     <Compile Include="Data\EntityManager.cs" />
     <Compile Include="Data\Formats\Exif\IExifAttributeParser.cs" />
-    <Compile Include="Data\Formats\Exif\Ifd0ExifAttributeParser.cs" />
+    <Compile Include="Data\Formats\Exif\ExifAttributeParser.cs" />
     <Compile Include="Data\Formats\Exif\ThumbnaiExifAttributeParser.cs" />
     <Compile Include="Data\Formats\IAttributeReader.cs" />
     <Compile Include="Data\Formats\IAttributeReaderFactory.cs" />

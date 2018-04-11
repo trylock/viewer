@@ -9,7 +9,7 @@ using Viewer.Data.Formats.Attributes;
 
 namespace Viewer.Data.Formats.Exif
 {
-    public class Ifd0ExifAttributeParser : IExifAttributeParser
+    public class ExifAttributeParser<T> : IExifAttributeParser where T : ExifDirectoryBase
     {
         /// <summary>
         /// Name of the returned attribute 
@@ -32,7 +32,7 @@ namespace Viewer.Data.Formats.Exif
         /// <param name="name">Name of the attributed that will be returned</param>
         /// <param name="tag">Tag id in Exif</param>
         /// <param name="type">Type of the returned attribute</param>
-        public Ifd0ExifAttributeParser(string name, int tag, AttributeType type)
+        public ExifAttributeParser(string name, int tag, AttributeType type)
         {
             Name = name;
             Tag = tag;
@@ -46,7 +46,7 @@ namespace Viewer.Data.Formats.Exif
         /// <returns>New attribute parsed from the exif or null if there is no such tag</returns>
         public Attribute Parse(ExifMetadata exif)
         {
-            var directory = exif.GetDirectoryOfType<ExifIfd0Directory>();
+            var directory = exif.GetDirectoryOfType<T>();
             if (directory == null || !directory.ContainsTag(Tag))
                 return null;
             

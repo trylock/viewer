@@ -126,5 +126,95 @@ namespace ViewerTest.UI.Attributes
             Assert.AreEqual("not unique: test2", _attrViewMock.LastError);
             CollectionAssert.AreEqual(new[]{ attr1, attr2, attr3 }, _attrViewMock.Attributes.ToArray());
         }
+
+        [TestMethod]
+        public void SortAttributes_EditingEnabled()
+        {
+            _presenter.EditingEnabled = true;
+
+            var attr1 = new AttributeGroup
+            {
+                Data = new IntAttribute("attr2", 42),
+                IsMixed = false,
+                IsGlobal = true
+            };
+            var attr2 = new AttributeGroup
+            {
+                Data = new StringAttribute("attr1", "value"),
+                IsMixed = false,
+                IsGlobal = true
+            };
+            var attr3 = new AttributeGroup
+            {
+                Data = new StringAttribute("attr3", ""),
+                IsMixed = false,
+                IsGlobal = true
+            };
+
+            _attrViewMock.Attributes.Add(attr1);
+            _attrViewMock.Attributes.Add(attr2);
+            _attrViewMock.Attributes.Add(attr3);
+
+            _selectionMock.Replace(new []{ "test" });
+            _attrViewMock.TriggerSortAttributes(new SortEventArgs{ Column = SortColumn.Name });
+            
+            Assert.IsTrue(_attrViewMock.Updated.Contains(0));
+            Assert.IsTrue(_attrViewMock.Updated.Contains(1));
+            Assert.IsTrue(_attrViewMock.Updated.Contains(2));
+            Assert.AreEqual(_attrViewMock.Attributes[0], attr2);
+            Assert.AreEqual(_attrViewMock.Attributes[1], attr1);
+            Assert.AreEqual(_attrViewMock.Attributes[2], attr3);
+
+            // asc
+            _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
+            Assert.AreEqual(_attrViewMock.Attributes[0], attr1);
+            Assert.AreEqual(_attrViewMock.Attributes[1], attr2);
+            Assert.AreEqual(_attrViewMock.Attributes[2], attr3);
+        }
+
+        [TestMethod]
+        public void SortAttributes_EditingDisabled()
+        {
+            _presenter.EditingEnabled = false;
+
+            var attr1 = new AttributeGroup
+            {
+                Data = new IntAttribute("attr2", 42),
+                IsMixed = false,
+                IsGlobal = true
+            };
+            var attr2 = new AttributeGroup
+            {
+                Data = new StringAttribute("attr1", "value"),
+                IsMixed = false,
+                IsGlobal = true
+            };
+            var attr3 = new AttributeGroup
+            {
+                Data = new StringAttribute("attr3", ""),
+                IsMixed = false,
+                IsGlobal = true
+            };
+
+            _attrViewMock.Attributes.Add(attr1);
+            _attrViewMock.Attributes.Add(attr2);
+            _attrViewMock.Attributes.Add(attr3);
+
+            _selectionMock.Replace(new[] { "test" });
+            _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
+
+            Assert.IsTrue(_attrViewMock.Updated.Contains(0));
+            Assert.IsTrue(_attrViewMock.Updated.Contains(1));
+            Assert.IsTrue(_attrViewMock.Updated.Contains(2));
+            Assert.AreEqual(_attrViewMock.Attributes[0], attr2);
+            Assert.AreEqual(_attrViewMock.Attributes[1], attr1);
+            Assert.AreEqual(_attrViewMock.Attributes[2], attr3);
+
+            // asc
+            _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
+            Assert.AreEqual(_attrViewMock.Attributes[0], attr3);
+            Assert.AreEqual(_attrViewMock.Attributes[1], attr1);
+            Assert.AreEqual(_attrViewMock.Attributes[2], attr2);
+        }
     }
 }

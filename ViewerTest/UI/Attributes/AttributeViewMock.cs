@@ -31,6 +31,11 @@ namespace ViewerTest.UI.Attributes
             });
         }
 
+        public void TriggerSortAttributes(SortEventArgs args)
+        {
+            SortAttributes?.Invoke(this, args);
+        }
+
         // mocked interface
         public event EventHandler SaveAttributes;
         public event EventHandler<AttributeChangedEventArgs> AttributeChanged;

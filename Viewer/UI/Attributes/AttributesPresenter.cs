@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -74,17 +74,21 @@ namespace Viewer.UI.Attributes
             return GetSelectedAttributes().Any(attr => attr.Data.Name == name);
         }
 
+        private bool IsSelectionEmpty()
+        {
+            return _selection.Count == 0;
+        }
+
         private void ViewAttributes()
         {
             // add existing attributes + an empty row for a new attribute
             _attrView.Attributes = GetSelectedAttributes().ToList();
-            if (_selection.Count > 0)
+            if (_selection.Count > 0 && EditingEnabled)
             {
                 _attrView.Attributes.Add(CreateAddAttributeView());
             }
 
             // update attributes view
-            _attrView.EditingEnabled = _selection.Count > 0;
             _attrView.UpdateAttributes();
         }
 
@@ -184,7 +188,7 @@ namespace Viewer.UI.Attributes
         
         private void View_SortAttributes(object sender, SortEventArgs e)
         {
-            if (_attrView.Attributes.Count <= 0)
+            if (IsSelectionEmpty())
             {
                 return;
             }
@@ -193,7 +197,7 @@ namespace Viewer.UI.Attributes
             var lastRow = _attrView.Attributes[_attrView.Attributes.Count - 1];
             if (EditingEnabled)
             {
-            _attrView.Attributes.RemoveAt(_attrView.Attributes.Count - 1);
+                _attrView.Attributes.RemoveAt(_attrView.Attributes.Count - 1);
             }
 
             // function which retrieves a key to sort the attributes by
@@ -227,7 +231,7 @@ namespace Viewer.UI.Attributes
             // add back the last row and update the view
             if (EditingEnabled)
             {
-            _attrView.Attributes.Add(lastRow);
+                _attrView.Attributes.Add(lastRow);
             }
 
             _attrView.UpdateAttributes();
@@ -235,7 +239,7 @@ namespace Viewer.UI.Attributes
 
         private void View_FilterAttributes(object sender, FilterEventArgs e)
         {
-            if (_attrView.Attributes.Count <= 0)
+            if (IsSelectionEmpty())
             {
                 return;
             }
@@ -255,7 +259,7 @@ namespace Viewer.UI.Attributes
             if (EditingEnabled)
             {
                 // if editing is enabled, the last row is an empty row 
-            _attrView.Attributes.Add(lastRow);
+                _attrView.Attributes.Add(lastRow);
             }
 
             _attrView.UpdateAttributes();

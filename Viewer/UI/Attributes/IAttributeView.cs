@@ -122,12 +122,7 @@ namespace Viewer.UI.Attributes
         /// Filter attributes by name
         /// </summary>
         event EventHandler<FilterEventArgs> FilterAttributes;
-
-        /// <summary>
-        /// true iff it is enabled to edit and add attributes
-        /// </summary>
-        bool EditingEnabled { get; set; }
-
+        
         /// <summary>
         /// Attributes shown in the view
         /// </summary>

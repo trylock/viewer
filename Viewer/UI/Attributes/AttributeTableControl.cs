@@ -47,16 +47,7 @@ namespace Viewer.UI.Attributes
         public event EventHandler<AttributeDeletedEventArgs> AttributeDeleted;
         public event EventHandler<SortEventArgs> SortAttributes;
         public event EventHandler<FilterEventArgs> FilterAttributes;
-
-        public bool EditingEnabled
-        {
-            get => GridView.Enabled;
-            set
-            {
-                GridView.Enabled = value;
-            }
-        }
-
+        
         public List<AttributeGroup> Attributes { get; set; } = new List<AttributeGroup>();
 
         private bool _suspendUpdateEvent = false;

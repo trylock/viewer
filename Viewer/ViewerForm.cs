@@ -73,9 +73,17 @@ namespace Viewer
             // presenters
             var attrPresenter = new AttributesPresenter(attributesView, progressViewFactory, selection, entityManager, attributeManager);
             attrPresenter.AttributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
-            var exifAttrPresenter = new AttributesPresenter(exifAttributesView, progressViewFactory, selection, entityManager, attributeManager);
-            exifAttrPresenter.AttributePredicate = attr => attr.Data.GetType() != typeof(ImageAttribute) && 
-                                                          (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
+            var exifAttrPresenter = new AttributesPresenter(
+                exifAttributesView, 
+                progressViewFactory, 
+                selection,
+                entityManager, 
+                attributeManager)
+            {
+                EditingEnabled = false,
+                AttributePredicate = attr => attr.Data.GetType() != typeof(ImageAttribute) &&
+                                             (attr.Data.Flags & AttributeFlags.ReadOnly) != 0
+            };
 
             var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, entityManager, clipboard, selection, thumbnailGenerator);
             imagesPresenter.LoadDirectoryAsync("D:/dataset/large");

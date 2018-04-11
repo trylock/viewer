@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -19,7 +19,15 @@ namespace Viewer.UI.Attributes
         private IEntityManager _entities;
         private IAttributeManager _attributes;
 
+        /// <summary>
+        /// Funtion which determines for each attribute whether it should be managed by this presenter.
+        /// </summary>
         public Func<AttributeGroup, bool> AttributePredicate { get; set; } = attr => true;
+
+        /// <summary>
+        /// true iff it is enabled to remove and update attributes
+        /// </summary>
+        public bool EditingEnabled { get; set; } = true;
 
         private SortColumn _currentSortColumn = SortColumn.None;
         private SortDirection _currentSortDirection = SortDirection.Ascending;
@@ -38,7 +46,6 @@ namespace Viewer.UI.Attributes
             _progressViewFactory = progressViewFactory;
             
             _attrView = attrView;
-            _attrView.EditingEnabled = false;
             PresenterUtils.SubscribeTo(_attrView, this, "View");
         }
         
@@ -85,6 +92,13 @@ namespace Viewer.UI.Attributes
 
         private void View_AttributeChanged(object sender, AttributeChangedEventArgs e)
         {
+            if (!EditingEnabled)
+            {
+                // revert changes
+                _attrView.UpdateAttribute(e.Index);
+                return;
+            }
+
             var oldAttr = e.OldValue.Data;
             var newAttr = e.NewValue.Data;
             if (oldAttr.Name == "") // add a new attribute
@@ -135,6 +149,11 @@ namespace Viewer.UI.Attributes
         
         private void View_AttributeDeleted(object sender, AttributeDeletedEventArgs e)
         {
+            if (!EditingEnabled)
+            {
+                return;
+            }
+
             var namesToDelete = e.Deleted.Select(index => _attrView.Attributes[index].Data.Name);
             foreach (var name in namesToDelete)
             {
@@ -170,9 +189,12 @@ namespace Viewer.UI.Attributes
                 return;
             }
 
-            // remove the new row temporarily 
+            // remove the last row temporarily 
             var lastRow = _attrView.Attributes[_attrView.Attributes.Count - 1];
+            if (EditingEnabled)
+            {
             _attrView.Attributes.RemoveAt(_attrView.Attributes.Count - 1);
+            }
 
             // function which retrieves a key to sort the attributes by
             string KeySelector(AttributeGroup attr)
@@ -203,7 +225,11 @@ namespace Viewer.UI.Attributes
             _currentSortColumn = e.Column;
 
             // add back the last row and update the view
+            if (EditingEnabled)
+            {
             _attrView.Attributes.Add(lastRow);
+            }
+
             _attrView.UpdateAttributes();
         }
 
@@ -214,8 +240,8 @@ namespace Viewer.UI.Attributes
                 return;
             }
 
+            var lastRow = _attrView.Attributes.LastOrDefault();
             var attrs = GetSelectedAttributes();
-            var lastRow = _attrView.Attributes.Last();
             if (e.FilterText.Length == 0)
             {
                 _attrView.Attributes = attrs.ToList();
@@ -225,7 +251,13 @@ namespace Viewer.UI.Attributes
                 var filter = e.FilterText.ToLower();
                 _attrView.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().StartsWith(filter)).ToList();
             }
+
+            if (EditingEnabled)
+            {
+                // if editing is enabled, the last row is an empty row 
             _attrView.Attributes.Add(lastRow);
+            }
+
             _attrView.UpdateAttributes();
         }
 

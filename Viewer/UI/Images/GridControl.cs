@@ -282,9 +282,9 @@ namespace Viewer.UI.Images
             // update selection 
             if (!_selection.IsEmpty)
             {
-                var selectionBounds = ProjectBounds(_selection);
-                e.Graphics.FillRectangle(_rangeSelectionFill, selectionBounds.Shrink(1));
-                e.Graphics.DrawRectangle(_rangeSelectionStroke, selectionBounds.Shrink(1));
+                var selectionBounds = Rectangle.Inflate(ProjectBounds(_selection), -1, -1);
+                e.Graphics.FillRectangle(_rangeSelectionFill, selectionBounds);
+                e.Graphics.DrawRectangle(_rangeSelectionStroke, selectionBounds);
             }
         }
 
@@ -296,18 +296,19 @@ namespace Viewer.UI.Images
 
             // clear grid cell area
             graphics.FillRectangle(Brushes.White, bounds);
-            
+
+            var drawBounds = Rectangle.Inflate(bounds, -1, -1);
             if ((item.State & ResultItemState.Selected) != 0)
             {
                 // draw selection 
-                graphics.FillRectangle(_selectedItemFill, bounds.Shrink(_selectedItemBorderSize));
-                graphics.DrawRectangle(_selectedItemStroke, bounds.Shrink(_selectedItemBorderSize));
+                graphics.FillRectangle(_selectedItemFill, drawBounds);
+                graphics.DrawRectangle(_selectedItemStroke, drawBounds);
             }
             else if ((item.State & ResultItemState.Active) != 0)
             {
                 // draw highlight
-                graphics.FillRectangle(_highlightedItemFill, bounds.Shrink(_highlightedItemBorderSize));
-                graphics.DrawRectangle(_highlightedItemStroke, bounds.Shrink(_highlightedItemBorderSize));
+                graphics.FillRectangle(_highlightedItemFill, drawBounds);
+                graphics.DrawRectangle(_highlightedItemStroke, drawBounds);
             }
 
             // draw the thumbnail

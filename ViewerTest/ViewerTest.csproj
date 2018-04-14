@@ -81,7 +81,6 @@
     <Compile Include="UI\Images\ImagesPresenterTest.cs" />
     <Compile Include="UI\Images\ImagesViewMock.cs" />
     <Compile Include="UI\Images\ThumbnailGeneratorTest.cs" />
-    <Compile Include="UI\RectangleExtensionsTest.cs" />
     <Compile Include="UI\SelectionMock.cs" />
     <Compile Include="UI\SelectionTest.cs" />
   </ItemGroup>

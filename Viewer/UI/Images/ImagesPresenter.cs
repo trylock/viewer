@@ -221,7 +221,7 @@ namespace Viewer.UI.Images
             var index = _imagesView.GetItemAt(e.Location);
 
             // update view
-            _imagesView.MakeActive();
+            _imagesView.EnsureVisible();
             _imagesView.HideItemEditForm();
 
             // udpate focused item

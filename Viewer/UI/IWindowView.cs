@@ -14,11 +14,12 @@ namespace Viewer.UI
         ///       (i.e. it might just hide itself or it might actually close its form)
         /// </summary>
         event EventHandler CloseView;
-
+        
         /// <summary>
-        /// Make this window active
+        /// Make sure the window is visible to the user.
+        /// Thread-safety: can be called from different threads
         /// </summary>
-        void MakeActive();
+        void EnsureVisible();
 
         /// <summary>
         /// Execute <paramref name="method"/> on the thread of this view.

@@ -19,12 +19,35 @@ namespace Viewer.UI
             // register event handlers
             FormClosed += OnFormClosed;
         }
-
-        public void MakeActive()
+        
+        public void EnsureVisible()
         {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(EnsureVisibleInternal));
+            }
+            else
+            {
+                EnsureVisibleInternal();
+            }
+        }
+
+        private void EnsureVisibleInternal()
+        {
+            if (IsAutoHide)
+            {
+                DockPanel.ActiveAutoHideContent = this;
+            }
+
             Activate();
         }
-        
+
+        private bool IsAutoHide => 
+            DockState == DockState.DockBottomAutoHide ||
+            DockState == DockState.DockLeftAutoHide ||
+            DockState == DockState.DockTopAutoHide ||
+            DockState == DockState.DockRightAutoHide;
+
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
             CloseView?.Invoke(sender, e);

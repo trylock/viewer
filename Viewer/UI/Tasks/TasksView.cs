@@ -11,11 +11,13 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Tasks
 {
-    public partial class TasksView : DockContent
+    public partial class TasksView : WindowView
     {
-        public TasksView()
+        public TasksView(string name)
         {
             InitializeComponent();
+
+            Text = name;
         }
     }
 }

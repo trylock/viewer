@@ -11,34 +11,37 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.IO;
 using Viewer.Properties;
+using Viewer.UI.Log;
 using Viewer.UI.Tasks;
 
 namespace Viewer.UI.Explorer
 {
     public class DirectoryTreePresenter
     {
+        public const string LogGroupName = "FileSystem";
+
         /// <summary>
         /// Directory with at least one of these flags will be hidden.
         /// </summary>
         public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
-
-        private IFileSystem _fileSystem;
-        private IClipboardService _clipboard;
-        private IDirectoryTreeView _treeView;
-        private IFileSystemErrorView _errorView;
-        private IProgressViewFactory _progressViewFactory;
+        
+        private readonly IFileSystem _fileSystem;
+        private readonly IClipboardService _clipboard;
+        private readonly IDirectoryTreeView _treeView;
+        private readonly IFileSystemErrorView _dialogView;
+        private readonly IProgressViewFactory _progressViewFactory;
 
         public DirectoryTreePresenter(
             IDirectoryTreeView treeView, 
             IProgressViewFactory progressViewFactory, 
-            IFileSystemErrorView errorView,
+            IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
             IClipboardService clipboard)
         {
             _clipboard = clipboard;
             _fileSystem = fileSystem;
 
-            _errorView = errorView;
+            _dialogView = dialogView;
             _progressViewFactory = progressViewFactory;
             _treeView = treeView;
             
@@ -116,15 +119,15 @@ namespace Viewer.UI.Explorer
             }
             catch (UnauthorizedAccessException)
             {
-                _errorView.UnauthorizedAccess(fullPath);
+                _dialogView.UnauthorizedAccess(fullPath);
             }
             catch (SecurityException)
             {
-                _errorView.UnauthorizedAccess(fullPath);
+                _dialogView.UnauthorizedAccess(fullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                _errorView.DirectoryNotFound(fullPath);
+                _dialogView.DirectoryNotFound(fullPath);
             }
 
             return result;
@@ -142,7 +145,7 @@ namespace Viewer.UI.Explorer
         {
             if (!PathUtils.IsValidFileName(e.NewName))
             {
-                _errorView.InvalidFileName(e.NewName, PathUtils.GetInvalidFileCharacters());
+                _dialogView.InvalidFileName(e.NewName, PathUtils.GetInvalidFileCharacters());
                 return;
             }
 
@@ -158,17 +161,17 @@ namespace Viewer.UI.Explorer
             }
             catch (UnauthorizedAccessException)
             {
-                _errorView.UnauthorizedAccess(e.FullPath);
+                _dialogView.UnauthorizedAccess(e.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                _errorView.DirectoryNotFound(e.FullPath);
+                _dialogView.DirectoryNotFound(e.FullPath);
             }
         }
         
         private void View_DeleteDirectory(object sender, DirectoryEventArgs e)
         {
-            if (!_errorView.ConfirmDelete(e.FullPath))
+            if (!_dialogView.ConfirmDelete(e.FullPath))
             {
                 return;
             }
@@ -180,17 +183,17 @@ namespace Viewer.UI.Explorer
             }
             catch (DirectoryNotFoundException)
             {
-                _errorView.DirectoryNotFound(e.FullPath);
+                _dialogView.DirectoryNotFound(e.FullPath);
                 // we stil want to remove the directory from the view
                 _treeView.RemoveDirectory(PathUtils.Split(e.FullPath));
             }
             catch (UnauthorizedAccessException)
             {
-                _errorView.UnauthorizedAccess(e.FullPath);
+                _dialogView.UnauthorizedAccess(e.FullPath);
             }
             catch (IOException)
             {
-                _errorView.FileInUse(e.FullPath);
+                _dialogView.FileInUse(e.FullPath);
             }
         }
         
@@ -210,11 +213,11 @@ namespace Viewer.UI.Explorer
             }
             catch (UnauthorizedAccessException)
             {
-                _errorView.UnauthorizedAccess(e.FullPath);
+                _dialogView.UnauthorizedAccess(e.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                _errorView.DirectoryNotFound(e.FullPath);
+                _dialogView.DirectoryNotFound(e.FullPath);
             }
         }
 
@@ -261,18 +264,18 @@ namespace Viewer.UI.Explorer
 
         private class CopyHandle
         {
-            private IFileSystem _fileSystem;
-            private IProgressView<CopyProgress> _progressView;
-            private IFileSystemErrorView _dialogView;
-            private string _baseDir;
-            private string _destDir;
-            private CancellationToken _cancellation;
+            private readonly IFileSystem _fileSystem;
+            private readonly IProgressView<CopyProgress> _progressView;
+            private readonly IFileSystemErrorView _dialogView;
+            private readonly string _baseDir;
+            private readonly string _destDir;
+            private readonly CancellationToken _cancellation;
 
             public CopyHandle(
                 IFileSystem fileSystem, 
                 string baseDir, 
                 string desDir, 
-                IProgressView<CopyProgress> progressView, 
+                IProgressView<CopyProgress> progressView,
                 IFileSystemErrorView dialogView,
                 CancellationToken cancellation)
             {
@@ -299,35 +302,30 @@ namespace Viewer.UI.Explorer
 
             public SearchControl CopyFile(string path)
             {
-                var destPath = GetDestinationPath(path);
-                _progressView.Progress.Report(new CopyProgress(path, false));
-                try
-                {
-                    _fileSystem.CopyFile(path, destPath);
-                }
-                catch (DirectoryNotFoundException e)
-                {
-                    _dialogView.DirectoryNotFound(e.Message);
-                }
-                finally
-                {
-                    _progressView.Progress.Report(new CopyProgress(path, true));
-                }
-
-                return SearchControl.None;
+                return Operation(path, (src, dest) => _fileSystem.CopyFile(src, dest));
             }
 
             public SearchControl MoveFile(string path)
+            {
+                return Operation(path, (src, dest) => _fileSystem.MoveFile(src, dest));
+            }
+
+            private SearchControl Operation(string path, Action<string, string> operation)
             {
                 var destPath = GetDestinationPath(path);
                 _progressView.Progress.Report(new CopyProgress(path, false));
                 try
                 {
-                    _fileSystem.MoveFile(path, destPath);
+                    operation(path, destPath);
                 }
-                catch (DirectoryNotFoundException e)
+                catch (DirectoryNotFoundException)
                 {
-                    _dialogView.DirectoryNotFound(e.Message);
+                    _dialogView.DirectoryNotFound(path);
+                }
+                catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
+                                          e.GetType() == typeof(SecurityException))
+                {
+                    _dialogView.UnauthorizedAccess(path);
                 }
                 finally
                 {
@@ -354,7 +352,7 @@ namespace Viewer.UI.Explorer
                         {
                             view.CancellationToken.ThrowIfCancellationRequested();
                             var baseDir = PathUtils.GetDirectoryPath(file);
-                            var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _errorView, view.CancellationToken);
+                            var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _dialogView, view.CancellationToken);
                             if ((effect & DragDropEffects.Move) != 0)
                                 _fileSystem.Search(file, copy.CreateDirectory, copy.MoveFile);
                             else

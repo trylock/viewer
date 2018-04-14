@@ -17,6 +17,7 @@ using Viewer.UI;
 using Viewer.UI.Attributes;
 using Viewer.UI.Images;
 using Viewer.UI.Explorer;
+using Viewer.UI.Log;
 using Viewer.UI.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -33,6 +34,8 @@ namespace Viewer
             _dockPanel = new DockPanel();
             _dockPanel.Theme = new VS2015LightTheme();
             _dockPanel.Dock = DockStyle.Fill;
+            _dockPanel.UpdateDockWindowZOrder(DockStyle.Right, true);
+            _dockPanel.UpdateDockWindowZOrder(DockStyle.Left, true);
             Controls.Add(_dockPanel);
 
             var factory = new AttributeStorageFactory();
@@ -45,7 +48,8 @@ namespace Viewer
             var thumbnailGenerator = new ThumbnailGenerator();
             var selection = new Selection();
             var attributeManager = new AttributeManager(selection);
-            
+            var log = new Log();
+
             // query 
             var queryResult = new EntityManager(modifiedEntities);
             foreach (var file in Directory.EnumerateFiles("D:/dataset/moderate"))
@@ -64,7 +68,7 @@ namespace Viewer
             // images
             var imagesView = new GridControl(Resources.QueryResultWindowName);
             imagesView.Show(_dockPanel, DockState.Document);
-                
+
             // attributes
             var attributesView = new AttributeTableControl("Attributes");
             attributesView.Show(_dockPanel, DockState.DockRight);
@@ -73,9 +77,15 @@ namespace Viewer
             var exifAttributesView = new AttributeTableControl("Exif");
             exifAttributesView.Show(_dockPanel, DockState.DockRight);
 
-            var tasksView = new TasksView();
-            tasksView.Show(attributesView.Pane, DockAlignment.Bottom, 0.4);
+            // background tasks
+            var tasksView = new TasksView("Background Tasks");
+            tasksView.Show(_dockPanel, DockState.DockBottom);
 
+            // log
+            var logView = new LogView("Log");
+            logView.Show(_dockPanel, DockState.DockBottom);
+
+            // tasks
             var progressViewFactory = new ProgressViewFactory(tasksView);
 
             // presenters
@@ -98,6 +108,8 @@ namespace Viewer
 
             var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressViewFactory, fileSystemErrorView, fileSystem, clipboard);
             treePresenter.UpdateRootDirectories();
+
+            var logPresenter = new LogPresenter(logView, log);
         }
     }
 }

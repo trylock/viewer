@@ -10,9 +10,9 @@ namespace Viewer.UI.Tasks
 
     public class ProgressViewFactory : IProgressViewFactory
     {
-        private Control _parentView;
+        private WindowView _parentView;
 
-        public ProgressViewFactory(Control parent)
+        public ProgressViewFactory(WindowView parent)
         {
             _parentView = parent;
         }
@@ -21,6 +21,7 @@ namespace Viewer.UI.Tasks
         {
             var view = new ProgressView<T>(finishPredicate, taskNameGetter);
             _parentView.Controls.Add(view);
+            _parentView.Show();
             return view;
         }
     }

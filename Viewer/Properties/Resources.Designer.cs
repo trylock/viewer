@@ -171,6 +171,16 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ErrorIcon {
+            get {
+                object obj = ResourceManager.GetObject("ErrorIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /select,&quot;{0}&quot;.
         /// </summary>
         internal static string ExplorerOpenFolderArguments {
@@ -272,6 +282,16 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MessageIcon {
+            get {
+                object obj = ResourceManager.GetObject("MessageIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Path too long..
         /// </summary>
         internal static string PathTooLong_Label {
@@ -324,6 +344,16 @@ namespace Viewer.Properties {
         internal static string UnauthorizedAccess_Message {
             get {
                 return ResourceManager.GetString("UnauthorizedAccess_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap WarningIcon {
+            get {
+                object obj = ResourceManager.GetObject("WarningIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

@@ -180,6 +180,11 @@ namespace ViewerTest.UI.Images
             EditIndex = -1;
         }
 
+        public void EnsureVisible()
+        {
+            throw new NotImplementedException();
+        }
+
         public IAsyncResult BeginInvoke(Delegate action)
         {
             throw new NotImplementedException();

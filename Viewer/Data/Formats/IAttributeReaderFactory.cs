@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,9 @@ namespace Viewer.Data.Formats
         /// <summary>
         /// Create attribute reader from JPEG segments loaded in memory
         /// </summary>
+        /// <param name="file">File metadata</param>
         /// <param name="segments">JPEG segments</param>
         /// <returns>Attribute reader of given segments</returns>
-        IAttributeReader CreateFromSegments(IEnumerable<JpegSegment> segments);
+        IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments);
     }
 }

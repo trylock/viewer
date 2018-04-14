@@ -132,12 +132,7 @@ namespace Viewer.Data.Formats.Attributes
     /// </summary>
     public class AttributeReaderFactory : IAttributeReaderFactory
     {
-        /// <summary>
-        /// Create attribute reader from list of 
-        /// </summary>
-        /// <param name="segments"></param>
-        /// <returns></returns>
-        public IAttributeReader CreateFromSegments(IEnumerable<JpegSegment> segments)
+        public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)
         {
             var data = JpegSegmentUtils.JoinSegmentData(segments, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
             return new AttributeReader(new BinaryReader(new MemoryStream(data)));

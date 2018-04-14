@@ -23,6 +23,7 @@ namespace Viewer.Data.Storage
             var segmentWriterFactory = new JpegSegmentWriterFactory();
             var attrReaderFactories = new List<IAttributeReaderFactory>
             {
+                new FileAttributeReaderFactory(),
                 new AttributeReaderFactory(),
                 new ExifAttributeReaderFactory(Settings.Instance.ExifTags)
             };

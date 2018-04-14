@@ -54,10 +54,11 @@ namespace Viewer.Data.Storage
         {
             // read all JPEG segments to memory
             IEntity attrs;
+            FileInfo fileInfo;
             var segments = new List<JpegSegment>();
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
             {
-                var fileInfo = new FileInfo(path);
+                fileInfo = new FileInfo(path);
                 attrs = new Entity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
 
                 for (;;)
@@ -78,7 +79,7 @@ namespace Viewer.Data.Storage
             // read attributes from all sources and add them to the collection
             foreach (var factory in _attrReaderFactories)
             {
-                var attrReader = factory.CreateFromSegments(segments);
+                var attrReader = factory.CreateFromSegments(fileInfo, segments);
                 for (;;)
                 {
                     var attr = attrReader.Read();

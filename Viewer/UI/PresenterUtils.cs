@@ -8,25 +8,6 @@ using System.Threading.Tasks;
 
 namespace Viewer.UI
 {
-    public class ViewEvent : System.Attribute
-    {
-        /// <summary>
-        /// View which triggers the event
-        /// </summary>
-        public Type ViewType { get; set; }
-
-        /// <summary>
-        /// Name of the event
-        /// </summary>
-        public string Name { get; set; }
-
-        public ViewEvent(Type view, string name)
-        {
-            ViewType = view;
-            Name = name;
-        }
-    }
-
     public static class PresenterUtils
     {
         public struct AutoEventSubscription

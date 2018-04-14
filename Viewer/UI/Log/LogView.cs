@@ -36,22 +36,10 @@ namespace Viewer.UI.Log
 
         public void UpdateEntries()
         {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action(UpdateEntriesInternal));
-            }
-            else
-            {
-                UpdateEntriesInternal();
-            }
-        }
-
-        private void UpdateEntriesInternal()
-        {
             LogEntryGridView.Rows.Clear();
             foreach (var entry in Entries)
             {
-                var row = (DataGridViewRow) LogEntryGridView.RowTemplate.Clone();
+                var row = (DataGridViewRow)LogEntryGridView.RowTemplate.Clone();
                 row.Cells.Add(new DataGridViewImageCell
                 {
                     Value = _logTypeIcon[(int)entry.Type],

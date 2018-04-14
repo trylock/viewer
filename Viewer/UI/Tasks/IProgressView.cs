@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Viewer.UI.Tasks
 {
-    public delegate void WorkDelegate(IProgressView view);
+    public delegate void WorkDelegate<T>(IProgressView<T> view);
 
-    public interface IProgressView
+    public interface IProgressView<T>
     {
         /// <summary>
         /// Event called when user requests to cancel the operation.
@@ -22,12 +22,15 @@ namespace Viewer.UI.Tasks
         CancellationToken CancellationToken { get; }
 
         /// <summary>
+        /// Get view's progress controller
+        /// </summary>
+        IProgress<T> Progress { get; }
+
+        /// <summary>
         /// Open a new progress view.
         /// </summary>
-        /// <param name="name">Name of the task</param>
-        /// <param name="maximum">Total number of units of work to do.</param>
         /// <param name="doWork">Function which starts an intensive computation</param>
-        void Show(string name, int maximum, WorkDelegate doWork);
+        void Show(WorkDelegate<T> doWork);
 
         /// <summary>
         /// Close this progress view
@@ -52,17 +55,22 @@ namespace Viewer.UI.Tasks
         void FinishWork();
 
         /// <summary>
-        /// Create a progress object which will update the view
+        /// Set view title
         /// </summary>
-        /// <typeparam name="T">Type of the progress value</typeparam>
-        /// <param name="finishedPredicate">Function which returns true iff we have finished a unit of work</param>
-        /// <param name="taskNameGetter">Function will set current task name</param>
-        /// <returns>Progress object</returns>
-        IProgress<T> CreateProgress<T>(Func<T, bool> finishedPredicate, Func<T, string> taskNameGetter);
+        /// <param name="title">New title</param>
+        /// <returns>this view</returns>
+        IProgressView<T> WithTitle(string title);
+        
+        /// <summary>
+        /// Set number of units of work
+        /// </summary>
+        /// <param name="workUnitCount"></param>
+        /// <returns>this view</returns>
+        IProgressView<T> WithWork(int workUnitCount);
     }
 
     public interface IProgressViewFactory
     {
-        IProgressView Create();
+        IProgressView<T> Create<T>(Func<T, bool> finishPredicate, Func<T, string> taskNameGetter);
     }
 }

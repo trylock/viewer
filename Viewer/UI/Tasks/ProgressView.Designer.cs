@@ -2,7 +2,7 @@
 
 namespace Viewer.UI.Tasks
 {
-    partial class ProgressView
+    partial class ProgressView<T>
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@ namespace Viewer.UI.Tasks
         /// </summary>
         private void InitializeComponent()
         {
-            this.Progress = new System.Windows.Forms.ProgressBar();
+            this.ProgressBar = new System.Windows.Forms.ProgressBar();
             this.CurrentTaskNameLabel = new System.Windows.Forms.Label();
             this.CancelProgressButton = new System.Windows.Forms.Button();
             this.ProgressLabel = new System.Windows.Forms.Label();
@@ -38,11 +38,11 @@ namespace Viewer.UI.Tasks
             // 
             // Progress
             // 
-            this.Progress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.Progress.Location = new System.Drawing.Point(12, 35);
-            this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(206, 25);
-            this.Progress.TabIndex = 0;
+            this.ProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProgressBar.Location = new System.Drawing.Point(12, 35);
+            this.ProgressBar.Name = "Progress";
+            this.ProgressBar.Size = new System.Drawing.Size(206, 25);
+            this.ProgressBar.TabIndex = 0;
             // 
             // CurrentTaskNameLabel
             // 
@@ -84,7 +84,7 @@ namespace Viewer.UI.Tasks
             this.Controls.Add(this.ProgressLabel);
             this.Controls.Add(this.CancelProgressButton);
             this.Controls.Add(this.CurrentTaskNameLabel);
-            this.Controls.Add(this.Progress);
+            this.Controls.Add(this.ProgressBar);
             this.MinimumSize = new System.Drawing.Size(150, 100);
             this.Name = "ProgressView";
             this.Size = new System.Drawing.Size(289, 100);
@@ -95,7 +95,7 @@ namespace Viewer.UI.Tasks
 
         #endregion
         
-        private System.Windows.Forms.ProgressBar Progress;
+        private System.Windows.Forms.ProgressBar ProgressBar;
         private System.Windows.Forms.Label CurrentTaskNameLabel;
         private System.Windows.Forms.Button CancelProgressButton;
         private Label ProgressLabel;

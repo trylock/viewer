@@ -13,11 +13,42 @@ using Viewer.Properties;
 
 namespace Viewer.UI.Tasks
 {
-    public partial class ProgressView : UserControl, IProgressView
+    public partial class ProgressView<T> : UserControl, IProgressView<T>
     {
-        public ProgressView()
+        private class ProgressController : IProgress<T>
+        {
+            private Func<T, bool> _finishedPredicate;
+            private Func<T, string> _taskNameGetter;
+            private IProgressView<T> _view;
+
+            public ProgressController(IProgressView<T> view, Func<T, bool> finishedPredicate, Func<T, string> taskNameGetter)
+            {
+                _view = view;
+                _finishedPredicate = finishedPredicate;
+                _taskNameGetter = taskNameGetter;
+            }
+
+            public void Report(T value)
+            {
+                if (_finishedPredicate(value))
+                {
+                    _view.FinishWork();
+                    return;
+                }
+
+                var name = _taskNameGetter(value);
+                if (name != null)
+                {
+                    _view.StartWork(name);
+                }
+            }
+        }
+
+        public ProgressView(Func<T, bool> finishPredicate, Func<T, string> taskNameGetter) 
         {
             InitializeComponent();
+
+            Progress = new ProgressController(this, finishPredicate, taskNameGetter);
 
             CancelProgress += (sender, e) => _cancellation.Cancel();
         }
@@ -27,23 +58,35 @@ namespace Viewer.UI.Tasks
         public event EventHandler CancelProgress;
 
         public CancellationToken CancellationToken => _cancellation.Token;
-        
+
+        public IProgress<T> Progress { get; }
+
         private CancellationTokenSource _cancellation = new CancellationTokenSource();
         private ReaderWriterLockSlim _closeLock = new ReaderWriterLockSlim();
         private bool _isFinished = false;
-
-        public void Show(string name, int maximum, WorkDelegate work)
+        
+        public IProgressView<T> WithTitle(string title)
         {
-            Text = name;
-            Progress.Value = 0;
-            Progress.Maximum = maximum;
-            Progress.Step = 1;
+            Text = title;
+            return this;
+        }
 
+        public IProgressView<T> WithWork(int workUnitCount)
+        {
+            ProgressBar.Value = 0;
+            ProgressBar.Maximum = workUnitCount;
+            ProgressBar.Step = 1;
+            return this;
+        }
+
+        public void Show(WorkDelegate<T> work)
+        {
             work(this);
         }
 
         public void StartWork(string name)
         {
+            CancellationToken.ThrowIfCancellationRequested();
             _closeLock.EnterReadLock();
             try
             {
@@ -65,6 +108,7 @@ namespace Viewer.UI.Tasks
 
         public void FinishWork()
         {
+            CancellationToken.ThrowIfCancellationRequested();
             _closeLock.EnterReadLock();
             try
             {
@@ -75,11 +119,11 @@ namespace Viewer.UI.Tasks
 
                 BeginInvoke(new Action(() =>
                 {
-                    Progress.PerformStep();
+                    ProgressBar.PerformStep();
 
-                    var currentProgress = (int)((Progress.Value / (double) Progress.Maximum) * 100);
+                    var currentProgress = (int)((ProgressBar.Value / (double)ProgressBar.Maximum) * 100);
                     ProgressLabel.Text = string.Format(Resources.Progress_Label, currentProgress);
-                    if (Progress.Value >= Progress.Maximum)
+                    if (ProgressBar.Value >= ProgressBar.Maximum)
                     {
                         CloseView();
                     }
@@ -89,39 +133,6 @@ namespace Viewer.UI.Tasks
             {
                 _closeLock.ExitReadLock();
             }
-        }
-
-        private class ProgressController<T> : IProgress<T>
-        {
-            private Func<T, bool> _finishedPredicate;
-            private Func<T, string> _taskNameGetter;
-            private IProgressView _view;
-
-            public ProgressController(IProgressView view, Func<T, bool> finishedPredicate, Func<T, string> taskNameGetter)
-            {
-                _view = view;
-                _finishedPredicate = finishedPredicate;
-                _taskNameGetter = taskNameGetter;
-            }
-
-            public void Report(T value)
-            {
-                if (_finishedPredicate(value))
-                {
-                    _view.FinishWork();
-                }
-
-                var name = _taskNameGetter(value);
-                if (name != null)
-                {
-                    _view.StartWork(name);
-                }
-            }
-        }
-
-        public IProgress<T> CreateProgress<T>(Func<T, bool> finishedPredicate, Func<T, string> taskNameGetter)
-        {
-            return new ProgressController<T>(this, finishedPredicate, taskNameGetter);
         }
 
         public void CloseView(bool canceled = false)

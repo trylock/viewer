@@ -108,7 +108,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// List of items to show 
         /// </summary>
-        IList<EntityView> Items { get; set; }
+        List<EntityView> Items { get; set; }
 
         /// <summary>
         /// Update gird size

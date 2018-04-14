@@ -32,7 +32,7 @@ namespace ViewerTest.UI.Images
 
         public Size ItemSize { get; set; } = new Size(1, 1);
         public Size ItemPadding { get; set; } = new Size(0, 0);
-        public IList<EntityView> Items { get; set; } = new List<EntityView>();
+        public List<EntityView> Items { get; set; } = new List<EntityView>();
         public Rectangle CurrentSelection { get; private set; } = Rectangle.Empty;
         public Size ViewSize { get; } = new Size(8, 8);
         public bool IsActive { get; private set; } = false;

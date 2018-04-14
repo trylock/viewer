@@ -10,6 +10,7 @@ using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.UI;
 using Viewer.UI.Images;
+using ViewerTest.Data;
 
 namespace ViewerTest.UI.Images
 {
@@ -24,28 +25,29 @@ namespace ViewerTest.UI.Images
     [TestClass]
     public class ImagesPresenterTest
     {
+        private IAttributeStorage _storage;
         private ImagesViewMock _viewMock;
         private SelectionMock _selectionMock;
         private ClipboardServiceMock _clipboardMock;
-        private EntityManager _entitiesMock;
+        private EntityManagerMock _entities;
         private ImagesPresenter _presenter;
 
         [TestInitialize]
         public void Setup()
         {
+            _storage = new MemoryAttributeStorage();
             _viewMock = new ImagesViewMock(8, 8);
             _clipboardMock = new ClipboardServiceMock();
-            var storage = new MemoryAttributeStorage();
-            _entitiesMock = new EntityManager(storage);
+            _entities = new EntityManagerMock();
             for (int i = 0; i < 16; ++i)
             {
-                _entitiesMock.Stage(new Entity(i.ToString()));
+                _entities.Add(new Entity(i.ToString()));
             }
 
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             _selectionMock = new SelectionMock();
-            _presenter = new ImagesPresenter(_viewMock, null, _entitiesMock, _clipboardMock, _selectionMock, thumbnailGenerator);
-            _presenter.LoadFromEntityManager();
+            _presenter = new ImagesPresenter(_viewMock, null, _storage, _entities, _clipboardMock, _selectionMock, thumbnailGenerator);
+            _presenter.LoadFromQueryResult();
         }
 
         [TestMethod]
@@ -344,18 +346,18 @@ namespace ViewerTest.UI.Images
         public void Close_ReleaseAllItems()
         {
             Assert.IsTrue(_viewMock.Items.Count > 0);
-            Assert.IsTrue(_entitiesMock.ToList().Count > 0);
+            Assert.IsTrue(_entities.ToList().Count > 0);
 
             _viewMock.TriggerCloseView();
             
             Assert.AreEqual(0, _viewMock.Items.Count);
-            Assert.AreEqual(0, _entitiesMock.ToList().Count);
+            Assert.AreEqual(0, _entities.ToList().Count);
         }
 
         [TestMethod]
         public void Rename_SelectedItem()
         {
-            var entity = _entitiesMock.GetEntity("5");
+            var entity = _entities[5];
             Assert.IsNotNull(entity);
 
             _viewMock.TriggerMouseDown(new MouseEventArgs(MouseButtons.Right, 1, 2, 2, 0));
@@ -363,11 +365,8 @@ namespace ViewerTest.UI.Images
 
             Assert.AreEqual("test", _viewMock.Items[5].Data.Path);
             
-            var newEntity = _entitiesMock.GetEntity("test");
-            Assert.IsNotNull(newEntity);
-
-            var oldEntity = _entitiesMock.GetEntity("5");
-            Assert.IsNull(oldEntity);
+            var newEntity = _entities[5];
+            Assert.AreEqual("test", newEntity.Path);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
+using Viewer.Data.Storage;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.UI.Explorer;
@@ -20,7 +21,8 @@ namespace Viewer.UI.Images
         private IImagesView _imagesView;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
-        private readonly IEntityManager _entities;
+        private readonly IAttributeStorage _storage;
+        private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
         private readonly IThumbnailGenerator _thumbnailGenerator;
 
@@ -47,12 +49,14 @@ namespace Viewer.UI.Images
         public ImagesPresenter(
             IImagesView imagesView, 
             IFileSystemErrorView dialogView,
-            IEntityManager entities, 
+            IAttributeStorage storage,
+            IEntityManager entityManager, 
             IClipboardService clipboard,
             ISelection selection,
             IThumbnailGenerator thumbnailGenerator)
         {
-            _entities = entities;
+            _storage = storage;
+            _entityManager = entityManager;
             _clipboard = clipboard;
             _selection = selection;
             _thumbnailGenerator = thumbnailGenerator;
@@ -65,62 +69,18 @@ namespace Viewer.UI.Images
             var result = PresenterUtils.SubscribeTo(_imagesView, this, "View");
         }
 
-        public void LoadFromEntityManager()
+        public void LoadFromQueryResult()
         {
             DisposeViewData();
-
-            // load new data
-            foreach (var entity in _entities)
+            
+            // add entities with the default thumbnail
+            foreach (var entity in _entityManager)
             {
                 _imagesView.Items.Add(new EntityView(entity, GetThumbnail(entity)));
             }
-
-            // update view
             _imagesView.UpdateItems();
         }
-
-        public async void LoadDirectoryAsync(string path)
-        {
-            DisposeViewData();
-
-            // get the default thumbnail
-            var defaultThumbnail = _thumbnailGenerator.GetThumbnail(Resources.DefaultThumbnail, _itemSize);
-
-            // find files
-            var result = await Task.Run(() =>
-            {
-                var items = new List<EntityView>();
-                foreach (var file in Directory.EnumerateFiles(path))
-                {
-                    items.Add(new EntityView(new Entity(file), defaultThumbnail));
-                }
-
-                return items;
-            });
-            
-            // show files with default thumbnails
-            _imagesView.Items = result;
-            _imagesView.UpdateItems();
-
-            // load thumbnails from image metadata
-            await Task.Run(() =>
-            {
-                for (int i = 0; i < _imagesView.Items.Count; ++i)
-                {
-                    var entityPath = _imagesView.Items[i].Data.Path;
-                    var entity = _entities.GetEntity(entityPath);
-                    var thumbnail = GetThumbnail(entity);
-                    var updatedView = new EntityView(entity, thumbnail);
-                    var index = i;
-                    _imagesView.BeginInvoke(new Action(() =>
-                    {
-                        _imagesView.Items[index] = updatedView;
-                        _imagesView.UpdateItem(index);
-                    }));
-                }
-            });
-        }
-
+        
         private void DisposeViewData()
         {
             if (_imagesView.Items == null)
@@ -235,7 +195,7 @@ namespace Viewer.UI.Images
             }
 
             // set global selection
-            _selection.Replace(_currentSelection.Select(index => _imagesView.Items[index].Data.Path));
+            _selection.Replace(_entityManager, _currentSelection);
             
             // reset state of items in previous selection
             foreach (var item in oldSelection)
@@ -273,7 +233,7 @@ namespace Viewer.UI.Images
                 if (!_currentSelection.Contains(index))
                 {
                     // make the active item the only item in selection
-                    ChangeSelection(Enumerable.Repeat(index, 1), SelectionStrategy.Replace);
+                    ChangeSelection(new []{ index }, SelectionStrategy.Replace);
                 }
 
                 // begin the move operation on files in selection
@@ -406,8 +366,10 @@ namespace Viewer.UI.Images
             // rename the file
             try
             {
-                _entities.MoveEntity(item.Path, newPath);
-                _imagesView.Items[index].Data = item.ChangePath(newPath);
+                _storage.Move(item.Path, newPath);
+                var updatedEntity = item.ChangePath(newPath);
+                _entityManager[index] = updatedEntity;
+                _imagesView.Items[index].Data = updatedEntity;
                 _imagesView.UpdateItem(index);
             }
             catch (PathTooLongException)
@@ -432,9 +394,14 @@ namespace Viewer.UI.Images
             }
         }
 
+        private IEnumerable<string> GetPathsInSelection()
+        {
+            return _selection.Select(index => _imagesView.Items[index].FullPath);
+        }
+
         private void View_CopyItems(object sender, EventArgs e)
         {
-            _clipboard.SetFiles(_selection);
+            _clipboard.SetFiles(GetPathsInSelection());
             _clipboard.SetPreferredEffect(DragDropEffects.Copy);
         }
 
@@ -446,22 +413,25 @@ namespace Viewer.UI.Images
             }
 
             // confirm delete
-            var filesToDelete = _selection.ToArray();
+            var filesToDelete = GetPathsInSelection().ToArray();
             if (!_dialogView.ConfirmDelete(filesToDelete))
             {
                 return;
             }
 
             // delete files 
+            var deletedPaths = new HashSet<string>();
             foreach (var item in _selection)
             {
+                var path = _imagesView.Items[item].FullPath;
                 try
                 {
-                    _entities.DeleteEntity(item);
+                    _storage.Remove(path);
+                    deletedPaths.Add(path);
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    _dialogView.UnauthorizedAccess(item);
+                    _dialogView.UnauthorizedAccess(path);
                 }
                 catch (DirectoryNotFoundException ex)
                 {
@@ -469,28 +439,17 @@ namespace Viewer.UI.Images
                 }
                 catch (PathTooLongException)
                 {
-                    _dialogView.PathTooLong(item);
+                    _dialogView.PathTooLong(path);
                 }
                 catch (IOException)
                 {
-                    _dialogView.FileInUse(item);
+                    _dialogView.FileInUse(path);
                 }
             }
 
-            // remove deleted items from the view
-            var newViewItems = new List<EntityView>();
-            foreach (var item in _imagesView.Items)
-            {
-                if (_selection.Contains(item.Data.Path))
-                {
-                    item.Dispose();
-                }
-                else
-                {
-                    newViewItems.Add(item);
-                }
-            }
-            _imagesView.Items = newViewItems;
+            // remove deleted items from the query and the view
+            _entityManager.RemoveAll(entity => deletedPaths.Contains(entity.Path));
+            _imagesView.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
 
             // clear selection
             ChangeSelection(Enumerable.Empty<int>(), SelectionStrategy.Replace);
@@ -515,9 +474,9 @@ namespace Viewer.UI.Images
             {
                 item.Dispose();
             }
-            _selection.Replace(Enumerable.Empty<string>());
+            _selection.Clear();
             _imagesView.Items.Clear();
-            _entities.Clear();
+            _entityManager.Clear();
         }
 
         #endregion

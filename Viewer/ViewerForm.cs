@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,14 +37,21 @@ namespace Viewer
 
             var factory = new AttributeStorageFactory();
 
-            // models
+            // dependencies
             var storage = factory.Create();
-            var selection = new Selection();
             var clipboard = new ClipboardService();
             var fileSystem = new FileSystem();
-            var entityManager = new EntityManager(storage);
-            var attributeManager = new AttributeManager(entityManager, selection);
+            var modifiedEntities = new EntityRepository();
             var thumbnailGenerator = new ThumbnailGenerator();
+            var selection = new Selection();
+            var attributeManager = new AttributeManager(selection);
+            
+            // query 
+            var queryResult = new EntityManager(modifiedEntities);
+            foreach (var file in Directory.EnumerateFiles("D:/dataset/moderate"))
+            {
+                queryResult.Add(storage.Load(file));
+            }
 
             // UI
             var fileSystemErrorView = new FileSystemErrorView();
@@ -71,13 +79,13 @@ namespace Viewer
             var progressViewFactory = new ProgressViewFactory(tasksView);
 
             // presenters
-            var attrPresenter = new AttributesPresenter(attributesView, progressViewFactory, selection, entityManager, attributeManager);
+            var attrPresenter = new AttributesPresenter(attributesView, progressViewFactory, selection, storage, attributeManager);
             attrPresenter.AttributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
             var exifAttrPresenter = new AttributesPresenter(
                 exifAttributesView, 
                 progressViewFactory, 
                 selection,
-                entityManager, 
+                storage,
                 attributeManager)
             {
                 EditingEnabled = false,
@@ -85,8 +93,8 @@ namespace Viewer
                                              (attr.Data.Flags & AttributeFlags.ReadOnly) != 0
             };
 
-            var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, entityManager, clipboard, selection, thumbnailGenerator);
-            imagesPresenter.LoadDirectoryAsync("D:/dataset/large");
+            var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, storage, queryResult, clipboard, selection, thumbnailGenerator);
+            imagesPresenter.LoadFromQueryResult();
 
             var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressViewFactory, fileSystemErrorView, fileSystem, clipboard);
             treePresenter.UpdateRootDirectories();

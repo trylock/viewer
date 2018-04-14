@@ -91,7 +91,7 @@ namespace Viewer.UI.Images
 
         public Size ItemSize { get; set; } = new Size(150, 100);
         public Size ItemPadding { get; set; } = new Size(8, 8);
-        public IList<EntityView> Items { get; set; }
+        public List<EntityView> Items { get; set; }
 
         public void UpdateItems()
         {

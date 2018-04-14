@@ -247,10 +247,22 @@ namespace Viewer.UI.Explorer
             PasteFiles(e.FullPath, _clipboard.GetFiles(), _clipboard.GetPreferredEffect());
         }
 
+        private class CopyProgress
+        {
+            public string Path { get; }
+            public bool IsFinished { get; }
+
+            public CopyProgress(string path, bool isFinished)
+            {
+                Path = path;
+                IsFinished = isFinished;
+            }
+        }
+
         private class CopyHandle
         {
             private IFileSystem _fileSystem;
-            private IProgressView _progressView;
+            private IProgressView<CopyProgress> _progressView;
             private IFileSystemErrorView _dialogView;
             private string _baseDir;
             private string _destDir;
@@ -260,7 +272,7 @@ namespace Viewer.UI.Explorer
                 IFileSystem fileSystem, 
                 string baseDir, 
                 string desDir, 
-                IProgressView progressView, 
+                IProgressView<CopyProgress> progressView, 
                 IFileSystemErrorView dialogView,
                 CancellationToken cancellation)
             {
@@ -277,15 +289,9 @@ namespace Viewer.UI.Explorer
                 var partialPath = path.Substring(_baseDir.Length + 1);
                 return Path.Combine(_destDir, partialPath);
             }
-
-            private void CancelIfRequested()
+            
+            public SearchControl CreateDirectory(string path)
             {
-                _cancellation.ThrowIfCancellationRequested();
-            }
-
-            public SearchControl CopyDirectory(string path)
-            {
-                CancelIfRequested();
                 var destDir = GetDestinationPath(path);
                 _fileSystem.CreateDirectory(destDir);
                 return SearchControl.Visit;
@@ -293,9 +299,8 @@ namespace Viewer.UI.Explorer
 
             public SearchControl CopyFile(string path)
             {
-                CancelIfRequested();
                 var destPath = GetDestinationPath(path);
-                _progressView.StartWork(path);
+                _progressView.Progress.Report(new CopyProgress(path, false));
                 try
                 {
                     _fileSystem.CopyFile(path, destPath);
@@ -306,7 +311,7 @@ namespace Viewer.UI.Explorer
                 }
                 finally
                 {
-                    _progressView.FinishWork();
+                    _progressView.Progress.Report(new CopyProgress(path, true));
                 }
 
                 return SearchControl.None;
@@ -314,9 +319,8 @@ namespace Viewer.UI.Explorer
 
             public SearchControl MoveFile(string path)
             {
-                CancelIfRequested();
                 var destPath = GetDestinationPath(path);
-                _progressView.StartWork(path);
+                _progressView.Progress.Report(new CopyProgress(path, false));
                 try
                 {
                     _fileSystem.MoveFile(path, destPath);
@@ -327,7 +331,7 @@ namespace Viewer.UI.Explorer
                 }
                 finally
                 {
-                    _progressView.FinishWork();
+                    _progressView.Progress.Report(new CopyProgress(path, true));
                 }
 
                 return SearchControl.None;
@@ -338,28 +342,32 @@ namespace Viewer.UI.Explorer
         {
             // copy files
             var fileCount = (int)_fileSystem.CountFiles(files, true);
-            _progressViewFactory.Create().Show(Resources.CopyingFiles_Label, fileCount, view =>
-            {
-                Task.Run(() =>
+            _progressViewFactory
+                .Create<CopyProgress>(copy => copy.IsFinished, copy => copy.Path)
+                .WithTitle(Resources.CopyingFiles_Label)
+                .WithWork(fileCount)
+                .Show(view =>
                 {
-                    foreach (var file in files)
+                    Task.Run(() =>
                     {
-                        view.CancellationToken.ThrowIfCancellationRequested();
-                        var baseDir = PathUtils.GetDirectoryPath(file);
-                        var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _errorView, view.CancellationToken);
-                        if ((effect & DragDropEffects.Move) != 0)
-                            _fileSystem.Search(file, copy.CopyDirectory, copy.MoveFile);
-                        else
-                            _fileSystem.Search(file, copy.CopyDirectory, copy.CopyFile);
-                    }
-                }, view.CancellationToken).ContinueWith(task =>
-                {
-                    // update subdirectories in given path
-                    _treeView.LoadDirectories(
-                        PathUtils.Split(destinationDirectory),
-                        GetValidSubdirectories(destinationDirectory));
-                }, TaskScheduler.FromCurrentSynchronizationContext());
-            });
+                        foreach (var file in files)
+                        {
+                            view.CancellationToken.ThrowIfCancellationRequested();
+                            var baseDir = PathUtils.GetDirectoryPath(file);
+                            var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _errorView, view.CancellationToken);
+                            if ((effect & DragDropEffects.Move) != 0)
+                                _fileSystem.Search(file, copy.CreateDirectory, copy.MoveFile);
+                            else
+                                _fileSystem.Search(file, copy.CreateDirectory, copy.CopyFile);
+                        }
+                    }, view.CancellationToken).ContinueWith(task =>
+                    {
+                        // update subdirectories in given path
+                        _treeView.LoadDirectories(
+                            PathUtils.Split(destinationDirectory),
+                            GetValidSubdirectories(destinationDirectory));
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
+                });
         }
     }
 }

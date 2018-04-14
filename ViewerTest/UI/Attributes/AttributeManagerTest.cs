@@ -7,24 +7,23 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.UI.Attributes;
+using ViewerTest.Data;
 
 namespace ViewerTest.UI.Attributes
 {
     [TestClass]
     public class AttributeManagerTest
     {
-        private MemoryAttributeStorage _storageMock;
-        private EntityManager _entitiesMock;
+        private EntityManagerMock _entities;
         private SelectionMock _selectionMock;
         private AttributeManager _attributes;
 
         [TestInitialize]
         public void Setup()
         {
-            _storageMock = new MemoryAttributeStorage();
-            _entitiesMock = new EntityManager(_storageMock);
+            _entities = new EntityManagerMock();
             _selectionMock = new SelectionMock();
-            _attributes = new AttributeManager(_entitiesMock, _selectionMock);
+            _attributes = new AttributeManager(_selectionMock);
         }
 
         [TestMethod]
@@ -39,8 +38,8 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void SetAttribute_OneEntity()
         {
-            _storageMock.Add(new Entity("test"));
-            _selectionMock.Replace(new []{ "test" });
+            _entities.Add(new Entity("test"));
+            _selectionMock.Replace(_entities, new[]{ 0 });
             
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(0, attrs.Count);
@@ -57,9 +56,9 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void SetAttribute_MultipleEntities()
         {
-            _storageMock.Add(new Entity("test1"));
-            _storageMock.Add(new Entity("test2"));
-            _selectionMock.Replace(new[] { "test1", "test2" });
+            _entities.Add(new Entity("test1"));
+            _entities.Add(new Entity("test2"));
+            _selectionMock.Replace(_entities, new[] { 0, 1 });
 
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(0, attrs.Count);
@@ -76,8 +75,8 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void RemoveAttribute_NonExistentAttribute()
         {
-            _storageMock.Add(new Entity("test"));
-            _selectionMock.Replace(new[] { "test" });
+            _entities.Add(new Entity("test"));
+            _selectionMock.Replace(_entities, new[] { 0 });
 
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(0, attrs.Count);
@@ -93,9 +92,9 @@ namespace ViewerTest.UI.Attributes
         {
             var entity1 = new Entity("test1").SetAttribute(new StringAttribute("attr", "value"));
             var entity2 = new Entity("test2").SetAttribute(new IntAttribute("attr", 42));
-            _storageMock.Add(entity1);
-            _storageMock.Add(entity2);
-            _selectionMock.Replace(new[] { "test1", "test2" });
+            _entities.Add(entity1);
+            _entities.Add(entity2);
+            _selectionMock.Replace(_entities, new[] { 0, 1 });
 
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(1, attrs.Count);
@@ -106,11 +105,6 @@ namespace ViewerTest.UI.Attributes
             
             attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(0, attrs.Count);
-            
-            var staged = _entitiesMock.ConsumeStaged().ToList();
-            Assert.AreEqual(2, staged.Count);
-            Assert.AreEqual(0, staged[0].ToList().Count);
-            Assert.AreEqual(0, staged[1].ToList().Count);
         }
 
         [TestMethod]
@@ -119,9 +113,9 @@ namespace ViewerTest.UI.Attributes
             var entity1 = new Entity("test1").SetAttribute(new IntAttribute("attr", 42));
             var entity2 = new Entity("test2");
 
-            _storageMock.Add(entity1);
-            _storageMock.Add(entity2);
-            _selectionMock.Replace(new []{ "test1", "test2" });
+            _entities.Add(entity1);
+            _entities.Add(entity2);
+            _selectionMock.Replace(_entities, new[]{ 0, 1 });
 
             var attrs = _attributes.GetSelectedAttributes().ToList();
             Assert.AreEqual(1, attrs.Count);

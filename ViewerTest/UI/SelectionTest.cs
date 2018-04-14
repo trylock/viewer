@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
 using Viewer.UI;
+using ViewerTest.Data;
 
 namespace ViewerTest.UI
 {
@@ -12,17 +15,13 @@ namespace ViewerTest.UI
         [TestMethod]
         public void Replace_NoChangedListener()
         {
-            var entities = new[]
-            {
-                "1", "2"
-            };
-
             var selection = new Selection();
-            selection.Replace(entities);
+            var entities = new EntityManagerMock(new Entity("test1"), new Entity("test2"));
+            selection.Replace(entities, new []{ 0, 1 });
             
             Assert.AreEqual(2, selection.Count);
-            Assert.IsTrue(selection.Contains("1"));
-            Assert.IsTrue(selection.Contains("2"));
+            Assert.IsTrue(selection.Contains(0));
+            Assert.IsTrue(selection.Contains(1));
         }
 
         [TestMethod]
@@ -30,8 +29,9 @@ namespace ViewerTest.UI
         {
             var counter = 0;
             var selection = new Selection();
+            var entities = new EntityManagerMock();
             selection.Changed += (sender, args) => { ++counter; };
-            selection.Replace(Enumerable.Empty<string>());
+            selection.Replace(entities, Enumerable.Empty<int>());
             Assert.AreEqual(1, counter);
             Assert.AreEqual(0, selection.Count);
         }
@@ -41,17 +41,18 @@ namespace ViewerTest.UI
         {
             var oldSelection = new[]
             {
-                "1", "2"
+                0, 1
             };
 
             var newSelection = new[]
             {
-                "3", "4"
+                2, 3
             };
 
             var selection = new Selection();
-            selection.Replace(oldSelection);
-            selection.Replace(newSelection);
+            var entities = new EntityManagerMock(new Entity("test"), new Entity("test2"), new Entity("test3"), new Entity("test4"));
+            selection.Replace(entities, oldSelection);
+            selection.Replace(entities, newSelection);
 
             CollectionAssert.AreEqual(newSelection, selection.ToArray());
 

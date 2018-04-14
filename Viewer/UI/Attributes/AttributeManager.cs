@@ -36,12 +36,10 @@ namespace Viewer.UI.Attributes
 
     public class AttributeManager : IAttributeManager
     {
-        private IEntityManager _entities;
         private ISelection _selection;
 
-        public AttributeManager(IEntityManager entities, ISelection selection)
+        public AttributeManager(ISelection selection)
         {
-            _entities = entities;
             _selection = selection;
         }
 
@@ -51,7 +49,7 @@ namespace Viewer.UI.Attributes
             var attrs = new Dictionary<string, AttributeGroup>();
             foreach (var item in _selection)
             {
-                var entity = _entities.GetEntity(item);
+                var entity = _selection.Items[item];
                 foreach (var attr in entity)
                 {
                     if (attrs.TryGetValue(attr.Name, out AttributeGroup attrView))
@@ -87,9 +85,9 @@ namespace Viewer.UI.Attributes
         {
             foreach (var item in _selection)
             {
-                var entity = _entities.GetEntity(item);
+                var entity = _selection.Items[item];
                 var updated = entity.RemoveAttribute(oldName).SetAttribute(attr);
-                _entities.Stage(updated);
+                _selection.Items[item] = updated;
             }
         }
 
@@ -97,9 +95,9 @@ namespace Viewer.UI.Attributes
         {
             foreach (var item in _selection)
             {
-                var entity = _entities.GetEntity(item);
+                var entity = _selection.Items[item];
                 var updated = entity.RemoveAttribute(name);
-                _entities.Stage(updated);
+                _selection.Items[item] = updated;
             }
         }
     }

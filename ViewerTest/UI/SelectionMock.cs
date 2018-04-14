@@ -16,12 +16,9 @@ namespace ViewerTest.UI
             Changed?.Invoke(this, EventArgs.Empty);
         }
 
-        private ISet<string> _selection = new HashSet<string>();
+        private ISet<int> _selection = new HashSet<int>();
 
-        public event EventHandler Changed;
-        public int Count => _selection.Count;
-
-        public IEnumerator<string> GetEnumerator()
+        public IEnumerator<int> GetEnumerator()
         {
             return _selection.GetEnumerator();
         }
@@ -31,13 +28,18 @@ namespace ViewerTest.UI
             return GetEnumerator();
         }
 
-        public void Replace(IEnumerable<string> newSelection)
+        public event EventHandler Changed;
+        public int Count => _selection.Count;
+        public IEntityManager Items { get; private set; } 
+
+        public void Replace(IEntityManager entityManager, IEnumerable<int> newSelection)
         {
+            Items = entityManager;
             _selection.Clear();
             _selection.UnionWith(newSelection);
         }
 
-        public bool Contains(string item)
+        public bool Contains(int item)
         {
             return _selection.Contains(item);
         }
@@ -45,6 +47,7 @@ namespace ViewerTest.UI
         public void Clear()
         {
             _selection.Clear();
+            Items = null;
         }
     }
 }

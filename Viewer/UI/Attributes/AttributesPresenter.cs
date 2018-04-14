@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.Data.Storage;
 using Viewer.UI.Tasks;
 using Attribute = Viewer.Data.Attribute;
 
@@ -13,11 +14,11 @@ namespace Viewer.UI.Attributes
 {
     public class AttributesPresenter
     {
-        private IAttributeView _attrView;
-        private IProgressViewFactory _progressViewFactory;
-        private ISelection _selection;
-        private IEntityManager _entities;
-        private IAttributeManager _attributes;
+        private readonly IAttributeView _attrView;
+        private readonly IProgressViewFactory _progressViewFactory;
+        private readonly ISelection _selection;
+        private readonly IAttributeStorage _storage;
+        private readonly IAttributeManager _attributes;
 
         /// <summary>
         /// Funtion which determines for each attribute whether it should be managed by this presenter.
@@ -36,12 +37,12 @@ namespace Viewer.UI.Attributes
             IAttributeView attrView, 
             IProgressViewFactory progressViewFactory,
             ISelection selection,
-            IEntityManager entities,
+            IAttributeStorage storage,
             IAttributeManager attributes)
         {
             _selection = selection;
             _selection.Changed += Selection_Changed;
-            _entities = entities;
+            _storage = storage;
             _attributes = attributes;
             _progressViewFactory = progressViewFactory;
             
@@ -167,22 +168,47 @@ namespace Viewer.UI.Attributes
             ViewAttributes();
         }
 
+        private class SaveProgress
+        {
+            public IEntity Entity { get; }
+            public bool IsFinished { get; }
+
+            public SaveProgress(IEntity entity, bool isFinished)
+            {
+                Entity = entity;
+                IsFinished = isFinished;
+            }
+        }
+
         private void View_SaveAttributes(object sender, EventArgs e)
         {
-            var unsaved = _entities.ConsumeStaged();
+            var unsaved = _selection.Items.GetModified();
             if (unsaved.Count <= 0)
             {
                 return;
             }
-
+            
             _progressViewFactory
-                .Create()
-                .Show("Saving Changes", unsaved.Count, view =>
+                .Create<SaveProgress>(save => save.IsFinished, save => save.Entity.Path)
+                .WithTitle("Saving Changes")
+                .WithWork(unsaved.Count)
+                .Show(view =>
                 {
-                    var progress = view.CreateProgress<CommitProgress>(
-                        commit => commit.IsFinished, 
-                        commit => commit.Entity.Path);
-                    Task.Run(() => unsaved.Commit(view.CancellationToken, progress), view.CancellationToken);
+                    Task.Run(() =>
+                    {
+                        foreach (var entity in unsaved)
+                        {
+                            view.Progress.Report(new SaveProgress(entity, false));
+                            try
+                            {
+                                _storage.Store(entity);
+                            }
+                            finally
+                            {
+                                view.Progress.Report(new SaveProgress(entity, true));
+                            }
+                        }
+                    }, view.CancellationToken);
                 });
         }
         

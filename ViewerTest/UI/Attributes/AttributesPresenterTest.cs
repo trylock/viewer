@@ -7,13 +7,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.UI.Attributes;
+using ViewerTest.Data;
 
 namespace ViewerTest.UI.Attributes
 {
     [TestClass]
     public class AttributesPresenterTest
     {
-        private IEntityManager _entitiesMock;
+        private IAttributeStorage _storage;
+        private EntityManagerMock _entities;
         private SelectionMock _selectionMock;
         private AttributeViewMock _attrViewMock;
         private AttributeManagerMock _attributeManagerMock;
@@ -22,20 +24,19 @@ namespace ViewerTest.UI.Attributes
         [TestInitialize]
         public void Setup()
         {
-            var storage = new MemoryAttributeStorage();
-            storage.Add(new Entity("test"));
-            _entitiesMock = new EntityManager(storage);
+            _storage = new MemoryAttributeStorage();
+            _entities = new EntityManagerMock(new Entity("test"));
             _selectionMock = new SelectionMock();
             _attrViewMock = new AttributeViewMock();
             _attributeManagerMock = new AttributeManagerMock();
-            _presenter = new AttributesPresenter(_attrViewMock, null, _selectionMock, _entitiesMock, _attributeManagerMock);
+            _presenter = new AttributesPresenter(_attrViewMock, null, _selectionMock, _storage, _attributeManagerMock);
         }
 
         [TestMethod]
         public void AttributesChanged_DontAddAttributeIfItsNameIsEmpty()
         {
             // add an entity to selection
-            _selectionMock.Replace(new[] { "test" });
+            _selectionMock.Replace(_entities, new[] { 0 });
             _selectionMock.TriggerChanged();
 
             // add a new attribute
@@ -62,7 +63,7 @@ namespace ViewerTest.UI.Attributes
         public void AttributesChanged_AddANewAttribute()
         {
             // add an entity to selection
-            _selectionMock.Replace(new[]{ "test" });
+            _selectionMock.Replace(_entities, new[]{ 0 });
             _selectionMock.TriggerChanged();
 
             // add a new attribute
@@ -155,7 +156,7 @@ namespace ViewerTest.UI.Attributes
             _attrViewMock.Attributes.Add(attr2);
             _attrViewMock.Attributes.Add(attr3);
 
-            _selectionMock.Replace(new []{ "test" });
+            _selectionMock.Replace(_entities, new []{ 0 });
             _attrViewMock.TriggerSortAttributes(new SortEventArgs{ Column = SortColumn.Name });
             
             Assert.IsTrue(_attrViewMock.Updated.Contains(0));
@@ -200,7 +201,7 @@ namespace ViewerTest.UI.Attributes
             _attrViewMock.Attributes.Add(attr2);
             _attrViewMock.Attributes.Add(attr3);
 
-            _selectionMock.Replace(new[] { "test" });
+            _selectionMock.Replace(_entities, new[] { 0 });
             _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
 
             Assert.IsTrue(_attrViewMock.Updated.Contains(0));

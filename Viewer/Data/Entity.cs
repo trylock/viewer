@@ -52,7 +52,7 @@ namespace Viewer.Data
 
     public class Entity : IEntity
     {
-        private ImmutableDictionary<string, Attribute> _attrs = ImmutableDictionary<string, Attribute>.Empty;
+        private readonly ImmutableDictionary<string, Attribute> _attrs;
 
         /// <summary>
         /// Path to the file where the attributes are (or will be) stored

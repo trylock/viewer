@@ -30,7 +30,7 @@ namespace Viewer.UI.Attributes
         /// </summary>
         public bool EditingEnabled { get; set; } = true;
 
-        private SortColumn _currentSortColumn = SortColumn.None;
+        private SortColumn _currentSortColumn = SortColumn.Name;
         private SortDirection _currentSortDirection = SortDirection.Ascending;
 
         public AttributesPresenter(
@@ -44,13 +44,13 @@ namespace Viewer.UI.Attributes
             _selection.Changed += Selection_Changed;
             _storage = storage;
             _attributes = attributes;
-            _progressViewFactory = progressViewFactory;
             
+            _progressViewFactory = progressViewFactory;
             _attrView = attrView;
             PresenterUtils.SubscribeTo(_attrView, this, "View");
         }
         
-        private AttributeGroup CreateAddAttributeView()
+        private static AttributeGroup CreateAddAttributeView()
         {
             return new AttributeGroup
             {
@@ -67,7 +67,9 @@ namespace Viewer.UI.Attributes
 
         private IEnumerable<AttributeGroup> GetSelectedAttributes()
         {
-            return _attributes.GroupAttributesInSelection().Where(AttributePredicate);
+            return _attributes.GroupAttributesInSelection()
+                .Where(AttributePredicate)
+                .OrderBy(attr => attr.Data.Name);
         }
 
         private bool HasAttribute(string name)

@@ -18,6 +18,7 @@ namespace ViewerTest.UI.Images
     public class ImagesViewMock : IImagesView
     {
         public event EventHandler CloseView;
+        public event EventHandler ViewGotFocus;
         public event MouseEventHandler HandleMouseDown;
         public event MouseEventHandler HandleMouseUp;
         public event MouseEventHandler HandleMouseMove;
@@ -182,7 +183,6 @@ namespace ViewerTest.UI.Images
 
         public void EnsureVisible()
         {
-            throw new NotImplementedException();
         }
 
         public IAsyncResult BeginInvoke(Delegate action)

@@ -11,15 +11,17 @@ namespace Viewer.UI
     public class WindowView : DockContent, IWindowView
     {
         public event EventHandler CloseView;
-        
+        public event EventHandler ViewGotFocus;
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
             // register event handlers
             FormClosed += OnFormClosed;
+            GotFocus += OnGotFocus;
         }
-        
+
         public void EnsureVisible()
         {
             if (InvokeRequired)
@@ -52,5 +54,11 @@ namespace Viewer.UI
         {
             CloseView?.Invoke(sender, e);
         }
+
+        private void OnGotFocus(object sender, EventArgs e)
+        {
+            ViewGotFocus?.Invoke(sender, e);
+        }
+
     }
 }

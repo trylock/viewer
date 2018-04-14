@@ -14,6 +14,11 @@ namespace Viewer.UI
         ///       (i.e. it might just hide itself or it might actually close its form)
         /// </summary>
         event EventHandler CloseView;
+
+        /// <summary>
+        /// Event called when this view gets focus.
+        /// </summary>
+        event EventHandler ViewGotFocus;
         
         /// <summary>
         /// Make sure the window is visible to the user.

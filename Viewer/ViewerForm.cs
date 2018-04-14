@@ -18,6 +18,7 @@ using Viewer.UI.Attributes;
 using Viewer.UI.Images;
 using Viewer.UI.Explorer;
 using Viewer.UI.Log;
+using Viewer.UI.Presentation;
 using Viewer.UI.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -52,7 +53,7 @@ namespace Viewer
 
             // query 
             var queryResult = new EntityManager(modifiedEntities);
-            foreach (var file in Directory.EnumerateFiles("D:/dataset/moderate"))
+            foreach (var file in Directory.EnumerateFiles(@"D:\dataset\moderate"))
             {
                 queryResult.Add(storage.Load(file));
             }
@@ -69,6 +70,10 @@ namespace Viewer
             var imagesView = new GridControl(Resources.QueryResultWindowName);
             imagesView.Show(_dockPanel, DockState.Document);
 
+            // presentation
+            var presentationView = new PresentationView("Presentation");
+            presentationView.Show(_dockPanel, DockState.Document);
+
             // attributes
             var attributesView = new AttributeTableControl("Attributes");
             attributesView.Show(_dockPanel, DockState.DockRight);
@@ -77,14 +82,14 @@ namespace Viewer
             var exifAttributesView = new AttributeTableControl("Exif");
             exifAttributesView.Show(_dockPanel, DockState.DockRight);
 
-            // background tasks
-            var tasksView = new TasksView("Background Tasks");
-            tasksView.Show(_dockPanel, DockState.DockBottom);
-
             // log
             var logView = new LogView("Log");
             logView.Show(_dockPanel, DockState.DockBottom);
 
+            // background tasks
+            var tasksView = new TasksView("Background Tasks");
+            tasksView.Show(_dockPanel, DockState.DockBottom);
+            
             // tasks
             var progressViewFactory = new ProgressViewFactory(tasksView);
 
@@ -105,6 +110,9 @@ namespace Viewer
 
             var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, storage, queryResult, clipboard, selection, thumbnailGenerator);
             imagesPresenter.LoadFromQueryResult();
+
+            var presentationPresenter = new PresentationPresenter(presentationView, selection);
+            presentationPresenter.ShowEntity(queryResult, 0);
 
             var treePresenter = new DirectoryTreePresenter(directoryTreeView, progressViewFactory, fileSystemErrorView, fileSystem, clipboard);
             treePresenter.UpdateRootDirectories();

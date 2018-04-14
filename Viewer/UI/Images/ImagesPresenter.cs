@@ -394,6 +394,11 @@ namespace Viewer.UI.Images
             }
         }
 
+        private void View_ViewGotFocus(object sender, EventArgs e)
+        {
+            _selection.Replace(_entityManager, _currentSelection);
+        }
+
         private IEnumerable<string> GetPathsInSelection()
         {
             return _selection.Select(index => _imagesView.Items[index].FullPath);

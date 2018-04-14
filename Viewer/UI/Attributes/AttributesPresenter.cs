@@ -67,7 +67,7 @@ namespace Viewer.UI.Attributes
 
         private IEnumerable<AttributeGroup> GetSelectedAttributes()
         {
-            return _attributes.GetSelectedAttributes().Where(AttributePredicate);
+            return _attributes.GroupAttributesInSelection().Where(AttributePredicate);
         }
 
         private bool HasAttribute(string name)

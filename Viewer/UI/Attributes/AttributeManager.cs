@@ -9,6 +9,31 @@ using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
 {
+    public class AttributeGroup
+    {
+        /// <summary>
+        /// Attribute value. 
+        /// This can be arbitrary if there are more attribute values in the group.
+        /// </summary>
+        public Attribute Data { get; set; }
+
+        /// <summary>
+        /// true iff value of this attribute is mixed.
+        /// Mixed value means there are 2 entities with the same attribute name but they have different value or type.
+        /// </summary>
+        public bool IsMixed { get; set; }
+
+        /// <summary>
+        /// true iff all entities in the group have an attribute with this name
+        /// </summary>
+        public bool IsGlobal { get; set; }
+
+        /// <summary>
+        /// Number of entities with an attribute with the same name
+        /// </summary>
+        public int EntityCount { get; set; }
+    }
+
     /// <summary>
     /// Attribute manager manages attributes of entities in selection
     /// </summary>
@@ -31,7 +56,7 @@ namespace Viewer.UI.Attributes
         /// Find selected attributes.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<AttributeGroup> GetSelectedAttributes();
+        IEnumerable<AttributeGroup> GroupAttributesInSelection();
     }
 
     public class AttributeManager : IAttributeManager
@@ -43,7 +68,7 @@ namespace Viewer.UI.Attributes
             _selection = selection;
         }
 
-        public IEnumerable<AttributeGroup> GetSelectedAttributes()
+        public IEnumerable<AttributeGroup> GroupAttributesInSelection()
         {
             // find all attributes in the selection
             var attrs = new Dictionary<string, AttributeGroup>();

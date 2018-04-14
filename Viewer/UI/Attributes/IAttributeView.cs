@@ -72,30 +72,6 @@ namespace Viewer.UI.Attributes
         DateTime,
     }
 
-    public class AttributeGroup
-    {
-        /// <summary>
-        /// Actual attribute the view represents
-        /// </summary>
-        public Attribute Data { get; set; }
-
-        /// <summary>
-        /// true iff value of this attribute is mixed.
-        /// Mixed value means there are 2 entities with the same attribute name but they have different value or type.
-        /// </summary>
-        public bool IsMixed { get; set; }
-
-        /// <summary>
-        /// true iff all entities in the group have an attribute with this name
-        /// </summary>
-        public bool IsGlobal { get; set; }
-
-        /// <summary>
-        /// Number of entities with an attribute with the same name
-        /// </summary>
-        public int EntityCount { get; set; }
-    }
-
     public interface IAttributeView
     {
         /// <summary>

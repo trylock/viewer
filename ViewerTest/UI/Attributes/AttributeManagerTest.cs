@@ -31,7 +31,7 @@ namespace ViewerTest.UI.Attributes
         {
             _attributes.SetAttribute("test", new StringAttribute("test", "value"));
 
-            var attrs = _attributes.GetSelectedAttributes().ToList();
+            var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(0, attrs.Count);
         }
 
@@ -41,12 +41,12 @@ namespace ViewerTest.UI.Attributes
             _entities.Add(new Entity("test"));
             _selectionMock.Replace(_entities, new[]{ 0 });
             
-            var attrs = _attributes.GetSelectedAttributes().ToList();
+            var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(0, attrs.Count);
 
             _attributes.SetAttribute("attr", new StringAttribute("attr", "value"));
             
-            attrs = _attributes.GetSelectedAttributes().ToList();
+            attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsFalse(attrs[0].IsMixed);
             Assert.IsTrue(attrs[0].IsGlobal);
@@ -60,12 +60,12 @@ namespace ViewerTest.UI.Attributes
             _entities.Add(new Entity("test2"));
             _selectionMock.Replace(_entities, new[] { 0, 1 });
 
-            var attrs = _attributes.GetSelectedAttributes().ToList();
+            var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(0, attrs.Count);
 
             _attributes.SetAttribute("attr", new StringAttribute("attr", "value"));
 
-            attrs = _attributes.GetSelectedAttributes().ToList();
+            attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsFalse(attrs[0].IsMixed);
             Assert.IsTrue(attrs[0].IsGlobal);
@@ -78,12 +78,12 @@ namespace ViewerTest.UI.Attributes
             _entities.Add(new Entity("test"));
             _selectionMock.Replace(_entities, new[] { 0 });
 
-            var attrs = _attributes.GetSelectedAttributes().ToList();
+            var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(0, attrs.Count);
 
             _attributes.RemoveAttribute("attr");
 
-            attrs = _attributes.GetSelectedAttributes().ToList();
+            attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(0, attrs.Count);
         }
 
@@ -96,14 +96,14 @@ namespace ViewerTest.UI.Attributes
             _entities.Add(entity2);
             _selectionMock.Replace(_entities, new[] { 0, 1 });
 
-            var attrs = _attributes.GetSelectedAttributes().ToList();
+            var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsTrue(attrs[0].IsMixed);
             Assert.IsTrue(attrs[0].IsGlobal);
 
             _attributes.RemoveAttribute("attr");
             
-            attrs = _attributes.GetSelectedAttributes().ToList();
+            attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(0, attrs.Count);
         }
 
@@ -117,7 +117,7 @@ namespace ViewerTest.UI.Attributes
             _entities.Add(entity2);
             _selectionMock.Replace(_entities, new[]{ 0, 1 });
 
-            var attrs = _attributes.GetSelectedAttributes().ToList();
+            var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(1, attrs.Count);
             Assert.IsFalse(attrs[0].IsMixed);
             Assert.IsFalse(attrs[0].IsGlobal);

@@ -25,7 +25,7 @@ namespace ViewerTest.UI.Attributes
             _attrs.Remove(name);
         }
 
-        public IEnumerable<AttributeGroup> GetSelectedAttributes()
+        public IEnumerable<AttributeGroup> GroupAttributesInSelection()
         {
             return _attrs.Values.Select(attr => new AttributeGroup
             {

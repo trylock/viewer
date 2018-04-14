@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Viewer.UI.Presentation
         public PresentationView(string name)
         {
             InitializeComponent();
-
+            
             Text = name;
         }
 
@@ -43,7 +44,10 @@ namespace Viewer.UI.Presentation
                 return;
             }
 
-            e.Graphics.FillRectangle(SystemBrushes.Control, e.ClipRectangle);
+            using (var brush = new SolidBrush(BackColor))
+            {
+                e.Graphics.FillRectangle(brush, e.ClipRectangle);
+            }
 
             // find out the image size
             var scaledSize = ThumbnailGenerator.GetThumbnailSize(Data.Photo.Size, ClientSize);
@@ -73,6 +77,16 @@ namespace Viewer.UI.Presentation
             {
                 PrevImage?.Invoke(sender, e);
             }
+        }
+
+        private void PrevButton_Click(object sender, EventArgs e)
+        {
+            PrevImage?.Invoke(sender, e);
+        }
+
+        private void NextButton_Click(object sender, EventArgs e)
+        {
+            NextImage?.Invoke(sender, e);
         }
     }
 }

@@ -284,6 +284,16 @@ namespace Viewer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap LeftArrowIcon {
+            get {
+                object obj = ResourceManager.GetObject("LeftArrowIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MessageIcon {
             get {
                 object obj = ResourceManager.GetObject("MessageIcon", resourceCulture);
@@ -326,6 +336,16 @@ namespace Viewer.Properties {
         internal static string QueryResultWindowName {
             get {
                 return ResourceManager.GetString("QueryResultWindowName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RightArrowIcon {
+            get {
+                object obj = ResourceManager.GetObject("RightArrowIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

@@ -97,6 +97,11 @@ namespace Viewer.UI.Attributes
 
         #region View
 
+        private void View_CloseView(object sender, EventArgs e)
+        {
+            _selection.Changed -= Selection_Changed;
+        }
+
         private void View_AttributeChanged(object sender, AttributeChangedEventArgs e)
         {
             if (!EditingEnabled)

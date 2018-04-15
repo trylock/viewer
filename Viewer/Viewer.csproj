@@ -121,6 +121,12 @@
       <DependentUpon>LogView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Presentation\IPresentationView.cs" />
+    <Compile Include="UI\Presentation\PresentationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Presentation\PresentationControl.Designer.cs">
+      <DependentUpon>PresentationControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Presentation\PresentationPresenter.cs" />
     <Compile Include="UI\Presentation\PresentationView.cs">
       <SubType>Form</SubType>
@@ -193,6 +199,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Log\LogView.resx">
       <DependentUpon>LogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Presentation\PresentationControl.resx">
+      <DependentUpon>PresentationControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Presentation\PresentationView.resx">
       <DependentUpon>PresentationView.cs</DependentUpon>

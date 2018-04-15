@@ -13,7 +13,7 @@ namespace Viewer.UI.Presentation
         /// <summary>
         /// Loaded image 
         /// </summary>
-        public Image Photo { get; set; }
+        public Image Picture { get; set; }
 
         /// <summary>
         /// Entity of the image

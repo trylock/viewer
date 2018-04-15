@@ -53,7 +53,7 @@ namespace Viewer.UI.Presentation
             _presentationView.Data = new ImageView
             {
                 Entity = entity,
-                Photo = image
+                Picture = image
             };
             _presentationView.UpdateImage();
         }

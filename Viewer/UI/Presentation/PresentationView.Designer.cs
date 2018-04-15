@@ -28,70 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.PrevButton = new System.Windows.Forms.Button();
-            this.NextButton = new System.Windows.Forms.Button();
+            this.PresentationControl = new Viewer.UI.Presentation.PresentationControl();
             this.SuspendLayout();
             // 
-            // PrevButton
+            // PresentationControl
             // 
-            this.PrevButton.BackColor = System.Drawing.Color.Transparent;
-            this.PrevButton.BackgroundImage = global::Viewer.Properties.Resources.LeftArrowIcon;
-            this.PrevButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.PrevButton.Dock = System.Windows.Forms.DockStyle.Left;
-            this.PrevButton.FlatAppearance.BorderSize = 0;
-            this.PrevButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.PrevButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.PrevButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PrevButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.PrevButton.ForeColor = System.Drawing.Color.White;
-            this.PrevButton.Location = new System.Drawing.Point(0, 0);
-            this.PrevButton.Name = "PrevButton";
-            this.PrevButton.Size = new System.Drawing.Size(60, 348);
-            this.PrevButton.TabIndex = 0;
-            this.PrevButton.TabStop = false;
-            this.PrevButton.UseVisualStyleBackColor = false;
-            this.PrevButton.Click += new System.EventHandler(this.PrevButton_Click);
-            // 
-            // NextButton
-            // 
-            this.NextButton.BackColor = System.Drawing.Color.Transparent;
-            this.NextButton.BackgroundImage = global::Viewer.Properties.Resources.RightArrowIcon;
-            this.NextButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.NextButton.Dock = System.Windows.Forms.DockStyle.Right;
-            this.NextButton.FlatAppearance.BorderSize = 0;
-            this.NextButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.NextButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.NextButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.NextButton.ForeColor = System.Drawing.Color.White;
-            this.NextButton.Location = new System.Drawing.Point(561, 0);
-            this.NextButton.Name = "NextButton";
-            this.NextButton.Size = new System.Drawing.Size(60, 348);
-            this.NextButton.TabIndex = 1;
-            this.NextButton.TabStop = false;
-            this.NextButton.UseVisualStyleBackColor = false;
-            this.NextButton.Click += new System.EventHandler(this.NextButton_Click);
+            this.PresentationControl.BackColor = System.Drawing.Color.Black;
+            this.PresentationControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PresentationControl.Location = new System.Drawing.Point(0, 0);
+            this.PresentationControl.Name = "PresentationControl";
+            this.PresentationControl.Picture = null;
+            this.PresentationControl.Size = new System.Drawing.Size(621, 348);
+            this.PresentationControl.TabIndex = 0;
             // 
             // PresentationView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(621, 348);
-            this.Controls.Add(this.NextButton);
-            this.Controls.Add(this.PrevButton);
+            this.Controls.Add(this.PresentationControl);
             this.DoubleBuffered = true;
             this.Name = "PresentationView";
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.PresentationView_Paint);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationView_KeyDown);
-            this.Resize += new System.EventHandler(this.PresentationView_Resize);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button PrevButton;
-        private System.Windows.Forms.Button NextButton;
+        private PresentationControl PresentationControl;
     }
 }

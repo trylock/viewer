@@ -35,7 +35,7 @@ namespace Viewer
                 // image metadata
                 new ExifAttributeParser<ExifIfd0Directory>("ImageWidth", ExifIfd0Directory.TagImageWidth, AttributeType.Int),
                 new ExifAttributeParser<ExifIfd0Directory>("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
-                new ExifAttributeParser<ExifIfd0Directory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
+                new ExifAttributeParser<ExifSubIfdDirectory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
                 new ThumbnaiExifAttributeParser("thumbnail"),
 
                 // camera metadata

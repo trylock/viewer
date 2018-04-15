@@ -481,7 +481,6 @@ namespace Viewer.UI.Images
             }
             _selection.Clear();
             _imagesView.Items.Clear();
-            _entityManager.Clear();
         }
 
         #endregion

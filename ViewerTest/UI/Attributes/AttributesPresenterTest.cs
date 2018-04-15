@@ -157,16 +157,8 @@ namespace ViewerTest.UI.Attributes
             _attrViewMock.Attributes.Add(attr3);
 
             _selectionMock.Replace(_entities, new []{ 0 });
-            _attrViewMock.TriggerSortAttributes(new SortEventArgs{ Column = SortColumn.Name });
             
-            Assert.IsTrue(_attrViewMock.Updated.Contains(0));
-            Assert.IsTrue(_attrViewMock.Updated.Contains(1));
-            Assert.IsTrue(_attrViewMock.Updated.Contains(2));
-            Assert.AreEqual(_attrViewMock.Attributes[0], attr2);
-            Assert.AreEqual(_attrViewMock.Attributes[1], attr1);
-            Assert.AreEqual(_attrViewMock.Attributes[2], attr3);
-
-            // asc
+            // desc
             _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
             Assert.AreEqual(_attrViewMock.Attributes[0], attr1);
             Assert.AreEqual(_attrViewMock.Attributes[1], attr2);
@@ -202,16 +194,8 @@ namespace ViewerTest.UI.Attributes
             _attrViewMock.Attributes.Add(attr3);
 
             _selectionMock.Replace(_entities, new[] { 0 });
-            _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
 
-            Assert.IsTrue(_attrViewMock.Updated.Contains(0));
-            Assert.IsTrue(_attrViewMock.Updated.Contains(1));
-            Assert.IsTrue(_attrViewMock.Updated.Contains(2));
-            Assert.AreEqual(_attrViewMock.Attributes[0], attr2);
-            Assert.AreEqual(_attrViewMock.Attributes[1], attr1);
-            Assert.AreEqual(_attrViewMock.Attributes[2], attr3);
-
-            // asc
+            // desc
             _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
             Assert.AreEqual(_attrViewMock.Attributes[0], attr3);
             Assert.AreEqual(_attrViewMock.Attributes[1], attr1);

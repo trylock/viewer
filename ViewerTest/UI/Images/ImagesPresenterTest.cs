@@ -351,7 +351,6 @@ namespace ViewerTest.UI.Images
             _viewMock.TriggerCloseView();
             
             Assert.AreEqual(0, _viewMock.Items.Count);
-            Assert.AreEqual(0, _entities.ToList().Count);
         }
 
         [TestMethod]

@@ -12,7 +12,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {
-    public partial class GridControl : WindowView, IImagesView
+    public partial class ImagesGridView : WindowView, IImagesView
     {
         #region Graphics settings
 
@@ -37,7 +37,7 @@ namespace Viewer.UI.Images
         private Grid _grid = new Grid();
         private Rectangle _selection = Rectangle.Empty;
 
-        public GridControl(string name)
+        public ImagesGridView(string name)
         {
             InitializeComponent();
 

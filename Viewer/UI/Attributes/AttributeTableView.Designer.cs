@@ -1,6 +1,6 @@
 ﻿namespace Viewer.UI.Attributes
 {
-    partial class AttributeTableControl
+    partial class AttributeTableView
     {
         /// <summary> 
         /// Required designer variable.
@@ -123,7 +123,7 @@
             this.Controls.Add(this.SearchTextBox);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.GridView);
-            this.Name = "AttributeTableControl";
+            this.Name = "AttributeTableView";
             this.Text = "Attributes";
             ((System.ComponentModel.ISupportInitialize)(this.GridView)).EndInit();
             this.ResumeLayout(false);

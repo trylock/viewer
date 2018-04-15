@@ -18,16 +18,16 @@ namespace Viewer.UI.Images
     public class ImagesPresenter
     {
         // dependencies
-        private IImagesView _imagesView;
+        private readonly IImagesView _imagesView;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
         private readonly IAttributeStorage _storage;
-        private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
         private readonly IThumbnailGenerator _thumbnailGenerator;
 
         // current state
-        private Size _itemSize = new Size(150, 100);
+        private IEntityManager _entities;
+        private readonly Size _itemSize = new Size(150, 100);
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
         private Point _selectionStartPoint;
@@ -49,14 +49,12 @@ namespace Viewer.UI.Images
         public ImagesPresenter(
             IImagesView imagesView, 
             IFileSystemErrorView dialogView,
-            IAttributeStorage storage,
-            IEntityManager entityManager, 
+            IAttributeStorage storage, 
             IClipboardService clipboard,
             ISelection selection,
             IThumbnailGenerator thumbnailGenerator)
         {
             _storage = storage;
-            _entityManager = entityManager;
             _clipboard = clipboard;
             _selection = selection;
             _thumbnailGenerator = thumbnailGenerator;
@@ -66,15 +64,22 @@ namespace Viewer.UI.Images
             _imagesView = imagesView;
             _imagesView.UpdateSize();
 
-            var result = PresenterUtils.SubscribeTo(_imagesView, this, "View");
+            PresenterUtils.SubscribeTo(_imagesView, this, "View");
         }
 
-        public void LoadFromQueryResult()
+        public void LoadFromQueryResult(IEntityManager entityManager)
         {
-            DisposeViewData();
-            
+            if (_entities != entityManager)
+            {
+                // dispose old images
+                DisposeViewData();
+
+                // set new entities
+                _entities = entityManager;
+            }
+
             // add entities with the default thumbnail
-            foreach (var entity in _entityManager)
+            foreach (var entity in _entities)
             {
                 _imagesView.Items.Add(new EntityView(entity, GetThumbnail(entity)));
             }
@@ -195,7 +200,7 @@ namespace Viewer.UI.Images
             }
 
             // set global selection
-            _selection.Replace(_entityManager, _currentSelection);
+            _selection.Replace(_entities, _currentSelection);
             
             // reset state of items in previous selection
             foreach (var item in oldSelection)
@@ -368,7 +373,7 @@ namespace Viewer.UI.Images
             {
                 _storage.Move(item.Path, newPath);
                 var updatedEntity = item.ChangePath(newPath);
-                _entityManager[index] = updatedEntity;
+                _entities[index] = updatedEntity;
                 _imagesView.Items[index].Data = updatedEntity;
                 _imagesView.UpdateItem(index);
             }
@@ -396,7 +401,7 @@ namespace Viewer.UI.Images
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
-            _selection.Replace(_entityManager, _currentSelection);
+            _selection.Replace(_entities, _currentSelection);
         }
 
         private IEnumerable<string> GetPathsInSelection()
@@ -453,7 +458,7 @@ namespace Viewer.UI.Images
             }
 
             // remove deleted items from the query and the view
-            _entityManager.RemoveAll(entity => deletedPaths.Contains(entity.Path));
+            _entities.RemoveAll(entity => deletedPaths.Contains(entity.Path));
             _imagesView.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
 
             // clear selection

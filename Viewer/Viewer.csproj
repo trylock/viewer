@@ -101,11 +101,11 @@
     </Compile>
     <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesPresenter.cs" />
-    <Compile Include="UI\Attributes\AttributeTableControl.cs">
+    <Compile Include="UI\Attributes\AttributeTableView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Attributes\AttributeTableControl.Designer.cs">
-      <DependentUpon>AttributeTableControl.cs</DependentUpon>
+    <Compile Include="UI\Attributes\AttributeTableView.Designer.cs">
+      <DependentUpon>AttributeTableView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Attributes\DateTimeCell.cs" />
     <Compile Include="UI\Attributes\IAttributeView.cs" />
@@ -146,21 +146,21 @@
     <Compile Include="UI\WindowView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Explorer\DirectoryTreeControl.cs">
+    <Compile Include="UI\Explorer\DirectoryTreeView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Explorer\DirectoryTreeControl.Designer.cs">
-      <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
+    <Compile Include="UI\Explorer\DirectoryTreeView.Designer.cs">
+      <DependentUpon>DirectoryTreeView.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="UI\Explorer\DirectoryTreePresenter.cs" />
     <Compile Include="UI\Explorer\FileSystemErrorView.cs" />
     <Compile Include="UI\Images\Grid.cs" />
-    <Compile Include="UI\Images\GridControl.cs">
+    <Compile Include="UI\Images\ImagesGridView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Images\GridControl.Designer.cs">
-      <DependentUpon>GridControl.cs</DependentUpon>
+    <Compile Include="UI\Images\ImagesGridView.Designer.cs">
+      <DependentUpon>ImagesGridView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Explorer\IDirectoryTreeView.cs" />
     <Compile Include="UI\Images\ImagesPresenter.cs" />
@@ -188,14 +188,14 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Attributes\AttributeTableControl.resx">
-      <DependentUpon>AttributeTableControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Attributes\AttributeTableView.resx">
+      <DependentUpon>AttributeTableView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Explorer\DirectoryTreeControl.resx">
-      <DependentUpon>DirectoryTreeControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Explorer\DirectoryTreeView.resx">
+      <DependentUpon>DirectoryTreeView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Images\GridControl.resx">
-      <DependentUpon>GridControl.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Images\ImagesGridView.resx">
+      <DependentUpon>ImagesGridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Log\LogView.resx">
       <DependentUpon>LogView.cs</DependentUpon>

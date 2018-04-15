@@ -62,11 +62,11 @@ namespace Viewer
             var fileSystemErrorView = new FileSystemErrorView();
             
             // explorer
-            var directoryTreeView = new DirectoryTreeControl(Resources.ExplorerWindowName);
+            var directoryTreeView = new DirectoryTreeView(Resources.ExplorerWindowName);
             directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
             // images
-            var imagesView = new GridControl(Resources.QueryResultWindowName);
+            var imagesView = new ImagesGridView(Resources.QueryResultWindowName);
             imagesView.Show(_dockPanel, DockState.Document);
 
             // presentation
@@ -74,11 +74,11 @@ namespace Viewer
             presentationView.Show(_dockPanel, DockState.Document);
 
             // attributes
-            var attributesView = new AttributeTableControl("Attributes");
+            var attributesView = new AttributeTableView("Attributes");
             attributesView.Show(_dockPanel, DockState.DockRight);
 
             // exif attributes
-            var exifAttributesView = new AttributeTableControl("Exif");
+            var exifAttributesView = new AttributeTableView("Exif");
             exifAttributesView.Show(_dockPanel, DockState.DockRight);
 
             // log
@@ -107,8 +107,8 @@ namespace Viewer
                                              (attr.Data.Flags & AttributeFlags.ReadOnly) != 0
             };
 
-            var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, storage, queryResult, clipboard, selection, thumbnailGenerator);
-            imagesPresenter.LoadFromQueryResult();
+            var imagesPresenter = new ImagesPresenter(imagesView, fileSystemErrorView, storage, clipboard, selection, thumbnailGenerator);
+            imagesPresenter.LoadFromQueryResult(queryResult);
 
             var presentationPresenter = new PresentationPresenter(presentationView, selection);
             presentationPresenter.ShowEntity(queryResult, 0);

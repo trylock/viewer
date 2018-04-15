@@ -1,6 +1,6 @@
 ﻿namespace Viewer.UI.Explorer
 {
-    partial class DirectoryTreeControl
+    partial class DirectoryTreeView
     {
         /// <summary> 
         /// Required designer variable.
@@ -161,7 +161,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(218, 330);
             this.Controls.Add(this.TreeView);
-            this.Name = "DirectoryTreeControl";
+            this.Name = "DirectoryTreeView";
             this.FileContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 

@@ -1,6 +1,6 @@
 ﻿namespace Viewer.UI.Images
 {
-    partial class GridControl
+    partial class ImagesGridView
     {
         /// <summary> 
         /// Required designer variable.
@@ -110,7 +110,7 @@
             this.ContextMenuStrip = this.ItemContextMenu;
             this.Controls.Add(this.NameTextBox);
             this.DoubleBuffered = true;
-            this.Name = "GridControl";
+            this.Name = "ImagesGridView";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridControl_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseMove);

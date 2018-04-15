@@ -14,7 +14,7 @@ using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
 {
-    public partial class AttributeTableControl : WindowView, IAttributeView
+    public partial class AttributeTableView : WindowView, IAttributeView
     {
         /// <summary>
         /// Background color of an attribute which is not set in all entities in selection
@@ -28,7 +28,7 @@ namespace Viewer.UI.Attributes
 
         private const int TypeColumnIndex = 2;
         
-        public AttributeTableControl(string name)
+        public AttributeTableView(string name)
         {
             InitializeComponent();
 

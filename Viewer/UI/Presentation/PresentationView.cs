@@ -53,6 +53,12 @@ namespace Viewer.UI.Presentation
             remove => PresentationControl.ExitFullscreen -= value;
         }
 
+        public event EventHandler TimerTick
+        {
+            add => PresentationControl.TimerTick += value;
+            remove => PresentationControl.TimerTick -= value;
+        }
+
         public Image Picture
         {
             get => PresentationControl.Picture;

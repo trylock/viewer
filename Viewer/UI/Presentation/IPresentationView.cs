@@ -49,6 +49,11 @@ namespace Viewer.UI.Presentation
         event EventHandler ExitFullscreen;
 
         /// <summary>
+        /// Event called periodically
+        /// </summary>
+        event EventHandler TimerTick;
+
+        /// <summary>
         /// Currently loaded image
         /// </summary>
         Image Picture { get; set; }

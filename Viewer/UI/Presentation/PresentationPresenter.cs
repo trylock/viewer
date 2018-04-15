@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
 
@@ -18,6 +19,11 @@ namespace Viewer.UI.Presentation
         private IEntityManager _entities;
         private Image _image;
         private int _entityIndex;
+
+        /// <summary>
+        /// Last time an image was changed in the presentation
+        /// </summary>
+        private DateTime _lastImageChange;
 
         public PresentationPresenter(
             IPresentationView presentationView,
@@ -53,22 +59,7 @@ namespace Viewer.UI.Presentation
             _presentationView.Picture = _image;
             _presentationView.UpdateImage();
         }
-
-        private async void PlayPresentationAsync()
-        {
-            for (;;)
-            {
-                await Task.Delay(_presentationView.Speed);
-
-                if (!_presentationView.IsPlaying)
-                {
-                    break;
-                }
-
-                View_NextImage(this, EventArgs.Empty);
-            }
-        }
-
+        
         private async void View_NextImage(object sender, EventArgs e)
         {
             _entityIndex = (_entityIndex + 1) % _entities.Count;
@@ -96,10 +87,20 @@ namespace Viewer.UI.Presentation
         private void View_PlayPausePresentation(object sender, EventArgs e)
         {
             _presentationView.IsPlaying = !_presentationView.IsPlaying;
+        }
 
-            if (_presentationView.IsPlaying)
+        private void View_TimerTick(object sender, EventArgs e)
+        {
+            if (!_presentationView.IsPlaying)
             {
-                PlayPresentationAsync();
+                return;
+            }
+
+            var elapsed = DateTime.Now - _lastImageChange;
+            if (elapsed.TotalMilliseconds >= _presentationView.Speed)
+            {
+                View_NextImage(sender, e);
+                _lastImageChange = DateTime.Now;
             }
         }
 

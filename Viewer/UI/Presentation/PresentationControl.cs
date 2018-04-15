@@ -20,6 +20,11 @@ namespace Viewer.UI.Presentation
         public event EventHandler ToggleFullscreen;
         public event EventHandler ExitFullscreen;
         public event EventHandler PlayPausePresentation;
+        public event EventHandler TimerTick
+        {
+            add => HideCursorTimer.Tick += value;
+            remove => HideCursorTimer.Tick -= value;
+        }
 
         public Image Picture { get; set; }
         

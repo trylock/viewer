@@ -96,7 +96,7 @@ namespace Viewer.UI.Presentation
             {
                 NextImage?.Invoke(sender, e);
             }
-            else if (e.KeyCode == Keys.F5)
+            else if (e.KeyCode == Keys.F5 || e.KeyCode == Keys.F)
             {
                 ToggleFullscreen?.Invoke(sender, e);
             }

@@ -79,7 +79,7 @@ namespace Viewer.UI.Presentation
             _presentationView.IsFullscreen = !_presentationView.IsFullscreen;
         }
         
-        private void View_ExifFullscreen(object sender, EventArgs e)
+        private void View_ExitFullscreen(object sender, EventArgs e)
         {
             _presentationView.IsFullscreen = false;
         }

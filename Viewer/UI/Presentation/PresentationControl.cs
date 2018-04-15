@@ -37,13 +37,7 @@ namespace Viewer.UI.Presentation
         /// Shown picture
         /// </summary>
         public Image Picture { get; set; }
-
-        /// <summary>
-        /// Maximal distance of the mouse cursor from the edge of this component required to show previous and next button.
-        /// If the distance is greater than this threshold, the buttons will be hidden.
-        /// </summary>
-        public int ShowButtonThreshold { get; set; } = 80;
-
+        
         public PresentationControl()
         {
             InitializeComponent();
@@ -82,8 +76,8 @@ namespace Viewer.UI.Presentation
 
         private void PresentationControl_MouseMove(object sender, MouseEventArgs e)
         {
-            PrevButton.Visible = e.Location.X - Location.X <= ShowButtonThreshold;
-            NextButton.Visible = Location.X + Width - e.Location.X <= ShowButtonThreshold;
+            PrevButton.Visible = e.Location.X - Location.X <= PrevButton.Width;
+            NextButton.Visible = Location.X + Width - e.Location.X <= NextButton.Width;
         }
 
         private void PresentationControl_KeyDown(object sender, KeyEventArgs e)

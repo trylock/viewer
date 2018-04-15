@@ -37,7 +37,17 @@ namespace Viewer.UI.Presentation
         /// Event called when user starts/stops the presentation
         /// </summary>
         event EventHandler PlayPausePresentation;
-        
+
+        /// <summary>
+        /// Event called when user tries to enter/leave a fullscreen mode
+        /// </summary>
+        event EventHandler ToggleFullscreen;
+
+        /// <summary>
+        /// Event called when user tries to leave a fullscreen mode
+        /// </summary>
+        event EventHandler ExitFullscreen;
+
         /// <summary>
         /// Currently loaded image
         /// </summary>

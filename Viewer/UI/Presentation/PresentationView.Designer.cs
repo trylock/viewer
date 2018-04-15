@@ -35,10 +35,12 @@
             // 
             this.PresentationControl.BackColor = System.Drawing.Color.Black;
             this.PresentationControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PresentationControl.IsPlaying = false;
             this.PresentationControl.Location = new System.Drawing.Point(0, 0);
             this.PresentationControl.Name = "PresentationControl";
             this.PresentationControl.Picture = null;
             this.PresentationControl.Size = new System.Drawing.Size(621, 348);
+            this.PresentationControl.Speed = 1000;
             this.PresentationControl.TabIndex = 0;
             // 
             // PresentationView

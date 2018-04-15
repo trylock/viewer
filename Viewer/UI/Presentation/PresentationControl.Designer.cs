@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.NextButton = new System.Windows.Forms.Button();
             this.PrevButton = new System.Windows.Forms.Button();
             this.PlayPauseButton = new System.Windows.Forms.Button();
@@ -35,6 +36,7 @@
             this.MaxDelayLabel = new System.Windows.Forms.Label();
             this.MinDelayLabel = new System.Windows.Forms.Label();
             this.SpeedTrackBar = new System.Windows.Forms.TrackBar();
+            this.HideCursorTimer = new System.Windows.Forms.Timer(this.components);
             this.ControlPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SpeedTrackBar)).BeginInit();
             this.SuspendLayout();
@@ -145,6 +147,12 @@
             this.SpeedTrackBar.Size = new System.Drawing.Size(231, 56);
             this.SpeedTrackBar.TabIndex = 1;
             this.SpeedTrackBar.Value = 1;
+            this.SpeedTrackBar.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
+            // 
+            // HideCursorTimer
+            // 
+            this.HideCursorTimer.Enabled = true;
+            this.HideCursorTimer.Tick += new System.EventHandler(this.HideCursorTimer_Tick);
             // 
             // PresentationControl
             // 
@@ -159,6 +167,7 @@
             this.Size = new System.Drawing.Size(800, 500);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PresentationControl_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseDoubleClick);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseMove);
             this.Resize += new System.EventHandler(this.PresentationControl_Resize);
             this.ControlPanel.ResumeLayout(false);
@@ -177,5 +186,6 @@
         private System.Windows.Forms.TrackBar SpeedTrackBar;
         private System.Windows.Forms.Label MinDelayLabel;
         private System.Windows.Forms.Label MaxDelayLabel;
+        private System.Windows.Forms.Timer HideCursorTimer;
     }
 }

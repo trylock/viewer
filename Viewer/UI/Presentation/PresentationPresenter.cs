@@ -83,6 +83,16 @@ namespace Viewer.UI.Presentation
             await LoadCurrentEntityAsync();
         }
 
+        private void View_ToggleFullscreen(object sender, EventArgs e)
+        {
+            _presentationView.IsFullscreen = !_presentationView.IsFullscreen;
+        }
+        
+        private void View_ExifFullscreen(object sender, EventArgs e)
+        {
+            _presentationView.IsFullscreen = false;
+        }
+
         private void View_PlayPausePresentation(object sender, EventArgs e)
         {
             _presentationView.IsPlaying = !_presentationView.IsPlaying;

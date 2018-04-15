@@ -34,14 +34,29 @@ namespace Viewer.UI.Presentation
         event EventHandler PrevImage;
 
         /// <summary>
+        /// Event called when user starts/stops the presentation
+        /// </summary>
+        event EventHandler PlayPausePresentation;
+        
+        /// <summary>
         /// Currently loaded image
         /// </summary>
-        ImageView Data { get; set; }
+        Image Picture { get; set; }
 
         /// <summary>
         /// true iff the view is in fullscreen mode
         /// </summary>
         bool IsFullscreen { get; set; }
+
+        /// <summary>
+        /// true iff the presentation is active
+        /// </summary>
+        bool IsPlaying { get; set; }
+
+        /// <summary>
+        /// Presentation speed in milliseconds
+        /// </summary>
+        int Speed { get; set; }
 
         /// <summary>
         /// Update shown image

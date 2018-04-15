@@ -50,12 +50,23 @@ namespace Viewer.UI.Presentation
             _image = image;
 
             // update view
-            _presentationView.Data = new ImageView
-            {
-                Entity = entity,
-                Picture = image
-            };
+            _presentationView.Picture = _image;
             _presentationView.UpdateImage();
+        }
+
+        private async void PlayPresentationAsync()
+        {
+            for (;;)
+            {
+                await Task.Delay(_presentationView.Speed);
+
+                if (!_presentationView.IsPlaying)
+                {
+                    break;
+                }
+
+                View_NextImage(this, EventArgs.Empty);
+            }
         }
 
         private async void View_NextImage(object sender, EventArgs e)
@@ -70,6 +81,16 @@ namespace Viewer.UI.Presentation
             if (_entityIndex < 0)
                 _entityIndex = _entities.Count - 1;
             await LoadCurrentEntityAsync();
+        }
+
+        private void View_PlayPausePresentation(object sender, EventArgs e)
+        {
+            _presentationView.IsPlaying = !_presentationView.IsPlaying;
+
+            if (_presentationView.IsPlaying)
+            {
+                PlayPresentationAsync();
+            }
         }
 
         private void View_ViewGotFocus(object sender, EventArgs e)

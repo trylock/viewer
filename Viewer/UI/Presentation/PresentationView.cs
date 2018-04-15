@@ -23,7 +23,7 @@ namespace Viewer.UI.Presentation
             Text = name;
 
             PresentationControl.ToggleFullscreen += (sender, e) => IsFullscreen = !IsFullscreen;
-            PresentationControl.ExifFullscreen += (sender, e) => IsFullscreen = false;
+            PresentationControl.ExitFullscreen += (sender, e) => IsFullscreen = false;
 
             _fullscreenForm = new Form
             {
@@ -75,7 +75,18 @@ namespace Viewer.UI.Presentation
             remove => PresentationControl.PrevImage -= value;
         }
 
-        public ImageView Data { get; set; }
+        public event EventHandler PlayPausePresentation
+        {
+            add => PresentationControl.PlayPausePresentation += value;
+            remove => PresentationControl.PlayPausePresentation -= value;
+        }
+        
+
+        public Image Picture
+        {
+            get => PresentationControl.Picture;
+            set => PresentationControl.Picture = value;
+        }
 
         public bool IsFullscreen
         {
@@ -92,9 +103,22 @@ namespace Viewer.UI.Presentation
             }
         }
 
+        public bool IsPlaying
+        {
+            get => PresentationControl.IsPlaying;
+            set => PresentationControl.IsPlaying = value;
+        }
+
+        public int Speed
+        {
+            get => PresentationControl.Speed;
+            set => PresentationControl.Speed = value;
+        }
+
+        public int PresentationTime { get; set; }
+
         public void UpdateImage()
         {
-            PresentationControl.Picture = Data.Picture;
             PresentationControl.Refresh();
         }
 

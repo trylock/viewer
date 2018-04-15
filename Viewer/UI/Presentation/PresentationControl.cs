@@ -7,42 +7,53 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Properties;
 using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
 {
     public partial class PresentationControl : UserControl
     {
-        /// <summary>
-        /// Event called when user clicks the next button
-        /// </summary>
         public event EventHandler NextImage;
-
-        /// <summary>
-        /// Event called when user clicks the prev button
-        /// </summary>
         public event EventHandler PrevImage;
-
-        /// <summary>
-        /// Event called when user tries to toggle fullscreen mode
-        /// </summary>
         public event EventHandler ToggleFullscreen;
-
-        /// <summary>
-        /// Event called when user tries to exit from the fullscreen mode
-        /// </summary>
-        public event EventHandler ExifFullscreen;
+        public event EventHandler ExitFullscreen;
+        public event EventHandler PlayPausePresentation;
 
         /// <summary>
         /// Shown picture
         /// </summary>
         public Image Picture { get; set; }
-        
+
+        private bool _isPlaying = false;
+
+        public bool IsPlaying
+        {
+            get => _isPlaying;
+            set
+            {
+                _isPlaying = value;
+                PlayPauseButton.BackgroundImage = _isPlaying ? Resources.PauseIcon : Resources.PlayIcon;
+                PlayPauseButton.Invalidate();
+            }
+        }
+
+        public int Speed
+        {
+            get => SpeedTrackBar.Value * 1000;
+            set => SpeedTrackBar.Value = value / 1000;
+        }
+
         public PresentationControl()
         {
             InitializeComponent();
-        }
 
+            MinDelayLabel.Text = SpeedTrackBar.Minimum + "s";
+            MaxDelayLabel.Text = SpeedTrackBar.Maximum + "s";
+        }
+        
+        #region Events
+        
         private void PresentationControl_Paint(object sender, PaintEventArgs e)
         {
             if (Picture == null)
@@ -71,6 +82,8 @@ namespace Viewer.UI.Presentation
 
         private void PresentationControl_Resize(object sender, EventArgs e)
         {
+            ControlPanel.Left = (Width - ControlPanel.Width) / 2;
+            ControlPanel.Top = Height - ControlPanel.Height;
             Invalidate();
         }
 
@@ -78,6 +91,7 @@ namespace Viewer.UI.Presentation
         {
             PrevButton.Visible = e.Location.X - Location.X <= PrevButton.Width;
             NextButton.Visible = Location.X + Width - e.Location.X <= NextButton.Width;
+            ControlPanel.Visible = Height - (e.Location.Y - Location.Y) <= ControlPanel.Height;
         }
 
         private void PresentationControl_KeyDown(object sender, KeyEventArgs e)
@@ -96,7 +110,7 @@ namespace Viewer.UI.Presentation
             }
             else if (e.KeyCode == Keys.Escape)
             {
-                ExifFullscreen?.Invoke(sender, e);
+                ExitFullscreen?.Invoke(sender, e);
             }
         }
 
@@ -109,5 +123,12 @@ namespace Viewer.UI.Presentation
         {
             NextImage?.Invoke(sender, e);
         }
+        
+        private void PausePlayButton_Click(object sender, EventArgs e)
+        {
+            PlayPausePresentation?.Invoke(sender, e);
+        }
+
+        #endregion
     }
 }

@@ -17,9 +17,11 @@ namespace Viewer.UI.Explorer
 {
     public partial class DirectoryTreeControl : WindowView, IDirectoryTreeView
     {
-        public DirectoryTreeControl()
+        public DirectoryTreeControl(string name)
         {
             InitializeComponent();
+
+            Text = name;
             
             var list = new ImageList();
             list.Images.Add(Resources.Directory);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -62,8 +62,7 @@ namespace Viewer
             var fileSystemErrorView = new FileSystemErrorView();
             
             // explorer
-            var directoryTreeView = new DirectoryTreeControl();
-            directoryTreeView.Text = Resources.ExplorerWindowName;
+            var directoryTreeView = new DirectoryTreeControl(Resources.ExplorerWindowName);
             directoryTreeView.Show(_dockPanel, DockState.DockLeft);
 
             // images

@@ -237,6 +237,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DefaultThumbnail.png" />
+    <None Include="Resources\PauseIcon.png" />
+    <None Include="Resources\PlayIcon.png" />
     <None Include="Resources\RightArrowIcon.png" />
     <None Include="Resources\LeftArrowIcon.png" />
     <None Include="Resources\MessageIcon.png" />

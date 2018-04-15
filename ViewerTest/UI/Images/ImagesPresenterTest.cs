@@ -46,7 +46,7 @@ namespace ViewerTest.UI.Images
 
             var thumbnailGenerator = new NullThumbnailGeneratorMock();
             _selectionMock = new SelectionMock();
-            _presenter = new ImagesPresenter(_viewMock, null, _storage, _clipboardMock, _selectionMock, thumbnailGenerator);
+            _presenter = new ImagesPresenter(_viewMock, null, _storage, _clipboardMock, _selectionMock, thumbnailGenerator, null);
             _presenter.LoadFromQueryResult(_entities);
         }
 

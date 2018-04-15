@@ -24,6 +24,7 @@ namespace Viewer.UI.Images
         private readonly IAttributeStorage _storage;
         private readonly IClipboardService _clipboard;
         private readonly IThumbnailGenerator _thumbnailGenerator;
+        private readonly IViewerApplication _app;
 
         // current state
         private IEntityManager _entities;
@@ -52,15 +53,16 @@ namespace Viewer.UI.Images
             IAttributeStorage storage, 
             IClipboardService clipboard,
             ISelection selection,
-            IThumbnailGenerator thumbnailGenerator)
+            IThumbnailGenerator thumbnailGenerator,
+            IViewerApplication app)
         {
             _storage = storage;
             _clipboard = clipboard;
             _selection = selection;
             _thumbnailGenerator = thumbnailGenerator;
+            _app = app;
 
             _dialogView = dialogView;
-
             _imagesView = imagesView;
             _imagesView.UpdateSize();
 
@@ -476,6 +478,15 @@ namespace Viewer.UI.Images
             }
 
             _imagesView.UpdateItems();
+        }
+
+        private void View_OpenItem(object sender, EventArgs e)
+        {
+            if (ActiveItem < 0 || ActiveItem >= _entities.Count)
+            {
+                return;
+            }
+            _app.ShowImage("Presentation", _entities, ActiveItem);
         }
         
         private void View_CloseView(object sender, EventArgs eventArgs)

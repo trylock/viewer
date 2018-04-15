@@ -143,6 +143,7 @@
     <Compile Include="UI\Tasks\TasksView.Designer.cs">
       <DependentUpon>TasksView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewerApplication.cs" />
     <Compile Include="UI\WindowView.cs">
       <SubType>Form</SubType>
     </Compile>

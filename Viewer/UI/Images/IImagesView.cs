@@ -54,7 +54,7 @@ namespace Viewer.UI.Images
             Thumbnail?.Dispose();
         }
     }
-
+    
     public class RenameEventArgs : EventArgs
     {
         /// <summary>
@@ -101,6 +101,11 @@ namespace Viewer.UI.Images
         /// Event called when user requests to delete items
         /// </summary>
         event EventHandler DeleteItems;
+
+        /// <summary>
+        /// Event called when user tries to open an item
+        /// </summary>
+        event EventHandler OpenItem;
 
         Size ItemSize { get; set; }
         Size ItemPadding { get; set; }

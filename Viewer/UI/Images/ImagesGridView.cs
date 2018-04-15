@@ -81,6 +81,8 @@ namespace Viewer.UI.Images
             add => DeleteMenuItem.Click += value;
             remove => DeleteMenuItem.Click -= value;
         }
+
+        public event EventHandler OpenItem;
         public event EventHandler CancelEditItemName;
         public event EventHandler<RenameEventArgs> RenameItem;
         public event EventHandler BeginEditItemName
@@ -364,6 +366,11 @@ namespace Viewer.UI.Images
                 e.SuppressKeyPress = true;
                 RenameItem?.Invoke(sender, new RenameEventArgs(NameTextBox.Text));
             }
+        }
+
+        private void OpenMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenItem?.Invoke(sender, e);
         }
     }
 }

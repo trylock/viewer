@@ -35,8 +35,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,46 +62,47 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(176, 140);
+            this.ItemContextMenu.Size = new System.Drawing.Size(164, 112);
             // 
             // OpenMenuItem
             // 
             this.OpenMenuItem.Name = "OpenMenuItem";
-            this.OpenMenuItem.Size = new System.Drawing.Size(175, 24);
+            this.OpenMenuItem.Size = new System.Drawing.Size(163, 24);
             this.OpenMenuItem.Text = "Open";
+            this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
             // 
             // CopyMenuItem
             // 
             this.CopyMenuItem.Name = "CopyMenuItem";
             this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.CopyMenuItem.Size = new System.Drawing.Size(175, 24);
+            this.CopyMenuItem.Size = new System.Drawing.Size(163, 24);
             this.CopyMenuItem.Text = "Copy";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
-            // 
-            // RenameMenuItem
-            // 
-            this.RenameMenuItem.Name = "RenameMenuItem";
-            this.RenameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.RenameMenuItem.Size = new System.Drawing.Size(175, 24);
-            this.RenameMenuItem.Text = "Rename";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
             // 
             // DeleteMenuItem
             // 
             this.DeleteMenuItem.Name = "DeleteMenuItem";
             this.DeleteMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.DeleteMenuItem.Size = new System.Drawing.Size(175, 24);
+            this.DeleteMenuItem.Size = new System.Drawing.Size(163, 24);
             this.DeleteMenuItem.Text = "Delete";
             // 
-            // GridControl
+            // RenameMenuItem
+            // 
+            this.RenameMenuItem.Name = "RenameMenuItem";
+            this.RenameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
+            this.RenameMenuItem.Size = new System.Drawing.Size(163, 24);
+            this.RenameMenuItem.Text = "Rename";
+            // 
+            // ImagesGridView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

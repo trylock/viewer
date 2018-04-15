@@ -30,6 +30,7 @@ namespace ViewerTest.UI.Images
         public event EventHandler<RenameEventArgs> RenameItem;
         public event EventHandler CopyItems;
         public event EventHandler DeleteItems;
+        public event EventHandler OpenItem;
 
         public Size ItemSize { get; set; } = new Size(1, 1);
         public Size ItemPadding { get; set; } = new Size(0, 0);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -105,6 +106,7 @@ namespace Viewer.IO
         void Search(string path, SearchCallback directoryCallback, SearchCallback fileCallback);
     }
 
+    [Export(typeof(IFileSystem))]
     public class FileSystem : IFileSystem
     {
         public long CountFiles(IEnumerable<string> files, bool isRecursive)

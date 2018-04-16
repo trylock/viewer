@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Primitives;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -86,6 +88,7 @@ namespace Viewer.UI.Log
         void Clear();
     }
 
+    [Export(typeof(ILog))]
     public class Log : ILog
     {
         private List<LogEntry> _entries = new List<LogEntry>();

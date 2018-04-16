@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.LogEntryGridView = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
             this.TypeColumn = new System.Windows.Forms.DataGridViewImageColumn();
             this.MessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GroupColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RetryColumn = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.LogEntryGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,26 +62,6 @@
             this.LogEntryGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LogEntryGridView.Size = new System.Drawing.Size(682, 265);
             this.LogEntryGridView.TabIndex = 0;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.HeaderText = "Message";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.Width = 324;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.FillWeight = 35F;
-            this.dataGridViewTextBoxColumn2.HeaderText = "Group";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.Width = 114;
-            // 
-            // dataGridViewButtonColumn1
-            // 
-            this.dataGridViewButtonColumn1.FillWeight = 35F;
-            this.dataGridViewButtonColumn1.HeaderText = "Retry";
-            this.dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
-            this.dataGridViewButtonColumn1.Width = 5;
             // 
             // TypeColumn
             // 
@@ -110,6 +90,26 @@
             this.RetryColumn.Name = "RetryColumn";
             this.RetryColumn.ReadOnly = true;
             // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.HeaderText = "Message";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.Width = 324;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.FillWeight = 35F;
+            this.dataGridViewTextBoxColumn2.HeaderText = "Group";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.Width = 114;
+            // 
+            // dataGridViewButtonColumn1
+            // 
+            this.dataGridViewButtonColumn1.FillWeight = 35F;
+            this.dataGridViewButtonColumn1.HeaderText = "Retry";
+            this.dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
+            this.dataGridViewButtonColumn1.Width = 5;
+            // 
             // LogView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -117,6 +117,7 @@
             this.ClientSize = new System.Drawing.Size(682, 265);
             this.Controls.Add(this.LogEntryGridView);
             this.Name = "LogView";
+            this.Text = "Log";
             ((System.ComponentModel.ISupportInitialize)(this.LogEntryGridView)).EndInit();
             this.ResumeLayout(false);
 

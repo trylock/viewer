@@ -155,13 +155,14 @@
             this.NewFolderMenuItem.Text = "New Folder";
             this.NewFolderMenuItem.Click += new System.EventHandler(this.NewFolderMenuItem_Click);
             // 
-            // DirectoryTreeControl
+            // DirectoryTreeView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(218, 330);
             this.Controls.Add(this.TreeView);
             this.Name = "DirectoryTreeView";
+            this.Text = "Explorer";
             this.FileContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 

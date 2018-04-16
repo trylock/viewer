@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.UI.Images;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace ViewerTest.UI.Images
 {
@@ -180,6 +181,11 @@ namespace ViewerTest.UI.Images
         public void HideItemEditForm()
         {
             EditIndex = -1;
+        }
+
+        public void Show(DockPanel dockPanel, DockState dockState)
+        {
+            throw new NotImplementedException();
         }
 
         public void EnsureVisible()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Data;
 using System.Diagnostics;
@@ -15,13 +16,12 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Explorer
 {
+    [Export(typeof(IDirectoryTreeView))]
     public partial class DirectoryTreeView : WindowView, IDirectoryTreeView
     {
-        public DirectoryTreeView(string name)
+        public DirectoryTreeView()
         {
             InitializeComponent();
-
-            Text = name;
             
             var list = new ImageList();
             list.Images.Add(Resources.Directory);

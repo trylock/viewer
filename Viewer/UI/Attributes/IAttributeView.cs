@@ -72,7 +72,7 @@ namespace Viewer.UI.Attributes
         DateTime,
     }
 
-    public interface IAttributeView
+    public interface IAttributeView : IWindowView
     {
         /// <summary>
         /// User requested to save all attributes to selected files.

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.UI.Attributes;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace ViewerTest.UI.Attributes
 {
@@ -65,6 +66,23 @@ namespace ViewerTest.UI.Attributes
         public void AttributeNameIsEmpty()
         {
             LastError = "empty";
+        }
+
+        public event EventHandler CloseView;
+        public event EventHandler ViewGotFocus;
+        public void EnsureVisible()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IAsyncResult BeginInvoke(Delegate method)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Show(DockPanel dockPanel, DockState dockState)
+        {
+            throw new NotImplementedException();
         }
     }
 }

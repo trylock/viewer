@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -93,6 +94,7 @@ namespace Viewer.Data.Formats.Attributes
         }
     }
 
+    [Export(typeof(IAttributeWriterFactory))]
     public class AttributeWriterFactory : IAttributeWriterFactory
     {
         public IAttributeWriter Create(Stream output)

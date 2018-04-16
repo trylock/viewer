@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Viewer.UI.Images
 {
+    [Export(typeof(IThumbnailGenerator))]
     public class ThumbnailGenerator : IThumbnailGenerator
     {
         public Image GetThumbnail(Image originalImage, Size thumbnailArea)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -58,11 +59,13 @@ namespace Viewer.UI.Attributes
         /// <returns></returns>
         IEnumerable<AttributeGroup> GroupAttributesInSelection();
     }
-
+    
+    [Export(typeof(IAttributeManager))]
     public class AttributeManager : IAttributeManager
     {
-        private ISelection _selection;
+        private readonly ISelection _selection;
 
+        [ImportingConstructor]
         public AttributeManager(ISelection selection)
         {
             _selection = selection;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Primitives;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +52,7 @@ namespace Viewer.Data
         IReadOnlyList<IEntity> GetSnapshot();
     }
     
+    [Export(typeof(IEntityRepository))]
     public class EntityRepository : IEntityRepository
     {
         private Dictionary<string, IEntity> _modified = new Dictionary<string, IEntity>();

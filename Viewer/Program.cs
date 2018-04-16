@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.UI.Tasks;
 
 namespace Viewer
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
@@ -14,9 +17,18 @@ namespace Viewer
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ViewerForm());
+            var catalog = new AggregateCatalog(
+                new AssemblyCatalog(Assembly.GetExecutingAssembly())
+            );
+            using (var container = new CompositionContainer(catalog))
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+
+                var app = container.GetExportedValue<ViewerApplication>();
+                app.InitializeLayout();
+                app.Run();
+            }
         }
     }
 }

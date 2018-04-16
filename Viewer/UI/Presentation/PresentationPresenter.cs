@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -9,11 +10,14 @@ using Viewer.Data;
 
 namespace Viewer.UI.Presentation
 {
-    public class PresentationPresenter 
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class PresentationPresenter : Presenter
     {
-        // dependencies
-        private readonly IPresentationView _presentationView;
         private readonly ISelection _selection;
+        private readonly IPresentationView _presentationView;
+
+        public override IWindowView MainView => _presentationView;
 
         // state
         private IEntityManager _entities;
@@ -24,14 +28,12 @@ namespace Viewer.UI.Presentation
         /// Last time an image was changed in the presentation
         /// </summary>
         private DateTime _lastImageChange;
-
-        public PresentationPresenter(
-            IPresentationView presentationView,
-            ISelection selection)
+        
+        [ImportingConstructor]
+        public PresentationPresenter([Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IPresentationView presentationView, ISelection selection)
         {
             _selection = selection;
             _presentationView = presentationView;
-
             PresenterUtils.SubscribeTo(_presentationView, this, "View");
         }
 

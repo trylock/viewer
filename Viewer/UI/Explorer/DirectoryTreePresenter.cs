@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,9 @@ using Viewer.UI.Tasks;
 
 namespace Viewer.UI.Explorer
 {
-    public class DirectoryTreePresenter
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class DirectoryTreePresenter : Presenter
     {
         public const string LogGroupName = "FileSystem";
 
@@ -27,24 +30,25 @@ namespace Viewer.UI.Explorer
         
         private readonly IFileSystem _fileSystem;
         private readonly IClipboardService _clipboard;
-        private readonly IDirectoryTreeView _treeView;
         private readonly IFileSystemErrorView _dialogView;
         private readonly IProgressViewFactory _progressViewFactory;
+        private readonly IDirectoryTreeView _treeView;
 
+        public override IWindowView MainView => _treeView;
+
+        [ImportingConstructor]
         public DirectoryTreePresenter(
-            IDirectoryTreeView treeView, 
-            IProgressViewFactory progressViewFactory, 
+            [Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IDirectoryTreeView treeView,
+            IProgressViewFactory progressViewFactory,
             IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
             IClipboardService clipboard)
         {
-            _clipboard = clipboard;
             _fileSystem = fileSystem;
-
+            _clipboard = clipboard;
             _dialogView = dialogView;
             _progressViewFactory = progressViewFactory;
             _treeView = treeView;
-            
             PresenterUtils.SubscribeTo(_treeView, this, "View");
         }
 

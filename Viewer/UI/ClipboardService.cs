@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -39,7 +40,8 @@ namespace Viewer.UI
         /// </returns>
         DragDropEffects GetPreferredEffect();
     }
-
+    
+    [Export(typeof(IClipboardService))]
     public class ClipboardService : IClipboardService
     {
         public IEnumerable<string> GetFiles()

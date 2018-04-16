@@ -1,27 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Viewer.UI.Log
 {
-    public class LogPresenter
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class LogPresenter : Presenter
     {
-        private readonly ILogView _view;
         private readonly ILog _log;
+        private readonly ILogView _view;
 
-        public LogPresenter(ILogView view, ILog log)
+        public override IWindowView MainView => _view;
+        
+        [ImportingConstructor]
+        public LogPresenter([Import(RequiredCreationPolicy = CreationPolicy.NonShared)] ILogView logView, ILog log)
         {
             _log = log;
+            _view = logView;
+
             _log.EntryAdded += LogOnEntryAdded;
-            _view = view;
             _view.Entries = _log;
             _view.UpdateEntries();
-
             PresenterUtils.SubscribeTo(_view, this, "View");
         }
-
+        
         private void LogOnEntryAdded(object sender, LogEventArgs e)
         {
             _view.BeginInvoke(new Action(() =>

@@ -112,6 +112,7 @@
             this.Controls.Add(this.NameTextBox);
             this.DoubleBuffered = true;
             this.Name = "ImagesGridView";
+            this.Text = "Images";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridControl_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseMove);

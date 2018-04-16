@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace Viewer.Data.Formats.Jpeg
         IJpegSegmentWriter CreateFromPath(string path, out string tmpFileName);
     }
     
+    [Export(typeof(IJpegSegmentWriterFactory))]
     public class JpegSegmentWriterFactory : IJpegSegmentWriterFactory
     {
         private Random _random = new Random();

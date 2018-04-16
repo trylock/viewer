@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -11,20 +12,25 @@ using Viewer.Data.Storage;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.UI.Explorer;
+using Viewer.UI.Presentation;
+using WeifenLuo.WinFormsUI.Docking;
 using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Images
 {
-    public class ImagesPresenter
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class ImagesPresenter : Presenter
     {
-        // dependencies
         private readonly IImagesView _imagesView;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
         private readonly IAttributeStorage _storage;
         private readonly IClipboardService _clipboard;
         private readonly IThumbnailGenerator _thumbnailGenerator;
-        private readonly IViewerApplication _app;
+        private readonly ExportFactory<PresentationPresenter> _presentationFactory;
+        
+        public override IWindowView MainView => _imagesView;
 
         // current state
         private IEntityManager _entities;
@@ -47,37 +53,41 @@ namespace Viewer.UI.Images
         /// </summary>
         public int FocusedItem { get; private set; } = -1;
 
+        [ImportingConstructor]
         public ImagesPresenter(
-            IImagesView imagesView, 
+            [Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IImagesView imagesView,
             IFileSystemErrorView dialogView,
-            IAttributeStorage storage, 
+            ISelection selection, 
+            IAttributeStorage storage,
             IClipboardService clipboard,
-            ISelection selection,
             IThumbnailGenerator thumbnailGenerator,
-            IViewerApplication app)
+            ExportFactory<PresentationPresenter> presentationFactory)
         {
+            _imagesView = imagesView;
+            _dialogView = dialogView;
+            _selection = selection;
             _storage = storage;
             _clipboard = clipboard;
-            _selection = selection;
             _thumbnailGenerator = thumbnailGenerator;
-            _app = app;
-
-            _dialogView = dialogView;
-            _imagesView = imagesView;
+            _presentationFactory = presentationFactory;
             _imagesView.UpdateSize();
-
             PresenterUtils.SubscribeTo(_imagesView, this, "View");
         }
 
-        public void LoadFromQueryResult(IEntityManager entityManager)
+        /// <summary>
+        /// Show all entities in the view.
+        /// Previously loaded entities will be released.
+        /// </summary>
+        /// <param name="entities">Entities to show</param>
+        public void LoadFromQueryResult(IEntityManager entities)
         {
-            if (_entities != entityManager)
+            if (_entities != entities)
             {
                 // dispose old images
                 DisposeViewData();
 
                 // set new entities
-                _entities = entityManager;
+                _entities = entities;
             }
 
             // add entities with the default thumbnail
@@ -486,7 +496,10 @@ namespace Viewer.UI.Images
             {
                 return;
             }
-            _app.ShowImage("Presentation", _entities, ActiveItem);
+
+            var presentation = _presentationFactory.CreateExport().Value;
+            presentation.ShowEntity(_entities, ActiveItem);
+            presentation.ShowView(DockState.Document);
         }
         
         private void View_CloseView(object sender, EventArgs eventArgs)

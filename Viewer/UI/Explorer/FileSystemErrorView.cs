@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Primitives;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +71,7 @@ namespace Viewer.UI.Explorer
         void FileInUse(string path);
     }
 
+    [Export(typeof(IFileSystemErrorView))]
     public class FileSystemErrorView : IFileSystemErrorView
     {
         public void UnauthorizedAccess(string path)

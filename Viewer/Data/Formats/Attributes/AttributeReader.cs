@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -130,6 +131,7 @@ namespace Viewer.Data.Formats.Attributes
     /// <summary>
     /// Create attribute reader of the custom attribute segments.
     /// </summary>
+    [Export(typeof(IAttributeReaderFactory))]
     public class AttributeReaderFactory : IAttributeReaderFactory
     {
         public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -69,15 +70,32 @@ namespace Viewer.Data.Formats.Exif
         }
     }
 
+    [Export(typeof(IAttributeReaderFactory))]
     public class ExifAttributeReaderFactory : IAttributeReaderFactory
     {
         private readonly IList<IExifAttributeParser> _tags;
 
         private const string ExifHeader = "Exif\0\0";
 
-        public ExifAttributeReaderFactory(IList<IExifAttributeParser> tags)
+        public ExifAttributeReaderFactory()
         {
-            _tags = tags;
+            _tags = new List<IExifAttributeParser>
+            {
+                // image metadata
+                new ExifAttributeParser<ExifIfd0Directory>("ImageWidth", ExifIfd0Directory.TagImageWidth, AttributeType.Int),
+                new ExifAttributeParser<ExifIfd0Directory>("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
+                new ExifAttributeParser<ExifSubIfdDirectory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
+                new ThumbnaiExifAttributeParser("thumbnail"),
+
+                // camera metadata
+                new ExifAttributeParser<ExifIfd0Directory>("CameraModel", ExifIfd0Directory.TagModel, AttributeType.String),
+                new ExifAttributeParser<ExifIfd0Directory>("CameraMaker", ExifIfd0Directory.TagMake, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("ExposureTime", ExifIfd0Directory.TagExposureTime, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("FStop", ExifIfd0Directory.TagFNumber, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("ExposureBias", ExifIfd0Directory.TagExposureBias, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("FocalLength", ExifIfd0Directory.TagFocalLength, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>("MaxAperture", ExifIfd0Directory.TagMaxAperture, AttributeType.String),
+            };
         }
 
         public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)

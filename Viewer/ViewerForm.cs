@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -24,26 +25,23 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer
 {
+    [Export]
     public partial class ViewerForm : Form
     {
-        public DockPanel DockPanel { get; private set; }
+        public DockPanel Panel { get; private set; }
 
         public ViewerForm()
         {
             InitializeComponent();
 
-            DockPanel = new DockPanel
+            Panel = new DockPanel
             {
                 Theme = new VS2015LightTheme(),
                 Dock = DockStyle.Fill
             };
-            DockPanel.UpdateDockWindowZOrder(DockStyle.Right, true);
-            DockPanel.UpdateDockWindowZOrder(DockStyle.Left, true);
-            Controls.Add(DockPanel);
-            
-            var app = new ViewerApplication(this);
-            app.InitializeLayout();
-            
+            Panel.UpdateDockWindowZOrder(DockStyle.Right, true);
+            Panel.UpdateDockWindowZOrder(DockStyle.Left, true);
+            Controls.Add(Panel);
         }
     }
 }

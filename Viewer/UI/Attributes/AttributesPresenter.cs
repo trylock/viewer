@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -12,13 +13,17 @@ using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
 {
-    public class AttributesPresenter
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class AttributesPresenter : Presenter
     {
-        private readonly IAttributeView _attrView;
         private readonly IProgressViewFactory _progressViewFactory;
         private readonly ISelection _selection;
         private readonly IAttributeStorage _storage;
         private readonly IAttributeManager _attributes;
+        private readonly IAttributeView _attrView;
+
+        public override IWindowView MainView => _attrView;
 
         /// <summary>
         /// Funtion which determines for each attribute whether it should be managed by this presenter.
@@ -33,20 +38,20 @@ namespace Viewer.UI.Attributes
         private SortColumn _currentSortColumn = SortColumn.Name;
         private SortDirection _currentSortDirection = SortDirection.Ascending;
 
+        [ImportingConstructor]
         public AttributesPresenter(
-            IAttributeView attrView, 
-            IProgressViewFactory progressViewFactory,
+            [Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IAttributeView attrView, 
+            IProgressViewFactory progressViewFactory, 
             ISelection selection,
             IAttributeStorage storage,
-            IAttributeManager attributes)
+            IAttributeManager attrManager)
         {
-            _selection = selection;
-            _selection.Changed += Selection_Changed;
-            _storage = storage;
-            _attributes = attributes;
-            
-            _progressViewFactory = progressViewFactory;
             _attrView = attrView;
+            _progressViewFactory = progressViewFactory;
+            _storage = storage;
+            _selection = selection;
+            _attributes = attrManager;
+            _selection.Changed += Selection_Changed;
             PresenterUtils.SubscribeTo(_attrView, this, "View");
         }
         

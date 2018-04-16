@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.IO;
@@ -20,131 +25,55 @@ using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer
 {
-    public interface IViewerApplication
+    [Export]
+    public class ViewerApplication : IPartImportsSatisfiedNotification
     {
-        /// <summary>
-        /// Show list of entities
-        /// </summary>
-        /// <param name="title">Title of the component</param>
-        /// <param name="entities">Entities</param>
-        void ShowImages(string title, IEntityManager entities);
+        [Import] private ViewerForm _appForm;
+        [Import] private IAttributeStorage _storage;
+        [Import] private IEntityRepository _modifiedEntities;
 
-        /// <summary>
-        /// Show a single image in a presentation component
-        /// </summary>
-        /// <param name="title">Title of the component</param>
-        /// <param name="entities">Entities</param>
-        /// <param name="index">Index of an entity to show</param>
-        void ShowImage(string title, IEntityManager entities, int index);
-    }
-
-    public class ViewerApplication : IViewerApplication
-    {
-        private ViewerForm _form;
-
-        // dependencies
-        private readonly IAttributeStorage _storage;
-        private readonly IClipboardService _clipboard;
-        private readonly IFileSystem _fileSystem;
-        private readonly IEntityRepository _modifiedEntities;
-        private readonly IThumbnailGenerator _thumbnailGenerator;
-        private readonly ISelection _selection;
-        private readonly ILog _log;
-        private readonly IAttributeManager _attributeManager;
-        private readonly IFileSystemErrorView _fileSystemErrorView;
-        private readonly IProgressViewFactory _progressViewFactory;
-
+        [Import] private ImagesPresenter _images;
+        [Import] private DirectoryTreePresenter _explorer;
+        [Import] private AttributesPresenter _mainAttributes;
+        [Import] private AttributesPresenter _exifAttributes;
+        [Import] private PresentationPresenter _presentation;
+        [Import] private LogPresenter _log;
+        
         // for testing purposes only 
         private IEntityManager _queryResult;
-
-        public ViewerApplication(ViewerForm form)
+        
+        public void OnImportsSatisfied()
         {
-            _form = form;
-            
-            var factory = new AttributeStorageFactory();
-            _storage = factory.Create();
-            _clipboard = new ClipboardService();
-            _fileSystem = new FileSystem();
-            _modifiedEntities = new EntityRepository();
-            _thumbnailGenerator = new ThumbnailGenerator();
-            _selection = new Selection();
-            _attributeManager = new AttributeManager(_selection);
-            _log = new Log();
-            _fileSystemErrorView = new FileSystemErrorView();
-            
-            // background tasks
-            var tasksView = new TasksView("Background Tasks");
-            tasksView.Show(_form.DockPanel, DockState.DockBottom);
-            _progressViewFactory = new ProgressViewFactory(tasksView);
-
-            // query 
             _queryResult = new EntityManager(_modifiedEntities);
             foreach (var file in Directory.EnumerateFiles(@"D:\dataset\moderate"))
             {
                 _queryResult.Add(_storage.Load(file));
             }
         }
-
+        
         public void InitializeLayout()
         {
-            ShowFileExplorer(Resources.ExplorerWindowName);
-            ShowImages(Resources.QueryResultWindowName, _queryResult);
-            ShowAttributes("Attributes", true, attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0);
-            ShowAttributes("Exif", false, attr => attr.Data.GetType() != typeof(ImageAttribute) &&
-                                                  (attr.Data.Flags & AttributeFlags.ReadOnly) != 0);
-            ShowLog("Log");
+            _images.LoadFromQueryResult(_queryResult);
+            _images.ShowView(DockState.Document);
+            
+            _explorer.UpdateRootDirectories();
+            _explorer.ShowView(DockState.DockLeft);
+
+            _mainAttributes.AttributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
+            _mainAttributes.EditingEnabled = true;
+            _mainAttributes.ShowView(DockState.DockRight);
+
+            _exifAttributes.AttributePredicate = attr => attr.Data.GetType() != typeof(ImageAttribute) &&
+                                                         (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
+            _exifAttributes.EditingEnabled = false;
+            _exifAttributes.ShowView(DockState.DockRight);
+
+            _log.ShowView(DockState.DockBottom);
         }
 
-        public void ShowFileExplorer(string title)
+        public void Run()
         {
-            var directoryTreeView = new DirectoryTreeView(title);
-            directoryTreeView.Show(_form.DockPanel, DockState.DockLeft);
-
-            var treePresenter = new DirectoryTreePresenter(directoryTreeView, _progressViewFactory, _fileSystemErrorView, _fileSystem, _clipboard);
-            treePresenter.UpdateRootDirectories();
-        }
-
-        public void ShowImages(string title, IEntityManager entities)
-        {
-            var imagesView = new ImagesGridView(title);
-            imagesView.Show(_form.DockPanel, DockState.Document);
-
-            var imagesPresenter = new ImagesPresenter(imagesView, _fileSystemErrorView, _storage, _clipboard, _selection, _thumbnailGenerator, this);
-            imagesPresenter.LoadFromQueryResult(entities);
-        }
-
-        public void ShowImage(string title, IEntityManager entities, int index)
-        {
-            var presentationView = new PresentationView(title);
-            presentationView.Show(_form.DockPanel, DockState.Document);
-
-            var presentationPresenter = new PresentationPresenter(presentationView, _selection);
-            presentationPresenter.ShowEntity(entities, index);
-        }
-
-        public void ShowAttributes(string name, bool editingEnabled, Func<AttributeGroup, bool> attrPredicate)
-        {
-            var attributesView = new AttributeTableView(name);
-            attributesView.Show(_form.DockPanel, DockState.DockRight);
-
-            var attrPresenter = new AttributesPresenter(
-                attributesView,
-                _progressViewFactory,
-                _selection,
-                _storage,
-                _attributeManager)
-            {
-                EditingEnabled = editingEnabled,
-                AttributePredicate = attrPredicate
-            };
-        }
-
-        public void ShowLog(string name)
-        {
-            var logView = new LogView(name);
-            logView.Show(_form.DockPanel, DockState.DockBottom);
-
-            var logPresenter = new LogPresenter(logView, _log);
+            Application.Run(_appForm);
         }
     }
 }

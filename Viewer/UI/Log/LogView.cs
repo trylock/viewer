@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -12,6 +13,7 @@ using Viewer.Properties;
 
 namespace Viewer.UI.Log
 {
+    [Export(typeof(ILogView))]
     public partial class LogView : WindowView, ILogView
     {
         private static Image[] _logTypeIcon =
@@ -21,11 +23,9 @@ namespace Viewer.UI.Log
             Resources.MessageIcon
         };
         
-        public LogView(string name)
+        public LogView()
         {
             InitializeComponent();
-
-            Text = name;
         }
 
         #region View

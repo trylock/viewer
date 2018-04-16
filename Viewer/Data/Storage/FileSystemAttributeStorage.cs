@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,25 +19,27 @@ namespace Viewer.Data.Storage
     /// <summary>
     /// Attribute storage which stores attributes directly in JPEG files.
     /// </summary>
+    [Export(typeof(IAttributeStorage))]
     public class FileSystemAttributeStorage : IAttributeStorage
     {
         private readonly IJpegSegmentReaderFactory _segmentReaderFactory;
         private readonly IJpegSegmentWriterFactory _segmentWriterFactory;
         private readonly IAttributeWriterFactory _attrWriterFactory;
-        private readonly IList<IAttributeReaderFactory> _attrReaderFactories;
+        private readonly IEnumerable<IAttributeReaderFactory> _attrReaderFactories;
 
+        [ImportingConstructor]
         public FileSystemAttributeStorage(
-            IJpegSegmentReaderFactory segmentReaderFactory, 
+            IJpegSegmentReaderFactory segmentReaderFactory,
             IJpegSegmentWriterFactory segmentWriterFactory,
             IAttributeWriterFactory attrWriterFactory,
-            IList<IAttributeReaderFactory> attrReaderFactories)
+            [ImportMany] IAttributeReaderFactory[] attrReaderFactories)
         {
             _segmentReaderFactory = segmentReaderFactory;
             _segmentWriterFactory = segmentWriterFactory;
-            _attrWriterFactory = attrWriterFactory;
             _attrReaderFactories = attrReaderFactories;
+            _attrWriterFactory = attrWriterFactory;
         }
-
+        
         /// <summary>
         /// Load attributes from given file.
         /// Read algorithm:

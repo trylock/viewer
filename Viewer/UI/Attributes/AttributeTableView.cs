@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -14,6 +15,7 @@ using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
 {
+    [Export(typeof(IAttributeView))]
     public partial class AttributeTableView : WindowView, IAttributeView
     {
         /// <summary>
@@ -28,11 +30,9 @@ namespace Viewer.UI.Attributes
 
         private const int TypeColumnIndex = 2;
         
-        public AttributeTableView(string name)
+        public AttributeTableView()
         {
             InitializeComponent();
-
-            Text = name;
 
             // add types column
             var typeColumn = GridView.Columns[TypeColumnIndex] as DataGridViewComboBoxColumn;
@@ -178,10 +178,12 @@ namespace Viewer.UI.Attributes
 
             if (attr.IsMixed)
             {
-                var mixedValueCell = new DataGridViewTextBoxCell();
-                mixedValueCell.Value = "mixed value";
-                mixedValueCell.ValueType = typeof(string);
-                mixedValueCell.Style.ForeColor = Color.Gray;
+                var mixedValueCell = new DataGridViewTextBoxCell
+                {
+                    Value = "mixed value",
+                    ValueType = typeof(string),
+                    Style = {ForeColor = Color.Gray}
+                };
 
                 row.Cells.Add(mixedValueCell);
             }

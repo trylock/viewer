@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Data;
 using System.Drawing.Drawing2D;
@@ -12,6 +13,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {
+    [Export(typeof(IImagesView))]
     public partial class ImagesGridView : WindowView, IImagesView
     {
         #region Graphics settings
@@ -37,14 +39,11 @@ namespace Viewer.UI.Images
         private Grid _grid = new Grid();
         private Rectangle _selection = Rectangle.Empty;
 
-        public ImagesGridView(string name)
+        public ImagesGridView()
         {
             InitializeComponent();
 
-            Text = name;
-
-            _grid = new Grid();
-            _grid.CellMargin = new Size(5, 5);
+            _grid = new Grid { CellMargin = new Size(5, 5) };
 
             _highlightedItemFill = new SolidBrush(Color.FromArgb(226, 241, 255));
             _highlightedItemStroke = new Pen(Color.FromArgb(221, 232, 248), _highlightedItemBorderSize);

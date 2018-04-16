@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Data;
 using System.Drawing.Drawing2D;
@@ -12,13 +13,12 @@ using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
 {
+    [Export(typeof(IPresentationView))]
     public partial class PresentationView : WindowView, IPresentationView
     {
-        public PresentationView(string name)
+        public PresentationView()
         {
             InitializeComponent();
-            
-            Text = name;
         }
 
         #region View

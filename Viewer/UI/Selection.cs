@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Primitives;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,9 +53,10 @@ namespace Viewer.UI
         void Clear();
     }
 
+    [Export(typeof(ISelection))]
     public class Selection : ISelection
     {
-        private ISet<int> _currentSelection = new HashSet<int>();
+        private readonly ISet<int> _currentSelection = new HashSet<int>();
 
         public event EventHandler Changed;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,7 @@ namespace Viewer.Data.Formats
         }
     }
 
+    [Export(typeof(IAttributeReaderFactory))]
     public class FileAttributeReaderFactory : IAttributeReaderFactory
     {
         public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)

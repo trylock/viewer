@@ -41,6 +41,7 @@
     <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.4.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.107.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.107.0\lib\net46\System.Data.SQLite.dll</HintPath>
@@ -70,7 +71,6 @@
     <Compile Include="Data\EntityManager.cs" />
     <Compile Include="Data\EntityRepository.cs" />
     <Compile Include="Data\Formats\FileAttributeReader.cs" />
-    <Compile Include="Data\Storage\AttributeStorageFactory.cs" />
     <Compile Include="Data\Formats\Exif\IExifAttributeParser.cs" />
     <Compile Include="Data\Formats\Exif\ExifAttributeParser.cs" />
     <Compile Include="Data\Formats\Exif\ThumbnaiExifAttributeParser.cs" />
@@ -134,6 +134,7 @@
     <Compile Include="UI\Presentation\PresentationView.Designer.cs">
       <DependentUpon>PresentationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Presenter.cs" />
     <Compile Include="UI\PresenterUtils.cs" />
     <Compile Include="UI\Tasks\ProgressViewFactory.cs" />
     <Compile Include="UI\Selection.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="UI\Tasks\TasksView.Designer.cs">
       <DependentUpon>TasksView.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Tasks\TasksViewFactory.cs" />
     <Compile Include="ViewerApplication.cs" />
     <Compile Include="UI\WindowView.cs">
       <SubType>Form</SubType>

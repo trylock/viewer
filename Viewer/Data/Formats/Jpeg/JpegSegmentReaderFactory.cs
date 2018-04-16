@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Viewer.Data.Formats.Jpeg
         IJpegSegmentReader CreateFromPath(string filePath);
     }
 
+    [Export(typeof(IJpegSegmentReaderFactory))]
     public class JpegSegmentReaderFactory : IJpegSegmentReaderFactory
     {
         public IJpegSegmentReader CreateFromPath(string filePath)

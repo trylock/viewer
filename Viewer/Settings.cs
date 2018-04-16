@@ -30,24 +30,6 @@ namespace Viewer
 
         private Settings()
         {
-            ExifTags = new List<IExifAttributeParser>
-            {
-                // image metadata
-                new ExifAttributeParser<ExifIfd0Directory>("ImageWidth", ExifIfd0Directory.TagImageWidth, AttributeType.Int),
-                new ExifAttributeParser<ExifIfd0Directory>("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
-                new ExifAttributeParser<ExifSubIfdDirectory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
-                new ThumbnaiExifAttributeParser("thumbnail"),
-
-                // camera metadata
-                new ExifAttributeParser<ExifIfd0Directory>("CameraModel", ExifIfd0Directory.TagModel, AttributeType.String),
-                new ExifAttributeParser<ExifIfd0Directory>("CameraMaker", ExifIfd0Directory.TagMake, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("ExposureTime", ExifIfd0Directory.TagExposureTime, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("FStop", ExifIfd0Directory.TagFNumber, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("ExposureBias", ExifIfd0Directory.TagExposureBias, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("FocalLength", ExifIfd0Directory.TagFocalLength, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("MaxAperture", ExifIfd0Directory.TagMaxAperture, AttributeType.String),
-            };
-
             CacheConnection = new SQLiteConnection($"Data Source={Environment.CurrentDirectory}/../../../cache.db;Version=3");
             CacheConnection.Open();
 

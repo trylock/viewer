@@ -34,7 +34,9 @@
             // PresentationControl
             // 
             this.PresentationControl.BackColor = System.Drawing.Color.Black;
+            this.PresentationControl.CursorHideDelay = 1000;
             this.PresentationControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PresentationControl.IsFullscreen = false;
             this.PresentationControl.IsPlaying = false;
             this.PresentationControl.Location = new System.Drawing.Point(0, 0);
             this.PresentationControl.Name = "PresentationControl";
@@ -51,6 +53,7 @@
             this.Controls.Add(this.PresentationControl);
             this.DoubleBuffered = true;
             this.Name = "PresentationView";
+            this.Text = "Presentation";
             this.ResumeLayout(false);
 
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI
 {
@@ -19,7 +20,14 @@ namespace Viewer.UI
         /// Event called when this view gets focus.
         /// </summary>
         event EventHandler ViewGotFocus;
-        
+
+        /// <summary>
+        /// Show the window in <paramref name="dockPanel"/> with <paramref name="dockState"/>
+        /// </summary>
+        /// <param name="dockPanel">A new dock panel for this window</param>
+        /// <param name="dockState">Dock state</param>
+        void Show(DockPanel dockPanel, DockState dockState);
+
         /// <summary>
         /// Make sure the window is visible to the user.
         /// Thread-safety: can be called from different threads

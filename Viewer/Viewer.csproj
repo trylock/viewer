@@ -91,6 +91,7 @@
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReader.cs" />
     <Compile Include="Data\Storage\MemoryAttributeStorage.cs" />
     <Compile Include="Data\Storage\SqliteAttributeStorage.cs" />
+    <Compile Include="Fraction.cs" />
     <Compile Include="IO\FileSystem.cs" />
     <Compile Include="IO\PathUtils.cs" />
     <Compile Include="MathUtils.cs" />

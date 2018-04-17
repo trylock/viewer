@@ -23,6 +23,8 @@ namespace Viewer.UI.Images
     public class ImagesPresenter : Presenter
     {
         public const string ThumbnailAttributeName = "thumbnail";
+        public const string ImageWidthAttributeName = "ImageWidth";
+        public const string ImageHeightAttributeName = "ImageHeight";
 
         private readonly IImagesView _imagesView;
         private readonly IFileSystemErrorView _dialogView;
@@ -36,7 +38,7 @@ namespace Viewer.UI.Images
 
         // current state
         private IEntityManager _entities;
-        private readonly Size _minItemSize = new Size(133, 100);
+        private Size _minItemSize = new Size(133, 100);
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
         private Point _selectionStartPoint;
@@ -89,12 +91,13 @@ namespace Viewer.UI.Images
         {
             if (_entities != entities)
             {
-                // dispose old images
                 DisposeViewData();
-
-                // set new entities
                 _entities = entities;
             }
+
+            // find optimal item size
+            _minItemSize = FindMinimalImageSize(entities);
+            _imagesView.ItemSize = _minItemSize;
 
             // add entities with the default thumbnail
             foreach (var entity in _entities)
@@ -118,11 +121,21 @@ namespace Viewer.UI.Images
             _imagesView.Items.Clear();
         }
 
+        /// <summary>
+        /// Create lazily initialized thumbnail for an entity
+        /// </summary>
+        /// <param name="item">Entity</param>
+        /// <returns>Thumbnail</returns>
         private Lazy<Image> GetThumbnail(IEntity item)
         {
             return new Lazy<Image>(() => GenerateThumbnail(item));
         }
 
+        /// <summary>
+        /// Generate thumbnail image for given entity
+        /// </summary>
+        /// <param name="item">Entity</param>
+        /// <returns>Thumbnail image of the entity</returns>
         private Image GenerateThumbnail(IEntity item)
         {
             var attr = item.GetAttribute(ThumbnailAttributeName);
@@ -138,6 +151,60 @@ namespace Viewer.UI.Images
             return null;
         }
 
+        /// <summary>
+        /// Determine minimal thumbnail size from the most common aspect ratio among images
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        private Size FindMinimalImageSize(IEnumerable<IEntity> entities)
+        {
+            var frequency = new Dictionary<Fraction, int>();
+            foreach (var entity in entities)
+            {
+                var widthAttr = entity.GetAttribute(ImageWidthAttributeName) as IntAttribute;
+                var heightAttr = entity.GetAttribute(ImageHeightAttributeName) as IntAttribute;
+                if (widthAttr == null || heightAttr == null)
+                    continue;
+                var ratio = new Fraction(widthAttr.Value, heightAttr.Value);
+                if (frequency.ContainsKey(ratio))
+                {
+                    frequency[ratio]++;
+                }
+                else
+                {
+                    frequency.Add(ratio, 1);
+                }
+            }
+
+            if (frequency.Count == 0)
+            {
+                return new Size(133, 100);
+            }
+
+            // find the most common aspect ratio
+            var maxFrequency = 0;
+            var maxRatio = new Fraction(4, 3);
+            foreach (var pair in frequency)
+            {
+                if (pair.Value > maxFrequency)
+                {
+                    maxFrequency = pair.Value;
+                    maxRatio = pair.Key;
+                }
+            }
+            
+            // determine the size
+            var aspectRatio = (double) maxRatio;
+            if (aspectRatio > 1)
+            {
+                return new Size((int) (100 * aspectRatio), 100);
+            }
+            else
+            {
+                return new Size(100, (int) (100 / aspectRatio));
+            }
+        }
+        
         private void StartSelection(Point location)
         {
             _isSelectionActive = true;

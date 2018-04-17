@@ -155,7 +155,6 @@
     <Compile Include="UI\Explorer\DirectoryTreeView.Designer.cs">
       <DependentUpon>DirectoryTreeView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="UI\Explorer\DirectoryTreePresenter.cs" />
     <Compile Include="UI\Explorer\FileSystemErrorView.cs" />
     <Compile Include="UI\Images\Grid.cs" />

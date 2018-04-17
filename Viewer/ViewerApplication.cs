@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
@@ -26,23 +26,38 @@ using Attribute = Viewer.Data.Attribute;
 namespace Viewer
 {
     [Export]
-    public class ViewerApplication : IPartImportsSatisfiedNotification
+    public class ViewerApplication
     {
-        [Import] private ViewerForm _appForm;
-        [Import] private IAttributeStorage _storage;
-        [Import] private IEntityRepository _modifiedEntities;
+        private readonly ViewerForm _appForm;
+        private readonly IAttributeStorage _storage;
+        private readonly IEntityRepository _modifiedEntities;
 
-        [Import] private ImagesPresenter _images;
-        [Import] private DirectoryTreePresenter _explorer;
-        [Import] private ExportFactory<AttributesPresenter> _attrPresenterFactory;
-        [Import] private PresentationPresenter _presentation;
-        [Import] private LogPresenter _log;
+        private readonly ImagesPresenter _images;
+        private readonly DirectoryTreePresenter _explorer;
+        private readonly ExportFactory<AttributesPresenter> _attrPresenterFactory;
+        private readonly LogPresenter _log;
         
         // for testing purposes only 
         private IEntityManager _queryResult;
         
-        public void OnImportsSatisfied()
+        [ImportingConstructor]
+        public ViewerApplication(
+            ViewerForm appForm, 
+            IAttributeStorage storage,
+            IEntityRepository modifiedEntities,
+            ImagesPresenter images,
+            DirectoryTreePresenter explorer,
+            ExportFactory<AttributesPresenter> attrPresenterFactory,
+            LogPresenter log)
         {
+            _appForm = appForm;
+            _storage = storage;
+            _modifiedEntities = modifiedEntities;
+            _images = images;
+            _explorer = explorer;
+            _attrPresenterFactory = attrPresenterFactory;
+            _log = log;
+
             _queryResult = new EntityManager(_modifiedEntities);
             foreach (var file in Directory.EnumerateFiles(@"D:\dataset\moderate"))
             {
@@ -54,9 +69,6 @@ namespace Viewer
         {
             _images.LoadFromQueryResult(_queryResult);
             _images.ShowView(DockState.Document);
-
-            _presentation.ShowEntity(_queryResult, 0);
-            _presentation.ShowView(DockState.Document);
 
             _explorer.UpdateRootDirectories();
             _explorer.ShowView(DockState.DockLeft);

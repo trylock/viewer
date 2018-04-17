@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -43,6 +44,14 @@ namespace Viewer.UI.Presentation
             _entityIndex = index;
             await LoadCurrentEntityAsync();
         }
+
+        private Image LoadImage(string path)
+        {
+            using (var input = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                return Image.FromStream(input);
+            }
+        }
         
         private async Task LoadCurrentEntityAsync()
         {
@@ -51,7 +60,7 @@ namespace Viewer.UI.Presentation
 
             // load new image
             var entity = _entities[_entityIndex];
-            var image = await Task.Run(() => Image.FromFile(entity.Path));
+            var image = await Task.Run(() => LoadImage(entity.Path));
 
             // replace old image with the new one
             _image?.Dispose();

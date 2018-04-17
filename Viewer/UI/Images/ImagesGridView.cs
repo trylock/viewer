@@ -345,9 +345,14 @@ namespace Viewer.UI.Images
         {
             HandleMouseMove?.Invoke(sender, ConvertMouseEventArgs(e));
         }
+        
+        private void ImagesGridView_DoubleClick(object sender, EventArgs e)
+        {
+            OpenItem?.Invoke(sender, e);
+        }
 
         #endregion
-        
+
         private void NameTextBox_Leave(object sender, EventArgs e)
         {
             CancelEditItemName?.Invoke(sender, e);

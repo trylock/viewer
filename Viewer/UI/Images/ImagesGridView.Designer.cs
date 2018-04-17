@@ -114,6 +114,7 @@
             this.Name = "ImagesGridView";
             this.Text = "Images";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridControl_Paint);
+            this.DoubleClick += new System.EventHandler(this.ImagesGridView_DoubleClick);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridControl_MouseUp);

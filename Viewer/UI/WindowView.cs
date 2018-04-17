@@ -49,7 +49,7 @@ namespace Viewer.UI
             DockState == DockState.DockLeftAutoHide ||
             DockState == DockState.DockTopAutoHide ||
             DockState == DockState.DockRightAutoHide;
-
+        
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
             CloseView?.Invoke(sender, e);

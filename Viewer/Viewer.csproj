@@ -110,6 +110,9 @@
     </Compile>
     <Compile Include="UI\Attributes\DateTimeCell.cs" />
     <Compile Include="UI\Attributes\IAttributeView.cs" />
+    <Compile Include="UI\BufferedDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\ClipboardService.cs" />
     <Compile Include="UI\Images\GridView.cs">
       <SubType>UserControl</SubType>

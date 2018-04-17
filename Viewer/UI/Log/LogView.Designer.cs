@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.LogEntryGridView = new System.Windows.Forms.DataGridView();
+            this.LogEntryGridView = new BufferedDataGridView();
             this.TypeColumn = new System.Windows.Forms.DataGridViewImageColumn();
             this.MessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.GroupColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();

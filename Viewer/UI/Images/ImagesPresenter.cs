@@ -252,14 +252,6 @@ namespace Viewer.UI.Images
                     // make the active item the only item in selection
                     ChangeSelection(new []{ index }, SelectionStrategy.Replace);
                 }
-
-                // begin the move operation on files in selection
-                if ((e.Button & MouseButtons.Left) != 0)
-                {
-                    var dragFiles = _currentSelection.Select(elem => _imagesView.Items[elem].FullPath).ToArray();
-                    var data = new DataObject(DataFormats.FileDrop, dragFiles);
-                    _imagesView.BeginDragDrop(data, DragDropEffects.Copy);
-                }
             }
             else
             {
@@ -315,6 +307,13 @@ namespace Viewer.UI.Images
             if (_isSelectionActive)
             {
                 UpdateSelection(e.Location);
+            }
+            else if ((e.Button & MouseButtons.Left) != 0)
+            {
+                // begin a drag&drop operation
+                var dragFiles = _currentSelection.Select(elem => _imagesView.Items[elem].FullPath).ToArray();
+                var data = new DataObject(DataFormats.FileDrop, dragFiles);
+                _imagesView.BeginDragDrop(data, DragDropEffects.Copy);
             }
         }
 

@@ -32,6 +32,10 @@ namespace ViewerTest.UI.Images
         public event EventHandler CopyItems;
         public event EventHandler DeleteItems;
         public event EventHandler OpenItem;
+        public event EventHandler ThumbnailSizeChanged;
+        public int ThumbnailSize { get; set; }
+        public int ThumbnailSizeMinimum { get; set; }
+        public int ThumbnailSizeMaximum { get; set; }
 
         public Size ItemSize { get; set; } = new Size(1, 1);
         public Size ItemPadding { get; set; } = new Size(0, 0);
@@ -107,6 +111,11 @@ namespace ViewerTest.UI.Images
         // mocked interface
         public void UpdateSize()
         {
+        }
+
+        public void UpdateSize(Size itemSize)
+        {
+            throw new NotImplementedException();
         }
 
         public void UpdateItems()

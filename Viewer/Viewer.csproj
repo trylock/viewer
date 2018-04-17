@@ -110,6 +110,12 @@
     <Compile Include="UI\Attributes\DateTimeCell.cs" />
     <Compile Include="UI\Attributes\IAttributeView.cs" />
     <Compile Include="UI\ClipboardService.cs" />
+    <Compile Include="UI\Images\GridView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Images\GridView.Designer.cs">
+      <DependentUpon>GridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Log\ButtonCell.cs" />
     <Compile Include="UI\Log\ILogView.cs" />
     <Compile Include="UI\Log\Log.cs" />
@@ -195,6 +201,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Explorer\DirectoryTreeView.resx">
       <DependentUpon>DirectoryTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Images\GridView.resx">
+      <DependentUpon>GridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Images\ImagesGridView.resx">
       <DependentUpon>ImagesGridView.cs</DependentUpon>

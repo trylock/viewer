@@ -34,7 +34,7 @@ namespace Viewer.UI.Images
 
         // current state
         private IEntityManager _entities;
-        private readonly Size _itemSize = new Size(150, 100);
+        private readonly Size _minItemSize = new Size(133, 100);
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
         private Point _selectionStartPoint;
@@ -70,7 +70,11 @@ namespace Viewer.UI.Images
             _clipboard = clipboard;
             _thumbnailGenerator = thumbnailGenerator;
             _presentationFactory = presentationFactory;
-            _imagesView.UpdateSize();
+
+            _imagesView.ThumbnailSizeMinimum = 1;
+            _imagesView.ThumbnailSizeMaximum = 100;
+            _imagesView.ThumbnailSize = 1;
+            _imagesView.ItemSize = _minItemSize;
             PresenterUtils.SubscribeTo(_imagesView, this, "View");
         }
 
@@ -125,7 +129,7 @@ namespace Viewer.UI.Images
                 var imageData = ((ImageAttribute) attr).Value;
                 using (var image = Image.FromStream(new MemoryStream(imageData)))
                 {
-                    return _thumbnailGenerator.GetThumbnail(image, _itemSize);
+                    return _thumbnailGenerator.GetThumbnail(image, _imagesView.ItemSize);
                 }
             }
 
@@ -324,7 +328,6 @@ namespace Viewer.UI.Images
 
         private void View_Resize(object sender, EventArgs e)
         {
-            _imagesView.UpdateSize();
         }
          
         private void View_HandleKeyDown(object sender, KeyEventArgs e)
@@ -514,6 +517,29 @@ namespace Viewer.UI.Images
             }
             _selection.Clear();
             _imagesView.Items.Clear();
+        }
+
+        private void View_ThumbnailSizeChanged(object sender, EventArgs e)
+        {
+            // compute the new thumbnail size
+            var scale = 1 + (_imagesView.ThumbnailSize - _imagesView.ThumbnailSizeMinimum) /
+                        (double)(_imagesView.ThumbnailSizeMaximum - _imagesView.ThumbnailSizeMinimum);
+            var itemSize = new Size(
+                (int)(_minItemSize.Width * scale),
+                (int)(_minItemSize.Height * scale)
+            );
+
+            // update thumbnails of all entities in the view
+            foreach (var item in _imagesView.Items)
+            {
+                if (item.Thumbnail.IsValueCreated)
+                {
+                    item.Thumbnail.Value?.Dispose();
+                }
+                item.Thumbnail = GetThumbnail(item.Data);
+            }
+
+            _imagesView.ItemSize = itemSize;
         }
 
         #endregion

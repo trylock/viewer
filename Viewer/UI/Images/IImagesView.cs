@@ -39,8 +39,11 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Image representation of the file
         /// </summary>
-        public Lazy<Image> Thumbnail { get; }
+        public Lazy<Image> Thumbnail { get; set; }
 
+        /// <summary>
+        /// Underlying entity
+        /// </summary>
         public IEntity Data { get; set; }
         
         public EntityView(IEntity data, Lazy<Image> thumbnail)
@@ -70,7 +73,7 @@ namespace Viewer.UI.Images
             NewName = newName;
         }
     }
-
+    
     public interface IImagesView : IWindowView
     {
         event MouseEventHandler HandleMouseDown;
@@ -110,8 +113,25 @@ namespace Viewer.UI.Images
         /// </summary>
         event EventHandler OpenItem;
 
-        Size ItemSize { get; set; }
-        Size ItemPadding { get; set; }
+        /// <summary>
+        /// Event called when user changes the thumbnail size
+        /// </summary>
+        event EventHandler ThumbnailSizeChanged;
+        
+        /// <summary>
+        /// Current thumbnail size set by user
+        /// </summary>
+        int ThumbnailSize { get; set; }
+
+        /// <summary>
+        /// Minimum thumbnail size 
+        /// </summary>
+        int ThumbnailSizeMinimum { get; set; }
+
+        /// <summary>
+        /// Maximum thumbnail size
+        /// </summary>
+        int ThumbnailSizeMaximum { get; set; }
 
         /// <summary>
         /// List of items to show 
@@ -119,9 +139,9 @@ namespace Viewer.UI.Images
         List<EntityView> Items { get; set; }
 
         /// <summary>
-        /// Update gird size
+        /// Set an item size
         /// </summary>
-        void UpdateSize();
+        Size ItemSize { get; set; }
 
         /// <summary>
         /// Notify the view that the Items collection has changed.

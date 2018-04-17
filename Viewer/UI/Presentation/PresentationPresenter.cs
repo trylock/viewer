@@ -47,10 +47,7 @@ namespace Viewer.UI.Presentation
 
         private Image LoadImage(string path)
         {
-            using (var input = new FileStream(path, FileMode.Open, FileAccess.Read))
-            {
-                return Image.FromStream(input);
-            }
+            return Image.FromStream(new MemoryStream(File.ReadAllBytes(path)));
         }
         
         private async Task LoadCurrentEntityAsync()

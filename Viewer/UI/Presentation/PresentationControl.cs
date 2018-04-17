@@ -71,6 +71,8 @@ namespace Viewer.UI.Presentation
         {
             InitializeComponent();
 
+            MouseWheel += PresentationControl_MouseWheel;
+
             MinDelayLabel.Text = SpeedTrackBar.Minimum + "s";
             MaxDelayLabel.Text = SpeedTrackBar.Maximum + "s";
             
@@ -158,6 +160,18 @@ namespace Viewer.UI.Presentation
             {
                 Cursor.Show();
                 _isCursorHidden = false;
+            }
+        }
+        private void PresentationControl_MouseWheel(object sender, MouseEventArgs e)
+        {
+            // move to the next/previous image
+            if (e.Delta >= 120)
+            {
+                NextImage?.Invoke(sender, e);
+            }
+            else if (e.Delta <= -120)
+            {
+                PrevImage?.Invoke(sender, e);
             }
         }
 

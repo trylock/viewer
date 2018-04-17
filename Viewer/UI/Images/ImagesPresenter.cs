@@ -112,7 +112,12 @@ namespace Viewer.UI.Images
             _imagesView.Items.Clear();
         }
 
-        private Image GetThumbnail(IEntity item)
+        private Lazy<Image> GetThumbnail(IEntity item)
+        {
+            return new Lazy<Image>(() => GenerateThumbnail(item));
+        }
+
+        private Image GenerateThumbnail(IEntity item)
         {
             var attr = item.GetAttribute("thumbnail");
             if (attr != null)

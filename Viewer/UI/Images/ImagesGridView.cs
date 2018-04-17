@@ -313,11 +313,12 @@ namespace Viewer.UI.Images
             }
 
             // draw the thumbnail
-            var thumbnailSize = item.Thumbnail.Size;
+            var thumbnail = item.Thumbnail.Value;
+            var thumbnailSize = thumbnail.Size;
             var thumbnailLocation = GetThumbnailLocation(bounds, thumbnailSize);
             // we don't really need an interpolation as we are drawing the image in its original size
             graphics.InterpolationMode = InterpolationMode.Low;
-            graphics.DrawImage(item.Thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
+            graphics.DrawImage(thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
 
             // draw name
             var nameLocation = GetNameLocation(bounds);

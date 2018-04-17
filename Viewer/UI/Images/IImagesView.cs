@@ -54,7 +54,7 @@ namespace Viewer.UI.Images
 
         public void Dispose()
         {
-            if (Thumbnail.IsValueCreated)
+            if (Thumbnail != null && Thumbnail.IsValueCreated)
             {
                 Thumbnail.Value?.Dispose();
             }

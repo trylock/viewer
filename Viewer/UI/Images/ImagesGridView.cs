@@ -28,13 +28,13 @@ namespace Viewer.UI.Images
         public event MouseEventHandler HandleMouseMove;
         public event KeyEventHandler HandleKeyDown
         {
-            add => KeyDown += value;
-            remove => KeyUp -= value;
+            add => GridView.KeyDown += value;
+            remove => GridView.KeyUp -= value;
         }
         public event KeyEventHandler HandleKeyUp
         {
-            add => KeyUp += value;
-            remove => KeyUp -= value;
+            add => GridView.KeyUp += value;
+            remove => GridView.KeyUp -= value;
         }
         public event EventHandler CopyItems
         {

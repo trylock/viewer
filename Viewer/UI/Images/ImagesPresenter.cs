@@ -22,6 +22,8 @@ namespace Viewer.UI.Images
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class ImagesPresenter : Presenter
     {
+        public const string ThumbnailAttributeName = "thumbnail";
+
         private readonly IImagesView _imagesView;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
@@ -123,7 +125,7 @@ namespace Viewer.UI.Images
 
         private Image GenerateThumbnail(IEntity item)
         {
-            var attr = item.GetAttribute("thumbnail");
+            var attr = item.GetAttribute(ThumbnailAttributeName);
             if (attr != null)
             {
                 var imageData = ((ImageAttribute) attr).Value;
@@ -324,10 +326,6 @@ namespace Viewer.UI.Images
                 var data = new DataObject(DataFormats.FileDrop, dragFiles);
                 _imagesView.BeginDragDrop(data, DragDropEffects.Copy);
             }
-        }
-
-        private void View_Resize(object sender, EventArgs e)
-        {
         }
          
         private void View_HandleKeyDown(object sender, KeyEventArgs e)

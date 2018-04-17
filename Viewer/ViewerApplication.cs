@@ -34,8 +34,7 @@ namespace Viewer
 
         [Import] private ImagesPresenter _images;
         [Import] private DirectoryTreePresenter _explorer;
-        [Import] private AttributesPresenter _mainAttributes;
-        [Import] private AttributesPresenter _exifAttributes;
+        [Import] private ExportFactory<AttributesPresenter> _attrPresenterFactory;
         [Import] private PresentationPresenter _presentation;
         [Import] private LogPresenter _log;
         
@@ -55,18 +54,23 @@ namespace Viewer
         {
             _images.LoadFromQueryResult(_queryResult);
             _images.ShowView(DockState.Document);
-            
+
+            _presentation.ShowEntity(_queryResult, 0);
+            _presentation.ShowView(DockState.Document);
+
             _explorer.UpdateRootDirectories();
             _explorer.ShowView(DockState.DockLeft);
 
-            _mainAttributes.AttributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
-            _mainAttributes.EditingEnabled = true;
-            _mainAttributes.ShowView(DockState.DockRight);
+            var mainAttributes = _attrPresenterFactory.CreateExport().Value;
+            mainAttributes.AttributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
+            mainAttributes.EditingEnabled = true;
+            mainAttributes.ShowView(DockState.DockRight);
 
-            _exifAttributes.AttributePredicate = attr => attr.Data.GetType() != typeof(ImageAttribute) &&
+            var exifAttributes = _attrPresenterFactory.CreateExport().Value;
+            exifAttributes.AttributePredicate = attr => attr.Data.GetType() != typeof(ImageAttribute) &&
                                                          (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
-            _exifAttributes.EditingEnabled = false;
-            _exifAttributes.ShowView(DockState.DockRight);
+            exifAttributes.EditingEnabled = false;
+            exifAttributes.ShowView(DockState.DockRight);
 
             _log.ShowView(DockState.DockBottom);
         }

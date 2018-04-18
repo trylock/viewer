@@ -146,7 +146,6 @@
       <DependentUpon>PresentationView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Presenter.cs" />
-    <Compile Include="UI\PresenterUtils.cs" />
     <Compile Include="UI\Tasks\ProgressViewFactory.cs" />
     <Compile Include="UI\Selection.cs" />
     <Compile Include="UI\Tasks\TasksView.cs">

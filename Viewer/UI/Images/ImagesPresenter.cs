@@ -79,7 +79,7 @@ namespace Viewer.UI.Images
             _imagesView.ThumbnailSizeMaximum = 100;
             _imagesView.ThumbnailSize = 1;
             _imagesView.ItemSize = _minItemSize;
-            PresenterUtils.SubscribeTo(_imagesView, this, "View");
+            SubscribeTo(_imagesView, "View");
         }
 
         /// <summary>

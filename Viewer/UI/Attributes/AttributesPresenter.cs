@@ -53,7 +53,8 @@ namespace Viewer.UI.Attributes
             _selection = selection;
             _attributes = attrManager;
             _selection.Changed += Selection_Changed;
-            PresenterUtils.SubscribeTo(_attrView, this, "View");
+
+            SubscribeTo(_attrView, "View");
         }
         
         private static AttributeGroup CreateAddAttributeView()

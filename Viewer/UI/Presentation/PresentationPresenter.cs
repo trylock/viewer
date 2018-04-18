@@ -41,7 +41,7 @@ namespace Viewer.UI.Presentation
             _selection = selection;
             _imageLoader = imageLoader;
             _presentationView = presentationView;
-            PresenterUtils.SubscribeTo(_presentationView, this, "View");
+            SubscribeTo(_presentationView, "View");
         }
 
         public async void ShowEntity(IEntityManager entities, int index)

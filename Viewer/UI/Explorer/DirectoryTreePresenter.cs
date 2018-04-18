@@ -49,7 +49,8 @@ namespace Viewer.UI.Explorer
             _dialogView = dialogView;
             _progressViewFactory = progressViewFactory;
             _treeView = treeView;
-            PresenterUtils.SubscribeTo(_treeView, this, "View");
+
+            SubscribeTo(_treeView, "View");
         }
 
         public void UpdateRootDirectories()

@@ -25,7 +25,7 @@ namespace Viewer.UI.Log
             _log.EntryAdded += LogOnEntryAdded;
             _view.Entries = _log;
             _view.UpdateEntries();
-            PresenterUtils.SubscribeTo(_view, this, "View");
+            SubscribeTo(_view, "View");
         }
         
         private void LogOnEntryAdded(object sender, LogEventArgs e)

@@ -83,6 +83,7 @@
     <Compile Include="UI\Attributes\AttributeViewMock.cs" />
     <Compile Include="UI\ClipboardServiceMock.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
+    <Compile Include="UI\Images\ImageLoaderMock.cs" />
     <Compile Include="UI\Images\ImagesPresenterTest.cs" />
     <Compile Include="UI\Images\ImagesViewMock.cs" />
     <Compile Include="UI\Images\ThumbnailGeneratorTest.cs" />

@@ -85,6 +85,7 @@ namespace Viewer.Data.Formats.Exif
                 new ExifAttributeParser<ExifIfd0Directory>("ImageWidth", ExifIfd0Directory.TagImageWidth, AttributeType.Int),
                 new ExifAttributeParser<ExifIfd0Directory>("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
                 new ExifAttributeParser<ExifSubIfdDirectory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
+                new ExifAttributeParser<ExifIfd0Directory>("orientation", ExifIfd0Directory.TagOrientation, AttributeType.Int),
                 new ThumbnaiExifAttributeParser("thumbnail"),
 
                 // camera metadata

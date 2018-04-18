@@ -31,7 +31,7 @@ namespace Viewer.UI.Images
         private readonly ISelection _selection;
         private readonly IAttributeStorage _storage;
         private readonly IClipboardService _clipboard;
-        private readonly IThumbnailGenerator _thumbnailGenerator;
+        private readonly IImageLoader _imageLoader;
         private readonly ExportFactory<PresentationPresenter> _presentationFactory;
         
         public override IWindowView MainView => _imagesView;
@@ -42,9 +42,9 @@ namespace Viewer.UI.Images
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
         private Point _selectionStartPoint;
-        private bool _isSelectionActive = false;
-        private bool _isControl = false;
-        private bool _isShift = false;
+        private bool _isSelectionActive;
+        private bool _isControl;
+        private bool _isShift;
 
         /// <summary>
         /// Index of an active item (item over which is a mouse cursor) 
@@ -64,7 +64,7 @@ namespace Viewer.UI.Images
             ISelection selection, 
             IAttributeStorage storage,
             IClipboardService clipboard,
-            IThumbnailGenerator thumbnailGenerator,
+            IImageLoader imageLoader,
             ExportFactory<PresentationPresenter> presentationFactory)
         {
             _imagesView = imagesView;
@@ -72,7 +72,7 @@ namespace Viewer.UI.Images
             _selection = selection;
             _storage = storage;
             _clipboard = clipboard;
-            _thumbnailGenerator = thumbnailGenerator;
+            _imageLoader = imageLoader;
             _presentationFactory = presentationFactory;
 
             _imagesView.ThumbnailSizeMinimum = 1;
@@ -128,27 +128,7 @@ namespace Viewer.UI.Images
         /// <returns>Thumbnail</returns>
         private Lazy<Image> GetThumbnail(IEntity item)
         {
-            return new Lazy<Image>(() => GenerateThumbnail(item));
-        }
-
-        /// <summary>
-        /// Generate thumbnail image for given entity
-        /// </summary>
-        /// <param name="item">Entity</param>
-        /// <returns>Thumbnail image of the entity</returns>
-        private Image GenerateThumbnail(IEntity item)
-        {
-            var attr = item.GetAttribute(ThumbnailAttributeName);
-            if (attr != null)
-            {
-                var imageData = ((ImageAttribute) attr).Value;
-                using (var image = Image.FromStream(new MemoryStream(imageData)))
-                {
-                    return _thumbnailGenerator.GetThumbnail(image, _imagesView.ItemSize);
-                }
-            }
-
-            return null;
+            return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, _imagesView.ItemSize));
         }
 
         /// <summary>
@@ -161,11 +141,8 @@ namespace Viewer.UI.Images
             var frequency = new Dictionary<Fraction, int>();
             foreach (var entity in entities)
             {
-                var widthAttr = entity.GetAttribute(ImageWidthAttributeName) as IntAttribute;
-                var heightAttr = entity.GetAttribute(ImageHeightAttributeName) as IntAttribute;
-                if (widthAttr == null || heightAttr == null)
-                    continue;
-                var ratio = new Fraction(widthAttr.Value, heightAttr.Value);
+                var size = _imageLoader.GetImageSize(entity);
+                var ratio = new Fraction(size.Width, size.Height);
                 if (frequency.ContainsKey(ratio))
                 {
                     frequency[ratio]++;

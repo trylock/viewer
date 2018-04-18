@@ -14,14 +14,6 @@ using ViewerTest.Data;
 
 namespace ViewerTest.UI.Images
 {
-    public class NullThumbnailGeneratorMock : IThumbnailGenerator
-    {
-        public Image GetThumbnail(Image original, Size thumbnailArea)
-        {
-            return null;
-        }
-    }
-
     [TestClass]
     public class ImagesPresenterTest
     {
@@ -43,10 +35,10 @@ namespace ViewerTest.UI.Images
             {
                 _entities.Add(new Entity(i.ToString()));
             }
-
-            var thumbnailGenerator = new NullThumbnailGeneratorMock();
+            
+            var imageLoaderMock = new ImageLoaderMock();
             _selectionMock = new SelectionMock();
-            _presenter = new ImagesPresenter(_viewMock, null, _selectionMock, _storage, _clipboardMock, thumbnailGenerator, null);
+            _presenter = new ImagesPresenter(_viewMock, null, _selectionMock, _storage, _clipboardMock, imageLoaderMock, null);
             _presenter.LoadFromQueryResult(_entities);
         }
 

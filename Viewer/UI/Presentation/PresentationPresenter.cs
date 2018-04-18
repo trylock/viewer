@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
 {
@@ -16,6 +17,7 @@ namespace Viewer.UI.Presentation
     public class PresentationPresenter : Presenter
     {
         private readonly ISelection _selection;
+        private readonly IImageLoader _imageLoader;
         private readonly IPresentationView _presentationView;
 
         public override IWindowView MainView => _presentationView;
@@ -31,9 +33,13 @@ namespace Viewer.UI.Presentation
         private DateTime _lastImageChange;
         
         [ImportingConstructor]
-        public PresentationPresenter([Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IPresentationView presentationView, ISelection selection)
+        public PresentationPresenter(
+            [Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IPresentationView presentationView, 
+            ISelection selection,
+            IImageLoader imageLoader)
         {
             _selection = selection;
+            _imageLoader = imageLoader;
             _presentationView = presentationView;
             PresenterUtils.SubscribeTo(_presentationView, this, "View");
         }
@@ -44,11 +50,6 @@ namespace Viewer.UI.Presentation
             _entityIndex = index;
             await LoadCurrentEntityAsync();
         }
-
-        private Image LoadImage(string path)
-        {
-            return Image.FromStream(new MemoryStream(File.ReadAllBytes(path)));
-        }
         
         private async Task LoadCurrentEntityAsync()
         {
@@ -57,7 +58,7 @@ namespace Viewer.UI.Presentation
 
             // load new image
             var entity = _entities[_entityIndex];
-            var image = await Task.Run(() => LoadImage(entity.Path));
+            var image = await Task.Run(() => _imageLoader.LoadImage(entity));
 
             // replace old image with the new one
             _image?.Dispose();

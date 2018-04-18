@@ -120,6 +120,7 @@
     <Compile Include="UI\Images\GridView.Designer.cs">
       <DependentUpon>GridView.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Images\ImageLoader.cs" />
     <Compile Include="UI\Log\ButtonCell.cs" />
     <Compile Include="UI\Log\ILogView.cs" />
     <Compile Include="UI\Log\Log.cs" />

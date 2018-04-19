@@ -45,6 +45,7 @@ namespace ViewerTest.UI.Attributes
         public event EventHandler<FilterEventArgs> FilterAttributes;
 
         public bool EditingEnabled { get; set; }
+        public string Text { get; set; }
 
         public List<AttributeGroup> Attributes { get; set; } = new List<AttributeGroup>();
 
@@ -70,6 +71,7 @@ namespace ViewerTest.UI.Attributes
 
         public event EventHandler CloseView;
         public event EventHandler ViewGotFocus;
+
         public void EnsureVisible()
         {
             throw new NotImplementedException();
@@ -83,6 +85,10 @@ namespace ViewerTest.UI.Attributes
         public void Show(DockPanel dockPanel, DockState dockState)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

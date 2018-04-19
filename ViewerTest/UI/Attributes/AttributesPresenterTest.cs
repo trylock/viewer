@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,12 @@ namespace ViewerTest.UI.Attributes
             _selectionMock = new SelectionMock();
             _attrViewMock = new AttributeViewMock();
             _attributeManagerMock = new AttributeManagerMock();
-            _presenter = new AttributesPresenter(_attrViewMock, null, _selectionMock, _storage, _attributeManagerMock);
+
+            var viewFactory = new ExportFactory<IAttributeView>(() =>
+            {
+                return new Tuple<IAttributeView, Action>(_attrViewMock, () => { });
+            });
+            _presenter = new AttributesPresenter(viewFactory, null, _selectionMock, _storage, _attributeManagerMock);
         }
 
         [TestMethod]

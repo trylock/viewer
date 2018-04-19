@@ -167,7 +167,6 @@
             this.ClientSize = new System.Drawing.Size(835, 434);
             this.ContextMenuStrip = this.ItemContextMenu;
             this.Controls.Add(this.SplitContainer);
-            this.DoubleBuffered = true;
             this.Name = "ImagesGridView";
             this.Text = "Images";
             this.ItemContextMenu.ResumeLayout(false);

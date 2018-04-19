@@ -12,6 +12,7 @@ using MetadataExtractor.IO;
 using Viewer.Data.Formats;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Data.Formats.Jpeg;
+using Viewer.IO;
 using Directory = MetadataExtractor.Directory;
 
 namespace Viewer.Data.Storage
@@ -22,6 +23,7 @@ namespace Viewer.Data.Storage
     [Export(typeof(IAttributeStorage))]
     public class FileSystemAttributeStorage : IAttributeStorage
     {
+        private readonly IFileSystem _fileSystem;
         private readonly IJpegSegmentReaderFactory _segmentReaderFactory;
         private readonly IJpegSegmentWriterFactory _segmentWriterFactory;
         private readonly IAttributeWriterFactory _attrWriterFactory;
@@ -29,17 +31,20 @@ namespace Viewer.Data.Storage
 
         [ImportingConstructor]
         public FileSystemAttributeStorage(
+            IFileSystem fileSystem,
             IJpegSegmentReaderFactory segmentReaderFactory,
             IJpegSegmentWriterFactory segmentWriterFactory,
             IAttributeWriterFactory attrWriterFactory,
             [ImportMany] IAttributeReaderFactory[] attrReaderFactories)
         {
+            _fileSystem = fileSystem;
             _segmentReaderFactory = segmentReaderFactory;
             _segmentWriterFactory = segmentWriterFactory;
             _attrReaderFactories = attrReaderFactories;
             _attrWriterFactory = attrWriterFactory;
         }
         
+        /// <inheritdoc />
         /// <summary>
         /// Load attributes from given file.
         /// Read algorithm:
@@ -49,7 +54,7 @@ namespace Viewer.Data.Storage
         /// (2.2) read all attributes and add them to the attributes collection 
         /// </summary>
         /// <param name="path">Path to a file</param>
-        /// <exception cref="InvalidDataFormatException">
+        /// <exception cref="T:Viewer.Data.Formats.InvalidDataFormatException">
         ///     Format of attributes in some segment is invalid.
         /// </exception>
         /// <returns>Collection of attributes read from the file</returns>
@@ -134,18 +139,18 @@ namespace Viewer.Data.Storage
                 }
 
                 // replace the original file with the modified file
-                File.Replace(tmpFileName, attrs.Path, null);
+                _fileSystem.ReplaceFile(tmpFileName, attrs.Path, null);
             }
         }
 
         public void Remove(string path)
         {
-            File.Delete(path);
+            _fileSystem.DeleteFile(path);
         }
 
         public void Move(string oldPath, string newPath)
         {
-            File.Move(oldPath, newPath);
+            _fileSystem.MoveFile(oldPath, newPath);
         }
 
         private byte[] Serialize(IEnumerable<Attribute> attrs)
@@ -162,7 +167,7 @@ namespace Viewer.Data.Storage
             }
         }
         
-        private bool IsAttributeSegment(JpegSegment segment)
+        private static bool IsAttributeSegment(JpegSegment segment)
         {
             const string header = AttributeReader.JpegSegmentHeader;
             return JpegSegmentUtils.MatchSegment(segment, JpegSegmentType.App1, header);

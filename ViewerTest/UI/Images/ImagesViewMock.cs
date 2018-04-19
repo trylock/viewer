@@ -37,6 +37,7 @@ namespace ViewerTest.UI.Images
         public int ThumbnailSizeMinimum { get; set; }
         public int ThumbnailSizeMaximum { get; set; }
 
+        public string Text { get; set; }
         public Size ItemSize { get; set; } = new Size(1, 1);
         public Size ItemPadding { get; set; } = new Size(0, 0);
         public List<EntityView> Items { get; set; } = new List<EntityView>();

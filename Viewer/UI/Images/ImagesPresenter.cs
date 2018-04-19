@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,27 +15,21 @@ using Viewer.Properties;
 using Viewer.UI.Explorer;
 using Viewer.UI.Presentation;
 using WeifenLuo.WinFormsUI.Docking;
-using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Images
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class ImagesPresenter : Presenter
+    public class ImagesPresenter : Presenter<IImagesView>
     {
-        public const string ThumbnailAttributeName = "thumbnail";
-        public const string ImageWidthAttributeName = "ImageWidth";
-        public const string ImageHeightAttributeName = "ImageHeight";
-
-        private readonly IImagesView _imagesView;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
         private readonly IAttributeStorage _storage;
         private readonly IClipboardService _clipboard;
         private readonly IImageLoader _imageLoader;
         private readonly ExportFactory<PresentationPresenter> _presentationFactory;
-        
-        public override IWindowView MainView => _imagesView;
+
+        protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
         // current state
         private IEntityManager _entities;
@@ -59,7 +54,7 @@ namespace Viewer.UI.Images
 
         [ImportingConstructor]
         public ImagesPresenter(
-            [Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IImagesView imagesView,
+            ExportFactory<IImagesView> viewFactory,
             IFileSystemErrorView dialogView,
             ISelection selection, 
             IAttributeStorage storage,
@@ -67,7 +62,7 @@ namespace Viewer.UI.Images
             IImageLoader imageLoader,
             ExportFactory<PresentationPresenter> presentationFactory)
         {
-            _imagesView = imagesView;
+            ViewLifetime = viewFactory.CreateExport();
             _dialogView = dialogView;
             _selection = selection;
             _storage = storage;
@@ -75,11 +70,22 @@ namespace Viewer.UI.Images
             _imageLoader = imageLoader;
             _presentationFactory = presentationFactory;
 
-            _imagesView.ThumbnailSizeMinimum = 1;
-            _imagesView.ThumbnailSizeMaximum = 100;
-            _imagesView.ThumbnailSize = 1;
-            _imagesView.ItemSize = _minItemSize;
-            SubscribeTo(_imagesView, "View");
+            View.ThumbnailSizeMinimum = 1;
+            View.ThumbnailSizeMaximum = 100;
+            View.ThumbnailSize = 1;
+            View.ItemSize = _minItemSize;
+            SubscribeTo(View, "View");
+        }
+
+        public override void Dispose()
+        {
+            foreach (var item in View.Items)
+            {
+                item.Dispose();
+            }
+            _selection.Clear();
+            View.Items.Clear();
+            base.Dispose();
         }
 
         /// <summary>
@@ -97,28 +103,28 @@ namespace Viewer.UI.Images
 
             // find optimal item size
             _minItemSize = FindMinimalImageSize(entities);
-            _imagesView.ItemSize = _minItemSize;
+            View.ItemSize = _minItemSize;
 
             // add entities with the default thumbnail
             foreach (var entity in _entities)
             {
-                _imagesView.Items.Add(new EntityView(entity, GetThumbnail(entity)));
+                View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
             }
-            _imagesView.UpdateItems();
+            View.UpdateItems();
         }
         
         private void DisposeViewData()
         {
-            if (_imagesView.Items == null)
+            if (View.Items == null)
             {
-                _imagesView.Items = new List<EntityView>();
+                View.Items = new List<EntityView>();
             }
 
-            foreach (var item in _imagesView.Items)
+            foreach (var item in View.Items)
             {
                 item.Dispose();
             }
-            _imagesView.Items.Clear();
+            View.Items.Clear();
         }
 
         /// <summary>
@@ -128,7 +134,7 @@ namespace Viewer.UI.Images
         /// <returns>Thumbnail</returns>
         private Lazy<Image> GetThumbnail(IEntity item)
         {
-            return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, _imagesView.ItemSize));
+            return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, View.ItemSize));
         }
 
         /// <summary>
@@ -194,7 +200,7 @@ namespace Viewer.UI.Images
         {
             _isSelectionActive = false;
             UpdateSelection(endPoint);
-            _imagesView.HideSelection();
+            View.HideSelection();
         }
 
         private Rectangle GetSelectionBounds(Point endPoint)
@@ -209,7 +215,7 @@ namespace Viewer.UI.Images
         private void UpdateSelection(Point endPoint)
         {
             var bounds = GetSelectionBounds(endPoint);
-            var newSelection = _imagesView.GetItemsIn(bounds);
+            var newSelection = View.GetItemsIn(bounds);
             var strategy = SelectionStrategy.Replace;
             if (_isShift)
             {
@@ -221,7 +227,7 @@ namespace Viewer.UI.Images
             }
 
             ChangeSelection(newSelection, strategy);
-            _imagesView.ShowSelection(bounds);
+            View.ShowSelection(bounds);
         }
 
         private enum SelectionStrategy
@@ -272,29 +278,29 @@ namespace Viewer.UI.Images
             // reset state of items in previous selection
             foreach (var item in oldSelection)
             {
-                if (item < 0 || item >= _imagesView.Items.Count)
+                if (item < 0 || item >= View.Items.Count)
                     continue;
-                _imagesView.Items[item].State = ResultItemState.None;
+                View.Items[item].State = ResultItemState.None;
             }
-            _imagesView.UpdateItems(oldSelection);
+            View.UpdateItems(oldSelection);
 
             // set state of items in current selection
             foreach (var item in _currentSelection)
             {
-                _imagesView.Items[item].State = ResultItemState.Selected;
+                View.Items[item].State = ResultItemState.Selected;
             }
-            _imagesView.UpdateItems(_currentSelection);
+            View.UpdateItems(_currentSelection);
         }
 
         #region User input
         
         private void View_HandleMouseDown(object sender, MouseEventArgs e)
         {
-            var index = _imagesView.GetItemAt(e.Location);
+            var index = View.GetItemAt(e.Location);
 
             // update view
-            _imagesView.EnsureVisible();
-            _imagesView.HideItemEditForm();
+            View.EnsureVisible();
+            View.HideItemEditForm();
 
             // udpate focused item
             FocusedItem = index;
@@ -322,7 +328,7 @@ namespace Viewer.UI.Images
             }
             else
             {
-                var index = _imagesView.GetItemAt(e.Location);
+                var index = View.GetItemAt(e.Location);
                 if (index >= 0)
                 {
                     ChangeSelection(Enumerable.Repeat(index, 1), SelectionStrategy.Replace);
@@ -333,19 +339,19 @@ namespace Viewer.UI.Images
         private void View_HandleMouseMove(object sender, MouseEventArgs e)
         {
             // update active item
-            var item = _imagesView.GetItemAt(e.Location);
+            var item = View.GetItemAt(e.Location);
             if (item != ActiveItem)
             {
                 if (item >= 0 && !_currentSelection.Contains(item))
                 {
-                    _imagesView.Items[item].State = ResultItemState.Active;
-                    _imagesView.UpdateItem(item);
+                    View.Items[item].State = ResultItemState.Active;
+                    View.UpdateItem(item);
                 }
 
                 if (ActiveItem >= 0 && !_currentSelection.Contains(ActiveItem))
                 {
-                    _imagesView.Items[ActiveItem].State = ResultItemState.None;
-                    _imagesView.UpdateItem(ActiveItem);
+                    View.Items[ActiveItem].State = ResultItemState.None;
+                    View.UpdateItem(ActiveItem);
                 }
 
                 ActiveItem = item;
@@ -366,9 +372,9 @@ namespace Viewer.UI.Images
             else if ((e.Button & MouseButtons.Left) != 0)
             {
                 // begin a drag&drop operation
-                var dragFiles = _currentSelection.Select(elem => _imagesView.Items[elem].FullPath).ToArray();
+                var dragFiles = _currentSelection.Select(elem => View.Items[elem].FullPath).ToArray();
                 var data = new DataObject(DataFormats.FileDrop, dragFiles);
-                _imagesView.BeginDragDrop(data, DragDropEffects.Copy);
+                View.BeginDragDrop(data, DragDropEffects.Copy);
             }
         }
          
@@ -379,11 +385,11 @@ namespace Viewer.UI.Images
 
             if (e.Control && e.KeyCode == Keys.A)
             {
-                ChangeSelection(Enumerable.Range(0, _imagesView.Items.Count), SelectionStrategy.Replace);
+                ChangeSelection(Enumerable.Range(0, View.Items.Count), SelectionStrategy.Replace);
             }
             else if (e.KeyCode == Keys.Escape)
             {
-                _imagesView.HideItemEditForm();
+                View.HideItemEditForm();
             }
         }
         
@@ -401,12 +407,12 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            _imagesView.ShowItemEditForm(index);
+            View.ShowItemEditForm(index);
         }
 
         private void View_CancelEditItemName(object sender, EventArgs e)
         {
-            _imagesView.HideItemEditForm();
+            View.HideItemEditForm();
         }
 
         private void View_RenameItem(object sender, RenameEventArgs e)
@@ -425,7 +431,7 @@ namespace Viewer.UI.Images
             }
 
             // construct the new file path
-            var item = _imagesView.Items[index].Data;
+            var item = View.Items[index].Data;
             var basePath = PathUtils.GetDirectoryPath(item.Path);
             var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.Path));
 
@@ -435,8 +441,8 @@ namespace Viewer.UI.Images
                 _storage.Move(item.Path, newPath);
                 var updatedEntity = item.ChangePath(newPath);
                 _entities[index] = updatedEntity;
-                _imagesView.Items[index].Data = updatedEntity;
-                _imagesView.UpdateItem(index);
+                View.Items[index].Data = updatedEntity;
+                View.UpdateItem(index);
             }
             catch (PathTooLongException)
             {
@@ -456,7 +462,7 @@ namespace Viewer.UI.Images
             }
             finally
             {
-                _imagesView.HideItemEditForm();
+                View.HideItemEditForm();
             }
         }
 
@@ -467,7 +473,7 @@ namespace Viewer.UI.Images
 
         private IEnumerable<string> GetPathsInSelection()
         {
-            return _selection.Select(index => _imagesView.Items[index].FullPath);
+            return _selection.Select(index => View.Items[index].FullPath);
         }
 
         private void View_CopyItems(object sender, EventArgs e)
@@ -494,7 +500,7 @@ namespace Viewer.UI.Images
             var deletedPaths = new HashSet<string>();
             foreach (var item in _selection)
             {
-                var path = _imagesView.Items[item].FullPath;
+                var path = View.Items[item].FullPath;
                 try
                 {
                     _storage.Remove(path);
@@ -520,23 +526,23 @@ namespace Viewer.UI.Images
 
             // remove deleted items from the query and the view
             _entities.RemoveAll(entity => deletedPaths.Contains(entity.Path));
-            _imagesView.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
+            View.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
 
             // clear selection
             ChangeSelection(Enumerable.Empty<int>(), SelectionStrategy.Replace);
             
             // reset active and focused items if necessary
-            if (ActiveItem >= _imagesView.Items.Count)
+            if (ActiveItem >= View.Items.Count)
             {
                 ActiveItem = -1;
             }
 
-            if (FocusedItem >= _imagesView.Items.Count)
+            if (FocusedItem >= View.Items.Count)
             {
                 FocusedItem = -1;
             }
 
-            _imagesView.UpdateItems();
+            View.UpdateItems();
         }
 
         private void View_OpenItem(object sender, EventArgs e)
@@ -546,33 +552,33 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            var presentation = _presentationFactory.CreateExport().Value;
-            presentation.ShowEntity(_entities, ActiveItem);
-            presentation.ShowView(DockState.Document);
+            var presentationExport = _presentationFactory.CreateExport();
+            presentationExport.Value.ShowEntity(_entities, ActiveItem);
+            presentationExport.Value.View.CloseView += (s, args) =>
+            {
+                presentationExport.Dispose();
+                presentationExport = null;
+            };
+            presentationExport.Value.ShowView("Presentation", DockState.Document);
         }
         
         private void View_CloseView(object sender, EventArgs eventArgs)
         {
-            foreach (var item in _imagesView.Items)
-            {
-                item.Dispose();
-            }
-            _selection.Clear();
-            _imagesView.Items.Clear();
+            Dispose();
         }
 
         private void View_ThumbnailSizeChanged(object sender, EventArgs e)
         {
             // compute the new thumbnail size
-            var scale = 1 + (_imagesView.ThumbnailSize - _imagesView.ThumbnailSizeMinimum) /
-                        (double)(_imagesView.ThumbnailSizeMaximum - _imagesView.ThumbnailSizeMinimum);
+            var scale = 1 + (View.ThumbnailSize - View.ThumbnailSizeMinimum) /
+                        (double)(View.ThumbnailSizeMaximum - View.ThumbnailSizeMinimum);
             var itemSize = new Size(
                 (int)(_minItemSize.Width * scale),
                 (int)(_minItemSize.Height * scale)
             );
 
             // update thumbnails of all entities in the view
-            foreach (var item in _imagesView.Items)
+            foreach (var item in View.Items)
             {
                 if (item.Thumbnail.IsValueCreated)
                 {
@@ -581,7 +587,7 @@ namespace Viewer.UI.Images
                 item.Thumbnail = GetThumbnail(item.Data);
             }
 
-            _imagesView.ItemSize = itemSize;
+            View.ItemSize = itemSize;
         }
 
         #endregion

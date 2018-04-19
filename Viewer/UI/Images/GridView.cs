@@ -79,16 +79,16 @@ namespace Viewer.UI.Images
 
         #region Graphics settings
 
-        private readonly Brush _highlightedItemFill;
-        private readonly Pen _highlightedItemStroke;
+        private readonly Color _highlightFillColor;
+        private readonly Color _highlightStrokeColor;
         private readonly int _highlightedItemBorderSize = 1;
 
-        private readonly Brush _selectedItemFill;
-        private readonly Pen _selectedItemStroke;
+        private readonly Color _selectedFillColor;
+        private readonly Color _selectedStrokeColor;
         private readonly int _selectedItemBorderSize = 1;
 
-        private readonly Brush _rangeSelectionFill;
-        private readonly Pen _rangeSelectionStroke;
+        private readonly Color _rangeSelectionFillColor;
+        private readonly Color _rangeSelectionStrokeColor;
 
         #endregion
 
@@ -99,14 +99,14 @@ namespace Viewer.UI.Images
 
             InitializeComponent();
 
-            _highlightedItemFill = new SolidBrush(Color.FromArgb(226, 241, 255));
-            _highlightedItemStroke = new Pen(Color.FromArgb(221, 232, 248), _highlightedItemBorderSize);
+            _highlightFillColor = Color.FromArgb(226, 241, 255);
+            _highlightStrokeColor = Color.FromArgb(221, 232, 248);
 
-            _selectedItemFill = new SolidBrush(Color.FromArgb(221, 232, 248));
-            _selectedItemStroke = new Pen(Color.FromArgb(210, 220, 236), _selectedItemBorderSize);
+            _selectedFillColor = Color.FromArgb(221, 232, 248);
+            _selectedStrokeColor = Color.FromArgb(210, 220, 236);
 
-            _rangeSelectionFill = new SolidBrush(Color.FromArgb(150, 79, 143, 247));
-            _rangeSelectionStroke = new Pen(Color.FromArgb(255, 79, 143, 247));
+            _rangeSelectionFillColor = Color.FromArgb(150, 79, 143, 247);
+            _rangeSelectionStrokeColor = Color.FromArgb(255, 79, 143, 247);
         }
 
         #region View interface
@@ -234,9 +234,13 @@ namespace Viewer.UI.Images
             // update selection 
             if (!SelectionBounds.IsEmpty)
             {
-                var selectionBounds = Rectangle.Inflate(ProjectBounds(SelectionBounds), -1, -1);
-                e.Graphics.FillRectangle(_rangeSelectionFill, selectionBounds);
-                e.Graphics.DrawRectangle(_rangeSelectionStroke, selectionBounds);
+                using (var brush = new SolidBrush(_rangeSelectionFillColor))
+                using (var pen = new Pen(_rangeSelectionStrokeColor, 1))
+                {
+                    var selectionBounds = Rectangle.Inflate(ProjectBounds(SelectionBounds), -1, -1);
+                    e.Graphics.FillRectangle(brush, selectionBounds);
+                    e.Graphics.DrawRectangle(pen, selectionBounds);
+                }
             }
         }
 
@@ -253,14 +257,22 @@ namespace Viewer.UI.Images
             if ((item.State & ResultItemState.Selected) != 0)
             {
                 // draw selection 
-                graphics.FillRectangle(_selectedItemFill, drawBounds);
-                graphics.DrawRectangle(_selectedItemStroke, drawBounds);
+                using (var brush = new SolidBrush(_selectedFillColor))
+                using (var pen = new Pen(_selectedStrokeColor, _selectedItemBorderSize))
+                {
+                    graphics.FillRectangle(brush, drawBounds);
+                    graphics.DrawRectangle(pen, drawBounds);
+                }
             }
             else if ((item.State & ResultItemState.Active) != 0)
             {
                 // draw highlight
-                graphics.FillRectangle(_highlightedItemFill, drawBounds);
-                graphics.DrawRectangle(_highlightedItemStroke, drawBounds);
+                using (var brush = new SolidBrush(_highlightFillColor))
+                using (var pen = new Pen(_highlightStrokeColor, _highlightedItemBorderSize))
+                {
+                    graphics.FillRectangle(brush, drawBounds);
+                    graphics.DrawRectangle(pen, drawBounds);
+                }
             }
 
             // draw the thumbnail

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,15 +17,14 @@ namespace Viewer.UI.Attributes
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class AttributesPresenter : Presenter
+    public class AttributesPresenter : Presenter<IAttributeView>
     {
         private readonly IProgressViewFactory _progressViewFactory;
         private readonly ISelection _selection;
         private readonly IAttributeStorage _storage;
         private readonly IAttributeManager _attributes;
-        private readonly IAttributeView _attrView;
 
-        public override IWindowView MainView => _attrView;
+        protected override ExportLifetimeContext<IAttributeView> ViewLifetime { get; }
 
         /// <summary>
         /// Funtion which determines for each attribute whether it should be managed by this presenter.
@@ -41,22 +41,28 @@ namespace Viewer.UI.Attributes
 
         [ImportingConstructor]
         public AttributesPresenter(
-            [Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IAttributeView attrView, 
+            ExportFactory<IAttributeView> viewFactory, 
             IProgressViewFactory progressViewFactory, 
             ISelection selection,
             IAttributeStorage storage,
             IAttributeManager attrManager)
         {
-            _attrView = attrView;
+            ViewLifetime = viewFactory.CreateExport();
             _progressViewFactory = progressViewFactory;
             _storage = storage;
             _selection = selection;
             _attributes = attrManager;
             _selection.Changed += Selection_Changed;
 
-            SubscribeTo(_attrView, "View");
+            SubscribeTo(View, "View");
         }
-        
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            _selection.Changed -= Selection_Changed;
+        }
+
         private static AttributeGroup CreateAddAttributeView()
         {
             return new AttributeGroup
@@ -92,14 +98,14 @@ namespace Viewer.UI.Attributes
         private void ViewAttributes()
         {
             // add existing attributes + an empty row for a new attribute
-            _attrView.Attributes = GetSelectedAttributes().ToList();
+            View.Attributes = GetSelectedAttributes().ToList();
             if (_selection.Count > 0 && EditingEnabled)
             {
-                _attrView.Attributes.Add(CreateAddAttributeView());
+                View.Attributes.Add(CreateAddAttributeView());
             }
 
             // update attributes view
-            _attrView.UpdateAttributes();
+            View.UpdateAttributes();
         }
 
         #region View
@@ -114,7 +120,7 @@ namespace Viewer.UI.Attributes
             if (!EditingEnabled)
             {
                 // revert changes
-                _attrView.UpdateAttribute(e.Index);
+                View.UpdateAttribute(e.Index);
                 return;
             }
 
@@ -132,21 +138,21 @@ namespace Viewer.UI.Attributes
             {
                 if (string.IsNullOrEmpty(newAttr.Name))
                 {
-                    _attrView.AttributeNameIsEmpty();
+                    View.AttributeNameIsEmpty();
 
                     // revert changes
-                    _attrView.Attributes[e.Index] = e.OldValue;
-                    _attrView.UpdateAttribute(e.Index);
+                    View.Attributes[e.Index] = e.OldValue;
+                    View.UpdateAttribute(e.Index);
                     return;
                 }
 
                 if (HasAttribute(newAttr.Name))
                 {
-                    _attrView.AttributeNameIsNotUnique(newAttr.Name);
+                    View.AttributeNameIsNotUnique(newAttr.Name);
 
                     // revert changes
-                    _attrView.Attributes[e.Index] = e.OldValue;
-                    _attrView.UpdateAttribute(e.Index);
+                    View.Attributes[e.Index] = e.OldValue;
+                    View.UpdateAttribute(e.Index);
                     return;
                 }
             }
@@ -156,14 +162,14 @@ namespace Viewer.UI.Attributes
             // if we added a new attribute, add a new empty row
             if (oldAttr.Name == "")
             {
-                _attrView.Attributes.Add(CreateAddAttributeView());
-                _attrView.UpdateAttribute(_attrView.Attributes.Count - 1);
+                View.Attributes.Add(CreateAddAttributeView());
+                View.UpdateAttribute(View.Attributes.Count - 1);
             }
 
             // show changes
             e.NewValue.IsGlobal = true;
-            _attrView.Attributes[e.Index] = e.NewValue;
-            _attrView.UpdateAttribute(e.Index);
+            View.Attributes[e.Index] = e.NewValue;
+            View.UpdateAttribute(e.Index);
         }
         
         private void View_AttributeDeleted(object sender, AttributeDeletedEventArgs e)
@@ -173,7 +179,7 @@ namespace Viewer.UI.Attributes
                 return;
             }
 
-            var namesToDelete = e.Deleted.Select(index => _attrView.Attributes[index].Data.Name);
+            var namesToDelete = e.Deleted.Select(index => View.Attributes[index].Data.Name);
             foreach (var name in namesToDelete)
             {
                 _attributes.RemoveAttribute(name);
@@ -234,10 +240,10 @@ namespace Viewer.UI.Attributes
             }
 
             // remove the last row temporarily 
-            var lastRow = _attrView.Attributes[_attrView.Attributes.Count - 1];
+            var lastRow = View.Attributes[View.Attributes.Count - 1];
             if (EditingEnabled)
             {
-                _attrView.Attributes.RemoveAt(_attrView.Attributes.Count - 1);
+                View.Attributes.RemoveAt(View.Attributes.Count - 1);
             }
 
             // function which retrieves a key to sort the attributes by
@@ -256,12 +262,12 @@ namespace Viewer.UI.Attributes
             {
                 if (_currentSortColumn != e.Column || _currentSortDirection == SortDirection.Descending)
                 {
-                    _attrView.Attributes = _attrView.Attributes.OrderBy(KeySelector).ToList();
+                    View.Attributes = View.Attributes.OrderBy(KeySelector).ToList();
                     _currentSortDirection = SortDirection.Ascending;
                 }
                 else
                 {
-                    _attrView.Attributes = _attrView.Attributes.OrderByDescending(KeySelector).ToList();
+                    View.Attributes = View.Attributes.OrderByDescending(KeySelector).ToList();
                     _currentSortDirection = SortDirection.Descending;
                 }
             }
@@ -271,10 +277,10 @@ namespace Viewer.UI.Attributes
             // add back the last row and update the view
             if (EditingEnabled)
             {
-                _attrView.Attributes.Add(lastRow);
+                View.Attributes.Add(lastRow);
             }
 
-            _attrView.UpdateAttributes();
+            View.UpdateAttributes();
         }
 
         private void View_FilterAttributes(object sender, FilterEventArgs e)
@@ -284,25 +290,25 @@ namespace Viewer.UI.Attributes
                 return;
             }
 
-            var lastRow = _attrView.Attributes.LastOrDefault();
+            var lastRow = View.Attributes.LastOrDefault();
             var attrs = GetSelectedAttributes();
             if (e.FilterText.Length == 0)
             {
-                _attrView.Attributes = attrs.ToList();
+                View.Attributes = attrs.ToList();
             }
             else
             {
                 var filter = e.FilterText.ToLower();
-                _attrView.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().StartsWith(filter)).ToList();
+                View.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().StartsWith(filter)).ToList();
             }
 
             if (EditingEnabled)
             {
                 // if editing is enabled, the last row is an empty row 
-                _attrView.Attributes.Add(lastRow);
+                View.Attributes.Add(lastRow);
             }
 
-            _attrView.UpdateAttributes();
+            View.UpdateAttributes();
         }
 
         #endregion

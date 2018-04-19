@@ -63,6 +63,22 @@ namespace Viewer.IO
         void MoveFile(string sourcePath, string destPath);
 
         /// <summary>
+        /// Delete file <paramref name="path"/>
+        /// </summary>
+        /// <param name="path"></param>
+        /// <inheritdoc cref="File.Delete(string)"/>
+        void DeleteFile(string path);
+
+        /// <summary>
+        /// Replace file at <paramref name="destPath"/> with <paramref name="sourcePath"/> using <paramref name="backupFile"/> as a backup file
+        /// </summary>
+        /// <param name="sourcePath"></param>
+        /// <param name="destPath"></param>
+        /// <param name="backupFile"></param>
+        /// <inheritdoc cref="File.Replace(string,string,string)"/>
+        void ReplaceFile(string sourcePath, string destPath, string backupFile);
+
+        /// <summary>
         /// Move a directory to <paramref name="destPath"/>
         /// </summary>
         /// <param name="sourcePath"></param>
@@ -133,6 +149,16 @@ namespace Viewer.IO
         public void MoveFile(string sourcePath, string destPath)
         {
             File.Move(sourcePath, destPath);
+        }
+
+        public void DeleteFile(string path)
+        {
+            File.Delete(path);
+        }
+
+        public void ReplaceFile(string sourcePath, string destPath, string backupFile)
+        {
+            File.Replace(sourcePath, destPath, backupFile);
         }
 
         public void MoveDirectory(string sourcePath, string destPath)

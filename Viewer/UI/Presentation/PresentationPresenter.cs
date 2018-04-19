@@ -14,13 +14,12 @@ namespace Viewer.UI.Presentation
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class PresentationPresenter : Presenter
+    public class PresentationPresenter : Presenter<IPresentationView>
     {
         private readonly ISelection _selection;
         private readonly IImageLoader _imageLoader;
-        private readonly IPresentationView _presentationView;
 
-        public override IWindowView MainView => _presentationView;
+        protected override ExportLifetimeContext<IPresentationView> ViewLifetime { get; }
 
         // state
         private IEntityManager _entities;
@@ -34,14 +33,14 @@ namespace Viewer.UI.Presentation
         
         [ImportingConstructor]
         public PresentationPresenter(
-            [Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IPresentationView presentationView, 
+            ExportFactory<IPresentationView> viewFactory, 
             ISelection selection,
             IImageLoader imageLoader)
         {
             _selection = selection;
             _imageLoader = imageLoader;
-            _presentationView = presentationView;
-            SubscribeTo(_presentationView, "View");
+            ViewLifetime = viewFactory.CreateExport();
+            SubscribeTo(View, "View");
         }
 
         public async void ShowEntity(IEntityManager entities, int index)
@@ -65,8 +64,8 @@ namespace Viewer.UI.Presentation
             _image = image;
 
             // update view
-            _presentationView.Picture = _image;
-            _presentationView.UpdateImage();
+            View.Picture = _image;
+            View.UpdateImage();
         }
         
         private async void View_NextImage(object sender, EventArgs e)
@@ -85,28 +84,28 @@ namespace Viewer.UI.Presentation
 
         private void View_ToggleFullscreen(object sender, EventArgs e)
         {
-            _presentationView.IsFullscreen = !_presentationView.IsFullscreen;
+            View.IsFullscreen = !View.IsFullscreen;
         }
         
         private void View_ExitFullscreen(object sender, EventArgs e)
         {
-            _presentationView.IsFullscreen = false;
+            View.IsFullscreen = false;
         }
 
         private void View_PlayPausePresentation(object sender, EventArgs e)
         {
-            _presentationView.IsPlaying = !_presentationView.IsPlaying;
+            View.IsPlaying = !View.IsPlaying;
         }
 
         private void View_TimerTick(object sender, EventArgs e)
         {
-            if (!_presentationView.IsPlaying)
+            if (!View.IsPlaying)
             {
                 return;
             }
 
             var elapsed = DateTime.Now - _lastImageChange;
-            if (elapsed.TotalMilliseconds >= _presentationView.Speed)
+            if (elapsed.TotalMilliseconds >= View.Speed)
             {
                 View_NextImage(sender, e);
                 _lastImageChange = DateTime.Now;

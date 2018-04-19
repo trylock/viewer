@@ -76,6 +76,21 @@ namespace ViewerTest.IO
             _files.Add(destPath);
         }
 
+        public void DeleteFile(string path)
+        {
+            _files.Remove(path);
+        }
+
+        public void ReplaceFile(string sourcePath, string destPath, string backupFile)
+        {
+            _files.Remove(sourcePath);
+            _files.Add(destPath);
+            if (backupFile != null)
+            {
+                _files.Add(backupFile);
+            }
+        }
+
         public void MoveDirectory(string sourcePath, string destPath)
         {
             if (sourcePath == null)

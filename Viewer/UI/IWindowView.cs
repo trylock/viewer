@@ -7,7 +7,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI
 {
-    public interface IWindowView
+    public interface IWindowView : IDisposable
     {
         /// <summary>
         /// Event called after the view closed.
@@ -20,6 +20,11 @@ namespace Viewer.UI
         /// Event called when this view gets focus.
         /// </summary>
         event EventHandler ViewGotFocus;
+
+        /// <summary>
+        /// Name of the window
+        /// </summary>
+        string Text { get; set; }
 
         /// <summary>
         /// Show the window in <paramref name="dockPanel"/> with <paramref name="dockState"/>

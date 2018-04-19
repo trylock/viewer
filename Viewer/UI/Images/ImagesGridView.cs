@@ -29,7 +29,7 @@ namespace Viewer.UI.Images
         public event KeyEventHandler HandleKeyDown
         {
             add => GridView.KeyDown += value;
-            remove => GridView.KeyUp -= value;
+            remove => GridView.KeyDown -= value;
         }
         public event KeyEventHandler HandleKeyUp
         {

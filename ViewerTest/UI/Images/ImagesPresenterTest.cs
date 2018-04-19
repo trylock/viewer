@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -35,10 +36,15 @@ namespace ViewerTest.UI.Images
             {
                 _entities.Add(new Entity(i.ToString()));
             }
+
+            var viewFactory = new ExportFactory<IImagesView>(() =>
+            {
+                return new Tuple<IImagesView, Action>(_viewMock, () => { });
+            });
             
             var imageLoaderMock = new ImageLoaderMock();
             _selectionMock = new SelectionMock();
-            _presenter = new ImagesPresenter(_viewMock, null, _selectionMock, _storage, _clipboardMock, imageLoaderMock, null);
+            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock, _storage, _clipboardMock, imageLoaderMock, null);
             _presenter.LoadFromQueryResult(_entities);
         }
 

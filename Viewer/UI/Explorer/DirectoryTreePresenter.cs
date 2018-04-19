@@ -19,7 +19,7 @@ namespace Viewer.UI.Explorer
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class DirectoryTreePresenter : Presenter
+    public class DirectoryTreePresenter : Presenter<IDirectoryTreeView>
     {
         public const string LogGroupName = "FileSystem";
 
@@ -32,13 +32,12 @@ namespace Viewer.UI.Explorer
         private readonly IClipboardService _clipboard;
         private readonly IFileSystemErrorView _dialogView;
         private readonly IProgressViewFactory _progressViewFactory;
-        private readonly IDirectoryTreeView _treeView;
 
-        public override IWindowView MainView => _treeView;
+        protected override ExportLifetimeContext<IDirectoryTreeView> ViewLifetime { get; }
 
         [ImportingConstructor]
         public DirectoryTreePresenter(
-            [Import(RequiredCreationPolicy = CreationPolicy.NonShared)] IDirectoryTreeView treeView,
+            ExportFactory<IDirectoryTreeView> viewFactory,
             IProgressViewFactory progressViewFactory,
             IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
@@ -48,14 +47,14 @@ namespace Viewer.UI.Explorer
             _clipboard = clipboard;
             _dialogView = dialogView;
             _progressViewFactory = progressViewFactory;
-            _treeView = treeView;
+            ViewLifetime = viewFactory.CreateExport();
 
-            SubscribeTo(_treeView, "View");
+            SubscribeTo(View, "View");
         }
 
         public void UpdateRootDirectories()
         {
-            _treeView.LoadDirectories(new string[] { }, GetRoots());
+            View.LoadDirectories(new string[] { }, GetRoots());
         }
         
         private IEnumerable<DirectoryView> GetRoots()
@@ -141,7 +140,7 @@ namespace Viewer.UI.Explorer
         private void View_ExpandDirectory(object sender, DirectoryEventArgs e)
         {
             var directories = GetValidSubdirectories(e.FullPath);
-            _treeView.LoadDirectories(
+            View.LoadDirectories(
                 PathUtils.Split(e.FullPath),
                 directories);
         }
@@ -158,7 +157,7 @@ namespace Viewer.UI.Explorer
             {
                 var newPath = Path.Combine(Path.GetDirectoryName(e.FullPath), e.NewName);
                 _fileSystem.MoveDirectory(e.FullPath, newPath);
-                _treeView.SetDirectory(PathUtils.Split(e.FullPath), new DirectoryView
+                View.SetDirectory(PathUtils.Split(e.FullPath), new DirectoryView
                 {
                     FileName = e.NewName,
                     UserName = e.NewName,
@@ -184,13 +183,13 @@ namespace Viewer.UI.Explorer
             try
             {
                 _fileSystem.DeleteDirectory(e.FullPath, true);
-                _treeView.RemoveDirectory(PathUtils.Split(e.FullPath));
+                View.RemoveDirectory(PathUtils.Split(e.FullPath));
             }
             catch (DirectoryNotFoundException)
             {
                 _dialogView.DirectoryNotFound(e.FullPath);
                 // we stil want to remove the directory from the view
-                _treeView.RemoveDirectory(PathUtils.Split(e.FullPath));
+                View.RemoveDirectory(PathUtils.Split(e.FullPath));
             }
             catch (UnauthorizedAccessException)
             {
@@ -209,12 +208,12 @@ namespace Viewer.UI.Explorer
                 var newName = "New Folder";
                 var directoryPath = Path.Combine(e.FullPath, newName);
                 _fileSystem.CreateDirectory(directoryPath);
-                _treeView.AddDirectory(PathUtils.Split(e.FullPath), new DirectoryView
+                View.AddDirectory(PathUtils.Split(e.FullPath), new DirectoryView
                 {
                     UserName = newName,
                     FileName = newName
                 });
-                _treeView.BeginEditDirectory(PathUtils.Split(directoryPath));
+                View.BeginEditDirectory(PathUtils.Split(directoryPath));
             }
             catch (UnauthorizedAccessException)
             {
@@ -366,7 +365,7 @@ namespace Viewer.UI.Explorer
                     }, view.CancellationToken).ContinueWith(task =>
                     {
                         // update subdirectories in given path
-                        _treeView.LoadDirectories(
+                        View.LoadDirectories(
                             PathUtils.Split(destinationDirectory),
                             GetValidSubdirectories(destinationDirectory));
                     }, TaskScheduler.FromCurrentSynchronizationContext());

@@ -9,32 +9,37 @@ namespace Viewer.UI.Log
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class LogPresenter : Presenter
+    public class LogPresenter : Presenter<ILogView>
     {
         private readonly ILog _log;
-        private readonly ILogView _view;
-
-        public override IWindowView MainView => _view;
         
+        protected override ExportLifetimeContext<ILogView> ViewLifetime { get; }
+
         [ImportingConstructor]
-        public LogPresenter([Import(RequiredCreationPolicy = CreationPolicy.NonShared)] ILogView logView, ILog log)
+        public LogPresenter(ExportFactory<ILogView> viewFactory, ILog log)
         {
             _log = log;
-            _view = logView;
+            ViewLifetime = viewFactory.CreateExport();
 
             _log.EntryAdded += LogOnEntryAdded;
-            _view.Entries = _log;
-            _view.UpdateEntries();
-            SubscribeTo(_view, "View");
+            View.Entries = _log;
+            View.UpdateEntries();
+            SubscribeTo(View, "View");
         }
-        
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            _log.EntryAdded -= LogOnEntryAdded;
+        }
+
         private void LogOnEntryAdded(object sender, LogEventArgs e)
         {
-            _view.BeginInvoke(new Action(() =>
+            View.BeginInvoke(new Action(() =>
             {
-                _view.Entries = _log;
-                _view.UpdateEntries();
-                _view.EnsureVisible();
+                View.Entries = _log;
+                View.UpdateEntries();
+                View.EnsureVisible();
             }));
         }
 

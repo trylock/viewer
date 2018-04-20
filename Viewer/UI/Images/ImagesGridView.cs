@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
@@ -83,6 +84,7 @@ namespace Viewer.UI.Images
         public void UpdateItems()
         {
             GridView.Items = Items;
+            ItemsCountLabel.Text = string.Format(Resources.ItemCount_Label, Items.Count.ToString("N0"));
         }
 
         public void UpdateItems(IEnumerable<int> itemIndices)

@@ -40,6 +40,7 @@
             this.ThumbnailSizeTrackBar = new System.Windows.Forms.TrackBar();
             this.GridView = new Viewer.UI.Images.GridView();
             this.SplitContainer = new System.Windows.Forms.SplitContainer();
+            this.ItemsCountLabel = new System.Windows.Forms.Label();
             this.ItemContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).BeginInit();
@@ -156,10 +157,21 @@
             // 
             // SplitContainer.Panel2
             // 
+            this.SplitContainer.Panel2.Controls.Add(this.ItemsCountLabel);
             this.SplitContainer.Panel2.Controls.Add(this.ThumbnailSizeTrackBar);
             this.SplitContainer.Size = new System.Drawing.Size(835, 434);
             this.SplitContainer.SplitterDistance = 400;
             this.SplitContainer.TabIndex = 3;
+            // 
+            // ItemsCountLabel
+            // 
+            this.ItemsCountLabel.AutoSize = true;
+            this.ItemsCountLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.ItemsCountLabel.Location = new System.Drawing.Point(8, 8);
+            this.ItemsCountLabel.Name = "ItemsCountLabel";
+            this.ItemsCountLabel.Size = new System.Drawing.Size(53, 17);
+            this.ItemsCountLabel.TabIndex = 2;
+            this.ItemsCountLabel.Text = "0 Items";
             // 
             // ImagesGridView
             // 
@@ -195,5 +207,6 @@
         private System.Windows.Forms.TrackBar ThumbnailSizeTrackBar;
         private GridView GridView;
         private System.Windows.Forms.SplitContainer SplitContainer;
+        private System.Windows.Forms.Label ItemsCountLabel;
     }
 }

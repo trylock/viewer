@@ -282,6 +282,15 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} items.
+        /// </summary>
+        internal static string ItemCount_Label {
+            get {
+                return ResourceManager.GetString("ItemCount_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap LeftArrowIcon {

@@ -119,6 +119,7 @@ namespace Viewer.UI.Presentation
 
         private void View_CloseView(object sender, EventArgs e)
         {
+            _selection.Clear();
             _image?.Dispose();
         }
     }

@@ -275,14 +275,6 @@ namespace Viewer.UI.Images
                 }
             }
 
-            // draw the thumbnail
-            var thumbnail = item.Thumbnail.Value;
-            var thumbnailSize = thumbnail.Size;
-            var thumbnailLocation = GetThumbnailLocation(bounds, thumbnailSize);
-            // we don't really need an interpolation as we are drawing the image in its original size
-            graphics.InterpolationMode = InterpolationMode.Low;
-            graphics.DrawImage(thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
-
             // draw name
             var nameLocation = GetNameLocation(bounds);
             var nameSize = GetNameSize(bounds);
@@ -293,6 +285,19 @@ namespace Viewer.UI.Images
                 SystemBrushes.ControlText,
                 new Rectangle(nameLocation, nameSize),
                 nameForamt);
+
+            // draw the thumbnail
+            var thumbnail = item.Thumbnail.Value;
+            if (thumbnail == null)
+            {
+                return;
+            }
+            
+            var thumbnailSize = ThumbnailGenerator.GetThumbnailSize(thumbnail.Size, ItemSize);
+            var thumbnailLocation = GetThumbnailLocation(bounds, thumbnailSize);
+            // we don't really need an interpolation as we are drawing the image in its original size
+            graphics.InterpolationMode = InterpolationMode.Low;
+            graphics.DrawImage(thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
         }
 
         private void GridView_Resize(object sender, EventArgs e)

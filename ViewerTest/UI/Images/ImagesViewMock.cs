@@ -33,6 +33,7 @@ namespace ViewerTest.UI.Images
         public event EventHandler DeleteItems;
         public event EventHandler OpenItem;
         public event EventHandler ThumbnailSizeChanged;
+        public event EventHandler ThumbnailSizeCommit;
         public int ThumbnailSize { get; set; }
         public int ThumbnailSizeMinimum { get; set; }
         public int ThumbnailSizeMaximum { get; set; }

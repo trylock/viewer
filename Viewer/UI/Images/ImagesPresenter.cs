@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
@@ -76,7 +77,7 @@ namespace Viewer.UI.Images
             View.ItemSize = _minItemSize;
             SubscribeTo(View, "View");
         }
-
+        
         public override void Dispose()
         {
             foreach (var item in View.Items)
@@ -577,17 +578,21 @@ namespace Viewer.UI.Images
                 (int)(_minItemSize.Height * scale)
             );
 
-            // update thumbnails of all entities in the view
+            // scale existing thumbnail
+            View.ItemSize = itemSize;
+        }
+
+        private void View_ThumbnailSizeCommit(object sender, EventArgs e)
+        {
+            // update the actual size of thumbnails in the view
             foreach (var item in View.Items)
             {
-                if (item.Thumbnail.IsValueCreated)
-                {
-                    item.Thumbnail.Value?.Dispose();
-                }
+                item.Dispose();
                 item.Thumbnail = GetThumbnail(item.Data);
             }
 
-            View.ItemSize = itemSize;
+            // start loading the new thumbnails for visible items
+            View.UpdateItems();
         }
 
         #endregion

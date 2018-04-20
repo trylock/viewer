@@ -117,6 +117,11 @@ namespace Viewer.UI.Images
         /// Event called when user changes the thumbnail size
         /// </summary>
         event EventHandler ThumbnailSizeChanged;
+
+        /// <summary>
+        /// Event called when user set the thumbnail size
+        /// </summary>
+        event EventHandler ThumbnailSizeCommit;
         
         /// <summary>
         /// Current thumbnail size set by user

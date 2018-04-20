@@ -53,6 +53,8 @@ namespace Viewer.UI.Images
             add => ThumbnailSizeTrackBar.ValueChanged += value;
             remove => ThumbnailSizeTrackBar.ValueChanged -= value;
         }
+
+        public event EventHandler ThumbnailSizeCommit;
         public event EventHandler CancelEditItemName;
         public event EventHandler<RenameEventArgs> RenameItem;
         public event EventHandler BeginEditItemName
@@ -205,6 +207,11 @@ namespace Viewer.UI.Images
         private void RenameMenuItem_Click(object sender, EventArgs e)
         {
             NameTextBox.BringToFront();
+        }
+
+        private void ThumbnailSizeTrackBar_MouseUp(object sender, MouseEventArgs e)
+        {
+            ThumbnailSizeCommit?.Invoke(sender, e);
         }
     }
 }

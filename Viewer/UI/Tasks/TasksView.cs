@@ -19,5 +19,21 @@ namespace Viewer.UI.Tasks
 
             Text = name;
         }
+
+        private void TasksView_Resize(object sender, EventArgs e)
+        {
+            SuspendLayout();
+            try
+            {
+                foreach (Control control in Controls)
+                {
+                    control.Width = ClientSize.Width;
+                }
+            }
+            finally
+            {
+                ResumeLayout(false);
+            }
+        }
     }
 }

@@ -38,6 +38,7 @@
             this.ClientSize = new System.Drawing.Size(602, 294);
             this.Name = "TasksView";
             this.Text = "TasksView";
+            this.Resize += new System.EventHandler(this.TasksView_Resize);
             this.ResumeLayout(false);
 
         }

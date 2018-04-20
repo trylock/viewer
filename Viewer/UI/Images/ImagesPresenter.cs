@@ -37,8 +37,7 @@ namespace Viewer.UI.Images
         private Size _minItemSize = new Size(133, 100);
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
-        private Point _selectionStartPoint;
-        private bool _isSelectionActive;
+        private readonly RectangleSelection _rectangleSelection = new RectangleSelection();
         private bool _isControl;
         private bool _isShift;
 
@@ -191,33 +190,9 @@ namespace Viewer.UI.Images
             }
         }
         
-        private void StartSelection(Point location)
-        {
-            _isSelectionActive = true;
-            _selectionStartPoint = location;
-            _previousSelection.Clear();
-            _previousSelection.AddRange(_currentSelection);
-        }
-
-        private void EndSelection(Point endPoint)
-        {
-            _isSelectionActive = false;
-            UpdateSelection(endPoint);
-            View.HideSelection();
-        }
-
-        private Rectangle GetSelectionBounds(Point endPoint)
-        {
-            var minX = Math.Min(_selectionStartPoint.X, endPoint.X);
-            var maxX = Math.Max(_selectionStartPoint.X, endPoint.X);
-            var minY = Math.Min(_selectionStartPoint.Y, endPoint.Y);
-            var maxY = Math.Max(_selectionStartPoint.Y, endPoint.Y);
-            return new Rectangle(minX, minY, maxX - minX, maxY - minY);
-        }
-        
         private void UpdateSelection(Point endPoint)
         {
-            var bounds = GetSelectionBounds(endPoint);
+            var bounds = _rectangleSelection.GetBounds(endPoint);
             var newSelection = View.GetItemsIn(bounds);
             var strategy = SelectionStrategy.Replace;
             if (_isShift)
@@ -319,15 +294,19 @@ namespace Viewer.UI.Images
             }
             else
             {
-                StartSelection(e.Location);
+                _rectangleSelection.StartSelection(e.Location);
+                _previousSelection.Clear();
+                _previousSelection.AddRange(_currentSelection);
             }
         }
 
         private void View_HandleMouseUp(object sender, MouseEventArgs e)
         {
-            if (_isSelectionActive)
+            if (_rectangleSelection.IsActive)
             {
-                EndSelection(e.Location);
+                UpdateSelection(e.Location);
+                _rectangleSelection.EndSelection();
+                View.HideSelection();
             }
         }
 
@@ -360,7 +339,7 @@ namespace Viewer.UI.Images
             }
 
             // update selection
-            if (_isSelectionActive)
+            if (_rectangleSelection.IsActive)
             {
                 UpdateSelection(e.Location);
             }

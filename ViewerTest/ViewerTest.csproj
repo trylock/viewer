@@ -99,6 +99,7 @@
     <Compile Include="UI\Images\GridTest.cs" />
     <Compile Include="UI\Images\ImageLoaderMock.cs" />
     <Compile Include="UI\Images\ImagesPresenterTest.cs" />
+    <Compile Include="UI\Images\RectangleSelectionTest.cs" />
     <Compile Include="UI\Images\ThumbnailGeneratorTest.cs" />
     <Compile Include="UI\SelectionMock.cs" />
     <Compile Include="UI\SelectionTest.cs" />

@@ -120,12 +120,14 @@ namespace Viewer.UI.Images
             {
                 View.Items = new List<EntityView>();
             }
-
-            foreach (var item in View.Items)
+            else
             {
-                item.Dispose();
+                foreach (var item in View.Items)
+                {
+                    item.Dispose();
+                }
+                View.Items.Clear();
             }
-            View.Items.Clear();
         }
 
         /// <summary>
@@ -327,14 +329,6 @@ namespace Viewer.UI.Images
             {
                 EndSelection(e.Location);
             }
-            else
-            {
-                var index = View.GetItemAt(e.Location);
-                if (index >= 0)
-                {
-                    ChangeSelection(Enumerable.Repeat(index, 1), SelectionStrategy.Replace);
-                }
-            }
         }
 
         private void View_HandleMouseMove(object sender, MouseEventArgs e)
@@ -474,7 +468,7 @@ namespace Viewer.UI.Images
 
         private IEnumerable<string> GetPathsInSelection()
         {
-            return _selection.Select(index => View.Items[index].FullPath);
+            return _selection.Select(index => _selection.Items[index].Path);
         }
 
         private void View_CopyItems(object sender, EventArgs e)

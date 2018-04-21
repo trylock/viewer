@@ -139,10 +139,16 @@ namespace Viewer.UI.Explorer
 
         private async void View_ExpandDirectory(object sender, DirectoryEventArgs e)
         {
-            var directories = await Task.Run(() => GetValidSubdirectories(e.FullPath));
-            View.LoadDirectories(
-                PathUtils.Split(e.FullPath),
-                directories);
+            View.BeginLoading();
+            try
+            {
+                var directories = await Task.Run(() => GetValidSubdirectories(e.FullPath));
+                View.LoadDirectories(PathUtils.Split(e.FullPath), directories);
+            }
+            finally
+            {
+                View.EndLoading();
+            }
         }
         
         private void View_RenameDirectory(object sender, RenameDirectoryEventArgs e)
@@ -273,22 +279,19 @@ namespace Viewer.UI.Explorer
             private readonly IFileSystemErrorView _dialogView;
             private readonly string _baseDir;
             private readonly string _destDir;
-            private readonly CancellationToken _cancellation;
 
             public CopyHandle(
                 IFileSystem fileSystem, 
                 string baseDir, 
                 string desDir, 
                 IProgressView<CopyProgress> progressView,
-                IFileSystemErrorView dialogView,
-                CancellationToken cancellation)
+                IFileSystemErrorView dialogView)
             {
                 _fileSystem = fileSystem;
                 _baseDir = baseDir;
                 _destDir = desDir;
                 _dialogView = dialogView;
                 _progressView = progressView;
-                _cancellation = cancellation;
             }
             
             private string GetDestinationPath(string path)
@@ -354,9 +357,8 @@ namespace Viewer.UI.Explorer
                     {
                         foreach (var file in files)
                         {
-                            view.CancellationToken.ThrowIfCancellationRequested();
                             var baseDir = PathUtils.GetDirectoryPath(file);
-                            var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _dialogView, view.CancellationToken);
+                            var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _dialogView);
                             if ((effect & DragDropEffects.Move) != 0)
                                 _fileSystem.Search(file, copy.CreateDirectory, copy.MoveFile);
                             else

@@ -45,5 +45,15 @@ namespace Viewer.UI
         /// <param name="method">Method to execute</param>
         /// <returns></returns>
         IAsyncResult BeginInvoke(Delegate method);
+
+        /// <summary>
+        /// Indicate to the user that the component is loading some data
+        /// </summary>
+        void BeginLoading();
+
+        /// <summary>
+        /// Previous loading operation ended
+        /// </summary>
+        void EndLoading();
     }
 }

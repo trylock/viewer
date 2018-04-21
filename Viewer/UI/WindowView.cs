@@ -34,6 +34,16 @@ namespace Viewer.UI
             }
         }
 
+        public void BeginLoading()
+        {
+            Cursor.Current = Cursors.WaitCursor;
+        }
+
+        public void EndLoading()
+        {
+            Cursor.Current = Cursors.Default;
+        }
+
         private void EnsureVisibleInternal()
         {
             if (IsAutoHide)

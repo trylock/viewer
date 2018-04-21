@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.Images;
 using Viewer.UI;
 using Viewer.UI.Images;
 using ViewerTest.Data;

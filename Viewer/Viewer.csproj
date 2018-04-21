@@ -124,7 +124,7 @@
     <Compile Include="UI\Images\GridView.Designer.cs">
       <DependentUpon>GridView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Images\ImageLoader.cs" />
+    <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="UI\Images\ImagesComponent.cs" />
     <Compile Include="UI\Images\RectangleSelection.cs" />
     <Compile Include="UI\Log\ButtonCell.cs" />
@@ -184,8 +184,7 @@
     <Compile Include="UI\Explorer\IDirectoryTreeView.cs" />
     <Compile Include="UI\Images\ImagesPresenter.cs" />
     <Compile Include="UI\Images\IImagesView.cs" />
-    <Compile Include="UI\Images\IThumbnailGenerator.cs" />
-    <Compile Include="UI\Images\ThumbnailGenerator.cs" />
+    <Compile Include="Images\ThumbnailGenerator.cs" />
     <Compile Include="UI\Tasks\IProgressView.cs" />
     <Compile Include="UI\IWindowView.cs" />
     <Compile Include="UI\Tasks\ProgressView.cs">

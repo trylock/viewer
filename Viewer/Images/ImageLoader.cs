@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data;
 
-namespace Viewer.UI.Images
+namespace Viewer.Images
 {
     public interface IImageLoader
     {

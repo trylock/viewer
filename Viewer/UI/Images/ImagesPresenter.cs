@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.Images;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.UI.Explorer;

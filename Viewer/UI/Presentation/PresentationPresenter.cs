@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.Images;
 using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation

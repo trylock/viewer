@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Viewer.Images;
 using Viewer.UI.Images;
 
-namespace ViewerTest.UI.Images
+namespace ViewerTest.Images
 {
     [TestClass]
     public class ThumbnailGeneratorTest

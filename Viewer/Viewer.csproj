@@ -102,6 +102,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\Attributes\AttributeManager.cs" />
+    <Compile Include="UI\Attributes\AttributesComponent.cs" />
     <Compile Include="UI\Attributes\AttributesPresenter.cs" />
     <Compile Include="UI\Attributes\AttributeTableView.cs">
       <SubType>Form</SubType>
@@ -115,6 +116,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\ClipboardService.cs" />
+    <Compile Include="UI\Explorer\ExplorerComponent.cs" />
+    <Compile Include="UI\IComponent.cs" />
     <Compile Include="UI\Images\GridView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -122,10 +125,12 @@
       <DependentUpon>GridView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Images\ImageLoader.cs" />
+    <Compile Include="UI\Images\ImagesComponent.cs" />
     <Compile Include="UI\Images\RectangleSelection.cs" />
     <Compile Include="UI\Log\ButtonCell.cs" />
     <Compile Include="UI\Log\ILogView.cs" />
     <Compile Include="UI\Log\Log.cs" />
+    <Compile Include="UI\Log\LogComponent.cs" />
     <Compile Include="UI\Log\LogPresenter.cs" />
     <Compile Include="UI\Log\LogView.cs">
       <SubType>Form</SubType>

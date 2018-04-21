@@ -182,6 +182,11 @@ namespace Viewer.UI.Images
             CancelEditItemName?.Invoke(sender, e);
         }
 
+        private void GridView_MouseWheel(object sender, MouseEventArgs e)
+        {
+            CancelEditItemName?.Invoke(sender, e);
+        }
+
         #endregion
 
         private void NameTextBox_Leave(object sender, EventArgs e)
@@ -216,11 +221,6 @@ namespace Viewer.UI.Images
         private void ThumbnailSizeTrackBar_MouseUp(object sender, MouseEventArgs e)
         {
             ThumbnailSizeCommit?.Invoke(sender, e);
-        }
-
-        private void GridView_MouseWheel(object sender, MouseEventArgs e)
-        {
-            CancelEditItemName?.Invoke(sender, e);
         }
     }
 }

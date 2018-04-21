@@ -29,87 +29,21 @@ namespace Viewer
     public class ViewerApplication
     {
         private readonly ViewerForm _appForm;
-        private readonly IAttributeStorage _storage;
-        private readonly IEntityRepository _modifiedEntities;
-
-        private readonly ExportFactory<ImagesPresenter> _imagesFactory;
-        private readonly ExportFactory<DirectoryTreePresenter> _explorerFactory;
-        private readonly ExportFactory<AttributesPresenter> _attributesFactory;
-        private readonly ExportFactory<LogPresenter> _logFactory;
+        private readonly IComponent[] _components;
         
         [ImportingConstructor]
-        public ViewerApplication(
-            ViewerForm appForm, 
-            IAttributeStorage storage,
-            IEntityRepository modifiedEntities,
-            ExportFactory<ImagesPresenter> images,
-            ExportFactory<DirectoryTreePresenter> explorer,
-            ExportFactory<AttributesPresenter> attributesFactory,
-            ExportFactory<LogPresenter> log)
+        public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
         {
             _appForm = appForm;
-            _storage = storage;
-            _modifiedEntities = modifiedEntities;
-            _imagesFactory = images;
-            _explorerFactory = explorer;
-            _attributesFactory = attributesFactory;
-            _logFactory = log;
+            _components = components;
         }
         
         public void InitializeLayout()
         {
-            var queryResult = new EntityManager(_modifiedEntities);
-            foreach (var file in Directory.EnumerateFiles(@"D:\dataset\large"))
+            foreach (var component in _components)
             {
-                queryResult.Add(_storage.Load(file));
+                component.OnStartup();
             }
-
-            var imagesExport = _imagesFactory.CreateExport();
-            imagesExport.Value.LoadFromQueryResult(queryResult);
-            imagesExport.Value.View.CloseView += (sender, args) =>
-            {
-                imagesExport.Dispose();
-                imagesExport = null;
-            };
-            imagesExport.Value.ShowView("Images", DockState.Document);
-
-            var explorerExport = _explorerFactory.CreateExport();
-            explorerExport.Value.UpdateRootDirectories();
-            explorerExport.Value.View.CloseView += (sender, args) =>
-            {
-                explorerExport.Dispose();
-                explorerExport = null;
-            };
-            explorerExport.Value.ShowView("Explorer", DockState.DockLeft);
-
-            var mainAttributesExport = _attributesFactory.CreateExport();
-            mainAttributesExport.Value.AttributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
-            mainAttributesExport.Value.EditingEnabled = true;
-            mainAttributesExport.Value.View.CloseView += (sender, args) =>
-            {
-                mainAttributesExport.Dispose();
-                mainAttributesExport = null;
-            };
-            mainAttributesExport.Value.ShowView("Attributes", DockState.DockRight);
-            
-            var exifAttributesExport = _attributesFactory.CreateExport();
-            exifAttributesExport.Value.AttributePredicate = attr => attr.Data.GetType() != typeof(ImageAttribute) &&
-                                                         (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
-            exifAttributesExport.Value.EditingEnabled = false;
-            exifAttributesExport.Value.View.CloseView += (sender, e) =>
-            {
-                exifAttributesExport.Dispose();
-                exifAttributesExport = null;
-            };
-            exifAttributesExport.Value.ShowView("Exif", DockState.DockRight);
-
-            var logExport = _logFactory.CreateExport();
-            logExport.Value.View.CloseView += (sender, e) =>
-            {
-                logExport.Dispose();
-                logExport = null;
-            };
-            logExport.Value.ShowView("Event Log", DockState.DockBottom);
         }
 
         public void Run()

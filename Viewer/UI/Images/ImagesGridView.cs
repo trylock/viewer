@@ -20,6 +20,8 @@ namespace Viewer.UI.Images
         public ImagesGridView()
         {
             InitializeComponent();
+
+            GridView.MouseWheel += GridView_MouseWheel;
         }
 
         #region Grid view
@@ -214,6 +216,11 @@ namespace Viewer.UI.Images
         private void ThumbnailSizeTrackBar_MouseUp(object sender, MouseEventArgs e)
         {
             ThumbnailSizeCommit?.Invoke(sender, e);
+        }
+
+        private void GridView_MouseWheel(object sender, MouseEventArgs e)
+        {
+            CancelEditItemName?.Invoke(sender, e);
         }
     }
 }

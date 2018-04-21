@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using MetadataExtractor;
@@ -13,7 +14,6 @@ using Viewer.Data.Formats;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Data.Formats.Jpeg;
 using Viewer.IO;
-using Directory = MetadataExtractor.Directory;
 
 namespace Viewer.Data.Storage
 {
@@ -54,9 +54,6 @@ namespace Viewer.Data.Storage
         /// (2.2) read all attributes and add them to the attributes collection 
         /// </summary>
         /// <param name="path">Path to a file</param>
-        /// <exception cref="T:Viewer.Data.Formats.InvalidDataFormatException">
-        ///     Format of attributes in some segment is invalid.
-        /// </exception>
         /// <returns>Collection of attributes read from the file</returns>
         public IEntity Load(string path)
         {
@@ -96,16 +93,15 @@ namespace Viewer.Data.Storage
                     attrs = attrs.SetAttribute(attr);
                 }
             }
-            
+
             return attrs;
         }
         
         public void Store(IEntity attrs)
         {
-            string tmpFileName;
-
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(attrs.Path))
             {
+                string tmpFileName;
                 using (var segmentWriter = _segmentWriterFactory.CreateFromPath(attrs.Path, out tmpFileName))
                 {
                     // copy all but attribute segments
@@ -126,7 +122,8 @@ namespace Viewer.Data.Storage
 
                     // serialize attributes to JpegSegments
                     var serialized = Serialize(attrs);
-                    var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
+                    var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1,
+                        AttributeReader.JpegSegmentHeader);
 
                     // write attribute segments
                     foreach (var segment in segments)

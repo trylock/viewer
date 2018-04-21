@@ -89,6 +89,7 @@ namespace Viewer.UI.Log
     }
 
     [Export(typeof(ILog))]
+    [Export(typeof(ILogger))]
     public class Log : ILog
     {
         private List<LogEntry> _entries = new List<LogEntry>();

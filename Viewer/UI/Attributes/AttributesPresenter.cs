@@ -4,12 +4,14 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.UI.Log;
 using Viewer.UI.Tasks;
 using Attribute = Viewer.Data.Attribute;
 
@@ -23,6 +25,7 @@ namespace Viewer.UI.Attributes
         private readonly ISelection _selection;
         private readonly IAttributeStorage _storage;
         private readonly IAttributeManager _attributes;
+        private readonly ILogger _log;
 
         protected override ExportLifetimeContext<IAttributeView> ViewLifetime { get; }
 
@@ -45,13 +48,15 @@ namespace Viewer.UI.Attributes
             IProgressViewFactory progressViewFactory, 
             ISelection selection,
             IAttributeStorage storage,
-            IAttributeManager attrManager)
+            IAttributeManager attrManager,
+            ILogger log)
         {
             ViewLifetime = viewFactory.CreateExport();
             _progressViewFactory = progressViewFactory;
+            _log = log;
             _storage = storage;
-            _selection = selection;
             _attributes = attrManager;
+            _selection = selection;
             _selection.Changed += Selection_Changed;
 
             SubscribeTo(View, "View");
@@ -61,6 +66,18 @@ namespace Viewer.UI.Attributes
         {
             base.Dispose();
             _selection.Changed -= Selection_Changed;
+        }
+
+        private void Log(string message, LogType type, Retry retry)
+        {
+            var entry = new LogEntry
+            {
+                Group = "Attributes",
+                Message = message,
+                Type = type,
+                RetryOperation = retry
+            };
+            _log.Add(entry);
         }
 
         private static AttributeGroup CreateAddAttributeView()
@@ -200,7 +217,7 @@ namespace Viewer.UI.Attributes
             }
         }
 
-        private void View_SaveAttributes(object sender, EventArgs e)
+        private void View_SaveAttributes(object sender, EventArgs args)
         {
             var unsaved = _selection.Items.GetModified();
             if (unsaved.Count <= 0)
@@ -222,6 +239,15 @@ namespace Viewer.UI.Attributes
                             try
                             {
                                 _storage.Store(entity);
+                            }
+                            catch (FileNotFoundException)
+                            {
+                                Log($"Attribute file {entity.Path} was not found.", LogType.Error, null);
+                            }
+                            catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
+                                                      e.GetType() == typeof(SecurityException))
+                            {
+                                Log($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
                             }
                             finally
                             {

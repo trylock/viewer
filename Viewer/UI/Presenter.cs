@@ -39,8 +39,12 @@ namespace Viewer.UI
             }
         }
 
+#pragma warning disable 0649
+
         [Import]
         private ViewerForm _appForm;
+
+#pragma warning restore 0649
 
         /// <summary>
         /// Event subscriptions

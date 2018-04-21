@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.UI;
 using Viewer.UI.Attributes;
 using ViewerTest.Data;
 
@@ -16,34 +18,45 @@ namespace ViewerTest.UI.Attributes
     public class AttributesPresenterTest
     {
         private IAttributeStorage _storage;
-        private EntityManagerMock _entities;
-        private SelectionMock _selectionMock;
-        private AttributeViewMock _attrViewMock;
-        private AttributeManagerMock _attributeManagerMock;
+        private EntityManager _entities;
+        private Mock<ISelection> _selection;
+        private Mock<IAttributeView> _view;
+        private Mock<IAttributeManager> _attributeManager;
         private AttributesPresenter _presenter;
 
+        // binding of attributes in view
+        private List<AttributeGroup> _viewAttributes;
+        
         [TestInitialize]
         public void Setup()
         {
+            var modifiedEntities = new Mock<IEntityRepository>();
             _storage = new MemoryAttributeStorage();
-            _entities = new EntityManagerMock(new Entity("test"));
-            _selectionMock = new SelectionMock();
-            _attrViewMock = new AttributeViewMock();
-            _attributeManagerMock = new AttributeManagerMock();
+            _entities = new EntityManager(modifiedEntities.Object);
+            _selection = new Mock<ISelection>();
+            _attributeManager = new Mock<IAttributeManager>();
+
+            // setup view mock
+            _view = new Mock<IAttributeView>();
+            _viewAttributes = new List<AttributeGroup>();
+            _view.Setup(mock => mock.Attributes).Returns(_viewAttributes);
 
             var viewFactory = new ExportFactory<IAttributeView>(() =>
             {
-                return new Tuple<IAttributeView, Action>(_attrViewMock, () => { });
+                return new Tuple<IAttributeView, Action>(_view.Object, () => { });
             });
-            _presenter = new AttributesPresenter(viewFactory, null, _selectionMock, _storage, _attributeManagerMock);
+            _presenter = new AttributesPresenter(viewFactory, null, _selection.Object, _storage, _attributeManager.Object);
         }
 
         [TestMethod]
         public void AttributesChanged_DontAddAttributeIfItsNameIsEmpty()
         {
+            _entities.Add(new Entity("test"));
+
             // add an entity to selection
-            _selectionMock.Replace(_entities, new[] { 0 });
-            _selectionMock.TriggerChanged();
+            _selection.Setup(mock => mock.Items).Returns(_entities);
+            _selection.Setup(mock => mock.GetEnumerator()).Returns(new[]{ 0 }.GetEnumerator() as IEnumerator<int>);
+            _selection.Raise(mock => mock.Changed += null, EventArgs.Empty);
 
             // add a new attribute
             var oldValue = new AttributeGroup
@@ -55,22 +68,28 @@ namespace ViewerTest.UI.Attributes
             {
                 Data = new StringAttribute("", "value")
             };
-            _attrViewMock.TriggerAttributeChanges(0, oldValue, newValue);
 
-            Assert.IsTrue(_attrViewMock.Updated.Contains(0));
-            Assert.IsNull(_attrViewMock.LastError);
-            Assert.AreEqual(1, _attrViewMock.Attributes.Count);
-            Assert.AreEqual(
-                new StringAttribute("", ""),
-                _attrViewMock.Attributes[0].Data);
+            _attributeManager.Setup(mock => mock.GroupAttributesInSelection()).Returns(new AttributeGroup[] { });
+
+            _view.Raise(mock => mock.AttributeChanged += null, new AttributeChangedEventArgs
+            {
+                Index = 0,
+                OldValue = oldValue,
+                NewValue = newValue
+            });
+            
+            Assert.AreEqual(0, _viewAttributes.Count);
         }
 
         [TestMethod]
         public void AttributesChanged_AddANewAttribute()
         {
+            _entities.Add(new Entity("test"));
+
             // add an entity to selection
-            _selectionMock.Replace(_entities, new[]{ 0 });
-            _selectionMock.TriggerChanged();
+            _selection.Setup(mock => mock.Items).Returns(_entities);
+            _selection.Setup(mock => mock.GetEnumerator()).Returns(new[] { 0 }.GetEnumerator() as IEnumerator<int>);
+            _selection.Raise(mock => mock.Changed += null, EventArgs.Empty);
 
             // add a new attribute
             var oldValue = new AttributeGroup
@@ -82,18 +101,24 @@ namespace ViewerTest.UI.Attributes
             {
                 Data = new StringAttribute("test", "value")
             };
-            _attrViewMock.TriggerAttributeChanges(0, oldValue, newValue);
+            _viewAttributes.Add(oldValue);
+            _attributeManager.Setup(mock => mock.GroupAttributesInSelection()).Returns(new AttributeGroup[] {});
 
-            Assert.IsTrue(_attrViewMock.Updated.Contains(0));
-            Assert.IsTrue(_attrViewMock.Updated.Contains(1));
-            Assert.IsNull(_attrViewMock.LastError);
-            Assert.AreEqual(2, _attrViewMock.Attributes.Count);
-            Assert.AreEqual(
-                new StringAttribute("test", "value"), 
-                _attrViewMock.Attributes[0].Data);
-            Assert.AreEqual(
-                new StringAttribute("", ""), 
-                _attrViewMock.Attributes[1].Data);
+            _view.Raise(mock => mock.AttributeChanged += null, new AttributeChangedEventArgs
+            {
+                Index = 0,
+                OldValue = oldValue,
+                NewValue = newValue
+            });
+            
+            _view.Verify(mock => mock.UpdateAttribute(0));
+            _view.Verify(mock => mock.UpdateAttribute(1));
+
+            _attributeManager.Verify(mock => mock.SetAttribute("", newValue.Data));
+
+            Assert.AreEqual(2, _viewAttributes.Count);
+            Assert.AreEqual(newValue, _viewAttributes[0]);
+            Assert.AreEqual("", _viewAttributes[1].Data.Name);
         }
 
         [TestMethod]
@@ -114,98 +139,28 @@ namespace ViewerTest.UI.Attributes
                 Data = new StringAttribute("", ""),
                 IsMixed = false
             };
-
-            // add some default attributes
-            _attributeManagerMock.SetAttribute(attr1.Data.Name, attr1.Data);
-            _attributeManagerMock.SetAttribute(attr2.Data.Name, attr2.Data);
-            _attrViewMock.Attributes.Add(attr1);
-            _attrViewMock.Attributes.Add(attr2);
-            _attrViewMock.Attributes.Add(attr3);
-
+            _viewAttributes.Add(attr1);
+            _viewAttributes.Add(attr2);
+            _viewAttributes.Add(attr3);
+            _attributeManager.Setup(mock => mock.GroupAttributesInSelection()).Returns(new[] { attr1, attr2 });
+            
             // add attribute with an existing name
-            _attrViewMock.TriggerAttributeChanges(2, _attrViewMock.Attributes[2], new AttributeGroup
+            _view.Raise(mock => mock.AttributeChanged += null, new AttributeChangedEventArgs
             {
-                Data = new StringAttribute("test2", "value2"),
-                IsMixed = false
+                Index = 2,
+                OldValue = _viewAttributes[2],
+                NewValue = new AttributeGroup
+                {
+                    Data = new StringAttribute("test2", "value2"),
+                    IsMixed = false
+                }
             });
+
+            _view.Verify(mock => mock.AttributeNameIsNotUnique("test2"));
+            _view.Verify(mock => mock.UpdateAttribute(2));
             
-            Assert.IsTrue(_attrViewMock.Updated.Contains(2));
-            Assert.AreEqual("not unique: test2", _attrViewMock.LastError);
-            CollectionAssert.AreEqual(new[]{ attr1, attr2, attr3 }, _attrViewMock.Attributes.ToArray());
-        }
-
-        [TestMethod]
-        public void SortAttributes_EditingEnabled()
-        {
-            _presenter.EditingEnabled = true;
-
-            var attr1 = new AttributeGroup
-            {
-                Data = new IntAttribute("attr2", 42),
-                IsMixed = false,
-                IsGlobal = true
-            };
-            var attr2 = new AttributeGroup
-            {
-                Data = new StringAttribute("attr1", "value"),
-                IsMixed = false,
-                IsGlobal = true
-            };
-            var attr3 = new AttributeGroup
-            {
-                Data = new StringAttribute("attr3", ""),
-                IsMixed = false,
-                IsGlobal = true
-            };
-
-            _attrViewMock.Attributes.Add(attr1);
-            _attrViewMock.Attributes.Add(attr2);
-            _attrViewMock.Attributes.Add(attr3);
-
-            _selectionMock.Replace(_entities, new []{ 0 });
-            
-            // desc
-            _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
-            Assert.AreEqual(_attrViewMock.Attributes[0], attr1);
-            Assert.AreEqual(_attrViewMock.Attributes[1], attr2);
-            Assert.AreEqual(_attrViewMock.Attributes[2], attr3);
-        }
-
-        [TestMethod]
-        public void SortAttributes_EditingDisabled()
-        {
-            _presenter.EditingEnabled = false;
-
-            var attr1 = new AttributeGroup
-            {
-                Data = new IntAttribute("attr2", 42),
-                IsMixed = false,
-                IsGlobal = true
-            };
-            var attr2 = new AttributeGroup
-            {
-                Data = new StringAttribute("attr1", "value"),
-                IsMixed = false,
-                IsGlobal = true
-            };
-            var attr3 = new AttributeGroup
-            {
-                Data = new StringAttribute("attr3", ""),
-                IsMixed = false,
-                IsGlobal = true
-            };
-
-            _attrViewMock.Attributes.Add(attr1);
-            _attrViewMock.Attributes.Add(attr2);
-            _attrViewMock.Attributes.Add(attr3);
-
-            _selectionMock.Replace(_entities, new[] { 0 });
-
-            // desc
-            _attrViewMock.TriggerSortAttributes(new SortEventArgs { Column = SortColumn.Name });
-            Assert.AreEqual(_attrViewMock.Attributes[0], attr3);
-            Assert.AreEqual(_attrViewMock.Attributes[1], attr1);
-            Assert.AreEqual(_attrViewMock.Attributes[2], attr2);
+            Assert.AreEqual(3, _viewAttributes.Count);
+            Assert.AreEqual(attr3, _viewAttributes[2]);
         }
     }
 }

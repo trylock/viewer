@@ -56,9 +56,11 @@ namespace ViewerTest.UI.Images
                 return new Tuple<IImagesView, Action>(_viewMock.Object, () => { });
             });
             
-            var imageLoaderMock = new ImageLoaderMock();
+            var imageLoaderMock = new Mock<IImageLoader>();
+            imageLoaderMock.Setup(mock => mock.GetImageSize(It.IsAny<IEntity>())).Returns(new Size(1, 1));
+
             _selectionMock = new Mock<ISelection>();
-            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _storage, _clipboardMock.Object, imageLoaderMock, null);
+            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _storage, _clipboardMock.Object, imageLoaderMock.Object, null);
             _presenter.LoadFromQueryResult(_entities.Object);
             
             _viewMock.Setup(mock => mock.Items).Returns(_items);

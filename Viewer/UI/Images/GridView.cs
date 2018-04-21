@@ -17,7 +17,12 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Height of the area for file name
         /// </summary>
-        public int NameHeight { get; set; } = 25;
+        public int NameHeight { get; set; } = 30;
+
+        /// <summary>
+        /// Space between the thumbnail and the name label
+        /// </summary>
+        public int NameSpace { get; set; } = 5;
 
         /// <summary>
         /// Size between thumbnail and an edge of an item
@@ -34,7 +39,7 @@ namespace Viewer.UI.Images
             {
                 _itemSize = value;
                 Grid.MinCellWidth = _itemSize.Width + ItemPadding.Width * 2;
-                Grid.CellHeight = _itemSize.Height + NameHeight + ItemPadding.Height * 2;
+                Grid.CellHeight = _itemSize.Height + NameHeight + NameSpace + ItemPadding.Height * 2;
                 UpdateScrollableSize();
                 Refresh();
             }
@@ -147,7 +152,7 @@ namespace Viewer.UI.Images
         {
             return new Point(
                 cellBounds.X + ItemPadding.Width,
-                cellBounds.Y + (cellBounds.Height - NameHeight) - ItemPadding.Height
+                cellBounds.Y + (cellBounds.Height - NameHeight) + NameSpace - ItemPadding.Height
             );
         }
 

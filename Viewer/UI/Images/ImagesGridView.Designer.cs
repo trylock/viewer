@@ -39,19 +39,18 @@
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ThumbnailSizeTrackBar = new System.Windows.Forms.TrackBar();
             this.GridView = new Viewer.UI.Images.GridView();
-            this.SplitContainer = new System.Windows.Forms.SplitContainer();
             this.ItemsCountLabel = new System.Windows.Forms.Label();
+            this.ViewTableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.ControlPanel = new System.Windows.Forms.Panel();
             this.ItemContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).BeginInit();
-            this.SplitContainer.Panel1.SuspendLayout();
-            this.SplitContainer.Panel2.SuspendLayout();
-            this.SplitContainer.SuspendLayout();
+            this.ViewTableLayout.SuspendLayout();
+            this.ControlPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // NameTextBox
             // 
-            this.NameTextBox.Location = new System.Drawing.Point(26, 65);
+            this.NameTextBox.Location = new System.Drawing.Point(71, 40);
             this.NameTextBox.Name = "NameTextBox";
             this.NameTextBox.Size = new System.Drawing.Size(115, 22);
             this.NameTextBox.TabIndex = 0;
@@ -114,8 +113,8 @@
             // 
             // ThumbnailSizeTrackBar
             // 
-            this.ThumbnailSizeTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ThumbnailSizeTrackBar.Location = new System.Drawing.Point(659, -5);
+            this.ThumbnailSizeTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ThumbnailSizeTrackBar.Location = new System.Drawing.Point(653, 3);
             this.ThumbnailSizeTrackBar.Name = "ThumbnailSizeTrackBar";
             this.ThumbnailSizeTrackBar.Size = new System.Drawing.Size(173, 56);
             this.ThumbnailSizeTrackBar.TabIndex = 1;
@@ -129,11 +128,11 @@
             this.GridView.ItemPadding = new System.Drawing.Size(8, 8);
             this.GridView.Items = null;
             this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(0, 0);
+            this.GridView.Location = new System.Drawing.Point(3, 3);
             this.GridView.Name = "GridView";
             this.GridView.NameHeight = 25;
             this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(835, 400);
+            this.GridView.Size = new System.Drawing.Size(829, 388);
             this.GridView.TabIndex = 2;
             this.GridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.GridView_Scroll);
             this.GridView.DoubleClick += new System.EventHandler(this.GridView_DoubleClick);
@@ -141,37 +140,40 @@
             this.GridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseMove);
             this.GridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseUp);
             // 
-            // SplitContainer
-            // 
-            this.SplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.SplitContainer.IsSplitterFixed = true;
-            this.SplitContainer.Location = new System.Drawing.Point(0, 0);
-            this.SplitContainer.Name = "SplitContainer";
-            this.SplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // SplitContainer.Panel1
-            // 
-            this.SplitContainer.Panel1.Controls.Add(this.GridView);
-            this.SplitContainer.Panel1.Controls.Add(this.NameTextBox);
-            // 
-            // SplitContainer.Panel2
-            // 
-            this.SplitContainer.Panel2.Controls.Add(this.ItemsCountLabel);
-            this.SplitContainer.Panel2.Controls.Add(this.ThumbnailSizeTrackBar);
-            this.SplitContainer.Size = new System.Drawing.Size(835, 434);
-            this.SplitContainer.SplitterDistance = 400;
-            this.SplitContainer.TabIndex = 3;
-            // 
             // ItemsCountLabel
             // 
             this.ItemsCountLabel.AutoSize = true;
             this.ItemsCountLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ItemsCountLabel.Location = new System.Drawing.Point(8, 8);
+            this.ItemsCountLabel.Location = new System.Drawing.Point(9, 8);
             this.ItemsCountLabel.Name = "ItemsCountLabel";
             this.ItemsCountLabel.Size = new System.Drawing.Size(53, 17);
             this.ItemsCountLabel.TabIndex = 2;
             this.ItemsCountLabel.Text = "0 Items";
+            // 
+            // ViewTableLayout
+            // 
+            this.ViewTableLayout.ColumnCount = 1;
+            this.ViewTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ViewTableLayout.Controls.Add(this.ControlPanel, 0, 1);
+            this.ViewTableLayout.Controls.Add(this.GridView, 0, 0);
+            this.ViewTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ViewTableLayout.Location = new System.Drawing.Point(0, 0);
+            this.ViewTableLayout.Name = "ViewTableLayout";
+            this.ViewTableLayout.RowCount = 2;
+            this.ViewTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ViewTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.ViewTableLayout.Size = new System.Drawing.Size(835, 434);
+            this.ViewTableLayout.TabIndex = 3;
+            // 
+            // ControlPanel
+            // 
+            this.ControlPanel.Controls.Add(this.ThumbnailSizeTrackBar);
+            this.ControlPanel.Controls.Add(this.ItemsCountLabel);
+            this.ControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ControlPanel.Location = new System.Drawing.Point(3, 397);
+            this.ControlPanel.Name = "ControlPanel";
+            this.ControlPanel.Size = new System.Drawing.Size(829, 34);
+            this.ControlPanel.TabIndex = 0;
             // 
             // ImagesGridView
             // 
@@ -179,18 +181,17 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(835, 434);
             this.ContextMenuStrip = this.ItemContextMenu;
-            this.Controls.Add(this.SplitContainer);
+            this.Controls.Add(this.ViewTableLayout);
+            this.Controls.Add(this.NameTextBox);
             this.Name = "ImagesGridView";
             this.Text = "Images";
             this.ItemContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).EndInit();
-            this.SplitContainer.Panel1.ResumeLayout(false);
-            this.SplitContainer.Panel1.PerformLayout();
-            this.SplitContainer.Panel2.ResumeLayout(false);
-            this.SplitContainer.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).EndInit();
-            this.SplitContainer.ResumeLayout(false);
+            this.ViewTableLayout.ResumeLayout(false);
+            this.ControlPanel.ResumeLayout(false);
+            this.ControlPanel.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -206,7 +207,8 @@
         private System.Windows.Forms.ToolStripMenuItem DeleteMenuItem;
         private System.Windows.Forms.TrackBar ThumbnailSizeTrackBar;
         private GridView GridView;
-        private System.Windows.Forms.SplitContainer SplitContainer;
         private System.Windows.Forms.Label ItemsCountLabel;
+        private System.Windows.Forms.TableLayoutPanel ViewTableLayout;
+        private System.Windows.Forms.Panel ControlPanel;
     }
 }

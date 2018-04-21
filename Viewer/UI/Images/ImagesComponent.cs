@@ -29,7 +29,7 @@ namespace Viewer.UI.Images
             _imagesFactory = images;
         }
 
-        public void OnStartup()
+        public void OnStartup(IViewerApplication app)
         {
             var queryResult = new EntityManager(_modifiedEntities);
             foreach (var file in Directory.EnumerateFiles(@"D:\dataset\large"))

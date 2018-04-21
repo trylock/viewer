@@ -27,7 +27,7 @@ namespace Viewer
             using (var container = new CompositionContainer(catalog))
             {
                 container.ComposeExportedValue(container);
-                var app = container.GetExportedValue<ViewerApplication>();
+                var app = container.GetExportedValue<IViewerApplication>();
                 app.InitializeLayout();
                 app.Run();
             }

@@ -28,20 +28,35 @@ namespace Viewer
     [Export]
     public partial class ViewerForm : Form
     {
-        public DockPanel Panel { get; private set; }
+        public DockPanel Panel { get; }
 
         public ViewerForm()
         {
-            InitializeComponent();
-
             Panel = new DockPanel
             {
-                Theme = new VS2015LightTheme(),
-                Dock = DockStyle.Fill
+                Theme = new VS2015LightTheme()
             };
             Panel.UpdateDockWindowZOrder(DockStyle.Right, true);
             Panel.UpdateDockWindowZOrder(DockStyle.Left, true);
             Controls.Add(Panel);
+            
+            InitializeComponent();
+
+            ViewerForm_Resize(this, EventArgs.Empty);
+        }
+
+        public void AddViewAction(string name, Action action)
+        {
+            var item = new ToolStripMenuItem { Text = name };
+            item.Click += (sender, args) => action();
+            ViewMenuItem.DropDownItems.Add(item);
+        }
+
+        private void ViewerForm_Resize(object sender, EventArgs e)
+        {
+            Panel.Width = ClientSize.Width;
+            Panel.Height = ClientSize.Height - ViewerMenu.Height;
+            Panel.Location = new Point(0, ViewerMenu.Height);
         }
     }
 }

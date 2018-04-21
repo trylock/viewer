@@ -11,6 +11,7 @@ namespace Viewer.UI
         /// <summary>
         /// Function called once when this component should be loaded
         /// </summary>
-        void OnStartup();
+        /// <param name="app">Application</param>
+        void OnStartup(IViewerApplication app);
     }
 }

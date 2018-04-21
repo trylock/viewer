@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -25,8 +26,28 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer
 {
-    [Export]
-    public class ViewerApplication
+    public interface IViewerApplication
+    {
+        /// <summary>
+        /// Initialize components of the application
+        /// </summary>
+        void InitializeLayout();
+
+        /// <summary>
+        /// Add an option to the View subtree of the application menu
+        /// </summary>
+        /// <param name="name">Name of the component</param>
+        /// <param name="action">Function executed when user clicks on the item</param>
+        void AddViewAction(string name, Action action);
+
+        /// <summary>
+        /// Run the application
+        /// </summary>
+        void Run();
+    }
+
+    [Export(typeof(IViewerApplication))]
+    public class ViewerApplication : IViewerApplication
     {
         private readonly ViewerForm _appForm;
         private readonly IComponent[] _components;
@@ -42,8 +63,13 @@ namespace Viewer
         {
             foreach (var component in _components)
             {
-                component.OnStartup();
+                component.OnStartup(this);
             }
+        }
+
+        public void AddViewAction(string name, Action action)
+        {
+            _appForm.AddViewAction(name, action);
         }
 
         public void Run()

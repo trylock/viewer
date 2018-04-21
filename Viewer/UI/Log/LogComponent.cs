@@ -11,7 +11,11 @@ namespace Viewer.UI.Log
     [Export(typeof(IComponent))]
     public class LogComponent : IComponent
     {
+        public const string Name = "Event Log";
+
         private readonly ExportFactory<LogPresenter> _logFactory;
+
+        private ExportLifetimeContext<LogPresenter> _log;
 
         [ImportingConstructor]
         public LogComponent(ExportFactory<LogPresenter> factory)
@@ -19,15 +23,28 @@ namespace Viewer.UI.Log
             _logFactory = factory;
         }
 
-        public void OnStartup()
+        public void OnStartup(IViewerApplication app)
         {
-            var logExport = _logFactory.CreateExport();
-            logExport.Value.View.CloseView += (sender, e) =>
+            app.AddViewAction(Name, ShowLog);
+            ShowLog();
+        }
+
+        private void ShowLog()
+        {
+            if (_log == null)
             {
-                logExport.Dispose();
-                logExport = null;
-            };
-            logExport.Value.ShowView("Event Log", DockState.DockBottom);
+                _log = _logFactory.CreateExport();
+                _log.Value.View.CloseView += (sender, e) =>
+                {
+                    _log.Dispose();
+                    _log = null;
+                };
+                _log.Value.ShowView(Name, DockState.DockBottom);
+            }
+            else
+            {
+                _log.Value.View.EnsureVisible();
+            }
         }
     }
 }

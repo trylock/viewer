@@ -28,22 +28,51 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.ViewerMenu = new System.Windows.Forms.MenuStrip();
+            this.ViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ViewerMenu.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // ViewerMenu
+            // 
+            this.ViewerMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.ViewerMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ViewMenuItem});
+            this.ViewerMenu.Location = new System.Drawing.Point(0, 0);
+            this.ViewerMenu.Name = "ViewerMenu";
+            this.ViewerMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.ViewerMenu.Size = new System.Drawing.Size(1000, 28);
+            this.ViewerMenu.TabIndex = 1;
+            this.ViewerMenu.Text = "menuStrip1";
+            // 
+            // ViewMenuItem
+            // 
+            this.ViewMenuItem.Name = "ViewMenuItem";
+            this.ViewMenuItem.Size = new System.Drawing.Size(53, 24);
+            this.ViewMenuItem.Text = "View";
             // 
             // ViewerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1210, 586);
+            this.ClientSize = new System.Drawing.Size(1000, 498);
+            this.Controls.Add(this.ViewerMenu);
             this.IsMdiContainer = true;
+            this.MainMenuStrip = this.ViewerMenu;
             this.Name = "ViewerForm";
             this.Text = "Viewer";
+            this.Resize += new System.EventHandler(this.ViewerForm_Resize);
+            this.ViewerMenu.ResumeLayout(false);
+            this.ViewerMenu.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        
+
+        private System.Windows.Forms.MenuStrip ViewerMenu;
+        private System.Windows.Forms.ToolStripMenuItem ViewMenuItem;
     }
 }
 

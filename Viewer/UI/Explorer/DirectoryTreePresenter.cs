@@ -137,9 +137,9 @@ namespace Viewer.UI.Explorer
             return result;
         }
 
-        private void View_ExpandDirectory(object sender, DirectoryEventArgs e)
+        private async void View_ExpandDirectory(object sender, DirectoryEventArgs e)
         {
-            var directories = GetValidSubdirectories(e.FullPath);
+            var directories = await Task.Run(() => GetValidSubdirectories(e.FullPath));
             View.LoadDirectories(
                 PathUtils.Split(e.FullPath),
                 directories);

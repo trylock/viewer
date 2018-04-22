@@ -118,7 +118,6 @@ namespace Viewer.UI.Images
         /// <param name="entities"></param>
         public void ShowEntities(IEntityManager entities)
         {
-            DisposeViewData();
             _entities = entities;
 
             // reset state
@@ -127,9 +126,6 @@ namespace Viewer.UI.Images
             _previousSelection.Clear();
             ActiveItem = -1;
             FocusedItem = -1;
-            
-            // find optimal item size
-            View.ItemSize = _minItemSize = _thumbnailSizeCalculator.ComputeMinimalSize(entities);
 
             // add entities with the default thumbnail
             var items = new List<EntityView>();
@@ -138,7 +134,10 @@ namespace Viewer.UI.Images
                 items.Add(new EntityView(entity, GetThumbnail(entity)));
             }
 
+            // update the view
+            DisposeViewData();
             View.Items = items;
+            View.ItemSize = _minItemSize = _thumbnailSizeCalculator.ComputeMinimalSize(entities);
             View.UpdateItems();
         }
         

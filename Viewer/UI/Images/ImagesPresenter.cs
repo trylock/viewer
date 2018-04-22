@@ -39,6 +39,7 @@ namespace Viewer.UI.Images
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
         private readonly RectangleSelection _rectangleSelection = new RectangleSelection();
+        private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
         private bool _isControl;
         private bool _isShift;
 
@@ -70,6 +71,7 @@ namespace Viewer.UI.Images
             _clipboard = clipboard;
             _imageLoader = imageLoader;
             _presentationFactory = presentationFactory;
+            _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
 
             View.ThumbnailSizeMinimum = 1;
             View.ThumbnailSizeMaximum = 100;
@@ -103,8 +105,7 @@ namespace Viewer.UI.Images
             }
 
             // find optimal item size
-            _minItemSize = FindMinimalImageSize(entities);
-            View.ItemSize = _minItemSize;
+            View.ItemSize = _minItemSize = _thumbnailSizeCalculator.ComputeMinimalSize(entities);
 
             // add entities with the default thumbnail
             foreach (var entity in _entities)
@@ -138,57 +139,6 @@ namespace Viewer.UI.Images
         private Lazy<Image> GetThumbnail(IEntity item)
         {
             return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, View.ItemSize));
-        }
-
-        /// <summary>
-        /// Determine minimal thumbnail size from the most common aspect ratio among images
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <returns></returns>
-        private Size FindMinimalImageSize(IEnumerable<IEntity> entities)
-        {
-            var frequency = new Dictionary<Fraction, int>();
-            foreach (var entity in entities)
-            {
-                var size = _imageLoader.GetImageSize(entity);
-                var ratio = new Fraction(size.Width, size.Height);
-                if (frequency.ContainsKey(ratio))
-                {
-                    frequency[ratio]++;
-                }
-                else
-                {
-                    frequency.Add(ratio, 1);
-                }
-            }
-
-            if (frequency.Count == 0)
-            {
-                return new Size(133, 100);
-            }
-
-            // find the most common aspect ratio
-            var maxFrequency = 0;
-            var maxRatio = new Fraction(4, 3);
-            foreach (var pair in frequency)
-            {
-                if (pair.Value > maxFrequency)
-                {
-                    maxFrequency = pair.Value;
-                    maxRatio = pair.Key;
-                }
-            }
-            
-            // determine the size
-            var aspectRatio = (double) maxRatio;
-            if (aspectRatio > 1)
-            {
-                return new Size((int) (100 * aspectRatio), 100);
-            }
-            else
-            {
-                return new Size(100, (int) (100 / aspectRatio));
-            }
         }
         
         private void UpdateSelection(Point endPoint)

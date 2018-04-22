@@ -128,6 +128,7 @@
     <Compile Include="UI\Images\ImagesComponent.cs" />
     <Compile Include="UI\Images\RectangleSelection.cs" />
     <Compile Include="UI\Forms\ButtonCell.cs" />
+    <Compile Include="UI\Images\ThumbnailSizeCalculator.cs" />
     <Compile Include="UI\Log\ILogView.cs" />
     <Compile Include="UI\Log\Log.cs" />
     <Compile Include="UI\Log\LogComponent.cs" />

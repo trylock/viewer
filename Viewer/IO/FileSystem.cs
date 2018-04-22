@@ -109,6 +109,48 @@ namespace Viewer.IO
         FileAttributes GetAttributes(string path);
 
         /// <summary>
+        /// Get files in given directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <inheritdoc cref="Directory.EnumerateFiles(string)"/>
+        IEnumerable<string> EnumerateFiles(string path);
+
+        /// <summary>
+        /// Get files in given directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        /// <inheritdoc cref="Directory.EnumerateFiles(string, string)"/>
+        IEnumerable<string> EnumerateFiles(string path, string pattern);
+
+        /// <summary>
+        /// Get files in given directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <inheritdoc cref="Directory.EnumerateDirectories(string)"/>
+        IEnumerable<string> EnumerateDirectories(string path);
+
+        /// <summary>
+        /// Get files in given directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        /// <inheritdoc cref="Directory.EnumerateDirectories(string, string)"/>
+        IEnumerable<string> EnumerateDirectories(string path, string pattern);
+
+        /// <summary>
+        /// Check whether there is a directory at <paramref name="path"/>
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <inheritdoc cref="Directory.Exists(string)"/>
+        bool DirectoryExists(string path);
+
+        /// <summary>
         /// Search given path for files and subdirectories.
         /// <paramref name="directoryCallback"/> will be called for each directory,
         /// <paramref name="fileCallback"/> will be called for each file.
@@ -180,7 +222,32 @@ namespace Viewer.IO
         {
             return File.GetAttributes(path);
         }
-        
+
+        public IEnumerable<string> EnumerateFiles(string path)
+        {
+            return Directory.EnumerateFiles(path);
+        }
+
+        public IEnumerable<string> EnumerateFiles(string path, string pattern)
+        {
+            return Directory.EnumerateFiles(path, pattern);
+        }
+
+        public IEnumerable<string> EnumerateDirectories(string path)
+        {
+            return Directory.EnumerateDirectories(path);
+        }
+
+        public IEnumerable<string> EnumerateDirectories(string path, string pattern)
+        {
+            return Directory.EnumerateDirectories(path, pattern);
+        }
+
+        public bool DirectoryExists(string path)
+        {
+            return Directory.Exists(path);
+        }
+
         public void Search(string path, SearchCallback directoryCallback, SearchCallback fileCallback)
         {
             var attrs = File.GetAttributes(path);

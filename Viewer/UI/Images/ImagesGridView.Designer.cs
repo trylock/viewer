@@ -131,6 +131,7 @@
             this.GridView.Location = new System.Drawing.Point(3, 3);
             this.GridView.Name = "GridView";
             this.GridView.NameHeight = 25;
+            this.GridView.NameSpace = 5;
             this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.GridView.Size = new System.Drawing.Size(829, 388);
             this.GridView.TabIndex = 2;

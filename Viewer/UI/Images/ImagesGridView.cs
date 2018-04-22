@@ -85,6 +85,7 @@ namespace Viewer.UI.Images
 
         public void UpdateItems()
         {
+            ControlPanel.Visible = Items.Count > 0;
             GridView.Items = Items;
             ItemsCountLabel.Text = string.Format(Resources.ItemCount_Label, Items.Count.ToString("N0"));
         }

@@ -132,11 +132,13 @@ namespace Viewer.UI.Images
             View.ItemSize = _minItemSize = _thumbnailSizeCalculator.ComputeMinimalSize(entities);
 
             // add entities with the default thumbnail
+            var items = new List<EntityView>();
             foreach (var entity in _entities)
             {
-                View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
+                items.Add(new EntityView(entity, GetThumbnail(entity)));
             }
 
+            View.Items = items;
             View.UpdateItems();
         }
         

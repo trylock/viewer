@@ -41,7 +41,6 @@ namespace Viewer.UI.Images
                 Grid.MinCellWidth = _itemSize.Width + ItemPadding.Width * 2;
                 Grid.CellHeight = _itemSize.Height + NameHeight + NameSpace + ItemPadding.Height * 2;
                 UpdateScrollableSize();
-                Refresh();
             }
         }
 

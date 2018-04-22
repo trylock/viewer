@@ -14,37 +14,41 @@ namespace Viewer.UI.Images
     [Export(typeof(IComponent))]
     public class ImagesComponent : IComponent
     {
-        private readonly IAttributeStorage _storage;
-        private readonly IEntityRepository _modifiedEntities;
+        private readonly IApplicationState _state;
         private readonly ExportFactory<ImagesPresenter> _imagesFactory;
 
+        private ExportLifetimeContext<ImagesPresenter> _images;
+
         [ImportingConstructor]
-        public ImagesComponent(
-            IAttributeStorage storage,
-            IEntityRepository modifiedEntities,
-            ExportFactory<ImagesPresenter> images)
+        public ImagesComponent(IApplicationState state, ExportFactory<ImagesPresenter> images)
         {
-            _storage = storage;
-            _modifiedEntities = modifiedEntities;
             _imagesFactory = images;
+            _state = state;
+            _state.QueryExecuted += (sender, e) => ShowImages(e.Query);
         }
 
         public void OnStartup(IViewerApplication app)
         {
-            var queryResult = new EntityManager(_modifiedEntities);
-            foreach (var file in Directory.EnumerateFiles(@"D:\dataset\large"))
-            {
-                queryResult.Add(_storage.Load(file));
-            }
+        }
 
-            var imagesExport = _imagesFactory.CreateExport();
-            imagesExport.Value.LoadFromQueryResult(queryResult);
-            imagesExport.Value.View.CloseView += (sender, args) =>
+        private void ShowImages(Query query)
+        {
+            if (_images == null)
             {
-                imagesExport.Dispose();
-                imagesExport = null;
-            };
-            imagesExport.Value.ShowView("Images", DockState.Document);
+                _images = _imagesFactory.CreateExport();
+                _images.Value.LoadQueryAsync(query);
+                _images.Value.View.CloseView += (sender, args) =>
+                {
+                    _images.Dispose();
+                    _images = null;
+                };
+                _images.Value.ShowView("Images", DockState.Document);
+            }
+            else
+            {
+                _images.Value.LoadQueryAsync(query);
+                _images.Value.View.EnsureVisible();
+            }
         }
     }
 }

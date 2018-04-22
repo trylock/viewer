@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Data;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.UI.Log;
@@ -27,7 +28,9 @@ namespace Viewer.UI.Explorer
         /// Directory with at least one of these flags will be hidden.
         /// </summary>
         public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
-        
+
+        private readonly IApplicationState _state;
+        private readonly IQueryEvaluator _evaluator;
         private readonly IFileSystem _fileSystem;
         private readonly IClipboardService _clipboard;
         private readonly IFileSystemErrorView _dialogView;
@@ -38,11 +41,15 @@ namespace Viewer.UI.Explorer
         [ImportingConstructor]
         public DirectoryTreePresenter(
             ExportFactory<IDirectoryTreeView> viewFactory,
+            IApplicationState state,
+            IQueryEvaluator evaluator,
             IProgressViewFactory progressViewFactory,
             IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
             IClipboardService clipboard)
         {
+            _state = state;
+            _evaluator = evaluator;
             _fileSystem = fileSystem;
             _clipboard = clipboard;
             _dialogView = dialogView;
@@ -149,6 +156,12 @@ namespace Viewer.UI.Explorer
             {
                 View.EndLoading();
             }
+        }
+
+        private void View_OpenDirectory(object sender, DirectoryEventArgs e)
+        {
+            var query = new Query().Select(e.FullPath);
+            _state.ExecuteQuery(query);
         }
         
         private void View_RenameDirectory(object sender, RenameDirectoryEventArgs e)

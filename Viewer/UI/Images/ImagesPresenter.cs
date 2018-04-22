@@ -30,6 +30,7 @@ namespace Viewer.UI.Images
         private readonly IClipboardService _clipboard;
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
+        private readonly IQueryEvaluator _evaluator;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
@@ -62,7 +63,8 @@ namespace Viewer.UI.Images
             IAttributeStorage storage,
             IClipboardService clipboard,
             IImageLoader imageLoader,
-            IApplicationState state)
+            IApplicationState state,
+            IQueryEvaluator evaluator)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogView = dialogView;
@@ -71,6 +73,7 @@ namespace Viewer.UI.Images
             _clipboard = clipboard;
             _imageLoader = imageLoader;
             _state = state;
+            _evaluator = evaluator;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
 
             View.ThumbnailSizeMinimum = 1;
@@ -92,18 +95,39 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Show all entities in the view.
-        /// Previously loaded entities will be released.
+        /// Execute given query and show all entities in the result.
         /// </summary>
-        /// <param name="entities">Entities to show</param>
-        public void LoadFromQueryResult(IEntityManager entities)
+        /// <param name="query">Query to show</param>
+        public async void LoadQueryAsync(Query query)
         {
-            if (_entities != entities)
+            View.BeginLoading();
+            try
             {
-                DisposeViewData();
-                _entities = entities;
+                var entities = await Task.Run(() => _evaluator.Evaluate(query));
+                ShowEntities(entities);
             }
+            finally
+            {
+                View.EndLoading();
+            }
+        }
 
+        /// <summary>
+        /// Show all entities
+        /// </summary>
+        /// <param name="entities"></param>
+        public void ShowEntities(IEntityManager entities)
+        {
+            DisposeViewData();
+            _entities = entities;
+
+            // reset state
+            _selection.Clear();
+            _currentSelection.Clear();
+            _previousSelection.Clear();
+            ActiveItem = -1;
+            FocusedItem = -1;
+            
             // find optimal item size
             View.ItemSize = _minItemSize = _thumbnailSizeCalculator.ComputeMinimalSize(entities);
 
@@ -112,6 +136,7 @@ namespace Viewer.UI.Images
             {
                 View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
             }
+
             View.UpdateItems();
         }
         
@@ -497,6 +522,7 @@ namespace Viewer.UI.Images
 
             // scale existing thumbnail
             View.ItemSize = itemSize;
+            View.UpdateItems();
         }
 
         private void View_ThumbnailSizeCommit(object sender, EventArgs e)

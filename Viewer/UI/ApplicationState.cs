@@ -8,16 +8,13 @@ using Viewer.Data;
 
 namespace Viewer.UI
 {
-    public class EntityListEventArgs : EventArgs
+    public class QueryEventArgs : EventArgs
     {
-        /// <summary>
-        /// Loaded entities
-        /// </summary>
-        public IEntityManager Entities { get; }
+        public Query Query { get; }
 
-        public EntityListEventArgs(IEntityManager entities)
+        public QueryEventArgs(Query query)
         {
-            Entities = entities;
+            Query = query;
         }
     }
 
@@ -43,9 +40,9 @@ namespace Viewer.UI
     public interface IApplicationState
     {
         /// <summary>
-        /// Event called when application tries to open a list of entities (i.e. a query result)
+        /// Event called when user tries to execute a query.
         /// </summary>
-        event EventHandler<EntityListEventArgs> EntitiesOpened;
+        event EventHandler<QueryEventArgs> QueryExecuted;
 
         /// <summary>
         /// Event called when user tries to open an entity (i.e. to open presentation)
@@ -60,16 +57,16 @@ namespace Viewer.UI
         void OpenEntity(IEntityManager entities, int index);
 
         /// <summary>
-        /// Open list of entities in a component
+        /// Execute a query
         /// </summary>
-        /// <param name="entities">List of entities</param>
-        void OpenEntities(IEntityManager entities);
+        /// <param name="query">Query to execute</param>
+        void ExecuteQuery(Query query);
     }
 
     [Export(typeof(IApplicationState))]
     public class ApplicationState : IApplicationState
     {
-        public event EventHandler<EntityListEventArgs> EntitiesOpened;
+        public event EventHandler<QueryEventArgs> QueryExecuted;
         public event EventHandler<EntityEventArgs> EntityOpened;
 
         public void OpenEntity(IEntityManager entities, int index)
@@ -77,9 +74,9 @@ namespace Viewer.UI
             EntityOpened?.Invoke(this, new EntityEventArgs(entities, index));
         }
 
-        public void OpenEntities(IEntityManager entities)
+        public void ExecuteQuery(Query query)
         {
-            EntitiesOpened?.Invoke(this, new EntityListEventArgs(entities));
+            QueryExecuted?.Invoke(this, new QueryEventArgs(query));
         }
     }
 }

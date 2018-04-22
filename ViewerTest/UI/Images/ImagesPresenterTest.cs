@@ -25,6 +25,8 @@ namespace ViewerTest.UI.Images
         private Mock<ISelection> _selectionMock;
         private Mock<IClipboardService> _clipboardMock;
         private Mock<IEntityManager> _entities;
+        private Mock<IQueryEvaluator> _evaluator;
+        private Mock<IApplicationState> _state;
         private ImagesPresenter _presenter;
 
         private List<Entity> _data;
@@ -37,7 +39,9 @@ namespace ViewerTest.UI.Images
             _viewMock = new Mock<IImagesView>();
             _clipboardMock = new Mock<IClipboardService>();
             _entities = new Mock<IEntityManager>();
-            
+            _evaluator = new Mock<IQueryEvaluator>();
+            _state = new Mock<IApplicationState>();
+
             _data = new List<Entity>();
             _items = new List<EntityView>();
             for (int i = 0; i < 16; ++i)
@@ -61,8 +65,8 @@ namespace ViewerTest.UI.Images
             imageLoaderMock.Setup(mock => mock.GetImageSize(It.IsAny<IEntity>())).Returns(new Size(1, 1));
 
             _selectionMock = new Mock<ISelection>();
-            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _storage, _clipboardMock.Object, imageLoaderMock.Object, null);
-            _presenter.LoadFromQueryResult(_entities.Object);
+            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _storage, _clipboardMock.Object, imageLoaderMock.Object, _state.Object, _evaluator.Object);
+            _presenter.ShowEntities(_entities.Object);
             
             _viewMock.Setup(mock => mock.Items).Returns(_items);
         }

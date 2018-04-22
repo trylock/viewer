@@ -73,6 +73,11 @@ namespace Viewer.UI.Explorer
     public interface IDirectoryTreeView : IWindowView
     {
         /// <summary>
+        /// Event called when user opens a directory 
+        /// </summary>
+        event EventHandler<DirectoryEventArgs> OpenDirectory;
+
+        /// <summary>
         /// Event called when a directory is expanded
         /// </summary>
         event EventHandler<DirectoryEventArgs> ExpandDirectory;

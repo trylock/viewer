@@ -32,7 +32,8 @@ namespace Viewer.UI.Explorer
         }
         
         #region View interface
-        
+
+        public event EventHandler<DirectoryEventArgs> OpenDirectory;
         public event EventHandler<DirectoryEventArgs> ExpandDirectory;
         public event EventHandler<RenameDirectoryEventArgs> RenameDirectory;
         public event EventHandler<DirectoryEventArgs> DeleteDirectory;
@@ -207,6 +208,10 @@ namespace Viewer.UI.Explorer
             {
                 TreeView.SelectedNode = e.Node;
             }
+            else if (e.Button == MouseButtons.Left)
+            {
+                OpenDirectory?.Invoke(sender, new DirectoryEventArgs(GetPath(e.Node)));
+            }
         }
 
         private void TreeView_MouseMove(object sender, MouseEventArgs e)
@@ -301,8 +306,7 @@ namespace Viewer.UI.Explorer
         }
 
         #endregion
-
-
+        
         #region Context Menu Events
 
         private void RenameMenuItem_Click(object sender, EventArgs e)

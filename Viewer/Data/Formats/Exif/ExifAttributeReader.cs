@@ -17,7 +17,7 @@ namespace Viewer.Data.Formats.Exif
 {
     public class ExifMetadata
     {
-        private IReadOnlyList<Directory> _directories;
+        private readonly IReadOnlyList<Directory> _directories;
 
         public JpegSegment Segment { get; }
 
@@ -27,9 +27,9 @@ namespace Viewer.Data.Formats.Exif
             _directories = directories;
         }
 
-        public T GetDirectoryOfType<T>()
+        public T GetDirectoryOfType<T>() where T : class
         {
-            return _directories.OfType<T>().FirstOrDefault();
+            return _directories?.OfType<T>().FirstOrDefault();
         }
     }
 

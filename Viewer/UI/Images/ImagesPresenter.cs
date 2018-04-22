@@ -29,7 +29,7 @@ namespace Viewer.UI.Images
         private readonly IAttributeStorage _storage;
         private readonly IClipboardService _clipboard;
         private readonly IImageLoader _imageLoader;
-        private readonly ExportFactory<PresentationPresenter> _presentationFactory;
+        private readonly IApplicationState _state;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
@@ -62,7 +62,7 @@ namespace Viewer.UI.Images
             IAttributeStorage storage,
             IClipboardService clipboard,
             IImageLoader imageLoader,
-            ExportFactory<PresentationPresenter> presentationFactory)
+            IApplicationState state)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogView = dialogView;
@@ -70,7 +70,7 @@ namespace Viewer.UI.Images
             _storage = storage;
             _clipboard = clipboard;
             _imageLoader = imageLoader;
-            _presentationFactory = presentationFactory;
+            _state = state;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
 
             View.ThumbnailSizeMinimum = 1;
@@ -477,14 +477,7 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            var presentationExport = _presentationFactory.CreateExport();
-            presentationExport.Value.ShowEntity(_entities, ActiveItem);
-            presentationExport.Value.View.CloseView += (s, args) =>
-            {
-                presentationExport.Dispose();
-                presentationExport = null;
-            };
-            presentationExport.Value.ShowView("Presentation", DockState.Document);
+            _state.OpenEntity(_entities, ActiveItem);
         }
         
         private void View_CloseView(object sender, EventArgs eventArgs)

@@ -110,9 +110,9 @@
     <Compile Include="UI\Attributes\AttributeTableView.Designer.cs">
       <DependentUpon>AttributeTableView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Attributes\DateTimeCell.cs" />
+    <Compile Include="UI\Forms\DateTimeCell.cs" />
     <Compile Include="UI\Attributes\IAttributeView.cs" />
-    <Compile Include="UI\BufferedDataGridView.cs">
+    <Compile Include="UI\Forms\BufferedDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\ClipboardService.cs" />
@@ -127,7 +127,7 @@
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="UI\Images\ImagesComponent.cs" />
     <Compile Include="UI\Images\RectangleSelection.cs" />
-    <Compile Include="UI\Log\ButtonCell.cs" />
+    <Compile Include="UI\Forms\ButtonCell.cs" />
     <Compile Include="UI\Log\ILogView.cs" />
     <Compile Include="UI\Log\Log.cs" />
     <Compile Include="UI\Log\LogComponent.cs" />

@@ -6,10 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Viewer.UI.Log
+namespace Viewer.UI.Forms
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Cell with a button
+    /// </summary>
     public class ButtonCell : DataGridViewButtonCell
     {
+        /// <summary>
+        /// Event called when user clicks on the button
+        /// </summary>
         public event EventHandler<DataGridViewCellEventArgs> Click;
 
         /// <summary>

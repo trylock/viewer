@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Viewer.UI
+namespace Viewer.UI.Forms
 {
     public class BufferedDataGridView : DataGridView
     {

@@ -41,7 +41,7 @@ namespace Viewer.UI.Attributes
                 _attributes = _attributesFactory.CreateExport();
                 _attributes.Value.AttributePredicate =
                     attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
-                _attributes.Value.EditingEnabled = true;
+                _attributes.Value.IsEditingEnabled = true;
                 _attributes.Value.View.CloseView += (sender, args) =>
                 {
                     _attributes.Dispose();
@@ -62,7 +62,7 @@ namespace Viewer.UI.Attributes
                 _exif = _attributesFactory.CreateExport();
                 _exif.Value.AttributePredicate = attr => attr.Data.GetType() != typeof(ImageAttribute) &&
                                                         (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
-                _exif.Value.EditingEnabled = false;
+                _exif.Value.IsEditingEnabled = false;
                 _exif.Value.View.CloseView += (sender, e) =>
                 {
                     _exif.Dispose();

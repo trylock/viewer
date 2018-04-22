@@ -129,12 +129,12 @@ namespace Viewer.UI.Images
         int ThumbnailSize { get; set; }
 
         /// <summary>
-        /// Minimum thumbnail size 
+        /// Minimal thumbnail size 
         /// </summary>
         int ThumbnailSizeMinimum { get; set; }
 
         /// <summary>
-        /// Maximum thumbnail size
+        /// Maximal thumbnail size
         /// </summary>
         int ThumbnailSizeMaximum { get; set; }
 

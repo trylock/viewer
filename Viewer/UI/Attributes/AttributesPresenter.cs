@@ -37,7 +37,7 @@ namespace Viewer.UI.Attributes
         /// <summary>
         /// true iff it is enabled to remove and update attributes
         /// </summary>
-        public bool EditingEnabled { get; set; } = true;
+        public bool IsEditingEnabled { get; set; } = true;
 
         private SortColumn _currentSortColumn = SortColumn.Name;
         private SortDirection _currentSortDirection = SortDirection.Ascending;
@@ -116,7 +116,7 @@ namespace Viewer.UI.Attributes
         {
             // add existing attributes + an empty row for a new attribute
             View.Attributes = GetSelectedAttributes().ToList();
-            if (_selection.Count > 0 && EditingEnabled)
+            if (_selection.Count > 0 && IsEditingEnabled)
             {
                 View.Attributes.Add(CreateAddAttributeView());
             }
@@ -134,7 +134,7 @@ namespace Viewer.UI.Attributes
 
         private void View_AttributeChanged(object sender, AttributeChangedEventArgs e)
         {
-            if (!EditingEnabled)
+            if (!IsEditingEnabled)
             {
                 // revert changes
                 View.UpdateAttribute(e.Index);
@@ -191,7 +191,7 @@ namespace Viewer.UI.Attributes
         
         private void View_AttributeDeleted(object sender, AttributeDeletedEventArgs e)
         {
-            if (!EditingEnabled)
+            if (!IsEditingEnabled)
             {
                 return;
             }
@@ -267,7 +267,7 @@ namespace Viewer.UI.Attributes
 
             // remove the last row temporarily 
             var lastRow = View.Attributes[View.Attributes.Count - 1];
-            if (EditingEnabled)
+            if (IsEditingEnabled)
             {
                 View.Attributes.RemoveAt(View.Attributes.Count - 1);
             }
@@ -301,7 +301,7 @@ namespace Viewer.UI.Attributes
             _currentSortColumn = e.Column;
 
             // add back the last row and update the view
-            if (EditingEnabled)
+            if (IsEditingEnabled)
             {
                 View.Attributes.Add(lastRow);
             }
@@ -328,7 +328,7 @@ namespace Viewer.UI.Attributes
                 View.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().StartsWith(filter)).ToList();
             }
 
-            if (EditingEnabled)
+            if (IsEditingEnabled)
             {
                 // if editing is enabled, the last row is an empty row 
                 View.Attributes.Add(lastRow);

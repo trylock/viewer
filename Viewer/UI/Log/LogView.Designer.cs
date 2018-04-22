@@ -1,4 +1,6 @@
-﻿namespace Viewer.UI.Log
+﻿using Viewer.UI.Forms;
+
+namespace Viewer.UI.Log
 {
     partial class LogView
     {

@@ -1,4 +1,6 @@
-﻿namespace Viewer.UI.Attributes
+﻿using Viewer.UI.Forms;
+
+namespace Viewer.UI.Attributes
 {
     partial class AttributeTableView
     {

@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 
-namespace Viewer.UI.Attributes
+namespace Viewer.UI.Forms
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// DataGridView date time cell
+    /// </summary>
     public class DateTimeCell : DataGridViewTextBoxCell
     {
         public override Type EditType => typeof(DateTimeEditingControl);

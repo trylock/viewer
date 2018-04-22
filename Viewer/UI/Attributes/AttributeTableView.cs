@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Properties;
+using Viewer.UI.Forms;
 using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
@@ -27,7 +28,7 @@ namespace Viewer.UI.Attributes
         /// Background color of a read only attribute
         /// </summary>
         private readonly Color _readOnlyBackColor = Color.LightGray;
-
+        
         private const int TypeColumnIndex = 2;
         
         public AttributeTableView()

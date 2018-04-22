@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Properties;
+using Viewer.UI.Forms;
 
 namespace Viewer.UI.Log
 {

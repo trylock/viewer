@@ -136,16 +136,29 @@ namespace Viewer.Images
 
         public Image LoadThumbnail(IEntity entity, Size thumbnailAreaSize)
         {
+            var thumbnail = LoadOriginalThumbnail(entity);
+            if (thumbnail == null)
+                return null;
+            return _thumbnailGenerator.GetThumbnail(thumbnail, thumbnailAreaSize);
+        }
+
+        /// <summary>
+        /// Load entity thumbnail without scaling it
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        private Image LoadOriginalThumbnail(IEntity entity)
+        {
             var attr = entity.GetAttribute(ThumbnailAttrName) as ImageAttribute;
             if (attr == null)
             {
-                return null;
+                return LoadImage(entity);
             }
 
             using (var image = Image.FromStream(new MemoryStream(attr.Value)))
             {
                 FixImageOrientation(entity, image);
-                return _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize);
+                return image;
             }
         }
     }

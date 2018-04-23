@@ -71,5 +71,21 @@ namespace ViewerTest.Images
         {
             ThumbnailGenerator.GetThumbnailSize(new Size(10, 10), new Size(10, -10));
         }
+
+        [TestMethod]
+        public void GetThumbnailSize_HeightIsNever0()
+        {
+            var size = ThumbnailGenerator.GetThumbnailSize(new Size(1024, 1), new Size(100, 100));
+            Assert.AreEqual(100, size.Width);
+            Assert.AreEqual(1, size.Height);
+        }
+
+        [TestMethod]
+        public void GetThumbnailSize_WidthIsNever0()
+        {
+            var size = ThumbnailGenerator.GetThumbnailSize(new Size(1, 1024), new Size(100, 100));
+            Assert.AreEqual(1, size.Width);
+            Assert.AreEqual(100, size.Height);
+        }
     }
 }

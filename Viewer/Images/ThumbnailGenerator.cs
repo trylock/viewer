@@ -68,11 +68,11 @@ namespace Viewer.Images
             var thumbnailAspectRatio = thumbnailAreaSize.Width / (double) thumbnailAreaSize.Height;
             if (originalAspectRatio >= thumbnailAspectRatio)
             {
-                thumbnailAreaSize.Height = (int)(thumbnailAreaSize.Width / originalAspectRatio);
+                thumbnailAreaSize.Height = Math.Max((int)(thumbnailAreaSize.Width / originalAspectRatio), 1);
             }
             else
             {
-                thumbnailAreaSize.Width = (int)(thumbnailAreaSize.Height * originalAspectRatio);
+                thumbnailAreaSize.Width = Math.Max((int)(thumbnailAreaSize.Height * originalAspectRatio), 1);
             }
 
             return thumbnailAreaSize;

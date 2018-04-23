@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data.Storage;
+using Viewer.IO;
 
 namespace Viewer.Data
 {
@@ -28,14 +29,16 @@ namespace Viewer.Data
     [Export(typeof(IQueryEvaluator))]
     public class QueryEvaluator : IQueryEvaluator
     {
+        private readonly IFileSystem _fileSystem;
         private readonly IEntityRepository _modifiedEntities;
         private readonly IAttributeStorage _storage;
 
         [ImportingConstructor]
-        public QueryEvaluator(IEntityRepository modifiedEntities, IAttributeStorage storage)
+        public QueryEvaluator(IFileSystem fileSystem, IEntityRepository modifiedEntities, IAttributeStorage storage)
         {
-            _modifiedEntities = modifiedEntities;
             _storage = storage;
+            _fileSystem = fileSystem;
+            _modifiedEntities = modifiedEntities;
         }
 
         public Query CreateQuery()
@@ -46,13 +49,25 @@ namespace Viewer.Data
         public IEntityManager Evaluate(Query query)
         {
             var entities = new EntityManager(_modifiedEntities);
-            foreach (var file in EnumerateFiles(query.SelectPattern))
+            var filter = CreateFilter(query);
+            foreach (var file in EnumerateFiles(query.Pattern))
             {
                 var entity = _storage.Load(file);
-                entities.Add(entity);
+                if (filter(entity))
+                {
+                    entities.Add(entity);
+                }
             }
 
             return entities;
+        }
+
+        private Func<IEntity, bool> CreateFilter(Query query)
+        {
+            return entity =>
+            {
+                return query.Filter.All(condition => condition(entity));
+            };
         }
 
         private IEnumerable<string> EnumerateFiles(string pattern)
@@ -61,8 +76,9 @@ namespace Viewer.Data
             {
                 yield break;
             }
-            
-            foreach (var path in Directory.EnumerateFiles(pattern))
+
+            var finder = new FileFinder(_fileSystem, pattern);
+            foreach (var path in finder.GetFiles())
             {
                 var extension = Path.GetExtension(path).ToLowerInvariant();
                 if (extension == ".jpeg" || extension == ".jpg")

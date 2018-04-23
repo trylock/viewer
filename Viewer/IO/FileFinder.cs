@@ -36,33 +36,9 @@ namespace Viewer.IO
                 LastMatchedPartIndex = lastMatchedPart;
             }
         }
-
-        private class PathPart
-        {
-            /// <summary>
-            /// Relative path to a directory
-            /// </summary>
-            public string Path { get; }
-
-            /// <summary>
-            /// true iff Path contains * or ?
-            /// </summary>
-            public bool IsPattern { get; }
-
-            public PathPart(string path)
-            {
-                Path = path;
-                IsPattern = Path.Contains('*') || Path.Contains('?');
-            }
-
-            public override string ToString()
-            {
-                return Path;
-            }
-        }
-
+        
         private readonly IFileSystem _fileSystem;
-        private readonly IReadOnlyList<PathPart> _parts;
+        private readonly IReadOnlyList<string> _parts;
 
         public FileFinder(IFileSystem fileSystem, string directoryPattern)
         {
@@ -75,14 +51,14 @@ namespace Viewer.IO
             _parts = ParsePattern(directoryPattern);
         }
 
-        private List<PathPart> ParsePattern(string directoryPattern)
+        private List<string> ParsePattern(string directoryPattern)
         {
-            var parts = new List<PathPart>();
+            var parts = new List<string>();
             var patternParts = PathUtils.Split(directoryPattern);
             var pathBuilder = new StringBuilder();
             foreach (var part in patternParts)
             {
-                if (!part.Contains('*') && !part.Contains('?'))
+                if (!IsPattern(part))
                 {
                     pathBuilder.Append(part);
                     pathBuilder.Append(Path.DirectorySeparatorChar);
@@ -93,18 +69,18 @@ namespace Viewer.IO
                     if (pathBuilder.Length > 0)
                     {
                         var directoryPath = pathBuilder.ToString();
-                        parts.Add(new PathPart(directoryPath));
+                        parts.Add(directoryPath);
                         pathBuilder = new StringBuilder();
                     }
 
                     // add directory name pattern
-                    parts.Add(new PathPart(part));
+                    parts.Add(part);
                 }
             }
 
             if (pathBuilder.Length > 0)
             {
-                parts.Add(new PathPart(pathBuilder.ToString()));
+                parts.Add(pathBuilder.ToString());
             }
 
             return parts;
@@ -121,7 +97,7 @@ namespace Viewer.IO
                 yield break;
             }
 
-            var firstPath = _parts[0].Path;
+            var firstPath = _parts[0];
             if (!_fileSystem.DirectoryExists(firstPath))
             {
                 yield break;
@@ -149,10 +125,10 @@ namespace Viewer.IO
                     else
                     {
                         var part = _parts[state.LastMatchedPartIndex + 1];
-                        if (!part.IsPattern)
+                        if (!IsPattern(part))
                         {
                             // path part is a relative path without any special characters
-                            var path = Path.Combine(state.Path, part.Path);
+                            var path = Path.Combine(state.Path, part);
                             if (!_fileSystem.DirectoryExists(path))
                             {
                                 return;
@@ -160,7 +136,7 @@ namespace Viewer.IO
                             
                             newLevel.Enqueue(new State(path, state.LastMatchedPartIndex + 1));
                         }
-                        else if (part.Path == "**")
+                        else if (part == "**")
                         {
                             foreach (var dir in _fileSystem.EnumerateDirectories(state.Path))
                             {
@@ -170,7 +146,7 @@ namespace Viewer.IO
                         }
                         else
                         {
-                            foreach (var dir in _fileSystem.EnumerateDirectories(state.Path, part.Path))
+                            foreach (var dir in _fileSystem.EnumerateDirectories(state.Path, part))
                             {
                                 newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex + 1));
                             }
@@ -194,6 +170,16 @@ namespace Viewer.IO
         public IEnumerable<string> GetFiles()
         {
             return GetDirectories().SelectMany(_fileSystem.EnumerateFiles);
+        }
+
+        /// <summary>
+        /// Check whether given path contains a special pattern character
+        /// </summary>
+        /// <param name="path">Tested path</param>
+        /// <returns>true iff <paramref name="path"/> contains a special pattern character</returns>
+        private static bool IsPattern(string path)
+        {
+            return path.Contains('*') || path.Contains('?');
         }
     }
 }

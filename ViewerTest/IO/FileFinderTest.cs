@@ -112,5 +112,25 @@ namespace ViewerTest.IO
             Assert.AreEqual("C:\\a\\c\\b\\x", directories[1]);
             Assert.AreEqual("C:\\a\\d\\e\\b\\x", directories[2]);
         }
+
+        [TestMethod]
+        public void GetDirectories_GeneralPatternMatchesEmptyString()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(mock => mock.DirectoryExists("a\\")).Returns(true);
+            fileSystem.Setup(mock => mock.DirectoryExists("a\\b\\c\\")).Returns(true);
+            fileSystem.Setup(mock => mock.DirectoryExists("a\\x\\b\\c\\")).Returns(true);
+            fileSystem.Setup(mock => mock.DirectoryExists("a\\x\\y\\b\\c\\")).Returns(true);
+            fileSystem.Setup(mock => mock.EnumerateDirectories("a\\")).Returns(new[]{ "a\\b", "a\\x" });
+            fileSystem.Setup(mock => mock.EnumerateDirectories("a\\x")).Returns(new[] { "a\\x\\y" });
+
+            var finder = new FileFinder(fileSystem.Object, "a/**/b/c");
+            var directories = finder.GetDirectories().OrderBy(item => item).ToArray();
+
+            Assert.AreEqual(3, directories.Length);
+            Assert.AreEqual("a\\b\\c\\", directories[0]);
+            Assert.AreEqual("a\\x\\b\\c\\", directories[1]);
+            Assert.AreEqual("a\\x\\y\\b\\c\\", directories[2]);
+        }
     }
 }

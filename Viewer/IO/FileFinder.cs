@@ -14,9 +14,11 @@ namespace Viewer.IO
     /// <summary>
     /// Find files and directories based on a directory path pattern.
     /// The pattern can contain special characters *, ? and **
-    /// * is a sequence of characters but a directory separator 
-    /// ? is a single character but a directory separator
-    /// ** must be delimited with directory separators from both sides and it is an arbitrary sequence of characters (including the directory separator)
+    /// * matches any sequence of character except a directory separator
+    /// ? matches any character except a directory separator
+    /// ** matches any sequence of characters (even a directory separator)
+    /// ** must be delimited with a directory separator from both sides or it has to be at the start or at the end
+    /// ** matches even empty string (i.e. a/**/b matches a/b, a/x/b, a/x/y/b etc.)
     /// </summary>
     /// <example>
     ///     var finder = new FileFinder("C:/photos/**/vacation/*2017");
@@ -116,6 +118,7 @@ namespace Viewer.IO
             {
                 var newLevel = new ConcurrentQueue<State>();
                 var result = new ConcurrentQueue<string>();
+                
                 Parallel.ForEach(states, state =>
                 {
                     if (state.LastMatchedPartIndex + 1 >= _parts.Count)
@@ -138,9 +141,12 @@ namespace Viewer.IO
                         }
                         else if (part == "**")
                         {
+                            // assume the pattern has been matched
+                            newLevel.Enqueue(new State(state.Path, state.LastMatchedPartIndex + 1));
+                            
+                            // assume it has not been matched yet
                             foreach (var dir in _fileSystem.EnumerateDirectories(state.Path))
                             {
-                                newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex + 1));
                                 newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex));
                             }
                         }

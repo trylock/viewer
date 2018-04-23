@@ -41,6 +41,7 @@ namespace ViewerTest.IO
         public void GetDirectories_PathWithoutPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(mock => mock.DirectoryExists("C:\\directory\\a\\b\\c\\")).Returns(true);
             var finder = new FileFinder(fileSystem.Object, "C:/directory/a/b/c");
             var directories = finder.GetDirectories().ToArray();
             Assert.AreEqual(1, directories.Length);
@@ -48,9 +49,21 @@ namespace ViewerTest.IO
         }
 
         [TestMethod]
+        public void GetDirectories_PathWithoutPatternAndNonexistentDirectory()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(mock => mock.DirectoryExists("C:\\directory\\a\\b\\c")).Returns(false);
+
+            var finder = new FileFinder(fileSystem.Object, "C:/directory/a/b/c");
+            var directories = finder.GetDirectories().ToArray();
+            Assert.AreEqual(0, directories.Length);
+        }
+
+        [TestMethod]
         public void GetDirectories_PathWithOneAsteriskPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\")).Returns(true);
             fileSystem.Setup(mock => mock.EnumerateDirectories("C:\\a\\", "b*")).Returns(new[]{ "C:\\a\\ba", "C:\\a\\bba" });
             fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\bba\\c\\")).Returns(false);
             fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\ba\\c\\")).Returns(true);
@@ -65,6 +78,7 @@ namespace ViewerTest.IO
         public void GetDirectories_PathWithOneQuestionMarkPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\")).Returns(true);
             fileSystem.Setup(mock => mock.EnumerateDirectories("C:\\a\\", "b?")).Returns(new[] { "C:\\a\\ba", "C:\\a\\bc" });
             fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\ba\\c\\")).Returns(true);
             fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\bc\\c\\")).Returns(true);
@@ -80,6 +94,7 @@ namespace ViewerTest.IO
         public void GetDirectories_PathWithGeneralPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\")).Returns(true);
             fileSystem.Setup(mock => mock.EnumerateDirectories("C:\\a\\")).Returns(new[] { "C:\\a\\b", "C:\\a\\c", "C:\\a\\d" });
             fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\b\\b\\")).Returns(true);
             fileSystem.Setup(mock => mock.DirectoryExists("C:\\a\\c\\b\\")).Returns(true);

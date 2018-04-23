@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace Viewer.IO
         }
 
         private readonly IFileSystem _fileSystem;
-        private readonly List<PathPart> _parts;
+        private readonly IReadOnlyList<PathPart> _parts;
 
         public FileFinder(IFileSystem fileSystem, string directoryPattern)
         {
@@ -120,54 +121,69 @@ namespace Viewer.IO
                 yield break;
             }
 
-            var states = new Stack<State>();
-            states.Push(new State(_parts[0].Path, 0));
-
-            while (states.Count > 0)
+            var firstPath = _parts[0].Path;
+            if (!_fileSystem.DirectoryExists(firstPath))
             {
-                var state = states.Pop();
-                if (state.LastMatchedPartIndex + 1 == _parts.Count)
+                yield break;
+            }
+            
+            if (_parts.Count == 1)
+            {
+                yield return firstPath;
+                yield break;
+            }
+
+            var states = new ConcurrentQueue<State>();
+            states.Enqueue(new State(firstPath, 0));
+
+            while (!states.IsEmpty)
+            {
+                var newLevel = new ConcurrentQueue<State>();
+                var result = new ConcurrentQueue<string>();
+                Parallel.ForEach(states, state =>
                 {
-                    yield return state.Path;
-                }
-                else
-                {
-                    var part = _parts[state.LastMatchedPartIndex + 1];
-                    if (!part.IsPattern)
+                    if (state.LastMatchedPartIndex + 1 >= _parts.Count)
                     {
-                        // path part is a relative path without any special characters
-                        var path = Path.Combine(state.Path, part.Path);
-                        if (!_fileSystem.DirectoryExists(path))
-                        {
-                            continue; 
-                        }
-                        
-                        // if the directory exists and this was the last part, we have found a new directory
-                        if (state.LastMatchedPartIndex + 2 >= _parts.Count)
-                        {
-                            yield return path;
-                        }
-                        else
-                        {
-                            states.Push(new State(path, state.LastMatchedPartIndex + 1));
-                        }
-                    }
-                    else if (part.Path == "**")
-                    {
-                        foreach (var dir in _fileSystem.EnumerateDirectories(state.Path))
-                        {
-                            states.Push(new State(dir, state.LastMatchedPartIndex));
-                            states.Push(new State(dir, state.LastMatchedPartIndex + 1));
-                        }
+                        result.Enqueue(state.Path);
                     }
                     else
                     {
-                        foreach (var dir in _fileSystem.EnumerateDirectories(state.Path, part.Path))
+                        var part = _parts[state.LastMatchedPartIndex + 1];
+                        if (!part.IsPattern)
                         {
-                            states.Push(new State(dir, state.LastMatchedPartIndex + 1));
+                            // path part is a relative path without any special characters
+                            var path = Path.Combine(state.Path, part.Path);
+                            if (!_fileSystem.DirectoryExists(path))
+                            {
+                                return;
+                            }
+                            
+                            newLevel.Enqueue(new State(path, state.LastMatchedPartIndex + 1));
+                        }
+                        else if (part.Path == "**")
+                        {
+                            foreach (var dir in _fileSystem.EnumerateDirectories(state.Path))
+                            {
+                                newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex + 1));
+                                newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex));
+                            }
+                        }
+                        else
+                        {
+                            foreach (var dir in _fileSystem.EnumerateDirectories(state.Path, part.Path))
+                            {
+                                newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex + 1));
+                            }
                         }
                     }
+                });
+
+                foreach (var item in result)
+                {
+                    yield return item;
                 }
+
+                states = newLevel;
             }
         }
 

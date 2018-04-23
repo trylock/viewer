@@ -54,8 +54,8 @@ namespace Viewer.Data
     {
         public int Count => _entities.Count;
         
-        private List<IEntity> _entities = new List<IEntity>();
-        private IEntityRepository _modified;
+        private readonly List<IEntity> _entities = new List<IEntity>();
+        private readonly IEntityRepository _modified;
 
         public EntityManager(IEntityRepository modified)
         {

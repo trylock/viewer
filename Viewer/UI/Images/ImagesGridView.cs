@@ -71,27 +71,47 @@ namespace Viewer.UI.Images
             get => ThumbnailSizeTrackBar.Value;
             set => ThumbnailSizeTrackBar.Value = value;
         }
+
         public int ThumbnailSizeMinimum
         {
             get => ThumbnailSizeTrackBar.Minimum;
             set => ThumbnailSizeTrackBar.Minimum = value;
         }
+
         public int ThumbnailSizeMaximum
         {
             get => ThumbnailSizeTrackBar.Maximum;
             set => ThumbnailSizeTrackBar.Maximum = value;
         }
-        public List<EntityView> Items { get; set; }
+
+        public List<EntityView> Items
+        {
+            get => GridView.Items;
+            set => GridView.Items = value;
+        }
+
+        public Size ItemSize
+        {
+            get => GridView.ItemSize;
+            set => GridView.ItemSize = value;
+        }
+
+        private void UpdateItemCount()
+        {
+            ControlPanel.Visible = Items.Count > 0;
+            ItemsCountLabel.Text = string.Format(Resources.ItemCount_Label, Items.Count.ToString("N0"));
+            GridView.UpdateItemCount();
+        }
 
         public void UpdateItems()
         {
-            ControlPanel.Visible = Items.Count > 0;
-            GridView.Items = Items;
-            ItemsCountLabel.Text = string.Format(Resources.ItemCount_Label, Items.Count.ToString("N0"));
+            UpdateItemCount();
+            Refresh();
         }
 
         public void UpdateItems(IEnumerable<int> itemIndices)
         {
+            UpdateItemCount();
             foreach (var index in itemIndices)
             {
                 UpdateItem(index);
@@ -100,6 +120,7 @@ namespace Viewer.UI.Images
         
         public void UpdateItem(int index)
         {
+            UpdateItemCount();
             GridView.InvalidateItem(index);
         }
         
@@ -146,12 +167,6 @@ namespace Viewer.UI.Images
         public void HideItemEditForm()
         {
             NameTextBox.Visible = false;
-        }
-
-        public Size ItemSize
-        {
-            get => GridView.ItemSize;
-            set => GridView.ItemSize = value;
         }
 
         #endregion

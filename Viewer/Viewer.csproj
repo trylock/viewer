@@ -87,6 +87,7 @@
     <Compile Include="Data\Formats\Attributes\AttributeWriter.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderFactory.cs" />
     <Compile Include="Data\Formats\InvalidDataFormatException.cs" />
+    <Compile Include="Data\QueryEngine.cs" />
     <Compile Include="Data\Storage\FileSystemAttributeStorage.cs" />
     <Compile Include="Data\Storage\IAttributeStorage.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReader.cs" />
@@ -103,7 +104,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Data\Query.cs" />
-    <Compile Include="Data\QueryEvaluator.cs" />
     <Compile Include="UI\ApplicationState.cs" />
     <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesComponent.cs" />

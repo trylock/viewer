@@ -30,13 +30,14 @@ namespace Viewer.UI.Images
         private readonly IClipboardService _clipboard;
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
-        private readonly IQueryEvaluator _evaluator;
+        private readonly IQueryEngine _queryEngine;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
         // current state
         private IEntityManager _entities;
         private Size _minItemSize = new Size(133, 100);
+        private double _thumbnailScale = 1.0;
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
         private readonly RectangleSelection _rectangleSelection = new RectangleSelection();
@@ -64,7 +65,7 @@ namespace Viewer.UI.Images
             IClipboardService clipboard,
             IImageLoader imageLoader,
             IApplicationState state,
-            IQueryEvaluator evaluator)
+            IQueryEngine queryEngine)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogView = dialogView;
@@ -73,7 +74,7 @@ namespace Viewer.UI.Images
             _clipboard = clipboard;
             _imageLoader = imageLoader;
             _state = state;
-            _evaluator = evaluator;
+            _queryEngine = queryEngine;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
 
             View.ThumbnailSizeMinimum = 1;
@@ -94,17 +95,70 @@ namespace Viewer.UI.Images
             base.Dispose();
         }
 
+        private CancellationTokenSource _loadCancellation;
+        private Task _loadTask = Task.CompletedTask;
+
+        /// <summary>
+        /// Minimal time in milliseconds between 2 view updates during a loading operation
+        /// </summary>
+        private const int MinViewUpdateDelay = 50;
+
         /// <summary>
         /// Execute given query and show all entities in the result.
         /// </summary>
         /// <param name="query">Query to show</param>
-        public async void LoadQueryAsync(Query query)
+        public async void LoadQueryAsync(IQuery query)
         {
+            // cancel previous load operation
+            _loadCancellation?.Cancel();
+
+            // wait for it to end
+            try
+            {
+                await _loadTask;
+            }
+            catch (OperationCanceledException)
+            {
+            }
+
+            // start loading a new query
+            _loadCancellation = new CancellationTokenSource();
+
             View.BeginLoading();
             try
             {
-                var entities = await Task.Run(() => _evaluator.Evaluate(query));
-                ShowEntities(entities);
+                Clear();
+
+                _loadTask = Task.Run(() =>
+                {
+                    var lastNofitication = DateTime.Now;
+                    foreach (var entity in query)
+                    {
+                        _loadCancellation.Token.ThrowIfCancellationRequested();
+
+                        var delay = DateTime.Now - lastNofitication;
+                        var entityCapture = entity;
+                        View.BeginInvoke(new Action(() =>
+                        {
+                            // add a new entity
+                            AddEntity(entityCapture);
+
+                            // update view
+                            if (delay.Milliseconds >= MinViewUpdateDelay)
+                            {
+                                lastNofitication = DateTime.Now;
+                                View.UpdateItems();
+                            }
+                        }));
+                    }
+                }, _loadCancellation.Token);
+
+                await _loadTask;
+
+                View.UpdateItems();
+            }
+            catch (OperationCanceledException)
+            {
             }
             finally
             {
@@ -113,32 +167,37 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Show all entities
+        /// Internal method used only for testing purposes
         /// </summary>
         /// <param name="entities"></param>
-        public void ShowEntities(IEntityManager entities)
+        public void SetEntitiesInternal(IEntityManager entities)
         {
             _entities = entities;
+        }
+
+        private void Clear()
+        {
+            _entities = _queryEngine.CreateEntityManager();
 
             // reset state
+            _thumbnailSizeCalculator.Reset();
             _selection.Clear();
             _currentSelection.Clear();
             _previousSelection.Clear();
             ActiveItem = -1;
             FocusedItem = -1;
 
-            // add entities with the default thumbnail
-            var items = new List<EntityView>();
-            foreach (var entity in _entities)
-            {
-                items.Add(new EntityView(entity, GetThumbnail(entity)));
-            }
-
-            // update the view
+            // reset view
             DisposeViewData();
-            View.Items = items;
-            View.ItemSize = _minItemSize = _thumbnailSizeCalculator.ComputeMinimalSize(entities);
-            View.UpdateItems();
+        }
+
+        private void AddEntity(IEntity entity)
+        {
+            _entities.Add(entity);
+            _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
+
+            View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
+            View.ItemSize = ComputeThumbnailSize();
         }
         
         private void DisposeViewData()
@@ -165,6 +224,14 @@ namespace Viewer.UI.Images
         private Lazy<Image> GetThumbnail(IEntity item)
         {
             return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, View.ItemSize));
+        }
+
+        private Size ComputeThumbnailSize()
+        {
+            return new Size(
+                (int)(_minItemSize.Width * _thumbnailScale),
+                (int)(_minItemSize.Height * _thumbnailScale)
+            );
         }
         
         private void UpdateSelection(Point endPoint)
@@ -293,13 +360,13 @@ namespace Viewer.UI.Images
             var item = View.GetItemAt(e.Location);
             if (item != ActiveItem)
             {
-                if (item >= 0 && !_currentSelection.Contains(item))
+                if (item >= 0 && item < View.Items.Count && !_currentSelection.Contains(item))
                 {
                     View.Items[item].State = ResultItemState.Active;
                     View.UpdateItem(item);
                 }
 
-                if (ActiveItem >= 0 && !_currentSelection.Contains(ActiveItem))
+                if (ActiveItem >= 0 && ActiveItem < View.Items.Count && !_currentSelection.Contains(ActiveItem))
                 {
                     View.Items[ActiveItem].State = ResultItemState.None;
                     View.UpdateItem(ActiveItem);
@@ -514,15 +581,11 @@ namespace Viewer.UI.Images
         private void View_ThumbnailSizeChanged(object sender, EventArgs e)
         {
             // compute the new thumbnail size
-            var scale = 1 + (View.ThumbnailSize - View.ThumbnailSizeMinimum) /
+            _thumbnailScale = 1 + (View.ThumbnailSize - View.ThumbnailSizeMinimum) /
                         (double)(View.ThumbnailSizeMaximum - View.ThumbnailSizeMinimum);
-            var itemSize = new Size(
-                (int)(_minItemSize.Width * scale),
-                (int)(_minItemSize.Height * scale)
-            );
-
+            
             // scale existing thumbnail
-            View.ItemSize = itemSize;
+            View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
         }
 

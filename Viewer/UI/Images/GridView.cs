@@ -66,7 +66,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Items to show in the component
         /// </summary>
-        public IReadOnlyList<EntityView> Items
+        public List<EntityView> Items
         {
             get => _items;
             set
@@ -80,7 +80,7 @@ namespace Viewer.UI.Images
 
         private Size _itemSize;
         private Rectangle _selectionBounds;
-        private IReadOnlyList<EntityView> _items;
+        private List<EntityView> _items;
 
         #region Graphics settings
 
@@ -123,6 +123,12 @@ namespace Viewer.UI.Images
             var cell = Grid.GetCell(index);
             var bounds = cell.Bounds;
             Invalidate(ProjectBounds(bounds));
+        }
+
+        public void UpdateItemCount()
+        {
+            Grid.CellCount = Items.Count;
+            UpdateScrollableSize();
         }
 
         public IEnumerable<int> GetItemsIn(Rectangle bounds)

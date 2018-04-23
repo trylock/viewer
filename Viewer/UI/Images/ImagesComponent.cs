@@ -31,7 +31,7 @@ namespace Viewer.UI.Images
         {
         }
 
-        private void ShowImages(Query query)
+        private void ShowImages(IQuery query)
         {
             if (_images == null)
             {

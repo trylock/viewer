@@ -25,7 +25,7 @@ namespace ViewerTest.UI.Images
         private Mock<ISelection> _selectionMock;
         private Mock<IClipboardService> _clipboardMock;
         private Mock<IEntityManager> _entities;
-        private Mock<IQueryEvaluator> _evaluator;
+        private Mock<IQueryEngine> _queryEngine;
         private Mock<IApplicationState> _state;
         private ImagesPresenter _presenter;
 
@@ -39,7 +39,7 @@ namespace ViewerTest.UI.Images
             _viewMock = new Mock<IImagesView>();
             _clipboardMock = new Mock<IClipboardService>();
             _entities = new Mock<IEntityManager>();
-            _evaluator = new Mock<IQueryEvaluator>();
+            _queryEngine = new Mock<IQueryEngine>();
             _state = new Mock<IApplicationState>();
 
             _data = new List<Entity>();
@@ -65,9 +65,9 @@ namespace ViewerTest.UI.Images
             imageLoaderMock.Setup(mock => mock.GetImageSize(It.IsAny<IEntity>())).Returns(new Size(1, 1));
 
             _selectionMock = new Mock<ISelection>();
-            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _storage, _clipboardMock.Object, imageLoaderMock.Object, _state.Object, _evaluator.Object);
-            _presenter.ShowEntities(_entities.Object);
-            
+            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _storage, _clipboardMock.Object, imageLoaderMock.Object, _state.Object, _queryEngine.Object);
+            _presenter.SetEntitiesInternal(_entities.Object);
+
             _viewMock.Setup(mock => mock.Items).Returns(_items);
         }
 
@@ -180,9 +180,7 @@ namespace ViewerTest.UI.Images
         public void Selection_SelectAllItemsOnControlPlusA()
         {
             _viewMock.Raise(mock => mock.HandleKeyDown += null, new KeyEventArgs(Keys.Control | Keys.A));
-
-            _viewMock.Verify(mock => mock.UpdateItems());
-
+            
             foreach (var item in _items)
             {
                 Assert.AreEqual(ResultItemState.Selected, item.State);
@@ -223,6 +221,5 @@ namespace ViewerTest.UI.Images
             Assert.AreEqual("test", _items[0].Data.Path);
             Assert.IsNotNull(testEntity);
         }
-        
     }
 }

@@ -10,9 +10,9 @@ namespace Viewer.UI
 {
     public class QueryEventArgs : EventArgs
     {
-        public Query Query { get; }
+        public IQuery Query { get; }
 
-        public QueryEventArgs(Query query)
+        public QueryEventArgs(IQuery query)
         {
             Query = query;
         }
@@ -60,7 +60,7 @@ namespace Viewer.UI
         /// Execute a query
         /// </summary>
         /// <param name="query">Query to execute</param>
-        void ExecuteQuery(Query query);
+        void ExecuteQuery(IQuery query);
     }
 
     [Export(typeof(IApplicationState))]
@@ -74,7 +74,7 @@ namespace Viewer.UI
             EntityOpened?.Invoke(this, new EntityEventArgs(entities, index));
         }
 
-        public void ExecuteQuery(Query query)
+        public void ExecuteQuery(IQuery query)
         {
             QueryExecuted?.Invoke(this, new QueryEventArgs(query));
         }

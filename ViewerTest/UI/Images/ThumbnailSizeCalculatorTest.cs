@@ -16,15 +16,6 @@ namespace ViewerTest.UI.Images
     public class ThumbnailSizeCalculatorTest 
     {
         [TestMethod]
-        public void ComputeMinimalSize_NoEntities()
-        {
-            var loaderMock = new Mock<IImageLoader>();
-            var calculator = new FrequentRatioThumbnailSizeCalculator(loaderMock.Object, 100);
-            var size = calculator.ComputeMinimalSize(Enumerable.Empty<IEntity>());
-            Assert.AreEqual(new Size(133, 100), size);
-        }
-
-        [TestMethod]
         public void ComputeMinimalSize_OneEntity()
         {
             var entity = new Entity("test");
@@ -32,7 +23,7 @@ namespace ViewerTest.UI.Images
             loaderMock.Setup(mock => mock.GetImageSize(entity)).Returns(new Size(1920, 1080));
 
             var calculator = new FrequentRatioThumbnailSizeCalculator(loaderMock.Object, 100);
-            var size = calculator.ComputeMinimalSize(new []{ entity });
+            var size = calculator.AddEntity(entity);
             Assert.AreEqual(new Size(177, 100), size);
         }
 
@@ -49,7 +40,9 @@ namespace ViewerTest.UI.Images
                 .Returns(new Size(2560, 1440));
 
             var calculator = new FrequentRatioThumbnailSizeCalculator(loaderMock.Object, 100);
-            var size = calculator.ComputeMinimalSize(new[] { entity1, entity2, entity3 });
+            calculator.AddEntity(entity1);
+            calculator.AddEntity(entity2);
+            var size = calculator.AddEntity(entity3);
             Assert.AreEqual(new Size(177, 100), size);
         }
     }

@@ -153,6 +153,7 @@ namespace Viewer.UI.Presentation
         
         private bool _isCursorHidden = false;
         private DateTime _lastCursorMove;
+        private Point _lastCursorLocation;
 
         private void ShowCursor()
         {
@@ -191,8 +192,12 @@ namespace Viewer.UI.Presentation
             PrevButton.Visible = e.Location.X - Location.X <= PrevButton.Width;
             NextButton.Visible = Location.X + Width - e.Location.X <= NextButton.Width;
             ControlPanel.Visible = Height - (e.Location.Y - Location.Y) - _controlPanelMargin <= ControlPanel.Height;
-            
-            ShowCursor();
+
+            if (e.Location != _lastCursorLocation)
+            {
+                ShowCursor();
+            }
+            _lastCursorLocation = e.Location;
         }
         
         private void HideCursorTimer_Tick(object sender, EventArgs e)

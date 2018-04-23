@@ -228,6 +228,8 @@ namespace Viewer.UI.Images
 
         private void GridView_Paint(object sender, PaintEventArgs e)
         {
+            Grid.CellCount = Items == null ? 0 : Items.Count;
+
             // update invalid items
             var clipBounds = UnprojectBounds(e.ClipRectangle);
             var cells = Grid.GetCellsInBounds(clipBounds);

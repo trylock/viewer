@@ -217,11 +217,11 @@ namespace Viewer.UI.Explorer
         private void TreeView_MouseMove(object sender, MouseEventArgs e)
         {
             var info = TreeView.HitTest(e.Location);
-            if (info.Node != null)
+            if (info.Node != null && Cursor.Current == Cursors.Default)
             {
                 Cursor.Current = Cursors.Hand;
             }
-            else
+            else if (Cursor.Current == Cursors.Hand)
             {
                 Cursor.Current = Cursors.Default;
             }

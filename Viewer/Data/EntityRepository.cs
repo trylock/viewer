@@ -57,7 +57,7 @@ namespace Viewer.Data
     {
         private Dictionary<string, IEntity> _modified = new Dictionary<string, IEntity>();
         
-        public virtual void Add(IEntity entity)
+        public void Add(IEntity entity)
         {
             lock (_modified)
             {
@@ -78,7 +78,7 @@ namespace Viewer.Data
             }
         }
 
-        public virtual void Remove(string path)
+        public void Remove(string path)
         {
             lock (_modified)
             {
@@ -86,7 +86,7 @@ namespace Viewer.Data
             }
         }
 
-        public virtual void Move(string oldPath, string newPath)
+        public void Move(string oldPath, string newPath)
         {
             lock (_modified)
             {

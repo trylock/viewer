@@ -90,7 +90,7 @@ namespace Viewer.UI.Images
             View.Items.Clear();
             base.Dispose();
         }
-
+        
         private CancellationTokenSource _loadCancellation;
         private Task _loadTask = Task.CompletedTask;
 

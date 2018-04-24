@@ -37,10 +37,14 @@ namespace Viewer.UI.Images
             get => _itemSize;
             set
             {
+                var item = CaptureFirstVisibleItem();
+
                 _itemSize = value;
                 Grid.MinCellWidth = _itemSize.Width + ItemPadding.Width * 2;
                 Grid.CellHeight = _itemSize.Height + NameHeight + NameSpace + ItemPadding.Height * 2;
                 UpdateScrollableSize();
+
+                RestoreFirstVisibleItem(item);
             }
         }
 
@@ -326,6 +330,24 @@ namespace Viewer.UI.Images
                 0, // we don't want to have a horizontal scroll bar
                 Grid.GridSize.Height
             );
+        }
+
+        private int CaptureFirstVisibleItem()
+        {
+            var height = Grid.CellSize.Height + Grid.CellMargin.Height;
+            // find the first row that is mostly visible
+            var row = (int)Math.Round(-AutoScrollPosition.Y / (double)height);
+            return row * Grid.ColumnCount;
+        }
+
+        private void RestoreFirstVisibleItem(int index)
+        {
+            if (index < 0)
+            {
+                return;
+            }
+
+            AutoScrollPosition = new Point(0, Grid.GetCell(index).Location.Y);
         }
     }
 }

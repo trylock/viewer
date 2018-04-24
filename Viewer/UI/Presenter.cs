@@ -20,8 +20,8 @@ namespace Viewer.UI
 
         public class SubscriptionLifetime : IDisposable
         {
-            private object _view;
-            private List<AutoEventSubscription> _subscriptions;
+            private readonly object _view;
+            private readonly List<AutoEventSubscription> _subscriptions;
 
             public SubscriptionLifetime(object view, List<AutoEventSubscription> subscriptions)
             {
@@ -49,7 +49,7 @@ namespace Viewer.UI
         /// <summary>
         /// Event subscriptions
         /// </summary>
-        private List<SubscriptionLifetime> _subscriptions = new List<SubscriptionLifetime>();
+        private readonly List<SubscriptionLifetime> _subscriptions = new List<SubscriptionLifetime>();
 
         /// <summary>
         /// Lifetime of the view of this presenter

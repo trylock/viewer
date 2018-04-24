@@ -31,5 +31,17 @@ namespace Viewer
             // at this point, exactly one is negative so the divison will be correct
             return num / denom;
         }
+
+        /// <summary>
+        /// Compute linear interpolation between <paramref name="min"/> and <paramref name="max"/> using <paramref name="param"/> as a weight.
+        /// </summary>
+        /// <param name="min">Minimal value</param>
+        /// <param name="max">Maximal value</param>
+        /// <param name="param">Interpolation parameter</param>
+        /// <returns>Interpolated value</returns>
+        public static double Lerp(double min, double max, double param)
+        {
+            return min * (1.0 - param) + max * param;
+        }
     }
 }

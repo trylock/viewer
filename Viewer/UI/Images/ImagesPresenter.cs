@@ -37,7 +37,6 @@ namespace Viewer.UI.Images
         // current state
         private IEntityManager _entities;
         private Size _minItemSize = new Size(133, 100);
-        private double _thumbnailScale = 1.0;
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
         private readonly RectangleSelection _rectangleSelection = new RectangleSelection();
@@ -76,10 +75,7 @@ namespace Viewer.UI.Images
             _state = state;
             _queryEngine = queryEngine;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
-
-            View.ThumbnailSizeMinimum = 1;
-            View.ThumbnailSizeMaximum = 100;
-            View.ThumbnailSize = 1;
+            
             View.ItemSize = _minItemSize;
             SubscribeTo(View, "View");
         }
@@ -188,20 +184,6 @@ namespace Viewer.UI.Images
             FocusedItem = -1;
 
             // reset view
-            DisposeViewData();
-        }
-
-        private void AddEntity(IEntity entity)
-        {
-            _entities.Add(entity);
-            _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
-
-            View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
-            View.ItemSize = ComputeThumbnailSize();
-        }
-        
-        private void DisposeViewData()
-        {
             if (View.Items == null)
             {
                 View.Items = new List<EntityView>();
@@ -216,6 +198,15 @@ namespace Viewer.UI.Images
             }
         }
 
+        private void AddEntity(IEntity entity)
+        {
+            _entities.Add(entity);
+            _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
+
+            View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
+            View.ItemSize = ComputeThumbnailSize();
+        }
+        
         /// <summary>
         /// Create lazily initialized thumbnail for an entity
         /// </summary>
@@ -229,8 +220,8 @@ namespace Viewer.UI.Images
         private Size ComputeThumbnailSize()
         {
             return new Size(
-                (int)(_minItemSize.Width * _thumbnailScale),
-                (int)(_minItemSize.Height * _thumbnailScale)
+                (int)(_minItemSize.Width * View.ThumbnailScale),
+                (int)(_minItemSize.Height * View.ThumbnailScale)
             );
         }
         
@@ -580,11 +571,6 @@ namespace Viewer.UI.Images
 
         private void View_ThumbnailSizeChanged(object sender, EventArgs e)
         {
-            // compute the new thumbnail size
-            _thumbnailScale = 1 + (View.ThumbnailSize - View.ThumbnailSizeMinimum) /
-                        (double)(View.ThumbnailSizeMaximum - View.ThumbnailSizeMinimum);
-            
-            // scale existing thumbnail
             View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
         }

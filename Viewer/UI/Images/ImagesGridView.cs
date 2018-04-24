@@ -34,16 +34,19 @@ namespace Viewer.UI.Images
             add => GridView.KeyDown += value;
             remove => GridView.KeyDown -= value;
         }
+
         public event KeyEventHandler HandleKeyUp
         {
             add => GridView.KeyUp += value;
             remove => GridView.KeyUp -= value;
         }
+
         public event EventHandler CopyItems
         {
             add => CopyMenuItem.Click += value;
             remove => CopyMenuItem.Click -= value;
         }
+
         public event EventHandler DeleteItems
         {
             add => DeleteMenuItem.Click += value;
@@ -66,24 +69,25 @@ namespace Viewer.UI.Images
             remove => RenameMenuItem.Click -= value;
         }
         
-        public int ThumbnailSize
+        public double ThumbnailScale
         {
-            get => ThumbnailSizeTrackBar.Value;
-            set => ThumbnailSizeTrackBar.Value = value;
-        }
+            get => 1.0 + (ThumbnailSizeTrackBar.Value - ThumbnailSizeTrackBar.Minimum) / 
+                   (double) (ThumbnailSizeTrackBar.Maximum - ThumbnailSizeTrackBar.Minimum);
+            set
+            {
+                if (value < 1.0 || value > 2.0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
 
-        public int ThumbnailSizeMinimum
-        {
-            get => ThumbnailSizeTrackBar.Minimum;
-            set => ThumbnailSizeTrackBar.Minimum = value;
+                ThumbnailSizeTrackBar.Value = (int) MathUtils.Lerp(
+                    ThumbnailSizeTrackBar.Minimum,
+                    ThumbnailSizeTrackBar.Maximum,
+                    value - 1.0
+                );
+            }
         }
-
-        public int ThumbnailSizeMaximum
-        {
-            get => ThumbnailSizeTrackBar.Maximum;
-            set => ThumbnailSizeTrackBar.Maximum = value;
-        }
-
+        
         public List<EntityView> Items
         {
             get => GridView.Items;

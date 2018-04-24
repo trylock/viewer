@@ -124,6 +124,7 @@
             // GridView
             // 
             this.GridView.AutoScroll = true;
+            this.GridView.ContextMenuStrip = this.ItemContextMenu;
             this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GridView.ItemPadding = new System.Drawing.Size(8, 8);
             this.GridView.Items = null;
@@ -181,7 +182,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(835, 434);
-            this.ContextMenuStrip = this.ItemContextMenu;
             this.Controls.Add(this.ViewTableLayout);
             this.Controls.Add(this.NameTextBox);
             this.Name = "ImagesGridView";

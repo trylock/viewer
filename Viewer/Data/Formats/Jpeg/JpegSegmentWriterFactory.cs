@@ -41,7 +41,7 @@ namespace Viewer.Data.Formats.Jpeg
                     input = new FileStream(tmpFileName, FileMode.CreateNew, FileAccess.Write);
                     break;
                 }
-                catch (IOException e) when (e.GetType() == typeof(IOException))
+                catch (IOException)
                 {
                     // generate a new name
                 }

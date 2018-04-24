@@ -29,7 +29,7 @@ namespace Viewer.Data.Formats.Jpeg
     public class JpegSegmentWriter : IJpegSegmentWriter
     {
         private readonly BinaryWriter _writer;
-        private int _blockSize = 4096;
+        private readonly int _blockSize;
         
         public JpegSegmentWriter(BinaryWriter writer, int blockSize = 4096)
         {

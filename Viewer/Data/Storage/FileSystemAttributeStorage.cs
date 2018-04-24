@@ -139,7 +139,7 @@ namespace Viewer.Data.Storage
                 _fileSystem.ReplaceFile(tmpFileName, attrs.Path, null);
             }
         }
-
+        
         public void Remove(string path)
         {
             _fileSystem.DeleteFile(path);

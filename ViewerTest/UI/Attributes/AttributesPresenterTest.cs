@@ -19,11 +19,11 @@ namespace ViewerTest.UI.Attributes
     public class AttributesPresenterTest
     {
         private IAttributeStorage _storage;
-        private EntityManager _entities;
         private Mock<ILogger> _logger;
         private Mock<ISelection> _selection;
         private Mock<IAttributeView> _view;
         private Mock<IAttributeManager> _attributeManager;
+        private Mock<IEntityRepository> _modified;
         private AttributesPresenter _presenter;
 
         // binding of attributes in view
@@ -32,12 +32,11 @@ namespace ViewerTest.UI.Attributes
         [TestInitialize]
         public void Setup()
         {
-            var modifiedEntities = new Mock<IEntityRepository>();
             _storage = new MemoryAttributeStorage();
-            _entities = new EntityManager(modifiedEntities.Object);
             _selection = new Mock<ISelection>();
             _logger = new Mock<ILogger>();
             _attributeManager = new Mock<IAttributeManager>();
+            _modified = new Mock<IEntityRepository>();
 
             // setup view mock
             _view = new Mock<IAttributeView>();
@@ -48,17 +47,19 @@ namespace ViewerTest.UI.Attributes
             {
                 return new Tuple<IAttributeView, Action>(_view.Object, () => { });
             });
-            _presenter = new AttributesPresenter(viewFactory, null, _selection.Object, _storage, _attributeManager.Object, _logger.Object);
+            _presenter = new AttributesPresenter(viewFactory, null, _selection.Object, _storage, _attributeManager.Object, _modified.Object, _logger.Object);
         }
 
         [TestMethod]
         public void AttributesChanged_DontAddAttributeIfItsNameIsEmpty()
         {
-            _entities.Add(new Entity("test"));
-
             // add an entity to selection
-            _selection.Setup(mock => mock.Items).Returns(_entities);
-            _selection.Setup(mock => mock.GetEnumerator()).Returns(new[]{ 0 }.GetEnumerator() as IEnumerator<int>);
+            _selection
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(new List<IEntity>
+                {
+                    new Entity("test")
+                }.GetEnumerator() );
             _selection.Raise(mock => mock.Changed += null, EventArgs.Empty);
 
             // add a new attribute
@@ -87,11 +88,13 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void AttributesChanged_AddANewAttribute()
         {
-            _entities.Add(new Entity("test"));
-
             // add an entity to selection
-            _selection.Setup(mock => mock.Items).Returns(_entities);
-            _selection.Setup(mock => mock.GetEnumerator()).Returns(new[] { 0 }.GetEnumerator() as IEnumerator<int>);
+            _selection
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(new List<IEntity>
+                {
+                    new Entity("test")
+                }.GetEnumerator());
             _selection.Raise(mock => mock.Changed += null, EventArgs.Empty);
 
             // add a new attribute

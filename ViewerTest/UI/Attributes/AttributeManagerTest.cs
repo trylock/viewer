@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.UI;
 using Viewer.UI.Attributes;
 using ViewerTest.Data;
 
@@ -14,77 +16,110 @@ namespace ViewerTest.UI.Attributes
     [TestClass]
     public class AttributeManagerTest
     {
-        private EntityManagerMock _entities;
-        private SelectionMock _selectionMock;
+        private Mock<IEntityRepository> _modified;
+        private Mock<ISelection> _selection;
         private AttributeManager _attributes;
 
         [TestInitialize]
         public void Setup()
         {
-            _entities = new EntityManagerMock();
-            _selectionMock = new SelectionMock();
-            _attributes = new AttributeManager(_selectionMock);
+            _selection = new Mock<ISelection>();
+            _modified = new Mock<IEntityRepository>();
+            _attributes = new AttributeManager(_selection.Object, _modified.Object);
         }
 
         [TestMethod]
         public void SetAttribute_EmptySelection()
         {
+            _selection
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(new List<IEntity>().GetEnumerator());
+
             _attributes.SetAttribute("test", new StringAttribute("test", "value"));
 
-            var attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(0, attrs.Count);
+            _modified.Verify(mock => mock.Add(It.IsAny<IEntity>()), Times.Never);
         }
 
         [TestMethod]
         public void SetAttribute_OneEntity()
         {
-            _entities.Add(new Entity("test"));
-            _selectionMock.Replace(_entities, new[]{ 0 });
-            
-            var attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(0, attrs.Count);
+            var oldAttr = new IntAttribute("oldAttr", 42);
+            var newAttr = new StringAttribute("attr", "value");
 
-            _attributes.SetAttribute("attr", new StringAttribute("attr", "value"));
+            var entity = new Entity("test").SetAttribute(oldAttr);
+            var selectedEntities = new List<IEntity>
+            {
+                entity
+            };
+            _selection
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(selectedEntities.GetEnumerator());
+            _selection
+                .Setup(mock => mock.Count)
+                .Returns(selectedEntities.Count);
+
+            _attributes.SetAttribute(oldAttr.Name, newAttr);
             
-            attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(1, attrs.Count);
-            Assert.IsFalse(attrs[0].IsMixed);
-            Assert.IsTrue(attrs[0].IsGlobal);
-            Assert.AreEqual(new StringAttribute("attr", "value"), attrs[0].Data);
+            // we have marked the entity as changed
+            _modified.Verify(mock => mock.Add(
+                It.Is<IEntity>(item =>
+                    item.GetAttribute(newAttr.Name).Equals(newAttr) &&
+                    item.GetAttribute(oldAttr.Name) == null
+                )
+            ), Times.Once);
         }
 
         [TestMethod]
         public void SetAttribute_MultipleEntities()
         {
-            _entities.Add(new Entity("test1"));
-            _entities.Add(new Entity("test2"));
-            _selectionMock.Replace(_entities, new[] { 0, 1 });
+            var selectedEntities = new List<IEntity>
+            {
+                new Entity("test1"),
+                new Entity("test2"),
+            };
 
-            var attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(0, attrs.Count);
+            _selection
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(selectedEntities.GetEnumerator());
+            _selection
+                .Setup(mock => mock.Count)
+                .Returns(selectedEntities.Count);
 
-            _attributes.SetAttribute("attr", new StringAttribute("attr", "value"));
+            var newAttr = new StringAttribute("attr", "value");
+            _attributes.SetAttribute("attr", newAttr);
+            
+            // we have added the attribute to both entities
+            _modified.Verify(mock => mock.Add(
+                It.Is<IEntity>(item =>
+                    item.Path == "test1" &&
+                    item.GetAttribute(newAttr.Name).Equals(newAttr)
+                )
+            ), Times.Once);
 
-            attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(1, attrs.Count);
-            Assert.IsFalse(attrs[0].IsMixed);
-            Assert.IsTrue(attrs[0].IsGlobal);
-            Assert.AreEqual(new StringAttribute("attr", "value"), attrs[0].Data);
+            _modified.Verify(mock => mock.Add(
+                It.Is<IEntity>(item =>
+                    item.Path == "test2" &&
+                    item.GetAttribute(newAttr.Name).Equals(newAttr)
+                )
+            ), Times.Once);
         }
 
         [TestMethod]
         public void RemoveAttribute_NonExistentAttribute()
         {
-            _entities.Add(new Entity("test"));
-            _selectionMock.Replace(_entities, new[] { 0 });
+            var selectedEntities = new List<IEntity>
+            {
+                new Entity("test"),
+            };
 
-            var attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(0, attrs.Count);
-
+            _selection
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(selectedEntities.GetEnumerator());
+            _selection
+                .Setup(mock => mock.Count)
+                .Returns(selectedEntities.Count);
+            
             _attributes.RemoveAttribute("attr");
-
-            attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(0, attrs.Count);
         }
 
         [TestMethod]
@@ -92,30 +127,56 @@ namespace ViewerTest.UI.Attributes
         {
             var entity1 = new Entity("test1").SetAttribute(new StringAttribute("attr", "value"));
             var entity2 = new Entity("test2").SetAttribute(new IntAttribute("attr", 42));
-            _entities.Add(entity1);
-            _entities.Add(entity2);
-            _selectionMock.Replace(_entities, new[] { 0, 1 });
+            
+            var selectedEntities = new List<IEntity>
+            {
+                entity1,
+                entity2
+            };
 
-            var attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(1, attrs.Count);
-            Assert.IsTrue(attrs[0].IsMixed);
-            Assert.IsTrue(attrs[0].IsGlobal);
+            _selection
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(selectedEntities.GetEnumerator());
+            _selection
+                .Setup(mock => mock.Count)
+                .Returns(selectedEntities.Count);
 
             _attributes.RemoveAttribute("attr");
-            
-            attrs = _attributes.GroupAttributesInSelection().ToList();
-            Assert.AreEqual(0, attrs.Count);
-        }
 
+            // we have removed the attribute
+            _modified.Verify(mock => mock.Add(
+                It.Is<IEntity>(item =>
+                    item.Path == "test1" &&
+                    item.GetAttribute("attr") == null
+                )
+            ), Times.Once);
+
+            _modified.Verify(mock => mock.Add(
+                It.Is<IEntity>(item =>
+                    item.Path == "test2" &&
+                    item.GetAttribute("attr") == null
+                )
+            ), Times.Once);
+        }
+        
         [TestMethod]
         public void GetSelectedEntities_MissingAttributeOnAnEntity()
         {
             var entity1 = new Entity("test1").SetAttribute(new IntAttribute("attr", 42));
             var entity2 = new Entity("test2");
 
-            _entities.Add(entity1);
-            _entities.Add(entity2);
-            _selectionMock.Replace(_entities, new[]{ 0, 1 });
+            var selectedEntities = new List<IEntity>
+            {
+                entity1,
+                entity2
+            };
+
+            _selection
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(selectedEntities.GetEnumerator());
+            _selection
+                .Setup(mock => mock.Count)
+                .Returns(selectedEntities.Count);
 
             var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(1, attrs.Count);

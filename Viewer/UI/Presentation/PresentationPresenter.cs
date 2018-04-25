@@ -54,7 +54,7 @@ namespace Viewer.UI.Presentation
         private async Task LoadCurrentEntityAsync()
         {
             // replace selection
-            _selection.Replace(_entities, new[]{ _entityIndex });
+            _selection.Replace(new[]{ _entities[_entityIndex] });
 
             // load new image
             var entity = _entities[_entityIndex];
@@ -115,7 +115,7 @@ namespace Viewer.UI.Presentation
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
-            _selection.Replace(_entities, new []{ _entityIndex });
+            _selection.Replace(new []{ _entities[_entityIndex] });
         }
 
         private void View_CloseView(object sender, EventArgs e)

@@ -378,6 +378,8 @@ namespace Viewer.UI.Explorer
                         }
                     }, view.CancellationToken).ContinueWith(task =>
                     {
+                        view.CloseView(view.CancellationToken.CanBeCanceled);
+
                         // update subdirectories in given path
                         View.LoadDirectories(
                             PathUtils.Split(destinationDirectory),

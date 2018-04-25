@@ -16,12 +16,9 @@ namespace ViewerTest.UI
         public void Replace_NoChangedListener()
         {
             var selection = new Selection();
-            var entities = new EntityManagerMock(new Entity("test1"), new Entity("test2"));
-            selection.Replace(entities, new []{ 0, 1 });
+            selection.Replace(new []{ new Entity("test1"), new Entity("test2") });
             
             Assert.AreEqual(2, selection.Count);
-            Assert.IsTrue(selection.Contains(0));
-            Assert.IsTrue(selection.Contains(1));
         }
 
         [TestMethod]
@@ -29,9 +26,8 @@ namespace ViewerTest.UI
         {
             var counter = 0;
             var selection = new Selection();
-            var entities = new EntityManagerMock();
             selection.Changed += (sender, args) => { ++counter; };
-            selection.Replace(entities, Enumerable.Empty<int>());
+            selection.Replace(Enumerable.Empty<IEntity>());
             Assert.AreEqual(1, counter);
             Assert.AreEqual(0, selection.Count);
         }
@@ -41,25 +37,21 @@ namespace ViewerTest.UI
         {
             var oldSelection = new[]
             {
-                0, 1
+                new Entity("test0"),
+                new Entity("test1"),
             };
 
             var newSelection = new[]
             {
-                2, 3
+                new Entity("test2"),
+                new Entity("test3"),
             };
 
             var selection = new Selection();
-            var entities = new EntityManagerMock(new Entity("test"), new Entity("test2"), new Entity("test3"), new Entity("test4"));
-            selection.Replace(entities, oldSelection);
-            selection.Replace(entities, newSelection);
+            selection.Replace(oldSelection);
+            selection.Replace(newSelection);
 
             CollectionAssert.AreEqual(newSelection, selection.ToArray());
-
-            Assert.IsFalse(selection.Contains(oldSelection[0]));
-            Assert.IsFalse(selection.Contains(oldSelection[1]));
-            Assert.IsTrue(selection.Contains(newSelection[0]));
-            Assert.IsTrue(selection.Contains(newSelection[1]));
         }
     }
 }

@@ -64,20 +64,21 @@ namespace Viewer.UI.Attributes
     public class AttributeManager : IAttributeManager
     {
         private readonly ISelection _selection;
+        private readonly IEntityRepository _modified;
 
         [ImportingConstructor]
-        public AttributeManager(ISelection selection)
+        public AttributeManager(ISelection selection, IEntityRepository modified)
         {
             _selection = selection;
+            _modified = modified;
         }
 
         public IEnumerable<AttributeGroup> GroupAttributesInSelection()
         {
             // find all attributes in the selection
             var attrs = new Dictionary<string, AttributeGroup>();
-            foreach (var item in _selection)
+            foreach (var entity in _selection)
             {
-                var entity = _selection.Items[item];
                 foreach (var attr in entity)
                 {
                     if (attrs.TryGetValue(attr.Name, out AttributeGroup attrView))
@@ -111,21 +112,19 @@ namespace Viewer.UI.Attributes
         
         public void SetAttribute(string oldName, Attribute attr)
         {
-            foreach (var item in _selection)
+            foreach (var entity in _selection)
             {
-                var entity = _selection.Items[item];
                 var updated = entity.RemoveAttribute(oldName).SetAttribute(attr);
-                _selection.Items[item] = updated;
+                _modified.Add(updated);
             }
         }
 
         public void RemoveAttribute(string name)
         {
-            foreach (var item in _selection)
-            {
-                var entity = _selection.Items[item];
+            foreach (var entity in _selection)
+            { 
                 var updated = entity.RemoveAttribute(name);
-                _selection.Items[item] = updated;
+                _modified.Add(updated);  
             }
         }
     }

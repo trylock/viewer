@@ -286,7 +286,7 @@ namespace Viewer.UI.Images
             }
 
             // set global selection
-            _selection.Replace(_entities, _currentSelection);
+            _selection.Replace(_currentSelection.Select(index => _entities[index]));
             
             // reset state of items in previous selection
             foreach (var item in oldSelection)
@@ -477,12 +477,12 @@ namespace Viewer.UI.Images
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
-            _selection.Replace(_entities, _currentSelection);
+            _selection.Replace(_currentSelection.Select(index => _entities[index]));
         }
 
         private IEnumerable<string> GetPathsInSelection()
         {
-            return _selection.Select(index => _selection.Items[index].Path);
+            return _selection.Select(entity => entity.Path);
         }
 
         private void View_CopyItems(object sender, EventArgs e)
@@ -509,7 +509,7 @@ namespace Viewer.UI.Images
             var deletedPaths = new HashSet<string>();
             foreach (var item in _selection)
             {
-                var path = View.Items[item].FullPath;
+                var path = item.Path;
                 try
                 {
                     _storage.Remove(path);

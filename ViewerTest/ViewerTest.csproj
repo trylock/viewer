@@ -104,7 +104,6 @@
     <Compile Include="UI\Images\RectangleSelectionTest.cs" />
     <Compile Include="Images\ThumbnailGeneratorTest.cs" />
     <Compile Include="UI\Images\ThumbnailSizeCalculatorTest.cs" />
-    <Compile Include="UI\SelectionMock.cs" />
     <Compile Include="UI\SelectionTest.cs" />
   </ItemGroup>
   <ItemGroup>

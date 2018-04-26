@@ -30,13 +30,13 @@ namespace Viewer.UI.Presentation
         private void ShowPresentation(IEnumerable<IEntity> entities, int index)
         {
             var presentationExport = _presentationFactory.CreateExport();
-            presentationExport.Value.ShowEntity(entities, index);
             presentationExport.Value.View.CloseView += (s, args) =>
             {
                 presentationExport.Dispose();
                 presentationExport = null;
             };
             presentationExport.Value.ShowView("Presentation", DockState.Document);
+            presentationExport.Value.ShowEntity(entities, index);
         }
     }
 }

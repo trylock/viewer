@@ -36,18 +36,18 @@ namespace Viewer.UI.Images
             if (_images == null)
             {
                 _images = _imagesFactory.CreateExport();
-                _images.Value.LoadQueryAsync(query);
                 _images.Value.View.CloseView += (sender, args) =>
                 {
                     _images.Dispose();
                     _images = null;
                 };
                 _images.Value.ShowView("Images", DockState.Document);
+                _images.Value.LoadQueryAsync(query);
             }
             else
             {
-                _images.Value.LoadQueryAsync(query);
                 _images.Value.View.EnsureVisible();
+                _images.Value.LoadQueryAsync(query);
             }
         }
     }

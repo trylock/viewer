@@ -541,7 +541,8 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            _state.OpenEntity(View.Items.Select(item => item.Data), ActiveItem);
+            var entities = View.Items.Select(item => item.Data);
+            _state.OpenEntity(entities, ActiveItem);
         }
         
         private void View_CloseView(object sender, EventArgs eventArgs)

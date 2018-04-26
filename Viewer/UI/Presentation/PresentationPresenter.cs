@@ -116,6 +116,10 @@ namespace Viewer.UI.Presentation
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
+            if (_entities.Count == 0)
+            {
+                return;
+            }
             _selection.Replace(new []{ _entities[_entityIndex] });
         }
 

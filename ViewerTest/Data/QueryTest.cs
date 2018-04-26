@@ -14,13 +14,22 @@ namespace ViewerTest.Data
     [TestClass]
     public class QueryTest
     {
+        private Mock<IEntityManager> _entityManager;
+        private Mock<IFileSystem> _fileSystem;
+        private IQuery _query;
+
+        [TestInitialize]
+        public void Startup()
+        {
+            _entityManager = new Mock<IEntityManager>();
+            _fileSystem = new Mock<IFileSystem>();
+            _query = new Query(_entityManager.Object, _fileSystem.Object);
+        }
+
         [TestMethod]
         public void Evaluate_EmptyQuery()
         {
-            var storage = new Mock<IAttributeStorage>();
-            var fileSystem = new Mock<IFileSystem>();
-            var query = new Query(storage.Object, fileSystem.Object);
-            var entities = query.ToArray();
+            var entities = _query.ToArray();
             Assert.AreEqual(0, entities.Length);
         }
 
@@ -29,19 +38,15 @@ namespace ViewerTest.Data
         {
             var entity1 = new Entity("pattern/a.jpg");
             var entity2 = new Entity("pattern/b.jpg");
+            
+            _fileSystem.Setup(mock => mock.DirectoryExists("pattern\\")).Returns(true);
+            _fileSystem.Setup(mock => mock.EnumerateFiles("pattern\\")).Returns(new[] {entity1.Path, entity2.Path});
 
-            var storage = new Mock<IAttributeStorage>();
-            var fileSystem = new Mock<IFileSystem>();
-
-            fileSystem.Setup(mock => mock.DirectoryExists("pattern\\")).Returns(true);
-            fileSystem.Setup(mock => mock.EnumerateFiles("pattern\\")).Returns(new[] {entity1.Path, entity2.Path});
-
-            storage.Setup(mock => mock.Load(entity1.Path)).Returns(entity1);
-            storage.Setup(mock => mock.Load(entity2.Path)).Returns(entity2);
-
-            IQuery query = new Query(storage.Object, fileSystem.Object);
-            query = query.Select("pattern");
-            var entities = query.ToArray();
+            _entityManager.Setup(mock => mock.GetEntity(entity1.Path)).Returns(entity1);
+            _entityManager.Setup(mock => mock.GetEntity(entity2.Path)).Returns(entity2);
+            
+            _query = _query.Select("pattern");
+            var entities = _query.ToArray();
             
             CollectionAssert.AreEqual(new IEntity[]{ entity1, entity2 }, entities);
         }
@@ -51,19 +56,15 @@ namespace ViewerTest.Data
         {
             var entity1 = new Entity("pattern/a.jpg");
             var entity2 = new Entity("pattern/b.jpg");
+            
+            _fileSystem.Setup(mock => mock.DirectoryExists("pattern\\")).Returns(true);
+            _fileSystem.Setup(mock => mock.EnumerateFiles("pattern\\")).Returns(new[] { entity1.Path, entity2.Path });
 
-            var storage = new Mock<IAttributeStorage>();
-            var fileSystem = new Mock<IFileSystem>();
+            _entityManager.Setup(mock => mock.GetEntity(entity1.Path)).Returns(entity1);
+            _entityManager.Setup(mock => mock.GetEntity(entity2.Path)).Returns(entity2);
 
-            fileSystem.Setup(mock => mock.DirectoryExists("pattern\\")).Returns(true);
-            fileSystem.Setup(mock => mock.EnumerateFiles("pattern\\")).Returns(new[] { entity1.Path, entity2.Path });
-
-            storage.Setup(mock => mock.Load(entity1.Path)).Returns(entity1);
-            storage.Setup(mock => mock.Load(entity2.Path)).Returns(entity2);
-
-            IQuery query = new Query(storage.Object, fileSystem.Object);
-            query = query.Select("pattern");
-            var firstQuery = query.Where(entity => entity.Path.StartsWith("pattern"));
+            _query = _query.Select("pattern");
+            var firstQuery = _query.Where(entity => entity.Path.StartsWith("pattern"));
             var secondQuery = firstQuery.Where(entity => entity.Path == "pattern/b.jpg");
             var thirdQuery = firstQuery.Where(entity => false);
 
@@ -71,10 +72,10 @@ namespace ViewerTest.Data
             var firstResult = firstQuery.ToArray();
             var secondResult = secondQuery.ToArray();
             var thirdResult = thirdQuery.ToArray();
-            
+
             // make sure we have loaded the entities from the storage
-            storage.Verify(mock => mock.Load("pattern/a.jpg"));
-            storage.Verify(mock => mock.Load("pattern/b.jpg"));
+            _entityManager.Verify(mock => mock.GetEntity("pattern/a.jpg"));
+            _entityManager.Verify(mock => mock.GetEntity("pattern/b.jpg"));
 
             CollectionAssert.AreEqual(new IEntity[] { entity1, entity2 }, firstResult);
             CollectionAssert.AreEqual(new IEntity[] { entity2 }, secondResult);

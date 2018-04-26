@@ -27,7 +27,7 @@ namespace Viewer.UI.Presentation
         {
         }
 
-        private void ShowPresentation(IEntityManager entities, int index)
+        private void ShowPresentation(IEnumerable<IEntity> entities, int index)
         {
             var presentationExport = _presentationFactory.CreateExport();
             presentationExport.Value.ShowEntity(entities, index);

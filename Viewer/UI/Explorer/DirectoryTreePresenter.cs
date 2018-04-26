@@ -30,7 +30,7 @@ namespace Viewer.UI.Explorer
         public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
 
         private readonly IApplicationState _state;
-        private readonly IQueryEngine _queryEngine;
+        private readonly IQueryFactory _queryFactory;
         private readonly IFileSystem _fileSystem;
         private readonly IClipboardService _clipboard;
         private readonly IFileSystemErrorView _dialogView;
@@ -42,14 +42,14 @@ namespace Viewer.UI.Explorer
         public DirectoryTreePresenter(
             ExportFactory<IDirectoryTreeView> viewFactory,
             IApplicationState state,
-            IQueryEngine queryEngine,
+            IQueryFactory queryFactory,
             IProgressViewFactory progressViewFactory,
             IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
             IClipboardService clipboard)
         {
             _state = state;
-            _queryEngine = queryEngine;
+            _queryFactory = queryFactory;
             _fileSystem = fileSystem;
             _clipboard = clipboard;
             _dialogView = dialogView;
@@ -160,7 +160,7 @@ namespace Viewer.UI.Explorer
 
         private void View_OpenDirectory(object sender, DirectoryEventArgs e)
         {
-            _state.ExecuteQuery(_queryEngine.CreateQuery().Select(e.FullPath));
+            _state.ExecuteQuery(_queryFactory.CreateQuery().Select(e.FullPath));
         }
         
         private void View_RenameDirectory(object sender, RenameDirectoryEventArgs e)

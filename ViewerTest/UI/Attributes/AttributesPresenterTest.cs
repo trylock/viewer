@@ -23,7 +23,7 @@ namespace ViewerTest.UI.Attributes
         private Mock<ISelection> _selection;
         private Mock<IAttributeView> _view;
         private Mock<IAttributeManager> _attributeManager;
-        private Mock<IEntityRepository> _modified;
+        private Mock<IEntityManager> _entityManager;
         private AttributesPresenter _presenter;
 
         // binding of attributes in view
@@ -36,7 +36,7 @@ namespace ViewerTest.UI.Attributes
             _selection = new Mock<ISelection>();
             _logger = new Mock<ILogger>();
             _attributeManager = new Mock<IAttributeManager>();
-            _modified = new Mock<IEntityRepository>();
+            _entityManager = new Mock<IEntityManager>();
 
             // setup view mock
             _view = new Mock<IAttributeView>();
@@ -47,7 +47,7 @@ namespace ViewerTest.UI.Attributes
             {
                 return new Tuple<IAttributeView, Action>(_view.Object, () => { });
             });
-            _presenter = new AttributesPresenter(viewFactory, null, _selection.Object, _storage, _attributeManager.Object, _modified.Object, _logger.Object);
+            _presenter = new AttributesPresenter(viewFactory, null, _selection.Object, _attributeManager.Object, _storage, _entityManager.Object, _logger.Object);
         }
 
         [TestMethod]

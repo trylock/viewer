@@ -24,8 +24,7 @@ namespace ViewerTest.UI.Images
         private Mock<IImagesView> _viewMock;
         private Mock<ISelection> _selectionMock;
         private Mock<IClipboardService> _clipboardMock;
-        private Mock<IEntityManager> _entities;
-        private Mock<IQueryEngine> _queryEngine;
+        private Mock<IEntityManager> _entityManager;
         private Mock<IApplicationState> _state;
         private ImagesPresenter _presenter;
 
@@ -38,24 +37,19 @@ namespace ViewerTest.UI.Images
             _storage = new MemoryAttributeStorage();
             _viewMock = new Mock<IImagesView>();
             _clipboardMock = new Mock<IClipboardService>();
-            _entities = new Mock<IEntityManager>();
-            _queryEngine = new Mock<IQueryEngine>();
+            _entityManager = new Mock<IEntityManager>();
             _state = new Mock<IApplicationState>();
 
             _data = new List<Entity>();
             _items = new List<EntityView>();
             for (int i = 0; i < 16; ++i)
             {
-                var index = i;
                 var entity = new Entity(i.ToString());
                 _storage.Store(entity);
                 _data.Add(entity);
                 _items.Add(new EntityView(entity, null));
-                _entities.Setup(mock => mock[index]).Returns(_data[index]);
             }
-
-            _entities.Setup(mock => mock.GetEnumerator()).Returns(_data.GetEnumerator());
-
+            
             var viewFactory = new ExportFactory<IImagesView>(() =>
             {
                 return new Tuple<IImagesView, Action>(_viewMock.Object, () => { });
@@ -65,8 +59,7 @@ namespace ViewerTest.UI.Images
             imageLoaderMock.Setup(mock => mock.GetImageSize(It.IsAny<IEntity>())).Returns(new Size(1, 1));
 
             _selectionMock = new Mock<ISelection>();
-            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _storage, _clipboardMock.Object, imageLoaderMock.Object, _state.Object, _queryEngine.Object);
-            _presenter.SetEntitiesInternal(_entities.Object);
+            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _entityManager.Object, _clipboardMock.Object, null, _state.Object);
 
             _viewMock.Setup(mock => mock.Items).Returns(_items);
         }
@@ -201,10 +194,6 @@ namespace ViewerTest.UI.Images
         {
             _viewMock.Setup(mock => mock.GetItemAt(new Point(0, 0))).Returns(0);
             
-            var testEntity = _storage.Load("test");
-            Assert.IsNull(testEntity);
-            Assert.AreEqual("0", _items[0].Data.Path);
-
             // user selects an item and modify its name
             _viewMock.Raise(mock => mock.HandleMouseDown += null, new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0));
 
@@ -217,9 +206,8 @@ namespace ViewerTest.UI.Images
             _viewMock.Verify(mock => mock.HideItemEditForm());
             _viewMock.Verify(mock => mock.UpdateItem(0));
 
-            testEntity = _storage.Load("test");
-            Assert.AreEqual("test", _items[0].Data.Path);
-            Assert.IsNotNull(testEntity);
+            // check that the entity has been renamed
+            _entityManager.Verify(mock => mock.MoveEntity("0", "test"), Times.Once);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Viewer.UI.Presentation
         protected override ExportLifetimeContext<IPresentationView> ViewLifetime { get; }
 
         // state
-        private IEntityManager _entities;
+        private readonly List<IEntity> _entities = new List<IEntity>();
         private Image _image;
         private int _entityIndex;
 
@@ -44,9 +44,10 @@ namespace Viewer.UI.Presentation
             SubscribeTo(View, "View");
         }
 
-        public async void ShowEntity(IEntityManager entities, int index)
+        public async void ShowEntity(IEnumerable<IEntity> entities, int index)
         {
-            _entities = entities;
+            _entities.Clear();
+            _entities.AddRange(entities);
             _entityIndex = index;
             await LoadCurrentEntityAsync();
         }

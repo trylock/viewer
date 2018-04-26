@@ -87,7 +87,6 @@
     <Compile Include="Data\Formats\Attributes\AttributeWriter.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderFactory.cs" />
     <Compile Include="Data\Formats\InvalidDataFormatException.cs" />
-    <Compile Include="Data\QueryEngine.cs" />
     <Compile Include="Data\Storage\FileSystemAttributeStorage.cs" />
     <Compile Include="Data\Storage\IAttributeStorage.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReader.cs" />

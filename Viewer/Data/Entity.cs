@@ -48,16 +48,22 @@ namespace Viewer.Data
         /// <param name="path">New path</param>
         /// <returns></returns>
         IEntity ChangePath(string path);
+
+        /// <summary>
+        /// Copy this entity
+        /// </summary>
+        /// <returns>New copied entity</returns>
+        IEntity Clone();
     }
 
     public class Entity : IEntity
     {
-        private readonly ImmutableDictionary<string, Attribute> _attrs;
+        private readonly Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
         /// <summary>
         /// Path to the file where the attributes are (or will be) stored
         /// </summary>
-        public string Path { get; }
+        public string Path { get; private set; }
 
         /// <summary>
         /// Last time these attributes were written to a file
@@ -85,21 +91,14 @@ namespace Viewer.Data
         public IEnumerable<Attribute> Values => _attrs.Values;
 
         public Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
-            : this(path, lastWriteTime, lastAccessTime, ImmutableDictionary<string, Attribute>.Empty)
-        {
-        }
-
-        public Entity(string path)
-            : this(path, DateTime.Now, DateTime.Now, ImmutableDictionary<string, Attribute>.Empty)
-        {
-        }
-
-        private Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime, ImmutableDictionary<string, Attribute> attrs)
         {
             Path = path;
             LastWriteTime = lastWriteTime;
             LastAccessTime = lastAccessTime;
-            _attrs = attrs;
+        }
+
+        public Entity(string path) : this(path, DateTime.Now, DateTime.Now)
+        {
         }
         
         public Attribute GetAttribute(string name)
@@ -113,21 +112,31 @@ namespace Viewer.Data
         
         public IEntity SetAttribute(Attribute attr)
         {
-            var attrs = _attrs.SetItem(attr.Name, attr);
-            return new Entity(Path, LastWriteTime, LastAccessTime, attrs);
+            _attrs[attr.Name] = attr;
+            return this;
         }
         
         public IEntity RemoveAttribute(string name)
         {
-            var attrs = _attrs.Remove(name);
-            if (ReferenceEquals(attrs, _attrs))
-                return this;
-            return new Entity(Path, LastWriteTime, LastAccessTime, attrs);
+            _attrs.Remove(name);
+            return this;
         }
 
         public IEntity ChangePath(string path)
         {
-            return new Entity(path, LastWriteTime, LastAccessTime, _attrs);
+            Path = path;
+            return this;
+        }
+
+        public IEntity Clone()
+        {
+            var clone = new Entity(Path, LastWriteTime, LastAccessTime);
+            foreach (var attr in _attrs)
+            {
+                clone.SetAttribute(attr.Value);
+            }
+
+            return clone;
         }
 
         public IEnumerator<Attribute> GetEnumerator()

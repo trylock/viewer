@@ -1,116 +1,117 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Data.Storage;
 
 namespace Viewer.Data
 {
-    /// <inheritdoc />
     /// <summary>
-    /// EntityManager represents a result of an ordered query.
-    /// It also keeps track of all changes to entities in the result and provides an API to manage them.
+    /// Class which implements this interface is responsible for maintaining a consistent state 
+    /// of entities throughout the application. 
     /// </summary>
-    public interface IEntityManager  : IEnumerable<IEntity>
+    public interface IEntityManager
     {
         /// <summary>
-        /// Number of entities
+        /// Get entity in memory or load it from an attribute storage.
+        /// There will be at most 1 object for each entity at any given time.
         /// </summary>
-        int Count { get; }
+        /// <param name="path">Path to an enttiy</param>
+        /// <returns>Loaded entity</returns>
+        IEntity GetEntity(string path);
 
         /// <summary>
-        /// Get/set entity
+        /// Set entity in the loader
         /// </summary>
-        /// <param name="index">index of an entity</param>
-        /// <returns>entity at given index</returns>
-        IEntity this[int index] { get; set; }
+        /// <param name="entity">Entity to set</param>
+        void SetEntity(IEntity entity);
 
         /// <summary>
-        /// Add entity to the end
+        /// Move an entity from <paramref name="oldPath"/> to <paramref name="newPath"/>
         /// </summary>
-        /// <param name="entity">New entity</param>
-        void Add(IEntity entity);
-        
-        /// <summary>
-        /// Remove all entities for which given predicate returns true.
-        /// </summary>
-        /// <param name="removePredicate">Remove predicate</param>
-        void RemoveAll(Predicate<IEntity> removePredicate);
+        /// <param name="oldPath"></param>
+        /// <param name="newPath"></param>
+        void MoveEntity(string oldPath, string newPath);
 
         /// <summary>
-        /// Remove all entities.
+        /// Remove entity from the loader
         /// </summary>
-        void Clear();
+        /// <param name="path">Path to an entity</param>
+        void RemoveEntity(string path);
 
         /// <summary>
-        /// Move all modified entities in the query result to a snapshot and return it.
+        /// Get a snapshot of unsaved modified entities.
+        /// All entities in the snapshot are copies.
         /// </summary>
-        /// <returns>Snapshot of modified entities.</returns>
+        /// <returns>Snapshot of modified entities</returns>
         IReadOnlyList<IEntity> GetModified();
     }
 
+    [Export(typeof(IEntityManager))]
     public class EntityManager : IEntityManager
     {
-        public int Count => _entities.Count;
-        
-        private readonly List<IEntity> _entities = new List<IEntity>();
+        private readonly Dictionary<string, WeakReference<IEntity>> _entities = new Dictionary<string, WeakReference<IEntity>>();
+        private readonly IAttributeStorage _storage;
         private readonly IEntityRepository _modified;
 
-        public EntityManager(IEntityRepository modified)
+        [ImportingConstructor]
+        public EntityManager(IAttributeStorage storage, IEntityRepository modified)
         {
+            _storage = storage;
             _modified = modified;
         }
-        
-        public IEnumerator<IEntity> GetEnumerator()
-        {
-            return _entities.GetEnumerator();
-        }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEntity GetEntity(string path)
         {
-            return GetEnumerator();
-        }
-
-        public void Add(IEntity item)
-        {
-            _entities.Add(item);
-        }
-
-        public void RemoveAll(Predicate<IEntity> removePredicate)
-        {
-            // unstage removed entities
-            foreach (var entity in _entities)
+            if (!_entities.TryGetValue(path, out var item) ||
+                !item.TryGetTarget(out IEntity entity))
             {
-                if (removePredicate(entity))
+                return LoadEntity(path);
+            }
+
+            return entity;
+        }
+
+        public void SetEntity(IEntity entity)
+        {
+            _entities[entity.Path] = new WeakReference<IEntity>(entity);
+            _modified.Add(entity.Clone());
+        }
+
+        public void MoveEntity(string oldPath, string newPath)
+        {
+            if (_entities.TryGetValue(oldPath, out var value))
+            {
+                _entities.Remove(oldPath);
+                if (value.TryGetTarget(out var entity))
                 {
-                    _modified.Remove(entity.Path);
+                    _entities[newPath] = new WeakReference<IEntity>(entity);
                 }
-            }
-
-            // remove entities
-            _entities.RemoveAll(removePredicate);
-        }
-
-        public void Clear()
-        {
-            _entities.Clear();
-            _modified.Clear();
-        }
-
-        public IEntity this[int index]
-        {
-            get => _entities[index];
-            set
-            {
-                _entities[index] = value;
-                _modified.Add(value);
+                _modified.Move(oldPath, newPath);
             }
         }
-        
+
+        public void RemoveEntity(string path)
+        {
+            _storage.Remove(path);
+            _modified.Remove(path);
+            _entities.Remove(path);
+        }
+
         public IReadOnlyList<IEntity> GetModified()
         {
             return _modified.GetSnapshot();
+        }
+
+        private IEntity LoadEntity(string path)
+        {
+            var entity = _storage.Load(path);
+            if (entity == null)
+                return null;
+            _entities[entity.Path] = new WeakReference<IEntity>(entity);
+            return entity;
         }
     }
 }

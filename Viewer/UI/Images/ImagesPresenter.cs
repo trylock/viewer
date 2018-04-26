@@ -26,16 +26,14 @@ namespace Viewer.UI.Images
     {
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
-        private readonly IAttributeStorage _storage;
+        private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
-        private readonly IQueryEngine _queryEngine;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
         // current state
-        private IEntityManager _entities;
         private Size _minItemSize = new Size(133, 100);
         private readonly List<int> _previousSelection = new List<int>();
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
@@ -60,20 +58,18 @@ namespace Viewer.UI.Images
             ExportFactory<IImagesView> viewFactory,
             IFileSystemErrorView dialogView,
             ISelection selection, 
-            IAttributeStorage storage,
+            IEntityManager entityManager,
             IClipboardService clipboard,
             IImageLoader imageLoader,
-            IApplicationState state,
-            IQueryEngine queryEngine)
+            IApplicationState state)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogView = dialogView;
             _selection = selection;
-            _storage = storage;
+            _entityManager = entityManager;
             _clipboard = clipboard;
             _imageLoader = imageLoader;
             _state = state;
-            _queryEngine = queryEngine;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
             
             View.ItemSize = _minItemSize;
@@ -161,20 +157,9 @@ namespace Viewer.UI.Images
                 View.EndLoading();
             }
         }
-
-        /// <summary>
-        /// Internal method used only for testing purposes
-        /// </summary>
-        /// <param name="entities"></param>
-        public void SetEntitiesInternal(IEntityManager entities)
-        {
-            _entities = entities;
-        }
-
+        
         private void Clear()
         {
-            _entities = _queryEngine.CreateEntityManager();
-
             // reset state
             _thumbnailSizeCalculator.Reset();
             _selection.Clear();
@@ -200,7 +185,6 @@ namespace Viewer.UI.Images
 
         private void AddEntity(IEntity entity)
         {
-            _entities.Add(entity);
             _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
 
             View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
@@ -286,7 +270,7 @@ namespace Viewer.UI.Images
             }
 
             // set global selection
-            _selection.Replace(_currentSelection.Select(index => _entities[index]));
+            _selection.Replace(_currentSelection.Select(index => View.Items[index].Data));
             
             // reset state of items in previous selection
             foreach (var item in oldSelection)
@@ -447,10 +431,7 @@ namespace Viewer.UI.Images
             // rename the file
             try
             {
-                _storage.Move(item.Path, newPath);
-                var updatedEntity = item.ChangePath(newPath);
-                _entities[index] = updatedEntity;
-                View.Items[index].Data = updatedEntity;
+                _entityManager.MoveEntity(item.Path, newPath);
                 View.UpdateItem(index);
             }
             catch (PathTooLongException)
@@ -477,7 +458,7 @@ namespace Viewer.UI.Images
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
-            _selection.Replace(_currentSelection.Select(index => _entities[index]));
+            _selection.Replace(_currentSelection.Select(index => View.Items[index].Data));
         }
 
         private IEnumerable<string> GetPathsInSelection()
@@ -512,7 +493,7 @@ namespace Viewer.UI.Images
                 var path = item.Path;
                 try
                 {
-                    _storage.Remove(path);
+                    _entityManager.RemoveEntity(path);
                     deletedPaths.Add(path);
                 }
                 catch (UnauthorizedAccessException)
@@ -534,7 +515,6 @@ namespace Viewer.UI.Images
             }
 
             // remove deleted items from the query and the view
-            _entities.RemoveAll(entity => deletedPaths.Contains(entity.Path));
             View.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
 
             // clear selection
@@ -556,12 +536,12 @@ namespace Viewer.UI.Images
 
         private void View_OpenItem(object sender, EventArgs e)
         {
-            if (ActiveItem < 0 || ActiveItem >= _entities.Count)
+            if (ActiveItem < 0 || ActiveItem >= View.Items.Count)
             {
                 return;
             }
 
-            _state.OpenEntity(_entities, ActiveItem);
+            _state.OpenEntity(View.Items.Select(item => item.Data), ActiveItem);
         }
         
         private void View_CloseView(object sender, EventArgs eventArgs)
@@ -589,5 +569,6 @@ namespace Viewer.UI.Images
         }
 
         #endregion
+        
     }
 }

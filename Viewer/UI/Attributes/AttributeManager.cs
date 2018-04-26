@@ -64,13 +64,13 @@ namespace Viewer.UI.Attributes
     public class AttributeManager : IAttributeManager
     {
         private readonly ISelection _selection;
-        private readonly IEntityRepository _modified;
+        private readonly IEntityManager _entityManager;
 
         [ImportingConstructor]
-        public AttributeManager(ISelection selection, IEntityRepository modified)
+        public AttributeManager(ISelection selection, IEntityManager entityManager)
         {
             _selection = selection;
-            _modified = modified;
+            _entityManager = entityManager;
         }
 
         public IEnumerable<AttributeGroup> GroupAttributesInSelection()
@@ -114,8 +114,8 @@ namespace Viewer.UI.Attributes
         {
             foreach (var entity in _selection)
             {
-                var updated = entity.RemoveAttribute(oldName).SetAttribute(attr);
-                _modified.Add(updated);
+                entity.RemoveAttribute(oldName).SetAttribute(attr);
+                _entityManager.SetEntity(entity);
             }
         }
 
@@ -123,8 +123,8 @@ namespace Viewer.UI.Attributes
         {
             foreach (var entity in _selection)
             { 
-                var updated = entity.RemoveAttribute(name);
-                _modified.Add(updated);  
+                entity.RemoveAttribute(name);
+                _entityManager.SetEntity(entity);
             }
         }
     }

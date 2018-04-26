@@ -33,6 +33,15 @@ namespace Viewer.Data
         /// <returns>A new query with additional predicate</returns>
         IQuery Where(Func<IEntity, bool> predicate);
     }
+
+    public interface IQueryFactory
+    {
+        /// <summary>
+        /// Create an empty query
+        /// </summary>
+        /// <returns>Empty query</returns>
+        IQuery CreateQuery();
+    }
     
     public class Query : IQuery
     {
@@ -41,18 +50,18 @@ namespace Viewer.Data
         private readonly ImmutableList<Func<IEntity, bool>> _filter = ImmutableList<Func<IEntity, bool>>.Empty;
 
         // dependencies
-        private readonly IAttributeStorage _storage;
+        private readonly IEntityManager _entities;
         private readonly IFileSystem _fileSystem;
 
-        public Query(IAttributeStorage storage, IFileSystem fileSystem)
+        public Query(IEntityManager entities, IFileSystem fileSystem)
         {
-            _storage = storage;
+            _entities = entities;
             _fileSystem = fileSystem;
         }
 
-        private Query(IAttributeStorage storage, IFileSystem fileSystem, string pattern, ImmutableList<Func<IEntity, bool>> filter)
+        private Query(IEntityManager entities, IFileSystem fileSystem, string pattern, ImmutableList<Func<IEntity, bool>> filter)
         {
-            _storage = storage;
+            _entities = entities;
             _fileSystem = fileSystem;
             _pattern = pattern;
             _filter = filter;
@@ -63,7 +72,7 @@ namespace Viewer.Data
             var filter = CreateFilter();
             foreach (var file in EnumerateFiles())
             {
-                var entity = _storage.Load(file);
+                var entity = _entities.GetEntity(file);
                 if (filter(entity))
                 {
                     yield return entity;
@@ -78,12 +87,12 @@ namespace Viewer.Data
 
         public IQuery Select(string newPattern)
         {
-            return new Query(_storage, _fileSystem, newPattern, _filter);
+            return new Query(_entities, _fileSystem, newPattern, _filter);
         }
 
         public IQuery Where(Func<IEntity, bool> predicate)
         {
-            return new Query(_storage, _fileSystem, _pattern, _filter.Add(predicate));
+            return new Query(_entities, _fileSystem, _pattern, _filter.Add(predicate));
         }
         
         private Func<IEntity, bool> CreateFilter()
@@ -110,6 +119,25 @@ namespace Viewer.Data
                     yield return path;
                 }
             }
+        }
+    }
+
+    [Export(typeof(IQueryFactory))]
+    public class QueryFactory : IQueryFactory
+    {
+        private readonly IEntityManager _entities;
+        private readonly IFileSystem _fileSystem;
+
+        [ImportingConstructor]
+        public QueryFactory(IEntityManager entities, IFileSystem fileSystem)
+        {
+            _entities = entities;
+            _fileSystem = fileSystem;
+        }
+
+        public IQuery CreateQuery()
+        {
+            return new Query(_entities, _fileSystem);
         }
     }
 }

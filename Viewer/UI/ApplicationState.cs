@@ -23,14 +23,14 @@ namespace Viewer.UI
         /// <summary>
         /// Loaded entities
         /// </summary>
-        public IEntityManager Entities { get; }
+        public IEnumerable<IEntity> Entities { get; }
 
         /// <summary>
         /// Index of selected entity
         /// </summary>
         public int Index { get; }
 
-        public EntityEventArgs(IEntityManager entities, int index)
+        public EntityEventArgs(IEnumerable<IEntity> entities, int index)
         {
             Entities = entities;
             Index = index;
@@ -54,7 +54,7 @@ namespace Viewer.UI
         /// </summary>
         /// <param name="entities"></param>
         /// <param name="index"></param>
-        void OpenEntity(IEntityManager entities, int index);
+        void OpenEntity(IEnumerable<IEntity> entities, int index);
 
         /// <summary>
         /// Execute a query
@@ -69,7 +69,7 @@ namespace Viewer.UI
         public event EventHandler<QueryEventArgs> QueryExecuted;
         public event EventHandler<EntityEventArgs> EntityOpened;
 
-        public void OpenEntity(IEntityManager entities, int index)
+        public void OpenEntity(IEnumerable<IEntity> entities, int index)
         {
             EntityOpened?.Invoke(this, new EntityEventArgs(entities, index));
         }

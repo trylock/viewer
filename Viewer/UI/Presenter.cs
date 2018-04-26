@@ -18,7 +18,7 @@ namespace Viewer.UI
             public Delegate Handler { get; set; }
         }
 
-        public class SubscriptionLifetime : IDisposable
+        public class SubscriptionLifetime 
         {
             private readonly object _view;
             private readonly List<AutoEventSubscription> _subscriptions;
@@ -29,7 +29,7 @@ namespace Viewer.UI
                 _subscriptions = subscriptions;
             }
 
-            public void Dispose()
+            public void Unsubscribe()
             {
                 foreach (var subscription in _subscriptions)
                 {
@@ -64,6 +64,7 @@ namespace Viewer.UI
         /// <summary>
         /// Show presenter's view
         /// </summary>
+        /// <param name="title"></param>
         /// <param name="dockState">Dock state of the view</param>
         public virtual void ShowView(string title, DockState dockState)
         {
@@ -117,7 +118,7 @@ namespace Viewer.UI
         {
             foreach (var subscription in _subscriptions)
             {
-                subscription.Dispose();
+                subscription.Unsubscribe();
             }
             ViewLifetime.Dispose();
         }

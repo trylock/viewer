@@ -16,16 +16,16 @@ namespace ViewerTest.UI.Attributes
     [TestClass]
     public class AttributeManagerTest
     {
-        private Mock<IEntityRepository> _modified;
         private Mock<ISelection> _selection;
+        private Mock<IEntityManager> _entityManager;
         private AttributeManager _attributes;
 
         [TestInitialize]
         public void Setup()
         {
             _selection = new Mock<ISelection>();
-            _modified = new Mock<IEntityRepository>();
-            _attributes = new AttributeManager(_selection.Object, _modified.Object);
+            _entityManager = new Mock<IEntityManager>();
+            _attributes = new AttributeManager(_selection.Object, _entityManager.Object);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace ViewerTest.UI.Attributes
 
             _attributes.SetAttribute("test", new StringAttribute("test", "value"));
 
-            _modified.Verify(mock => mock.Add(It.IsAny<IEntity>()), Times.Never);
+            _entityManager.Verify(mock => mock.SetEntity(It.IsAny<IEntity>()), Times.Never);
         }
 
         [TestMethod]
@@ -59,9 +59,9 @@ namespace ViewerTest.UI.Attributes
                 .Returns(selectedEntities.Count);
 
             _attributes.SetAttribute(oldAttr.Name, newAttr);
-            
+
             // we have marked the entity as changed
-            _modified.Verify(mock => mock.Add(
+            _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
                     item.GetAttribute(newAttr.Name).Equals(newAttr) &&
                     item.GetAttribute(oldAttr.Name) == null
@@ -87,16 +87,16 @@ namespace ViewerTest.UI.Attributes
 
             var newAttr = new StringAttribute("attr", "value");
             _attributes.SetAttribute("attr", newAttr);
-            
+
             // we have added the attribute to both entities
-            _modified.Verify(mock => mock.Add(
+            _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
                     item.Path == "test1" &&
                     item.GetAttribute(newAttr.Name).Equals(newAttr)
                 )
             ), Times.Once);
 
-            _modified.Verify(mock => mock.Add(
+            _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
                     item.Path == "test2" &&
                     item.GetAttribute(newAttr.Name).Equals(newAttr)
@@ -144,14 +144,14 @@ namespace ViewerTest.UI.Attributes
             _attributes.RemoveAttribute("attr");
 
             // we have removed the attribute
-            _modified.Verify(mock => mock.Add(
+            _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
                     item.Path == "test1" &&
                     item.GetAttribute("attr") == null
                 )
             ), Times.Once);
 
-            _modified.Verify(mock => mock.Add(
+            _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
                     item.Path == "test2" &&
                     item.GetAttribute("attr") == null

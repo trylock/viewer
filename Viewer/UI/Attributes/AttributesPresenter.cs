@@ -23,9 +23,9 @@ namespace Viewer.UI.Attributes
     {
         private readonly IProgressViewFactory _progressViewFactory;
         private readonly ISelection _selection;
-        private readonly IAttributeStorage _storage;
         private readonly IAttributeManager _attributes;
-        private readonly IEntityRepository _modified;
+        private readonly IAttributeStorage _storage;
+        private readonly IEntityManager _entityManager;
         private readonly ILogger _log;
 
         protected override ExportLifetimeContext<IAttributeView> ViewLifetime { get; }
@@ -48,9 +48,9 @@ namespace Viewer.UI.Attributes
             ExportFactory<IAttributeView> viewFactory, 
             IProgressViewFactory progressViewFactory, 
             ISelection selection,
-            IAttributeStorage storage,
             IAttributeManager attrManager,
-            IEntityRepository modified,
+            IAttributeStorage storage,
+            IEntityManager entityManager,
             ILogger log)
         {
             ViewLifetime = viewFactory.CreateExport();
@@ -58,7 +58,7 @@ namespace Viewer.UI.Attributes
             _log = log;
             _storage = storage;
             _attributes = attrManager;
-            _modified = modified;
+            _entityManager = entityManager;
             _selection = selection;
             _selection.Changed += Selection_Changed;
 
@@ -222,7 +222,7 @@ namespace Viewer.UI.Attributes
 
         private void View_SaveAttributes(object sender, EventArgs args)
         {
-            var unsaved = _modified.GetSnapshot();
+            var unsaved = _entityManager.GetModified();
             if (unsaved.Count <= 0)
             {
                 return;

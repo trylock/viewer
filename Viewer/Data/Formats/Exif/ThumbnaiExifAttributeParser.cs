@@ -10,7 +10,7 @@ using MetadataExtractor.Formats.Exif;
 
 namespace Viewer.Data.Formats.Exif
 {
-    public class ThumbnaiExifAttributeParser : IExifAttributeParser
+    public class ThumbnaiExifAttributeParser<T> : IExifAttributeParser where T : ExifDirectoryBase
     {
         private readonly string _attributeName;
 
@@ -28,14 +28,20 @@ namespace Viewer.Data.Formats.Exif
         /// </summary>
         /// <param name="exif">Exif metadata</param>
         /// <returns>Thumbnail attribute</returns>
-        public Attribute Parse(ExifMetadata exif)
+        public Attribute Parse(IExifMetadata exif)
         {
-            var dir = exif.GetDirectoryOfType<ExifThumbnailDirectory>();
+            var dir = exif.GetDirectoryOfType<T>();
             if (dir == null)
             {
                 return null;
             }
 
+            if (!dir.ContainsTag(ExifThumbnailDirectory.TagThumbnailOffset) ||
+                !dir.ContainsTag(ExifThumbnailDirectory.TagThumbnailLength))
+            {
+                return null;
+            }
+            
             var offset = dir.GetInt32(ExifThumbnailDirectory.TagThumbnailOffset);
             var length = dir.GetInt32(ExifThumbnailDirectory.TagThumbnailLength);
             if (length <= 0)

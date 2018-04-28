@@ -16,7 +16,7 @@ namespace ViewerTest.Data.Formats.Exif
             _attr = attr;
         }
 
-        public Attribute Parse(ExifMetadata exif)
+        public Attribute Parse(IExifMetadata exif)
         {
             return _attr;
         }

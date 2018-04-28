@@ -15,7 +15,22 @@ using Directory = MetadataExtractor.Directory;
 
 namespace Viewer.Data.Formats.Exif
 {
-    public class ExifMetadata
+    public interface IExifMetadata
+    {
+        /// <summary>
+        /// Get segment which contains the exif metadata
+        /// </summary>
+        JpegSegment Segment { get; }
+
+        /// <summary>
+        /// Get parsed exif directory
+        /// </summary>
+        /// <typeparam name="T">Type of the directory</typeparam>
+        /// <returns>Directory in the segment or null</returns>
+        T GetDirectoryOfType<T>() where T : class;
+    }
+
+    public class ExifMetadata : IExifMetadata
     {
         private readonly IReadOnlyList<Directory> _directories;
 
@@ -86,7 +101,7 @@ namespace Viewer.Data.Formats.Exif
                 new ExifAttributeParser<ExifIfd0Directory>("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
                 new ExifAttributeParser<ExifSubIfdDirectory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
                 new ExifAttributeParser<ExifIfd0Directory>("orientation", ExifIfd0Directory.TagOrientation, AttributeType.Int),
-                new ThumbnaiExifAttributeParser("thumbnail"),
+                new ThumbnaiExifAttributeParser<ExifThumbnailDirectory>("thumbnail"),
 
                 // camera metadata
                 new ExifAttributeParser<ExifIfd0Directory>("CameraModel", ExifIfd0Directory.TagModel, AttributeType.String),

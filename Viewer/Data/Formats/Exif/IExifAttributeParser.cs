@@ -17,6 +17,6 @@ namespace Viewer.Data.Formats.Exif
         /// </summary>
         /// <param name="exif">Parsed exif metadata</param>
         /// <returns>Parsed attribute</returns>
-        Attribute Parse(ExifMetadata exif);
+        Attribute Parse(IExifMetadata exif);
     }
 }

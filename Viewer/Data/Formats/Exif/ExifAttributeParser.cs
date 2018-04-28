@@ -44,7 +44,7 @@ namespace Viewer.Data.Formats.Exif
         /// </summary>
         /// <param name="exif">Parsed exif data</param>
         /// <returns>New attribute parsed from the exif or null if there is no such tag</returns>
-        public Attribute Parse(ExifMetadata exif)
+        public Attribute Parse(IExifMetadata exif)
         {
             var directory = exif.GetDirectoryOfType<T>();
             if (directory == null || !directory.ContainsTag(Tag))

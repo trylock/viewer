@@ -145,14 +145,14 @@ namespace Viewer.IO
                             newLevel.Enqueue(new State(state.Path, state.LastMatchedPartIndex + 1));
                             
                             // assume it has not been matched yet
-                            foreach (var dir in _fileSystem.EnumerateDirectories(state.Path))
+                            foreach (var dir in EnumerateDirectories(state.Path))
                             {
                                 newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex));
                             }
                         }
                         else
                         {
-                            foreach (var dir in _fileSystem.EnumerateDirectories(state.Path, part))
+                            foreach (var dir in EnumerateDirectories(state.Path, part))
                             {
                                 newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex + 1));
                             }
@@ -169,13 +169,71 @@ namespace Viewer.IO
             }
         }
 
+        private IEnumerable<string> EnumerateDirectories(string path)
+        {
+            try
+            {
+                return _fileSystem.EnumerateDirectories(path);
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            catch (SecurityException)
+            {
+            }
+
+            return Enumerable.Empty<string>();
+        }
+
+        private IEnumerable<string> EnumerateDirectories(string path, string pattern)
+        {
+            try
+            {
+                return _fileSystem.EnumerateDirectories(path, pattern);
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            catch (SecurityException)
+            {
+            }
+
+            return Enumerable.Empty<string>();
+        }
+
         /// <summary>
         /// Get files in directories matching the pattern
         /// </summary>
         /// <returns>List of files in directories which match the pattern</returns>
         public IEnumerable<string> GetFiles()
         {
-            return GetDirectories().SelectMany(_fileSystem.EnumerateFiles);
+            foreach (var directory in GetDirectories())
+            {
+                IEnumerable<string> files = null;
+                try
+                {
+                    files = _fileSystem.EnumerateFiles(directory);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                }
+                catch (UnauthorizedAccessException)
+                {
+                }
+                catch (SecurityException)
+                {
+                }
+
+                if (files == null)
+                {
+                    continue;
+                }
+
+                foreach (var file in files)
+                {
+                    yield return file;
+                }
+            }
         }
 
         /// <summary>

@@ -32,15 +32,57 @@ namespace Viewer.UI.Images
         private readonly IApplicationState _state;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
+        
+        /// <summary>
+        /// Minimal time in milliseconds between 2 view updates during a loading operation
+        /// </summary>
+        private const int MinViewUpdateDelay = 100;
 
-        // current state
+        /// <summary>
+        /// Minimal size of a thumbnail
+        /// (i.e. size of a thumbnail for View.ThumbnailScale == 1.0)
+        /// </summary>
         private Size _minItemSize = new Size(133, 100);
+
+        /// <summary>
+        /// Indices of items in View.Items in previous selection 
+        /// </summary>
         private readonly List<int> _previousSelection = new List<int>();
+
+        /// <summary>
+        /// Indices of items in View.Items currently in selection
+        /// </summary>
         private readonly HashSet<int> _currentSelection = new HashSet<int>();
+
+        /// <summary>
+        /// Current state of the rectangle selection
+        /// </summary>
         private readonly RectangleSelection _rectangleSelection = new RectangleSelection();
+
+        /// <summary>
+        /// Thumbnail size calculator
+        /// </summary>
         private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
+
+        /// <summary>
+        /// true iff constrol is pressed
+        /// </summary>
         private bool _isControl;
+
+        /// <summary>
+        /// true iff shift is pressed
+        /// </summary>
         private bool _isShift;
+
+        /// <summary>
+        /// Cancellation token source for the last load operation
+        /// </summary>
+        private CancellationTokenSource _loadCancellation;
+
+        /// <summary>
+        /// Last query load task
+        /// </summary>
+        private Task _loadTask = Task.CompletedTask;
 
         /// <summary>
         /// Index of an active item (item over which is a mouse cursor) 
@@ -86,14 +128,6 @@ namespace Viewer.UI.Images
             View.Items.Clear();
             base.Dispose();
         }
-        
-        private CancellationTokenSource _loadCancellation;
-        private Task _loadTask = Task.CompletedTask;
-
-        /// <summary>
-        /// Minimal time in milliseconds between 2 view updates during a loading operation
-        /// </summary>
-        private const int MinViewUpdateDelay = 50;
 
         /// <summary>
         /// Execute given query and show all entities in the result.
@@ -120,33 +154,8 @@ namespace Viewer.UI.Images
             try
             {
                 Clear();
-
-                _loadTask = Task.Run(() =>
-                {
-                    var lastNofitication = DateTime.Now;
-                    foreach (var entity in query)
-                    {
-                        _loadCancellation.Token.ThrowIfCancellationRequested();
-
-                        var delay = DateTime.Now - lastNofitication;
-                        var entityCapture = entity;
-                        View.BeginInvoke(new Action(() =>
-                        {
-                            // add a new entity
-                            AddEntity(entityCapture);
-
-                            // update view
-                            if (delay.Milliseconds >= MinViewUpdateDelay)
-                            {
-                                lastNofitication = DateTime.Now;
-                                View.UpdateItems();
-                            }
-                        }));
-                    }
-                }, _loadCancellation.Token);
-
+                _loadTask = Task.Run(() => LoadQueryBackground(query), _loadCancellation.Token);
                 await _loadTask;
-
                 View.UpdateItems();
             }
             catch (OperationCanceledException)
@@ -157,7 +166,41 @@ namespace Viewer.UI.Images
                 View.EndLoading();
             }
         }
+
+        /// <summary>
+        /// Load entities from the query.
+        /// This function assumes that it runs on a background thread
+        /// </summary>
+        /// <param name="query"></param>
+        private void LoadQueryBackground(IQuery query)
+        {
+            var lastNofitication = DateTime.Now;
+            var waiting = new Queue<IEntity>();
+            foreach (var entity in query)
+            {
+                _loadCancellation.Token.ThrowIfCancellationRequested();
+
+                waiting.Enqueue(entity);
+
+                var delay = DateTime.Now - lastNofitication;
+                if (delay.Milliseconds >= MinViewUpdateDelay)
+                {
+                    var localQueue = waiting;
+                    waiting = new Queue<IEntity>();
+                    lastNofitication = DateTime.Now;
+                    View.BeginInvoke(new Action(() => ViewEntities(localQueue)));
+                }
+            }
+
+            if (waiting.Count > 0)
+            {
+                View.BeginInvoke(new Action(() => ViewEntities(waiting)));
+            }
+        }
         
+        /// <summary>
+        /// Reset presenter and view state
+        /// </summary>
         private void Clear()
         {
             // reset state
@@ -182,13 +225,20 @@ namespace Viewer.UI.Images
                 View.Items.Clear();
             }
         }
-
-        private void AddEntity(IEntity entity)
+        
+        /// <summary>
+        /// Add entities to the view
+        /// </summary>
+        /// <param name="entities"></param>
+        private void ViewEntities(IEnumerable<IEntity> entities)
         {
-            _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
-
-            View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
+            foreach (var entity in entities)
+            {
+                _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
+                View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
+            }
             View.ItemSize = ComputeThumbnailSize();
+            View.UpdateItems();
         }
         
         /// <summary>
@@ -201,6 +251,11 @@ namespace Viewer.UI.Images
             return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, View.ItemSize));
         }
 
+        /// <summary>
+        /// Compute current thumbnail size based on the current minimal thumbnail size
+        /// and View.ThumbnailScale
+        /// </summary>
+        /// <returns></returns>
         private Size ComputeThumbnailSize()
         {
             return new Size(

@@ -82,14 +82,8 @@ namespace Viewer.Data
                 {
                     entity = _entities.GetEntity(file);
                 }
-                catch (InvalidDataFormatException e)
+                catch (InvalidDataFormatException)
                 {
-                    _log.Add(new LogEntry
-                    {
-                        Group = "Query",
-                        Message = $"Failed to load {file}: {e.Message}",
-                        Type = LogType.Error
-                    });
                 }
 
                 if (entity == null)

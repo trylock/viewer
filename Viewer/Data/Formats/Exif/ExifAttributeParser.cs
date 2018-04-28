@@ -49,19 +49,27 @@ namespace Viewer.Data.Formats.Exif
             var directory = exif.GetDirectoryOfType<T>();
             if (directory == null || !directory.ContainsTag(Tag))
                 return null;
-            
-            switch (Type)
+
+            try
             {
-                case AttributeType.Int:
-                    return new IntAttribute(Name, directory.GetInt32(Tag), AttributeFlags.ReadOnly);
-                case AttributeType.Double:
-                    return new DoubleAttribute(Name, directory.GetDouble(Tag), AttributeFlags.ReadOnly);
-                case AttributeType.String:
-                    return new StringAttribute(Name, directory.GetString(Tag), AttributeFlags.ReadOnly);
-                case AttributeType.DateTime:
-                    return new DateTimeAttribute(Name, directory.GetDateTime(Tag), AttributeFlags.ReadOnly);
-                default:
-                    throw new ArgumentOutOfRangeException();
+                switch (Type)
+                {
+                    case AttributeType.Int:
+                        return new IntAttribute(Name, directory.GetInt32(Tag), AttributeFlags.ReadOnly);
+                    case AttributeType.Double:
+                        return new DoubleAttribute(Name, directory.GetDouble(Tag), AttributeFlags.ReadOnly);
+                    case AttributeType.String:
+                        return new StringAttribute(Name, directory.GetString(Tag), AttributeFlags.ReadOnly);
+                    case AttributeType.DateTime:
+                        return new DateTimeAttribute(Name, directory.GetDateTime(Tag), AttributeFlags.ReadOnly);
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            catch (MetadataException)
+            {
+                // the tag exists but its format is invalid => ignore it
+                return null;
             }
         }
     }

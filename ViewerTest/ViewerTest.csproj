@@ -85,7 +85,8 @@
     <Compile Include="Data\EntityTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeReaderTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeWriterTest.cs" />
-    <Compile Include="Data\Formats\Exif\ExifAttributeReader.cs" />
+    <Compile Include="Data\Formats\Exif\ExifAttributeParserTest.cs" />
+    <Compile Include="Data\Formats\Exif\ExifAttributeReaderTest.cs" />
     <Compile Include="Data\Formats\Exif\ExifMetadataTest.cs" />
     <Compile Include="Data\Formats\Exif\ThumbnailExifAttributeParserTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderTest.cs" />

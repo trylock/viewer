@@ -25,7 +25,7 @@ namespace Viewer.Data
         /// </summary>
         /// <param name="pattern">Diretory path pattern <see cref="FileFinder"/></param>
         /// <returns>A new query with given directory path pattern</returns>
-        IQuery Select(string pattern);
+        IQuery Path(string pattern);
     }
 
     public interface IQueryFactory
@@ -86,7 +86,7 @@ namespace Viewer.Data
             return GetEnumerator();
         }
 
-        public IQuery Select(string newPattern)
+        public IQuery Path(string newPattern)
         {
             return new Query(_entities, _fileSystem, newPattern);
         }
@@ -101,7 +101,7 @@ namespace Viewer.Data
             var finder = new FileFinder(_fileSystem, _pattern);
             var files = 
                 from path in finder.GetFiles()
-                let extension = Path.GetExtension(path).ToLowerInvariant()
+                let extension = System.IO.Path.GetExtension(path).ToLowerInvariant()
                 where extension == ".jpeg" || extension == ".jpg"
                 select path;
             return files;

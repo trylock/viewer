@@ -47,7 +47,7 @@ namespace ViewerTest.Data
             _entityManager.Setup(mock => mock.GetEntity(entity1.Path)).Returns(entity1);
             _entityManager.Setup(mock => mock.GetEntity(entity2.Path)).Returns(entity2);
             
-            _query = _query.Select("pattern");
+            _query = _query.Path("pattern");
             var entities = _query.ToArray();
             
             CollectionAssert.AreEqual(new IEntity[]{ entity1, entity2 }, entities);
@@ -65,7 +65,7 @@ namespace ViewerTest.Data
             _entityManager.Setup(mock => mock.GetEntity(entity1.Path)).Returns(entity1);
             _entityManager.Setup(mock => mock.GetEntity(entity2.Path)).Returns(entity2);
 
-            _query = _query.Select("pattern");
+            _query = _query.Path("pattern");
             var firstQuery = _query.Where(entity => entity.Path.StartsWith("pattern"));
             var secondQuery = firstQuery.Where(entity => entity.Path == "pattern/b.jpg");
             var thirdQuery = firstQuery.Where(entity => false);

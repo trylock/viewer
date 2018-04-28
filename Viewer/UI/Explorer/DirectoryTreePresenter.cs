@@ -160,7 +160,7 @@ namespace Viewer.UI.Explorer
 
         private void View_OpenDirectory(object sender, DirectoryEventArgs e)
         {
-            _state.ExecuteQuery(_queryFactory.CreateQuery().Select(e.FullPath));
+            _state.ExecuteQuery(_queryFactory.CreateQuery().Path(e.FullPath));
         }
         
         private void View_RenameDirectory(object sender, RenameDirectoryEventArgs e)

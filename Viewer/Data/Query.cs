@@ -26,14 +26,6 @@ namespace Viewer.Data
         /// <param name="pattern">Diretory path pattern <see cref="FileFinder"/></param>
         /// <returns>A new query with given directory path pattern</returns>
         IQuery Select(string pattern);
-
-        /// <summary>
-        /// Create a new query with additional condition.
-        /// Entity will be included in the query result iff <paramref name="predicate"/> returns true
-        /// </summary>
-        /// <param name="predicate">Entity predicate</param>
-        /// <returns>A new query with additional predicate</returns>
-        IQuery Where(Func<IEntity, bool> predicate);
     }
 
     public interface IQueryFactory
@@ -49,32 +41,26 @@ namespace Viewer.Data
     {
         // query description
         private readonly string _pattern = "";
-        private readonly ImmutableList<Func<IEntity, bool>> _filter = ImmutableList<Func<IEntity, bool>>.Empty;
 
         // dependencies
         private readonly IEntityManager _entities;
         private readonly IFileSystem _fileSystem;
-        private readonly ILogger _log;
 
-        public Query(IEntityManager entities, IFileSystem fileSystem, ILogger log)
+        public Query(IEntityManager entities, IFileSystem fileSystem)
         {
             _entities = entities;
             _fileSystem = fileSystem;
-            _log = log;
         }
 
-        private Query(IEntityManager entities, IFileSystem fileSystem, ILogger log, string pattern, ImmutableList<Func<IEntity, bool>> filter)
+        private Query(IEntityManager entities, IFileSystem fileSystem, string pattern)
         {
             _entities = entities;
             _fileSystem = fileSystem;
-            _log = log;
             _pattern = pattern;
-            _filter = filter;
         }
 
         public IEnumerator<IEntity> GetEnumerator()
         {
-            var filter = CreateFilter();
             foreach (var file in EnumerateFiles())
             {
                 IEntity entity = null;
@@ -90,10 +76,8 @@ namespace Viewer.Data
                 {
                     continue;
                 }
-                if (filter(entity))
-                {
-                    yield return entity;
-                }
+
+                yield return entity;
             }
         }
 
@@ -104,20 +88,7 @@ namespace Viewer.Data
 
         public IQuery Select(string newPattern)
         {
-            return new Query(_entities, _fileSystem, _log, newPattern, _filter);
-        }
-
-        public IQuery Where(Func<IEntity, bool> predicate)
-        {
-            return new Query(_entities, _fileSystem, _log, _pattern, _filter.Add(predicate));
-        }
-        
-        private Func<IEntity, bool> CreateFilter()
-        {
-            return entity =>
-            {
-                return _filter.All(condition => condition(entity));
-            };
+            return new Query(_entities, _fileSystem, newPattern);
         }
 
         private IEnumerable<string> EnumerateFiles()
@@ -142,19 +113,17 @@ namespace Viewer.Data
     {
         private readonly IEntityManager _entities;
         private readonly IFileSystem _fileSystem;
-        private readonly ILogger _log;
 
         [ImportingConstructor]
-        public QueryFactory(IEntityManager entities, IFileSystem fileSystem, ILogger log)
+        public QueryFactory(IEntityManager entities, IFileSystem fileSystem)
         {
             _entities = entities;
             _fileSystem = fileSystem;
-            _log = log;
         }
 
         public IQuery CreateQuery()
         {
-            return new Query(_entities, _fileSystem, _log);
+            return new Query(_entities, _fileSystem);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Viewer.IO
     /// <summary>
     /// Find files and directories based on a directory path pattern.
     /// The pattern can contain special characters *, ? and **
-    /// * matches any sequence of character except a directory separator
+    /// * matches any sequence of characters except a directory separator
     /// ? matches any character except a directory separator
     /// ** matches any sequence of characters (even a directory separator)
     /// ** must be delimited with a directory separator from both sides or it has to be at the start or at the end

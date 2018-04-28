@@ -7,8 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Data.Formats;
 using Viewer.Data.Storage;
 using Viewer.IO;
+using Viewer.UI.Log;
 
 namespace Viewer.Data
 {
@@ -52,17 +54,20 @@ namespace Viewer.Data
         // dependencies
         private readonly IEntityManager _entities;
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger _log;
 
-        public Query(IEntityManager entities, IFileSystem fileSystem)
+        public Query(IEntityManager entities, IFileSystem fileSystem, ILogger log)
         {
             _entities = entities;
             _fileSystem = fileSystem;
+            _log = log;
         }
 
-        private Query(IEntityManager entities, IFileSystem fileSystem, string pattern, ImmutableList<Func<IEntity, bool>> filter)
+        private Query(IEntityManager entities, IFileSystem fileSystem, ILogger log, string pattern, ImmutableList<Func<IEntity, bool>> filter)
         {
             _entities = entities;
             _fileSystem = fileSystem;
+            _log = log;
             _pattern = pattern;
             _filter = filter;
         }
@@ -72,7 +77,25 @@ namespace Viewer.Data
             var filter = CreateFilter();
             foreach (var file in EnumerateFiles())
             {
-                var entity = _entities.GetEntity(file);
+                IEntity entity = null;
+                try
+                {
+                    entity = _entities.GetEntity(file);
+                }
+                catch (InvalidDataFormatException e)
+                {
+                    _log.Add(new LogEntry
+                    {
+                        Group = "Query",
+                        Message = $"Failed to load {file}: {e.Message}",
+                        Type = LogType.Error
+                    });
+                }
+
+                if (entity == null)
+                {
+                    continue;
+                }
                 if (filter(entity))
                 {
                     yield return entity;
@@ -87,12 +110,12 @@ namespace Viewer.Data
 
         public IQuery Select(string newPattern)
         {
-            return new Query(_entities, _fileSystem, newPattern, _filter);
+            return new Query(_entities, _fileSystem, _log, newPattern, _filter);
         }
 
         public IQuery Where(Func<IEntity, bool> predicate)
         {
-            return new Query(_entities, _fileSystem, _pattern, _filter.Add(predicate));
+            return new Query(_entities, _fileSystem, _log, _pattern, _filter.Add(predicate));
         }
         
         private Func<IEntity, bool> CreateFilter()
@@ -107,18 +130,16 @@ namespace Viewer.Data
         {
             if (_pattern == null)
             {
-                yield break;
+                return Enumerable.Empty<string>();
             }
 
             var finder = new FileFinder(_fileSystem, _pattern);
-            foreach (var path in finder.GetFiles())
-            {
-                var extension = Path.GetExtension(path).ToLowerInvariant();
-                if (extension == ".jpeg" || extension == ".jpg")
-                {
-                    yield return path;
-                }
-            }
+            var files = 
+                from path in finder.GetFiles()
+                let extension = Path.GetExtension(path).ToLowerInvariant()
+                where extension == ".jpeg" || extension == ".jpg"
+                select path;
+            return files;
         }
     }
 
@@ -127,17 +148,19 @@ namespace Viewer.Data
     {
         private readonly IEntityManager _entities;
         private readonly IFileSystem _fileSystem;
+        private readonly ILogger _log;
 
         [ImportingConstructor]
-        public QueryFactory(IEntityManager entities, IFileSystem fileSystem)
+        public QueryFactory(IEntityManager entities, IFileSystem fileSystem, ILogger log)
         {
             _entities = entities;
             _fileSystem = fileSystem;
+            _log = log;
         }
 
         public IQuery CreateQuery()
         {
-            return new Query(_entities, _fileSystem);
+            return new Query(_entities, _fileSystem, _log);
         }
     }
 }

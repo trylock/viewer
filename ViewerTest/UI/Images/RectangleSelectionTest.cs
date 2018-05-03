@@ -15,7 +15,7 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void GetBounds_InactiveSelection()
         {
-            var selection = new RectangleSelection();
+            var selection = new RectangleSelection<int>(EqualityComparer<int>.Default);
             Assert.IsFalse(selection.IsActive);
             Assert.AreEqual(Rectangle.Empty, selection.GetBounds(new Point(5, 6)));
         }
@@ -23,17 +23,31 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public void Selection_Bounds()
         {
-            var selection = new RectangleSelection();
+            var selection = new RectangleSelection<int>(EqualityComparer<int>.Default);
             Assert.IsFalse(selection.IsActive);
 
-            selection.StartSelection(new Point(1, 2));
+            selection.Begin(new Point(1, 2), SelectionStrategy.Replace);
             Assert.IsTrue(selection.IsActive);
             Assert.AreEqual(selection.StartPoint, new Point(1, 2));
             Assert.AreEqual(new Rectangle(1, 2, 2, 3), selection.GetBounds(new Point(3, 5)));
             Assert.AreEqual(new Rectangle(0, 0, 1, 2), selection.GetBounds(new Point(0, 0)));
-            selection.EndSelection();
+            selection.End();
 
             Assert.IsFalse(selection.IsActive);
+        }
+
+        [TestMethod]
+        public void Selection_ReplaceStrategy()
+        {
+            var selection = new RectangleSelection<int>(EqualityComparer<int>.Default);
+
+            selection.Begin(new Point(0, 0), SelectionStrategy.Replace);
+            var changed = selection.Set(new[] {1, 2});
+            Assert.IsTrue(changed);
+            changed = selection.Set(new[] {1, 2});
+            Assert.IsFalse(changed);
+            CollectionAssert.AreEqual(new[]{ 1, 2 }, selection.OrderBy(item => item).ToArray());
+            selection.End();
         }
     }
 }

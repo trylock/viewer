@@ -271,7 +271,7 @@ namespace Viewer.UI.Images
             graphics.FillRectangle(Brushes.White, bounds);
 
             var drawBounds = Rectangle.Inflate(bounds, -1, -1);
-            if ((item.State & ResultItemState.Selected) != 0)
+            if ((item.State & EntityViewState.Selected) != 0)
             {
                 // draw selection 
                 using (var brush = new SolidBrush(_selectedFillColor))
@@ -281,7 +281,7 @@ namespace Viewer.UI.Images
                     graphics.DrawRectangle(pen, drawBounds);
                 }
             }
-            else if ((item.State & ResultItemState.Active) != 0)
+            else if ((item.State & EntityViewState.Active) != 0)
             {
                 // draw highlight
                 using (var brush = new SolidBrush(_highlightFillColor))

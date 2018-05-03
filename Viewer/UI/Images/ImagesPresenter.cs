@@ -43,21 +43,11 @@ namespace Viewer.UI.Images
         /// (i.e. size of a thumbnail for View.ThumbnailScale == 1.0)
         /// </summary>
         private Size _minItemSize = new Size(133, 100);
-
-        /// <summary>
-        /// Indices of items in View.Items in previous selection 
-        /// </summary>
-        private readonly List<int> _previousSelection = new List<int>();
-
-        /// <summary>
-        /// Indices of items in View.Items currently in selection
-        /// </summary>
-        private readonly HashSet<int> _currentSelection = new HashSet<int>();
-
+        
         /// <summary>
         /// Current state of the rectangle selection
         /// </summary>
-        private readonly RectangleSelection _rectangleSelection = new RectangleSelection();
+        private readonly RectangleSelection<EntityView> _rectangleSelection = new RectangleSelection<EntityView>(new EntityViewPathComparer());
 
         /// <summary>
         /// Thumbnail size calculator
@@ -205,9 +195,8 @@ namespace Viewer.UI.Images
         {
             // reset state
             _thumbnailSizeCalculator.Reset();
+            _rectangleSelection.Clear();
             _selection.Clear();
-            _currentSelection.Clear();
-            _previousSelection.Clear();
             ActiveItem = -1;
             FocusedItem = -1;
 
@@ -268,80 +257,41 @@ namespace Viewer.UI.Images
         {
             var bounds = _rectangleSelection.GetBounds(endPoint);
             var newSelection = View.GetItemsIn(bounds);
-            var strategy = SelectionStrategy.Replace;
-            if (_isShift)
-            {
-                strategy = SelectionStrategy.Union;
-            }
-            else if (_isControl)
-            {
-                strategy = SelectionStrategy.SymetricDifference;
-            }
+            ChangeSelection(newSelection);
 
-            ChangeSelection(newSelection, strategy);
             View.ShowSelection(bounds);
         }
-
-        private enum SelectionStrategy
+        
+        private void ChangeSelection(IEnumerable<int> newSelection)
         {
-            /// <summary>
-            /// Previous selection will be replaced with the new selection.
-            /// </summary>
-            Replace,
-
-            /// <summary>
-            /// Compute union with the old selection.
-            /// </summary>
-            Union,
-
-            /// <summary>
-            /// Compute symetric difference with the previous selection.
-            /// </summary>
-            SymetricDifference,
-        }
-
-        private void ChangeSelection(IEnumerable<int> newSelection, SelectionStrategy strategy)
-        {
-            var oldSelection = new int[_currentSelection.Count];
-            _currentSelection.CopyTo(oldSelection, 0);
-
-            // update current selection 
-            _currentSelection.Clear();
-            _currentSelection.UnionWith(newSelection);
-            switch (strategy)
-            {
-                case SelectionStrategy.Union:
-                    _currentSelection.UnionWith(_previousSelection);
-                    break;
-                case SelectionStrategy.SymetricDifference:
-                    _currentSelection.SymmetricExceptWith(_previousSelection);
-                    break;
-            }
-
-            // if the selection did not change, don't update the view or the model
-            if (_currentSelection.SetEquals(oldSelection))
+            var selectedItems = newSelection.Select(index => View.Items[index]);
+            var changed = _rectangleSelection.Set(selectedItems);
+            if (!changed)
             {
                 return;
             }
 
             // set global selection
-            _selection.Replace(_currentSelection.Select(index => View.Items[index].Data));
-            
-            // reset state of items in previous selection
-            foreach (var item in oldSelection)
-            {
-                if (item < 0 || item >= View.Items.Count)
-                    continue;
-                View.Items[item].State = ResultItemState.None;
-            }
-            View.UpdateItems(oldSelection);
+            _selection.Replace(_rectangleSelection.Select(item => item.Data));
 
-            // set state of items in current selection
-            foreach (var item in _currentSelection)
+            UpdateSelectedItems();
+        }
+
+        private void UpdateSelectedItems()
+        {
+            foreach (var item in View.Items)
             {
-                View.Items[item].State = ResultItemState.Selected;
+                if (_rectangleSelection.Contains(item))
+                {
+                    item.State = EntityViewState.Selected;
+                }
+                else
+                {
+                    item.State = EntityViewState.None;
+                }
             }
-            View.UpdateItems(_currentSelection);
+
+            View.UpdateItems();
         }
 
         #region User input
@@ -360,17 +310,24 @@ namespace Viewer.UI.Images
             // update selection
             if (index >= 0)
             {
-                if (!_currentSelection.Contains(index))
+                if (!_rectangleSelection.Contains(View.Items[index]))
                 {
                     // make the active item the only item in selection
-                    ChangeSelection(new []{ index }, SelectionStrategy.Replace);
+                    ChangeSelection(new []{ index });
                 }
             }
             else
             {
-                _rectangleSelection.StartSelection(e.Location);
-                _previousSelection.Clear();
-                _previousSelection.AddRange(_currentSelection);
+                var strategy = SelectionStrategy.Replace;
+                if (_isShift)
+                {
+                    strategy = SelectionStrategy.Union;
+                }
+                else if (_isControl)
+                {
+                    strategy = SelectionStrategy.SymetricDifference;
+                }
+                _rectangleSelection.Begin(e.Location, strategy);
             }
         }
 
@@ -379,7 +336,7 @@ namespace Viewer.UI.Images
             if (_rectangleSelection.IsActive)
             {
                 UpdateSelection(e.Location);
-                _rectangleSelection.EndSelection();
+                _rectangleSelection.End();
                 View.HideSelection();
             }
         }
@@ -390,15 +347,15 @@ namespace Viewer.UI.Images
             var item = View.GetItemAt(e.Location);
             if (item != ActiveItem)
             {
-                if (item >= 0 && item < View.Items.Count && !_currentSelection.Contains(item))
+                if (item >= 0 && item < View.Items.Count && !_rectangleSelection.Contains(View.Items[item]))
                 {
-                    View.Items[item].State = ResultItemState.Active;
+                    View.Items[item].State = EntityViewState.Active;
                     View.UpdateItem(item);
                 }
 
-                if (ActiveItem >= 0 && ActiveItem < View.Items.Count && !_currentSelection.Contains(ActiveItem))
+                if (ActiveItem >= 0 && ActiveItem < View.Items.Count && !_rectangleSelection.Contains(View.Items[ActiveItem]))
                 {
-                    View.Items[ActiveItem].State = ResultItemState.None;
+                    View.Items[ActiveItem].State = EntityViewState.None;
                     View.UpdateItem(ActiveItem);
                 }
 
@@ -420,7 +377,7 @@ namespace Viewer.UI.Images
             else if ((e.Button & MouseButtons.Left) != 0)
             {
                 // begin a drag&drop operation
-                var dragFiles = _currentSelection.Select(elem => View.Items[elem].FullPath).ToArray();
+                var dragFiles = _rectangleSelection.Select(elem => elem.FullPath).ToArray();
                 var data = new DataObject(DataFormats.FileDrop, dragFiles);
                 View.BeginDragDrop(data, DragDropEffects.Copy);
             }
@@ -433,7 +390,7 @@ namespace Viewer.UI.Images
 
             if (e.Control && e.KeyCode == Keys.A)
             {
-                ChangeSelection(Enumerable.Range(0, View.Items.Count), SelectionStrategy.Replace);
+                ChangeSelection(Enumerable.Range(0, View.Items.Count));
             }
             else if (e.KeyCode == Keys.Escape)
             {
@@ -513,7 +470,7 @@ namespace Viewer.UI.Images
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
-            _selection.Replace(_currentSelection.Select(index => View.Items[index].Data));
+            _selection.Replace(_rectangleSelection.Select(item => item.Data));
         }
 
         private IEnumerable<string> GetPathsInSelection()
@@ -573,7 +530,7 @@ namespace Viewer.UI.Images
             View.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
 
             // clear selection
-            ChangeSelection(Enumerable.Empty<int>(), SelectionStrategy.Replace);
+            ChangeSelection(Enumerable.Empty<int>());
             
             // reset active and focused items if necessary
             if (ActiveItem >= View.Items.Count)

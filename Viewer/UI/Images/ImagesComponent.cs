@@ -15,14 +15,16 @@ namespace Viewer.UI.Images
     public class ImagesComponent : IComponent
     {
         private readonly IApplicationState _state;
+        private readonly IQueryFactory _queryFactory;
         private readonly ExportFactory<ImagesPresenter> _imagesFactory;
 
         private ExportLifetimeContext<ImagesPresenter> _images;
 
         [ImportingConstructor]
-        public ImagesComponent(IApplicationState state, ExportFactory<ImagesPresenter> images)
+        public ImagesComponent(IApplicationState state, IQueryFactory queryFactory, ExportFactory<ImagesPresenter> images)
         {
             _imagesFactory = images;
+            _queryFactory = queryFactory;
             _state = state;
             _state.QueryExecuted += (sender, e) => ShowImages(e.Query);
         }

@@ -79,8 +79,8 @@ namespace ViewerTest.UI.Images
             _viewMock.Raise(mock => mock.HandleMouseMove += null, new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
             _viewMock.Raise(mock => mock.HandleMouseUp += null, new MouseEventArgs(MouseButtons.Left, 0, 4, 2, 0));
 
-            // presenter updated items 5 and 6
-            _viewMock.Verify(mock => mock.UpdateItems(new int[]{ 5, 6 }));
+            // presenter updated view
+            _viewMock.Verify(mock => mock.UpdateItems());
             
             // make sure we have updated just the selection items
             var index = 0;
@@ -88,11 +88,11 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 5 || index == 6)
                 {
-                    Assert.AreEqual(ResultItemState.Selected, item.State);
+                    Assert.AreEqual(EntityViewState.Selected, item.State);
                 }
                 else
                 {
-                    Assert.AreEqual(ResultItemState.None, item.State);
+                    Assert.AreEqual(EntityViewState.None, item.State);
                 }
                 ++index;
             }
@@ -120,8 +120,7 @@ namespace ViewerTest.UI.Images
             _viewMock.Raise(mock => mock.HandleMouseDown += null, new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0));
             
             // presenter updated view
-            _viewMock.Verify(mock => mock.UpdateItems(new []{ 5, 6 }));
-            _viewMock.Verify(mock => mock.UpdateItems(new[] { 0 }));
+            _viewMock.Verify(mock => mock.UpdateItems());
 
             // make sure we have updated just the selection items
             var index = 0;
@@ -129,11 +128,11 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 0)
                 {
-                    Assert.AreEqual(ResultItemState.Selected, item.State);
+                    Assert.AreEqual(EntityViewState.Selected, item.State);
                 }
                 else
                 {
-                    Assert.AreEqual(ResultItemState.None, item.State);
+                    Assert.AreEqual(EntityViewState.None, item.State);
                 }
                 ++index;
             }
@@ -159,11 +158,11 @@ namespace ViewerTest.UI.Images
             {
                 if (index == 1)
                 {
-                    Assert.AreEqual(ResultItemState.Active, item.State);
+                    Assert.AreEqual(EntityViewState.Active, item.State);
                 }
                 else
                 {
-                    Assert.AreEqual(ResultItemState.None, item.State);
+                    Assert.AreEqual(EntityViewState.None, item.State);
                 }
                 ++index;
             }
@@ -176,7 +175,7 @@ namespace ViewerTest.UI.Images
             
             foreach (var item in _items)
             {
-                Assert.AreEqual(ResultItemState.Selected, item.State);
+                Assert.AreEqual(EntityViewState.Selected, item.State);
             }
         }
 

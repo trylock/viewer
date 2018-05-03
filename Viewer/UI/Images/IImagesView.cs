@@ -12,7 +12,7 @@ using Viewer.Properties;
 namespace Viewer.UI.Images
 {
     [Flags]
-    public enum ResultItemState
+    public enum EntityViewState
     {
         None = 0x0,
         Active = 0x1,
@@ -22,7 +22,7 @@ namespace Viewer.UI.Images
     public class EntityView : IDisposable
     {
         /// <summary>
-        /// Name of the file which should be shown to the user
+        /// Name of the file which is shown to the user
         /// </summary>
         public string Name => Path.GetFileNameWithoutExtension(FullPath);
 
@@ -34,7 +34,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Current state of the item
         /// </summary>
-        public ResultItemState State { get; set; } = ResultItemState.None;
+        public EntityViewState State { get; set; } = EntityViewState.None;
 
         /// <summary>
         /// Image representation of the file
@@ -60,7 +60,24 @@ namespace Viewer.UI.Images
             }
         }
     }
-    
+
+    public class EntityViewPathComparer : IEqualityComparer<EntityView>
+    {
+        public bool Equals(EntityView x, EntityView y)
+        {
+            if (x == null && y == null)
+                return true;
+            if (x == null || y == null)
+                return false;
+            return x.FullPath == y.FullPath;
+        }
+
+        public int GetHashCode(EntityView obj)
+        {
+            return obj.FullPath.GetHashCode();
+        }
+    }
+
     public class RenameEventArgs : EventArgs
     {
         /// <summary>

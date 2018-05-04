@@ -35,9 +35,8 @@ namespace ViewerTest.Data.Formats.Attributes
             var reader = new AttributeReader(new BinaryReader(input));
 
             var attr = reader.Read();
-            Assert.IsInstanceOfType(attr, typeof(IntAttribute));
             Assert.AreEqual("test", attr.Name);
-            Assert.AreEqual(0x12345678, ((IntAttribute)attr).Value);
+            Assert.AreEqual(0x12345678, ((IntValue)attr.Value).Value);
 
             Assert.IsNull(reader.Read());
         }
@@ -55,9 +54,8 @@ namespace ViewerTest.Data.Formats.Attributes
             var reader = new AttributeReader(new BinaryReader(input));
 
             var attr = reader.Read();
-            Assert.IsInstanceOfType(attr, typeof(DoubleAttribute));
             Assert.AreEqual("test", attr.Name);
-            Assert.AreEqual(0.32, ((DoubleAttribute)attr).Value);
+            Assert.AreEqual(0.32, ((RealValue)attr.Value).Value);
 
             Assert.IsNull(reader.Read());
         }
@@ -66,7 +64,7 @@ namespace ViewerTest.Data.Formats.Attributes
         public void ReadNext_SingleDateTimeAttribute()
         {
             var valueDateTime = new DateTime(2018, 2, 11, 17, 50, 0);
-            var valueString = valueDateTime.ToString(DateTimeAttribute.Format);
+            var valueString = valueDateTime.ToString(DateTimeValue.Format);
             var valueBytes = Encoding.UTF8.GetBytes(valueString);
             var headerBytes = new byte[]
             {
@@ -81,9 +79,8 @@ namespace ViewerTest.Data.Formats.Attributes
             var reader = new AttributeReader(new BinaryReader(inputMemoryStream));
 
             var attr = reader.Read();
-            Assert.IsInstanceOfType(attr, typeof(DateTimeAttribute));
             Assert.AreEqual("test", attr.Name);
-            Assert.AreEqual(valueDateTime, ((DateTimeAttribute)attr).Value);
+            Assert.AreEqual(valueDateTime, ((DateTimeValue)attr.Value).Value);
 
             Assert.IsNull(reader.Read());
         }
@@ -104,14 +101,12 @@ namespace ViewerTest.Data.Formats.Attributes
             var reader = new AttributeReader(new BinaryReader(input));
 
             var attr = reader.Read();
-            Assert.IsInstanceOfType(attr, typeof(IntAttribute));
             Assert.AreEqual("test", attr.Name);
-            Assert.AreEqual(0x12345678, ((IntAttribute)attr).Value);
+            Assert.AreEqual(0x12345678, ((IntValue)attr.Value).Value);
 
             attr = reader.Read();
-            Assert.IsInstanceOfType(attr, typeof(StringAttribute));
             Assert.AreEqual("tmp", attr.Name);
-            Assert.AreEqual("value", ((StringAttribute)attr).Value);
+            Assert.AreEqual("value", ((StringValue)attr.Value).Value);
 
             Assert.IsNull(reader.Read());
         }
@@ -128,9 +123,8 @@ namespace ViewerTest.Data.Formats.Attributes
             var reader = new AttributeReader(new BinaryReader(input));
 
             var attr = reader.Read();
-            Assert.IsInstanceOfType(attr, typeof(IntAttribute));
             Assert.AreEqual("ěščřžýáíé", attr.Name);
-            Assert.AreEqual(0x12345678, ((IntAttribute)attr).Value);
+            Assert.AreEqual(0x12345678, ((IntValue)attr.Value).Value);
 
             Assert.IsNull(reader.Read());
         }
@@ -147,9 +141,8 @@ namespace ViewerTest.Data.Formats.Attributes
             var reader = new AttributeReader(new BinaryReader(input));
 
             var attr = reader.Read();
-            Assert.IsInstanceOfType(attr, typeof(IntAttribute));
             Assert.AreEqual("𐍈", attr.Name);
-            Assert.AreEqual(0x12345678, ((IntAttribute)attr).Value);
+            Assert.AreEqual(0x12345678, ((IntValue)attr.Value).Value);
 
             Assert.IsNull(reader.Read());
         }

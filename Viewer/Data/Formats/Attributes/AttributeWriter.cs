@@ -17,7 +17,7 @@ namespace Viewer.Data.Formats.Attributes
     /// </summary>
     public class AttributeWriter : IAttributeWriter
     {
-        private class WriterVisitor : IAttributeVisitor, IDisposable
+        private class WriterVisitor : IValueVisitor, IDisposable
         {
             private BinaryWriter Writer { get; }
 
@@ -26,35 +26,34 @@ namespace Viewer.Data.Formats.Attributes
                 Writer = writer ?? throw new ArgumentNullException(nameof(writer));
             }
 
-            public void Visit(IntAttribute attr)
+            public void Write(Attribute attr)
             {
-                Writer.Write((short)AttributeType.Int);
+                Writer.Write((short)attr.Value.Type);
                 WriteString(attr.Name);
-                Writer.Write((int)attr.Value);
+                attr.Value.Accept(this);
             }
 
-            public void Visit(DoubleAttribute attr)
+            void IValueVisitor.Visit(IntValue attr)
             {
-                Writer.Write((short)AttributeType.Double);
-                WriteString(attr.Name);
-                Writer.Write(attr.Value);
+                Writer.Write((int) attr.Value);
             }
 
-            public void Visit(StringAttribute attr)
+            void IValueVisitor.Visit(RealValue attr)
             {
-                Writer.Write((short)AttributeType.String);
-                WriteString(attr.Name);
+                Writer.Write((double) attr.Value);
+            }
+
+            void IValueVisitor.Visit(StringValue attr)
+            {
                 WriteString(attr.Value);
             }
 
-            public void Visit(DateTimeAttribute attr)
+            void IValueVisitor.Visit(DateTimeValue attr)
             {
-                Writer.Write((short)AttributeType.DateTime);
-                WriteString(attr.Name);
-                WriteString(attr.Value.ToString(DateTimeAttribute.Format));
+                WriteString(attr.Value?.ToString(DateTimeValue.Format));
             }
 
-            public void Visit(ImageAttribute attr)
+            void IValueVisitor.Visit(ImageValue attr)
             {
                 throw new NotSupportedException();
             }
@@ -84,8 +83,8 @@ namespace Viewer.Data.Formats.Attributes
             {
                 return;
             }
-
-            attr.Accept(_writer);
+            
+            _writer.Write(attr);
         }
         
         public void Dispose()

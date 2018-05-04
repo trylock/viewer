@@ -11,19 +11,19 @@ namespace Viewer.Data.Formats
 {
     public class FileAttributeReader : IAttributeReader
     {
-        private Attribute[] _attributes;
+        private readonly Attribute[] _attributes;
         private int _index;
 
         public FileAttributeReader(FileInfo fileInfo)
         {
             _attributes = new Attribute[]
             {
-                new StringAttribute("FileName", fileInfo.Name, AttributeFlags.ReadOnly),
-                new IntAttribute("FileSize", (int)fileInfo.Length, AttributeFlags.ReadOnly),
-                new StringAttribute("Directory", fileInfo.Directory.Name, AttributeFlags.ReadOnly),
-                new DateTimeAttribute("LastAccessTime", fileInfo.LastAccessTime, AttributeFlags.ReadOnly),
-                new DateTimeAttribute("LastWriteTime", fileInfo.LastWriteTime, AttributeFlags.ReadOnly),
-                new DateTimeAttribute("CreationTime", fileInfo.CreationTime, AttributeFlags.ReadOnly),
+                new Attribute("FileName", new StringValue(fileInfo.Name), AttributeFlags.ReadOnly),
+                new Attribute("FileSize", new IntValue((int)fileInfo.Length), AttributeFlags.ReadOnly),
+                new Attribute("Directory", new StringValue(fileInfo.Directory.Name), AttributeFlags.ReadOnly),
+                new Attribute("LastAccessTime", new DateTimeValue(fileInfo.LastAccessTime), AttributeFlags.ReadOnly),
+                new Attribute("LastWriteTime", new DateTimeValue(fileInfo.LastWriteTime), AttributeFlags.ReadOnly), 
+                new Attribute("CreationTime", new DateTimeValue(fileInfo.CreationTime), AttributeFlags.ReadOnly), 
             };
         }
 

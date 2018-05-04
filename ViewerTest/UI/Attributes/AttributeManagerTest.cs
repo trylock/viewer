@@ -10,6 +10,7 @@ using Viewer.Data.Storage;
 using Viewer.UI;
 using Viewer.UI.Attributes;
 using ViewerTest.Data;
+using Attribute = Viewer.Data.Attribute;
 
 namespace ViewerTest.UI.Attributes
 {
@@ -35,7 +36,7 @@ namespace ViewerTest.UI.Attributes
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(new List<IEntity>().GetEnumerator());
 
-            _attributes.SetAttribute("test", new StringAttribute("test", "value"));
+            _attributes.SetAttribute("test", new Attribute("test", new StringValue("value")));
 
             _entityManager.Verify(mock => mock.SetEntity(It.IsAny<IEntity>()), Times.Never);
         }
@@ -43,8 +44,8 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void SetAttribute_OneEntity()
         {
-            var oldAttr = new IntAttribute("oldAttr", 42);
-            var newAttr = new StringAttribute("attr", "value");
+            var oldAttr = new Attribute("oldAttr", new IntValue(42));
+            var newAttr = new Attribute("attr", new StringValue("value"));
 
             var entity = new Entity("test").SetAttribute(oldAttr);
             var selectedEntities = new List<IEntity>
@@ -85,7 +86,7 @@ namespace ViewerTest.UI.Attributes
                 .Setup(mock => mock.Count)
                 .Returns(selectedEntities.Count);
 
-            var newAttr = new StringAttribute("attr", "value");
+            var newAttr = new Attribute("attr", new StringValue("value"));
             _attributes.SetAttribute("attr", newAttr);
 
             // we have added the attribute to both entities
@@ -125,8 +126,8 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void RemoveAttribute_MultipleEntitiesWithDifferentValue()
         {
-            var entity1 = new Entity("test1").SetAttribute(new StringAttribute("attr", "value"));
-            var entity2 = new Entity("test2").SetAttribute(new IntAttribute("attr", 42));
+            var entity1 = new Entity("test1").SetAttribute(new Attribute("attr", new StringValue("value")));
+            var entity2 = new Entity("test2").SetAttribute(new Attribute("attr", new IntValue(42)));
             
             var selectedEntities = new List<IEntity>
             {
@@ -162,7 +163,7 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void GetSelectedEntities_MissingAttributeOnAnEntity()
         {
-            var entity1 = new Entity("test1").SetAttribute(new IntAttribute("attr", 42));
+            var entity1 = new Entity("test1").SetAttribute(new Attribute("attr", new IntValue(42)));
             var entity2 = new Entity("test2");
 
             var selectedEntities = new List<IEntity>

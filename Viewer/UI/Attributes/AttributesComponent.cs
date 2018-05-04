@@ -60,7 +60,7 @@ namespace Viewer.UI.Attributes
             if (_exif == null)
             {
                 _exif = _attributesFactory.CreateExport();
-                _exif.Value.AttributePredicate = attr => attr.Data.GetType() != typeof(ImageAttribute) &&
+                _exif.Value.AttributePredicate = attr => attr.Data.Value.Type != TypeId.Image &&
                                                         (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
                 _exif.Value.IsEditingEnabled = false;
                 _exif.Value.View.CloseView += (sender, e) =>

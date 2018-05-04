@@ -50,7 +50,7 @@ namespace ViewerTest.Data.Formats.Exif
             metadata.Setup(mock => mock.GetDirectoryOfType<ExifDirectoryBase>()).Returns(dir);
 
             var parser = new ThumbnaiExifAttributeParser<ExifDirectoryBase>("thumbnail");
-            var thumbnail = parser.Parse(metadata.Object) as ImageAttribute;
+            var thumbnail = parser.Parse(metadata.Object).Value as ImageValue;
             CollectionAssert.AreEqual(new byte[]{ 0x12, 0x23 }, thumbnail.Value);
         }
     }

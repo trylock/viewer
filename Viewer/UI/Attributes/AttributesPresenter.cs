@@ -87,7 +87,7 @@ namespace Viewer.UI.Attributes
         {
             return new AttributeGroup
             {
-                Data = new StringAttribute("", ""),
+                Data = new Attribute("", new StringValue("")),
                 IsMixed = false,
                 IsGlobal = true
             };

@@ -78,8 +78,8 @@ namespace Viewer.Images
         /// <returns>Orientation of the entity or 0</returns>
         private static int GetOrientation(IEntity entity)
         {
-            var orientationAttr = entity.GetAttribute(OrientationAttrName) as IntAttribute;
-            return orientationAttr == null ? 0 : orientationAttr.Value;
+            var orientationAttr = entity.GetAttribute(OrientationAttrName).Value as IntValue;
+            return orientationAttr?.Value ?? 0;
         }
 
         /// <summary>
@@ -114,17 +114,19 @@ namespace Viewer.Images
 
         public Size GetImageSize(IEntity entity)
         {
-            var widthAttr = entity.GetAttribute(WidthAttrName) as IntAttribute;
-            var heightAttr = entity.GetAttribute(HeightAttrName) as IntAttribute;
+            var widthAttr = entity.GetAttribute(WidthAttrName);
+            var heightAttr = entity.GetAttribute(HeightAttrName);
             if (widthAttr == null || heightAttr == null)
             {
                 return new Size(1, 1);
             }
 
+            var width = (widthAttr.Value as IntValue)?.Value ?? 0;
+            var height = (heightAttr.Value as IntValue)?.Value ?? 0;
             var orientation = GetOrientation(entity);
             return orientation < 5 ? 
-                new Size(widthAttr.Value, heightAttr.Value) : 
-                new Size(heightAttr.Value, widthAttr.Value);
+                new Size(width, height) : 
+                new Size(height, width);
         }
 
         public Image LoadImage(IEntity entity)
@@ -151,11 +153,12 @@ namespace Viewer.Images
         /// <returns></returns>
         private Image LoadOriginalThumbnail(IEntity entity)
         {
-            var attr = entity.GetAttribute(ThumbnailAttrName) as ImageAttribute;
+            var attr = entity.GetAttribute(ThumbnailAttrName)?.Value as ImageValue;
             if (attr == null)
             {
                 return LoadImage(entity);
             }
+
 
             var image = Image.FromStream(new MemoryStream(attr.Value));
             FixImageOrientation(entity, image);

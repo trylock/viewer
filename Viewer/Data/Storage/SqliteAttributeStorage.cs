@@ -63,22 +63,22 @@ namespace Viewer.Data.Storage
                 switch ((AttributeType)type)
                 {
                     case AttributeType.Int:
-                        attrs = attrs.SetAttribute(new IntAttribute(name, reader.GetInt32(3), (AttributeFlags)source));
+                        attrs = attrs.SetAttribute(new Attribute(name, new IntValue(reader.GetInt32(3)), (AttributeFlags)source));
                         break;
                     case AttributeType.Double:
-                        attrs = attrs.SetAttribute(new DoubleAttribute(name, reader.GetDouble(3), (AttributeFlags)source));
+                        attrs = attrs.SetAttribute(new Attribute(name, new RealValue(reader.GetDouble(3)), (AttributeFlags)source));
                         break;
                     case AttributeType.String:
-                        attrs = attrs.SetAttribute(new StringAttribute(name, reader.GetString(3), (AttributeFlags)source));
+                        attrs = attrs.SetAttribute(new Attribute(name, new StringValue(reader.GetString(3)), (AttributeFlags)source));
                         break;
                     case AttributeType.DateTime:
-                        attrs = attrs.SetAttribute(new DateTimeAttribute(name, reader.GetDateTime(3), (AttributeFlags)source));
+                        attrs = attrs.SetAttribute(new Attribute(name, new DateTimeValue(reader.GetDateTime(3)), (AttributeFlags)source));
                         break;
                     case AttributeType.Image:
                         var buffer = new byte[valueSize];
                         var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
                         Debug.Assert(buffer.Length == length);
-                        attrs = attrs.SetAttribute(new ImageAttribute(name, buffer, (AttributeFlags)source));
+                        attrs = attrs.SetAttribute(new Attribute(name, new ImageValue(buffer), (AttributeFlags)source));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -160,9 +160,9 @@ namespace Viewer.Data.Storage
         /// This visitor prepares given sql command for inserting a new attribute.
         /// It adds the attribute name and value parameters for each possible value type.
         /// </summary>
-        private class InsertVisitor : IAttributeVisitor
+        private class InsertVisitor : IValueVisitor
         {
-            private SQLiteCommand _command;
+            private readonly SQLiteCommand _command;
 
             public const string TypeName = ":type";
             public const string ValueName = ":value";
@@ -172,33 +172,34 @@ namespace Viewer.Data.Storage
                 _command = cmd;
             }
 
-            public void Visit(IntAttribute attr)
+            public void Prepare(Attribute attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(TypeName, (int)AttributeType.Int));
+                _command.Parameters.Add(new SQLiteParameter(TypeName, (int)attr.Value.Type));
+                attr.Value.Accept(this);
+            }
+
+            void IValueVisitor.Visit(IntValue attr)
+            {
                 _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
             }
 
-            public void Visit(DoubleAttribute attr)
+            void IValueVisitor.Visit(RealValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(TypeName, (int)AttributeType.Double));
                 _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
             }
 
-            public void Visit(StringAttribute attr)
+            void IValueVisitor.Visit(StringValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(TypeName, (int)AttributeType.String));
                 _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
             }
 
-            public void Visit(DateTimeAttribute attr)
+            void IValueVisitor.Visit(DateTimeValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(TypeName, (int)AttributeType.DateTime));
-                _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value.ToString(DateTimeAttribute.Format)));
+                _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value?.ToString(DateTimeValue.Format)));
             }
 
-            public void Visit(ImageAttribute attr)
+            void IValueVisitor.Visit(ImageValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(TypeName, (int)AttributeType.Image));
                 _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
             }
         }
@@ -212,7 +213,7 @@ namespace Viewer.Data.Storage
                 command.Parameters.Add(new SQLiteParameter(":source", (int)attr.Flags));
                 command.Parameters.Add(new SQLiteParameter(":owner", fileId));
                 var visitor = new InsertVisitor(command);
-                attr.Accept(visitor);
+                visitor.Prepare(attr);
                 command.ExecuteNonQuery();
             }
         }

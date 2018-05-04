@@ -7,24 +7,6 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    public interface IAttributeVisitor
-    {
-        void Visit(IntAttribute attr);
-        void Visit(DoubleAttribute attr);
-        void Visit(StringAttribute attr);
-        void Visit(DateTimeAttribute attr);
-        void Visit(ImageAttribute attr);
-    }
-
-    public interface IAttributeVisitor<out T>
-    {
-        T Visit(IntAttribute attr);
-        T Visit(DoubleAttribute attr);
-        T Visit(StringAttribute attr);
-        T Visit(DateTimeAttribute attr);
-        T Visit(ImageAttribute attr);
-    }
-
     [Flags]
     public enum AttributeFlags
     {
@@ -36,7 +18,7 @@ namespace Viewer.Data
         ReadOnly = 0x1,
     }
 
-    public abstract class Attribute : IEquatable<Attribute>
+    public class Attribute : IEquatable<Attribute>
     {
         /// <summary>
         /// Name of the attribute
@@ -48,29 +30,16 @@ namespace Viewer.Data
         /// </summary>
         public AttributeFlags Flags { get; }
 
-        protected Attribute(string name, AttributeFlags flags)
+        /// <summary>
+        /// Value of the attribute
+        /// </summary>
+        public BaseValue Value { get; }
+
+        public Attribute(string name, BaseValue value, AttributeFlags flags = AttributeFlags.None)
         {
             Name = name;
+            Value = value;
             Flags = flags;
-        }
-        
-        /// <summary>
-        /// Accept visitor without a return value
-        /// </summary>
-        /// <param name="visitor">Visitor</param>
-        public abstract void Accept(IAttributeVisitor visitor);
-
-        /// <summary>
-        /// Accept visitor with a return value
-        /// </summary>
-        /// <typeparam name="T">Return value of the visitor</typeparam>
-        /// <param name="visitor">visitor</param>
-        /// <returns>Value returned by the visitor</returns>
-        public abstract T Accept<T>(IAttributeVisitor<T> visitor);
-        
-        protected string FormatAttribute<T>(T value, string typeName)
-        {
-            return typeName + "(\"" + Name + "\", " + value + ")";
         }
 
         /// <summary>
@@ -78,7 +47,7 @@ namespace Viewer.Data
         /// </summary>
         /// <param name="other">Other attribute</param>
         /// <returns>true iff the attributes have the same type and represent the same value</returns>
-        public virtual bool Equals(Attribute other)
+        public bool Equals(Attribute other)
         {
             if (ReferenceEquals(null, other))
                 return false;
@@ -88,7 +57,7 @@ namespace Viewer.Data
                 return false;
             if (Name != other.Name || Flags != other.Flags)
                 return false;
-            return true;
+            return Value.Equals(other.Value);
         }
 
         public override bool Equals(object obj)
@@ -104,211 +73,16 @@ namespace Viewer.Data
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (int) Flags;
-            }
-        }
-    }
-
-    public class IntAttribute : Attribute
-    {
-        /// <summary>
-        /// Name of this type
-        /// </summary>
-        public const string TypeName = "Int32";
-
-        /// <summary>
-        /// Value of the attribute
-        /// </summary>
-        public int Value { get; }
-
-        public IntAttribute(string name, int value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
-        {
-            Value = value;
-        }
-
-        public override void Accept(IAttributeVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        public override T Accept<T>(IAttributeVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
-
-        public override bool Equals(Attribute other)
-        {
-            if (!base.Equals(other))
-                return false;
-            return Value == ((IntAttribute) other).Value;
+            var hashCode = -1038278788;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + Flags.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<BaseValue>.Default.GetHashCode(Value);
+            return hashCode;
         }
 
         public override string ToString()
         {
-            return FormatAttribute(Value, TypeName);
-        }
-    }
-
-    public sealed class DoubleAttribute : Attribute
-    {
-        /// <summary>
-        /// Name of this type
-        /// </summary>
-        public const string TypeName = "Double";
-
-        /// <summary>
-        /// Value of the attribute
-        /// </summary>
-        public double Value { get; }
-
-        public DoubleAttribute(string name, double value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
-        {
-            Value = value;
-        }
-
-        public override void Accept(IAttributeVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        public override T Accept<T>(IAttributeVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
-
-        public override bool Equals(Attribute other)
-        {
-            if (!base.Equals(other))
-                return false;
-            return Value == ((DoubleAttribute)other).Value;
-        }
-
-        public override string ToString()
-        {
-            return FormatAttribute(Value, TypeName);
-        }
-    }
-
-    public sealed class StringAttribute : Attribute
-    {
-        /// <summary>
-        /// Name of this type
-        /// </summary>
-        public const string TypeName = "String";
-
-        /// <summary>
-        /// Value of the attribute
-        /// </summary>
-        public string Value { get; }
-
-        public StringAttribute(string name, string value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
-        {
-            Value = value;
-        }
-        
-        public override void Accept(IAttributeVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        public override T Accept<T>(IAttributeVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
-
-        public override bool Equals(Attribute other)
-        {
-            if (!base.Equals(other))
-                return false;
-            return Value == ((StringAttribute)other).Value;
-        }
-
-        public override string ToString()
-        {
-            return FormatAttribute(Value, TypeName);
-        }
-    }
-
-    public sealed class DateTimeAttribute : Attribute
-    {
-        /// <summary>
-        /// Name of this type
-        /// </summary>
-        public const string TypeName = "DateTime";
-
-        /// <summary>
-        /// Format of a DateTime value in string
-        /// </summary>
-        public const string Format = "yyyy-MM-ddTHH:mm:ss.szzz";
-
-        /// <summary>
-        /// Value of the attribute
-        /// </summary>
-        public DateTime Value { get; }
-
-        public DateTimeAttribute(string name, DateTime value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
-        {
-            Value = value;
-        }
-
-        public override void Accept(IAttributeVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        public override T Accept<T>(IAttributeVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
-
-        public override bool Equals(Attribute other)
-        {
-            if (!base.Equals(other))
-                return false;
-            return Value == ((DateTimeAttribute)other).Value;
-        }
-
-        public override string ToString()
-        {
-            return FormatAttribute(Value.ToString(Format), TypeName);
-        }
-    }
-
-    public sealed class ImageAttribute : Attribute
-    {
-        /// <summary>
-        /// Name of this type
-        /// </summary>
-        public const string TypeName = "Image";
-
-        public byte[] Value { get; }
-
-        public ImageAttribute(string name, byte[] value, AttributeFlags flags = AttributeFlags.None) : base(name, flags)
-        {
-            Value = value;
-        }
-        
-        public override void Accept(IAttributeVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        public override T Accept<T>(IAttributeVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
-
-        public override bool Equals(Attribute other)
-        {
-            // image value is unique to the attribute
-            return ReferenceEquals(this, other);
-        }
-        
-        public override string ToString()
-        {
-            return FormatAttribute(Value.Length, TypeName);
+            return "(\"" + Name + "\", " + Value + ")";
         }
     }
 }

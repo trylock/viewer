@@ -65,12 +65,12 @@ namespace ViewerTest.UI.Attributes
             // add a new attribute
             var oldValue = new AttributeGroup
             {
-                Data = new StringAttribute("", ""),
+                Data = new Viewer.Data.Attribute("", new StringValue("")),
                 IsMixed = false
             };
             var newValue = new AttributeGroup
             {
-                Data = new StringAttribute("", "value")
+                Data = new Viewer.Data.Attribute("", new StringValue("value"))
             };
 
             _attributeManager.Setup(mock => mock.GroupAttributesInSelection()).Returns(new AttributeGroup[] { });
@@ -100,12 +100,12 @@ namespace ViewerTest.UI.Attributes
             // add a new attribute
             var oldValue = new AttributeGroup
             {
-                Data = new StringAttribute("",""),
+                Data = new Viewer.Data.Attribute("", new StringValue("")),
                 IsMixed = false
             };
             var newValue = new AttributeGroup
             {
-                Data = new StringAttribute("test", "value")
+                Data = new Viewer.Data.Attribute("test", new StringValue("value"))
             };
             _viewAttributes.Add(oldValue);
             _attributeManager.Setup(mock => mock.GroupAttributesInSelection()).Returns(new AttributeGroup[] {});
@@ -132,17 +132,17 @@ namespace ViewerTest.UI.Attributes
         {
             var attr1 = new AttributeGroup
             {
-                Data = new StringAttribute("test", "value"),
+                Data = new Viewer.Data.Attribute("test", new StringValue("value")),
                 IsMixed = false
             };
             var attr2 = new AttributeGroup
             {
-                Data = new IntAttribute("test2", 42),
+                Data = new Viewer.Data.Attribute("test2", new IntValue(42)),
                 IsMixed = false
             };
             var attr3 = new AttributeGroup
             {
-                Data = new StringAttribute("", ""),
+                Data = new Viewer.Data.Attribute("", new StringValue("")),
                 IsMixed = false
             };
             _viewAttributes.Add(attr1);
@@ -157,7 +157,7 @@ namespace ViewerTest.UI.Attributes
                 OldValue = _viewAttributes[2],
                 NewValue = new AttributeGroup
                 {
-                    Data = new StringAttribute("test2", "value2"),
+                    Data = new Viewer.Data.Attribute("test2", new StringValue("value2")),
                     IsMixed = false
                 }
             });

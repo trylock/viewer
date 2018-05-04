@@ -112,7 +112,7 @@ namespace Viewer.UI.Attributes
 
         #endregion
 
-        private class RowAttributeVisitor : IAttributeVisitor
+        private class RowAttributeVisitor : IValueVisitor
         {
             private DataGridViewRow _row;
 
@@ -121,7 +121,7 @@ namespace Viewer.UI.Attributes
                 _row = row;
             }
 
-            public void Visit(IntAttribute attr)
+            public void Visit(IntValue attr)
             {
                 _row.Cells.Add(new DataGridViewTextBoxCell
                 {
@@ -131,7 +131,7 @@ namespace Viewer.UI.Attributes
                 AddTypeColumn(AttributeType.Int);
             }
 
-            public void Visit(DoubleAttribute attr)
+            public void Visit(RealValue attr)
             {
                 _row.Cells.Add(new DataGridViewTextBoxCell
                 {
@@ -141,7 +141,7 @@ namespace Viewer.UI.Attributes
                 AddTypeColumn(AttributeType.Double);
             }
 
-            public void Visit(StringAttribute attr)
+            public void Visit(StringValue attr)
             {
                 _row.Cells.Add(new DataGridViewTextBoxCell
                 {
@@ -151,13 +151,13 @@ namespace Viewer.UI.Attributes
                 AddTypeColumn(AttributeType.String);
             }
 
-            public void Visit(DateTimeAttribute attr)
+            public void Visit(DateTimeValue attr)
             {
                 _row.Cells.Add(new DateTimeCell { Value = attr.Value });
                 AddTypeColumn(AttributeType.DateTime);
             }
 
-            public void Visit(ImageAttribute attr)
+            public void Visit(ImageValue attr)
             {
             }
 
@@ -190,7 +190,7 @@ namespace Viewer.UI.Attributes
             }
             else
             {
-                attr.Data.Accept(new RowAttributeVisitor(row));
+                attr.Data.Value.Accept(new RowAttributeVisitor(row));
 
                 if (!attr.IsGlobal)
                 {
@@ -217,13 +217,13 @@ namespace Viewer.UI.Attributes
             switch (type)
             {
                 case AttributeType.Int:
-                    return new IntAttribute(name, value as int? ?? 0);
+                    return new Attribute(name, new IntValue(value as int?));
                 case AttributeType.Double:
-                    return new DoubleAttribute(name, value as double? ?? 0.0);
+                    return new Attribute(name, new RealValue(value as double?));
                 case AttributeType.String:
-                    return new StringAttribute(name, value as string ?? "");
+                    return new Attribute(name, new StringValue(value as string));
                 case AttributeType.DateTime:
-                    return new DateTimeAttribute(name, value as DateTime? ?? DateTime.Now);
+                    return new Attribute(name, new DateTimeValue(value as DateTime?));
                 case null:
                     return null;
                 default:

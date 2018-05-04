@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.Data.Formats.Attributes;
+using Attribute = Viewer.Data.Attribute;
 
 namespace ViewerTest.Data.Formats.Attributes
 {
@@ -20,7 +21,7 @@ namespace ViewerTest.Data.Formats.Attributes
         {
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new IntAttribute("test", 0x12345678));
+            attrWriter.Write(new Attribute("test", new IntValue(0x12345678)));
 
             var actualData = output.ToArray();
             CollectionAssert.AreEqual(new byte[]
@@ -41,7 +42,7 @@ namespace ViewerTest.Data.Formats.Attributes
 
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new DoubleAttribute("test", value));
+            attrWriter.Write(new Attribute("test", new RealValue(value)));
 
             var bytes = BitConverter.GetBytes(value);
             var actualData = output.ToArray();
@@ -61,7 +62,7 @@ namespace ViewerTest.Data.Formats.Attributes
         {
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new StringAttribute("test", "value"));
+            attrWriter.Write(new Attribute("test", new StringValue("value")));
 
             var actualData = output.ToArray();
             CollectionAssert.AreEqual(new byte[]
@@ -82,7 +83,7 @@ namespace ViewerTest.Data.Formats.Attributes
 
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new DateTimeAttribute("test", value));
+            attrWriter.Write(new Attribute("test", new DateTimeValue(value)));
 
             var actualData = output.ToArray();
             var expectedValue = new List<byte>
@@ -92,7 +93,7 @@ namespace ViewerTest.Data.Formats.Attributes
                 // name
                 (byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00,
             };
-            var dateTimeValue = value.ToString(DateTimeAttribute.Format);
+            var dateTimeValue = value.ToString(DateTimeValue.Format);
             foreach (var val in dateTimeValue)
             {
                 expectedValue.Add((byte)val);

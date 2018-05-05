@@ -21,11 +21,16 @@ namespace Viewer.Data
 
     public class EntityComparer : IComparer<IEntity>
     {
-        private readonly List<ValueOrder> _order = new List<ValueOrder>();
+        private readonly List<ValueOrder> _order;
 
-        public void Add(ValueOrder order)
+        public EntityComparer()
         {
-            _order.Add(order);
+            _order = new List<ValueOrder>();
+        }
+
+        public EntityComparer(List<ValueOrder> order)
+        {
+            _order = order;
         }
 
         public int Compare(IEntity x, IEntity y)

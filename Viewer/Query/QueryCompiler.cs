@@ -32,7 +32,7 @@ namespace Viewer.Query
 
         private readonly ParameterExpression _entityParameter = Expression.Parameter(typeof(IEntity), "entity");
         private readonly Attribute _nullAttribute = new Attribute("", new IntValue(null));
-        private readonly EntityComparer _comparer = new EntityComparer();
+        private readonly List<ValueOrder> _order = new List<ValueOrder>();
 
         public IQuery Query { get; private set; }
 
@@ -113,7 +113,7 @@ namespace Viewer.Query
 
             // compose the query
             Query = Query.Where(entityPredicate);
-            Query = Query.SetComparer(_comparer);
+            Query = Query.SetComparer(new EntityComparer(_order));
             return null;
         }
 
@@ -171,8 +171,8 @@ namespace Viewer.Query
             );
             var valueGetter = valueGetterExpr.Compile();
             var direction = context.optionalDirection().GetText() == "DESC" ? -1 : 1;
-            
-            _comparer.Add(new ValueOrder
+
+            _order.Add(new ValueOrder
             {
                 Getter = valueGetter,
                 Direction = direction

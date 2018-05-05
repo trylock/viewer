@@ -21,11 +21,23 @@ namespace Viewer.Data
     public interface IQuery : IEnumerable<IEntity>
     {
         /// <summary>
+        /// Current directory path pattern
+        /// </summary>
+        string Pattern { get; }
+
+        /// <summary>
         /// Create a new query with given directory path pattern
         /// </summary>
         /// <param name="pattern">Diretory path pattern <see cref="FileFinder"/></param>
         /// <returns>A new query with given directory path pattern</returns>
         IQuery Path(string pattern);
+        
+        /// <summary>
+        /// Only include entities in the result if <paramref name="predicate"/> returns true
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        IQuery Where(Func<IEntity, bool> predicate);
     }
 
     public interface IQueryFactory
@@ -40,7 +52,8 @@ namespace Viewer.Data
     public class Query : IQuery
     {
         // query description
-        private readonly string _pattern = "";
+        public string Pattern { get; } = "";
+        private Func<IEntity, bool> _includePredicate = entity => true;
 
         // dependencies
         private readonly IEntityManager _entities;
@@ -52,11 +65,12 @@ namespace Viewer.Data
             _fileSystem = fileSystem;
         }
 
-        private Query(IEntityManager entities, IFileSystem fileSystem, string pattern)
+        private Query(IEntityManager entities, IFileSystem fileSystem, string pattern, Func<IEntity, bool> includePredicate)
         {
             _entities = entities;
             _fileSystem = fileSystem;
-            _pattern = pattern;
+            Pattern = pattern;
+            _includePredicate = includePredicate;
         }
 
         public IEnumerator<IEntity> GetEnumerator()
@@ -72,7 +86,7 @@ namespace Viewer.Data
                 {
                 }
 
-                if (entity == null)
+                if (entity == null || !_includePredicate(entity))
                 {
                     continue;
                 }
@@ -88,17 +102,22 @@ namespace Viewer.Data
 
         public IQuery Path(string newPattern)
         {
-            return new Query(_entities, _fileSystem, newPattern);
+            return new Query(_entities, _fileSystem, newPattern, _includePredicate);
+        }
+
+        public IQuery Where(Func<IEntity, bool> predicate)
+        {
+            return new Query(_entities, _fileSystem, Pattern, entity => _includePredicate(entity) && predicate(entity));
         }
 
         private IEnumerable<string> EnumerateFiles()
         {
-            if (_pattern == null)
+            if (Pattern == null)
             {
                 return Enumerable.Empty<string>();
             }
 
-            var finder = new FileFinder(_fileSystem, _pattern);
+            var finder = new FileFinder(_fileSystem, Pattern);
             var files = 
                 from path in finder.GetFiles()
                 let extension = System.IO.Path.GetExtension(path).ToLowerInvariant()

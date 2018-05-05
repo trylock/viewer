@@ -98,6 +98,7 @@
     <Compile Include="IO\PathUtilsTest.cs" />
     <Compile Include="MathUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\RuntimeTest.cs" />
     <Compile Include="Query\ValueConverterTest.cs" />
     <Compile Include="UI\Attributes\AttributeManagerTest.cs" />
     <Compile Include="UI\Attributes\AttributesPresenterTest.cs" />

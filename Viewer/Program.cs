@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Query;
 using Viewer.UI.Tasks;
 
 namespace Viewer
@@ -26,7 +28,6 @@ namespace Viewer
             );
             using (var container = new CompositionContainer(catalog))
             {
-                container.ComposeExportedValue(container);
                 var app = container.GetExportedValue<IViewerApplication>();
                 app.InitializeLayout();
                 app.Run();

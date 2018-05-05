@@ -252,13 +252,6 @@ namespace Viewer.Query
         /// <returns></returns>
         private Expression RuntimeCall(string functionName, params Expression[] arguments)
         {
-            var actualArguments = new Expression[arguments.Length + 1];
-            actualArguments[0] = Expression.Constant(functionName);
-            for (var i = 0; i < arguments.Length; ++i)
-            {
-                actualArguments[i + 1] = arguments[i];
-            }
-            
             var runtimeCall = _runtime.GetType().GetMethod("FindAndCall");
             return Expression.Call(
                 Expression.Constant(_runtime),

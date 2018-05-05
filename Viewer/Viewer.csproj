@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime.Standard, Version=4.7.1.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.Standard.4.7.1.1\lib\net35\Antlr4.Runtime.Standard.dll</HintPath>
+    </Reference>
     <Reference Include="MetadataExtractor, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MetadataExtractor.2.0.0\lib\net45\MetadataExtractor.dll</HintPath>
     </Reference>
@@ -104,6 +107,9 @@
     </Compile>
     <Compile Include="Data\Query.cs" />
     <Compile Include="Query\Function.cs" />
+    <Compile Include="Query\QueryLexer.cs" />
+    <Compile Include="Query\QueryParser.cs" />
+    <Compile Include="Query\QueryVisitor.cs" />
     <Compile Include="Query\Runtime.cs" />
     <Compile Include="Data\Value.cs" />
     <Compile Include="Query\ValueConvertor.cs" />

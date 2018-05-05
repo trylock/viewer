@@ -17,7 +17,6 @@ namespace ViewerTest.Data
     {
         private Mock<IEntityManager> _entityManager;
         private Mock<IFileSystem> _fileSystem;
-        private Mock<ILogger> _log;
         private IQuery _query;
 
         [TestInitialize]
@@ -25,7 +24,7 @@ namespace ViewerTest.Data
         {
             _entityManager = new Mock<IEntityManager>();
             _fileSystem = new Mock<IFileSystem>();
-            _query = new Query(_entityManager.Object, _fileSystem.Object);
+            _query = new Viewer.Data.Query(_entityManager.Object, _fileSystem.Object);
         }
 
         [TestMethod]

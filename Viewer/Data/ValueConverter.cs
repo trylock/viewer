@@ -4,9 +4,8 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Viewer.Data;
 
-namespace Viewer.Query
+namespace Viewer.Data
 {
     public interface IValueConverter
     {

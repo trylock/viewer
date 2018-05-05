@@ -115,7 +115,7 @@
     <Compile Include="Query\QueryVisitor.cs" />
     <Compile Include="Query\Runtime.cs" />
     <Compile Include="Data\Value.cs" />
-    <Compile Include="Query\ValueConvertor.cs" />
+    <Compile Include="Data\ValueConverter.cs" />
     <Compile Include="UI\ApplicationState.cs" />
     <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesComponent.cs" />

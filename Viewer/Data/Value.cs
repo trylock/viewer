@@ -13,7 +13,8 @@ namespace Viewer.Data
         Real,
         String,
         DateTime,
-        Image
+        Image,
+        Count
     }
 
     public interface IValueVisitor
@@ -44,6 +45,11 @@ namespace Viewer.Data
         /// Type ID of this value
         /// </summary>
         public abstract TypeId Type { get; }
+
+        /// <summary>
+        /// true iff this value is null
+        /// </summary>
+        public abstract bool IsNull { get; }
 
         public abstract bool Equals(BaseValue other);
 
@@ -81,6 +87,8 @@ namespace Viewer.Data
         public int? Value { get; }
 
         public override TypeId Type => TypeId.Integer;
+
+        public override bool IsNull => Value == null;
 
         public IntValue(int? value)
         {
@@ -122,6 +130,8 @@ namespace Viewer.Data
 
         public override TypeId Type => TypeId.Real;
 
+        public override bool IsNull => Value == null;
+
         public RealValue(double? value)
         {
             Value = value;
@@ -161,6 +171,8 @@ namespace Viewer.Data
         public string Value { get; }
 
         public override TypeId Type => TypeId.String;
+
+        public override bool IsNull => Value == null;
 
         public StringValue(string value)
         {
@@ -207,6 +219,8 @@ namespace Viewer.Data
 
         public override TypeId Type => TypeId.DateTime;
 
+        public override bool IsNull => Value == null;
+
         public DateTimeValue(DateTime? value)
         {
             Value = value;
@@ -246,6 +260,8 @@ namespace Viewer.Data
         public byte[] Value { get; }
 
         public override TypeId Type => TypeId.Image;
+
+        public override bool IsNull => Value == null;
 
         public ImageValue(byte[] value)
         {

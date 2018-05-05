@@ -104,6 +104,7 @@
     </Compile>
     <Compile Include="Data\Query.cs" />
     <Compile Include="Data\Value.cs" />
+    <Compile Include="Query\ValueConvertor.cs" />
     <Compile Include="UI\ApplicationState.cs" />
     <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesComponent.cs" />

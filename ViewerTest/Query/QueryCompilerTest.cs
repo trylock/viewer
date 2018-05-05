@@ -225,5 +225,35 @@ namespace ViewerTest.Query
                 predicate(new Entity("test"))
             )));
         }
+
+        [TestMethod]
+        public void Compile_Subquery()
+        {
+            _compiler.Compile(
+                new StringReader("SELECT (SELECT \"pattern\" WHERE test = 1 ORDER BY test DESC) WHERE test2 = 2"));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(2), new IntValue(2)))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(1)))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(2)))
+                .Returns(new IntValue(null));
+
+            _query.Verify(mock => mock.Path("pattern"));
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
+                !predicate(new Entity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None))) &&
+                predicate(new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)))
+            )));
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
+                predicate(new Entity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None))) &&
+                !predicate(new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)))
+            )));
+        }
     }
 }

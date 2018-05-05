@@ -114,10 +114,8 @@ namespace Viewer.Query
                 _entityParameter
             );
             var entityPredicate = filter.Compile();
-
-            // compose the query
             Query = Query.Where(entityPredicate);
-            Query = Query.SetComparer(new EntityComparer(_order));
+            
             return null;
         }
 
@@ -126,11 +124,17 @@ namespace Viewer.Query
             var subquery = context.query();
             if (subquery != null)
             {
-                return subquery.Accept(this);
+                // compile subquery
+                var subqueryCompiler = new QueryCompilerVisitor(_queryFactory, _runtime);
+                subquery.Accept(subqueryCompiler);
+                Query = subqueryCompiler.Query;
+                return null;
             }
             
-            var pattern = context.STRING().GetText();
-            Query = Query.Path(pattern.Substring(1, pattern.Length - 2));
+            // set path pattern
+            var pattern = context.STRING();
+            var pathPattern = pattern.GetText().Substring(1, pattern.GetText().Length - 2);
+            Query = Query.Path(pathPattern);
             return null;
         }
 
@@ -153,7 +157,12 @@ namespace Viewer.Query
             {
                 return null;
             }
-            return orderByList.Accept(this);
+
+            orderByList.Accept(this);
+            
+            // set query comparer
+            Query = Query.SetComparer(new EntityComparer(_order));
+            return null;
         }
 
         public Expression VisitOrderByList(QueryParser.OrderByListContext context)

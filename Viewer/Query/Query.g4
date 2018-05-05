@@ -1,13 +1,21 @@
 grammar Query;
 
 // query
-query: SELECT source optionalWhere EOF |;
+query: SELECT source optionalWhere optionalOrderBy EOF |;
 
 source: PATH_PATTERN | '(' query ')';
 
 optionalWhere: WHERE comparison | ;
 
+optionalOrderBy: ORDERBY orderByList | ;
+
 // expressions
+orderByList: orderByKey (',' orderByKey)*;
+
+orderByKey: comparison optionalDirection;
+
+optionalDirection: DIRECTION | ;
+
 comparison: expression REL_OP expression | expression;
 
 expression: expression ADD_SUB multiplication | multiplication; 
@@ -20,6 +28,10 @@ factor: '(' comparison ')' | ID | INT | REAL;
 SELECT: 'SELECT';
 
 WHERE: 'WHERE';
+
+ORDERBY: 'ORDER BY';
+
+DIRECTION: ('DESC' | 'ASC');
 
 PATH_PATTERN: '"' ~('\n' | '\r' | '"')+ '"';
 

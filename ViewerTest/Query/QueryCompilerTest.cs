@@ -16,6 +16,7 @@ namespace ViewerTest.Query
     public class QueryCompilerTest
     {
         private Mock<IQueryFactory> _factory;
+        private Mock<IQuery> _query;
         private Mock<IRuntime> _runtime;
         private QueryCompiler _compiler;
 
@@ -23,6 +24,19 @@ namespace ViewerTest.Query
         public void Setup()
         {
             _factory = new Mock<IQueryFactory>();
+
+            _query = new Mock<IQuery>();
+            _query
+                .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>()))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.Path(It.IsAny<string>()))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.SetComparer(It.IsAny<IComparer<IEntity>>()))
+                .Returns(_query.Object);
+            _factory.Setup(mock => mock.CreateQuery()).Returns(_query.Object);
+
             _runtime = new Mock<IRuntime>();
             _compiler = new QueryCompiler(_factory.Object, _runtime.Object);
         }
@@ -40,40 +54,22 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_SelectOnly()
         {
-            var queryMock = new Mock<IQuery>();
-            queryMock
-                .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>()))
-                .Returns(queryMock.Object);
-            queryMock
-                .Setup(mock => mock.Path(It.IsAny<string>()))
-                .Returns(queryMock.Object);
-            _factory.Setup(mock => mock.CreateQuery()).Returns(queryMock.Object);
-
             _compiler.Compile(new StringReader("SELECT \"a/b/**/cd/e*/f?\""));
 
-            queryMock.Verify(mock => mock.Path("a/b/**/cd/e*/f?"), Times.Once);
+            _query.Verify(mock => mock.Path("a/b/**/cd/e*/f?"), Times.Once);
         }
 
         [TestMethod]
         public void Compile_WhereConstantExpressionAlwaysTrue()
         {
-            var queryMock = new Mock<IQuery>();
-            queryMock
-                .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>()))
-                .Returns(queryMock.Object);
-            queryMock
-                .Setup(mock => mock.Path(It.IsAny<string>()))
-                .Returns(queryMock.Object);
-            _factory.Setup(mock => mock.CreateQuery()).Returns(queryMock.Object);
-
             _runtime
                 .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
                 .Returns(new IntValue(1));
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 1"));
 
-            queryMock.Verify(mock => mock.Path("pattern"), Times.Once);
-            queryMock.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
+            _query.Verify(mock => mock.Path("pattern"), Times.Once);
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate => predicate(null) && predicate(new Entity("test"))
             )), Times.Once);
         }
@@ -81,23 +77,14 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_WhereConstantExpressionAlwaysFalse()
         {
-            var queryMock = new Mock<IQuery>();
-            queryMock
-                .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>()))
-                .Returns(queryMock.Object);
-            queryMock
-                .Setup(mock => mock.Path(It.IsAny<string>()))
-                .Returns(queryMock.Object);
-            _factory.Setup(mock => mock.CreateQuery()).Returns(queryMock.Object);
-
             _runtime
                 .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(2)))
                 .Returns(new IntValue(null));
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 2"));
-            
-            queryMock.Verify(mock => mock.Path("pattern"), Times.Once);
-            queryMock.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
+
+            _query.Verify(mock => mock.Path("pattern"), Times.Once);
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate => !(predicate(null) && predicate(new Entity("test")))
             )), Times.Once);
         }
@@ -105,15 +92,6 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_WhereComparisonWithAttribute()
         {
-            var queryMock = new Mock<IQuery>();
-            queryMock
-                .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>()))
-                .Returns(queryMock.Object);
-            queryMock
-                .Setup(mock => mock.Path(It.IsAny<string>()))
-                .Returns(queryMock.Object);
-            _factory.Setup(mock => mock.CreateQuery()).Returns(queryMock.Object);
-
             _runtime
                 .Setup(mock => mock.FindAndCall("=", new IntValue(4), new IntValue(4)))
                 .Returns(new IntValue(1));
@@ -123,8 +101,8 @@ namespace ViewerTest.Query
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test = 4"));
 
-            queryMock.Verify(mock => mock.Path("pattern"), Times.Once);
-            queryMock.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
+            _query.Verify(mock => mock.Path("pattern"), Times.Once);
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate => 
                     !predicate(new Entity("test")) && 
                     predicate(new Entity("test").SetAttribute(new Attribute("test", new IntValue(4), AttributeFlags.None)))
@@ -134,15 +112,6 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_ComparisonBetweenAttributes()
         {
-            var queryMock = new Mock<IQuery>();
-            queryMock
-                .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>()))
-                .Returns(queryMock.Object);
-            queryMock
-                .Setup(mock => mock.Path(It.IsAny<string>()))
-                .Returns(queryMock.Object);
-            _factory.Setup(mock => mock.CreateQuery()).Returns(queryMock.Object);
-
             _runtime
                 .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(null)))
                 .Returns(new IntValue(null));
@@ -158,8 +127,8 @@ namespace ViewerTest.Query
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test1 = test2"));
 
-            queryMock.Verify(mock => mock.Path("pattern"), Times.Once);
-            queryMock.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
+            _query.Verify(mock => mock.Path("pattern"), Times.Once);
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate =>
                     !predicate(new Entity("test")) &&
                     !predicate(new Entity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))) &&
@@ -170,6 +139,77 @@ namespace ViewerTest.Query
                         .SetAttribute(new Attribute("test1", new IntValue(4), AttributeFlags.None))
                         .SetAttribute(new Attribute("test2", new IntValue(4), AttributeFlags.None)))
             )), Times.Once);
+        }
+
+        [TestMethod]
+        public void Compile_OrderBySimpleKey()
+        {
+            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test"));
+
+            _query.Verify(mock => mock.SetComparer(It.Is<IComparer<IEntity>>(comparer => 
+                comparer.Compare(
+                    new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)),
+                    new Entity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeFlags.None))
+                ) < 0 &&
+                comparer.Compare(
+                    new Entity("test"),
+                    new Entity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeFlags.None))
+                ) > 0
+            )));
+        }
+
+        [TestMethod]
+        public void Compile_OrderByComplexExpression()
+        {
+            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test / 3 DESC"));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", new IntValue(1), new IntValue(3)))
+                .Returns(new IntValue(1 / 3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", new IntValue(2), new IntValue(3)))
+                .Returns(new IntValue(2 / 3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", new IntValue(3), new IntValue(3)))
+                .Returns(new IntValue(3 / 3));
+
+            _query.Verify(mock => mock.SetComparer(It.Is<IComparer<IEntity>>(comparer =>
+                comparer.Compare(
+                    new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)),
+                    new Entity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeFlags.None))
+                ) == 0 &&
+                comparer.Compare(
+                    new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)),
+                    new Entity("test").SetAttribute(new Attribute("test", new IntValue(3), AttributeFlags.None))
+                ) > 0
+            )));
+        }
+
+        [TestMethod]
+        public void Compile_OrderByMultipleExpressions()
+        {
+            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test1 / 3 DESC, test2"));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", new IntValue(1), new IntValue(3)))
+                .Returns(new IntValue(1 / 3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", new IntValue(2), new IntValue(3)))
+                .Returns(new IntValue(2 / 3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", new IntValue(3), new IntValue(3)))
+                .Returns(new IntValue(3 / 3));
+
+            _query.Verify(mock => mock.SetComparer(It.Is<IComparer<IEntity>>(comparer =>
+                comparer.Compare(
+                    new Entity("test")
+                        .SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))
+                        .SetAttribute(new Attribute("test2", new RealValue(3.14), AttributeFlags.None)),
+                    new Entity("test")
+                        .SetAttribute(new Attribute("test1", new IntValue(2), AttributeFlags.None))
+                        .SetAttribute(new Attribute("test2", new RealValue(2.20), AttributeFlags.None))
+                ) > 0 
+            )));
         }
     }
 }

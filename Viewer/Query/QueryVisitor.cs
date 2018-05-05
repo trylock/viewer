@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from Query.g4 by ANTLR 4.7.1
+// Generated from C:\projects\Viewer\Viewer\Query\Query.g4 by ANTLR 4.7.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -50,6 +50,30 @@ public interface IQueryVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitOptionalWhere([NotNull] QueryParser.OptionalWhereContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="QueryParser.optionalOrderBy"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOptionalOrderBy([NotNull] QueryParser.OptionalOrderByContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="QueryParser.orderByList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOrderByList([NotNull] QueryParser.OrderByListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="QueryParser.orderByKey"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOrderByKey([NotNull] QueryParser.OrderByKeyContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="QueryParser.optionalDirection"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitOptionalDirection([NotNull] QueryParser.OptionalDirectionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="QueryParser.comparison"/>.
 	/// </summary>

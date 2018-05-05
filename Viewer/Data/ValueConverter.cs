@@ -58,7 +58,7 @@ namespace Viewer.Data
                     case TypeId.Real:
                         return new RealValue(value.Value);
                     case TypeId.String:
-                        return new StringValue(value.Value == null ? null : value.ToString());
+                        return new StringValue(value?.Value == null ? null : value.Value.ToString());
                     case TypeId.DateTime:
                         return new DateTimeValue(null);
                     case TypeId.Image:
@@ -77,7 +77,7 @@ namespace Viewer.Data
                     case TypeId.Real:
                         return value;
                     case TypeId.String:
-                        return new StringValue(value.ToString());
+                        return new StringValue(value?.Value == null ? null : value.Value.ToString());
                     case TypeId.DateTime:
                         return new DateTimeValue(null);
                     case TypeId.Image:
@@ -119,7 +119,7 @@ namespace Viewer.Data
                     case TypeId.Real:
                         return new RealValue(null);
                     case TypeId.String:
-                        return new StringValue(value.ToString());
+                        return new StringValue(value?.Value == null ? null : value.Value.ToString());
                     case TypeId.DateTime:
                         return value;
                     case TypeId.Image:

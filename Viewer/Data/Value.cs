@@ -111,7 +111,7 @@ namespace Viewer.Data
             return Value.GetHashCode();
         }
 
-        public override string ToString() => Value.ToString();
+        public override string ToString() => Value?.ToString() ?? "null"; 
 
         public override void Accept(IValueVisitor visitor)
         {
@@ -195,7 +195,7 @@ namespace Viewer.Data
             return Value.GetHashCode();
         }
 
-        public override string ToString() => Value;
+        public override string ToString() => Value == null ? "null" : "\"" + Value + "\"";
 
         public override void Accept(IValueVisitor visitor)
         {
@@ -242,7 +242,7 @@ namespace Viewer.Data
             return Value.GetHashCode();
         }
 
-        public override string ToString() => Value.ToString();
+        public override string ToString() => Value == null ? "null" : "\"" + Value + "\"";
 
         public override void Accept(IValueVisitor visitor)
         {

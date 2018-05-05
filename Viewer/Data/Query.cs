@@ -26,6 +26,11 @@ namespace Viewer.Data
         string Pattern { get; }
 
         /// <summary>
+        /// Current comparer to sort the query result
+        /// </summary>
+        IComparer<IEntity> Comparer { get; }
+
+        /// <summary>
         /// Create a new query with given directory path pattern
         /// </summary>
         /// <param name="pattern">Diretory path pattern <see cref="FileFinder"/></param>
@@ -38,6 +43,13 @@ namespace Viewer.Data
         /// <param name="predicate"></param>
         /// <returns></returns>
         IQuery Where(Func<IEntity, bool> predicate);
+
+        /// <summary>
+        /// Set comparer to order the query result
+        /// </summary>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        IQuery SetComparer(IComparer<IEntity> comparer);
     }
 
     public interface IQueryFactory
@@ -53,7 +65,8 @@ namespace Viewer.Data
     {
         // query description
         public string Pattern { get; } = "";
-        private Func<IEntity, bool> _includePredicate = entity => true;
+        public IComparer<IEntity> Comparer { get; } = new EntityComparer();
+        private readonly Func<IEntity, bool> _includePredicate = entity => true;
 
         // dependencies
         private readonly IEntityManager _entities;
@@ -65,11 +78,12 @@ namespace Viewer.Data
             _fileSystem = fileSystem;
         }
 
-        private Query(IEntityManager entities, IFileSystem fileSystem, string pattern, Func<IEntity, bool> includePredicate)
+        private Query(IEntityManager entities, IFileSystem fileSystem, string pattern, Func<IEntity, bool> includePredicate, IComparer<IEntity> comparer)
         {
             _entities = entities;
             _fileSystem = fileSystem;
             Pattern = pattern;
+            Comparer = comparer;
             _includePredicate = includePredicate;
         }
 
@@ -102,12 +116,17 @@ namespace Viewer.Data
 
         public IQuery Path(string newPattern)
         {
-            return new Query(_entities, _fileSystem, newPattern, _includePredicate);
+            return new Query(_entities, _fileSystem, newPattern, _includePredicate, Comparer);
         }
 
         public IQuery Where(Func<IEntity, bool> predicate)
         {
-            return new Query(_entities, _fileSystem, Pattern, entity => _includePredicate(entity) && predicate(entity));
+            return new Query(_entities, _fileSystem, Pattern, entity => _includePredicate(entity) && predicate(entity), Comparer);
+        }
+
+        public IQuery SetComparer(IComparer<IEntity> comparer)
+        {
+            return new Query(_entities, _fileSystem, Pattern, _includePredicate, comparer);
         }
 
         private IEnumerable<string> EnumerateFiles()

@@ -66,6 +66,10 @@ namespace Viewer.Query
                     var doubleValue = double.Parse(node.Symbol.Text);
                     expr = Expression.Constant(new RealValue(doubleValue));
                     break;
+                case QueryLexer.STRING:
+                    var stringValue = node.Symbol.Text.Substring(1, node.Symbol.Text.Length - 2);
+                    expr = Expression.Constant(new StringValue(stringValue));
+                    break;
                 case QueryLexer.ID:
                     var name = Expression.Constant(node.Symbol.Text);
                     var attributeGetter = typeof(IEntity).GetMethod("GetAttribute");
@@ -125,7 +129,7 @@ namespace Viewer.Query
                 return subquery.Accept(this);
             }
             
-            var pattern = context.PATH_PATTERN().GetText();
+            var pattern = context.STRING().GetText();
             Query = Query.Path(pattern.Substring(1, pattern.Length - 2));
             return null;
         }
@@ -251,8 +255,34 @@ namespace Viewer.Query
                 return doubleValue.Accept(this);
             }
 
+            var stringValue = context.STRING();
+            if (stringValue != null)
+            {
+                return stringValue.Accept(this);
+            }
+
             var id = context.ID();
+            var argumentList = context.argumentList();
+            if (argumentList != null)
+            {
+                // function call
+                var arguments = argumentList.Accept(this);
+                return RuntimeCall(id.GetText(), arguments);
+            }
+
+            // attribute identifier
             return id.Accept(this);
+        }
+
+        public Expression VisitArgumentList(QueryParser.ArgumentListContext context)
+        {
+            var argumentCount = context.comparison().Length;
+            var arguments = new Expression[argumentCount];
+            for (var i = 0; i < argumentCount; ++i)
+            {
+                arguments[i] = context.comparison(i).Accept(this);
+            }
+            return Expression.NewArrayInit(typeof(BaseValue), arguments);
         }
 
         private Expression CompileBinaryOperator(string op, Expression lhs, Expression rhs)
@@ -269,12 +299,20 @@ namespace Viewer.Query
         /// <returns></returns>
         private Expression RuntimeCall(string functionName, params Expression[] arguments)
         {
+            return RuntimeCall(functionName, Expression.NewArrayInit(typeof(BaseValue), arguments));
+        }
+
+        private Expression RuntimeCall(string functionName, Expression argumentArray)
+        {
+            if (argumentArray.Type != typeof(BaseValue[]))
+                throw new ArgumentOutOfRangeException(nameof(argumentArray));
+
             var runtimeCall = _runtime.GetType().GetMethod("FindAndCall");
             return Expression.Call(
                 Expression.Constant(_runtime),
                 runtimeCall,
                 Expression.Constant(functionName),
-                Expression.NewArrayInit(typeof(BaseValue), arguments));
+                argumentArray);
         }
     }
 

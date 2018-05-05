@@ -98,5 +98,11 @@ public interface IQueryVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFactor([NotNull] QueryParser.FactorContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="QueryParser.argumentList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArgumentList([NotNull] QueryParser.ArgumentListContext context);
 }
 } // namespace Viewer.Query

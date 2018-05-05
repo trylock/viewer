@@ -3,7 +3,7 @@ grammar Query;
 // query
 query: SELECT source optionalWhere optionalOrderBy EOF |;
 
-source: PATH_PATTERN | '(' query ')';
+source: STRING | '(' query ')';
 
 optionalWhere: WHERE comparison | ;
 
@@ -22,7 +22,9 @@ expression: expression ADD_SUB multiplication | multiplication;
 
 multiplication: multiplication MULT_DIV factor | factor;
 
-factor: '(' comparison ')' | ID | INT | REAL;
+factor: '(' comparison ')' | INT | REAL | STRING | ID | ID '(' argumentList ')';
+
+argumentList: comparison (',' comparison)* | ;
 
 // lexer
 SELECT: 'SELECT';
@@ -33,13 +35,13 @@ ORDERBY: 'ORDER BY';
 
 DIRECTION: ('DESC' | 'ASC');
 
-PATH_PATTERN: '"' ~('\n' | '\r' | '"')+ '"';
-
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 
 INT: [0-9]+;
 
 REAL: [0-9]+'.'[0-9]+;
+
+STRING: '"' ~('"')* '"'; 
 
 ADD_SUB: ('+' | '-');
 

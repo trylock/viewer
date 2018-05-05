@@ -211,5 +211,19 @@ namespace ViewerTest.Query
                 ) > 0 
             )));
         }
+
+        [TestMethod]
+        public void Compile_CustomFunctionInvocation()
+        {
+            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test(1, \"value\")"));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("test", new IntValue(1), new StringValue("value")))
+                .Returns(new RealValue(3.14));
+
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
+                predicate(new Entity("test"))
+            )));
+        }
     }
 }

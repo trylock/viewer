@@ -24,8 +24,31 @@ namespace Viewer.Query
         /// <returns>Compiled LINQ query</returns>
         IQuery Compile(TextReader input);
     }
+
+    internal class CompilationResult
+    {
+        /// <summary>
+        /// Expression which computes a value
+        /// </summary>
+        public Expression Value { get; set; }
+
+        /// <summary>
+        /// Subquery
+        /// </summary>
+        public IQuery Query { get; set; }
+
+        /// <summary>
+        /// Value getter for construction of a comparer
+        /// </summary>
+        public ValueOrder Order { get; set; }
+
+        /// <summary>
+        /// Entity comparer
+        /// </summary>
+        public IComparer<IEntity> Comparer { get; set; }
+    }
     
-    internal class QueryCompilerVisitor : IQueryVisitor<Expression>
+    internal class QueryCompilerVisitor : IQueryVisitor<CompilationResult>
     {
         private readonly IQueryFactory _queryFactory;
         private readonly IRuntime _runtime;
@@ -33,27 +56,29 @@ namespace Viewer.Query
         private readonly ParameterExpression _entityParameter = Expression.Parameter(typeof(IEntity), "entity");
         private readonly Attribute _nullAttribute = new Attribute("", new IntValue(null));
         private readonly List<ValueOrder> _order = new List<ValueOrder>();
-
-        public IQuery Query { get; private set; }
-
+        
         public QueryCompilerVisitor(IQueryFactory queryFactory, IRuntime runtime)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;
-            Query = _queryFactory.CreateQuery();
         }
 
-        public Expression Visit(IParseTree tree)
+        public IQuery Compile(IParseTree tree)
+        {
+            return tree.Accept(this).Query;
+        }
+
+        public CompilationResult Visit(IParseTree tree)
         {
             throw new NotImplementedException();
         }
 
-        public Expression VisitChildren(IRuleNode node)
+        public CompilationResult VisitChildren(IRuleNode node)
         {
             throw new NotImplementedException();
         }
 
-        public Expression VisitTerminal(ITerminalNode node)
+        public CompilationResult VisitTerminal(ITerminalNode node)
         {
             Expression expr = null;
             switch (node.Symbol.Type)
@@ -83,30 +108,69 @@ namespace Viewer.Query
                     break;
             }
 
-            return expr;
+            return new CompilationResult{ Value = expr };
         }
 
-        public Expression VisitErrorNode(IErrorNode node)
+        public CompilationResult VisitErrorNode(IErrorNode node)
         {
             throw new NotImplementedException();
         }
 
-        public Expression VisitQuery(QueryParser.QueryContext context)
+        public CompilationResult VisitQueryExpression(QueryParser.QueryExpressionContext context)
+        {
+            if (context.queryExpression() == null)
+            {
+                return context.intersection().Accept(this);
+            }
+
+            // parse UNION, EXCEPT
+            var left = context.queryExpression().Accept(this);
+            var right = context.intersection().Accept(this);
+            var result = context.UNION_EXCEPT().Symbol.Text == "UNION" ? 
+                left.Query.Union(right.Query) : 
+                left.Query.Except(right.Query);
+            return new CompilationResult{ Query = result };
+        }
+
+        public CompilationResult VisitIntersection(QueryParser.IntersectionContext context)
+        {
+            // parse INTERSECT
+            IQuery query = null;
+            foreach (var result in context.query())
+            {
+                var subquery = result.Accept(this).Query;
+
+                query = query == null ? 
+                    subquery : 
+                    query.Intersect(subquery);
+            }
+            return new CompilationResult{ Query = query };
+        }
+
+        public CompilationResult VisitQuery(QueryParser.QueryContext context)
+        {
+            // parse unordered query
+            var query = context.unorderedQuery().Accept(this).Query;
+
+            // parser ORDER BY
+            var orderBy = context.optionalOrderBy();
+            if (orderBy != null)
+            {
+                var comparer = context.optionalOrderBy().Accept(this).Comparer;
+                query = query.SetComparer(comparer);
+            }
+
+            return new CompilationResult{ Query = query };
+        }
+
+        public CompilationResult VisitUnorderedQuery(QueryParser.UnorderedQueryContext context)
         {
             var source = context.source();
             var optionalWhere = context.optionalWhere();
-            var optionalOrderBy = context.optionalOrderBy();
-
-            // empty query is valid 
-            if (source == null)
-            {
-                return null;
-            }
 
             // visit children
-            source.Accept(this);
-            var optionalWhereResult = optionalWhere.Accept(this);
-            optionalOrderBy.Accept(this);
+            var query = source.Accept(this).Query;
+            var optionalWhereResult = optionalWhere.Accept(this).Value;
 
             // compile the where condition
             var filter = Expression.Lambda<Func<IEntity, bool>>(
@@ -114,70 +178,74 @@ namespace Viewer.Query
                 _entityParameter
             );
             var entityPredicate = filter.Compile();
-            Query = Query.Where(entityPredicate);
-            
-            return null;
+
+            return new CompilationResult{ Query = query.Where(entityPredicate) };
         }
 
-        public Expression VisitSource(QueryParser.SourceContext context)
+        public CompilationResult VisitSource(QueryParser.SourceContext context)
         {
+            IQuery query = null;
             var subquery = context.query();
             if (subquery != null)
             {
                 // compile subquery
-                var subqueryCompiler = new QueryCompilerVisitor(_queryFactory, _runtime);
-                subquery.Accept(subqueryCompiler);
-                Query = subqueryCompiler.Query;
-                return null;
+                query = subquery.Accept(this).Query;
+                return new CompilationResult{ Query = query };
             }
             
             // set path pattern
             var pattern = context.STRING();
             var pathPattern = pattern.GetText().Substring(1, pattern.GetText().Length - 2);
-            Query = Query.Path(pathPattern);
-            return null;
+            query = _queryFactory.CreateQuery(pathPattern);
+            return new CompilationResult{ Query = query };
         }
 
-        public Expression VisitOptionalWhere(QueryParser.OptionalWhereContext context)
+        public CompilationResult VisitOptionalWhere(QueryParser.OptionalWhereContext context)
         {
             var condition = context.comparison();
             if (condition == null)
             {
-                return Expression.Constant(true);
+                return new CompilationResult{ Value = Expression.Constant(true) };
             }
 
-            var result = condition.Accept(this);
-            return Expression.Not(Expression.Property(result, "IsNull"));
+            var result = condition.Accept(this).Value;
+            return new CompilationResult {
+                Value = Expression.Not(Expression.Property(result, "IsNull"))
+            };
         }
 
-        public Expression VisitOptionalOrderBy(QueryParser.OptionalOrderByContext context)
+        public CompilationResult VisitOptionalOrderBy(QueryParser.OptionalOrderByContext context)
         {
             var orderByList = context.orderByList();
-            if (orderByList == null)
+            if (orderByList != null)
             {
-                return null;
+                return orderByList.Accept(this);
             }
-
-            orderByList.Accept(this);
             
-            // set query comparer
-            Query = Query.SetComparer(new EntityComparer(_order));
-            return null;
+            return new CompilationResult
+            {
+                Comparer = new EntityComparer()
+            };
         }
 
-        public Expression VisitOrderByList(QueryParser.OrderByListContext context)
+        public CompilationResult VisitOrderByList(QueryParser.OrderByListContext context)
         {
+            var orderByList = new List<ValueOrder>();
             foreach (var child in context.orderByKey())
             {
-                child.Accept(this);
+                var item = child.Accept(this).Order;
+                orderByList.Add(item);
             }
 
-            return null;
+            return new CompilationResult
+            {
+                Comparer = new EntityComparer(orderByList)
+            };
         }
 
-        public Expression VisitOrderByKey(QueryParser.OrderByKeyContext context)
+        public CompilationResult VisitOrderByKey(QueryParser.OrderByKeyContext context)
         {
-            var valueExpr = context.comparison().Accept(this);
+            var valueExpr = context.comparison().Accept(this).Value;
             var valueGetterExpr = Expression.Lambda<Func<IEntity, BaseValue>>(
                 valueExpr,
                 _entityParameter
@@ -185,21 +253,22 @@ namespace Viewer.Query
             var valueGetter = valueGetterExpr.Compile();
             var direction = context.optionalDirection().GetText() == "DESC" ? -1 : 1;
 
-            _order.Add(new ValueOrder
+            return new CompilationResult
             {
-                Getter = valueGetter,
-                Direction = direction
-            });
-
-            return null;
+                Order = new ValueOrder
+                {
+                    Getter = valueGetter,
+                    Direction = direction
+                }
+            };
         }
 
-        public Expression VisitOptionalDirection(QueryParser.OptionalDirectionContext context)
+        public CompilationResult VisitOptionalDirection(QueryParser.OptionalDirectionContext context)
         {
             return null;
         }
 
-        public Expression VisitComparison(QueryParser.ComparisonContext context)
+        public CompilationResult VisitComparison(QueryParser.ComparisonContext context)
         {
             var lhs = context.expression(0);
             var rhs = context.expression(1);
@@ -211,10 +280,13 @@ namespace Viewer.Query
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
             var op = context.REL_OP().Symbol.Text;
-            return CompileBinaryOperator(op, left, right);
+            return new CompilationResult
+            {
+                Value = CompileBinaryOperator(op, left.Value, right.Value)
+            };
         }
 
-        public Expression VisitExpression(QueryParser.ExpressionContext context)
+        public CompilationResult VisitExpression(QueryParser.ExpressionContext context)
         {
             var lhs = context.expression();
             var rhs = context.multiplication();
@@ -226,10 +298,13 @@ namespace Viewer.Query
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
             var op = context.ADD_SUB().Symbol.Text;
-            return CompileBinaryOperator(op, left, right);
+            return new CompilationResult
+            {
+                Value = CompileBinaryOperator(op, left.Value, right.Value)
+            };
         }
 
-        public Expression VisitMultiplication(QueryParser.MultiplicationContext context)
+        public CompilationResult VisitMultiplication(QueryParser.MultiplicationContext context)
         {
             var lhs = context.multiplication();
             var rhs = context.factor();
@@ -241,10 +316,13 @@ namespace Viewer.Query
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
             var op = context.MULT_DIV().Symbol.Text;
-            return CompileBinaryOperator(op, left, right);
+            return new CompilationResult
+            {
+                Value = CompileBinaryOperator(op, left.Value, right.Value)
+            };
         }
 
-        public Expression VisitFactor(QueryParser.FactorContext context)
+        public CompilationResult VisitFactor(QueryParser.FactorContext context)
         {
             var comparison = context.comparison();
             if (comparison != null)
@@ -271,27 +349,34 @@ namespace Viewer.Query
             }
 
             var id = context.ID();
-            var argumentList = context.argumentList();
+            var argumentList = context.argumentList(); 
             if (argumentList != null)
             {
                 // function call
-                var arguments = argumentList.Accept(this);
-                return RuntimeCall(id.GetText(), arguments);
+                var arguments = argumentList.Accept(this).Value;
+                return new CompilationResult
+                {
+                    Value = RuntimeCall(id.GetText(), arguments)
+                };
             }
 
             // attribute identifier
             return id.Accept(this);
         }
 
-        public Expression VisitArgumentList(QueryParser.ArgumentListContext context)
+        public CompilationResult VisitArgumentList(QueryParser.ArgumentListContext context)
         {
             var argumentCount = context.comparison().Length;
             var arguments = new Expression[argumentCount];
             for (var i = 0; i < argumentCount; ++i)
             {
-                arguments[i] = context.comparison(i).Accept(this);
+                arguments[i] = context.comparison(i).Accept(this).Value;
             }
-            return Expression.NewArrayInit(typeof(BaseValue), arguments);
+
+            return new CompilationResult
+            {
+                Value = Expression.NewArrayInit(typeof(BaseValue), arguments)
+            };
         }
 
         private Expression CompileBinaryOperator(string op, Expression lhs, Expression rhs)
@@ -347,10 +432,9 @@ namespace Viewer.Query
             var parser = new QueryParser(tokenStream);
 
             // parse and compile the query
-            var query = parser.query();
+            var query = parser.queryExpression();
             var compiler = new QueryCompilerVisitor(_queryFactory, _runtime);
-            query.Accept(compiler);
-            return compiler.Query;
+            return compiler.Compile(query);
         }
     }
 }

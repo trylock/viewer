@@ -30,6 +30,15 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>()))
                 .Returns(_query.Object);
             _query
+                .Setup(mock => mock.Except(It.IsAny<IEnumerable<IEntity>>()))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.Intersect(It.IsAny<IEnumerable<IEntity>>()))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.Union(It.IsAny<IEnumerable<IEntity>>()))
+                .Returns(_query.Object);
+            _query
                 .Setup(mock => mock.SetComparer(It.IsAny<IComparer<IEntity>>()))
                 .Returns(_query.Object);
 
@@ -265,6 +274,28 @@ namespace ViewerTest.Query
                 .Returns(new IntValue(1));
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => predicate(new Entity("test")))));
+        }
+
+        [TestMethod]
+        public void Compile_SetOperations()
+        {
+            var order = 0;
+
+            // intersect has higher precedence than any other set operation
+            _query
+                .Setup(mock => mock.Intersect(It.IsAny<IEnumerable<IEntity>>()))
+                .Callback(() => Assert.AreEqual(0, order++))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.Union(It.IsAny<IEnumerable<IEntity>>()))
+                .Callback(() => Assert.AreEqual(1, order++))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.Except(It.IsAny<IEnumerable<IEntity>>()))
+                .Callback(() => Assert.AreEqual(2, order++))
+                .Returns(_query.Object);
+
+            _compiler.Compile(new StringReader("SELECT \"a\" UNION SELECT \"b\" INTERSECT SELECT \"c\" EXCEPT SELECT \"d\""));
         }
     }
 }

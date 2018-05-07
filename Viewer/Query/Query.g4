@@ -1,7 +1,13 @@
 grammar Query;
 
 // query
-query: SELECT source optionalWhere optionalOrderBy EOF |;
+queryExpression: queryExpression UNION_EXCEPT intersection | intersection;
+
+intersection: query (INTERSECT query)*;
+
+query: unorderedQuery optionalOrderBy;
+
+unorderedQuery: SELECT source optionalWhere;
 
 source: STRING | '(' query ')';
 
@@ -34,6 +40,10 @@ WHERE: 'WHERE';
 ORDERBY: 'ORDER BY';
 
 DIRECTION: ('DESC' | 'ASC');
+
+INTERSECT: 'INTERSECT';
+
+UNION_EXCEPT: ('UNION' | 'EXCEPT');
 
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 

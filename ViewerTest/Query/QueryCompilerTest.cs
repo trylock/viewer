@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,25 +30,18 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>()))
                 .Returns(_query.Object);
             _query
-                .Setup(mock => mock.Path(It.IsAny<string>()))
-                .Returns(_query.Object);
-            _query
                 .Setup(mock => mock.SetComparer(It.IsAny<IComparer<IEntity>>()))
                 .Returns(_query.Object);
-            _factory.Setup(mock => mock.CreateQuery()).Returns(_query.Object);
 
+            _factory
+                .Setup(mock => mock.CreateQuery())
+                .Returns(_query.Object);
+            _factory
+                .Setup(mock => mock.CreateQuery(It.IsAny<string>()))
+                .Returns(_query.Object);
+            
             _runtime = new Mock<IRuntime>();
             _compiler = new QueryCompiler(_factory.Object, _runtime.Object);
-        }
-
-        [TestMethod]
-        public void Compile_EmptyQuery()
-        {
-            var emptyQuery = new Viewer.Data.Query(null, null);
-            _factory.Setup(mock => mock.CreateQuery()).Returns(emptyQuery);
-
-            var query = _compiler.Compile(new StringReader(""));
-            Assert.AreEqual(emptyQuery, query);
         }
 
         [TestMethod]
@@ -56,7 +49,7 @@ namespace ViewerTest.Query
         {
             _compiler.Compile(new StringReader("SELECT \"a/b/**/cd/e*/f?\""));
 
-            _query.Verify(mock => mock.Path("a/b/**/cd/e*/f?"), Times.Once);
+            _factory.Verify(mock => mock.CreateQuery("a/b/**/cd/e*/f?"), Times.Once);
         }
 
         [TestMethod]
@@ -68,7 +61,7 @@ namespace ViewerTest.Query
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 1"));
 
-            _query.Verify(mock => mock.Path("pattern"), Times.Once);
+            _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate => predicate(null) && predicate(new Entity("test"))
             )), Times.Once);
@@ -83,7 +76,7 @@ namespace ViewerTest.Query
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 2"));
 
-            _query.Verify(mock => mock.Path("pattern"), Times.Once);
+            _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate => !(predicate(null) && predicate(new Entity("test")))
             )), Times.Once);
@@ -101,7 +94,7 @@ namespace ViewerTest.Query
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test = 4"));
 
-            _query.Verify(mock => mock.Path("pattern"), Times.Once);
+            _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate => 
                     !predicate(new Entity("test")) && 
@@ -127,7 +120,7 @@ namespace ViewerTest.Query
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test1 = test2"));
 
-            _query.Verify(mock => mock.Path("pattern"), Times.Once);
+            _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate =>
                     !predicate(new Entity("test")) &&
@@ -245,7 +238,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(2)))
                 .Returns(new IntValue(null));
 
-            _query.Verify(mock => mock.Path("pattern"));
+            _factory.Verify(mock => mock.CreateQuery("pattern"));
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
                 !predicate(new Entity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None))) &&
                 predicate(new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)))

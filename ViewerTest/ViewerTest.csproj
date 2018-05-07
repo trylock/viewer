@@ -95,7 +95,6 @@
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentUtilsTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterTest.cs" />
-    <Compile Include="Data\QueryTest.cs" />
     <Compile Include="Data\ValueComparerTest.cs" />
     <Compile Include="FractionTest.cs" />
     <Compile Include="IO\FileFinderTest.cs" />

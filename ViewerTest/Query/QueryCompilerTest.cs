@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -247,6 +247,24 @@ namespace ViewerTest.Query
                 predicate(new Entity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None))) &&
                 !predicate(new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)))
             )));
+        }
+
+        [TestMethod]
+        public void Compile_AdditionHasLowerPrecedenceThanMultiplication()
+        {
+            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 + 2 * 3 = 7"));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("+", new IntValue(1), new IntValue(6)))
+                .Returns(new IntValue(7));
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", new IntValue(2), new IntValue(3)))
+                .Returns(new IntValue(6));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(7), new IntValue(7)))
+                .Returns(new IntValue(1));
+
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => predicate(new Entity("test")))));
         }
     }
 }

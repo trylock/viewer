@@ -151,6 +151,14 @@ namespace Viewer.IO
         bool DirectoryExists(string path);
 
         /// <summary>
+        /// Read the whole file into memory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <inheritdoc cref="File.ReadAllBytes"/>
+        byte[] ReadAllBytes(string path);
+
+        /// <summary>
         /// Search given path for files and subdirectories.
         /// <paramref name="directoryCallback"/> will be called for each directory,
         /// <paramref name="fileCallback"/> will be called for each file.
@@ -246,6 +254,11 @@ namespace Viewer.IO
         public bool DirectoryExists(string path)
         {
             return Directory.Exists(path);
+        }
+
+        public byte[] ReadAllBytes(string path)
+        {
+            return File.ReadAllBytes(path);
         }
 
         public void Search(string path, SearchCallback directoryCallback, SearchCallback fileCallback)

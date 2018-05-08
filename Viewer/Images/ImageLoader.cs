@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.IO;
 
 namespace Viewer.Images
 {
@@ -64,11 +65,13 @@ namespace Viewer.Images
         };
 
         private readonly IThumbnailGenerator _thumbnailGenerator;
+        private readonly IFileSystem _fileSystem;
 
         [ImportingConstructor]
-        public ImageLoader(IThumbnailGenerator generator)
+        public ImageLoader(IThumbnailGenerator generator, IFileSystem fileSystem)
         {
             _thumbnailGenerator = generator;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -78,7 +81,7 @@ namespace Viewer.Images
         /// <returns>Orientation of the entity or 0</returns>
         private static int GetOrientation(IEntity entity)
         {
-            var orientationAttr = entity.GetAttribute(OrientationAttrName).Value as IntValue;
+            var orientationAttr = entity.GetAttribute(OrientationAttrName)?.Value as IntValue;
             return orientationAttr?.Value ?? 0;
         }
 
@@ -131,7 +134,7 @@ namespace Viewer.Images
 
         public Image LoadImage(IEntity entity)
         {
-            var image = Image.FromStream(new MemoryStream(File.ReadAllBytes(entity.Path)));
+            var image = Image.FromStream(new MemoryStream(_fileSystem.ReadAllBytes(entity.Path)));
             FixImageOrientation(entity, image);
             return image;
         }

@@ -301,7 +301,6 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_ChangePrecedenceOfSetOperators()
         {
-
             var order = 0;
             
             _query
@@ -318,6 +317,18 @@ namespace ViewerTest.Query
                 .Returns(_query.Object);
 
             _compiler.Compile(new StringReader("(SELECT \"a\" UNION SELECT \"b\") INTERSECT (SELECT \"c\" EXCEPT SELECT \"d\")"));
+        }
+
+        [TestMethod]
+        public void Compile_AttributeIdentifierWithSpecialCharacters()
+        {
+            _compiler.Compile(new StringReader("SELECT \"a\" WHERE `identifier with spaces and special characters ěščřžýáíéůú`"));
+
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
+                !predicate(new Entity("test")) &&
+                !predicate(new Entity("test").SetAttribute(new Attribute("`identifier with spaces and special characters ěščřžýáíéůú`", new IntValue(1), AttributeFlags.None))) &&
+                predicate(new Entity("test").SetAttribute(new Attribute("identifier with spaces and special characters ěščřžýáíéůú", new IntValue(1), AttributeFlags.None)))
+            )));
         }
     }
 }

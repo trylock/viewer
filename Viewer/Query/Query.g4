@@ -31,7 +31,7 @@ expression: expression ADD_SUB multiplication | multiplication;
 
 multiplication: multiplication MULT_DIV factor | factor;
 
-factor: '(' comparison ')' | INT | REAL | STRING | ID | ID '(' argumentList ')';
+factor: '(' comparison ')' | INT | REAL | STRING | COMPLEX_ID | ID | ID '(' argumentList ')';
 
 argumentList: comparison (',' comparison)* | ;
 
@@ -54,6 +54,8 @@ INT: [0-9]+;
 
 REAL: [0-9]+'.'[0-9]+;
 
+COMPLEX_ID: '`' ~('`')+ '`';
+
 STRING: '"' ~('"')* '"'; 
 
 ADD_SUB: ('+' | '-');
@@ -62,4 +64,4 @@ MULT_DIV: ('*' | '/');
 
 REL_OP: ('=' | '!=' | '<' | '<=' | '>' | '>=');
 
-WS : [ \t\r\n]+ -> skip ;
+WS : [ \t\r\n]+ -> skip;

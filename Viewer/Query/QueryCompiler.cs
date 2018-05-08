@@ -95,16 +95,11 @@ namespace Viewer.Query
                     var stringValue = node.Symbol.Text.Substring(1, node.Symbol.Text.Length - 2);
                     expr = Expression.Constant(new StringValue(stringValue));
                     break;
+                case QueryLexer.COMPLEX_ID:
+                    expr = CompileAttributeAccess(node.Symbol.Text.Substring(1, node.Symbol.Text.Length - 2));
+                    break;
                 case QueryLexer.ID:
-                    var name = Expression.Constant(node.Symbol.Text);
-                    var attributeGetter = typeof(IEntity).GetMethod("GetAttribute");
-                    
-                    expr = Expression.Property(
-                        Expression.Coalesce(
-                            Expression.Call(_entityParameter, attributeGetter, name), 
-                            Expression.Constant(_nullAttribute)
-                        ),
-                        "Value");
+                    expr = CompileAttributeAccess(node.Symbol.Text);
                     break;
             }
 
@@ -359,6 +354,12 @@ namespace Viewer.Query
                 return stringValue.Accept(this);
             }
 
+            var complexId = context.COMPLEX_ID();
+            if (complexId != null)
+            {
+                return complexId.Accept(this);
+            }
+
             var id = context.ID();
             var argumentList = context.argumentList(); 
             if (argumentList != null)
@@ -394,6 +395,19 @@ namespace Viewer.Query
         {
             var expr = RuntimeCall(op, lhs, rhs);
             return expr;
+        }
+
+        private Expression CompileAttributeAccess(string attributeName)
+        {
+            var name = Expression.Constant(attributeName);
+            var attributeGetter = typeof(IEntity).GetMethod("GetAttribute");
+
+            return Expression.Property(
+                Expression.Coalesce(
+                    Expression.Call(_entityParameter, attributeGetter, name),
+                    Expression.Constant(_nullAttribute)
+                ),
+                "Value");
         }
 
         /// <summary>

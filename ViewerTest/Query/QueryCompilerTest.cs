@@ -297,5 +297,27 @@ namespace ViewerTest.Query
 
             _compiler.Compile(new StringReader("SELECT \"a\" UNION SELECT \"b\" INTERSECT SELECT \"c\" EXCEPT SELECT \"d\""));
         }
+
+        [TestMethod]
+        public void Compile_ChangePrecedenceOfSetOperators()
+        {
+
+            var order = 0;
+            
+            _query
+                .Setup(mock => mock.Union(It.IsAny<IEnumerable<IEntity>>()))
+                .Callback(() => Assert.AreEqual(0, order++))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.Except(It.IsAny<IEnumerable<IEntity>>()))
+                .Callback(() => Assert.AreEqual(1, order++))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.Intersect(It.IsAny<IEnumerable<IEntity>>()))
+                .Callback(() => Assert.AreEqual(2, order++))
+                .Returns(_query.Object);
+
+            _compiler.Compile(new StringReader("(SELECT \"a\" UNION SELECT \"b\") INTERSECT (SELECT \"c\" EXCEPT SELECT \"d\")"));
+        }
     }
 }

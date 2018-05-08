@@ -136,7 +136,7 @@ namespace Viewer.Query
         {
             // parse INTERSECT
             IQuery query = null;
-            foreach (var result in context.query())
+            foreach (var result in context.queryFactor())
             {
                 var subquery = result.Accept(this).Query;
 
@@ -145,6 +145,17 @@ namespace Viewer.Query
                     query.Intersect(subquery);
             }
             return new CompilationResult{ Query = query };
+        }
+
+        public CompilationResult VisitQueryFactor(QueryParser.QueryFactorContext context)
+        {
+            var query = context.query();
+            if (query != null)
+            {
+                return query.Accept(this);
+            }
+
+            return context.queryExpression().Accept(this);
         }
 
         public CompilationResult VisitQuery(QueryParser.QueryContext context)

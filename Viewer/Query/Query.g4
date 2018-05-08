@@ -1,10 +1,13 @@
 grammar Query;
 
-// query
+// set operations on queries
 queryExpression: queryExpression UNION_EXCEPT intersection | intersection;
 
-intersection: query (INTERSECT query)*;
+intersection: queryFactor (INTERSECT queryFactor)*;
 
+queryFactor: query | '(' queryExpression ')';
+
+// query
 query: unorderedQuery optionalOrderBy;
 
 unorderedQuery: SELECT source optionalWhere;

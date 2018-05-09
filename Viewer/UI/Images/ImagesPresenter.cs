@@ -14,6 +14,7 @@ using Viewer.Data.Storage;
 using Viewer.Images;
 using Viewer.IO;
 using Viewer.Properties;
+using Viewer.Query;
 using Viewer.UI.Explorer;
 using Viewer.UI.Presentation;
 using WeifenLuo.WinFormsUI.Docking;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.Query;
 
 namespace Viewer.UI
 {

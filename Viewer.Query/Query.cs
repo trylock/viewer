@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.Data.Storage;
 using Viewer.IO;
 
-namespace Viewer.Data
+namespace Viewer.Query
 {
     /// <inheritdoc />
     /// <summary>

@@ -78,7 +78,6 @@
     <Compile Include="Formats\Jpeg\JpegSegmentWriter.cs" />
     <Compile Include="Formats\Jpeg\JpegSegmentWriterFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query.cs" />
     <Compile Include="Storage\FileSystemAttributeStorage.cs" />
     <Compile Include="Storage\IAttributeStorage.cs" />
     <Compile Include="Storage\MemoryAttributeStorage.cs" />

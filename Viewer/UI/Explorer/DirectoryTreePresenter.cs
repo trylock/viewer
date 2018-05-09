@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.IO;
 using Viewer.Properties;
+using Viewer.Query;
 using Viewer.UI.Log;
 using Viewer.UI.Tasks;
 

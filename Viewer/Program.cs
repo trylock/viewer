@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Data;
 using Viewer.Query;
 using Viewer.UI.Tasks;
 
@@ -24,8 +25,13 @@ namespace Viewer
             Application.SetCompatibleTextRenderingDefault(false);
 
             var catalog = new AggregateCatalog(
-                new AssemblyCatalog(Assembly.GetExecutingAssembly())
+                new AssemblyCatalog(Assembly.GetExecutingAssembly()),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Data.IEntity))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Query.IRuntime))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.QueryRuntime.IntValueAdditionFunction))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.IO.IFileSystem)))
             );
+
             using (var container = new CompositionContainer(catalog))
             {
                 var app = container.GetExportedValue<IViewerApplication>();

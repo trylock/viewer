@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Viewer.Data.Formats;
 using Viewer.Data.Storage;
 using Viewer.IO;
-using Viewer.UI.Log;
 
 namespace Viewer.Data
 {

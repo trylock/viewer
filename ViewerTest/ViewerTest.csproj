@@ -120,6 +120,22 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Viewer.Data\Viewer.Data.csproj">
+      <Project>{1d709be7-4906-4af8-b31c-3ee7a1eb3323}</Project>
+      <Name>Viewer.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Viewer.IO\Viewer.IO.csproj">
+      <Project>{e5d95203-8d44-46f1-8af0-43c1b7f6ad33}</Project>
+      <Name>Viewer.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Viewer.QueryRuntime\Viewer.QueryRuntime.csproj">
+      <Project>{01d83bbe-3569-4b73-b249-f85680b58fe1}</Project>
+      <Name>Viewer.QueryRuntime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Viewer.Query\Viewer.Query.csproj">
+      <Project>{a09ee86c-981c-4f59-9554-c89fc8064c25}</Project>
+      <Name>Viewer.Query</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Viewer\Viewer.csproj">
       <Project>{ee97e5f1-ce89-4d1e-9a3b-797505982594}</Project>
       <Name>Viewer</Name>

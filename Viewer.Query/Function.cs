@@ -71,23 +71,4 @@ namespace Viewer.Query
         /// <returns>Return value of the function</returns>
         BaseValue Call(IArgumentList arguments);
     }
-
-    [Export(typeof(IFunction))]
-    public class SumFunction : IFunction
-    {
-        public string Name => "+";
-
-        public IReadOnlyList<TypeId> Arguments { get; } = new[]
-        {
-            TypeId.Integer,
-            TypeId.Integer
-        };
-
-        public BaseValue Call(IArgumentList arguments)
-        {
-            var lhs = arguments.Get<IntValue>(0);
-            var rhs = arguments.Get<IntValue>(1);
-            return new IntValue(lhs.Value + rhs.Value);
-        }
-    }
 }

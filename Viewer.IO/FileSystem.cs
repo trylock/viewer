@@ -7,8 +7,6 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
-using Viewer.Data;
 
 namespace Viewer.IO
 {

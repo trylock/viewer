@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Viewer.Data;
@@ -55,7 +54,6 @@ namespace Viewer.Query
 
         private readonly ParameterExpression _entityParameter = Expression.Parameter(typeof(IEntity), "entity");
         private readonly Attribute _nullAttribute = new Attribute("", new IntValue(null));
-        private readonly List<ValueOrder> _order = new List<ValueOrder>();
         
         public QueryCompilerVisitor(IQueryFactory queryFactory, IRuntime runtime)
         {

@@ -68,6 +68,7 @@ namespace Viewer.Query
         BaseValue FindAndCall(string name, params BaseValue[] arguments);
     }
 
+    [Export(typeof(IRuntime))]
     public class Runtime : IRuntime
     {
         private readonly Dictionary<string, List<IFunction>> _functions = new Dictionary<string, List<IFunction>>();

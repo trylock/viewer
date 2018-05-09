@@ -29,7 +29,9 @@ namespace ViewerTest.Query
         [TestMethod]
         public void CallAndFind()
         {
-            _testFunction.Setup(mock => mock.Arguments).Returns(new[] {TypeId.String, TypeId.String});
+            _testFunction
+                .Setup(mock => mock.Arguments)
+                .Returns(new[] {TypeId.String, TypeId.String});
             _testFunction
                 .Setup(mock => mock.Call(It.Is<ArgumentList>(args => 
                     args.Count == 2 &&

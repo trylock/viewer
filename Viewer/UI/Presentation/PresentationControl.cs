@@ -233,6 +233,18 @@ namespace Viewer.UI.Presentation
             ToggleFullscreen?.Invoke(sender, e);
         }
 
+        private void PresentationControl_MouseLeave(object sender, EventArgs e)
+        {
+            var point = PointToClient(Cursor.Position);
+            if (ClientRectangle.Contains(point))
+            {
+                return;
+            }
+            PrevButton.Visible = false;
+            NextButton.Visible = false;
+            ControlPanel.Visible = false;
+        }
+
         private void PrevButton_Click(object sender, EventArgs e)
         {
             PrevImage?.Invoke(sender, e);

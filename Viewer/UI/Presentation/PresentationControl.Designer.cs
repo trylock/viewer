@@ -61,6 +61,7 @@
             this.NextButton.UseVisualStyleBackColor = false;
             this.NextButton.Click += new System.EventHandler(this.NextButton_Click);
             this.NextButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
+            this.NextButton.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
             // PrevButton
             // 
@@ -82,6 +83,7 @@
             this.PrevButton.UseVisualStyleBackColor = false;
             this.PrevButton.Click += new System.EventHandler(this.PrevButton_Click);
             this.PrevButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
+            this.PrevButton.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
             // PlayPauseButton
             // 
@@ -100,6 +102,7 @@
             this.PlayPauseButton.UseVisualStyleBackColor = false;
             this.PlayPauseButton.Click += new System.EventHandler(this.PausePlayButton_Click);
             this.PlayPauseButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
+            this.PlayPauseButton.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
             // ControlPanel
             // 
@@ -112,6 +115,7 @@
             this.ControlPanel.Name = "ControlPanel";
             this.ControlPanel.Size = new System.Drawing.Size(300, 58);
             this.ControlPanel.TabIndex = 4;
+            this.ControlPanel.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
             // MaxDelayLabel
             // 
@@ -124,6 +128,7 @@
             this.MaxDelayLabel.Size = new System.Drawing.Size(31, 17);
             this.MaxDelayLabel.TabIndex = 3;
             this.MaxDelayLabel.Text = "10s";
+            this.MaxDelayLabel.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
             // MinDelayLabel
             // 
@@ -136,6 +141,7 @@
             this.MinDelayLabel.Size = new System.Drawing.Size(23, 17);
             this.MinDelayLabel.TabIndex = 2;
             this.MinDelayLabel.Text = "1s";
+            this.MinDelayLabel.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
             // SpeedTrackBar
             // 
@@ -148,6 +154,7 @@
             this.SpeedTrackBar.TabIndex = 1;
             this.SpeedTrackBar.Value = 1;
             this.SpeedTrackBar.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
+            this.SpeedTrackBar.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
             // HideCursorTimer
             // 
@@ -168,6 +175,7 @@
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PresentationControl_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseDoubleClick);
+            this.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseMove);
             this.Resize += new System.EventHandler(this.PresentationControl_Resize);
             this.ControlPanel.ResumeLayout(false);

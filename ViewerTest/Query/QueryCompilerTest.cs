@@ -39,7 +39,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.Union(It.IsAny<IEnumerable<IEntity>>()))
                 .Returns(_query.Object);
             _query
-                .Setup(mock => mock.SetComparer(It.IsAny<IComparer<IEntity>>()))
+                .Setup(mock => mock.WithComparer(It.IsAny<IComparer<IEntity>>()))
                 .Returns(_query.Object);
 
             _factory
@@ -148,7 +148,7 @@ namespace ViewerTest.Query
         {
             _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test"));
 
-            _query.Verify(mock => mock.SetComparer(It.Is<IComparer<IEntity>>(comparer => 
+            _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer => 
                 comparer.Compare(
                     new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)),
                     new Entity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeFlags.None))
@@ -175,7 +175,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("/", new IntValue(3), new IntValue(3)))
                 .Returns(new IntValue(3 / 3));
 
-            _query.Verify(mock => mock.SetComparer(It.Is<IComparer<IEntity>>(comparer =>
+            _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer =>
                 comparer.Compare(
                     new Entity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)),
                     new Entity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeFlags.None))
@@ -202,7 +202,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("/", new IntValue(3), new IntValue(3)))
                 .Returns(new IntValue(3 / 3));
 
-            _query.Verify(mock => mock.SetComparer(It.Is<IComparer<IEntity>>(comparer =>
+            _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer =>
                 comparer.Compare(
                     new Entity("test")
                         .SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))

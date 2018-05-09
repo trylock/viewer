@@ -161,7 +161,7 @@ namespace Viewer.Query
             if (orderBy != null)
             {
                 var comparer = context.optionalOrderBy().Accept(this).Comparer;
-                query = query.SetComparer(comparer);
+                query = query.WithComparer(comparer);
             }
 
             return new CompilationResult{ Query = query };

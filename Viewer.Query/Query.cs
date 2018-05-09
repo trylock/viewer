@@ -30,7 +30,7 @@ namespace Viewer.Query
         /// </summary>
         /// <param name="comparer"></param>
         /// <returns></returns>
-        IQuery SetComparer(IComparer<IEntity> comparer);
+        IQuery WithComparer(IComparer<IEntity> comparer);
 
         /// <summary>
         /// Only include entities in the result if <paramref name="predicate"/> returns true
@@ -161,7 +161,7 @@ namespace Viewer.Query
             return new Query(_source.Where(predicate), Comparer);
         }
 
-        public IQuery SetComparer(IComparer<IEntity> comparer)
+        public IQuery WithComparer(IComparer<IEntity> comparer)
         {
             return new Query(_source, comparer);
         }

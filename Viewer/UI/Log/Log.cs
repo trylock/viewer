@@ -45,6 +45,16 @@ namespace Viewer.UI.Log
         /// It can be null.
         /// </summary>
         public Retry RetryOperation { get; set; }
+
+        /// <summary>
+        /// Line in an input where the error occurs
+        /// </summary>
+        public int Line { get; set; }
+
+        /// <summary>
+        /// Column in an input where the error occurs
+        /// </summary>
+        public int Column { get; set; }
     }
 
     public class LogEventArgs : EventArgs

@@ -30,14 +30,17 @@ namespace Viewer.UI.Log
         /// </summary>
         private void InitializeComponent()
         {
-            this.LogEntryGridView = new BufferedDataGridView();
-            this.TypeColumn = new System.Windows.Forms.DataGridViewImageColumn();
-            this.MessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.GroupColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RetryColumn = new System.Windows.Forms.DataGridViewButtonColumn();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.LogEntryGridView = new Viewer.UI.Forms.BufferedDataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.TypeColumn = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Line = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.GroupColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RetryColumn = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.LogEntryGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -51,6 +54,8 @@ namespace Viewer.UI.Log
             this.LogEntryGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.LogEntryGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.TypeColumn,
+            this.Line,
+            this.Column,
             this.MessageColumn,
             this.GroupColumn,
             this.RetryColumn});
@@ -59,38 +64,13 @@ namespace Viewer.UI.Log
             this.LogEntryGridView.Name = "LogEntryGridView";
             this.LogEntryGridView.ReadOnly = true;
             this.LogEntryGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.LogEntryGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.LogEntryGridView.RowTemplate.Height = 23;
             this.LogEntryGridView.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.LogEntryGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.LogEntryGridView.Size = new System.Drawing.Size(682, 265);
+            this.LogEntryGridView.Size = new System.Drawing.Size(756, 265);
             this.LogEntryGridView.TabIndex = 0;
-            // 
-            // TypeColumn
-            // 
-            this.TypeColumn.FillWeight = 10F;
-            this.TypeColumn.HeaderText = "";
-            this.TypeColumn.Name = "TypeColumn";
-            this.TypeColumn.ReadOnly = true;
-            // 
-            // MessageColumn
-            // 
-            this.MessageColumn.HeaderText = "Message";
-            this.MessageColumn.Name = "MessageColumn";
-            this.MessageColumn.ReadOnly = true;
-            // 
-            // GroupColumn
-            // 
-            this.GroupColumn.FillWeight = 35F;
-            this.GroupColumn.HeaderText = "Group";
-            this.GroupColumn.Name = "GroupColumn";
-            this.GroupColumn.ReadOnly = true;
-            // 
-            // RetryColumn
-            // 
-            this.RetryColumn.FillWeight = 35F;
-            this.RetryColumn.HeaderText = "Retry";
-            this.RetryColumn.Name = "RetryColumn";
-            this.RetryColumn.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -112,11 +92,53 @@ namespace Viewer.UI.Log
             this.dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
             this.dataGridViewButtonColumn1.Width = 5;
             // 
+            // TypeColumn
+            // 
+            this.TypeColumn.FillWeight = 17.85629F;
+            this.TypeColumn.HeaderText = "";
+            this.TypeColumn.Name = "TypeColumn";
+            this.TypeColumn.ReadOnly = true;
+            // 
+            // Line
+            // 
+            this.Line.FillWeight = 28.93401F;
+            this.Line.HeaderText = "Line";
+            this.Line.Name = "Line";
+            this.Line.ReadOnly = true;
+            // 
+            // Column
+            // 
+            this.Column.FillWeight = 29.65273F;
+            this.Column.HeaderText = "Column";
+            this.Column.Name = "Column";
+            this.Column.ReadOnly = true;
+            // 
+            // MessageColumn
+            // 
+            this.MessageColumn.FillWeight = 178.5629F;
+            this.MessageColumn.HeaderText = "Message";
+            this.MessageColumn.Name = "MessageColumn";
+            this.MessageColumn.ReadOnly = true;
+            // 
+            // GroupColumn
+            // 
+            this.GroupColumn.FillWeight = 62.49702F;
+            this.GroupColumn.HeaderText = "Group";
+            this.GroupColumn.Name = "GroupColumn";
+            this.GroupColumn.ReadOnly = true;
+            // 
+            // RetryColumn
+            // 
+            this.RetryColumn.FillWeight = 62.49702F;
+            this.RetryColumn.HeaderText = "Retry";
+            this.RetryColumn.Name = "RetryColumn";
+            this.RetryColumn.ReadOnly = true;
+            // 
             // LogView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(682, 265);
+            this.ClientSize = new System.Drawing.Size(756, 265);
             this.Controls.Add(this.LogEntryGridView);
             this.Name = "LogView";
             this.Text = "Log";
@@ -126,12 +148,13 @@ namespace Viewer.UI.Log
         }
 
         #endregion
-
-        private System.Windows.Forms.DataGridView LogEntryGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewButtonColumn dataGridViewButtonColumn1;
+        private BufferedDataGridView LogEntryGridView;
         private System.Windows.Forms.DataGridViewImageColumn TypeColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Line;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column;
         private System.Windows.Forms.DataGridViewTextBoxColumn MessageColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn GroupColumn;
         private System.Windows.Forms.DataGridViewButtonColumn RetryColumn;

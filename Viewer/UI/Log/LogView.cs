@@ -47,7 +47,19 @@ namespace Viewer.UI.Log
                 });
                 row.Cells.Add(new DataGridViewTextBoxCell
                 {
-                    Value = entry.Message
+                    Value = entry.Line
+                });
+                row.Cells.Add(new DataGridViewTextBoxCell
+                {
+                    Value = entry.Column
+                });
+                row.Cells.Add(new DataGridViewTextBoxCell
+                {
+                    Value = entry.Message,
+                    Style =
+                    {
+                        Alignment = DataGridViewContentAlignment.MiddleLeft
+                    }
                 });
                 row.Cells.Add(new DataGridViewTextBoxCell
                 {

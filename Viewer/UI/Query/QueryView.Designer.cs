@@ -1,4 +1,6 @@
-﻿namespace Viewer.UI.Query
+﻿using ScintillaNET;
+
+namespace Viewer.UI.Query
 {
     partial class QueryView
     {
@@ -29,7 +31,7 @@
         private void InitializeComponent()
         {
             this.TablePanel = new System.Windows.Forms.TableLayoutPanel();
-            this.QueryTextBox = new System.Windows.Forms.TextBox();
+            this.QueryTextBox = new ScintillaNET.Scintilla();
             this.RunButton = new System.Windows.Forms.Button();
             this.TablePanel.SuspendLayout();
             this.SuspendLayout();
@@ -45,16 +47,17 @@
             this.TablePanel.Name = "TablePanel";
             this.TablePanel.RowCount = 2;
             this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.TablePanel.Size = new System.Drawing.Size(627, 335);
             this.TablePanel.TabIndex = 0;
             // 
             // QueryTextBox
             // 
+            this.QueryTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.QueryTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.QueryTextBox.Location = new System.Drawing.Point(3, 3);
-            this.QueryTextBox.Multiline = true;
             this.QueryTextBox.Name = "QueryTextBox";
+            this.QueryTextBox.ScrollWidth = 200;
             this.QueryTextBox.Size = new System.Drawing.Size(621, 289);
             this.QueryTextBox.TabIndex = 0;
             this.QueryTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.QueryTextBox_KeyDown);
@@ -79,7 +82,6 @@
             this.Name = "QueryView";
             this.Text = "Query";
             this.TablePanel.ResumeLayout(false);
-            this.TablePanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -87,7 +89,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel TablePanel;
-        private System.Windows.Forms.TextBox QueryTextBox;
+        private ScintillaNET.Scintilla QueryTextBox;
         private System.Windows.Forms.Button RunButton;
     }
 }

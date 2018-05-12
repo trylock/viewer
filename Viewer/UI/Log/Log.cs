@@ -107,7 +107,7 @@ namespace Viewer.UI.Log
     [Export(typeof(ILogger))]
     public class Log : ILog
     {
-        private List<LogEntry> _entries = new List<LogEntry>();
+        private readonly List<LogEntry> _entries = new List<LogEntry>();
 
         public event EventHandler<LogEventArgs> EntryAdded;
         public event EventHandler EntriesRemoved;

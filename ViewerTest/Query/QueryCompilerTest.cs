@@ -330,5 +330,17 @@ namespace ViewerTest.Query
                 predicate(new Entity("test").SetAttribute(new Attribute("identifier with spaces and special characters ěščřžýáíéůú", new IntValue(1), AttributeFlags.None)))
             )));
         }
+
+        [TestMethod]
+        public void Compile_KeywordsAreCaseInsensitive()
+        {
+            _compiler.Compile(new StringReader("SelEcT \"a\" wHEre b ORDer bY c"), new NullErrorListener());
+
+            _factory.Verify(mock => mock.CreateQuery("a"));
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
+                !predicate(new Entity("test")) &&
+                predicate(new Entity("test").SetAttribute(new Attribute("b", new IntValue(1), AttributeFlags.None)))
+            )));
+        }
     }
 }

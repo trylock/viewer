@@ -17,3 +17,7 @@ Viewer.Query/QueryLexer.tokens
 Viewer.Query/QueryParser.cs
 Viewer.Query/QueryVisitor.cs
 Viewer.Query/QueryBaseVisitor.cs
+
+# Files generated from .tt templates
+Viewer.QueryRuntime/ArithmeticOperators.cs
+Viewer.QueryRuntime/ComparisonOperators.cs

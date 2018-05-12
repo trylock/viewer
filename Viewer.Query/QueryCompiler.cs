@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Viewer.Data;
 using Viewer.Data.Formats.Attributes;
@@ -20,8 +21,9 @@ namespace Viewer.Query
         /// Compile given query to an internal structure which can then be evaluated.
         /// </summary>
         /// <param name="input">Stream with the query</param>
-        /// <returns>Compiled LINQ query</returns>
-        IQuery Compile(TextReader input);
+        /// <param name="errorListener">Error reporter</param>
+        /// <returns>Compiled query</returns>
+        IQuery Compile(TextReader input, IErrorListener errorListener);
     }
 
     internal class CompilationResult
@@ -63,15 +65,20 @@ namespace Viewer.Query
 
         public IQuery Compile(IParseTree tree)
         {
-            return tree.Accept(this).Query;
+            return Visit(tree).Query;
         }
 
         public CompilationResult Visit(IParseTree tree)
         {
-            throw new NotImplementedException();
+            return tree.Accept(this);
         }
 
         public CompilationResult VisitChildren(IRuleNode node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CompilationResult VisitErrorNode(IErrorNode node)
         {
             throw new NotImplementedException();
         }
@@ -102,11 +109,6 @@ namespace Viewer.Query
             }
 
             return new CompilationResult{ Value = expr };
-        }
-
-        public CompilationResult VisitErrorNode(IErrorNode node)
-        {
-            throw new NotImplementedException();
         }
 
         public CompilationResult VisitQueryExpression(QueryParser.QueryExpressionContext context)
@@ -395,6 +397,12 @@ namespace Viewer.Query
             return expr;
         }
 
+        /// <summary>
+        /// Compile attribute value getter.
+        /// Generated code will also handle missing attributes.
+        /// </summary>
+        /// <param name="attributeName"></param>
+        /// <returns></returns>
         private Expression CompileAttributeAccess(string attributeName)
         {
             var name = Expression.Constant(attributeName);
@@ -432,6 +440,51 @@ namespace Viewer.Query
                 argumentArray);
         }
     }
+    
+    internal class ParserErrorListener : IAntlrErrorListener<IToken>
+    {
+        private readonly IErrorListener _errorListener;
+
+        public ParserErrorListener(IErrorListener listener)
+        {
+            _errorListener = listener;
+        }
+
+        public void SyntaxError(
+            TextWriter output, 
+            IRecognizer recognizer, 
+            IToken offendingSymbol, 
+            int line, 
+            int charPositionInLine,
+            string msg, 
+            RecognitionException e)
+        {
+            _errorListener.ReportError(line, charPositionInLine, msg);
+            throw new ParseCanceledException(e);
+        }
+    }
+
+    internal class LexerErrorListener : IAntlrErrorListener<int>
+    {
+        private readonly IErrorListener _errorListener;
+
+        public LexerErrorListener(IErrorListener listener)
+        {
+            _errorListener = listener;
+        }
+
+        public void SyntaxError(
+            TextWriter output,
+            IRecognizer recognizer, 
+            int offendingSymbol, 
+            int line, 
+            int charPositionInLine,
+            string msg, 
+            RecognitionException e)
+        {
+            _errorListener.ReportError(line, charPositionInLine, msg);
+        }
+    }
 
     [Export(typeof(IQueryCompiler))]
     public class QueryCompiler : IQueryCompiler
@@ -446,18 +499,37 @@ namespace Viewer.Query
             _runtime = runtime;
         }
 
-        public IQuery Compile(TextReader inputQuery)
+        public IQuery Compile(TextReader inputQuery, IErrorListener errorListener)
         {
             // create all necessary components to parse a query
             var input = new AntlrInputStream(inputQuery);
             var lexer = new QueryLexer(input);
+            lexer.AddErrorListener(new LexerErrorListener(errorListener));
+
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new QueryParser(tokenStream);
+            parser.AddErrorListener(new ParserErrorListener(errorListener));
 
             // parse and compile the query
-            var query = parser.queryExpression();
-            var compiler = new QueryCompilerVisitor(_queryFactory, _runtime);
-            return compiler.Compile(query);
+            errorListener.BeforeCompilation();
+            IQuery result;
+            try
+            {
+                var query = parser.queryExpression();
+                var compiler = new QueryCompilerVisitor(_queryFactory, _runtime);
+                result = compiler.Compile(query);
+            }
+            catch (ParseCanceledException)
+            {
+                // an error was reported already
+                return null;
+            }
+            finally
+            {
+                errorListener.AfterCompilation();
+            }
+
+            return result;
         }
     }
 }

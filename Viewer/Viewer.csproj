@@ -125,6 +125,7 @@
     <Compile Include="UI\Presenter.cs" />
     <Compile Include="UI\Query\IQueryView.cs" />
     <Compile Include="UI\Query\QueryComponent.cs" />
+    <Compile Include="UI\Query\QueryErrorListener.cs" />
     <Compile Include="UI\Query\QueryPresenter.cs" />
     <Compile Include="UI\Query\QueryView.cs">
       <SubType>Form</SubType>

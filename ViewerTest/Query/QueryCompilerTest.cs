@@ -56,7 +56,7 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_SelectOnly()
         {
-            _compiler.Compile(new StringReader("SELECT \"a/b/**/cd/e*/f?\""));
+            _compiler.Compile(new StringReader("SELECT \"a/b/**/cd/e*/f?\""), new NullErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("a/b/**/cd/e*/f?"), Times.Once);
         }
@@ -68,7 +68,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
                 .Returns(new IntValue(1));
 
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 1"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 1"), new NullErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
@@ -83,7 +83,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(2)))
                 .Returns(new IntValue(null));
 
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 2"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 2"), new NullErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
@@ -101,7 +101,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(4)))
                 .Returns(new IntValue(null));
 
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test = 4"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test = 4"), new NullErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
@@ -127,7 +127,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", new IntValue(4), new IntValue(4)))
                 .Returns(new IntValue(1));
 
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test1 = test2"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test1 = test2"), new NullErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
@@ -146,7 +146,7 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_OrderBySimpleKey()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test"), new NullErrorListener());
 
             _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer => 
                 comparer.Compare(
@@ -163,7 +163,7 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_OrderByComplexExpression()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test / 3 DESC"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test / 3 DESC"), new NullErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("/", new IntValue(1), new IntValue(3)))
@@ -190,7 +190,7 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_OrderByMultipleExpressions()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test1 / 3 DESC, test2"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test1 / 3 DESC, test2"), new NullErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("/", new IntValue(1), new IntValue(3)))
@@ -217,7 +217,7 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_CustomFunctionInvocation()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test(1, \"value\")"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test(1, \"value\")"), new NullErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("test", new IntValue(1), new StringValue("value")))
@@ -232,7 +232,7 @@ namespace ViewerTest.Query
         public void Compile_Subquery()
         {
             _compiler.Compile(
-                new StringReader("SELECT (SELECT \"pattern\" WHERE test = 1 ORDER BY test DESC) WHERE test2 = 2"));
+                new StringReader("SELECT (SELECT \"pattern\" WHERE test = 1 ORDER BY test DESC) WHERE test2 = 2"), new NullErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
@@ -261,7 +261,7 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_AdditionHasLowerPrecedenceThanMultiplication()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 + 2 * 3 = 7"));
+            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 + 2 * 3 = 7"), new NullErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("+", new IntValue(1), new IntValue(6)))
@@ -295,7 +295,7 @@ namespace ViewerTest.Query
                 .Callback(() => Assert.AreEqual(2, order++))
                 .Returns(_query.Object);
 
-            _compiler.Compile(new StringReader("SELECT \"a\" UNION SELECT \"b\" INTERSECT SELECT \"c\" EXCEPT SELECT \"d\""));
+            _compiler.Compile(new StringReader("SELECT \"a\" UNION SELECT \"b\" INTERSECT SELECT \"c\" EXCEPT SELECT \"d\""), new NullErrorListener());
         }
 
         [TestMethod]
@@ -316,13 +316,13 @@ namespace ViewerTest.Query
                 .Callback(() => Assert.AreEqual(2, order++))
                 .Returns(_query.Object);
 
-            _compiler.Compile(new StringReader("(SELECT \"a\" UNION SELECT \"b\") INTERSECT (SELECT \"c\" EXCEPT SELECT \"d\")"));
+            _compiler.Compile(new StringReader("(SELECT \"a\" UNION SELECT \"b\") INTERSECT (SELECT \"c\" EXCEPT SELECT \"d\")"), new NullErrorListener());
         }
 
         [TestMethod]
         public void Compile_AttributeIdentifierWithSpecialCharacters()
         {
-            _compiler.Compile(new StringReader("SELECT \"a\" WHERE `identifier with spaces and special characters ěščřžýáíéůú`"));
+            _compiler.Compile(new StringReader("SELECT \"a\" WHERE `identifier with spaces and special characters ěščřžýáíéůú`"), new NullErrorListener());
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
                 !predicate(new Entity("test")) &&

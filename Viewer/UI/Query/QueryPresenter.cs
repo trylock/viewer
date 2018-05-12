@@ -14,23 +14,28 @@ namespace Viewer.UI.Query
     {
         private readonly IApplicationState _appEvents;
         private readonly IQueryCompiler _queryCompiler;
+        private readonly IErrorListener _queryErrorListener;
 
         protected override ExportLifetimeContext<IQueryView> ViewLifetime { get; }
 
         [ImportingConstructor]
-        public QueryPresenter(ExportFactory<IQueryView> viewFactory, IApplicationState appEvents, IQueryCompiler queryCompiler)
+        public QueryPresenter(ExportFactory<IQueryView> viewFactory, IApplicationState appEvents, IQueryCompiler queryCompiler, IErrorListener queryErrorListener)
         {
             ViewLifetime = viewFactory.CreateExport();
             _appEvents = appEvents;
             _queryCompiler = queryCompiler;
+            _queryErrorListener = queryErrorListener;
 
             SubscribeTo(View, "View");
         }
 
         private void View_RunQuery(object sender, EventArgs e)
         {
-            var query = _queryCompiler.Compile(new StringReader(View.Query));
-            _appEvents.ExecuteQuery(query);
+            var query = _queryCompiler.Compile(new StringReader(View.Query), _queryErrorListener);
+            if (query != null)
+            {
+                _appEvents.ExecuteQuery(query);
+            }
         }
     }
 }

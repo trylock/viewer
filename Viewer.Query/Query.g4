@@ -14,7 +14,7 @@ unorderedQuery: SELECT source optionalWhere;
 
 source: STRING | '(' query ')';
 
-optionalWhere: WHERE comparison | ;
+optionalWhere: WHERE predicate | ;
 
 optionalOrderBy: ORDER BY orderByList | ;
 
@@ -24,6 +24,10 @@ orderByList: orderByKey (',' orderByKey)*;
 orderByKey: comparison optionalDirection;
 
 optionalDirection: DIRECTION | ;
+
+predicate: predicate OR conjunction | conjunction;
+
+conjunction: conjunction AND comparison | comparison; 
 
 comparison: expression REL_OP expression | expression;
 
@@ -43,6 +47,10 @@ WHERE: W H E R E;
 ORDER: O R D E R;
 
 BY:  B Y;
+
+AND: A N D;
+
+OR: O R;
 
 DIRECTION: (D E S C | A S C);
 

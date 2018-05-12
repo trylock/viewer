@@ -208,16 +208,14 @@ namespace Viewer.Query
 
         public CompilationResult VisitOptionalWhere(QueryParser.OptionalWhereContext context)
         {
-            var condition = context.comparison();
+            var condition = context.predicate();
             if (condition == null)
             {
                 return new CompilationResult{ Value = Expression.Constant(true) };
             }
 
-            var result = condition.Accept(this).Value;
-            return new CompilationResult {
-                Value = Expression.Not(Expression.Property(result, "IsNull"))
-            };
+            var predicate = condition.Accept(this).Value;
+            return new CompilationResult{ Value = predicate };
         }
 
         public CompilationResult VisitOptionalOrderBy(QueryParser.OptionalOrderByContext context)
@@ -272,6 +270,50 @@ namespace Viewer.Query
         public CompilationResult VisitOptionalDirection(QueryParser.OptionalDirectionContext context)
         {
             return null;
+        }
+
+        public CompilationResult VisitPredicate(QueryParser.PredicateContext context)
+        {
+            var right = context.conjunction();
+            var rhs = right.Accept(this).Value;
+
+            // just return the computed value if this is a production: predicate -> conjuction
+            var left = context.predicate();
+            if (left == null)
+            {
+                return new CompilationResult{ Value = rhs };
+            }
+
+            // compile OR
+            var lhs = left.Accept(this).Value;
+            return new CompilationResult
+            {
+                Value = Expression.Or(lhs, rhs)
+            };
+        }
+
+        public CompilationResult VisitConjunction(QueryParser.ConjunctionContext context)
+        {
+            // compile right subexpression
+            var right = context.comparison();
+            var rhs = right.Accept(this).Value;
+
+            // convert the computed value to bool
+            rhs = Expression.Not(Expression.Property(rhs, "IsNull"));
+
+            // if this is a production: conjunction -> comparison
+            var left = context.conjunction();
+            if (left == null)
+            {
+                return new CompilationResult{ Value = rhs };
+            }
+            
+            // compile AND
+            var lhs = left.Accept(this).Value;
+            return new CompilationResult
+            {
+                Value = Expression.And(lhs, rhs)
+            };
         }
 
         public CompilationResult VisitComparison(QueryParser.ComparisonContext context)

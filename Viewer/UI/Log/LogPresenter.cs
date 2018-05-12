@@ -22,6 +22,7 @@ namespace Viewer.UI.Log
             ViewLifetime = viewFactory.CreateExport();
 
             _log.EntryAdded += LogOnEntryAdded;
+            _log.EntriesRemoved += LogOnEntriesRemoved;
             View.Entries = _log;
             View.UpdateEntries();
             SubscribeTo(View, "View");
@@ -31,6 +32,7 @@ namespace Viewer.UI.Log
         {
             base.Dispose();
             _log.EntryAdded -= LogOnEntryAdded;
+            _log.EntriesRemoved -= LogOnEntriesRemoved;
         }
 
         private void LogOnEntryAdded(object sender, LogEventArgs e)
@@ -40,6 +42,15 @@ namespace Viewer.UI.Log
                 View.Entries = _log;
                 View.UpdateEntries();
                 View.EnsureVisible();
+            }));
+        }
+
+        private void LogOnEntriesRemoved(object sender, EventArgs e)
+        {
+            View.BeginInvoke(new Action(() =>
+            {
+                View.Entries = _log;
+                View.UpdateEntries();
             }));
         }
 

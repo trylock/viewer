@@ -87,6 +87,11 @@ namespace Viewer.UI.Log
         event EventHandler<LogEventArgs> EntryAdded;
 
         /// <summary>
+        /// Event called when the log is cleared
+        /// </summary>
+        event EventHandler EntriesRemoved;
+
+        /// <summary>
         /// Remove a log entry from the collection
         /// </summary>
         /// <param name="entry"></param>
@@ -103,7 +108,9 @@ namespace Viewer.UI.Log
     public class Log : ILog
     {
         private List<LogEntry> _entries = new List<LogEntry>();
+
         public event EventHandler<LogEventArgs> EntryAdded;
+        public event EventHandler EntriesRemoved;
 
         public void Add(LogEntry entry)
         {
@@ -128,6 +135,7 @@ namespace Viewer.UI.Log
             {
                 _entries.Clear();
             }
+            EntriesRemoved?.Invoke(this, EventArgs.Empty);
         }
 
         public IEnumerator<LogEntry> GetEnumerator()

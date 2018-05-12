@@ -51,6 +51,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ComparisonOperators.tt</DependentUpon>
     </Compile>
+    <Content Include="LogicOperators.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LogicOperators.cs</LastGenOutput>
+    </Content>
+    <Compile Include="LogicOperators.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LogicOperators.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

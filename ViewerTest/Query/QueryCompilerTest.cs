@@ -346,26 +346,32 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_ExpressionWithAndOr()
         {
-            _compiler.Compile(new StringReader("SELECT \"a\" WHERE a = 1 OR b = 2 AND c = 3"), new NullErrorListener());
+            _compiler.Compile(new StringReader("SELECT \"a\" WHERE a OR b AND c"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(1)))
+                .Setup(mock => mock.FindAndCall("and", new IntValue(2), new IntValue(3)))
+                .Returns(new IntValue(3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("and", new IntValue(2), new IntValue(null)))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("and", new IntValue(null), new IntValue(3)))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("and", new IntValue(null), new IntValue(null)))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(2), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("or", new IntValue(1), new IntValue(3)))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
+                .Setup(mock => mock.FindAndCall("or", new IntValue(1), new IntValue(null)))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(3), new IntValue(3)))
-                .Returns(new IntValue(1));
+                .Setup(mock => mock.FindAndCall("or", new IntValue(null), new IntValue(3)))
+                .Returns(new IntValue(3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("or", new IntValue(null), new IntValue(null)))
+                .Returns(new IntValue(null));
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
                 !predicate(new Entity("test")) &&
@@ -376,6 +382,57 @@ namespace ViewerTest.Query
                     .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))
                     .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
                 predicate(new Entity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))) &&
+                predicate(new Entity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                predicate(new Entity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None)))
+            )));
+        }
+
+        [TestMethod]
+        public void Compile_ParenthesesInLogicalExpression()
+        {
+            _compiler.Compile(new StringReader("select \"a\" where (a or b) and c"), new NullErrorListener());
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("and", new IntValue(1), new IntValue(3)))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("and", new IntValue(1), new IntValue(null)))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("and", new IntValue(null), new IntValue(3)))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("and", new IntValue(null), new IntValue(null)))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("or", new IntValue(1), new IntValue(2)))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("or", new IntValue(1), new IntValue(null)))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("or", new IntValue(null), new IntValue(2)))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("or", new IntValue(null), new IntValue(null)))
+                .Returns(new IntValue(null));
+
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
+                !predicate(new Entity("test")) &&
+                !predicate(new Entity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))) &&
+                !predicate(new Entity("test").SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))) &&
+                !predicate(new Entity("test").SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                predicate(new Entity("test")
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                !predicate(new Entity("test")
                     .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
                     .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))) &&
                 predicate(new Entity("test")

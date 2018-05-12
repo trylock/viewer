@@ -14,17 +14,19 @@ unorderedQuery: SELECT source optionalWhere;
 
 source: STRING | '(' query ')';
 
+// WHERE
 optionalWhere: WHERE predicate | ;
 
+// ORDER BY
 optionalOrderBy: ORDER BY orderByList | ;
 
-// expressions
 orderByList: orderByKey (',' orderByKey)*;
 
 orderByKey: comparison optionalDirection;
 
 optionalDirection: DIRECTION | ;
 
+// expressions
 predicate: predicate OR conjunction | conjunction;
 
 conjunction: conjunction AND comparison | comparison; 
@@ -35,7 +37,7 @@ expression: expression ADD_SUB multiplication | multiplication;
 
 multiplication: multiplication MULT_DIV factor | factor;
 
-factor: '(' comparison ')' | INT | REAL | STRING | COMPLEX_ID | ID | ID '(' argumentList ')';
+factor: '(' predicate ')' | INT | REAL | STRING | COMPLEX_ID | ID | ID '(' argumentList ')';
 
 argumentList: comparison (',' comparison)* | ;
 

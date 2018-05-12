@@ -1,0 +1,62 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Viewer.Data;
+using Viewer.Query;
+
+namespace Viewer.QueryRuntime
+{
+    <#
+    var typeNames = new[]{ "IntValue", "RealValue", "StringValue", "DateTimeValue" };
+    var typeId = new[]{ "Integer", "Real", "String", "DateTime" };
+
+    for (var i = 0; i < typeNames.Length; ++i)
+    {
+    #>
+        [Export(typeof(IFunction))]
+        public class And<#= typeNames[i] #>Function : IFunction
+        {
+            public string Name => "and";
+
+            public IReadOnlyList<TypeId> Arguments { get; } = new[]
+            {
+                TypeId.<#= typeId[i] #>,
+                TypeId.<#= typeId[i] #>,
+            };
+
+            public BaseValue Call(IArgumentList arguments)
+            {
+                return arguments[0].IsNull ? arguments[0] : arguments[1];
+            }
+        }
+
+        [Export(typeof(IFunction))]
+        public class Or<#= typeNames[i] #>Function : IFunction
+        {
+            public string Name => "or";
+
+            public IReadOnlyList<TypeId> Arguments { get; } = new[]
+            {
+                TypeId.<#= typeId[i] #>,
+                TypeId.<#= typeId[i] #>,
+            };
+
+            public BaseValue Call(IArgumentList arguments)
+            {
+                return arguments[0].IsNull ? arguments[1] : arguments[0];
+            }
+        }
+    <# 
+    } 
+    #>
+}

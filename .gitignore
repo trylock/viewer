@@ -21,3 +21,4 @@ Viewer.Query/QueryBaseVisitor.cs
 # Files generated from .tt templates
 Viewer.QueryRuntime/ArithmeticOperators.cs
 Viewer.QueryRuntime/ComparisonOperators.cs
+Viewer.QueryRuntime/LogicOperators.cs

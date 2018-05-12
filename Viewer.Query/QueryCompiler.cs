@@ -215,7 +215,10 @@ namespace Viewer.Query
             }
 
             var predicate = condition.Accept(this).Value;
-            return new CompilationResult{ Value = predicate };
+            return new CompilationResult
+            {
+                Value = Expression.Not(Expression.Property(predicate, "IsNull"))
+            };
         }
 
         public CompilationResult VisitOptionalOrderBy(QueryParser.OptionalOrderByContext context)
@@ -288,7 +291,7 @@ namespace Viewer.Query
             var lhs = left.Accept(this).Value;
             return new CompilationResult
             {
-                Value = Expression.Or(lhs, rhs)
+                Value = RuntimeCall("or", lhs, rhs)
             };
         }
 
@@ -297,9 +300,6 @@ namespace Viewer.Query
             // compile right subexpression
             var right = context.comparison();
             var rhs = right.Accept(this).Value;
-
-            // convert the computed value to bool
-            rhs = Expression.Not(Expression.Property(rhs, "IsNull"));
 
             // if this is a production: conjunction -> comparison
             var left = context.conjunction();
@@ -312,7 +312,7 @@ namespace Viewer.Query
             var lhs = left.Accept(this).Value;
             return new CompilationResult
             {
-                Value = Expression.And(lhs, rhs)
+                Value = RuntimeCall("and", lhs, rhs)
             };
         }
 
@@ -372,7 +372,7 @@ namespace Viewer.Query
 
         public CompilationResult VisitFactor(QueryParser.FactorContext context)
         {
-            var comparison = context.comparison();
+            var comparison = context.predicate();
             if (comparison != null)
             {
                 return comparison.Accept(this);

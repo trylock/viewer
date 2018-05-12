@@ -123,6 +123,15 @@
       <DependentUpon>PresentationView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Presenter.cs" />
+    <Compile Include="UI\Query\IQueryView.cs" />
+    <Compile Include="UI\Query\QueryComponent.cs" />
+    <Compile Include="UI\Query\QueryPresenter.cs" />
+    <Compile Include="UI\Query\QueryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Query\QueryView.Designer.cs">
+      <DependentUpon>QueryView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Tasks\ProgressViewFactory.cs" />
     <Compile Include="UI\Selection.cs" />
     <Compile Include="UI\Tasks\TasksView.cs">
@@ -196,6 +205,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Presentation\PresentationView.resx">
       <DependentUpon>PresentationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Query\QueryView.resx">
+      <DependentUpon>QueryView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Tasks\ProgressView.resx">
       <DependentUpon>ProgressView.cs</DependentUpon>

@@ -298,7 +298,7 @@ namespace Viewer.Query
         public CompilationResult VisitConjunction(QueryParser.ConjunctionContext context)
         {
             // compile right subexpression
-            var right = context.comparison();
+            var right = context.literal();
             var rhs = right.Accept(this).Value;
 
             // if this is a production: conjunction -> comparison
@@ -314,6 +314,20 @@ namespace Viewer.Query
             {
                 Value = RuntimeCall("and", lhs, rhs)
             };
+        }
+
+        public CompilationResult VisitLiteral(QueryParser.LiteralContext context)
+        {
+            var value = context.comparison().Accept(this).Value;
+            if (context.NOT() != null)
+            {
+                return new CompilationResult
+                {
+                    Value = RuntimeCall("not", new[]{ value })
+                };
+            }
+
+            return new CompilationResult{ Value = value };
         }
 
         public CompilationResult VisitComparison(QueryParser.ComparisonContext context)

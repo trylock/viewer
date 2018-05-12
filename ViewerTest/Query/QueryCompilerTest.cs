@@ -444,5 +444,24 @@ namespace ViewerTest.Query
                     .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None)))
             )));
         }
+
+        [TestMethod]
+        public void Compile_Not()
+        {
+            _compiler.Compile(new StringReader("select \"a\" where not a"), new NullErrorListener());
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("not", new IntValue(null)))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("not", new IntValue(1)))
+                .Returns(new IntValue(null));
+
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
+                predicate(new Entity("test")) &&
+                predicate(new Entity("test").SetAttribute(new Attribute("a", new IntValue(null), AttributeFlags.None))) &&
+                !predicate(new Entity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None)))
+            )));
+        }
     }
 }

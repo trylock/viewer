@@ -29,7 +29,9 @@ optionalDirection: DIRECTION | ;
 // expressions
 predicate: predicate OR conjunction | conjunction;
 
-conjunction: conjunction AND comparison | comparison; 
+conjunction: conjunction AND literal | literal; 
+
+literal: comparison | NOT comparison;
 
 comparison: expression REL_OP expression | expression;
 
@@ -53,6 +55,8 @@ BY:  B Y;
 AND: A N D;
 
 OR: O R;
+
+NOT: N O T;
 
 DIRECTION: (D E S C | A S C);
 

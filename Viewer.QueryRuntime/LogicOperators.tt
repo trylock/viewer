@@ -56,6 +56,22 @@ namespace Viewer.QueryRuntime
                 return arguments[0].IsNull ? arguments[1] : arguments[0];
             }
         }
+
+        [Export(typeof(IFunction))]
+        public class Not<#= typeNames[i] #>Function : IFunction
+        {
+            public string Name => "not";
+
+            public IReadOnlyList<TypeId> Arguments { get; } = new[]
+            {
+                TypeId.<#= typeId[i] #>,
+            };
+
+            public BaseValue Call(IArgumentList arguments)
+            {
+                return arguments[0].IsNull ? new IntValue(1) : new IntValue(null);
+            }
+        }
     <# 
     } 
     #>

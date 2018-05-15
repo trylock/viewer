@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -76,6 +76,11 @@ namespace Viewer.UI.Images
         private Task _loadTask = Task.CompletedTask;
 
         /// <summary>
+        /// Currently loaded query
+        /// </summary>
+        private IQuery _query;
+
+        /// <summary>
         /// Index of an active item (item over which is a mouse cursor) 
         /// or -1 if no item is active.
         /// </summary>
@@ -126,17 +131,10 @@ namespace Viewer.UI.Images
         /// <param name="query">Query to show</param>
         public async void LoadQueryAsync(IQuery query)
         {
-            // cancel previous load operation
-            _loadCancellation?.Cancel();
+            _query = query;
 
-            // wait for it to end
-            try
-            {
-                await _loadTask;
-            }
-            catch (OperationCanceledException)
-            {
-            }
+            // cancel previous load operation and wait for it to end
+            await CancelLoadAsync();
 
             // start loading a new query
             _loadCancellation = new CancellationTokenSource();
@@ -155,6 +153,21 @@ namespace Viewer.UI.Images
             finally
             {
                 View.EndLoading();
+            }
+        }
+
+        private async Task CancelLoadAsync()
+        {
+            // cancel previous load operation
+            _loadCancellation?.Cancel();
+
+            // wait for it to end
+            try
+            {
+                await _loadTask;
+            }
+            catch (OperationCanceledException)
+            {
             }
         }
 
@@ -558,8 +571,9 @@ namespace Viewer.UI.Images
             _state.OpenEntity(entities, ActiveItem);
         }
         
-        private void View_CloseView(object sender, EventArgs eventArgs)
+        private async void View_CloseView(object sender, EventArgs eventArgs)
         {
+            await CancelLoadAsync();
             Dispose();
         }
 

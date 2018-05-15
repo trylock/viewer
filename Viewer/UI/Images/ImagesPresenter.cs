@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -238,10 +238,32 @@ namespace Viewer.UI.Images
             foreach (var entity in entities)
             {
                 _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
-                View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
+                AddEntityView(new EntityView(entity, GetThumbnail(entity)));
             }
             View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
+        }
+
+        private void AddEntityView(EntityView view)
+        {
+            View.Items.Add(view);
+
+            var index = View.Items.Count - 2;
+            while (index >= 0)
+            {
+                var comparison = _query.Comparer.Compare(View.Items[index].Data, View.Items[index + 1].Data);
+                if (comparison > 0)
+                {
+                    var tmp = View.Items[index];
+                    View.Items[index] = View.Items[index + 1];
+                    View.Items[index + 1] = tmp;
+                    --index;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
         
         /// <summary>

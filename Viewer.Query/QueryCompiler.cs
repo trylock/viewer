@@ -280,7 +280,7 @@ namespace Viewer.Query
             var right = context.conjunction();
             var rhs = right.Accept(this).Value;
 
-            // just return the computed value if this is a production: predicate -> conjuction
+            // just return the computed value if this is a production: predicate -> conjunction
             var left = context.predicate();
             if (left == null)
             {

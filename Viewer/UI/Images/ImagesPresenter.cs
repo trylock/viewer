@@ -187,7 +187,7 @@ namespace Viewer.UI.Images
                 waiting.Enqueue(entity);
 
                 var delay = DateTime.Now - lastNofitication;
-                if (delay.Milliseconds >= MinViewUpdateDelay)
+                if (delay.TotalMilliseconds >= MinViewUpdateDelay)
                 {
                     var localQueue = waiting;
                     waiting = new Queue<IEntity>();

@@ -463,5 +463,18 @@ namespace ViewerTest.Query
                 !predicate(new Entity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None)))
             )));
         }
+
+        [TestMethod]
+        public void Compile_LowerCaseDescOrdering()
+        {
+            _compiler.Compile(new StringReader("select \"a\" order by a desc"), new NullErrorListener());
+
+            _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer =>
+                comparer.Compare(
+                    new Entity("a").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None)),
+                    new Entity("b").SetAttribute(new Attribute("a", new IntValue(2), AttributeFlags.None))
+                ) > 0
+            )));
+        }
     }
 }

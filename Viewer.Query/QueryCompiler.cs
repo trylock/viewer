@@ -258,7 +258,7 @@ namespace Viewer.Query
                 _entityParameter
             );
             var valueGetter = valueGetterExpr.Compile();
-            var direction = context.optionalDirection().GetText() == "DESC" ? -1 : 1;
+            var direction = context.optionalDirection().GetText().ToLowerInvariant() == "desc" ? -1 : 1;
 
             return new CompilationResult
             {

@@ -84,7 +84,7 @@ namespace Viewer.UI.Images
 
         private Size _itemSize;
         private Rectangle _selectionBounds;
-        private List<EntityView> _items;
+        private List<EntityView> _items = new List<EntityView>();
 
         #region Graphics settings
 

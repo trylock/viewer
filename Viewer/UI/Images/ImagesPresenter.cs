@@ -66,11 +66,6 @@ namespace Viewer.UI.Images
         private bool _isShift;
 
         /// <summary>
-        /// Cancellation token source for the last load operation
-        /// </summary>
-        private CancellationTokenSource _loadCancellation;
-
-        /// <summary>
         /// Last query load task
         /// </summary>
         private Task _loadTask = Task.CompletedTask;
@@ -131,19 +126,16 @@ namespace Viewer.UI.Images
         /// <param name="query">Query to show</param>
         public async void LoadQueryAsync(IQuery query)
         {
-            _query = query;
-
             // cancel previous load operation and wait for it to end
             await CancelLoadAsync();
 
             // start loading a new query
-            _loadCancellation = new CancellationTokenSource();
+            _query = query;
 
             View.BeginLoading();
             try
             {
-                Clear();
-                _loadTask = Task.Run(() => LoadQueryBackground(query), _loadCancellation.Token);
+                _loadTask = Task.Run(() => LoadQueryBackground(query), _query.Cancellation.Token);
                 await _loadTask;
                 View.UpdateItems();
             }
@@ -159,7 +151,7 @@ namespace Viewer.UI.Images
         private async Task CancelLoadAsync()
         {
             // cancel previous load operation
-            _loadCancellation?.Cancel();
+            _query?.Cancellation.Cancel();
 
             // wait for it to end
             try
@@ -169,6 +161,9 @@ namespace Viewer.UI.Images
             catch (OperationCanceledException)
             {
             }
+
+            // update view
+            Clear();
         }
 
         /// <summary>
@@ -182,7 +177,7 @@ namespace Viewer.UI.Images
             var waiting = new Queue<IEntity>();
             foreach (var entity in query)
             {
-                _loadCancellation.Token.ThrowIfCancellationRequested();
+                query.Cancellation.Token.ThrowIfCancellationRequested();
 
                 waiting.Enqueue(entity);
 

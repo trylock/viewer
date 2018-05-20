@@ -29,7 +29,7 @@ namespace ViewerTest.UI.Images
         private ImagesPresenter _presenter;
 
         private List<Entity> _data;
-        private List<EntityView> _items;
+        private SortedList<EntityView> _items;
 
         [TestInitialize]
         public void Setup()
@@ -41,7 +41,7 @@ namespace ViewerTest.UI.Images
             _state = new Mock<IApplicationState>();
 
             _data = new List<Entity>();
-            _items = new List<EntityView>();
+            _items = new SortedList<EntityView>(new EntityViewComparer(new EntityComparer()));
             for (int i = 0; i < 16; ++i)
             {
                 var entity = new Entity(i.ToString());

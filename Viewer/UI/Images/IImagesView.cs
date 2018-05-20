@@ -60,7 +60,7 @@ namespace Viewer.UI.Images
             }
         }
     }
-
+    
     public class EntityViewPathComparer : IEqualityComparer<EntityView>
     {
         public bool Equals(EntityView x, EntityView y)
@@ -75,6 +75,21 @@ namespace Viewer.UI.Images
         public int GetHashCode(EntityView obj)
         {
             return obj.FullPath.GetHashCode();
+        }
+    }
+
+    public class EntityViewComparer : IComparer<EntityView>
+    {
+        private readonly IComparer<IEntity> _entityComparer;
+
+        public EntityViewComparer(IComparer<IEntity> entityComparer)
+        {
+            _entityComparer = entityComparer;
+        }
+
+        public int Compare(EntityView x, EntityView y)
+        {
+            return _entityComparer.Compare(x.Data, y.Data);
         }
     }
 
@@ -149,7 +164,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// List of items to show 
         /// </summary>
-        List<EntityView> Items { get; set; }
+        SortedList<EntityView> Items { get; set; }
 
         /// <summary>
         /// Set an item size

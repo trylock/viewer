@@ -70,7 +70,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Items to show in the component
         /// </summary>
-        public List<EntityView> Items
+        public SortedList<EntityView> Items
         {
             get => _items;
             set
@@ -84,7 +84,7 @@ namespace Viewer.UI.Images
 
         private Size _itemSize;
         private Rectangle _selectionBounds;
-        private List<EntityView> _items = new List<EntityView>();
+        private SortedList<EntityView> _items;
 
         #region Graphics settings
 

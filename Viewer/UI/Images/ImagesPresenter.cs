@@ -131,7 +131,8 @@ namespace Viewer.UI.Images
 
             // start loading a new query
             _query = query;
-
+            
+            View.Items = new SortedList<EntityView>(new EntityViewComparer(_query.Comparer));
             View.BeginLoading();
             try
             {
@@ -210,12 +211,8 @@ namespace Viewer.UI.Images
             FocusedItem = -1;
 
             // reset view
-            if (View.Items == null)
-            {
-                View.Items = new List<EntityView>();
-            }
-            else
-            {
+            if (View.Items != null)
+            { 
                 foreach (var item in View.Items)
                 {
                     item.Dispose();
@@ -233,32 +230,10 @@ namespace Viewer.UI.Images
             foreach (var entity in entities)
             {
                 _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
-                AddEntityView(new EntityView(entity, GetThumbnail(entity)));
+                View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
             }
             View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
-        }
-
-        private void AddEntityView(EntityView view)
-        {
-            View.Items.Add(view);
-
-            var index = View.Items.Count - 2;
-            while (index >= 0)
-            {
-                var comparison = _query.Comparer.Compare(View.Items[index].Data, View.Items[index + 1].Data);
-                if (comparison > 0)
-                {
-                    var tmp = View.Items[index];
-                    View.Items[index] = View.Items[index + 1];
-                    View.Items[index + 1] = tmp;
-                    --index;
-                }
-                else
-                {
-                    break;
-                }
-            }
         }
         
         /// <summary>

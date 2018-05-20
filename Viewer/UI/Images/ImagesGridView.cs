@@ -88,7 +88,7 @@ namespace Viewer.UI.Images
             }
         }
         
-        public List<EntityView> Items
+        public SortedList<EntityView> Items
         {
             get => GridView.Items;
             set => GridView.Items = value;

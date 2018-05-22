@@ -29,9 +29,10 @@ namespace Viewer.UI.Query
             SubscribeTo(View, "View");
         }
 
-        private void View_RunQuery(object sender, EventArgs e)
+        private async void View_RunQuery(object sender, EventArgs e)
         {
-            var query = _queryCompiler.Compile(new StringReader(View.Query), _queryErrorListener);
+            var input = View.Query;
+            var query = await Task.Run(() => _queryCompiler.Compile(new StringReader(input), _queryErrorListener));
             if (query != null)
             {
                 _appEvents.ExecuteQuery(query);

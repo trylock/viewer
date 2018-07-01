@@ -11,12 +11,11 @@ using Viewer.Properties;
 
 namespace Viewer.UI.Images
 {
-    [Flags]
     public enum EntityViewState
     {
-        None = 0x0,
-        Active = 0x1,
-        Selected = 0x2,
+        None,
+        Active,
+        Selected,
     }
 
     public class EntityView : IDisposable

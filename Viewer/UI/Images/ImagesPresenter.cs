@@ -34,11 +34,6 @@ namespace Viewer.UI.Images
         private readonly IApplicationState _state;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
-        
-        /// <summary>
-        /// Minimal time in milliseconds between 2 view updates during a loading operation
-        /// </summary>
-        private const int MinViewUpdateDelay = 100;
 
         /// <summary>
         /// Minimal size of a thumbnail

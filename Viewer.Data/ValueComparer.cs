@@ -13,6 +13,8 @@ namespace Viewer.Data
         /// </summary>
         public static ValueComparer Default { get; } = new ValueComparer();
 
+        private static readonly NumberVisitor _numberVisitor = new NumberVisitor();
+
         /// <summary>
         /// Convert value to a number or null
         /// </summary>
@@ -47,8 +49,6 @@ namespace Viewer.Data
                 return null;
             }
         }
-
-        private readonly NumberVisitor _numberVisitor = new NumberVisitor();
 
         public int Compare(BaseValue x, BaseValue y)
         {

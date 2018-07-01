@@ -77,6 +77,9 @@ namespace Viewer.UI.Images
         }
     }
 
+    /// <summary>
+    /// EntityView comparer which compares entity views by their underlying entity.
+    /// </summary>
     public class EntityViewComparer : IComparer<EntityView>
     {
         private readonly IComparer<IEntity> _entityComparer;
@@ -110,7 +113,6 @@ namespace Viewer.UI.Images
         event MouseEventHandler HandleMouseDown;
         event MouseEventHandler HandleMouseUp;
         event MouseEventHandler HandleMouseMove;
-        event EventHandler Resize;
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;
 

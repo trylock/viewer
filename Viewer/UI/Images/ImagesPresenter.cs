@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -76,6 +77,16 @@ namespace Viewer.UI.Images
         private IQuery _query;
 
         /// <summary>
+        /// Queue of entities loaded from the query which are not shown yet.
+        /// </summary>
+        private readonly ConcurrentQueue<IEntity> _waitingQueue = new ConcurrentQueue<IEntity>();
+
+        /// <summary>
+        /// Minimal time in milliseconds between 2 poll events.
+        /// </summary>
+        private const int PollingRate = 100;
+
+        /// <summary>
         /// Index of an active item (item over which is a mouse cursor) 
         /// or -1 if no item is active.
         /// </summary>
@@ -131,12 +142,15 @@ namespace Viewer.UI.Images
 
             // start loading a new query
             _query = query;
-            
+            Debug.Assert(_waitingQueue.IsEmpty);
+
             View.Items = new SortedList<EntityView>(new EntityViewComparer(_query.Comparer));
             View.BeginLoading();
+            View.BeginPolling(PollingRate);
+
             try
             {
-                _loadTask = Task.Run(() => LoadQueryBackground(query), _query.Cancellation.Token);
+                _loadTask = Task.Run(() => LoadQueryBlocking(query), _query.Cancellation.Token);
                 await _loadTask;
                 View.UpdateItems();
             }
@@ -145,6 +159,7 @@ namespace Viewer.UI.Images
             }
             finally
             {
+                View.EndPolling();
                 View.EndLoading();
             }
         }
@@ -168,33 +183,16 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Load entities from the query.
-        /// This function assumes that it runs on a background thread
+        /// Load entities from the query and put them to a qaiting queue.
         /// </summary>
-        /// <param name="query"></param>
-        private void LoadQueryBackground(IQuery query)
+        /// <param name="query">Query to load</param>
+        private void LoadQueryBlocking(IQuery query)
         {
-            var lastNofitication = DateTime.Now;
-            var waiting = new Queue<IEntity>();
             foreach (var entity in query)
             {
                 query.Cancellation.Token.ThrowIfCancellationRequested();
 
-                waiting.Enqueue(entity);
-
-                var delay = DateTime.Now - lastNofitication;
-                if (delay.TotalMilliseconds >= MinViewUpdateDelay)
-                {
-                    var localQueue = waiting;
-                    waiting = new Queue<IEntity>();
-                    lastNofitication = DateTime.Now;
-                    View.BeginInvoke(new Action(() => ViewEntities(localQueue)));
-                }
-            }
-
-            if (waiting.Count > 0)
-            {
-                View.BeginInvoke(new Action(() => ViewEntities(waiting)));
+                _waitingQueue.Enqueue(entity);
             }
         }
         
@@ -219,21 +217,6 @@ namespace Viewer.UI.Images
                 }
                 View.Items.Clear();
             }
-        }
-        
-        /// <summary>
-        /// Add entities to the view
-        /// </summary>
-        /// <param name="entities"></param>
-        private void ViewEntities(IEnumerable<IEntity> entities)
-        {
-            foreach (var entity in entities)
-            {
-                _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
-                View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
-            }
-            View.ItemSize = ComputeThumbnailSize();
-            View.UpdateItems();
         }
         
         /// <summary>
@@ -301,6 +284,25 @@ namespace Viewer.UI.Images
         }
 
         #region User input
+
+        private void View_Poll(object sender, EventArgs e)
+        {
+            // show all entities in the waiting queue
+            int count = 0;
+            while (_waitingQueue.TryDequeue(out var entity))
+            {
+                _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
+                View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
+                ++count;
+            }
+
+            // update the view if necessary
+            if (count > 0)
+            {
+                View.ItemSize = ComputeThumbnailSize();
+                View.UpdateItems();
+            }
+        }
         
         private void View_HandleMouseDown(object sender, MouseEventArgs e)
         {

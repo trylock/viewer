@@ -175,6 +175,34 @@ namespace Viewer.UI.Images
 
         #endregion
 
+        #region IPolledView
+        
+        public event EventHandler Poll;
+
+        public void BeginPolling(int delay)
+        {
+            if (delay <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(delay));
+            }
+
+            PollTimer.Interval = delay;
+            PollTimer.Enabled = true;
+        }
+
+        public void EndPolling()
+        {
+            PollTimer.Enabled = false;
+            Poll?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void PollTimer_Tick(object sender, EventArgs e)
+        {
+            Poll?.Invoke(sender, e);
+        }
+
+        #endregion
+
         #region GridView Events
 
         private void GridView_MouseDown(object sender, MouseEventArgs e)

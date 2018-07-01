@@ -107,9 +107,34 @@ namespace Viewer.UI.Images
             NewName = newName;
         }
     }
-    
-    public interface IImagesView : IWindowView
+
+    public interface IPolledView
     {
+        /// <summary>
+        /// Event called once every k milliseconds.
+        /// The rate of polling depends on the argument in the BeginPolling method.
+        /// </summary>
+        event EventHandler Poll;
+
+        /// <summary>
+        /// Start triggering the Poll event in regular intervals.
+        /// Subsequent calls to this method will change the interval.
+        /// </summary>
+        /// <param name="delay">Minimal time in milliseconds between 2 poll events</param>
+        void BeginPolling(int delay);
+
+        /// <summary>
+        /// Trigger one last Poll event instantaneously and stop triggering the event.
+        /// </summary>
+        void EndPolling();
+    }
+    
+    public interface IImagesView : IWindowView, IPolledView
+    {
+        // TODO: break this interface to multiple interfaces
+
+        #region Events
+
         event MouseEventHandler HandleMouseDown;
         event MouseEventHandler HandleMouseUp;
         event MouseEventHandler HandleMouseMove;
@@ -155,7 +180,11 @@ namespace Viewer.UI.Images
         /// Event called when user set the thumbnail size
         /// </summary>
         event EventHandler ThumbnailSizeCommit;
-        
+
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// Current scale of a thumbnail. It will always be in the [1, 2] internal.
         /// 1.0 is a minimal thumbnail size, 2.0 is a maximal thumbnail size
@@ -171,6 +200,10 @@ namespace Viewer.UI.Images
         /// Set an item size
         /// </summary>
         Size ItemSize { get; set; }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Notify the view that the Items collection has changed.
@@ -236,5 +269,7 @@ namespace Viewer.UI.Images
         /// Hide item edit form.
         /// </summary>
         void HideItemEditForm();
+
+        #endregion
     }
 }

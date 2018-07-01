@@ -42,6 +42,7 @@
             this.ItemsCountLabel = new System.Windows.Forms.Label();
             this.ViewTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.ControlPanel = new System.Windows.Forms.Panel();
+            this.PollTimer = new System.Windows.Forms.Timer(this.components);
             this.ItemContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).BeginInit();
             this.ViewTableLayout.SuspendLayout();
@@ -177,6 +178,10 @@
             this.ControlPanel.Size = new System.Drawing.Size(829, 34);
             this.ControlPanel.TabIndex = 0;
             // 
+            // PollTimer
+            // 
+            this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
+            // 
             // ImagesGridView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -211,5 +216,6 @@
         private System.Windows.Forms.Label ItemsCountLabel;
         private System.Windows.Forms.TableLayoutPanel ViewTableLayout;
         private System.Windows.Forms.Panel ControlPanel;
+        private System.Windows.Forms.Timer PollTimer;
     }
 }

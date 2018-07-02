@@ -33,6 +33,9 @@ namespace Viewer.UI.Query
 
             QueryTextBox.Lexer = Lexer.Sql;
             QueryTextBox.SetKeywords(0, "select where order by desc asc and or not");
+
+            QueryTextBox.Margins[0].Type = MarginType.Number;
+            QueryTextBox.Margins[0].Width = 16;
         }
 
         #region View interface
@@ -58,6 +61,10 @@ namespace Viewer.UI.Query
         private void RunButton_Click(object sender, EventArgs e)
         {
             RunQuery?.Invoke(sender, e);
+        }
+
+        private void QueryTextBox_TextChanged(object sender, EventArgs e)
+        {
         }
     }
 }

@@ -64,6 +64,11 @@ namespace Viewer.UI
         event EventHandler<OpenFileEventArgs> FileOpened;
 
         /// <summary>
+        /// Event called when user tries to save a file.
+        /// </summary>
+        event EventHandler FileSaved;
+
+        /// <summary>
         /// Event called when user tries to open an entity (i.e. to open presentation)
         /// </summary>
         event EventHandler<EntityEventArgs> EntityOpened;
@@ -86,6 +91,11 @@ namespace Viewer.UI
         /// </summary>
         /// <param name="path">Full path to a file</param>
         void OpenFile(string path);
+
+        /// <summary>
+        /// Trigger the save file event
+        /// </summary>
+        void SaveFile();
     }
 
     [Export(typeof(IApplicationState))]
@@ -93,6 +103,7 @@ namespace Viewer.UI
     {
         public event EventHandler<QueryEventArgs> QueryExecuted;
         public event EventHandler<OpenFileEventArgs> FileOpened;
+        public event EventHandler FileSaved;
         public event EventHandler<EntityEventArgs> EntityOpened;
 
         public void OpenEntity(IEnumerable<IEntity> entities, int index)
@@ -108,6 +119,11 @@ namespace Viewer.UI
         public void OpenFile(string path)
         {
             FileOpened?.Invoke(this, new OpenFileEventArgs(path));
+        }
+
+        public void SaveFile()
+        {
+            FileSaved?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -58,7 +58,7 @@
             this.TreeView.Location = new System.Drawing.Point(0, 0);
             this.TreeView.Name = "TreeView";
             this.TreeView.ShowLines = false;
-            this.TreeView.Size = new System.Drawing.Size(218, 330);
+            this.TreeView.Size = new System.Drawing.Size(373, 363);
             this.TreeView.TabIndex = 0;
             this.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
             this.TreeView.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterExpand);
@@ -159,7 +159,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(218, 330);
+            this.ClientSize = new System.Drawing.Size(373, 363);
             this.Controls.Add(this.TreeView);
             this.Name = "DirectoryTreeView";
             this.Text = "Explorer";

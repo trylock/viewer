@@ -53,7 +53,8 @@ namespace Viewer.UI.Query
             try
             {
                 var query = await Task.Run(() => File.ReadAllText(e.Path));
-                CreateQueryInput(name, query);
+                var queryInput = CreateQueryInput(name, query);
+                queryInput.Value.FullPath = e.Path;
             }
             catch (FileNotFoundException)
             {

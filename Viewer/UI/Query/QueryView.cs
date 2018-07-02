@@ -42,6 +42,10 @@ namespace Viewer.UI.Query
 
         public event EventHandler RunQuery;
 
+        public event EventHandler QueryChanged;
+
+        public event EventHandler SaveQuery;
+
         public string Query
         {
             get => QueryTextBox.Text;
@@ -56,6 +60,12 @@ namespace Viewer.UI.Query
             {
                 RunQuery?.Invoke(sender, e);
             }
+
+            if (e.Control && e.KeyCode == Keys.S)
+            {
+                SaveQuery?.Invoke(sender, e);
+                e.SuppressKeyPress = true;
+            }
         }
 
         private void RunButton_Click(object sender, EventArgs e)
@@ -65,6 +75,7 @@ namespace Viewer.UI.Query
 
         private void QueryTextBox_TextChanged(object sender, EventArgs e)
         {
+            QueryChanged?.Invoke(sender, e);
         }
     }
 }

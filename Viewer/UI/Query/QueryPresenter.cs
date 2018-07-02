@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Query;
@@ -19,7 +21,27 @@ namespace Viewer.UI.Query
         private readonly IErrorListener _queryErrorListener;
 
         protected override ExportLifetimeContext<IQueryView> ViewLifetime { get; }
-        
+
+        private bool _isUnsaved = false;
+        private string _path;
+
+        /// <summary>
+        /// Full path to a file which contains this query or
+        /// null if there is no such file.
+        /// </summary>
+        public string FullPath
+        {
+            get => _path;
+            set
+            {
+                _path = value;
+                if (_path != null)
+                {
+                    View.Text = Path.GetFileName(_path);
+                }
+            }
+        }
+
         [ImportingConstructor]
         public QueryPresenter(
             ExportFactory<IQueryView> viewFactory, 
@@ -29,12 +51,69 @@ namespace Viewer.UI.Query
             IErrorListener queryErrorListener)
         {
             ViewLifetime = viewFactory.CreateExport();
-            _appEvents = appEvents;
             _dialogErrorView = dialogErrorView;
             _queryCompiler = queryCompiler;
             _queryErrorListener = queryErrorListener;
+            _appEvents = appEvents;
+            _appEvents.FileSaved += View_SaveQuery;
 
             SubscribeTo(View, "View");
+        }
+
+        /// <summary>
+        /// Mark this file unsaved
+        /// </summary>
+        private void MarkUnsaved()
+        {
+            _isUnsaved = true;
+            if (!View.Text.EndsWith("*"))
+            {
+                View.Text += '*';
+            }
+        }
+
+        /// <summary>
+        /// Inverse operation to MarkUnsaved
+        /// </summary>
+        private void MarkSaved()
+        {
+            _isUnsaved = false;
+            if (View.Text.EndsWith("*"))
+            {
+                View.Text = View.Text.Substring(0, View.Text.Length - 1);
+            }
+        }
+        
+        private async void View_SaveQuery(object sender, EventArgs e)
+        {
+            if (!_isUnsaved || FullPath == null)
+            {
+                return;
+            }
+
+            var path = FullPath;
+            try
+            {
+                using (var stream = File.OpenWrite(path))
+                {
+                    var data = Encoding.UTF8.GetBytes(View.Query);
+                    await stream.WriteAsync(data, 0, data.Length);
+                }
+
+                MarkSaved();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _dialogErrorView.UnauthorizedAccess(path);
+            }
+            catch (SecurityException)
+            {
+                _dialogErrorView.UnauthorizedAccess(path);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                _dialogErrorView.FileNotFound(path);
+            }
         }
 
         private async void View_RunQuery(object sender, EventArgs e)
@@ -45,6 +124,16 @@ namespace Viewer.UI.Query
             {
                 _appEvents.ExecuteQuery(query);
             }
+        }
+
+        private void View_QueryChanged(object sender, EventArgs e)
+        {
+            MarkUnsaved();
+        }
+
+        private void View_CloseView(object sender, EventArgs e)
+        {
+            _appEvents.FileSaved -= View_SaveQuery;
         }
     }
 }

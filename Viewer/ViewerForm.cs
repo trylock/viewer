@@ -72,5 +72,10 @@ namespace Viewer
             }
             _applicationEvents.OpenFile(FileDialog.FileName);
         }
+
+        private void SaveMenuItem_Click(object sender, EventArgs e)
+        {
+            _applicationEvents.SaveFile();
+        }
     }
 }

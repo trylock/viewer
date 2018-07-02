@@ -14,6 +14,16 @@ namespace Viewer.UI.Query
         event EventHandler RunQuery;
 
         /// <summary>
+        /// Event called when user changes the query
+        /// </summary>
+        event EventHandler QueryChanged;
+
+        /// <summary>
+        /// Event called when user tries to save the query to a file
+        /// </summary>
+        event EventHandler SaveQuery;
+
+        /// <summary>
         /// Input query
         /// </summary>
         string Query { get; set; }

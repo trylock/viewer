@@ -27,6 +27,13 @@ namespace Viewer.UI
         string Text { get; set; }
 
         /// <summary>
+        /// true iff the caller has to use an Invoke method in order to modify the view.
+        /// </summary>
+        bool InvokeRequired { get; }
+
+        bool IsActivated { get; }
+
+        /// <summary>
         /// Show the window in <paramref name="dockPanel"/> with <paramref name="dockState"/>
         /// </summary>
         /// <param name="dockPanel">A new dock panel for this window</param>

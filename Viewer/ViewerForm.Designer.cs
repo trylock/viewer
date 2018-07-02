@@ -29,7 +29,10 @@
         private void InitializeComponent()
         {
             this.ViewerMenu = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileDialog = new System.Windows.Forms.OpenFileDialog();
             this.ViewerMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -37,6 +40,7 @@
             // 
             this.ViewerMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ViewerMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
             this.ViewMenuItem});
             this.ViewerMenu.Location = new System.Drawing.Point(0, 0);
             this.ViewerMenu.Name = "ViewerMenu";
@@ -45,11 +49,31 @@
             this.ViewerMenu.TabIndex = 1;
             this.ViewerMenu.Text = "menuStrip1";
             // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.OpenFileMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // OpenFileMenuItem
+            // 
+            this.OpenFileMenuItem.Name = "OpenFileMenuItem";
+            this.OpenFileMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.OpenFileMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.OpenFileMenuItem.Text = "Open";
+            this.OpenFileMenuItem.Click += new System.EventHandler(this.OpenFileMenuItem_Click);
+            // 
             // ViewMenuItem
             // 
             this.ViewMenuItem.Name = "ViewMenuItem";
             this.ViewMenuItem.Size = new System.Drawing.Size(53, 24);
             this.ViewMenuItem.Text = "View";
+            // 
+            // FileDialog
+            // 
+            this.FileDialog.FileName = "openFileDialog1";
             // 
             // ViewerForm
             // 
@@ -73,6 +97,9 @@
 
         private System.Windows.Forms.MenuStrip ViewerMenu;
         private System.Windows.Forms.ToolStripMenuItem ViewMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenFileMenuItem;
+        private System.Windows.Forms.OpenFileDialog FileDialog;
     }
 }
 

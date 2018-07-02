@@ -47,7 +47,7 @@ namespace Viewer.UI.Query
             this.TablePanel.Name = "TablePanel";
             this.TablePanel.RowCount = 2;
             this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.TablePanel.Size = new System.Drawing.Size(627, 335);
             this.TablePanel.TabIndex = 0;
             // 
@@ -58,16 +58,18 @@ namespace Viewer.UI.Query
             this.QueryTextBox.Location = new System.Drawing.Point(3, 3);
             this.QueryTextBox.Name = "QueryTextBox";
             this.QueryTextBox.ScrollWidth = 200;
-            this.QueryTextBox.Size = new System.Drawing.Size(621, 289);
+            this.QueryTextBox.Size = new System.Drawing.Size(621, 294);
             this.QueryTextBox.TabIndex = 0;
+            this.QueryTextBox.TextChanged += new System.EventHandler(this.QueryTextBox_TextChanged);
             this.QueryTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.QueryTextBox_KeyDown);
             // 
             // RunButton
             // 
-            this.RunButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.RunButton.Location = new System.Drawing.Point(549, 298);
+            this.RunButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.RunButton.Location = new System.Drawing.Point(542, 303);
             this.RunButton.Name = "RunButton";
-            this.RunButton.Size = new System.Drawing.Size(75, 34);
+            this.RunButton.Size = new System.Drawing.Size(82, 29);
             this.RunButton.TabIndex = 1;
             this.RunButton.Text = "Run";
             this.RunButton.UseVisualStyleBackColor = true;

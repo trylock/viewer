@@ -15,6 +15,7 @@ namespace ViewerTest.Query
     [TestClass]
     public class QueryCompilerTest
     {
+        private Mock<IQueryViewRepository> _queryViewRepository;
         private Mock<IQueryFactory> _factory;
         private Mock<IQuery> _query;
         private Mock<IRuntime> _runtime;
@@ -23,7 +24,7 @@ namespace ViewerTest.Query
         [TestInitialize]
         public void Setup()
         {
-            _factory = new Mock<IQueryFactory>();
+            _queryViewRepository = new Mock<IQueryViewRepository>();
 
             _query = new Mock<IQuery>();
             _query
@@ -42,6 +43,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.WithComparer(It.IsAny<IComparer<IEntity>>()))
                 .Returns(_query.Object);
 
+            _factory = new Mock<IQueryFactory>();
             _factory
                 .Setup(mock => mock.CreateQuery())
                 .Returns(_query.Object);
@@ -50,7 +52,7 @@ namespace ViewerTest.Query
                 .Returns(_query.Object);
             
             _runtime = new Mock<IRuntime>();
-            _compiler = new QueryCompiler(_factory.Object, _runtime.Object);
+            _compiler = new QueryCompiler(_factory.Object, _runtime.Object, _queryViewRepository.Object);
         }
 
         [TestMethod]
@@ -474,6 +476,41 @@ namespace ViewerTest.Query
                     new Entity("a").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None)),
                     new Entity("b").SetAttribute(new Attribute("a", new IntValue(2), AttributeFlags.None))
                 ) > 0
+            )));
+        }
+
+        [TestMethod]
+        public void Compile_View()
+        {
+            _queryViewRepository
+                .Setup(mock => mock["view"])
+                .Returns("select \"path\" where test1 = 1");
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(1)))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(2)))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(2), new IntValue(2)))
+                .Returns(new IntValue(2));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
+                .Returns(new IntValue(1));
+
+            _compiler.Compile(new StringReader("select view where test2 = 2"), new NullErrorListener());
+            
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
+                !predicate(new Entity("test")) &&
+                predicate(new Entity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))) &&
+                !predicate(new Entity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None))) 
+            )));
+
+            _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
+                !predicate(new Entity("test")) &&
+                !predicate(new Entity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))) &&
+                predicate(new Entity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None)))
             )));
         }
     }

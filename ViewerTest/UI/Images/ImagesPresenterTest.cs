@@ -59,7 +59,7 @@ namespace ViewerTest.UI.Images
             imageLoaderMock.Setup(mock => mock.GetImageSize(It.IsAny<IEntity>())).Returns(new Size(1, 1));
 
             _selectionMock = new Mock<ISelection>();
-            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _entityManager.Object, _clipboardMock.Object, null, _state.Object);
+            _presenter = new ImagesPresenter(viewFactory, null, _selectionMock.Object, _entityManager.Object, _clipboardMock.Object, null, _state.Object, null);
 
             _viewMock.Setup(mock => mock.Items).Returns(_items);
         }

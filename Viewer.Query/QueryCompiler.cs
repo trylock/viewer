@@ -18,6 +18,11 @@ namespace Viewer.Query
     public interface IQueryCompiler
     {
         /// <summary>
+        /// Repository of views available to this compiler
+        /// </summary>
+        IQueryViewRepository Views { get; }
+
+        /// <summary>
         /// Compile given query to an internal structure which can then be evaluated.
         /// </summary>
         /// <param name="input">Stream with the query</param>
@@ -51,16 +56,20 @@ namespace Viewer.Query
     
     internal class QueryCompilerVisitor : IQueryVisitor<CompilationResult>
     {
+        private readonly IQueryCompiler _queryCompiler;
+        private readonly IErrorListener _errorListener;
         private readonly IQueryFactory _queryFactory;
         private readonly IRuntime _runtime;
 
         private readonly ParameterExpression _entityParameter = Expression.Parameter(typeof(IEntity), "entity");
         private readonly Attribute _nullAttribute = new Attribute("", new IntValue(null));
         
-        public QueryCompilerVisitor(IQueryFactory queryFactory, IRuntime runtime)
+        public QueryCompilerVisitor(IQueryFactory queryFactory, IRuntime runtime, IQueryCompiler compiler, IErrorListener errorListener)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;
+            _queryCompiler = compiler;
+            _errorListener = errorListener;
         }
 
         public IQuery Compile(IParseTree tree)
@@ -196,6 +205,19 @@ namespace Viewer.Query
             {
                 // compile subquery
                 query = subquery.Accept(this).Query;
+                return new CompilationResult{ Query = query };
+            }
+
+            var viewId = context.ID();
+            if (viewId != null)
+            {
+                var view = _queryCompiler.Views[viewId.GetText()];
+                query = _queryCompiler.Compile(new StringReader(view), _errorListener);
+                if (query == null)
+                {
+                    // compilation of the subquery failed
+                    throw new ParseCanceledException();
+                }
                 return new CompilationResult{ Query = query };
             }
             
@@ -548,11 +570,14 @@ namespace Viewer.Query
         private readonly IQueryFactory _queryFactory;
         private readonly IRuntime _runtime;
 
+        public IQueryViewRepository Views { get; }
+
         [ImportingConstructor]
-        public QueryCompiler(IQueryFactory queryFactory, IRuntime runtime)
+        public QueryCompiler(IQueryFactory queryFactory, IRuntime runtime, IQueryViewRepository queryViewRepository)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;
+            Views = queryViewRepository;
         }
 
         public IQuery Compile(TextReader inputQuery, IErrorListener errorListener)
@@ -572,7 +597,7 @@ namespace Viewer.Query
             try
             {
                 var query = parser.queryExpression();
-                var compiler = new QueryCompilerVisitor(_queryFactory, _runtime);
+                var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, errorListener);
                 result = compiler.Compile(query);
             }
             catch (ParseCanceledException)

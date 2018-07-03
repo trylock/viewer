@@ -20,12 +20,12 @@ namespace Viewer.UI.Log
         {
             _log = log;
             ViewLifetime = viewFactory.CreateExport();
-
-            _log.EntryAdded += LogOnEntryAdded;
-            _log.EntriesRemoved += LogOnEntriesRemoved;
             View.Entries = _log;
             View.UpdateEntries();
             SubscribeTo(View, "View");
+            
+            _log.EntryAdded += LogOnEntryAdded;
+            _log.EntriesRemoved += LogOnEntriesRemoved;
         }
 
         public override void Dispose()

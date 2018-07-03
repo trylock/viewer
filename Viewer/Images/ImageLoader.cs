@@ -161,8 +161,7 @@ namespace Viewer.Images
             {
                 return LoadImage(entity);
             }
-
-
+            
             var image = Image.FromStream(new MemoryStream(attr.Value));
             FixImageOrientation(entity, image);
             return image;

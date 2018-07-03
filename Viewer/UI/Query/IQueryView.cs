@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,11 @@ namespace Viewer.UI.Query
         /// Event called when user tries to save the query to a file
         /// </summary>
         event EventHandler SaveQuery;
+
+        /// <summary>
+        /// Event called when user requests to open a new query
+        /// </summary>
+        event EventHandler OpenQuery;
 
         /// <summary>
         /// Input query

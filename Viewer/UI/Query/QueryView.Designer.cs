@@ -32,8 +32,10 @@ namespace Viewer.UI.Query
         {
             this.TablePanel = new System.Windows.Forms.TableLayoutPanel();
             this.QueryTextBox = new ScintillaNET.Scintilla();
+            this.ControlBarPanel = new System.Windows.Forms.Panel();
             this.RunButton = new System.Windows.Forms.Button();
             this.TablePanel.SuspendLayout();
+            this.ControlBarPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // TablePanel
@@ -41,7 +43,7 @@ namespace Viewer.UI.Query
             this.TablePanel.ColumnCount = 1;
             this.TablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.TablePanel.Controls.Add(this.QueryTextBox, 0, 0);
-            this.TablePanel.Controls.Add(this.RunButton, 0, 1);
+            this.TablePanel.Controls.Add(this.ControlBarPanel, 0, 1);
             this.TablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TablePanel.Location = new System.Drawing.Point(0, 0);
             this.TablePanel.Name = "TablePanel";
@@ -63,11 +65,20 @@ namespace Viewer.UI.Query
             this.QueryTextBox.TextChanged += new System.EventHandler(this.QueryTextBox_TextChanged);
             this.QueryTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.QueryTextBox_KeyDown);
             // 
+            // ControlBarPanel
+            // 
+            this.ControlBarPanel.Controls.Add(this.RunButton);
+            this.ControlBarPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ControlBarPanel.Location = new System.Drawing.Point(3, 303);
+            this.ControlBarPanel.Name = "ControlBarPanel";
+            this.ControlBarPanel.Size = new System.Drawing.Size(621, 29);
+            this.ControlBarPanel.TabIndex = 1;
+            // 
             // RunButton
             // 
             this.RunButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RunButton.Location = new System.Drawing.Point(542, 303);
+            this.RunButton.Location = new System.Drawing.Point(536, 0);
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(82, 29);
             this.RunButton.TabIndex = 1;
@@ -84,6 +95,7 @@ namespace Viewer.UI.Query
             this.Name = "QueryView";
             this.Text = "Query";
             this.TablePanel.ResumeLayout(false);
+            this.ControlBarPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -93,5 +105,6 @@ namespace Viewer.UI.Query
         private System.Windows.Forms.TableLayoutPanel TablePanel;
         private ScintillaNET.Scintilla QueryTextBox;
         private System.Windows.Forms.Button RunButton;
+        private System.Windows.Forms.Panel ControlBarPanel;
     }
 }

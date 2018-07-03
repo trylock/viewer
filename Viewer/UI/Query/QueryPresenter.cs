@@ -55,7 +55,6 @@ namespace Viewer.UI.Query
             _queryCompiler = queryCompiler;
             _queryErrorListener = queryErrorListener;
             _appEvents = appEvents;
-            _appEvents.FileSaved += View_SaveQuery;
 
             SubscribeTo(View, "View");
         }
@@ -129,11 +128,6 @@ namespace Viewer.UI.Query
         private void View_QueryChanged(object sender, EventArgs e)
         {
             MarkUnsaved();
-        }
-
-        private void View_CloseView(object sender, EventArgs e)
-        {
-            _appEvents.FileSaved -= View_SaveQuery;
         }
     }
 }

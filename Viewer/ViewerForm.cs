@@ -62,20 +62,5 @@ namespace Viewer
             Panel.Height = ClientSize.Height - ViewerMenu.Height;
             Panel.Location = new Point(0, ViewerMenu.Height);
         }
-
-        private void OpenFileMenuItem_Click(object sender, EventArgs e)
-        {
-            var result = FileDialog.ShowDialog();
-            if (result != DialogResult.OK)
-            {
-                return;
-            }
-            _applicationEvents.OpenFile(FileDialog.FileName);
-        }
-
-        private void SaveMenuItem_Click(object sender, EventArgs e)
-        {
-            _applicationEvents.SaveFile();
-        }
     }
 }

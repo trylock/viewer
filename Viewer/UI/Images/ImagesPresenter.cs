@@ -32,6 +32,7 @@ namespace Viewer.UI.Images
         private readonly IClipboardService _clipboard;
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
+        private readonly IThumbnailGenerator _thumbnailGenerator;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
@@ -100,7 +101,8 @@ namespace Viewer.UI.Images
             IEntityManager entityManager,
             IClipboardService clipboard,
             IImageLoader imageLoader,
-            IApplicationState state)
+            IApplicationState state,
+            IThumbnailGenerator thumbnailGenerator)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogView = dialogView;
@@ -109,6 +111,7 @@ namespace Viewer.UI.Images
             _clipboard = clipboard;
             _imageLoader = imageLoader;
             _state = state;
+            _thumbnailGenerator = thumbnailGenerator;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
             
             View.ItemSize = _minItemSize;
@@ -173,8 +176,22 @@ namespace Viewer.UI.Images
             {
             }
 
-            // update view
-            Clear();
+            // reset state
+            _thumbnailSizeCalculator.Reset();
+            _rectangleSelection.Clear();
+            _selection.Clear();
+            ActiveItem = -1;
+            FocusedItem = -1;
+
+            // reset view
+            if (View.Items != null)
+            {
+                foreach (var item in View.Items)
+                {
+                    item.Dispose();
+                }
+                View.Items.Clear();
+            }
         }
 
         /// <summary>
@@ -192,29 +209,6 @@ namespace Viewer.UI.Images
         }
         
         /// <summary>
-        /// Reset presenter and view state
-        /// </summary>
-        private void Clear()
-        {
-            // reset state
-            _thumbnailSizeCalculator.Reset();
-            _rectangleSelection.Clear();
-            _selection.Clear();
-            ActiveItem = -1;
-            FocusedItem = -1;
-
-            // reset view
-            if (View.Items != null)
-            { 
-                foreach (var item in View.Items)
-                {
-                    item.Dispose();
-                }
-                View.Items.Clear();
-            }
-        }
-        
-        /// <summary>
         /// Create lazily initialized thumbnail for an entity
         /// </summary>
         /// <param name="item">Entity</param>
@@ -223,6 +217,7 @@ namespace Viewer.UI.Images
         {
             return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, View.ItemSize));
         }
+        
 
         /// <summary>
         /// Compute current thumbnail size based on the current minimal thumbnail size

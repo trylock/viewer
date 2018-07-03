@@ -41,10 +41,9 @@ namespace Viewer.UI.Query
         #region View interface
 
         public event EventHandler RunQuery;
-
         public event EventHandler QueryChanged;
-
         public event EventHandler SaveQuery;
+        public event EventHandler OpenQuery;
 
         public string Query
         {
@@ -64,6 +63,11 @@ namespace Viewer.UI.Query
             if (e.Control && e.KeyCode == Keys.S)
             {
                 SaveQuery?.Invoke(sender, e);
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.O)
+            {
+                OpenQuery?.Invoke(sender, e);
                 e.SuppressKeyPress = true;
             }
         }

@@ -295,7 +295,7 @@ namespace Viewer.UI.Images
             // draw name
             var nameLocation = GetNameLocation(bounds);
             var nameSize = GetNameSize(bounds);
-            var nameForamt = new StringFormat { Alignment = StringAlignment.Center };
+            var nameForamt = new StringFormat{ Alignment = StringAlignment.Center };
             graphics.DrawString(
                 item.Name,
                 Font,

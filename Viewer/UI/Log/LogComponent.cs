@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -18,15 +20,20 @@ namespace Viewer.UI.Log
         private ExportLifetimeContext<LogPresenter> _log;
 
         [ImportingConstructor]
-        public LogComponent(ExportFactory<LogPresenter> factory)
+        public LogComponent(ExportFactory<LogPresenter> factory, ILog log)
         {
             _logFactory = factory;
+
+            var context = SynchronizationContext.Current;
+            log.EntryAdded += (sender, args) =>
+            {
+                context.Post(state => ShowLog(), null);
+            };
         }
 
         public void OnStartup(IViewerApplication app)
         {
             app.AddViewAction(Name, ShowLog);
-            ShowLog();
         }
 
         private void ShowLog()

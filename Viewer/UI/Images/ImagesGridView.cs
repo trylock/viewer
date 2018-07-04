@@ -25,7 +25,62 @@ namespace Viewer.UI.Images
             GridView.MouseWheel += GridView_MouseWheel;
         }
 
-        #region Grid view
+        #region IThumbnailView
+
+        public event EventHandler ThumbnailSizeChanged
+        {
+            add => ThumbnailSizeTrackBar.ValueChanged += value;
+            remove => ThumbnailSizeTrackBar.ValueChanged -= value;
+        }
+
+        public event EventHandler ThumbnailSizeCommit;
+
+        public double ThumbnailScale
+        {
+            get => 1.0 + (ThumbnailSizeTrackBar.Value - ThumbnailSizeTrackBar.Minimum) /
+                   (double)(ThumbnailSizeTrackBar.Maximum - ThumbnailSizeTrackBar.Minimum);
+            set
+            {
+                if (value < 1.0 || value > 2.0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                ThumbnailSizeTrackBar.Value = (int)MathUtils.Lerp(
+                    ThumbnailSizeTrackBar.Minimum,
+                    ThumbnailSizeTrackBar.Maximum,
+                    value - 1.0
+                );
+            }
+        }
+
+        #endregion
+
+        #region ISelectionView
+        
+        public void ShowSelection(Rectangle bounds)
+        {
+            GridView.SelectionBounds = bounds;
+        }
+
+        public void HideSelection()
+        {
+            GridView.SelectionBounds = Rectangle.Empty;
+        }
+        
+        public IEnumerable<int> GetItemsIn(Rectangle bounds)
+        {
+            return GridView.GetItemsIn(bounds);
+        }
+
+        public int GetItemAt(Point location)
+        {
+            return GridView.GetItemAt(location);
+        }
+
+        #endregion
+
+        #region IImagesView
 
         public event MouseEventHandler HandleMouseDown;
         public event MouseEventHandler HandleMouseUp;
@@ -55,38 +110,12 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler OpenItem;
-        public event EventHandler ThumbnailSizeChanged
-        {
-            add => ThumbnailSizeTrackBar.ValueChanged += value;
-            remove => ThumbnailSizeTrackBar.ValueChanged -= value;
-        }
-
-        public event EventHandler ThumbnailSizeCommit;
         public event EventHandler CancelEditItemName;
         public event EventHandler<RenameEventArgs> RenameItem;
         public event EventHandler BeginEditItemName
         {
             add => RenameMenuItem.Click += value;
             remove => RenameMenuItem.Click -= value;
-        }
-        
-        public double ThumbnailScale
-        {
-            get => 1.0 + (ThumbnailSizeTrackBar.Value - ThumbnailSizeTrackBar.Minimum) / 
-                   (double) (ThumbnailSizeTrackBar.Maximum - ThumbnailSizeTrackBar.Minimum);
-            set
-            {
-                if (value < 1.0 || value > 2.0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-
-                ThumbnailSizeTrackBar.Value = (int) MathUtils.Lerp(
-                    ThumbnailSizeTrackBar.Minimum,
-                    ThumbnailSizeTrackBar.Maximum,
-                    value - 1.0
-                );
-            }
         }
         
         public SortedList<EntityView> Items
@@ -129,29 +158,9 @@ namespace Viewer.UI.Images
             GridView.InvalidateItem(index);
         }
         
-        public void ShowSelection(Rectangle bounds)
-        {
-            GridView.SelectionBounds = bounds;
-        }
-
-        public void HideSelection()
-        {
-            GridView.SelectionBounds = Rectangle.Empty;
-        }
-
         public void BeginDragDrop(IDataObject data, DragDropEffects effect)
         {
             DoDragDrop(data, effect);
-        }
-
-        public IEnumerable<int> GetItemsIn(Rectangle bounds)
-        {
-            return GridView.GetItemsIn(bounds);
-        }
-
-        public int GetItemAt(Point location)
-        {
-            return GridView.GetItemAt(location);
         }
 
         public void ShowItemEditForm(int index)

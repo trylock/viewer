@@ -128,13 +128,59 @@ namespace Viewer.UI.Images
         /// </summary>
         void EndPolling();
     }
-    
-    public interface IImagesView : IWindowView, IPolledView
+
+    public interface IThumbnailView
     {
-        // TODO: break this interface to multiple interfaces
+        /// <summary>
+        /// Event called when user changes the thumbnail size
+        /// </summary>
+        event EventHandler ThumbnailSizeChanged;
 
-        #region Events
+        /// <summary>
+        /// Event called when user set the thumbnail size
+        /// </summary>
+        event EventHandler ThumbnailSizeCommit;
 
+        /// <summary>
+        /// Current scale of a thumbnail. It will always be in the [1, 2] internal.
+        /// 1.0 is a minimal thumbnail size, 2.0 is a maximal thumbnail size
+        /// </summary>
+        double ThumbnailScale { get; set; }
+    }
+
+    public interface ISelectionView
+    {
+        /// <summary>
+        /// Draw rectangular selection area.
+        /// </summary>
+        /// <param name="bounds">Area of the selection</param>
+        void ShowSelection(Rectangle bounds);
+
+        /// <summary>
+        /// Hide current rectengular selection.
+        /// </summary>
+        void HideSelection();
+
+        /// <summary>
+        /// Get items in given rectangle.
+        /// </summary>
+        /// <param name="bounds">Query area</param>
+        /// <returns>Indicies of items in this area</returns>
+        IEnumerable<int> GetItemsIn(Rectangle bounds);
+
+        /// <summary>
+        /// Get index of an item at <paramref name="location"/>.
+        /// </summary>
+        /// <param name="location">Query location</param>
+        /// <returns>
+        ///     Index of an item at <paramref name="location"/>.
+        ///     If there is no item at given location, it will return -1.
+        /// </returns>
+        int GetItemAt(Point location);
+    }
+
+    public interface IImagesView : IWindowView, IPolledView, IThumbnailView, ISelectionView
+    {
         event MouseEventHandler HandleMouseDown;
         event MouseEventHandler HandleMouseUp;
         event MouseEventHandler HandleMouseMove;
@@ -170,26 +216,6 @@ namespace Viewer.UI.Images
         /// Event called when user tries to open an item
         /// </summary>
         event EventHandler OpenItem;
-
-        /// <summary>
-        /// Event called when user changes the thumbnail size
-        /// </summary>
-        event EventHandler ThumbnailSizeChanged;
-
-        /// <summary>
-        /// Event called when user set the thumbnail size
-        /// </summary>
-        event EventHandler ThumbnailSizeCommit;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Current scale of a thumbnail. It will always be in the [1, 2] internal.
-        /// 1.0 is a minimal thumbnail size, 2.0 is a maximal thumbnail size
-        /// </summary>
-        double ThumbnailScale { get; set; }
         
         /// <summary>
         /// List of items to show 
@@ -200,11 +226,7 @@ namespace Viewer.UI.Images
         /// Set an item size
         /// </summary>
         Size ItemSize { get; set; }
-
-        #endregion
-
-        #region Methods
-
+        
         /// <summary>
         /// Notify the view that the Items collection has changed.
         /// </summary>
@@ -224,39 +246,11 @@ namespace Viewer.UI.Images
         void UpdateItem(int index);
 
         /// <summary>
-        /// Draw rectangular selection area.
-        /// </summary>
-        /// <param name="bounds">Area of the selection</param>
-        void ShowSelection(Rectangle bounds);
-
-        /// <summary>
-        /// Hide current rectengular selection.
-        /// </summary>
-        void HideSelection();
-
-        /// <summary>
         /// Begin drag&amp;drop operation.
         /// </summary>
         /// <param name="data">Data to drag</param>
         /// <param name="effect">Drop effect (e.g. copy, move)</param>
         void BeginDragDrop(IDataObject data, DragDropEffects effect);
-
-        /// <summary>
-        /// Get items in given rectangle.
-        /// </summary>
-        /// <param name="bounds">Query area</param>
-        /// <returns>Indicies of items in this area</returns>
-        IEnumerable<int> GetItemsIn(Rectangle bounds);
-
-        /// <summary>
-        /// Get index of an item at <paramref name="location"/>.
-        /// </summary>
-        /// <param name="location">Query location</param>
-        /// <returns>
-        ///     Index of an item at <paramref name="location"/>.
-        ///     If there is no item at given location, it will return -1.
-        /// </returns>
-        int GetItemAt(Point location);
 
         /// <summary>
         /// Show edit form for given item.
@@ -269,7 +263,5 @@ namespace Viewer.UI.Images
         /// Hide item edit form.
         /// </summary>
         void HideItemEditForm();
-
-        #endregion
     }
 }

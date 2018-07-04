@@ -16,7 +16,8 @@ namespace Viewer.UI.Query
     public interface IEditor
     {
         /// <summary>
-        /// Open given file in the editor
+        /// Open given file in the editor.
+        /// If the file is opened already, the editor will just make its window visible to user.
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <returns>Task completed when the editor window opens</returns>
@@ -54,10 +55,20 @@ namespace Viewer.UI.Query
         /// <summary>
         /// Opened editor windows
         /// </summary>
-        private List<ExportLifetimeContext<QueryPresenter>> _windows = new List<ExportLifetimeContext<QueryPresenter>>();
+        private readonly List<ExportLifetimeContext<QueryPresenter>> _windows = new List<ExportLifetimeContext<QueryPresenter>>();
 
         public async Task OpenAsync(string path)
         {
+            // don't open a new window, if an window with this file is opened already
+            var window = _windows.Find(editor => 
+                StringComparer.CurrentCultureIgnoreCase.Compare(editor.Value.FullPath, path) == 0);
+            if (window != null)
+            {
+                window.Value.View.EnsureVisible();
+                return;
+            }
+
+            // otherwise load the file and show it in a new window
             try
             {
                 var buffer = await Task.Run(() => _fileSystem.ReadAllBytes(path));
@@ -102,6 +113,7 @@ namespace Viewer.UI.Query
                 _windows.Remove(editor);
                 editor.Dispose();
             };
+            _windows.Add(editor);
             return editor.Value;
         }
     }

@@ -291,10 +291,14 @@ namespace Viewer.UI.Images
                 items = _waitingQueue;
             } while (Interlocked.CompareExchange(ref _waitingQueue, empty, items) != items);
 
+            // update item size
+            foreach (var item in items)
+            {
+                _minItemSize = _thumbnailSizeCalculator.AddEntity(item.Data);
+            }
+
             // show all entities in the snapshot
             View.Items = View.Items.Merge(items);
-
-            // update the view if necessary
             View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
         }

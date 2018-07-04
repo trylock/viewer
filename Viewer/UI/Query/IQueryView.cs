@@ -7,6 +7,19 @@ using System.Threading.Tasks;
 
 namespace Viewer.UI.Query
 {
+    public class OpenQueryEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Full path to a file to open
+        /// </summary>
+        public string FullPath { get; }
+
+        public OpenQueryEventArgs(string fullPath)
+        {
+            FullPath = fullPath;
+        }
+    }
+
     public interface IQueryView : IWindowView
     {
         /// <summary>
@@ -27,8 +40,8 @@ namespace Viewer.UI.Query
         /// <summary>
         /// Event called when user requests to open a new query
         /// </summary>
-        event EventHandler OpenQuery;
-
+        event EventHandler<OpenQueryEventArgs> OpenQuery;
+        
         /// <summary>
         /// Input query
         /// </summary>

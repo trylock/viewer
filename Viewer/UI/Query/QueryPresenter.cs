@@ -19,6 +19,7 @@ namespace Viewer.UI.Query
         private readonly IFileSystemErrorView _dialogErrorView;
         private readonly IQueryCompiler _queryCompiler;
         private readonly IErrorListener _queryErrorListener;
+        private readonly IEditor _editor;
 
         protected override ExportLifetimeContext<IQueryView> ViewLifetime { get; }
 
@@ -48,13 +49,15 @@ namespace Viewer.UI.Query
             IApplicationState appEvents, 
             IFileSystemErrorView dialogErrorView, 
             IQueryCompiler queryCompiler, 
-            IErrorListener queryErrorListener)
+            IErrorListener queryErrorListener,
+            IEditor editor)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogErrorView = dialogErrorView;
             _queryCompiler = queryCompiler;
             _queryErrorListener = queryErrorListener;
             _appEvents = appEvents;
+            _editor = editor;
 
             SubscribeTo(View, "View");
         }
@@ -113,6 +116,11 @@ namespace Viewer.UI.Query
             {
                 _dialogErrorView.FileNotFound(path);
             }
+        }
+
+        private void View_OpenQuery(object sender, OpenQueryEventArgs e)
+        {
+            _editor.OpenAsync(e.FullPath);
         }
 
         private async void View_RunQuery(object sender, EventArgs e)

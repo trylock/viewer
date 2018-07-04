@@ -30,10 +30,7 @@ namespace Viewer
     public partial class ViewerForm : Form
     {
         public DockPanel Panel { get; }
-
-        [Import]
-        private IApplicationState _applicationEvents;
-
+        
         public ViewerForm()
         {
             Panel = new DockPanel

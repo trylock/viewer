@@ -14,46 +14,19 @@ namespace Viewer.UI.Query
     [Export(typeof(IComponent))]
     public class QueryComponent : IComponent
     {
-        private readonly ExportFactory<QueryPresenter> _queryFactory;
-
-        private ExportLifetimeContext<QueryPresenter> _query;
+        private readonly IEditor _editor;
 
         [ImportingConstructor]
-        public QueryComponent(
-            ExportFactory<QueryPresenter> queryFactory, 
-            IFileSystemErrorView dialogErrorView, 
-            IApplicationState applicationEvents)
+        public QueryComponent(IEditor editor)
         {
-            _queryFactory = queryFactory;
+            _editor = editor;
         }
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction("Query", ShowQueryInput);
+            app.AddViewAction("Query", _editor.OpenNew);
 
-            ShowQueryInput();
-        }
-        
-        private ExportLifetimeContext<QueryPresenter> CreateQueryInput(string name, string query)
-        {
-            var queryInput = _queryFactory.CreateExport();
-            queryInput.Value.ShowView(name, DockState.Document);
-            queryInput.Value.View.Query = query;
-            queryInput.Value.View.CloseView += (sender, args) => queryInput.Dispose();
-            return queryInput;
-        }
-
-        private void ShowQueryInput()
-        {
-            if (_query == null)
-            {
-                _query = CreateQueryInput("Query", "");
-                _query.Value.View.CloseView += (sender, args) => _query = null;
-            }
-            else
-            {
-                _query.Value.View.EnsureVisible();
-            }
+            _editor.OpenNew();
         }
     }
 }

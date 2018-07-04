@@ -20,11 +20,13 @@ namespace Viewer.UI.Query
             InitializeComponent();
 
             // initialize highlighting
-
             QueryTextBox.StyleResetDefault();
             QueryTextBox.Styles[Style.Default].Font = "Consolas";
             QueryTextBox.Styles[Style.Default].Size = 11;
             QueryTextBox.StyleClearAll();
+
+            QueryTextBox.Styles[Style.LineNumber].ForeColor = Color.FromArgb(0x888888);
+            QueryTextBox.Styles[Style.LineNumber].BackColor = Color.White;
 
             QueryTextBox.Styles[Style.Sql.String].ForeColor = Color.FromArgb(0xa31515);
             QueryTextBox.Styles[Style.Sql.Word].ForeColor = Color.FromArgb(0x0000ff);
@@ -35,7 +37,7 @@ namespace Viewer.UI.Query
             QueryTextBox.SetKeywords(0, "select where order by desc asc and or not");
 
             QueryTextBox.Margins[0].Type = MarginType.Number;
-            QueryTextBox.Margins[0].Width = 16;
+            QueryTextBox.Margins[0].Width = 20;
         }
 
         #region View interface
@@ -43,7 +45,7 @@ namespace Viewer.UI.Query
         public event EventHandler RunQuery;
         public event EventHandler QueryChanged;
         public event EventHandler SaveQuery;
-        public event EventHandler OpenQuery;
+        public event EventHandler<OpenQueryEventArgs> OpenQuery;
 
         public string Query
         {
@@ -67,7 +69,7 @@ namespace Viewer.UI.Query
             }
             else if (e.Control && e.KeyCode == Keys.O)
             {
-                OpenQuery?.Invoke(sender, e);
+                OpenButton_Click(sender, e);
                 e.SuppressKeyPress = true;
             }
         }
@@ -80,6 +82,22 @@ namespace Viewer.UI.Query
         private void QueryTextBox_TextChanged(object sender, EventArgs e)
         {
             QueryChanged?.Invoke(sender, e);
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            SaveQuery?.Invoke(sender, e);
+        }
+
+        private void OpenButton_Click(object sender, EventArgs e)
+        {
+            var result = OpenDialog.ShowDialog();
+            if (result != DialogResult.OK)
+            {
+                return;
+            }
+
+            OpenQuery?.Invoke(sender, new OpenQueryEventArgs(OpenDialog.FileName));
         }
     }
 }

@@ -41,6 +41,11 @@ namespace Viewer.UI
         void Show(DockPanel dockPanel, DockState dockState);
 
         /// <summary>
+        /// Close this window.
+        /// </summary>
+        void Close();
+
+        /// <summary>
         /// Make sure the window is visible to the user.
         /// Thread-safety: can be called from different threads
         /// </summary>

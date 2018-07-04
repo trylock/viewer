@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
@@ -71,11 +72,11 @@ namespace Viewer.UI.Images
         /// Currently loaded query
         /// </summary>
         private IQuery _query;
-
+        
         /// <summary>
         /// Queue of entities loaded from the query which are not shown yet.
         /// </summary>
-        private readonly ConcurrentQueue<IEntity> _waitingQueue = new ConcurrentQueue<IEntity>();
+        private ImmutableSortedSet<EntityView> _waitingQueue = ImmutableSortedSet<EntityView>.Empty;
 
         /// <summary>
         /// Minimal time in milliseconds between 2 poll events.
@@ -140,7 +141,7 @@ namespace Viewer.UI.Images
 
             // start loading a new query
             _query = query;
-            Debug.Assert(_waitingQueue.IsEmpty);
+            _waitingQueue = ImmutableSortedSet<EntityView>.Empty.WithComparer(new EntityViewComparer(_query.Comparer));
 
             View.Items = new SortedList<EntityView>(new EntityViewComparer(_query.Comparer));
             View.BeginLoading();
@@ -151,13 +152,12 @@ namespace Viewer.UI.Images
                 _loadTask = Task.Run(() => LoadQueryBlocking(query), _query.Cancellation.Token);
                 await _loadTask;
                 View.UpdateItems();
-            }
+            }   
             catch (OperationCanceledException)
             {
             }
             finally
             {
-                View.EndPolling();
                 View.EndLoading();
             }
         }
@@ -204,7 +204,13 @@ namespace Viewer.UI.Images
             {
                 query.Cancellation.Token.ThrowIfCancellationRequested();
 
-                _waitingQueue.Enqueue(entity);
+                var item = new EntityView(entity, GetThumbnail(entity));
+                ImmutableSortedSet<EntityView> newQueue, oldQueue;
+                do
+                {
+                    oldQueue = _waitingQueue;
+                    newQueue = oldQueue.Add(item);
+                } while (Interlocked.CompareExchange(ref _waitingQueue, newQueue, oldQueue) != oldQueue);
             }
         }
         
@@ -277,21 +283,20 @@ namespace Viewer.UI.Images
 
         private void View_Poll(object sender, EventArgs e)
         {
-            // show all entities in the waiting queue
-            int count = 0;
-            while (_waitingQueue.TryDequeue(out var entity))
+            // get a snapshot of the waiting queue
+            var empty = ImmutableSortedSet<EntityView>.Empty.WithComparer(new EntityViewComparer(_query.Comparer));
+            ImmutableSortedSet<EntityView> items;
+            do
             {
-                _minItemSize = _thumbnailSizeCalculator.AddEntity(entity);
-                View.Items.Add(new EntityView(entity, GetThumbnail(entity)));
-                ++count;
-            }
+                items = _waitingQueue;
+            } while (Interlocked.CompareExchange(ref _waitingQueue, empty, items) != items);
+
+            // show all entities in the snapshot
+            View.Items = View.Items.Merge(items);
 
             // update the view if necessary
-            if (count > 0)
-            {
-                View.ItemSize = ComputeThumbnailSize();
-                View.UpdateItems();
-            }
+            View.ItemSize = ComputeThumbnailSize();
+            View.UpdateItems();
         }
         
         private void View_HandleMouseDown(object sender, MouseEventArgs e)

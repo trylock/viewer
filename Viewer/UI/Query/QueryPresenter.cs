@@ -96,7 +96,7 @@ namespace Viewer.UI.Query
             var path = FullPath;
             try
             {
-                using (var stream = File.OpenWrite(path))
+                using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
                 {
                     var data = Encoding.UTF8.GetBytes(View.Query);
                     await stream.WriteAsync(data, 0, data.Length);

@@ -37,6 +37,7 @@ namespace Viewer.UI.Query
             this.OpenButton = new System.Windows.Forms.Button();
             this.RunButton = new System.Windows.Forms.Button();
             this.OpenDialog = new System.Windows.Forms.OpenFileDialog();
+            this.SaveDialog = new System.Windows.Forms.SaveFileDialog();
             this.TablePanel.SuspendLayout();
             this.ControlBarPanel.SuspendLayout();
             this.SuspendLayout();
@@ -148,5 +149,6 @@ namespace Viewer.UI.Query
         private System.Windows.Forms.Button OpenButton;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.OpenFileDialog OpenDialog;
+        private System.Windows.Forms.SaveFileDialog SaveDialog;
     }
 }

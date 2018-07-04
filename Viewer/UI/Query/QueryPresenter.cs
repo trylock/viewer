@@ -88,15 +88,26 @@ namespace Viewer.UI.Query
         
         private async void View_SaveQuery(object sender, EventArgs e)
         {
-            if (!_isUnsaved || FullPath == null)
+            if (!_isUnsaved)
             {
                 return;
             }
 
-            var path = FullPath;
+            // this query is not saved in a file
+            if (FullPath == null)
+            {
+                FullPath = View.PickFileForWrite();
+                if (FullPath == null)
+                {
+                    // user has not picked a file
+                    return;
+                }
+            }
+
+            // save the query to its file
             try
             {
-                using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                using (var stream = new FileStream(FullPath, FileMode.Create, FileAccess.Write))
                 {
                     var data = Encoding.UTF8.GetBytes(View.Query);
                     await stream.WriteAsync(data, 0, data.Length);
@@ -106,15 +117,15 @@ namespace Viewer.UI.Query
             }
             catch (UnauthorizedAccessException)
             {
-                _dialogErrorView.UnauthorizedAccess(path);
+                _dialogErrorView.UnauthorizedAccess(FullPath);
             }
             catch (SecurityException)
             {
-                _dialogErrorView.UnauthorizedAccess(path);
+                _dialogErrorView.UnauthorizedAccess(FullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                _dialogErrorView.FileNotFound(path);
+                _dialogErrorView.FileNotFound(FullPath);
             }
         }
 

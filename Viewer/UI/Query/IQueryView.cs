@@ -46,5 +46,11 @@ namespace Viewer.UI.Query
         /// Input query
         /// </summary>
         string Query { get; set; }
+
+        /// <summary>
+        /// Prompts user to pick a file where the query should be saved
+        /// </summary>
+        /// <returns>Path to selected file or null if user did not select a file</returns>
+        string PickFileForWrite();
     }
 }

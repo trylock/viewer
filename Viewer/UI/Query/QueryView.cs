@@ -53,6 +53,12 @@ namespace Viewer.UI.Query
             set => QueryTextBox.Text = value;
         }
 
+        public string PickFileForWrite()
+        {
+            var result = SaveDialog.ShowDialog();
+            return result != DialogResult.OK ? null : SaveDialog.FileName;
+        }
+
         #endregion
 
         private void QueryTextBox_KeyDown(object sender, KeyEventArgs e)

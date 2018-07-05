@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -285,11 +285,7 @@ namespace Viewer.UI.Images
         {
             // get a snapshot of the waiting queue
             var empty = ImmutableSortedSet<EntityView>.Empty.WithComparer(new EntityViewComparer(_query.Comparer));
-            ImmutableSortedSet<EntityView> items;
-            do
-            {
-                items = _waitingQueue;
-            } while (Interlocked.CompareExchange(ref _waitingQueue, empty, items) != items);
+            var items = Interlocked.Exchange(ref _waitingQueue, empty);
 
             // update item size
             foreach (var item in items)

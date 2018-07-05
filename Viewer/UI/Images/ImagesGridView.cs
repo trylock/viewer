@@ -57,7 +57,14 @@ namespace Viewer.UI.Images
         #endregion
 
         #region ISelectionView
-        
+
+        private bool _isSelectionActive = false;
+
+        public event MouseEventHandler SelectionBegin;
+        public event MouseEventHandler SelectionEnd;
+        public event MouseEventHandler SelectionDrag;
+        public event EventHandler<EntityEventArgs> SelectItem;
+
         public void ShowSelection(Rectangle bounds)
         {
             GridView.SelectionBounds = bounds;
@@ -80,11 +87,41 @@ namespace Viewer.UI.Images
 
         #endregion
 
+        #region IPolledView
+
+        public event EventHandler Poll;
+
+        public void BeginPolling(int delay)
+        {
+            if (delay <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(delay));
+            }
+
+            PollTimer.Interval = delay;
+            PollTimer.Enabled = true;
+        }
+
+        public void EndPolling()
+        {
+            PollTimer.Enabled = false;
+            Poll?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void PollTimer_Tick(object sender, EventArgs e)
+        {
+            Poll?.Invoke(sender, e);
+        }
+
+        #endregion
+
         #region IImagesView
 
-        public event MouseEventHandler HandleMouseDown;
-        public event MouseEventHandler HandleMouseUp;
-        public event MouseEventHandler HandleMouseMove;
+        /// <summary>
+        /// Index of the last item user clicked on with left or right mouse button.
+        /// </summary>
+        private int _activeItemIndex = -1;
+        
         public event KeyEventHandler HandleKeyDown
         {
             add => GridView.KeyDown += value;
@@ -96,6 +133,8 @@ namespace Viewer.UI.Images
             add => GridView.KeyUp += value;
             remove => GridView.KeyUp -= value;
         }
+
+        public event EventHandler<EntityEventArgs> ItemHover;
 
         public event EventHandler CopyItems
         {
@@ -109,14 +148,11 @@ namespace Viewer.UI.Images
             remove => DeleteMenuItem.Click -= value;
         }
 
-        public event EventHandler OpenItem;
+        public event EventHandler<EntityEventArgs> OpenItem;
         public event EventHandler CancelEditItemName;
+        public event EventHandler BeginDragItems;
         public event EventHandler<RenameEventArgs> RenameItem;
-        public event EventHandler BeginEditItemName
-        {
-            add => RenameMenuItem.Click += value;
-            remove => RenameMenuItem.Click -= value;
-        }
+        public event EventHandler<EntityEventArgs> BeginEditItemName;
         
         public SortedList<EntityView> Items
         {
@@ -185,54 +221,70 @@ namespace Viewer.UI.Images
 
         #endregion
 
-        #region IPolledView
-        
-        public event EventHandler Poll;
-
-        public void BeginPolling(int delay)
-        {
-            if (delay <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(delay));
-            }
-
-            PollTimer.Interval = delay;
-            PollTimer.Enabled = true;
-        }
-
-        public void EndPolling()
-        {
-            PollTimer.Enabled = false;
-            Poll?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void PollTimer_Tick(object sender, EventArgs e)
-        {
-            Poll?.Invoke(sender, e);
-        }
-
-        #endregion
 
         #region GridView Events
 
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
-            HandleMouseDown?.Invoke(sender, GridView.ConvertMouseEventArgs(e));
+            var location = GridView.UnprojectLocation(e.Location);
+            var item = GridView.GetItemAt(location);
+            if (item >= 0)
+            {
+                // user clicked on an item
+                _activeItemIndex = item;
+
+                SelectItem?.Invoke(sender, new EntityEventArgs(item));
+                return;
+            }
+
+            _isSelectionActive = true;
+            SelectionBegin?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
         }
 
         private void GridView_MouseUp(object sender, MouseEventArgs e)
         {
-            HandleMouseUp?.Invoke(sender, GridView.ConvertMouseEventArgs(e));
+            if (_isSelectionActive)
+            {
+                var location = GridView.UnprojectLocation(e.Location);
+                SelectionEnd?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+                _isSelectionActive = false;
+            }
         }
 
         private void GridView_MouseMove(object sender, MouseEventArgs e)
         {
-            HandleMouseMove?.Invoke(sender, GridView.ConvertMouseEventArgs(e));
+            var location = GridView.UnprojectLocation(e.Location);
+            if (_isSelectionActive)
+            {
+                SelectionDrag?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+            }
+            else
+            {
+                // trigger the ItemHover event
+                var item = GridView.GetItemAt(location);
+                if (item < 0)
+                {
+                    return;
+                }
+                ItemHover?.Invoke(sender, new EntityEventArgs(item));
+
+                // begin the drag operation
+                if (e.Button.HasFlag(MouseButtons.Left))
+                {
+                    BeginDragItems?.Invoke(sender, e);
+                }
+            }
         }
         
         private void GridView_DoubleClick(object sender, EventArgs e)
         {
-            OpenItem?.Invoke(sender, e);
+            var location = GridView.UnprojectLocation(PointToClient(MousePosition));
+            var index = GridView.GetItemAt(location);
+            if (index < 0)
+            {
+                return;
+            }
+            OpenItem?.Invoke(sender, new EntityEventArgs(index));
         }
 
         private void GridView_Scroll(object sender, ScrollEventArgs e)
@@ -262,18 +314,24 @@ namespace Viewer.UI.Images
             else if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
-                RenameItem?.Invoke(sender, new RenameEventArgs(NameTextBox.Text));
+                RenameItem?.Invoke(sender, new RenameEventArgs(_activeItemIndex, NameTextBox.Text));
             }
         }
 
         private void OpenMenuItem_Click(object sender, EventArgs e)
         {
-            OpenItem?.Invoke(sender, e);
+            if (_activeItemIndex < 0)
+            {
+                return;
+            }
+
+            OpenItem?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
         }
 
         private void RenameMenuItem_Click(object sender, EventArgs e)
         {
             NameTextBox.BringToFront();
+            BeginEditItemName?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
         }
 
         private void ThumbnailSizeTrackBar_MouseUp(object sender, MouseEventArgs e)

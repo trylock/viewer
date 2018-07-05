@@ -98,16 +98,35 @@ namespace Viewer.UI.Images
     public class RenameEventArgs : EventArgs
     {
         /// <summary>
+        /// Index of an entity whis should be renamed
+        /// </summary>
+        public int Index { get; }
+
+        /// <summary>
         /// New name of the file (just the name without directory separators and file extension)
         /// </summary>
         public string NewName { get; }
 
-        public RenameEventArgs(string newName)
+        public RenameEventArgs(int index, string newName)
         {
+            Index = index;
             NewName = newName;
         }
     }
 
+    public class EntityEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Index of an entity or -1
+        /// </summary>
+        public int Index { get; }
+
+        public EntityEventArgs(int index)
+        {
+            Index = index;
+        }
+    }
+    
     public interface IPolledView
     {
         /// <summary>
@@ -151,6 +170,26 @@ namespace Viewer.UI.Images
     public interface ISelectionView
     {
         /// <summary>
+        /// Event called when user starts a new range selection.
+        /// </summary>
+        event MouseEventHandler SelectionBegin;
+
+        /// <summary>
+        /// Event called when user end a range selection (i.e. releases LMB)
+        /// </summary>
+        event MouseEventHandler SelectionEnd;
+
+        /// <summary>
+        /// Event called when user moves with a mouse with active selection
+        /// </summary>
+        event MouseEventHandler SelectionDrag;
+
+        /// <summary>
+        /// Event called when user selects a single item with a mouse click.
+        /// </summary>
+        event EventHandler<EntityEventArgs> SelectItem;
+
+        /// <summary>
         /// Draw rectangular selection area.
         /// </summary>
         /// <param name="bounds">Area of the selection</param>
@@ -181,16 +220,18 @@ namespace Viewer.UI.Images
 
     public interface IImagesView : IWindowView, IPolledView, IThumbnailView, ISelectionView
     {
-        event MouseEventHandler HandleMouseDown;
-        event MouseEventHandler HandleMouseUp;
-        event MouseEventHandler HandleMouseMove;
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;
 
         /// <summary>
+        /// Event called when user moves cursor over an item.
+        /// </summary>
+        event EventHandler<EntityEventArgs> ItemHover;
+
+        /// <summary>
         /// Event called when user requests to edit file name
         /// </summary>
-        event EventHandler BeginEditItemName;
+        event EventHandler<EntityEventArgs> BeginEditItemName;
 
         /// <summary>
         /// Event called when user requests to cancel file name edit.
@@ -198,24 +239,29 @@ namespace Viewer.UI.Images
         event EventHandler CancelEditItemName;
 
         /// <summary>
+        /// Event called when user begins to drag items in selection.
+        /// </summary>
+        event EventHandler BeginDragItems;
+
+        /// <summary>
         /// Event called when user requests to rename file
         /// </summary>
         event EventHandler<RenameEventArgs> RenameItem;
 
         /// <summary>
-        /// Event called when user requests to copy items
+        /// Event called when user requests to copy items in selection.
         /// </summary>
         event EventHandler CopyItems;
 
         /// <summary>
-        /// Event called when user requests to delete items
+        /// Event called when user requests to delete items in selection.
         /// </summary>
         event EventHandler DeleteItems;
 
         /// <summary>
         /// Event called when user tries to open an item
         /// </summary>
-        event EventHandler OpenItem;
+        event EventHandler<EntityEventArgs> OpenItem;
         
         /// <summary>
         /// List of items to show 

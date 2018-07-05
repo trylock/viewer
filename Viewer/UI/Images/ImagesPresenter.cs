@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -82,17 +82,6 @@ namespace Viewer.UI.Images
         /// Minimal time in milliseconds between 2 poll events.
         /// </summary>
         private const int PollingRate = 100;
-
-        /// <summary>
-        /// Index of an active item (item over which is a mouse cursor) 
-        /// or -1 if no item is active.
-        /// </summary>
-        public int ActiveItem { get; private set; } = -1;
-
-        /// <summary>
-        /// Index of an item with focus or -1 it there is no such item.
-        /// </summary>
-        public int FocusedItem { get; private set; } = -1;
 
         [ImportingConstructor]
         public ImagesPresenter(
@@ -180,8 +169,6 @@ namespace Viewer.UI.Images
             _thumbnailSizeCalculator.Reset();
             _rectangleSelection.Clear();
             _selection.Clear();
-            ActiveItem = -1;
-            FocusedItem = -1;
 
             // reset view
             if (View.Items != null)
@@ -224,7 +211,6 @@ namespace Viewer.UI.Images
             return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, View.ItemSize));
         }
         
-
         /// <summary>
         /// Compute current thumbnail size based on the current minimal thumbnail size
         /// and View.ThumbnailScale
@@ -237,16 +223,7 @@ namespace Viewer.UI.Images
                 (int)(_minItemSize.Height * View.ThumbnailScale)
             );
         }
-        
-        private void UpdateSelection(Point endPoint)
-        {
-            var bounds = _rectangleSelection.GetBounds(endPoint);
-            var newSelection = View.GetItemsIn(bounds);
-            ChangeSelection(newSelection);
 
-            View.ShowSelection(bounds);
-        }
-        
         private void ChangeSelection(IEnumerable<int> newSelection)
         {
             var selectedItems = newSelection.Select(index => View.Items[index]);
@@ -286,6 +263,10 @@ namespace Viewer.UI.Images
             // get a snapshot of the waiting queue
             var empty = ImmutableSortedSet<EntityView>.Empty.WithComparer(new EntityViewComparer(_query.Comparer));
             var items = Interlocked.Exchange(ref _waitingQueue, empty);
+            if (items.Count <= 0)
+            {
+                return;
+            }
 
             // update item size
             foreach (var item in items)
@@ -298,94 +279,56 @@ namespace Viewer.UI.Images
             View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
         }
+
+        private void View_SelectionBegin(object sender, MouseEventArgs e)
+        {
+            var strategy = SelectionStrategy.Replace;
+            if (_isShift)
+            {
+                strategy = SelectionStrategy.Union;
+            }
+            else if (_isControl)
+            {
+                strategy = SelectionStrategy.SymetricDifference;
+            }
+            _rectangleSelection.Begin(e.Location, strategy);
+        }
+
+        private void View_SelectionDrag(object sender, MouseEventArgs e)
+        {
+            var bounds = _rectangleSelection.GetBounds(e.Location);
+            var newSelection = View.GetItemsIn(bounds);
+            ChangeSelection(newSelection);
+
+            View.ShowSelection(bounds);
+        }
+
+        private void View_SelectionEnd(object sender, MouseEventArgs e)
+        {
+            var bounds = _rectangleSelection.GetBounds(e.Location);
+            var newSelection = View.GetItemsIn(bounds);
+            ChangeSelection(newSelection);
+
+            _rectangleSelection.End();
+            View.HideSelection();
+        }
+
+        private void View_SelectItem(object sender, EntityEventArgs e)
+        {
+            var item = View.Items[e.Index];
+            if (!_rectangleSelection.Contains(item))
+            {
+                ChangeSelection(new[] { e.Index });
+            }
+        }
+
+        private void View_BeginDragItems(object sender, EventArgs e)
+        {
+            var dragFiles = _rectangleSelection.Select(elem => elem.FullPath).ToArray();
+            var data = new DataObject(DataFormats.FileDrop, dragFiles);
+            View.BeginDragDrop(data, DragDropEffects.Copy);
+        }
         
-        private void View_HandleMouseDown(object sender, MouseEventArgs e)
-        {
-            var index = View.GetItemAt(e.Location);
-
-            // update view
-            View.EnsureVisible();
-            View.HideItemEditForm();
-
-            // udpate focused item
-            FocusedItem = index;
-
-            // update selection
-            if (index >= 0)
-            {
-                if (!_rectangleSelection.Contains(View.Items[index]))
-                {
-                    // make the active item the only item in selection
-                    ChangeSelection(new []{ index });
-                }
-            }
-            else
-            {
-                var strategy = SelectionStrategy.Replace;
-                if (_isShift)
-                {
-                    strategy = SelectionStrategy.Union;
-                }
-                else if (_isControl)
-                {
-                    strategy = SelectionStrategy.SymetricDifference;
-                }
-                _rectangleSelection.Begin(e.Location, strategy);
-            }
-        }
-
-        private void View_HandleMouseUp(object sender, MouseEventArgs e)
-        {
-            if (_rectangleSelection.IsActive)
-            {
-                UpdateSelection(e.Location);
-                _rectangleSelection.End();
-                View.HideSelection();
-            }
-        }
-
-        private void View_HandleMouseMove(object sender, MouseEventArgs e)
-        {
-            // update active item
-            var item = View.GetItemAt(e.Location);
-            if (item != ActiveItem)
-            {
-                if (item >= 0 && item < View.Items.Count && !_rectangleSelection.Contains(View.Items[item]))
-                {
-                    View.Items[item].State = EntityViewState.Active;
-                    View.UpdateItem(item);
-                }
-
-                if (ActiveItem >= 0 && ActiveItem < View.Items.Count && !_rectangleSelection.Contains(View.Items[ActiveItem]))
-                {
-                    View.Items[ActiveItem].State = EntityViewState.None;
-                    View.UpdateItem(ActiveItem);
-                }
-
-                ActiveItem = item;
-            }
-
-            // update focused item
-            if ((e.Button & MouseButtons.Left) != 0 ||
-                (e.Button & MouseButtons.Right) != 0)
-            {
-                FocusedItem = item;
-            }
-
-            // update selection
-            if (_rectangleSelection.IsActive)
-            {
-                UpdateSelection(e.Location);
-            }
-            else if ((e.Button & MouseButtons.Left) != 0)
-            {
-                // begin a drag&drop operation
-                var dragFiles = _rectangleSelection.Select(elem => elem.FullPath).ToArray();
-                var data = new DataObject(DataFormats.FileDrop, dragFiles);
-                View.BeginDragDrop(data, DragDropEffects.Copy);
-            }
-        }
-         
         private void View_HandleKeyDown(object sender, KeyEventArgs e)
         {
             _isControl = e.Control;
@@ -407,15 +350,9 @@ namespace Viewer.UI.Images
             _isShift = e.Shift;
         }
 
-        private void View_BeginEditItemName(object sender, EventArgs e)
+        private void View_BeginEditItemName(object sender, EntityEventArgs e)
         {
-            var index = FocusedItem;
-            if (index < 0)
-            {
-                return;
-            }
-
-            View.ShowItemEditForm(index);
+            View.ShowItemEditForm(e.Index);
         }
 
         private void View_CancelEditItemName(object sender, EventArgs e)
@@ -425,13 +362,7 @@ namespace Viewer.UI.Images
 
         private void View_RenameItem(object sender, RenameEventArgs e)
         {
-            var index = FocusedItem;
-            if (index < 0)
-            {
-                return;
-            }
-
-            // check the new file name
+            // check the new file name 
             if (!PathUtils.IsValidFileName(e.NewName))
             {
                 _dialogView.InvalidFileName(e.NewName, PathUtils.GetInvalidFileCharacters());
@@ -439,7 +370,7 @@ namespace Viewer.UI.Images
             }
 
             // construct the new file path
-            var item = View.Items[index].Data;
+            var item = View.Items[e.Index].Data;
             var basePath = PathUtils.GetDirectoryPath(item.Path);
             var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.Path));
 
@@ -447,7 +378,7 @@ namespace Viewer.UI.Images
             try
             {
                 _entityManager.MoveEntity(item.Path, newPath);
-                View.UpdateItem(index);
+                View.UpdateItem(e.Index);
             }
             catch (PathTooLongException)
             {
@@ -535,29 +466,19 @@ namespace Viewer.UI.Images
             // clear selection
             ChangeSelection(Enumerable.Empty<int>());
             
-            // reset active and focused items if necessary
-            if (ActiveItem >= View.Items.Count)
-            {
-                ActiveItem = -1;
-            }
-
-            if (FocusedItem >= View.Items.Count)
-            {
-                FocusedItem = -1;
-            }
-
             View.UpdateItems();
         }
 
-        private void View_OpenItem(object sender, EventArgs e)
+        private void View_OpenItem(object sender, EntityEventArgs e)
         {
-            if (ActiveItem < 0 || ActiveItem >= View.Items.Count)
+            if (e.Index < 0)
             {
-                return;
+                throw new ArgumentOutOfRangeException(nameof(e));
             }
 
+            var entityIndex = e.Index;
             var entities = View.Items.Select(item => item.Data);
-            _state.OpenEntity(entities, ActiveItem);
+            _state.OpenEntity(entities, entityIndex);
         }
         
         private async void View_CloseView(object sender, EventArgs eventArgs)

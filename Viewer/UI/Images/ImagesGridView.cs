@@ -178,15 +178,6 @@ namespace Viewer.UI.Images
             UpdateItemCount();
             Refresh();
         }
-
-        public void UpdateItems(IEnumerable<int> itemIndices)
-        {
-            UpdateItemCount();
-            foreach (var index in itemIndices)
-            {
-                UpdateItem(index);
-            }
-        }
         
         public void UpdateItem(int index)
         {

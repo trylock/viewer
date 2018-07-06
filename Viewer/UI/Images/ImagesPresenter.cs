@@ -340,10 +340,6 @@ namespace Viewer.UI.Images
             {
                 ChangeSelection(Enumerable.Range(0, View.Items.Count));
             }
-            else if (e.KeyCode == Keys.Escape)
-            {
-                View.HideItemEditForm();
-            }
         }
         
         private void View_HandleKeyUp(object sender, KeyEventArgs e)

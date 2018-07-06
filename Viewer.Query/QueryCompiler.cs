@@ -200,7 +200,7 @@ namespace Viewer.Query
         public CompilationResult VisitSource(QueryParser.SourceContext context)
         {
             IQuery query = null;
-            var subquery = context.query();
+            var subquery = context.queryExpression();
             if (subquery != null)
             {
                 // compile subquery

@@ -513,5 +513,18 @@ namespace ViewerTest.Query
                 predicate(new Entity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None)))
             )));
         }
+
+        [TestMethod]
+        public void Compile_NestedQueryExpression()
+        {
+            _query
+                .Setup(mock => mock.Union(It.IsAny<IQuery>()))
+                .Returns(_query.Object);
+
+            _compiler.Compile(new StringReader("select (select \"a\" union select \"b\")"), new NullErrorListener());
+            
+            _factory.Verify(mock => mock.CreateQuery("a"), Times.Once);
+            _factory.Verify(mock => mock.CreateQuery("b"), Times.Once);
+        }
     }
 }

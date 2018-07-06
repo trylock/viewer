@@ -12,7 +12,7 @@ query: unorderedQuery optionalOrderBy;
 
 unorderedQuery: SELECT source optionalWhere;
 
-source: ID | STRING | '(' query ')';
+source: ID | STRING | '(' queryExpression ')';
 
 // WHERE
 optionalWhere: WHERE predicate | ;

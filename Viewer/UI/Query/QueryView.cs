@@ -34,7 +34,7 @@ namespace Viewer.UI.Query
             QueryTextBox.Styles[Style.Sql.Number].ForeColor = Color.FromArgb(0x09885a);
 
             QueryTextBox.Lexer = Lexer.Sql;
-            QueryTextBox.SetKeywords(0, "select where order by desc asc and or not");
+            QueryTextBox.SetKeywords(0, "select where order by desc asc and or not union except intersect");
 
             QueryTextBox.Margins[0].Type = MarginType.Number;
             QueryTextBox.Margins[0].Width = 20;

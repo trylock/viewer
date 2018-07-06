@@ -59,7 +59,6 @@
     <Compile Include="Entity.cs" />
     <Compile Include="EntityComparer.cs" />
     <Compile Include="EntityManager.cs" />
-    <Compile Include="EntityRepository.cs" />
     <Compile Include="Formats\Attributes\AttributeReader.cs" />
     <Compile Include="Formats\Attributes\AttributeWriter.cs" />
     <Compile Include="Formats\Exif\ExifAttributeParser.cs" />

@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetadataExtractor;
 using Viewer.Data.Storage;
 
 namespace Viewer.Data
@@ -53,14 +54,13 @@ namespace Viewer.Data
     public class EntityManager : IEntityManager
     {
         private readonly Dictionary<string, WeakReference<IEntity>> _entities = new Dictionary<string, WeakReference<IEntity>>();
+        private readonly Dictionary<string, IEntity> _modified = new Dictionary<string, IEntity>();
         private readonly IAttributeStorage _storage;
-        private readonly IEntityRepository _modified;
 
         [ImportingConstructor]
-        public EntityManager(IAttributeStorage storage, IEntityRepository modified)
+        public EntityManager(IAttributeStorage storage)
         {
             _storage = storage;
-            _modified = modified;
         }
 
         public IEntity GetEntity(string path)
@@ -76,8 +76,9 @@ namespace Viewer.Data
 
         public void SetEntity(IEntity entity)
         {
-            _entities[entity.Path] = new WeakReference<IEntity>(entity);
-            _modified.Add(entity.Clone());
+            var path = entity.Path;
+            _entities[path] = new WeakReference<IEntity>(entity);
+            _modified.Add(path, entity.Clone());
         }
 
         public void MoveEntity(string oldPath, string newPath)
@@ -89,10 +90,14 @@ namespace Viewer.Data
                 _entities.Remove(oldPath);
                 if (value.TryGetTarget(out var entity))
                 {
+                    // add the modified entity to the cache
                     entity.ChangePath(newPath);
                     _entities[newPath] = new WeakReference<IEntity>(entity);
+                    
+                    // add the modified entity to the modified list
+                    _modified.Remove(oldPath);
+                    _modified.Add(newPath, entity.Clone());
                 }
-                _modified.Move(oldPath, newPath);
             }
         }
 
@@ -105,7 +110,9 @@ namespace Viewer.Data
 
         public IReadOnlyList<IEntity> GetModified()
         {
-            return _modified.GetSnapshot();
+            var snapshot = _modified.Values.ToArray();
+            _modified.Clear();
+            return snapshot;
         }
 
         private IEntity LoadEntity(string path)

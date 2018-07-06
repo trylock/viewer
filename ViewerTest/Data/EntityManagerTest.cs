@@ -16,15 +16,13 @@ namespace ViewerTest.Data
     public class EntityManagerTest
     {
         private Mock<IAttributeStorage> _storage;
-        private Mock<IEntityRepository> _modified;
         private EntityManager _entityManager;
 
         [TestInitialize]
         public void Setup()
         {
             _storage = new Mock<IAttributeStorage>();
-            _modified = new Mock<IEntityRepository>();
-            _entityManager = new EntityManager(_storage.Object, _modified.Object);
+            _entityManager = new EntityManager(_storage.Object);
         }
 
         [TestMethod]
@@ -84,7 +82,9 @@ namespace ViewerTest.Data
             }
             Assert.IsTrue(throws);
 
-            _modified.Verify(mock => mock.Move("test", It.IsAny<string>()), Times.Never);
+            var modified = _entityManager.GetModified().ToArray();
+            Assert.AreEqual(1, modified.Length);
+            Assert.AreEqual("test", modified[0].Path);
         }
     }
 }

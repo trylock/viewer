@@ -84,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\EntityManagerTest.cs" />
-    <Compile Include="Data\EntityRepositoryTest.cs" />
     <Compile Include="Data\EntityTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeReaderTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeWriterTest.cs" />

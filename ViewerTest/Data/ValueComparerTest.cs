@@ -65,5 +65,11 @@ namespace ViewerTest.Data
             TestIsLess(new StringValue("a"), new IntValue(null));
             TestIsLess(new StringValue("a"), new RealValue(null));
         }
+
+        [TestMethod]
+        public void Compare_Dates()
+        {
+            TestIsLess(new DateTimeValue(new DateTime(2010, 8, 2)), new DateTimeValue(new DateTime(2018, 7, 2)));
+        }
     }
 }

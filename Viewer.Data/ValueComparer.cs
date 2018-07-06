@@ -86,7 +86,15 @@ namespace Viewer.Data
                 return 1; // only y is a number
             }
 
-            // sort strings (string, DateTime) second
+            // sort dates 
+            if (x is DateTimeValue xDate && y is DateTimeValue yDate)
+            {
+                return Comparer<DateTime>.Default.Compare(
+                    (DateTime)xDate.Value, 
+                    (DateTime)yDate.Value);
+            }
+
+            // sort strings (string, DateTime) 
             return Comparer<string>.Default.Compare(x.ToString(), y.ToString());
         }
     }

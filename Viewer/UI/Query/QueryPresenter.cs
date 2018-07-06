@@ -24,24 +24,12 @@ namespace Viewer.UI.Query
         protected override ExportLifetimeContext<IQueryView> ViewLifetime { get; }
 
         private bool _isUnsaved = false;
-        private string _path;
 
         /// <summary>
         /// Full path to a file which contains this query or
         /// null if there is no such file.
         /// </summary>
-        public string FullPath
-        {
-            get => _path;
-            set
-            {
-                _path = value;
-                if (_path != null)
-                {
-                    View.Text = Path.GetFileName(_path);
-                }
-            }
-        }
+        public string FullPath { get; private set; }
 
         [ImportingConstructor]
         public QueryPresenter(
@@ -60,6 +48,23 @@ namespace Viewer.UI.Query
             _editor = editor;
 
             SubscribeTo(View, "View");
+        }
+
+        /// <summary>
+        /// Set content of this editor window
+        /// </summary>
+        /// <param name="path">Location of a file which contains the query or null</param>
+        /// <param name="content">Query</param>
+        public void SetContent(string path, string content)
+        {
+            FullPath = path;
+            if (FullPath != null)
+            {
+                View.Text = Path.GetFileName(FullPath);
+            }
+
+            View.Query = content;
+            MarkSaved();
         }
 
         /// <summary>

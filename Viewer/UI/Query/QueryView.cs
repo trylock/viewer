@@ -70,13 +70,13 @@ namespace Viewer.UI.Query
 
             if (e.Control && e.KeyCode == Keys.S)
             {
-                SaveQuery?.Invoke(sender, e);
                 e.SuppressKeyPress = true;
+                SaveQuery?.Invoke(sender, e);
             }
             else if (e.Control && e.KeyCode == Keys.O)
             {
-                OpenButton_Click(sender, e);
                 e.SuppressKeyPress = true;
+                OpenButton_Click(sender, e);
             }
         }
 

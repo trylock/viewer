@@ -74,8 +74,7 @@ namespace Viewer.UI.Query
                 var buffer = await Task.Run(() => _fileSystem.ReadAllBytes(path));
                 var data = Encoding.UTF8.GetString(buffer);
                 var editor = OpenWindow();
-                editor.FullPath = path;
-                editor.View.Query = data;
+                editor.SetContent(path, data);
             }
             catch (UnauthorizedAccessException)
             {

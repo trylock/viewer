@@ -82,11 +82,14 @@ namespace Viewer.Data
 
         public void MoveEntity(string oldPath, string newPath)
         {
+            _storage.Move(oldPath, newPath);
+
             if (_entities.TryGetValue(oldPath, out var value))
             {
                 _entities.Remove(oldPath);
                 if (value.TryGetTarget(out var entity))
                 {
+                    entity.ChangePath(newPath);
                     _entities[newPath] = new WeakReference<IEntity>(entity);
                 }
                 _modified.Move(oldPath, newPath);

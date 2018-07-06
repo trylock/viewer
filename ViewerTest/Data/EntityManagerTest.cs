@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,42 @@ namespace ViewerTest.Data
             Assert.IsTrue(ReferenceEquals(result, entity));
 
             _storage.Verify(mock => mock.Load("test"), Times.Once);
+        }
+
+        [TestMethod]
+        public void MoveEntity_MovesEntityInTheStorage()
+        {
+            var entity = new Entity("test");
+
+            _entityManager.SetEntity(entity);
+            _entityManager.MoveEntity("test", "test2");
+
+            _storage.Verify(mock => mock.Move("test", "test2"), Times.Once);
+
+            Assert.AreEqual("test2", entity.Path);
+        }
+
+        [TestMethod]
+        public void MoveEntity_DoNotMoveEntityIfTheMoveOperationInStorageFails()
+        {
+            _entityManager.SetEntity(new Entity("test"));
+
+            _storage
+                .Setup(mock => mock.Move("test", "test2"))
+                .Throws(new UnauthorizedAccessException());
+
+            var throws = false;
+            try
+            {
+                _entityManager.MoveEntity("test", "test2");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throws = true;
+            }
+            Assert.IsTrue(throws);
+
+            _modified.Verify(mock => mock.Move("test", It.IsAny<string>()), Times.Never);
         }
     }
 }

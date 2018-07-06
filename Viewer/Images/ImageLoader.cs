@@ -36,6 +36,18 @@ namespace Viewer.Images
         /// <param name="thumbnailAreaSize">Size of an area for the thumbnail</param>
         /// <returns>Thumbnail of the entity</returns>
         Image LoadThumbnail(IEntity entity, Size thumbnailAreaSize);
+
+        /// <summary>
+        /// Load thumbnail asynchronously.
+        /// Thread-Safety:
+        ///     It has to be called from the UI thread. This is necessary as
+        ///     entities are shared collections and they are not thread-safe.
+        ///     The thumbnail will be loaded on a different thread.
+        /// </summary>
+        /// <param name="entity">Entity to load</param>
+        /// <param name="thumbnailAreaSize">Area for the thumbnail</param>
+        /// <returns>Task which loads the thumbnail</returns>
+        Task<Image> LoadThumbnailAsync(IEntity entity, Size thumbnailAreaSize);
     }
 
     [Export(typeof(IImageLoader))]
@@ -147,6 +159,33 @@ namespace Viewer.Images
                     return null;
                 return _thumbnailGenerator.GetThumbnail(thumbnail, thumbnailAreaSize);
             }
+        }
+
+        public Task<Image> LoadThumbnailAsync(IEntity entity, Size thumbnailAreaSize)
+        {
+            var path = entity.Path;
+            var attr = entity.GetAttribute(ThumbnailAttrName)?.Value as ImageValue;
+            var fix = GetTransformation(entity);
+            if (attr == null)
+            {
+                // TODO: don't block a thread pool thread if an entity does not have an embeded thumbnail
+            }
+
+            return Task.Run(() =>
+            {
+                var input = attr == null ?
+                    (Stream) new FileStream(path, FileMode.Open, FileAccess.Read) :
+                    (Stream) new MemoryStream(attr.Value);
+
+                using (var image = Image.FromStream(input))
+                {
+                    if (fix != RotateFlipType.RotateNoneFlipNone)
+                    {
+                        image.RotateFlip(fix);
+                    }
+                    return _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize);
+                }
+            });
         }
 
         /// <summary>

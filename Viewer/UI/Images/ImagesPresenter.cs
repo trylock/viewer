@@ -33,7 +33,6 @@ namespace Viewer.UI.Images
         private readonly IClipboardService _clipboard;
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
-        private readonly IThumbnailGenerator _thumbnailGenerator;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
@@ -91,8 +90,7 @@ namespace Viewer.UI.Images
             IEntityManager entityManager,
             IClipboardService clipboard,
             IImageLoader imageLoader,
-            IApplicationState state,
-            IThumbnailGenerator thumbnailGenerator)
+            IApplicationState state)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogView = dialogView;
@@ -101,7 +99,6 @@ namespace Viewer.UI.Images
             _clipboard = clipboard;
             _imageLoader = imageLoader;
             _state = state;
-            _thumbnailGenerator = thumbnailGenerator;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
             
             View.ItemSize = _minItemSize;
@@ -206,9 +203,9 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="item">Entity</param>
         /// <returns>Thumbnail</returns>
-        private Lazy<Image> GetThumbnail(IEntity item)
+        private Lazy<Task<Image>> GetThumbnail(IEntity item)
         {
-            return new Lazy<Image>(() => _imageLoader.LoadThumbnail(item, View.ItemSize));
+            return new Lazy<Task<Image>>(() => _imageLoader.LoadThumbnailAsync(item, ComputeThumbnailSize()));
         }
         
         /// <summary>
@@ -264,20 +261,19 @@ namespace Viewer.UI.Images
             // get a snapshot of the waiting queue
             var empty = ImmutableSortedSet<EntityView>.Empty.WithComparer(new EntityViewComparer(_query.Comparer));
             var items = Interlocked.Exchange(ref _waitingQueue, empty);
-            if (items.Count <= 0)
+            if (items.Count > 0)
             {
-                return;
+                // update item size
+                foreach (var item in items)
+                {
+                    _minItemSize = _thumbnailSizeCalculator.AddEntity(item.Data);
+                }
+
+                // show all entities in the snapshot
+                View.Items = View.Items.Merge(items);
+                View.ItemSize = ComputeThumbnailSize();
             }
 
-            // update item size
-            foreach (var item in items)
-            {
-                _minItemSize = _thumbnailSizeCalculator.AddEntity(item.Data);
-            }
-
-            // show all entities in the snapshot
-            View.Items = View.Items.Merge(items);
-            View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
         }
 

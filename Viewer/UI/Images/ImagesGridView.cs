@@ -329,5 +329,13 @@ namespace Viewer.UI.Images
         {
             ThumbnailSizeCommit?.Invoke(sender, e);
         }
+
+        private void ThumbnailSizeTrackBar_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+            {
+                ThumbnailSizeCommit?.Invoke(sender, e);
+            }
+        }
     }
 }

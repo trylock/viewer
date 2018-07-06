@@ -120,6 +120,7 @@
             this.ThumbnailSizeTrackBar.Size = new System.Drawing.Size(173, 56);
             this.ThumbnailSizeTrackBar.TabIndex = 1;
             this.ThumbnailSizeTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.ThumbnailSizeTrackBar.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ThumbnailSizeTrackBar_KeyUp);
             this.ThumbnailSizeTrackBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ThumbnailSizeTrackBar_MouseUp);
             // 
             // GridView

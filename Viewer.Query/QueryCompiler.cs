@@ -130,7 +130,9 @@ namespace Viewer.Query
             // parse UNION, EXCEPT
             var left = context.queryExpression().Accept(this);
             var right = context.intersection().Accept(this);
-            var result = context.UNION_EXCEPT().Symbol.Text == "UNION" ? 
+            var op = context.UNION_EXCEPT().Symbol.Text;
+
+            var result = StringComparer.InvariantCultureIgnoreCase.Compare(op, "union") == 0 ? 
                 left.Query.Union(right.Query) : 
                 left.Query.Except(right.Query);
             return new CompilationResult{ Query = result };

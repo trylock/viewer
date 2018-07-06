@@ -522,7 +522,8 @@ namespace ViewerTest.Query
                 .Returns(_query.Object);
 
             _compiler.Compile(new StringReader("select (select \"a\" union select \"b\")"), new NullErrorListener());
-            
+
+            _query.Verify(mock => mock.Union(It.IsAny<IEnumerable<IEntity>>()), Times.Once);
             _factory.Verify(mock => mock.CreateQuery("a"), Times.Once);
             _factory.Verify(mock => mock.CreateQuery("b"), Times.Once);
         }

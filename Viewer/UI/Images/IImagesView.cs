@@ -277,12 +277,6 @@ namespace Viewer.UI.Images
         /// Notify the view that the Items collection has changed.
         /// </summary>
         void UpdateItems();
-
-        /// <summary>
-        /// Update items in the view.
-        /// </summary>
-        /// <param name="itemIndices">Indicies of items to update</param>
-        void UpdateItems(IEnumerable<int> itemIndices);
         
         /// <summary>
         /// Update a single item in the view.

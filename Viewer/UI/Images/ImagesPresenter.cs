@@ -233,14 +233,15 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            // set global selection
-            _selection.Replace(_rectangleSelection.Select(item => item.Data));
-
             UpdateSelectedItems();
         }
 
         private void UpdateSelectedItems()
         {
+            // set global selection
+            _selection.Replace(_rectangleSelection.Select(item => item.Data));
+
+            // update the view
             foreach (var item in View.Items)
             {
                 if (_rectangleSelection.Contains(item))
@@ -292,6 +293,7 @@ namespace Viewer.UI.Images
                 strategy = SelectionStrategy.SymetricDifference;
             }
             _rectangleSelection.Begin(e.Location, strategy);
+            UpdateSelectedItems();
         }
 
         private void View_SelectionDrag(object sender, MouseEventArgs e)

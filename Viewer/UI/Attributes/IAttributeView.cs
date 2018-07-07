@@ -60,8 +60,8 @@ namespace Viewer.UI.Attributes
 
     public enum SortDirection
     {
-        Ascending,
-        Descending
+        Ascending = 1,
+        Descending = -1
     }
 
     public enum AttributeType

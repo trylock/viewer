@@ -223,6 +223,8 @@ namespace Viewer.UI.Attributes
             {
                 foreach (var entity in unsaved)
                 {
+                    cancellation.Token.ThrowIfCancellationRequested();
+
                     progress.Report(new LoadingProgress(entity.Path));
                     try
                     {
@@ -240,6 +242,11 @@ namespace Viewer.UI.Attributes
                 }
             }, cancellation.Token);
         }
+
+        private static IComparer<AttributeGroup> CreateComparer<TKey>(Func<AttributeGroup, TKey> keySelector, int direction)
+        {
+            return Comparer<AttributeGroup>.Create((a, b) => direction * Comparer<TKey>.Default.Compare(keySelector(a), keySelector(b)));
+        }
         
         private void View_SortAttributes(object sender, SortEventArgs e)
         {
@@ -255,33 +262,37 @@ namespace Viewer.UI.Attributes
                 View.Attributes.RemoveAt(View.Attributes.Count - 1);
             }
 
-            // function which retrieves a key to sort the attributes by
-            string KeySelector(AttributeGroup attr)
-            {
-                if (e.Column == SortColumn.Name)
-                    return attr.Data.Name;
-                else if (e.Column == SortColumn.Type)
-                    return attr.Data.GetType().Name;
-                else // if (e.Column == SortColumn.Value)
-                    return attr.Data.ToString();
-            }
-
-            // sort the values by given column
+            // determine sort column and direction
+            _currentSortColumn = e.Column;
             if (e.Column != SortColumn.None)
             {
                 if (_currentSortColumn != e.Column || _currentSortDirection == SortDirection.Descending)
                 {
-                    View.Attributes = View.Attributes.OrderBy(KeySelector).ToList();
                     _currentSortDirection = SortDirection.Ascending;
                 }
                 else
                 {
-                    View.Attributes = View.Attributes.OrderByDescending(KeySelector).ToList();
                     _currentSortDirection = SortDirection.Descending;
                 }
             }
 
-            _currentSortColumn = e.Column;
+            // sort the values 
+            IComparer<AttributeGroup> comparer;
+            if (e.Column == SortColumn.Name)
+            {
+                comparer = CreateComparer(attr => attr.Data.Name, (int) _currentSortDirection);
+            }
+            else if (e.Column == SortColumn.Type)
+            {
+                comparer = CreateComparer(attr => (int) attr.Data.Value.Type, (int)_currentSortDirection);
+            }
+            else // if (e.Column == SortColumn.Value)
+            {
+                comparer = Comparer<AttributeGroup>.Create((a, b) =>
+                    (int) _currentSortDirection *
+                    ValueComparer.Default.Compare(a.Data.Value, b.Data.Value));
+            }
+            View.Attributes.Sort(comparer);
 
             // add back the last row and update the view
             if (IsEditingEnabled)

@@ -35,7 +35,7 @@ namespace Viewer.UI.Explorer
         private readonly IFileSystem _fileSystem;
         private readonly IClipboardService _clipboard;
         private readonly IFileSystemErrorView _dialogView;
-        private readonly IProgressViewFactory _progressViewFactory;
+        private readonly ITaskLoader _taskLoader;
 
         protected override ExportLifetimeContext<IDirectoryTreeView> ViewLifetime { get; }
 
@@ -44,7 +44,7 @@ namespace Viewer.UI.Explorer
             ExportFactory<IDirectoryTreeView> viewFactory,
             IApplicationState state,
             IQueryFactory queryFactory,
-            IProgressViewFactory progressViewFactory,
+            ITaskLoader taskLoader,
             IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
             IClipboardService clipboard)
@@ -54,7 +54,7 @@ namespace Viewer.UI.Explorer
             _fileSystem = fileSystem;
             _clipboard = clipboard;
             _dialogView = dialogView;
-            _progressViewFactory = progressViewFactory;
+            _taskLoader = taskLoader;
             ViewLifetime = viewFactory.CreateExport();
 
             SubscribeTo(View, "View");
@@ -272,39 +272,30 @@ namespace Viewer.UI.Explorer
         {
             PasteFiles(e.FullPath, _clipboard.GetFiles(), _clipboard.GetPreferredEffect());
         }
-
-        private class CopyProgress
-        {
-            public string Path { get; }
-            public bool IsFinished { get; }
-
-            public CopyProgress(string path, bool isFinished)
-            {
-                Path = path;
-                IsFinished = isFinished;
-            }
-        }
-
+        
         private class CopyHandle
         {
             private readonly IFileSystem _fileSystem;
-            private readonly IProgressView<CopyProgress> _progressView;
+            private readonly IProgress<LoadingProgress> _progress;
             private readonly IFileSystemErrorView _dialogView;
+            private readonly CancellationToken _cancellationToken;
             private readonly string _baseDir;
             private readonly string _destDir;
 
             public CopyHandle(
                 IFileSystem fileSystem, 
                 string baseDir, 
-                string desDir, 
-                IProgressView<CopyProgress> progressView,
+                string desDir,
+                IProgress<LoadingProgress> progress,
+                CancellationToken cancellationToken,
                 IFileSystemErrorView dialogView)
             {
                 _fileSystem = fileSystem;
                 _baseDir = baseDir;
                 _destDir = desDir;
                 _dialogView = dialogView;
-                _progressView = progressView;
+                _progress = progress;
+                _cancellationToken = cancellationToken;
             }
             
             private string GetDestinationPath(string path)
@@ -332,8 +323,10 @@ namespace Viewer.UI.Explorer
 
             private SearchControl Operation(string path, Action<string, string> operation)
             {
+                _cancellationToken.ThrowIfCancellationRequested();
+
                 var destPath = GetDestinationPath(path);
-                _progressView.Progress.Report(new CopyProgress(path, false));
+                _progress.Report(new LoadingProgress(path));
                 try
                 {
                     operation(path, destPath);
@@ -347,46 +340,42 @@ namespace Viewer.UI.Explorer
                 {
                     _dialogView.UnauthorizedAccess(path);
                 }
-                finally
-                {
-                    _progressView.Progress.Report(new CopyProgress(path, true));
-                }
 
                 return SearchControl.None;
             }
         }
 
-        private void PasteFiles(string destinationDirectory, IEnumerable<string> files, DragDropEffects effect)
+        private async void PasteFiles(string destinationDirectory, IEnumerable<string> files, DragDropEffects effect)
         {
             // copy files
             var fileCount = (int)_fileSystem.CountFiles(files, true);
-            _progressViewFactory
-                .Create<CopyProgress>(copy => copy.IsFinished, copy => copy.Path)
-                .WithTitle(Resources.CopyingFiles_Label)
-                .WithWork(fileCount)
-                .Show(view =>
-                {
-                    Task.Run(() =>
-                    {
-                        foreach (var file in files)
-                        {
-                            var baseDir = PathUtils.GetDirectoryPath(file);
-                            var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, view, _dialogView);
-                            if ((effect & DragDropEffects.Move) != 0)
-                                _fileSystem.Search(file, copy.CreateDirectory, copy.MoveFile);
-                            else
-                                _fileSystem.Search(file, copy.CreateDirectory, copy.CopyFile);
-                        }
-                    }, view.CancellationToken).ContinueWith(task =>
-                    {
-                        view.CloseView(view.CancellationToken.CanBeCanceled);
+            var cancellation = new CancellationTokenSource();
+            var progress = _taskLoader.CreateLoader(Resources.CopyingFiles_Label, fileCount, cancellation);
 
-                        // update subdirectories in given path
-                        View.LoadDirectories(
-                            PathUtils.Split(destinationDirectory),
-                            GetValidSubdirectories(destinationDirectory));
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
-                });
+            try
+            {
+                await Task.Run(() =>
+                {
+                    foreach (var file in files)
+                    {
+                        var baseDir = PathUtils.GetDirectoryPath(file);
+                        var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, progress,
+                            cancellation.Token, _dialogView);
+                        if ((effect & DragDropEffects.Move) != 0)
+                            _fileSystem.Search(file, copy.CreateDirectory, copy.MoveFile);
+                        else
+                            _fileSystem.Search(file, copy.CreateDirectory, copy.CopyFile);
+                    }
+                }, cancellation.Token);
+            }
+            catch (OperationCanceledException)
+            {
+            }
+
+            // update subdirectories in given path
+            View.LoadDirectories(
+                PathUtils.Split(destinationDirectory),
+                GetValidSubdirectories(destinationDirectory));
         }
     }
 }

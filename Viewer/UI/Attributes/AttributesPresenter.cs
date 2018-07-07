@@ -21,7 +21,7 @@ namespace Viewer.UI.Attributes
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class AttributesPresenter : Presenter<IAttributeView>
     {
-        private readonly IProgressViewFactory _progressViewFactory;
+        private readonly ITaskLoader _taskLoader;
         private readonly ISelection _selection;
         private readonly IAttributeManager _attributes;
         private readonly IAttributeStorage _storage;
@@ -46,7 +46,7 @@ namespace Viewer.UI.Attributes
         [ImportingConstructor]
         public AttributesPresenter(
             ExportFactory<IAttributeView> viewFactory, 
-            IProgressViewFactory progressViewFactory, 
+            ITaskLoader taskLoader, 
             ISelection selection,
             IAttributeManager attrManager,
             IAttributeStorage storage,
@@ -54,7 +54,7 @@ namespace Viewer.UI.Attributes
             ILogger log)
         {
             ViewLifetime = viewFactory.CreateExport();
-            _progressViewFactory = progressViewFactory;
+            _taskLoader = taskLoader;
             _log = log;
             _storage = storage;
             _attributes = attrManager;
@@ -207,19 +207,7 @@ namespace Viewer.UI.Attributes
 
             ViewAttributes();
         }
-
-        private class SaveProgress
-        {
-            public IEntity Entity { get; }
-            public bool IsFinished { get; }
-
-            public SaveProgress(IEntity entity, bool isFinished)
-            {
-                Entity = entity;
-                IsFinished = isFinished;
-            }
-        }
-
+        
         private void View_SaveAttributes(object sender, EventArgs args)
         {
             var unsaved = _entityManager.GetModified();
@@ -228,37 +216,29 @@ namespace Viewer.UI.Attributes
                 return;
             }
             
-            _progressViewFactory
-                .Create<SaveProgress>(save => save.IsFinished, save => save.Entity.Path)
-                .WithTitle("Saving Changes")
-                .WithWork(unsaved.Count)
-                .Show(view =>
+            var cancellation = new CancellationTokenSource();
+            var progress = _taskLoader.CreateLoader("Saving Changes", unsaved.Count, cancellation);
+
+            Task.Run(() =>
+            {
+                foreach (var entity in unsaved)
                 {
-                    Task.Run(() =>
+                    progress.Report(new LoadingProgress(entity.Path));
+                    try
                     {
-                        foreach (var entity in unsaved)
-                        {
-                            view.Progress.Report(new SaveProgress(entity, false));
-                            try
-                            {
-                                _storage.Store(entity);
-                            }
-                            catch (FileNotFoundException)
-                            {
-                                Log($"Attribute file {entity.Path} was not found.", LogType.Error, null);
-                            }
-                            catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
-                                                      e.GetType() == typeof(SecurityException))
-                            {
-                                Log($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
-                            }
-                            finally
-                            {
-                                view.Progress.Report(new SaveProgress(entity, true));
-                            }
-                        }
-                    }, view.CancellationToken);
-                });
+                        _storage.Store(entity);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Log($"Attribute file {entity.Path} was not found.", LogType.Error, null);
+                    }
+                    catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
+                                              e.GetType() == typeof(SecurityException))
+                    {
+                        Log($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
+                    }
+                }
+            }, cancellation.Token);
         }
         
         private void View_SortAttributes(object sender, SortEventArgs e)

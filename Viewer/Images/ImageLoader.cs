@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Primitives;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -176,13 +177,14 @@ namespace Viewer.Images
                 var input = attr == null ?
                     (Stream) new FileStream(path, FileMode.Open, FileAccess.Read) :
                     (Stream) new MemoryStream(attr.Value);
-
+                
                 using (var image = Image.FromStream(input))
                 {
                     if (fix != RotateFlipType.RotateNoneFlipNone)
                     {
                         image.RotateFlip(fix);
                     }
+
                     return _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize);
                 }
             });

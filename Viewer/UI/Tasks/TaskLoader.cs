@@ -24,6 +24,7 @@ namespace Viewer.UI.Tasks
         {
             var view = new TaskLoaderView(totalTaskCount, cancellation);
             view.Show(_appForm.Panel, DockState.DockBottom);
+            view.Text = name;
             return view.Progress;
         }
     }

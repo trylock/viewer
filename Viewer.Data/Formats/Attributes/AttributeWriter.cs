@@ -28,6 +28,10 @@ namespace Viewer.Data.Formats.Attributes
 
             public void Write(Attribute attr)
             {
+                if (attr.Value.IsNull)
+                {
+                    return;
+                }
                 Writer.Write((short)attr.Value.Type);
                 WriteString(attr.Name);
                 attr.Value.Accept(this);

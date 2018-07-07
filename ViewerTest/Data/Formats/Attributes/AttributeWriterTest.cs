@@ -103,6 +103,16 @@ namespace ViewerTest.Data.Formats.Attributes
             CollectionAssert.AreEqual(expectedValue, actualData);
         }
 
+        [TestMethod]
+        public void Write_DoNotWriteAttributesWithNullValue()
+        {
+            var output = new MemoryStream();
+            var writer = new AttributeWriter(new BinaryWriter(output));
+            writer.Write(new Attribute("test", new IntValue(null)));
+
+            CollectionAssert.AreEqual(new byte[]{}, output.ToArray());
+        }
+
         private class StreamMock : Stream
         {
             public override void Flush()

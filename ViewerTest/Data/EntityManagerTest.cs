@@ -9,6 +9,7 @@ using Moq;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.IO;
+using Attribute = Viewer.Data.Attribute;
 
 namespace ViewerTest.Data
 {
@@ -85,6 +86,19 @@ namespace ViewerTest.Data
             var modified = _entityManager.GetModified().ToArray();
             Assert.AreEqual(1, modified.Length);
             Assert.AreEqual("test", modified[0].Path);
+        }
+
+        [TestMethod]
+        public void SetEntity_ModifyTheSameEntityTwice()
+        {
+            var entityA = new Entity("test");
+            var entityB = new Entity("test").SetAttribute(new Attribute("a", new IntValue(1)));
+            _entityManager.SetEntity(entityA);
+            _entityManager.SetEntity(entityB);
+
+            var modified = _entityManager.GetModified();
+            Assert.AreEqual(1, modified.Count);
+            Assert.AreEqual(1, (modified[0].GetAttribute("a")?.Value as IntValue).Value);
         }
     }
 }

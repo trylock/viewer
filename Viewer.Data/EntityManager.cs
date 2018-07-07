@@ -78,7 +78,7 @@ namespace Viewer.Data
         {
             var path = entity.Path;
             _entities[path] = new WeakReference<IEntity>(entity);
-            _modified.Add(path, entity.Clone());
+            _modified[path] = entity.Clone();
         }
 
         public void MoveEntity(string oldPath, string newPath)

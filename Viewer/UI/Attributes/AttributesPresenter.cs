@@ -284,7 +284,7 @@ namespace Viewer.UI.Attributes
             }
             else if (e.Column == SortColumn.Type)
             {
-                comparer = CreateComparer(attr => (int) attr.Data.Value.Type, (int)_currentSortDirection);
+                comparer = CreateComparer(attr => attr.Data.Value.Type, (int)_currentSortDirection);
             }
             else // if (e.Column == SortColumn.Value)
             {
@@ -319,7 +319,7 @@ namespace Viewer.UI.Attributes
             else
             {
                 var filter = e.FilterText.ToLower();
-                View.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().StartsWith(filter)).ToList();
+                View.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().Contains(filter)).ToList();
             }
 
             if (IsEditingEnabled)

@@ -36,7 +36,7 @@ namespace ViewerTest.Data
         }
 
         [TestMethod]
-        public void GetEntity_LoadEntityOnlyOnce()
+        public void GetEntity_LoadEntity()
         {
             var entity = new Entity("test");
             _storage.Setup(mock => mock.Load("test")).Returns(entity);
@@ -47,7 +47,7 @@ namespace ViewerTest.Data
             result = _entityManager.GetEntity("test");
             Assert.IsTrue(ReferenceEquals(result, entity));
 
-            _storage.Verify(mock => mock.Load("test"), Times.Once);
+            _storage.Verify(mock => mock.Load("test"), Times.Exactly(2));
         }
 
         [TestMethod]
@@ -59,8 +59,6 @@ namespace ViewerTest.Data
             _entityManager.MoveEntity("test", "test2");
 
             _storage.Verify(mock => mock.Move("test", "test2"), Times.Once);
-
-            Assert.AreEqual("test2", entity.Path);
         }
 
         [TestMethod]

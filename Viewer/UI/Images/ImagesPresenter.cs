@@ -179,7 +179,7 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Load entities from the query and put them to a qaiting queue.
+        /// Load entities from the query and put them to a waiting queue.
         /// </summary>
         /// <param name="query">Query to load</param>
         private void LoadQueryBlocking(IQuery query)
@@ -372,6 +372,7 @@ namespace Viewer.UI.Images
             try
             {
                 _entityManager.MoveEntity(item.Path, newPath);
+                item = item.ChangePath(newPath);
                 View.UpdateItem(e.Index);
             }
             catch (PathTooLongException)

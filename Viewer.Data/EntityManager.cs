@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MetadataExtractor;
 using Viewer.Data.Storage;
@@ -11,7 +12,8 @@ namespace Viewer.Data
 {
     /// <summary>
     /// Class which implements this interface is responsible for maintaining a consistent state 
-    /// of entities throughout the application. 
+    /// of entities throughout the application.
+    /// This type is thread safe.
     /// </summary>
     public interface IEntityManager
     {
@@ -53,6 +55,7 @@ namespace Viewer.Data
     [Export(typeof(IEntityManager))]
     public class EntityManager : IEntityManager
     {
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         private readonly Dictionary<string, WeakReference<IEntity>> _entities = new Dictionary<string, WeakReference<IEntity>>();
         private readonly Dictionary<string, IEntity> _modified = new Dictionary<string, IEntity>();
         private readonly IAttributeStorage _storage;
@@ -65,62 +68,138 @@ namespace Viewer.Data
 
         public IEntity GetEntity(string path)
         {
-            if (!_entities.TryGetValue(path, out var item) ||
-                !item.TryGetTarget(out IEntity entity))
+            // check whether the entity is loaded in main memory
+            _lock.EnterReadLock();
+            var isLoaded = false;
+            WeakReference<IEntity> item = null;
+            try
             {
-                return LoadEntity(path);
+                isLoaded = _entities.TryGetValue(path, out item);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
             }
 
-            return entity;
+            // return loaded entity or load it
+            if (isLoaded && item.TryGetTarget(out IEntity entity))
+            {
+                return entity;
+            }
+
+            return LoadEntity(path);
         }
 
         public void SetEntity(IEntity entity)
         {
             var path = entity.Path;
-            _entities[path] = new WeakReference<IEntity>(entity);
-            _modified[path] = entity.Clone();
+            var clone = entity.Clone();
+            var cacheEntry = new WeakReference<IEntity>(entity);
+
+            _lock.EnterWriteLock();
+            try
+            {
+                _entities[path] = cacheEntry;
+                _modified[path] = clone;
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         public void MoveEntity(string oldPath, string newPath)
         {
             _storage.Move(oldPath, newPath);
 
-            if (_entities.TryGetValue(oldPath, out var value))
+            _lock.EnterUpgradeableReadLock();
+            try
             {
-                _entities.Remove(oldPath);
-                if (value.TryGetTarget(out var entity))
+                // check whether the entity is loaded in cache
+                if (!_entities.TryGetValue(oldPath, out var value))
                 {
+                    return;
+                }
+
+                // the entity is in the cache => we have to move it
+                _lock.EnterWriteLock();
+                try
+                {
+                    _entities.Remove(oldPath);
+                    if (!value.TryGetTarget(out var entity))
+                    {
+                        return;
+                    }
+
                     // add the modified entity to the cache
                     entity.ChangePath(newPath);
                     _entities[newPath] = new WeakReference<IEntity>(entity);
-                    
+
                     // add the modified entity to the modified list
                     _modified.Remove(oldPath);
                     _modified.Add(newPath, entity.Clone());
                 }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
+            }
+            finally
+            {
+                _lock.ExitUpgradeableReadLock();
             }
         }
 
         public void RemoveEntity(string path)
         {
             _storage.Remove(path);
-            _modified.Remove(path);
-            _entities.Remove(path);
+
+            _lock.EnterWriteLock();
+            try
+            {
+                _modified.Remove(path);
+                _entities.Remove(path);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         public IReadOnlyList<IEntity> GetModified()
         {
-            var snapshot = _modified.Values.ToArray();
-            _modified.Clear();
-            return snapshot;
+            _lock.EnterWriteLock();
+            try
+            {
+                var snapshot = _modified.Values.ToArray();
+                _modified.Clear();
+                return snapshot;
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         private IEntity LoadEntity(string path)
         {
+            // load the entity from storage
             var entity = _storage.Load(path);
             if (entity == null)
                 return null;
-            _entities[entity.Path] = new WeakReference<IEntity>(entity);
+
+            // chace it
+            var cacheEntry = new WeakReference<IEntity>(entity);
+            _lock.EnterWriteLock();
+            try
+            {
+                _entities[entity.Path] = cacheEntry;
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+
             return entity;
         }
     }

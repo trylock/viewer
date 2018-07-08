@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Viewer.Data
@@ -23,21 +25,24 @@ namespace Viewer.Data
         int Count { get; }
 
         /// <summary>
-        /// Find attribute in the collection
+        /// Find attribute in the collection.
+        /// It is thread-safe.
         /// </summary>
         /// <param name="name">Name of the attribute</param>
         /// <returns>Found attribute or null if it does not exist</returns>
         Attribute GetAttribute(string name);
 
         /// <summary>
-        /// Set attribute value
+        /// Set attribute value.
+        /// It is thread-safe.
         /// </summary>
         /// <param name="attr">Attribute to set</param>
         IEntity SetAttribute(Attribute attr);
 
         /// <summary>
         /// Remove attribute with given name.
-        /// It won't trown an exception if there is no attribute with given name
+        /// It won't trown an exception if there is no attribute with given name.
+        /// It is thread-safe.
         /// </summary>
         /// <param name="name">Name of an attribute to remove.</param>
         IEntity RemoveAttribute(string name);
@@ -58,6 +63,7 @@ namespace Viewer.Data
 
     public class Entity : IEntity
     {
+        private readonly ReaderWriterLockSlim _attrsLock = new ReaderWriterLockSlim();
         private readonly Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
         /// <summary>
@@ -79,16 +85,6 @@ namespace Viewer.Data
         /// Number or attributes in the collection
         /// </summary>
         public int Count => _attrs.Count;
-        
-        /// <summary>
-        /// Collection of attribute names
-        /// </summary>
-        public IEnumerable<string> Keys => _attrs.Keys;
-
-        /// <summary>
-        /// Collection of attributes
-        /// </summary>
-        public IEnumerable<Attribute> Values => _attrs.Values;
 
         public Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
         {
@@ -103,22 +99,49 @@ namespace Viewer.Data
         
         public Attribute GetAttribute(string name)
         {
-            if (!_attrs.TryGetValue(name, out Attribute attr))
+            _attrsLock.EnterReadLock();
+            try
             {
-                return null;
+                if (!_attrs.TryGetValue(name, out Attribute attr))
+                {
+                    return null;
+                }
+
+                return attr;
             }
-            return attr;
+            finally
+            {
+                _attrsLock.ExitReadLock();
+            }
         }
         
         public IEntity SetAttribute(Attribute attr)
         {
-            _attrs[attr.Name] = attr;
+            _attrsLock.EnterWriteLock();
+            try
+            {
+                _attrs[attr.Name] = attr;
+            }
+            finally
+            {
+                _attrsLock.ExitWriteLock();
+            }
+
             return this;
         }
         
         public IEntity RemoveAttribute(string name)
         {
-            _attrs.Remove(name);
+            _attrsLock.EnterWriteLock();
+            try
+            {
+                _attrs.Remove(name);
+            }
+            finally
+            {
+                _attrsLock.ExitWriteLock();
+            }
+
             return this;
         }
 
@@ -141,7 +164,7 @@ namespace Viewer.Data
 
         public IEnumerator<Attribute> GetEnumerator()
         {
-            return Values.GetEnumerator();
+            return _attrs.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

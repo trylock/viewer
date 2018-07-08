@@ -154,9 +154,17 @@ namespace Viewer.Data
         public IEntity Clone()
         {
             var clone = new Entity(Path, LastWriteTime, LastAccessTime);
-            foreach (var attr in _attrs)
+            _attrsLock.EnterReadLock();
+            try
             {
-                clone.SetAttribute(attr.Value);
+                foreach (var attr in _attrs)
+                {
+                    clone.SetAttribute(attr.Value);
+                }
+            }
+            finally
+            {
+                _attrsLock.ExitReadLock();
             }
 
             return clone;
@@ -164,7 +172,15 @@ namespace Viewer.Data
 
         public IEnumerator<Attribute> GetEnumerator()
         {
-            return _attrs.Values.GetEnumerator();
+            _attrsLock.EnterReadLock();
+            try
+            {
+                return _attrs.Values.ToList().GetEnumerator();
+            }
+            finally
+            {
+                _attrsLock.ExitReadLock();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -4,11 +4,13 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
 using Viewer.Images;
+using Viewer.UI.Explorer;
 using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
@@ -19,6 +21,7 @@ namespace Viewer.UI.Presentation
     {
         private readonly ISelection _selection;
         private readonly IImageLoader _imageLoader;
+        private readonly IFileSystemErrorView _dialogView;
 
         protected override ExportLifetimeContext<IPresentationView> ViewLifetime { get; }
 
@@ -36,10 +39,12 @@ namespace Viewer.UI.Presentation
         public PresentationPresenter(
             ExportFactory<IPresentationView> viewFactory, 
             ISelection selection,
-            IImageLoader imageLoader)
+            IImageLoader imageLoader,
+            IFileSystemErrorView dialogView)
         {
             _selection = selection;
             _imageLoader = imageLoader;
+            _dialogView = dialogView;
             ViewLifetime = viewFactory.CreateExport();
             SubscribeTo(View, "View");
         }
@@ -59,15 +64,30 @@ namespace Viewer.UI.Presentation
 
             // load new image
             var entity = _entities[_entityIndex];
-            var image = await Task.Run(() => _imageLoader.LoadImage(entity));
+            try
+            {
+                var image = await Task.Run(() => _imageLoader.LoadImage(entity));
 
-            // replace old image with the new one
-            _image?.Dispose();
-            _image = image;
+                // replace old image with the new one
+                _image?.Dispose();
+                _image = image;
 
-            // update view
-            View.Picture = _image;
-            View.UpdateImage();
+                // update view
+                View.Picture = _image;
+                View.UpdateImage();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _dialogView.UnauthorizedAccess(entity.Path);
+            }
+            catch (SecurityException)
+            {
+                _dialogView.UnauthorizedAccess(entity.Path);
+            }
+            catch (FileNotFoundException)
+            {
+                _dialogView.FileNotFound(entity.Path);
+            }
         }
         
         private async void View_NextImage(object sender, EventArgs e)

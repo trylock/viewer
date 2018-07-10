@@ -9,6 +9,7 @@ using Moq;
 using Viewer.Data;
 using Viewer.Images;
 using Viewer.UI;
+using Viewer.UI.Explorer;
 using Viewer.UI.Presentation;
 
 namespace ViewerTest.UI.Presentation
@@ -19,6 +20,7 @@ namespace ViewerTest.UI.Presentation
         private Mock<IImageLoader> _imageLoader;
         private Mock<IPresentationView> _view;
         private Mock<ISelection> _selection;
+        private Mock<IFileSystemErrorView> _dialogView;
         private PresentationPresenter _presenter;
 
         [TestInitialize]
@@ -26,13 +28,14 @@ namespace ViewerTest.UI.Presentation
         {
             _imageLoader = new Mock<IImageLoader>();
             _selection = new Mock<ISelection>();
+            _dialogView = new Mock<IFileSystemErrorView>();
             _view = new Mock<IPresentationView>();
 
             var viewFactory = new ExportFactory<IPresentationView>(() =>
             {
                 return new Tuple<IPresentationView, Action>(_view.Object, () => { });
             });
-            _presenter = new PresentationPresenter(viewFactory, _selection.Object, _imageLoader.Object);
+            _presenter = new PresentationPresenter(viewFactory, _selection.Object, _imageLoader.Object, _dialogView.Object);
         }
 
         [TestMethod]

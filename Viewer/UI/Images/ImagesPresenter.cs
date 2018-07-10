@@ -41,7 +41,12 @@ namespace Viewer.UI.Images
         /// (i.e. size of a thumbnail for View.ThumbnailScale == 1.0)
         /// </summary>
         private Size _minItemSize = new Size(133, 100);
-        
+
+        /// <summary>
+        /// Current thumbnail area size
+        /// </summary>
+        private Size _thumbnailAreaSize = new Size(133, 100);
+
         /// <summary>
         /// Current state of the rectangle selection
         /// </summary>
@@ -203,9 +208,9 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="item">Entity</param>
         /// <returns>Thumbnail</returns>
-        private Lazy<Task<Image>> GetThumbnail(IEntity item)
+        private ILazyThumbnail GetThumbnail(IEntity item)
         {
-            return new Lazy<Task<Image>>(() => _imageLoader.LoadThumbnailAsync(item, ComputeThumbnailSize()));
+            return new PhotoThumbnail(_imageLoader, item, _thumbnailAreaSize);
         }
         
         /// <summary>
@@ -484,7 +489,7 @@ namespace Viewer.UI.Images
 
         private void View_ThumbnailSizeChanged(object sender, EventArgs e)
         {
-            View.ItemSize = ComputeThumbnailSize();
+            _thumbnailAreaSize = View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
         }
 
@@ -493,8 +498,7 @@ namespace Viewer.UI.Images
             // update the actual size of thumbnails in the view
             foreach (var item in View.Items)
             {
-                item.Dispose();
-                item.Thumbnail = GetThumbnail(item.Data);
+                item.Thumbnail.Resize(ComputeThumbnailSize());
             }
 
             // start loading the new thumbnails for visible items

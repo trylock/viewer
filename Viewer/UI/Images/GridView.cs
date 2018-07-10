@@ -304,18 +304,17 @@ namespace Viewer.UI.Images
                 nameForamt);
 
             // draw the thumbnail
-            var thumbnail = item.Thumbnail.Value;
-            if (thumbnail?.Status != TaskStatus.RanToCompletion)
+            var thumbnail = item.Thumbnail.GetCurrent();
+            if (thumbnail == null)
             {
                 return;
             }
-
-            var thumbnailImage = thumbnail.Result;
-            var thumbnailSize = ThumbnailGenerator.GetThumbnailSize(thumbnailImage.Size, ItemSize);
+            
+            var thumbnailSize = ThumbnailGenerator.GetThumbnailSize(thumbnail.Size, ItemSize);
             var thumbnailLocation = GetThumbnailLocation(bounds, thumbnailSize);
             // we don't really need an interpolation as we are drawing the image in its original size
             graphics.InterpolationMode = InterpolationMode.Low;
-            graphics.DrawImage(thumbnailImage, new Rectangle(thumbnailLocation, thumbnailSize));
+            graphics.DrawImage(thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
         }
 
         private void GridView_Resize(object sender, EventArgs e)

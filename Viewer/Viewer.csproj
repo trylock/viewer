@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="UI\Images\ImagesComponent.cs" />
+    <Compile Include="UI\Images\LazyThumbnail.cs" />
     <Compile Include="UI\Images\RectangleSelection.cs" />
     <Compile Include="UI\Forms\ButtonCell.cs" />
     <Compile Include="UI\Images\SortedList.cs" />

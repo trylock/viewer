@@ -107,6 +107,7 @@
     <Compile Include="UI\Attributes\AttributesPresenterTest.cs" />
     <Compile Include="UI\ClipboardServiceMock.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
+    <Compile Include="UI\Images\LazyImageTest.cs" />
     <Compile Include="UI\Images\RectangleSelectionTest.cs" />
     <Compile Include="Images\ThumbnailGeneratorTest.cs" />
     <Compile Include="UI\Images\SortedListTest.cs" />

@@ -38,14 +38,14 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Image representation of the file
         /// </summary>
-        public Lazy<Task<Image>> Thumbnail { get; set; }
+        public ILazyThumbnail Thumbnail { get; set; }
 
         /// <summary>
         /// Underlying entity
         /// </summary>
         public IEntity Data { get; set; }
         
-        public EntityView(IEntity data, Lazy<Task<Image>> thumbnail)
+        public EntityView(IEntity data, ILazyThumbnail thumbnail)
         {
             Data = data;
             Thumbnail = thumbnail;
@@ -53,10 +53,7 @@ namespace Viewer.UI.Images
 
         public void Dispose()
         {
-            if (Thumbnail != null && Thumbnail.IsValueCreated)
-            {
-                Thumbnail.Value.ContinueWith(p => p.Result.Dispose());
-            }
+            Thumbnail?.Dispose();
         }
     }
     

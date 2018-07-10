@@ -247,7 +247,7 @@ namespace Viewer.UI.Images
         private void UpdateSelectedItems()
         {
             // set global selection
-            UpdateGlobalSelection();
+            _selection.Replace(GetEntitiesInSelection());
 
             // update the view
             foreach (var item in View.Items)
@@ -265,16 +265,12 @@ namespace Viewer.UI.Images
             View.UpdateItems();
         }
 
-        /// <summary>
-        /// Update selection of entities in the whole application
-        /// </summary>
-        private void UpdateGlobalSelection()
+        private IEnumerable<IEntity> GetEntitiesInSelection()
         {
-            _selection.Replace(
-                from item in _rectangleSelection 
+            return
+                from item in _rectangleSelection
                 where item.Type == FileViewType.File
-                select item.Data 
-            );
+                select item.Data;
         }
 
         #region User input
@@ -422,7 +418,7 @@ namespace Viewer.UI.Images
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
-            UpdateGlobalSelection();
+            _selection.Replace(GetEntitiesInSelection());
         }
 
         private IEnumerable<string> GetPathsInSelection()
@@ -494,9 +490,40 @@ namespace Viewer.UI.Images
                 throw new ArgumentOutOfRangeException(nameof(e));
             }
 
-            var entityIndex = e.Index;
-            var entities = View.Items.Select(item => item.Data);
-            _state.OpenEntity(entities, entityIndex);
+            if (!_rectangleSelection.Any())
+            {
+                return;
+            }
+            
+
+            // if the selection contains directories only
+            if (_rectangleSelection.All(item => item.Type == FileViewType.Directory))
+            {
+                var entity = View.Items[e.Index];
+                Process.Start(
+                    Resources.ExplorerProcessName, 
+                    string.Format(
+                        Resources.ExplorerOpenFolderArguments, 
+                        Path.Combine(entity.Data.Path, ".")
+                    ));
+            }
+            else
+            {
+                // count number of directories before selected item
+                var directoryCount = 0;
+                for (var i = 0; i < e.Index; ++i)
+                {
+                    if (View.Items[i].Type == FileViewType.Directory)
+                    {
+                        ++directoryCount;
+                    }
+                }
+
+                // find index of the selected item after removing all directories
+                var entities = from item in View.Items where item.Type == FileViewType.File select item.Data;
+                var entityIndex = e.Index - directoryCount;
+                _state.OpenEntity(entities, entityIndex);
+            }
         }
         
         private async void View_CloseView(object sender, EventArgs eventArgs)

@@ -72,6 +72,10 @@ namespace Viewer.UI
 
         public void OpenEntity(IEnumerable<IEntity> entities, int index)
         {
+            if (index < 0 || index >= entities.Count())
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
             EntityOpened?.Invoke(this, new EntityEventArgs(entities, index));
         }
 

@@ -45,12 +45,6 @@ namespace Viewer.UI.Images
                 DisposeLoading();
                 _isInvalid = false;
                 _loading = _imageLoader.LoadThumbnailAsync(_entity, _thumbnailAreaSize);
-
-                // return current thumbnail if the loading does not complete immediately
-                if (!_loading.IsCompleted)
-                {
-                    return _current;
-                }
             }
 
             // if the thumbnail loading has finished, replace the loaded thumbnail with the current thumbnail

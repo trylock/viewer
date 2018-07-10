@@ -33,6 +33,7 @@ namespace Viewer.UI.Images
         private readonly IClipboardService _clipboard;
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
+        private readonly IQueryFactory _queryFactory;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
@@ -95,7 +96,8 @@ namespace Viewer.UI.Images
             IEntityManager entityManager,
             IClipboardService clipboard,
             IImageLoader imageLoader,
-            IApplicationState state)
+            IApplicationState state,
+            IQueryFactory queryFactory)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogView = dialogView;
@@ -104,6 +106,7 @@ namespace Viewer.UI.Images
             _clipboard = clipboard;
             _imageLoader = imageLoader;
             _state = state;
+            _queryFactory = queryFactory;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
             
             View.ItemSize = _minItemSize;
@@ -500,12 +503,8 @@ namespace Viewer.UI.Images
             if (_rectangleSelection.All(item => item.Type == FileViewType.Directory))
             {
                 var entity = View.Items[e.Index];
-                Process.Start(
-                    Resources.ExplorerProcessName, 
-                    string.Format(
-                        Resources.ExplorerOpenFolderArguments, 
-                        Path.Combine(entity.Data.Path, ".")
-                    ));
+                var query = _queryFactory.CreateQuery(entity.Data.Path);
+                _state.ExecuteQuery(query);
             }
             else
             {

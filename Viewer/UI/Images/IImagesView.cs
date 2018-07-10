@@ -11,42 +11,49 @@ using Viewer.Properties;
 
 namespace Viewer.UI.Images
 {
-    public enum EntityViewState
+    public enum FileViewState
     {
         None,
         Active,
         Selected,
     }
 
-    public class EntityView : IDisposable
+    public enum FileViewType
     {
+        File,
+        Directory
+    }
+
+    public class FileView : IDisposable
+    {
+        /// <summary>
+        /// Type of the view
+        /// </summary>
+        public FileViewType Type { get; }
+
         /// <summary>
         /// Name of the file which is shown to the user
         /// </summary>
-        public string Name => Path.GetFileNameWithoutExtension(FullPath);
-
-        /// <summary>
-        /// Path to a file
-        /// </summary>
-        public string FullPath => Data.Path;
+        public string Name => Path.GetFileNameWithoutExtension(Data.Path);
 
         /// <summary>
         /// Current state of the item
         /// </summary>
-        public EntityViewState State { get; set; } = EntityViewState.None;
+        public FileViewState State { get; set; } = FileViewState.None;
 
         /// <summary>
         /// Image representation of the file
         /// </summary>
-        public ILazyThumbnail Thumbnail { get; set; }
+        public ILazyThumbnail Thumbnail { get; }
 
         /// <summary>
         /// Underlying entity
         /// </summary>
-        public IEntity Data { get; set; }
+        public IEntity Data { get; }
         
-        public EntityView(IEntity data, ILazyThumbnail thumbnail)
+        public FileView(FileViewType type, IEntity data, ILazyThumbnail thumbnail)
         {
+            Type = type;
             Data = data;
             Thumbnail = thumbnail;
         }
@@ -57,37 +64,50 @@ namespace Viewer.UI.Images
         }
     }
     
-    public class EntityViewPathComparer : IEqualityComparer<EntityView>
+    public class FileViewPathComparer : IEqualityComparer<FileView>
     {
-        public bool Equals(EntityView x, EntityView y)
+        public bool Equals(FileView x, FileView y)
         {
             if (x == null && y == null)
                 return true;
             if (x == null || y == null)
                 return false;
-            return x.FullPath == y.FullPath;
+            return x.Data.Path == y.Data.Path;
         }
 
-        public int GetHashCode(EntityView obj)
+        public int GetHashCode(FileView obj)
         {
-            return obj.FullPath.GetHashCode();
+            return obj.Data.Path.GetHashCode();
         }
     }
 
     /// <summary>
     /// EntityView comparer which compares entity views by their underlying entity.
     /// </summary>
-    public class EntityViewComparer : IComparer<EntityView>
+    public class FileViewComparer : IComparer<FileView>
     {
         private readonly IComparer<IEntity> _entityComparer;
 
-        public EntityViewComparer(IComparer<IEntity> entityComparer)
+        public FileViewComparer(IComparer<IEntity> entityComparer)
         {
             _entityComparer = entityComparer;
         }
 
-        public int Compare(EntityView x, EntityView y)
+        public int Compare(FileView x, FileView y)
         {
+            if (x.Type == FileViewType.Directory && y.Type == FileViewType.Directory)
+            {
+                return Comparer<string>.Default.Compare(x.Data.Path, y.Data.Path);
+            }
+            else if (x.Type == FileViewType.Directory)
+            {
+                return -1;
+            }
+            else if (y.Type == FileViewType.Directory)
+            {
+                return 1;
+            }
+
             return _entityComparer.Compare(x.Data, y.Data);
         }
     }
@@ -263,7 +283,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// List of items to show 
         /// </summary>
-        SortedList<EntityView> Items { get; set; }
+        SortedList<FileView> Items { get; set; }
 
         /// <summary>
         /// Set an item size

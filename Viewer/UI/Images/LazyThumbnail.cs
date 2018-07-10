@@ -27,6 +27,31 @@ namespace Viewer.UI.Images
         void Resize(Size newThumbnailAreaSize);
     }
 
+    public class DirectoryThumbnail : ILazyThumbnail
+    {
+        private readonly string _path;
+
+        public static Image Default { get; } = Resources.DirectoryThumbnail;
+
+        public DirectoryThumbnail(string path)
+        {
+            _path = path;
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public Image GetCurrent()
+        {
+            return Default;
+        }
+
+        public void Resize(Size newThumbnailAreaSize)
+        {
+        }
+    }
+
     public class PhotoThumbnail : ILazyThumbnail
     {
         private readonly IImageLoader _imageLoader;

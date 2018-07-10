@@ -70,7 +70,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Items to show in the component
         /// </summary>
-        public SortedList<EntityView> Items
+        public SortedList<FileView> Items
         {
             get => _items;
             set
@@ -84,7 +84,7 @@ namespace Viewer.UI.Images
 
         private Size _itemSize;
         private Rectangle _selectionBounds;
-        private SortedList<EntityView> _items;
+        private SortedList<FileView> _items;
 
         #region Graphics settings
 
@@ -271,7 +271,7 @@ namespace Viewer.UI.Images
             graphics.FillRectangle(Brushes.White, bounds);
 
             var drawBounds = Rectangle.Inflate(bounds, -1, -1);
-            if ((item.State & EntityViewState.Selected) != 0)
+            if ((item.State & FileViewState.Selected) != 0)
             {
                 // draw selection 
                 using (var brush = new SolidBrush(_selectedFillColor))
@@ -281,7 +281,7 @@ namespace Viewer.UI.Images
                     graphics.DrawRectangle(pen, drawBounds);
                 }
             }
-            else if ((item.State & EntityViewState.Active) != 0)
+            else if ((item.State & FileViewState.Active) != 0)
             {
                 // draw highlight
                 using (var brush = new SolidBrush(_highlightFillColor))
@@ -304,7 +304,7 @@ namespace Viewer.UI.Images
                 nameForamt);
 
             // draw the thumbnail
-            var thumbnail = item.Thumbnail.GetCurrent();
+            Image thumbnail = item.Thumbnail.GetCurrent();
             if (thumbnail == null)
             {
                 return;

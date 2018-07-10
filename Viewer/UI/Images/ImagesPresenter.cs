@@ -50,7 +50,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Current state of the rectangle selection
         /// </summary>
-        private readonly RectangleSelection<EntityView> _rectangleSelection = new RectangleSelection<EntityView>(new EntityViewPathComparer());
+        private readonly RectangleSelection<FileView> _rectangleSelection = new RectangleSelection<FileView>(new FileViewPathComparer());
 
         /// <summary>
         /// Thumbnail size calculator
@@ -80,7 +80,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Queue of entities loaded from the query which are not shown yet.
         /// </summary>
-        private ImmutableSortedSet<EntityView> _waitingQueue = ImmutableSortedSet<EntityView>.Empty;
+        private ImmutableSortedSet<FileView> _waitingQueue = ImmutableSortedSet<FileView>.Empty;
 
         /// <summary>
         /// Minimal time in milliseconds between 2 poll events.
@@ -132,9 +132,9 @@ namespace Viewer.UI.Images
 
             // start loading a new query
             _query = query;
-            _waitingQueue = ImmutableSortedSet<EntityView>.Empty.WithComparer(new EntityViewComparer(_query.Comparer));
+            _waitingQueue = ImmutableSortedSet<FileView>.Empty.WithComparer(new FileViewComparer(_query.Comparer));
 
-            View.Items = new SortedList<EntityView>(new EntityViewComparer(_query.Comparer));
+            View.Items = new SortedList<FileView>(new FileViewComparer(_query.Comparer));
             View.BeginLoading();
             View.BeginPolling(PollingRate);
 
@@ -192,9 +192,11 @@ namespace Viewer.UI.Images
             foreach (var entity in query)
             {
                 query.Cancellation.Token.ThrowIfCancellationRequested();
-
-                var item = new EntityView(entity, GetThumbnail(entity));
-                ImmutableSortedSet<EntityView> newQueue, oldQueue;
+                
+                // add the file to the result
+                var type = entity is DirectoryEntity ? FileViewType.Directory : FileViewType.File;
+                var item = new FileView(type, entity, GetThumbnail(entity));
+                ImmutableSortedSet<FileView> newQueue, oldQueue;
                 do
                 {
                     oldQueue = _waitingQueue;
@@ -210,6 +212,10 @@ namespace Viewer.UI.Images
         /// <returns>Thumbnail</returns>
         private ILazyThumbnail GetThumbnail(IEntity item)
         {
+            if (item is DirectoryEntity)
+            {
+                return new DirectoryThumbnail(item.Path);
+            }
             return new PhotoThumbnail(_imageLoader, item, _thumbnailAreaSize);
         }
         
@@ -241,22 +247,34 @@ namespace Viewer.UI.Images
         private void UpdateSelectedItems()
         {
             // set global selection
-            _selection.Replace(_rectangleSelection.Select(item => item.Data));
+            UpdateGlobalSelection();
 
             // update the view
             foreach (var item in View.Items)
             {
                 if (_rectangleSelection.Contains(item))
                 {
-                    item.State = EntityViewState.Selected;
+                    item.State = FileViewState.Selected;
                 }
                 else
                 {
-                    item.State = EntityViewState.None;
+                    item.State = FileViewState.None;
                 }
             }
 
             View.UpdateItems();
+        }
+
+        /// <summary>
+        /// Update selection of entities in the whole application
+        /// </summary>
+        private void UpdateGlobalSelection()
+        {
+            _selection.Replace(
+                from item in _rectangleSelection 
+                where item.Type == FileViewType.File
+                select item.Data 
+            );
         }
 
         #region User input
@@ -264,7 +282,7 @@ namespace Viewer.UI.Images
         private void View_Poll(object sender, EventArgs e)
         {
             // get a snapshot of the waiting queue
-            var empty = ImmutableSortedSet<EntityView>.Empty.WithComparer(new EntityViewComparer(_query.Comparer));
+            var empty = ImmutableSortedSet<FileView>.Empty.WithComparer(new FileViewComparer(_query.Comparer));
             var items = Interlocked.Exchange(ref _waitingQueue, empty);
             if (items.Count > 0)
             {
@@ -327,7 +345,7 @@ namespace Viewer.UI.Images
 
         private void View_BeginDragItems(object sender, EventArgs e)
         {
-            var dragFiles = _rectangleSelection.Select(elem => elem.FullPath).ToArray();
+            var dragFiles = _rectangleSelection.Select(elem => elem.Data.Path).ToArray();
             var data = new DataObject(DataFormats.FileDrop, dragFiles);
             View.BeginDragDrop(data, DragDropEffects.Copy);
         }
@@ -404,7 +422,7 @@ namespace Viewer.UI.Images
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
-            _selection.Replace(_rectangleSelection.Select(item => item.Data));
+            UpdateGlobalSelection();
         }
 
         private IEnumerable<string> GetPathsInSelection()
@@ -461,7 +479,7 @@ namespace Viewer.UI.Images
             }
 
             // remove deleted items from the query and the view
-            View.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
+            View.Items.RemoveAll(view => deletedPaths.Contains(view.Data.Path));
 
             // clear selection
             ChangeSelection(Enumerable.Empty<int>());

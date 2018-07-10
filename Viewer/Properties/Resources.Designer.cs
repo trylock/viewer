@@ -153,6 +153,16 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DirectoryThumbnail {
+            get {
+                object obj = ResourceManager.GetObject("DirectoryThumbnail", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate attribute name.
         /// </summary>
         internal static string DuplicateAttributeName_Label {

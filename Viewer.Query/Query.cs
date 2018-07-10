@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -100,10 +101,13 @@ namespace Viewer.Query
 
         public IEnumerator<IEntity> GetEnumerator()
         {
+            var directories = new HashSet<string>();
+
             foreach (var file in EnumerateFiles())
             {
                 _cancellationToken.ThrowIfCancellationRequested();
-
+                
+                // load file
                 IEntity entity = null;
                 try
                 {
@@ -119,6 +123,19 @@ namespace Viewer.Query
                 }
 
                 yield return entity;
+
+                // return subdirectories
+                var dirPath = PathUtils.GetDirectoryPath(file);
+                if (directories.Contains(dirPath))
+                {
+                    continue;
+                }
+
+                directories.Add(dirPath);
+                foreach (var dir in _fileSystem.EnumerateDirectories(dirPath))
+                {
+                    yield return new DirectoryEntity(dir);
+                }
             }
         }
 

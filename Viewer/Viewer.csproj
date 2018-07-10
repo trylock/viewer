@@ -253,6 +253,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DefaultThumbnail.png" />
+    <Content Include="Resources\DirectoryThumbnail.png" />
     <Content Include="Resources\Open.png" />
     <Content Include="Resources\Save.png" />
     <None Include="Resources\Start.png" />

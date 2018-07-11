@@ -154,7 +154,7 @@ namespace Viewer.UI.Images
         public event EventHandler<RenameEventArgs> RenameItem;
         public event EventHandler<EntityEventArgs> BeginEditItemName;
         
-        public SortedList<FileView> Items
+        public SortedList<IFileView> Items
         {
             get => GridView.Items;
             set => GridView.Items = value;

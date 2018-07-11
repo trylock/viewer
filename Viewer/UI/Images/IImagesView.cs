@@ -18,42 +18,39 @@ namespace Viewer.UI.Images
         Selected,
     }
 
-    public enum FileViewType
+    public interface IFileView : IDisposable
     {
-        File,
-        Directory
-    }
-
-    public class FileView : IDisposable
-    {
-        /// <summary>
-        /// Type of the view
-        /// </summary>
-        public FileViewType Type { get; }
-
         /// <summary>
         /// Name of the file which is shown to the user
         /// </summary>
-        public string Name => Path.GetFileNameWithoutExtension(Data.Path);
+        string Name { get; }
+
+        /// <summary>
+        /// Full path to the file
+        /// </summary>
+        string FullPath { get; }
 
         /// <summary>
         /// Current state of the item
         /// </summary>
-        public FileViewState State { get; set; } = FileViewState.None;
+        FileViewState State { get; set; }
 
         /// <summary>
         /// Image representation of the file
         /// </summary>
-        public ILazyThumbnail Thumbnail { get; }
+        ILazyThumbnail Thumbnail { get; }
+    }
 
-        /// <summary>
-        /// Underlying entity
-        /// </summary>
+    public sealed class FileView : IFileView
+    {
+        public string Name => Path.GetFileNameWithoutExtension(Data.Path);
+        public string FullPath => Data.Path;
+        public FileViewState State { get; set; } = FileViewState.None;
+        public ILazyThumbnail Thumbnail { get; }
         public IEntity Data { get; }
         
-        public FileView(FileViewType type, IEntity data, ILazyThumbnail thumbnail)
+        public FileView(IEntity data, ILazyThumbnail thumbnail)
         {
-            Type = type;
             Data = data;
             Thumbnail = thumbnail;
         }
@@ -63,28 +60,47 @@ namespace Viewer.UI.Images
             Thumbnail?.Dispose();
         }
     }
-    
-    public class FileViewPathComparer : IEqualityComparer<FileView>
+
+    public sealed class DirectoryView : IFileView
     {
-        public bool Equals(FileView x, FileView y)
+        public string Name => Path.GetFileNameWithoutExtension(FullPath);
+        public string FullPath { get; }
+        public FileViewState State { get; set; } = FileViewState.None;
+        public ILazyThumbnail Thumbnail { get; }
+
+        public DirectoryView(string path, ILazyThumbnail thumbnail)
+        {
+            FullPath = path;
+            Thumbnail = thumbnail;
+        }
+
+        public void Dispose()
+        {
+            Thumbnail?.Dispose();
+        }
+    }
+
+    public class FileViewPathComparer : IEqualityComparer<IFileView>
+    {
+        public bool Equals(IFileView x, IFileView y)
         {
             if (x == null && y == null)
                 return true;
             if (x == null || y == null)
                 return false;
-            return x.Data.Path == y.Data.Path;
+            return x.FullPath == y.FullPath;
         }
 
-        public int GetHashCode(FileView obj)
+        public int GetHashCode(IFileView obj)
         {
-            return obj.Data.Path.GetHashCode();
+            return obj.FullPath.GetHashCode();
         }
     }
 
     /// <summary>
     /// EntityView comparer which compares entity views by their underlying entity.
     /// </summary>
-    public class FileViewComparer : IComparer<FileView>
+    public class FileViewComparer : IComparer<IFileView>
     {
         private readonly IComparer<IEntity> _entityComparer;
 
@@ -93,22 +109,22 @@ namespace Viewer.UI.Images
             _entityComparer = entityComparer;
         }
 
-        public int Compare(FileView x, FileView y)
+        public int Compare(IFileView x, IFileView y)
         {
-            if (x.Type == FileViewType.Directory && y.Type == FileViewType.Directory)
+            if (x is DirectoryView && y is DirectoryView)
             {
-                return Comparer<string>.Default.Compare(x.Data.Path, y.Data.Path);
+                return Comparer<string>.Default.Compare(x.FullPath, y.FullPath);
             }
-            else if (x.Type == FileViewType.Directory)
+            else if (x is DirectoryView)
             {
                 return -1;
             }
-            else if (y.Type == FileViewType.Directory)
+            else if (y is DirectoryView)
             {
                 return 1;
             }
 
-            return _entityComparer.Compare(x.Data, y.Data);
+            return _entityComparer.Compare(((FileView) x).Data, ((FileView) y).Data);
         }
     }
 
@@ -283,7 +299,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// List of items to show 
         /// </summary>
-        SortedList<FileView> Items { get; set; }
+        SortedList<IFileView> Items { get; set; }
 
         /// <summary>
         /// Set an item size

@@ -101,8 +101,6 @@ namespace Viewer.Query
 
         public IEnumerator<IEntity> GetEnumerator()
         {
-            var directories = new HashSet<string>();
-
             foreach (var file in EnumerateFiles())
             {
                 _cancellationToken.ThrowIfCancellationRequested();
@@ -123,19 +121,6 @@ namespace Viewer.Query
                 }
 
                 yield return entity;
-
-                // return subdirectories
-                var dirPath = PathUtils.GetDirectoryPath(file);
-                if (directories.Contains(dirPath))
-                {
-                    continue;
-                }
-
-                directories.Add(dirPath);
-                foreach (var dir in _fileSystem.EnumerateDirectories(dirPath))
-                {
-                    yield return new DirectoryEntity(dir);
-                }
             }
         }
 

@@ -61,54 +61,6 @@ namespace Viewer.Data
         IEntity Clone();
     }
 
-    public class DirectoryEntity : IEntity
-    {
-        public string Path { get; private set; }
-
-        public int Count => 0;
-
-        public DirectoryEntity(string path)
-        {
-            Path = path;
-        }
-
-        public Attribute GetAttribute(string name)
-        {
-            return null;
-        }
-
-        public IEntity SetAttribute(Attribute attr)
-        {
-            throw new NotSupportedException();
-        }
-
-        public IEntity RemoveAttribute(string name)
-        {
-            throw new NotSupportedException();
-        }
-
-        public IEntity ChangePath(string path)
-        {
-            Path = path;
-            return this;
-        }
-
-        public IEntity Clone()
-        {
-            return new DirectoryEntity(Path);
-        }
-
-        public IEnumerator<Attribute> GetEnumerator()
-        {
-            return Enumerable.Empty<Attribute>().GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
-
     public class Entity : IEntity
     {
         private readonly ReaderWriterLockSlim _attrsLock = new ReaderWriterLockSlim();

@@ -70,7 +70,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Items to show in the component
         /// </summary>
-        public SortedList<FileView> Items
+        public SortedList<IFileView> Items
         {
             get => _items;
             set
@@ -84,7 +84,7 @@ namespace Viewer.UI.Images
 
         private Size _itemSize;
         private Rectangle _selectionBounds;
-        private SortedList<FileView> _items;
+        private SortedList<IFileView> _items;
 
         #region Graphics settings
 

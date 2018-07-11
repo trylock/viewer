@@ -51,7 +51,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Current state of the rectangle selection
         /// </summary>
-        private readonly RectangleSelection<FileView> _rectangleSelection = new RectangleSelection<FileView>(new FileViewPathComparer());
+        private readonly RectangleSelection<IFileView> _rectangleSelection = new RectangleSelection<IFileView>(new FileViewPathComparer());
 
         /// <summary>
         /// Thumbnail size calculator
@@ -81,13 +81,13 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Queue of entities loaded from the query which are not shown yet.
         /// </summary>
-        private ImmutableSortedSet<FileView> _waitingQueue = ImmutableSortedSet<FileView>.Empty;
+        private ConcurrentSortedSet<IFileView> _waitingQueue;
 
         /// <summary>
         /// Minimal time in milliseconds between 2 poll events.
         /// </summary>
         private const int PollingRate = 100;
-
+        
         [ImportingConstructor]
         public ImagesPresenter(
             ExportFactory<IImagesView> viewFactory,
@@ -108,7 +108,7 @@ namespace Viewer.UI.Images
             _state = state;
             _queryFactory = queryFactory;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
-            
+
             View.ItemSize = _minItemSize;
             SubscribeTo(View, "View");
         }
@@ -135,9 +135,9 @@ namespace Viewer.UI.Images
 
             // start loading a new query
             _query = query;
-            _waitingQueue = ImmutableSortedSet<FileView>.Empty.WithComparer(new FileViewComparer(_query.Comparer));
+            _waitingQueue = new ConcurrentSortedSet<IFileView>(new FileViewComparer(_query.Comparer));
 
-            View.Items = new SortedList<FileView>(new FileViewComparer(_query.Comparer));
+            View.Items = new SortedList<IFileView>(_waitingQueue.Comparer);
             View.BeginLoading();
             View.BeginPolling(PollingRate);
 
@@ -192,36 +192,51 @@ namespace Viewer.UI.Images
         /// <param name="query">Query to load</param>
         private void LoadQueryBlocking(IQuery query)
         {
+            var directories = new HashSet<string>();
+
             foreach (var entity in query)
             {
                 query.Cancellation.Token.ThrowIfCancellationRequested();
                 
                 // add the file to the result
-                var type = entity is DirectoryEntity ? FileViewType.Directory : FileViewType.File;
-                var item = new FileView(type, entity, GetThumbnail(entity));
-                ImmutableSortedSet<FileView> newQueue, oldQueue;
-                do
+                var item = new FileView(entity, GetPhotoThumbnail(entity));
+                _waitingQueue.Add(item);
+
+                // add all subdirectories to the result
+                var dirPath = PathUtils.GetDirectoryPath(entity.Path);
+                if (directories.Contains(dirPath))
                 {
-                    oldQueue = _waitingQueue;
-                    newQueue = oldQueue.Add(item);
-                } while (Interlocked.CompareExchange(ref _waitingQueue, newQueue, oldQueue) != oldQueue);
+                    continue;
+                }
+
+                directories.Add(dirPath);
+                foreach (var dir in Directory.EnumerateDirectories(dirPath))
+                {
+                    _waitingQueue.Add(new DirectoryView(dir, GetDirectoryThumbnail(dir)));
+                }
             }
         }
         
         /// <summary>
-        /// Create lazily initialized thumbnail for an entity
+        /// Create lazily initialized thumbnail for a photo
         /// </summary>
         /// <param name="item">Entity</param>
         /// <returns>Thumbnail</returns>
-        private ILazyThumbnail GetThumbnail(IEntity item)
+        private ILazyThumbnail GetPhotoThumbnail(IEntity item)
         {
-            if (item is DirectoryEntity)
-            {
-                return new DirectoryThumbnail(item.Path);
-            }
             return new PhotoThumbnail(_imageLoader, item, _thumbnailAreaSize);
         }
-        
+
+        /// <summary>
+        /// Create lazily initialized thumbnail for a directory
+        /// </summary>
+        /// <param name="path">Path to the directory</param>
+        /// <returns>Thumbnail</returns>
+        private ILazyThumbnail GetDirectoryThumbnail(string path)
+        {
+            return new DirectoryThumbnail(path);
+        }
+
         /// <summary>
         /// Compute current thumbnail size based on the current minimal thumbnail size
         /// and View.ThumbnailScale
@@ -270,10 +285,7 @@ namespace Viewer.UI.Images
 
         private IEnumerable<IEntity> GetEntitiesInSelection()
         {
-            return
-                from item in _rectangleSelection
-                where item.Type == FileViewType.File
-                select item.Data;
+            return _rectangleSelection.OfType<FileView>().Select(item => item.Data);
         }
 
         #region User input
@@ -281,14 +293,16 @@ namespace Viewer.UI.Images
         private void View_Poll(object sender, EventArgs e)
         {
             // get a snapshot of the waiting queue
-            var empty = ImmutableSortedSet<FileView>.Empty.WithComparer(new FileViewComparer(_query.Comparer));
-            var items = Interlocked.Exchange(ref _waitingQueue, empty);
+            var items = _waitingQueue.Consume();
             if (items.Count > 0)
             {
                 // update item size
                 foreach (var item in items)
                 {
-                    _minItemSize = _thumbnailSizeCalculator.AddEntity(item.Data);
+                    if (item is FileView fileItem)
+                    {
+                        _minItemSize = _thumbnailSizeCalculator.AddEntity(fileItem.Data);
+                    }
                 }
 
                 // show all entities in the snapshot
@@ -344,7 +358,7 @@ namespace Viewer.UI.Images
 
         private void View_BeginDragItems(object sender, EventArgs e)
         {
-            var dragFiles = _rectangleSelection.Select(elem => elem.Data.Path).ToArray();
+            var dragFiles = _rectangleSelection.Select(elem => elem.FullPath).ToArray();
             var data = new DataObject(DataFormats.FileDrop, dragFiles);
             View.BeginDragDrop(data, DragDropEffects.Copy);
         }
@@ -386,7 +400,7 @@ namespace Viewer.UI.Images
             }
 
             // construct the new file path
-            var item = View.Items[e.Index].Data;
+            var item = ((FileView) View.Items[e.Index]).Data;
             var basePath = PathUtils.GetDirectoryPath(item.Path);
             var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.Path));
 
@@ -437,7 +451,7 @@ namespace Viewer.UI.Images
 
         private void View_DeleteItems(object sender, EventArgs e)
         {
-            if (_selection.Count <= 0)
+            if (!_rectangleSelection.Any())
             {
                 return;
             }
@@ -478,7 +492,7 @@ namespace Viewer.UI.Images
             }
 
             // remove deleted items from the query and the view
-            View.Items.RemoveAll(view => deletedPaths.Contains(view.Data.Path));
+            View.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
 
             // clear selection
             ChangeSelection(Enumerable.Empty<int>());
@@ -498,30 +512,29 @@ namespace Viewer.UI.Images
                 return;
             }
             
-
-            // if the selection contains directories only
-            if (_rectangleSelection.All(item => item.Type == FileViewType.Directory))
-            {
-                var entity = View.Items[e.Index];
-                var query = _queryFactory.CreateQuery(entity.Data.Path);
-                _state.ExecuteQuery(query);
-            }
-            else
+            // if the selection contains files only
+            if (_rectangleSelection.All(item => item is FileView))
             {
                 // count number of directories before selected item
                 var directoryCount = 0;
                 for (var i = 0; i < e.Index; ++i)
                 {
-                    if (View.Items[i].Type == FileViewType.Directory)
+                    if (View.Items[i].GetType() != typeof(FileView))
                     {
                         ++directoryCount;
                     }
                 }
 
                 // find index of the selected item after removing all directories
-                var entities = from item in View.Items where item.Type == FileViewType.File select item.Data;
+                var entities = View.Items.OfType<FileView>().Select(item => item.Data);
                 var entityIndex = e.Index - directoryCount;
                 _state.OpenEntity(entities, entityIndex);
+            }
+            else
+            {
+                var entity = View.Items[e.Index];
+                var query = _queryFactory.CreateQuery(entity.FullPath);
+                _state.ExecuteQuery(query);
             }
         }
         

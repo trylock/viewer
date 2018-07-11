@@ -90,7 +90,6 @@
     <Compile Include="UI\ClipboardService.cs" />
     <Compile Include="UI\Explorer\ExplorerComponent.cs" />
     <Compile Include="UI\IComponent.cs" />
-    <Compile Include="UI\Images\Atomic.cs" />
     <Compile Include="UI\Images\ConcurrentSortedSet.cs" />
     <Compile Include="UI\Images\GridView.cs">
       <SubType>UserControl</SubType>

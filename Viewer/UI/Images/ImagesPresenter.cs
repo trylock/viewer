@@ -39,8 +39,8 @@ namespace Viewer.UI.Images
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
-        private readonly Atomic<Size> _minItemSize = new Atomic<Size>(new Size(133, 100));
-        private readonly Atomic<Size> _currentItemSize = new Atomic<Size>(new Size(133, 100));
+        private Size _minItemSize = new Size(133, 100);
+        private Size _currentItemSize = new Size(133, 100);
 
         /// <summary>
         /// Current state of the rectangle selection
@@ -188,10 +188,7 @@ namespace Viewer.UI.Images
             foreach (var entity in query)
             {
                 query.Cancellation.Token.ThrowIfCancellationRequested();
-
-                // update minimal thumbnail area size
-                _minItemSize.Value = _thumbnailSizeCalculator.AddEntity(entity);
-
+                
                 // add the file to the result
                 var item = new FileView(entity, GetPhotoThumbnail(entity));
                 _waitingQueue.Add(item);
@@ -238,7 +235,7 @@ namespace Viewer.UI.Images
         /// <returns></returns>
         private Size ComputeThumbnailSize()
         {
-            var minimal = _minItemSize.Value;
+            var minimal = _minItemSize;
             return new Size(
                 (int)(minimal.Width * View.ThumbnailScale),
                 (int)(minimal.Height * View.ThumbnailScale)
@@ -291,6 +288,15 @@ namespace Viewer.UI.Images
             var items = _waitingQueue.Consume();
             if (items.Count > 0)
             {
+                // update thumbnail size 
+                foreach (var item in items)
+                {
+                    if (item is FileView view)
+                    {
+                        _minItemSize = _thumbnailSizeCalculator.AddEntity(view.Data);
+                    }
+                }
+
                 // show all entities in the snapshot
                 View.Items = View.Items.Merge(items);
                 View.ItemSize = ComputeThumbnailSize();
@@ -564,7 +570,7 @@ namespace Viewer.UI.Images
             View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
 
-            _currentItemSize.Value = View.ItemSize;
+            _currentItemSize = View.ItemSize;
         }
 
         private void View_ThumbnailSizeCommit(object sender, EventArgs e)

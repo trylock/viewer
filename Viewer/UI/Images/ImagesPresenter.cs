@@ -451,7 +451,7 @@ namespace Viewer.UI.Images
 
         private IEnumerable<string> GetPathsInSelection()
         {
-            return _selection.Select(entity => entity.Path);
+            return _rectangleSelection.Select(item => item.FullPath);
         }
 
         private void View_CopyItems(object sender, EventArgs e)

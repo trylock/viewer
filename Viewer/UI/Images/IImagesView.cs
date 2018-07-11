@@ -28,7 +28,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Full path to the file
         /// </summary>
-        string FullPath { get; }
+        string FullPath { get; set; }
 
         /// <summary>
         /// Current state of the item
@@ -44,7 +44,12 @@ namespace Viewer.UI.Images
     public sealed class FileView : IFileView
     {
         public string Name => Path.GetFileNameWithoutExtension(Data.Path);
-        public string FullPath => Data.Path;
+
+        public string FullPath
+        {
+            get => Data.Path;
+            set => Data.ChangePath(value);
+        }
         public FileViewState State { get; set; } = FileViewState.None;
         public ILazyThumbnail Thumbnail { get; }
         public IEntity Data { get; }
@@ -64,7 +69,7 @@ namespace Viewer.UI.Images
     public sealed class DirectoryView : IFileView
     {
         public string Name => Path.GetFileNameWithoutExtension(FullPath);
-        public string FullPath { get; }
+        public string FullPath { get; set; }
         public FileViewState State { get; set; } = FileViewState.None;
         public ILazyThumbnail Thumbnail { get; }
 

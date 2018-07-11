@@ -27,6 +27,7 @@ namespace Viewer.UI.Images
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class ImagesPresenter : Presenter<IImagesView>
     {
+        private readonly IFileSystem _fileSystem;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
@@ -91,6 +92,7 @@ namespace Viewer.UI.Images
         [ImportingConstructor]
         public ImagesPresenter(
             ExportFactory<IImagesView> viewFactory,
+            IFileSystem fileSystem,
             IFileSystemErrorView dialogView,
             ISelection selection, 
             IEntityManager entityManager,
@@ -100,6 +102,7 @@ namespace Viewer.UI.Images
             IQueryFactory queryFactory)
         {
             ViewLifetime = viewFactory.CreateExport();
+            _fileSystem = fileSystem;
             _dialogView = dialogView;
             _selection = selection;
             _entityManager = entityManager;
@@ -400,15 +403,23 @@ namespace Viewer.UI.Images
             }
 
             // construct the new file path
-            var item = ((FileView) View.Items[e.Index]).Data;
-            var basePath = PathUtils.GetDirectoryPath(item.Path);
-            var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.Path));
+            var item = View.Items[e.Index];
+            var basePath = PathUtils.GetDirectoryPath(item.FullPath);
+            var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.FullPath));
 
             // rename the file
             try
             {
-                _entityManager.MoveEntity(item.Path, newPath);
-                item = item.ChangePath(newPath);
+                if (item is FileView view)
+                {
+                    var entity = view.Data;
+                    _entityManager.MoveEntity(entity.Path, newPath);
+                }
+                else
+                {
+                    _fileSystem.MoveDirectory(item.FullPath, newPath);
+                }
+                item.FullPath = newPath;
                 View.UpdateItem(e.Index);
             }
             catch (PathTooLongException)
@@ -421,7 +432,7 @@ namespace Viewer.UI.Images
             }
             catch (IOException)
             {
-                _dialogView.FailedToMove(item.Path, newPath);
+                _dialogView.FailedToMove(item.FullPath, newPath);
             }
             catch (UnauthorizedAccessException)
             {

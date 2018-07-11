@@ -476,9 +476,9 @@ namespace Viewer.UI.Images
 
             // delete files 
             var deletedPaths = new HashSet<string>();
-            foreach (var item in _selection)
+            var filesInSelection = _rectangleSelection.OfType<FileView>().Select(item => item.FullPath);
+            foreach (var path in filesInSelection)
             {
-                var path = item.Path;
                 try
                 {
                     _entityManager.RemoveEntity(path);
@@ -499,6 +499,27 @@ namespace Viewer.UI.Images
                 catch (IOException)
                 {
                     _dialogView.FileInUse(path);
+                }
+            }
+
+            // delete folders
+            var foldersInSelection = _rectangleSelection.OfType<DirectoryView>().Select(item => item.FullPath);
+            foreach (var folder in foldersInSelection)
+            {
+                try
+                {
+                    _fileSystem.DeleteDirectory(folder, true);
+
+                    deletedPaths.Add(folder);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    _dialogView.UnauthorizedAccess(folder);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    // ignore directory not found
+                    deletedPaths.Add(folder);
                 }
             }
 

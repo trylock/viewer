@@ -35,30 +35,18 @@ namespace Viewer.UI.Images
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
         private readonly IQueryFactory _queryFactory;
+        private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
-        /// <summary>
-        /// Minimal size of a thumbnail
-        /// (i.e. size of a thumbnail for View.ThumbnailScale == 1.0)
-        /// </summary>
-        private Size _minItemSize = new Size(133, 100);
-
-        /// <summary>
-        /// Current thumbnail area size
-        /// </summary>
-        private Size _thumbnailAreaSize = new Size(133, 100);
+        private readonly Atomic<Size> _minItemSize = new Atomic<Size>(new Size(133, 100));
+        private readonly Atomic<Size> _currentItemSize = new Atomic<Size>(new Size(133, 100));
 
         /// <summary>
         /// Current state of the rectangle selection
         /// </summary>
         private readonly RectangleSelection<IFileView> _rectangleSelection = new RectangleSelection<IFileView>(new FileViewPathComparer());
-
-        /// <summary>
-        /// Thumbnail size calculator
-        /// </summary>
-        private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
-
+        
         /// <summary>
         /// true iff constrol is pressed
         /// </summary>
@@ -111,8 +99,8 @@ namespace Viewer.UI.Images
             _state = state;
             _queryFactory = queryFactory;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
-
-            View.ItemSize = _minItemSize;
+            
+            View.ItemSize = _currentItemSize;
             SubscribeTo(View, "View");
         }
         
@@ -200,7 +188,10 @@ namespace Viewer.UI.Images
             foreach (var entity in query)
             {
                 query.Cancellation.Token.ThrowIfCancellationRequested();
-                
+
+                // update minimal thumbnail area size
+                _minItemSize.Value = _thumbnailSizeCalculator.AddEntity(entity);
+
                 // add the file to the result
                 var item = new FileView(entity, GetPhotoThumbnail(entity));
                 _waitingQueue.Add(item);
@@ -227,7 +218,7 @@ namespace Viewer.UI.Images
         /// <returns>Thumbnail</returns>
         private ILazyThumbnail GetPhotoThumbnail(IEntity item)
         {
-            return new PhotoThumbnail(_imageLoader, item, _thumbnailAreaSize);
+            return new PhotoThumbnail(_imageLoader, item);
         }
 
         /// <summary>
@@ -247,9 +238,10 @@ namespace Viewer.UI.Images
         /// <returns></returns>
         private Size ComputeThumbnailSize()
         {
+            var minimal = _minItemSize.Value;
             return new Size(
-                (int)(_minItemSize.Width * View.ThumbnailScale),
-                (int)(_minItemSize.Height * View.ThumbnailScale)
+                (int)(minimal.Width * View.ThumbnailScale),
+                (int)(minimal.Height * View.ThumbnailScale)
             );
         }
 
@@ -299,15 +291,6 @@ namespace Viewer.UI.Images
             var items = _waitingQueue.Consume();
             if (items.Count > 0)
             {
-                // update item size
-                foreach (var item in items)
-                {
-                    if (item is FileView fileItem)
-                    {
-                        _minItemSize = _thumbnailSizeCalculator.AddEntity(fileItem.Data);
-                    }
-                }
-
                 // show all entities in the snapshot
                 View.Items = View.Items.Merge(items);
                 View.ItemSize = ComputeThumbnailSize();
@@ -578,18 +561,14 @@ namespace Viewer.UI.Images
 
         private void View_ThumbnailSizeChanged(object sender, EventArgs e)
         {
-            _thumbnailAreaSize = View.ItemSize = ComputeThumbnailSize();
+            View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
+
+            _currentItemSize.Value = View.ItemSize;
         }
 
         private void View_ThumbnailSizeCommit(object sender, EventArgs e)
         {
-            // update the actual size of thumbnails in the view
-            foreach (var item in View.Items)
-            {
-                item.Thumbnail.Resize(ComputeThumbnailSize());
-            }
-
             // start loading the new thumbnails for visible items
             View.UpdateItems();
         }

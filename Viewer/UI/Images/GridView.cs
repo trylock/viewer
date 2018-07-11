@@ -304,7 +304,7 @@ namespace Viewer.UI.Images
                 nameForamt);
 
             // draw the thumbnail
-            Image thumbnail = item.Thumbnail.GetCurrent();
+            Image thumbnail = item.Thumbnail.GetCurrent(ItemSize);
             if (thumbnail == null)
             {
                 return;

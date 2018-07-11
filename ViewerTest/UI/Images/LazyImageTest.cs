@@ -27,14 +27,14 @@ namespace ViewerTest.UI.Images
             _entity = new Entity("test");
             _thumbnailSize = new Size(100, 100);
             _imageLoader = new Mock<IImageLoader>();
-            _thumbnail = new PhotoThumbnail(_imageLoader.Object, _entity, _thumbnailSize);
+            _thumbnail = new PhotoThumbnail(_imageLoader.Object, _entity);
         }
 
         [TestMethod]
         public void Current_StartLoadingImage()
         {
-            var image = _thumbnail.GetCurrent();
-            image = _thumbnail.GetCurrent();
+            var image = _thumbnail.GetCurrent(_thumbnailSize);
+            image = _thumbnail.GetCurrent(_thumbnailSize);
 
             _imageLoader.Verify(mock => mock.LoadThumbnailAsync(_entity, _thumbnailSize), Times.Once);
         }
@@ -48,7 +48,7 @@ namespace ViewerTest.UI.Images
                 .Setup(mock => mock.LoadThumbnailAsync(_entity, _thumbnailSize))
                 .Returns(task);
 
-            var current = _thumbnail.GetCurrent();
+            var current = _thumbnail.GetCurrent(_thumbnailSize);
             
             Assert.AreEqual(image, current);
             _imageLoader.Verify(mock => mock.LoadThumbnailAsync(_entity, _thumbnailSize), Times.Once);
@@ -66,11 +66,11 @@ namespace ViewerTest.UI.Images
                 .Setup(mock => mock.LoadThumbnailAsync(_entity, new Size(200, 200)))
                 .Returns(Task.FromResult((Image)image2));
 
-            var current = _thumbnail.GetCurrent();
+            var current = _thumbnail.GetCurrent(_thumbnailSize);
             Assert.AreEqual(image1, current);
-            _thumbnail.Resize(new Size(200, 200));
+            _thumbnailSize = new Size(200, 200);
             Assert.AreEqual(image1, current);
-            current = _thumbnail.GetCurrent();
+            current = _thumbnail.GetCurrent(_thumbnailSize);
             Assert.AreEqual(image2, current);
         }
     }

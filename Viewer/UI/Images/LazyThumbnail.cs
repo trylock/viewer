@@ -16,15 +16,14 @@ namespace Viewer.UI.Images
         /// Returns currently loaded thumbnail or null if there is none.
         /// This will start loading a thumbnail if a better thumbnail is available.
         /// </summary>
-        Image GetCurrent();
+        /// <param name="thumbnailAreaSize">Size of the area for this thumbnail.</param>
+        Image GetCurrent(Size thumbnailAreaSize);
 
         /// <summary>
-        /// Change thumbnail area size.
-        /// This won't start loading the thumbnail. New thumbnail will start
-        /// loading on the next call to the Current getter.
+        /// Causes the class to regenerate the thumbnail next time its value is requested.
+        /// This can be used for resizing, for example.
         /// </summary>
-        /// <param name="newThumbnailAreaSize">New size of an area for the thumbnail</param>
-        void Resize(Size newThumbnailAreaSize);
+        void Invalidate();
     }
 
     public class DirectoryThumbnail : ILazyThumbnail
@@ -42,12 +41,12 @@ namespace Viewer.UI.Images
         {
         }
 
-        public Image GetCurrent()
+        public Image GetCurrent(Size thumbnailAreaSize)
         {
             return Default;
         }
 
-        public void Resize(Size newThumbnailAreaSize)
+        public void Invalidate()
         {
         }
     }
@@ -56,20 +55,29 @@ namespace Viewer.UI.Images
     {
         private readonly IImageLoader _imageLoader;
         private readonly IEntity _entity;
-        private Size _thumbnailAreaSize;
         private Image _current = Default;
         private Task<Image> _loading;
         private bool _isInvalid = true;
+        private Size _thumbnailAreaSize;
         
         public static Image Default { get; } = Resources.DefaultThumbnail;
 
-        public Image GetCurrent()
-    { 
+        public Image GetCurrent(Size thumbnailAreaSize)
+        {
+            // invalidate the thumbnail if the thumbnail size has changed
+            if (_thumbnailAreaSize != thumbnailAreaSize)
+            {
+                Invalidate();
+            }
+
+            _thumbnailAreaSize = thumbnailAreaSize;
+
+            // start loading a new thumbnail
             if (_isInvalid)
             {
                 DisposeLoading();
                 _isInvalid = false;
-                _loading = _imageLoader.LoadThumbnailAsync(_entity, _thumbnailAreaSize);
+                _loading = _imageLoader.LoadThumbnailAsync(_entity, thumbnailAreaSize);
             }
 
             // if the thumbnail loading has finished, replace the loaded thumbnail with the current thumbnail
@@ -83,17 +91,15 @@ namespace Viewer.UI.Images
             return _current;
         }
 
-        public PhotoThumbnail(IImageLoader loader, IEntity entity, Size thumbnailAreaSize)
+        public PhotoThumbnail(IImageLoader loader, IEntity entity)
         {
             _imageLoader = loader;
             _entity = entity;
-            _thumbnailAreaSize = thumbnailAreaSize;
         }
 
-        public void Resize(Size newThumbnailAreaSize)
+        public void Invalidate()
         {
-            _thumbnailAreaSize = newThumbnailAreaSize;
-            _isInvalid = true; // invalidate current thumbnail
+            _isInvalid = true; 
         }
 
         public void Dispose()

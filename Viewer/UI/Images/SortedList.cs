@@ -135,7 +135,7 @@ namespace Viewer.UI.Images
 
         public int IndexOf(T item)
         {
-            return _values.BinarySearch(item);
+            return _values.BinarySearch(item, Comparer);
         }
         
         public void RemoveAt(int index)

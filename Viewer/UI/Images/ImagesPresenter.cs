@@ -75,7 +75,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Minimal time in milliseconds between 2 poll events.
         /// </summary>
-        private const int PollingRate = 100;
+        private const int PollingRate = 200;
         
         [ImportingConstructor]
         public ImagesPresenter(
@@ -296,7 +296,7 @@ namespace Viewer.UI.Images
                         _minItemSize = _thumbnailSizeCalculator.AddEntity(view.Data);
                     }
                 }
-
+                
                 // show all entities in the snapshot
                 View.Items = View.Items.Merge(items);
                 View.ItemSize = ComputeThumbnailSize();
@@ -409,7 +409,7 @@ namespace Viewer.UI.Images
                     _fileSystem.MoveDirectory(item.FullPath, newPath);
                 }
                 item.FullPath = newPath;
-                View.UpdateItem(e.Index);
+                View.UpdateItems();
             }
             catch (PathTooLongException)
             {
@@ -575,7 +575,6 @@ namespace Viewer.UI.Images
 
         private void View_ThumbnailSizeCommit(object sender, EventArgs e)
         {
-            // start loading the new thumbnails for visible items
             View.UpdateItems();
         }
 

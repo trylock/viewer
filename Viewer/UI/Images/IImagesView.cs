@@ -310,19 +310,12 @@ namespace Viewer.UI.Images
         /// Set an item size
         /// </summary>
         Size ItemSize { get; set; }
-        
+
         /// <summary>
         /// Notify the view that the Items collection has changed.
         /// </summary>
         void UpdateItems();
         
-        /// <summary>
-        /// Update a single item in the view.
-        /// Noop, if the <paramref name="index"/> is not a valid index of any item.
-        /// </summary>
-        /// <param name="index">Index of an item</param>
-        void UpdateItem(int index);
-
         /// <summary>
         /// Begin drag&amp;drop operation.
         /// </summary>

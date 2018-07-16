@@ -51,9 +51,10 @@
             // 
             // NameTextBox
             // 
-            this.NameTextBox.Location = new System.Drawing.Point(71, 40);
+            this.NameTextBox.Location = new System.Drawing.Point(53, 32);
+            this.NameTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(115, 22);
+            this.NameTextBox.Size = new System.Drawing.Size(87, 20);
             this.NameTextBox.TabIndex = 0;
             this.NameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.NameTextBox.Visible = false;
@@ -71,53 +72,54 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(164, 112);
+            this.ItemContextMenu.Size = new System.Drawing.Size(145, 104);
             // 
             // OpenMenuItem
             // 
             this.OpenMenuItem.Name = "OpenMenuItem";
-            this.OpenMenuItem.Size = new System.Drawing.Size(163, 24);
+            this.OpenMenuItem.Size = new System.Drawing.Size(144, 22);
             this.OpenMenuItem.Text = "Open";
             this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // CopyMenuItem
             // 
             this.CopyMenuItem.Name = "CopyMenuItem";
             this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.CopyMenuItem.Size = new System.Drawing.Size(163, 24);
+            this.CopyMenuItem.Size = new System.Drawing.Size(144, 22);
             this.CopyMenuItem.Text = "Copy";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(141, 6);
             // 
             // DeleteMenuItem
             // 
             this.DeleteMenuItem.Name = "DeleteMenuItem";
             this.DeleteMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.DeleteMenuItem.Size = new System.Drawing.Size(163, 24);
+            this.DeleteMenuItem.Size = new System.Drawing.Size(144, 22);
             this.DeleteMenuItem.Text = "Delete";
             // 
             // RenameMenuItem
             // 
             this.RenameMenuItem.Name = "RenameMenuItem";
             this.RenameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.RenameMenuItem.Size = new System.Drawing.Size(163, 24);
+            this.RenameMenuItem.Size = new System.Drawing.Size(144, 22);
             this.RenameMenuItem.Text = "Rename";
             this.RenameMenuItem.Click += new System.EventHandler(this.RenameMenuItem_Click);
             // 
             // ThumbnailSizeTrackBar
             // 
             this.ThumbnailSizeTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ThumbnailSizeTrackBar.Location = new System.Drawing.Point(653, 3);
+            this.ThumbnailSizeTrackBar.Location = new System.Drawing.Point(490, 2);
+            this.ThumbnailSizeTrackBar.Margin = new System.Windows.Forms.Padding(2);
             this.ThumbnailSizeTrackBar.Name = "ThumbnailSizeTrackBar";
-            this.ThumbnailSizeTrackBar.Size = new System.Drawing.Size(173, 56);
+            this.ThumbnailSizeTrackBar.Size = new System.Drawing.Size(130, 45);
             this.ThumbnailSizeTrackBar.TabIndex = 1;
             this.ThumbnailSizeTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.ThumbnailSizeTrackBar.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ThumbnailSizeTrackBar_KeyUp);
@@ -131,12 +133,13 @@
             this.GridView.ItemPadding = new System.Drawing.Size(8, 8);
             this.GridView.Items = null;
             this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(3, 3);
+            this.GridView.Location = new System.Drawing.Point(2, 2);
+            this.GridView.Margin = new System.Windows.Forms.Padding(2);
             this.GridView.Name = "GridView";
             this.GridView.NameHeight = 25;
             this.GridView.NameSpace = 5;
             this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(829, 388);
+            this.GridView.Size = new System.Drawing.Size(622, 317);
             this.GridView.TabIndex = 2;
             this.GridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.GridView_Scroll);
             this.GridView.DoubleClick += new System.EventHandler(this.GridView_DoubleClick);
@@ -148,9 +151,10 @@
             // 
             this.ItemsCountLabel.AutoSize = true;
             this.ItemsCountLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ItemsCountLabel.Location = new System.Drawing.Point(9, 8);
+            this.ItemsCountLabel.Location = new System.Drawing.Point(7, 6);
+            this.ItemsCountLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.ItemsCountLabel.Name = "ItemsCountLabel";
-            this.ItemsCountLabel.Size = new System.Drawing.Size(53, 17);
+            this.ItemsCountLabel.Size = new System.Drawing.Size(41, 13);
             this.ItemsCountLabel.TabIndex = 2;
             this.ItemsCountLabel.Text = "0 Items";
             // 
@@ -162,11 +166,12 @@
             this.ViewTableLayout.Controls.Add(this.GridView, 0, 0);
             this.ViewTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ViewTableLayout.Location = new System.Drawing.Point(0, 0);
+            this.ViewTableLayout.Margin = new System.Windows.Forms.Padding(2);
             this.ViewTableLayout.Name = "ViewTableLayout";
             this.ViewTableLayout.RowCount = 2;
             this.ViewTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.ViewTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.ViewTableLayout.Size = new System.Drawing.Size(835, 434);
+            this.ViewTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.ViewTableLayout.Size = new System.Drawing.Size(626, 353);
             this.ViewTableLayout.TabIndex = 3;
             // 
             // ControlPanel
@@ -174,9 +179,10 @@
             this.ControlPanel.Controls.Add(this.ThumbnailSizeTrackBar);
             this.ControlPanel.Controls.Add(this.ItemsCountLabel);
             this.ControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ControlPanel.Location = new System.Drawing.Point(3, 397);
+            this.ControlPanel.Location = new System.Drawing.Point(2, 323);
+            this.ControlPanel.Margin = new System.Windows.Forms.Padding(2);
             this.ControlPanel.Name = "ControlPanel";
-            this.ControlPanel.Size = new System.Drawing.Size(829, 34);
+            this.ControlPanel.Size = new System.Drawing.Size(622, 28);
             this.ControlPanel.TabIndex = 0;
             // 
             // PollTimer
@@ -185,11 +191,12 @@
             // 
             // ImagesGridView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(835, 434);
+            this.ClientSize = new System.Drawing.Size(626, 353);
             this.Controls.Add(this.ViewTableLayout);
             this.Controls.Add(this.NameTextBox);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ImagesGridView";
             this.Text = "Images";
             this.ItemContextMenu.ResumeLayout(false);

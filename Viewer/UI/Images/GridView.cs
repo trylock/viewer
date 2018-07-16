@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
@@ -37,14 +38,10 @@ namespace Viewer.UI.Images
             get => _itemSize;
             set
             {
-                var item = CaptureFirstVisibleItem();
-
                 _itemSize = value;
                 Grid.MinCellWidth = _itemSize.Width + ItemPadding.Width * 2;
                 Grid.CellHeight = _itemSize.Height + NameHeight + NameSpace + ItemPadding.Height * 2;
                 UpdateScrollableSize();
-
-                RestoreFirstVisibleItem(item);
             }
         }
 
@@ -76,7 +73,6 @@ namespace Viewer.UI.Images
             set
             {
                 _items = value;
-                Grid.CellCount = _items == null ? 0 : _items.Count;
                 UpdateScrollableSize();
                 Refresh();
             }
@@ -85,7 +81,7 @@ namespace Viewer.UI.Images
         private Size _itemSize;
         private Rectangle _selectionBounds;
         private SortedList<IFileView> _items;
-
+        
         #region Graphics settings
 
         private readonly Color _highlightFillColor;
@@ -108,6 +104,10 @@ namespace Viewer.UI.Images
 
             InitializeComponent();
 
+            DoubleBuffered = true;
+
+            MouseWheel += GridView_MouseWheel;
+
             _highlightFillColor = Color.FromArgb(226, 241, 255);
             _highlightStrokeColor = Color.FromArgb(221, 232, 248);
 
@@ -119,19 +119,9 @@ namespace Viewer.UI.Images
         }
 
         #region View interface
-
-        public void InvalidateItem(int index)
-        {
-            if (index < 0 || index >= Items.Count)
-                return;
-            var cell = Grid.GetCell(index);
-            var bounds = cell.Bounds;
-            Invalidate(ProjectBounds(bounds));
-        }
-
+        
         public void UpdateItemCount()
         {
-            Grid.CellCount = Items.Count;
             UpdateScrollableSize();
         }
 
@@ -144,7 +134,7 @@ namespace Viewer.UI.Images
         {
             return Grid.GetCellAt(location).Index;
         }
-
+        
         #endregion
 
         public Point GetThumbnailLocation(Rectangle cellBounds, Size thumbnailSize)
@@ -238,8 +228,6 @@ namespace Viewer.UI.Images
 
         private void GridView_Paint(object sender, PaintEventArgs e)
         {
-            Grid.CellCount = Items == null ? 0 : Items.Count;
-
             // update invalid items
             var clipBounds = UnprojectBounds(e.ClipRectangle);
             var cells = Grid.GetCellsInBounds(clipBounds);
@@ -304,7 +292,7 @@ namespace Viewer.UI.Images
                 nameForamt);
 
             // draw the thumbnail
-            Image thumbnail = item.Thumbnail.GetCurrent(ItemSize);
+            var thumbnail = item.Thumbnail.GetCurrent(ItemSize);
             if (thumbnail == null)
             {
                 return;
@@ -323,31 +311,22 @@ namespace Viewer.UI.Images
             Refresh();
         }
 
+        private void GridView_Scroll(object sender, ScrollEventArgs e)
+        {
+        }
+
+        private void GridView_MouseWheel(object sender, MouseEventArgs e)
+        {
+        }
+
         private void UpdateScrollableSize()
         {
             Grid.Resize(ClientSize.Width);
+            Grid.CellCount = _items?.Count ?? 0;
             AutoScrollMinSize = new Size(
                 0, // we don't want to have a horizontal scroll bar
                 Grid.GridSize.Height
             );
-        }
-
-        private int CaptureFirstVisibleItem()
-        {
-            var height = Grid.CellSize.Height + Grid.CellMargin.Height;
-            // find the first row that is mostly visible
-            var row = (int)Math.Round(-AutoScrollPosition.Y / (double)height);
-            return row * Grid.ColumnCount;
-        }
-
-        private void RestoreFirstVisibleItem(int index)
-        {
-            if (index < 0)
-            {
-                return;
-            }
-
-            AutoScrollPosition = new Point(0, Grid.GetCell(index).Location.Y);
         }
     }
 }

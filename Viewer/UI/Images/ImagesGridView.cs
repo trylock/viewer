@@ -172,17 +172,11 @@ namespace Viewer.UI.Images
             ItemsCountLabel.Text = string.Format(Resources.ItemCount_Label, Items.Count.ToString("N0"));
             GridView.UpdateItemCount();
         }
-
+        
         public void UpdateItems()
         {
             UpdateItemCount();
             Refresh();
-        }
-        
-        public void UpdateItem(int index)
-        {
-            UpdateItemCount();
-            GridView.InvalidateItem(index);
         }
         
         public void BeginDragDrop(IDataObject data, DragDropEffects effect)
@@ -211,7 +205,6 @@ namespace Viewer.UI.Images
         }
 
         #endregion
-
 
         #region GridView Events
 

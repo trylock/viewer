@@ -53,9 +53,10 @@
             this.NextButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.NextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.NextButton.ForeColor = System.Drawing.Color.White;
-            this.NextButton.Location = new System.Drawing.Point(720, 0);
+            this.NextButton.Location = new System.Drawing.Point(540, 0);
+            this.NextButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.NextButton.Name = "NextButton";
-            this.NextButton.Size = new System.Drawing.Size(80, 500);
+            this.NextButton.Size = new System.Drawing.Size(60, 406);
             this.NextButton.TabIndex = 3;
             this.NextButton.TabStop = false;
             this.NextButton.UseVisualStyleBackColor = false;
@@ -76,8 +77,9 @@
             this.PrevButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.PrevButton.ForeColor = System.Drawing.Color.White;
             this.PrevButton.Location = new System.Drawing.Point(0, 0);
+            this.PrevButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.PrevButton.Name = "PrevButton";
-            this.PrevButton.Size = new System.Drawing.Size(80, 500);
+            this.PrevButton.Size = new System.Drawing.Size(60, 406);
             this.PrevButton.TabIndex = 2;
             this.PrevButton.TabStop = false;
             this.PrevButton.UseVisualStyleBackColor = false;
@@ -95,9 +97,10 @@
             this.PlayPauseButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
             this.PlayPauseButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.PlayPauseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PlayPauseButton.Location = new System.Drawing.Point(237, 0);
+            this.PlayPauseButton.Location = new System.Drawing.Point(178, 0);
+            this.PlayPauseButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.PlayPauseButton.Name = "PlayPauseButton";
-            this.PlayPauseButton.Size = new System.Drawing.Size(60, 60);
+            this.PlayPauseButton.Size = new System.Drawing.Size(45, 49);
             this.PlayPauseButton.TabIndex = 0;
             this.PlayPauseButton.UseVisualStyleBackColor = false;
             this.PlayPauseButton.Click += new System.EventHandler(this.PausePlayButton_Click);
@@ -111,9 +114,10 @@
             this.ControlPanel.Controls.Add(this.MinDelayLabel);
             this.ControlPanel.Controls.Add(this.SpeedTrackBar);
             this.ControlPanel.Controls.Add(this.PlayPauseButton);
-            this.ControlPanel.Location = new System.Drawing.Point(263, 439);
+            this.ControlPanel.Location = new System.Drawing.Point(197, 357);
+            this.ControlPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ControlPanel.Name = "ControlPanel";
-            this.ControlPanel.Size = new System.Drawing.Size(300, 58);
+            this.ControlPanel.Size = new System.Drawing.Size(225, 47);
             this.ControlPanel.TabIndex = 4;
             this.ControlPanel.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
@@ -123,9 +127,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MaxDelayLabel.AutoSize = true;
             this.MaxDelayLabel.BackColor = System.Drawing.SystemColors.Control;
-            this.MaxDelayLabel.Location = new System.Drawing.Point(200, 38);
+            this.MaxDelayLabel.Location = new System.Drawing.Point(150, 31);
+            this.MaxDelayLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.MaxDelayLabel.Name = "MaxDelayLabel";
-            this.MaxDelayLabel.Size = new System.Drawing.Size(31, 17);
+            this.MaxDelayLabel.Size = new System.Drawing.Size(24, 13);
             this.MaxDelayLabel.TabIndex = 3;
             this.MaxDelayLabel.Text = "10s";
             this.MaxDelayLabel.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
@@ -136,9 +141,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MinDelayLabel.AutoSize = true;
             this.MinDelayLabel.BackColor = System.Drawing.SystemColors.Control;
-            this.MinDelayLabel.Location = new System.Drawing.Point(3, 38);
+            this.MinDelayLabel.Location = new System.Drawing.Point(2, 31);
+            this.MinDelayLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.MinDelayLabel.Name = "MinDelayLabel";
-            this.MinDelayLabel.Size = new System.Drawing.Size(23, 17);
+            this.MinDelayLabel.Size = new System.Drawing.Size(18, 13);
             this.MinDelayLabel.TabIndex = 2;
             this.MinDelayLabel.Text = "1s";
             this.MinDelayLabel.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
@@ -147,10 +153,11 @@
             // 
             this.SpeedTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.SpeedTrackBar.Location = new System.Drawing.Point(0, 5);
+            this.SpeedTrackBar.Location = new System.Drawing.Point(0, 4);
+            this.SpeedTrackBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.SpeedTrackBar.Minimum = 1;
             this.SpeedTrackBar.Name = "SpeedTrackBar";
-            this.SpeedTrackBar.Size = new System.Drawing.Size(231, 56);
+            this.SpeedTrackBar.Size = new System.Drawing.Size(173, 45);
             this.SpeedTrackBar.TabIndex = 1;
             this.SpeedTrackBar.Value = 1;
             this.SpeedTrackBar.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
@@ -163,18 +170,20 @@
             // 
             // PresentationControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.Controls.Add(this.ControlPanel);
             this.Controls.Add(this.NextButton);
             this.Controls.Add(this.PrevButton);
             this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "PresentationControl";
-            this.Size = new System.Drawing.Size(800, 500);
+            this.Size = new System.Drawing.Size(600, 406);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PresentationControl_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseDoubleClick);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseDown);
             this.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseMove);
             this.Resize += new System.EventHandler(this.PresentationControl_Resize);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -225,6 +225,18 @@ namespace Viewer.UI.Presentation
             else if (e.KeyCode == Keys.Escape)
             {
                 ExitFullscreen?.Invoke(sender, e);
+            }
+        }
+
+        private void PresentationControl_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button.HasFlag(MouseButtons.XButton1))
+            {
+                PrevImage?.Invoke(sender, e);
+            }
+            else if (e.Button.HasFlag(MouseButtons.XButton2))
+            {
+                NextImage?.Invoke(sender, e);
             }
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -242,7 +242,10 @@ namespace Viewer.UI.Presentation
 
         private void PresentationControl_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            ToggleFullscreen?.Invoke(sender, e);
+            if (e.Button.HasFlag(MouseButtons.Left))
+            {
+                ToggleFullscreen?.Invoke(sender, e);
+            }
         }
 
         private void PresentationControl_MouseLeave(object sender, EventArgs e)

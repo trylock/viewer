@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.Properties;
 using Viewer.UI.Log;
 using Viewer.UI.Tasks;
 using Attribute = Viewer.Data.Attribute;
@@ -217,29 +218,36 @@ namespace Viewer.UI.Attributes
             }
             
             var cancellation = new CancellationTokenSource();
-            var progress = _taskLoader.CreateLoader("Saving Changes", unsaved.Count, cancellation);
+            var progress = _taskLoader.CreateLoader(Resources.SavingChanges_Label, unsaved.Count, cancellation);
 
             Task.Run(() =>
             {
                 foreach (var entity in unsaved)
                 {
-                    cancellation.Token.ThrowIfCancellationRequested();
-
-                    progress.Report(new LoadingProgress(entity.Path));
-                    try
+                    if (cancellation.IsCancellationRequested)
                     {
-                        _storage.Store(entity);
+                        // put the changes back to the entity manager
+                        _entityManager.SetEntity(entity, false);
                     }
-                    catch (FileNotFoundException)
+                    else
                     {
-                        Log($"Attribute file {entity.Path} was not found.", LogType.Error, null);
-                    }
-                    catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
-                                              e.GetType() == typeof(SecurityException))
-                    {
-                        Log($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
+                        progress.Report(new LoadingProgress(entity.Path));
+                        try
+                        {
+                            _storage.Store(entity);
+                        }
+                        catch (FileNotFoundException)
+                        {
+                            Log($"Attribute file {entity.Path} was not found.", LogType.Error, null);
+                        }
+                        catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
+                                                  e.GetType() == typeof(SecurityException))
+                        {
+                            Log($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
+                        }
                     }
                 }
+                cancellation.Token.ThrowIfCancellationRequested();
             }, cancellation.Token);
         }
 

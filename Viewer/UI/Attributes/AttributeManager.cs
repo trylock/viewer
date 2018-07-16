@@ -115,7 +115,7 @@ namespace Viewer.UI.Attributes
             foreach (var entity in _selection)
             {
                 entity.RemoveAttribute(oldName).SetAttribute(attr);
-                _entityManager.SetEntity(entity);
+                _entityManager.SetEntity(entity, true);
             }
         }
 
@@ -124,7 +124,7 @@ namespace Viewer.UI.Attributes
             foreach (var entity in _selection)
             { 
                 entity.RemoveAttribute(name);
-                _entityManager.SetEntity(entity);
+                _entityManager.SetEntity(entity, true);
             }
         }
     }

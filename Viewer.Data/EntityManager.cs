@@ -27,10 +27,11 @@ namespace Viewer.Data
 
         /// <summary>
         /// Add the entity to the modified list.
-        /// If an entity with the same path is in the list already, it will be replaced.
+        /// If an entity with the same path is in the list already, it will be replaced iff <paramref name="replace"/> is true.
         /// </summary>
         /// <param name="entity">Entity to set</param>
-        void SetEntity(IEntity entity);
+        /// <param name="replace">Replace entity in the modified list if true.</param>
+        void SetEntity(IEntity entity, bool replace);
 
         /// <summary>
         /// Move an entity from <paramref name="oldPath"/> to <paramref name="newPath"/>
@@ -73,11 +74,18 @@ namespace Viewer.Data
             return entity;
         }
 
-        public void SetEntity(IEntity entity)
+        public void SetEntity(IEntity entity, bool replace)
         {
             var path = entity.Path;
             var clone = entity.Clone();
-            _modified[path] = clone;
+            if (replace)
+            {
+                _modified[path] = clone;
+            }
+            else
+            {
+                _modified.TryAdd(path, clone);
+            }
         }
 
         public void MoveEntity(string oldPath, string newPath)

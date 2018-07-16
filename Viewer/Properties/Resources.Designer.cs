@@ -409,6 +409,15 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saving Changes.
+        /// </summary>
+        internal static string SavingChanges_Label {
+            get {
+                return ResourceManager.GetString("SavingChanges_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Start {

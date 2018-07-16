@@ -38,7 +38,7 @@ namespace ViewerTest.UI.Attributes
 
             _attributes.SetAttribute("test", new Attribute("test", new StringValue("value")));
 
-            _entityManager.Verify(mock => mock.SetEntity(It.IsAny<IEntity>()), Times.Never);
+            _entityManager.Verify(mock => mock.SetEntity(It.IsAny<IEntity>(), true), Times.Never);
         }
 
         [TestMethod]
@@ -66,7 +66,7 @@ namespace ViewerTest.UI.Attributes
                 It.Is<IEntity>(item =>
                     item.GetAttribute(newAttr.Name).Equals(newAttr) &&
                     item.GetAttribute(oldAttr.Name) == null
-                )
+                ), true
             ), Times.Once);
         }
 
@@ -94,14 +94,14 @@ namespace ViewerTest.UI.Attributes
                 It.Is<IEntity>(item =>
                     item.Path == "test1" &&
                     item.GetAttribute(newAttr.Name).Equals(newAttr)
-                )
+                ), true
             ), Times.Once);
 
             _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
                     item.Path == "test2" &&
                     item.GetAttribute(newAttr.Name).Equals(newAttr)
-                )
+                ), true
             ), Times.Once);
         }
 
@@ -149,14 +149,14 @@ namespace ViewerTest.UI.Attributes
                 It.Is<IEntity>(item =>
                     item.Path == "test1" &&
                     item.GetAttribute("attr") == null
-                )
+                ), true
             ), Times.Once);
 
             _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
                     item.Path == "test2" &&
                     item.GetAttribute("attr") == null
-                )
+                ), true
             ), Times.Once);
         }
         

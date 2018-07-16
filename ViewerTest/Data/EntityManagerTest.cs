@@ -55,7 +55,7 @@ namespace ViewerTest.Data
         {
             var entity = new Entity("test");
 
-            _entityManager.SetEntity(entity);
+            _entityManager.SetEntity(entity, true);
             _entityManager.MoveEntity("test", "test2");
 
             _storage.Verify(mock => mock.Move("test", "test2"), Times.Once);
@@ -64,7 +64,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void MoveEntity_DoNotMoveEntityIfTheMoveOperationInStorageFails()
         {
-            _entityManager.SetEntity(new Entity("test"));
+            _entityManager.SetEntity(new Entity("test"), true);
 
             _storage
                 .Setup(mock => mock.Move("test", "test2"))
@@ -91,8 +91,8 @@ namespace ViewerTest.Data
         {
             var entityA = new Entity("test");
             var entityB = new Entity("test").SetAttribute(new Attribute("a", new IntValue(1)));
-            _entityManager.SetEntity(entityA);
-            _entityManager.SetEntity(entityB);
+            _entityManager.SetEntity(entityA, true);
+            _entityManager.SetEntity(entityB, true);
 
             var modified = _entityManager.GetModified();
             Assert.AreEqual(1, modified.Count);

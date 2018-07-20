@@ -558,6 +558,21 @@ namespace Viewer.UI.Images
                 _state.ExecuteQuery(query);
             }
         }
+
+        private void View_OpenItemInExplorer(object sender, EntityEventArgs e)
+        {
+            if (e.Index < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(e));
+            }
+
+            var fullPath = View.Items[e.Index].FullPath;
+
+            Process.Start(
+                Resources.ExplorerProcessName,
+                string.Format(Resources.ExplorerOpenFolderArguments, fullPath)
+            );
+        }
         
         private async void View_CloseView(object sender, EventArgs eventArgs)
         {

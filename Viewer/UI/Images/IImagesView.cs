@@ -300,6 +300,11 @@ namespace Viewer.UI.Images
         /// Event called when user tries to open an item
         /// </summary>
         event EventHandler<EntityEventArgs> OpenItem;
+
+        /// <summary>
+        /// Event called when user tries to open an item in system file explorer
+        /// </summary>
+        event EventHandler<EntityEventArgs> OpenItemInExplorer;
         
         /// <summary>
         /// List of items to show 

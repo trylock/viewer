@@ -43,6 +43,7 @@
             this.ViewTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.ControlPanel = new System.Windows.Forms.Panel();
             this.PollTimer = new System.Windows.Forms.Timer(this.components);
+            this.OpenInExplorerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).BeginInit();
             this.ViewTableLayout.SuspendLayout();
@@ -66,50 +67,51 @@
             this.ItemContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ItemContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenMenuItem,
+            this.OpenInExplorerMenuItem,
             this.toolStripSeparator1,
             this.CopyMenuItem,
             this.toolStripSeparator2,
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(145, 104);
+            this.ItemContextMenu.Size = new System.Drawing.Size(181, 148);
             // 
             // OpenMenuItem
             // 
             this.OpenMenuItem.Name = "OpenMenuItem";
-            this.OpenMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.OpenMenuItem.Size = new System.Drawing.Size(180, 22);
             this.OpenMenuItem.Text = "Open";
             this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // CopyMenuItem
             // 
             this.CopyMenuItem.Name = "CopyMenuItem";
             this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.CopyMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.CopyMenuItem.Size = new System.Drawing.Size(180, 22);
             this.CopyMenuItem.Text = "Copy";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(141, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // DeleteMenuItem
             // 
             this.DeleteMenuItem.Name = "DeleteMenuItem";
             this.DeleteMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.DeleteMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.DeleteMenuItem.Size = new System.Drawing.Size(180, 22);
             this.DeleteMenuItem.Text = "Delete";
             // 
             // RenameMenuItem
             // 
             this.RenameMenuItem.Name = "RenameMenuItem";
             this.RenameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.RenameMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.RenameMenuItem.Size = new System.Drawing.Size(180, 22);
             this.RenameMenuItem.Text = "Rename";
             this.RenameMenuItem.Click += new System.EventHandler(this.RenameMenuItem_Click);
             // 
@@ -189,6 +191,13 @@
             // 
             this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
             // 
+            // OpenInExplorerMenuItem
+            // 
+            this.OpenInExplorerMenuItem.Name = "OpenInExplorerMenuItem";
+            this.OpenInExplorerMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.OpenInExplorerMenuItem.Text = "Open in Explorer";
+            this.OpenInExplorerMenuItem.Click += new System.EventHandler(this.OpenInExplorerMenuItem_Click);
+            // 
             // ImagesGridView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -225,5 +234,6 @@
         private System.Windows.Forms.TableLayoutPanel ViewTableLayout;
         private System.Windows.Forms.Panel ControlPanel;
         private System.Windows.Forms.Timer PollTimer;
+        private System.Windows.Forms.ToolStripMenuItem OpenInExplorerMenuItem;
     }
 }

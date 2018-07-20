@@ -149,6 +149,7 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler<EntityEventArgs> OpenItem;
+        public event EventHandler<EntityEventArgs> OpenItemInExplorer;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
         public event EventHandler<RenameEventArgs> RenameItem;
@@ -329,6 +330,16 @@ namespace Viewer.UI.Images
             {
                 ThumbnailSizeCommit?.Invoke(sender, e);
             }
+        }
+
+        private void OpenInExplorerMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_activeItemIndex < 0)
+            {
+                return;
+            }
+
+            OpenItemInExplorer?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
         }
     }
 }

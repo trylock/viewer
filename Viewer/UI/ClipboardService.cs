@@ -56,7 +56,9 @@ namespace Viewer.UI
 
         public void SetFiles(IEnumerable<string> files)
         {
-            var data = new DataObject(DataFormats.FileDrop, files.ToArray());
+            var fileList = files.ToArray();
+            var data = new DataObject(DataFormats.FileDrop, fileList);
+            data.SetText(string.Join(", ", fileList));
 
             Clipboard.Clear();
             Clipboard.SetDataObject(data);

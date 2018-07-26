@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -54,7 +55,7 @@ namespace Viewer.Data
         /// <returns>Snapshot of modified entities</returns>
         IReadOnlyList<IEntity> GetModified();
     }
-
+    
     [Export(typeof(IEntityManager))]
     public class EntityManager : IEntityManager
     {
@@ -69,9 +70,7 @@ namespace Viewer.Data
 
         public IEntity GetEntity(string path)
         {
-            // load the entity from storage
-            var entity = _storage.Load(path);
-            return entity;
+            return _storage.Load(path);
         }
 
         public void SetEntity(IEntity entity, bool replace)

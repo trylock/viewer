@@ -251,4 +251,12 @@
   <data name="SavingChanges_Label" xml:space="preserve">
     <value>Saving Changes</value>
   </data>
+  <data name="CacheFilePath" xml:space="preserve">
+    <value>{0}/../../../cache.db</value>
+    <comment>{0} is the directory with the viewer executable</comment>
+  </data>
+  <data name="SqliteConnectionString" xml:space="preserve">
+    <value>Data Source={0};Version=3;foreign keys=true;synchronous=OFF</value>
+    <comment>{0} is the location of the cache file</comment>
+  </data>
 </root>

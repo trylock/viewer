@@ -17,10 +17,11 @@ using Viewer.IO;
 
 namespace Viewer.Data.Storage
 {
+    /// <inheritdoc />
     /// <summary>
     /// Attribute storage which stores attributes directly in JPEG files.
     /// </summary>
-    [Export(typeof(IAttributeStorage))]
+    [Export(typeof(FileSystemAttributeStorage))]
     public class FileSystemAttributeStorage : IAttributeStorage
     {
         private readonly IFileSystem _fileSystem;
@@ -97,12 +98,12 @@ namespace Viewer.Data.Storage
             return attrs;
         }
         
-        public void Store(IEntity attrs)
+        public void Store(IEntity entity)
         {
-            using (var segmentReader = _segmentReaderFactory.CreateFromPath(attrs.Path))
+            using (var segmentReader = _segmentReaderFactory.CreateFromPath(entity.Path))
             {
                 string tmpFileName;
-                using (var segmentWriter = _segmentWriterFactory.CreateFromPath(attrs.Path, out tmpFileName))
+                using (var segmentWriter = _segmentWriterFactory.CreateFromPath(entity.Path, out tmpFileName))
                 {
                     // copy all but attribute segments
                     for (;;)
@@ -121,7 +122,7 @@ namespace Viewer.Data.Storage
                     }
 
                     // serialize attributes to JpegSegments
-                    var serialized = Serialize(attrs);
+                    var serialized = Serialize(entity);
                     var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1,
                         AttributeReader.JpegSegmentHeader);
 
@@ -136,7 +137,7 @@ namespace Viewer.Data.Storage
                 }
 
                 // replace the original file with the modified file
-                _fileSystem.ReplaceFile(tmpFileName, attrs.Path, null);
+                _fileSystem.ReplaceFile(tmpFileName, entity.Path, null);
             }
         }
         

@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Drawing;
@@ -12,30 +14,32 @@ using Viewer.Data.Formats.Attributes;
 
 namespace Viewer.Data.Storage
 {
-    public class SqliteAttributeStorage : IAttributeStorage
+    [Export(typeof(SqliteAttributeStorage))]
+    public class SqliteAttributeStorage : ICacheAttributeStorage
     {
-        private SQLiteConnection _connection;
+        public SQLiteConnection Connection { get; }
         
+        [ImportingConstructor]
         public SqliteAttributeStorage(SQLiteConnection connection)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         /// <summary>
         /// Load attributes from database.
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="inputPath"></param>
         /// <returns>
         ///     Valid attributes of the file or null if the attributes in cache are not valid.
         /// </returns>
-        public IEntity Load(string path)
+        public IEntity Load(string inputPath)
         {
-            var fileInfo = new FileInfo(path);
-            IEntity attrs = new Entity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
+            var fileInfo = new FileInfo(inputPath);
+            IEntity entity = new Entity(inputPath, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
             
             // load valid attributes
             SQLiteDataReader reader;
-            using (var query = new SQLiteCommand(_connection))
+            using (var query = new SQLiteCommand(Connection))
             {
                 query.CommandText = @"
                 SELECT a.name, a.source, a.type, a.value, length(a.value) as size
@@ -46,7 +50,7 @@ namespace Viewer.Data.Storage
                     f.path = :path AND
                     f.lastWriteTime >= :lastWriteTime";
 
-                query.Parameters.Add(new SQLiteParameter(":path", path));
+                query.Parameters.Add(new SQLiteParameter(":path", entity.Path));
                 query.Parameters.Add(new SQLiteParameter(":lastWriteTime", fileInfo.LastWriteTime));
                 reader = query.ExecuteReader();
             }
@@ -62,47 +66,47 @@ namespace Viewer.Data.Storage
                 switch ((AttributeType)type)
                 {
                     case AttributeType.Int:
-                        attrs = attrs.SetAttribute(new Attribute(name, new IntValue(reader.GetInt32(3)), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new IntValue(reader.GetInt32(3)), (AttributeFlags)source));
                         break;
                     case AttributeType.Double:
-                        attrs = attrs.SetAttribute(new Attribute(name, new RealValue(reader.GetDouble(3)), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new RealValue(reader.GetDouble(3)), (AttributeFlags)source));
                         break;
                     case AttributeType.String:
-                        attrs = attrs.SetAttribute(new Attribute(name, new StringValue(reader.GetString(3)), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new StringValue(reader.GetString(3)), (AttributeFlags)source));
                         break;
                     case AttributeType.DateTime:
-                        attrs = attrs.SetAttribute(new Attribute(name, new DateTimeValue(reader.GetDateTime(3)), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new DateTimeValue(reader.GetDateTime(3)), (AttributeFlags)source));
                         break;
                     case AttributeType.Image:
                         var buffer = new byte[valueSize];
                         var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
                         Debug.Assert(buffer.Length == length);
-                        attrs = attrs.SetAttribute(new Attribute(name, new ImageValue(buffer), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new ImageValue(buffer), (AttributeFlags)source));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
 
-            if (attrs.Count <= 0)
+            if (entity.Count <= 0)
             {
                 return null;
             }
             
-            return attrs;
+            return entity;
         }
 
-        public void Store(IEntity attrs)
+        public void Store(IEntity entity)
         {
-            using (var transaction = _connection.BeginTransaction())
+            using (var transaction = Connection.BeginTransaction())
             {
                 // remove file (and transitively all attributes)
-                RemoveFile(attrs.Path);
+                RemoveFile(entity.Path);
                 
-                long id = StoreFile(attrs.Path);
+                long id = StoreFile(entity.Path);
 
                 // add new attributes
-                foreach (var attr in attrs)
+                foreach (var attr in entity)
                 {
                     StoreAttribute(id, attr);
                 }
@@ -205,7 +209,7 @@ namespace Viewer.Data.Storage
 
         private void StoreAttribute(long fileId, Attribute attr)
         {
-            using (var command = new SQLiteCommand(_connection))
+            using (var command = new SQLiteCommand(Connection))
             {
                 command.CommandText = "INSERT INTO attributes (name, source, type, value, owner) VALUES (:name, :source, :type, :value, :owner)";
                 command.Parameters.Add(new SQLiteParameter(":name", attr.Name));

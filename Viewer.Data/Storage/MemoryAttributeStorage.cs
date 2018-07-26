@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Viewer.Data.Storage
 {
+    [Export(typeof(MemoryAttributeStorage))]
     public class MemoryAttributeStorage : IAttributeStorage
     {
-        private Dictionary<string, IEntity> _files = new Dictionary<string, IEntity>();
+        private readonly Dictionary<string, IEntity> _files = new Dictionary<string, IEntity>();
 
         public IEnumerable<IEntity> Files
         {
@@ -23,46 +25,53 @@ namespace Viewer.Data.Storage
 
         public IEntity Load(string path)
         {
-            if (!_files.TryGetValue(path, out IEntity collection))
+            lock (_files)
             {
-                return null;
+                if (_files.TryGetValue(path, out IEntity entity))
+                {
+                    return entity;
+                }
             }
 
-            return collection;
+            return null;
         }
 
-        public void Store(IEntity attrs)
+        public void Store(IEntity entity)
         {
-            if (_files.ContainsKey(attrs.Path))
+            lock (_files)
             {
-                _files[attrs.Path] = attrs;
-            }
-            else
-            {
-                _files.Add(attrs.Path, attrs);
+                _files[entity.Path] = entity.Clone();
             }
         }
 
         public void Remove(string path)
         {
-            _files.Remove(path);
+            lock (_files)
+            {
+                _files.Remove(path);
+            }
         }
 
         public void Move(string oldPath, string newPath)
         {
-            if (!_files.TryGetValue(oldPath, out IEntity entity))
+            lock (_files)
             {
-                return;
+                if (_files.TryGetValue(oldPath, out var entity))
+                {
+                    _files[newPath] = entity;
+                    _files.Remove(oldPath);
+                }
             }
-
-            entity = entity.ChangePath(newPath);
-            _files.Remove(oldPath);
-            _files.Add(newPath, entity);
         }
-        
-        public void Add(IEntity entity)
+
+        public IReadOnlyList<IEntity> Consume()
         {
-            _files.Add(entity.Path, entity);
+            lock (_files)
+            {
+                var items = _files.Values.ToArray();
+                _files.Clear();
+                return items;
+            }
         }
     }
 }

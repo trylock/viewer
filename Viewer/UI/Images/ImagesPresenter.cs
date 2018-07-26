@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -134,7 +134,11 @@ namespace Viewer.UI.Images
 
             try
             {
-                _loadTask = Task.Run(() => LoadQueryBlocking(query), _query.Cancellation.Token);
+                _loadTask = Task.Factory.StartNew(
+                    () => LoadQueryBlocking(query), 
+                    _query.Cancellation.Token, 
+                    TaskCreationOptions.LongRunning, 
+                    TaskScheduler.Current);
                 await _loadTask;
                 View.UpdateItems();
             }   

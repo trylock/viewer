@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
@@ -14,6 +14,7 @@ using Viewer.Data.Formats.Attributes;
 
 namespace Viewer.Data.Storage
 {
+    [Export(typeof(ICacheAttributeStorage))]
     [Export(typeof(SqliteAttributeStorage))]
     public class SqliteAttributeStorage : ICacheAttributeStorage
     {
@@ -92,7 +93,7 @@ namespace Viewer.Data.Storage
             {
                 return null;
             }
-            
+
             return entity;
         }
 
@@ -125,9 +126,29 @@ namespace Viewer.Data.Storage
             RemoveFile(path);
         }
 
+        public void Touch(string path)
+        {
+            using (var query = new SQLiteCommand(Connection))
+            {
+                query.CommandText = @"UPDATE files SET lastAccessTime = datetime('now') WHERE path = :path";
+                query.Parameters.Add(new SQLiteParameter(":path", path));
+                query.ExecuteNonQuery();
+            }
+        }
+
+        public void Clean(TimeSpan maxLifespan)
+        {
+            using (var query = new SQLiteCommand(Connection))
+            {
+                query.CommandText = @"DELETE FROM files WHERE lastAccessTime < :threshold";
+                query.Parameters.Add(new SQLiteParameter(":threshold", DateTime.Now - maxLifespan));
+                query.ExecuteNonQuery();
+            }
+        }
+        
         private void RemoveFile(string path)
         {
-            using (var query = new SQLiteCommand(_connection))
+            using (var query = new SQLiteCommand(Connection))
             {
                 query.CommandText = @"DELETE FROM files WHERE path = :path";
                 query.Parameters.Add(new SQLiteParameter(":path", path));
@@ -137,7 +158,7 @@ namespace Viewer.Data.Storage
 
         private void MoveFile(string oldPath, string newPath)
         {
-            using (var query = new SQLiteCommand(_connection))
+            using (var query = new SQLiteCommand(Connection))
             {
                 query.CommandText = @"UPDATE files SET path = :newPath WHERE path = :oldPath";
                 query.Parameters.Add(new SQLiteParameter(":oldPath", oldPath));
@@ -149,13 +170,13 @@ namespace Viewer.Data.Storage
         private long StoreFile(string path)
         {
             var fi = new FileInfo(path);
-            using (var command = new SQLiteCommand(_connection))
+            using (var command = new SQLiteCommand(Connection))
             {
-                command.CommandText = "INSERT INTO files (path, lastWriteTime, lastAccessTime) VALUES (:path, :lastWriteTime, CURRENT_TIMESTAMP)";
+                command.CommandText = "INSERT INTO files (path, lastWriteTime, lastAccessTime) VALUES (:path, :lastWriteTime, datetime('now'))";
                 command.Parameters.Add(new SQLiteParameter(":path", path));
                 command.Parameters.Add(new SQLiteParameter(":lastWriteTime", fi.LastWriteTime));
                 command.ExecuteNonQuery();
-                return _connection.LastInsertRowId;
+                return Connection.LastInsertRowId;
             }
         }
 

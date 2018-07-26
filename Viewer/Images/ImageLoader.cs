@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -177,7 +177,7 @@ namespace Viewer.Images
         private Task<Image> LoadEmbeddedThumbnail(IEntity entity, Size thumbnailAreaSize)
         {
             var orientation = GetTransformation(entity);
-            var thumbnail = entity.GetAttribute(ThumbnailAttrName).Value as ImageValue;
+            var thumbnail = entity.GetAttribute(ThumbnailAttrName)?.Value as ImageValue;
             if (thumbnail == null)
             {
                 return Task.FromResult<Image>(null);

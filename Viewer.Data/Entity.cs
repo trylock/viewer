@@ -15,7 +15,7 @@ namespace Viewer.Data
     public interface IEntity : IEnumerable<Attribute>
     {
         /// <summary>
-        /// Path to the entity
+        /// Path to the entity.
         /// </summary>
         string Path { get; }
 
@@ -88,7 +88,7 @@ namespace Viewer.Data
 
         public Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
         {
-            Path = path;
+            Path = UnifyPath(path);
             LastWriteTime = lastWriteTime;
             LastAccessTime = lastAccessTime;
         }
@@ -97,6 +97,30 @@ namespace Viewer.Data
         {
         }
         
+        private static string UnifyPath(string path)
+        {
+            var unifiedPath = new StringBuilder();
+            for (var i = 0; i < path.Length; ++i)
+            {
+                if (path[i] == '/' || path[i] == '\\')
+                {
+                    unifiedPath.Append('/');
+
+                    // remove double separator
+                    if (i + 1 < path.Length && (path[i + 1] == '\\' || path[i + 1] == '/'))
+                    {
+                        ++i;
+                    }
+                }
+                else
+                {
+                    unifiedPath.Append(path[i]);
+                }
+            }
+
+            return unifiedPath.ToString();
+        }
+
         public Attribute GetAttribute(string name)
         {
             _attrsLock.EnterReadLock();
@@ -147,7 +171,7 @@ namespace Viewer.Data
 
         public IEntity ChangePath(string path)
         {
-            Path = path;
+            Path = UnifyPath(path);
             return this;
         }
 

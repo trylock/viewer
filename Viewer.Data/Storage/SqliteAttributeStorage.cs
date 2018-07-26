@@ -118,16 +118,18 @@ namespace Viewer.Data.Storage
 
         public void Move(string oldPath, string newPath)
         {
-            MoveFile(oldPath, newPath);
+            MoveFile(Entity.UnifyPath(oldPath), Entity.UnifyPath(newPath));
         }
 
         public void Remove(string path)
         {
-            RemoveFile(path);
+            RemoveFile(Entity.UnifyPath(path));
         }
 
         public void Touch(string path)
         {
+            path = Entity.UnifyPath(path);
+
             using (var query = new SQLiteCommand(Connection))
             {
                 query.CommandText = @"UPDATE files SET lastAccessTime = datetime('now') WHERE path = :path";

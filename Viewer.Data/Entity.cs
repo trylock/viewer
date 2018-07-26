@@ -97,7 +97,7 @@ namespace Viewer.Data
         {
         }
         
-        private static string UnifyPath(string path)
+        public static string UnifyPath(string path)
         {
             var unifiedPath = new StringBuilder();
             for (var i = 0; i < path.Length; ++i)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,8 +42,8 @@ namespace Viewer.Data.Storage
         /// <summary>
         /// Store attributes to a path.
         /// </summary>
-        /// <param name="attrs">Attributes to store in this file</param>
-        void Store(IEntity attrs);
+        /// <param name="entity">Attributes to store in this file</param>
+        void Store(IEntity entity);
 
         /// <summary>
         /// Permanently remove entity at given path
@@ -57,5 +57,21 @@ namespace Viewer.Data.Storage
         /// <param name="oldPath">Old path of an entity</param>
         /// <param name="newPath">New path to entity</param>
         void Move(string oldPath, string newPath);
+    }
+
+    public interface ICacheAttributeStorage : IAttributeStorage
+    {
+        /// <summary>
+        /// Update last access time of an entity to the current time.
+        /// Noop if there is no entity at <paramref name="path"/>.
+        /// </summary>
+        /// <param name="path">Path to an entity.</param>
+        void Touch(string path);
+
+        /// <summary>
+        /// Remove all entities with access time older than (NOW - <paramref name="threshold"/>)
+        /// </summary>
+        /// <param name="threshold"></param>
+        void Clean(TimeSpan threshold);
     }
 }

@@ -35,6 +35,7 @@ namespace Viewer.UI.Images
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
         private readonly IQueryFactory _queryFactory;
+        private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
@@ -87,7 +88,8 @@ namespace Viewer.UI.Images
             IClipboardService clipboard,
             IImageLoader imageLoader,
             IApplicationState state,
-            IQueryFactory queryFactory)
+            IQueryFactory queryFactory,
+            ILazyThumbnailFactory thumbnailFactory)
         {
             ViewLifetime = viewFactory.CreateExport();
             _fileSystem = fileSystem;
@@ -98,6 +100,7 @@ namespace Viewer.UI.Images
             _imageLoader = imageLoader;
             _state = state;
             _queryFactory = queryFactory;
+            _thumbnailFactory = thumbnailFactory;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
             
             View.ItemSize = _currentItemSize;
@@ -138,7 +141,7 @@ namespace Viewer.UI.Images
                     () => LoadQueryBlocking(query), 
                     _query.Cancellation.Token, 
                     TaskCreationOptions.LongRunning, 
-                    TaskScheduler.Current);
+                    TaskScheduler.Default);
                 await _loadTask;
                 View.UpdateItems();
             }   
@@ -188,11 +191,11 @@ namespace Viewer.UI.Images
         private void LoadQueryBlocking(IQuery query)
         {
             var directories = new HashSet<string>();
-
+            
             foreach (var entity in query)
             {
                 query.Cancellation.Token.ThrowIfCancellationRequested();
-                
+
                 // add the file to the result
                 var item = new FileView(entity, GetPhotoThumbnail(entity));
                 _waitingQueue.Add(item);
@@ -207,6 +210,7 @@ namespace Viewer.UI.Images
                 directories.Add(dirPath);
                 foreach (var dir in Directory.EnumerateDirectories(dirPath))
                 {
+                    query.Cancellation.Token.ThrowIfCancellationRequested();
                     _waitingQueue.Add(new DirectoryView(dir, GetDirectoryThumbnail(dir)));
                 }
             }
@@ -219,7 +223,7 @@ namespace Viewer.UI.Images
         /// <returns>Thumbnail</returns>
         private ILazyThumbnail GetPhotoThumbnail(IEntity item)
         {
-            return new PhotoThumbnail(_imageLoader, item);
+            return _thumbnailFactory.Create(item);
         }
 
         /// <summary>

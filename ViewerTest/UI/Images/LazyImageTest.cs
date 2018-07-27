@@ -19,6 +19,7 @@ namespace ViewerTest.UI.Images
         private IEntity _entity;
         private Size _thumbnailSize;
         private Mock<IImageLoader> _imageLoader;
+        private Mock<IThumbnailGenerator> _thumbnailGenerator;
         private PhotoThumbnail _thumbnail;
 
         [TestInitialize]
@@ -27,7 +28,8 @@ namespace ViewerTest.UI.Images
             _entity = new Entity("test");
             _thumbnailSize = new Size(100, 100);
             _imageLoader = new Mock<IImageLoader>();
-            _thumbnail = new PhotoThumbnail(_imageLoader.Object, _entity);
+            _thumbnailGenerator = new Mock<IThumbnailGenerator>();
+            _thumbnail = new PhotoThumbnail(_imageLoader.Object, _thumbnailGenerator.Object, _entity);
         }
 
         [TestMethod]
@@ -36,7 +38,7 @@ namespace ViewerTest.UI.Images
             var image = _thumbnail.GetCurrent(_thumbnailSize);
             image = _thumbnail.GetCurrent(_thumbnailSize);
 
-            _imageLoader.Verify(mock => mock.LoadThumbnailAsync(_entity, _thumbnailSize), Times.Once);
+            _imageLoader.Verify(mock => mock.LoadThumbnailAsync(_entity), Times.Once);
         }
 
         [TestMethod]
@@ -45,13 +47,17 @@ namespace ViewerTest.UI.Images
             var image = new Bitmap(1, 1);
             var task = Task.FromResult((Image) image);
             _imageLoader
-                .Setup(mock => mock.LoadThumbnailAsync(_entity, _thumbnailSize))
+                .Setup(mock => mock.LoadThumbnailAsync(_entity))
                 .Returns(task);
+            _thumbnailGenerator
+                .Setup(mock => mock.GetThumbnail(image, _thumbnailSize))
+                .Returns(image);
 
             var current = _thumbnail.GetCurrent(_thumbnailSize);
-            
+            current = _thumbnail.GetCurrent(_thumbnailSize);
+
             Assert.AreEqual(image, current);
-            _imageLoader.Verify(mock => mock.LoadThumbnailAsync(_entity, _thumbnailSize), Times.Once);
+            _imageLoader.Verify(mock => mock.LoadThumbnailAsync(_entity), Times.Once);
         }
         
         [TestMethod]
@@ -60,13 +66,14 @@ namespace ViewerTest.UI.Images
             var image1 = new Bitmap(1, 1);
             var image2 = new Bitmap(1, 1);
             _imageLoader
-                .Setup(mock => mock.LoadThumbnailAsync(_entity, _thumbnailSize))
+                .Setup(mock => mock.LoadThumbnailAsync(_entity))
                 .Returns(Task.FromResult((Image)image1));
             _imageLoader
-                .Setup(mock => mock.LoadThumbnailAsync(_entity, new Size(200, 200)))
+                .Setup(mock => mock.LoadThumbnailAsync(_entity))
                 .Returns(Task.FromResult((Image)image2));
 
             var current = _thumbnail.GetCurrent(_thumbnailSize);
+            current = _thumbnail.GetCurrent(_thumbnailSize);
             Assert.AreEqual(image1, current);
             _thumbnailSize = new Size(200, 200);
             Assert.AreEqual(image1, current);

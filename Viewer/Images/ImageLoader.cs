@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -6,13 +6,16 @@ using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
 using Viewer.IO;
+using Image = System.Drawing.Image;
 
 namespace Viewer.Images
 {
@@ -34,15 +37,21 @@ namespace Viewer.Images
         Image LoadImage(IEntity entity);
 
         /// <summary>
-        /// Load thumbnail asynchronously.
-        /// This method is thread-safe.
+        /// Load embeded thumbnail asynchronously.
+        /// The thumbnail is loaded in its original size.
         /// </summary>
         /// <param name="entity">Entity to load</param>
-        /// <param name="thumbnailAreaSize">Area for the thumbnail</param>
-        /// <returns>Task which loads the thumbnail</returns>
-        Task<Image> LoadThumbnailAsync(IEntity entity, Size thumbnailAreaSize);
-    }
+        /// <returns>Task which loads the thumbnail. The task will return null if there is no thumbnail.</returns>
+        Task<Image> LoadThumbnailAsync(IEntity entity);
 
+        /// <summary>
+        /// Load the whole image asynchronously.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns>Task which loads the image</returns>
+        Task<Image> LoadImageAsync(IEntity entity);
+    }
+    
     [Export(typeof(IImageLoader))]
     public class ImageLoader : IImageLoader
     {
@@ -68,14 +77,12 @@ namespace Viewer.Images
             RotateFlipType.Rotate270FlipX,      // right bottom
             RotateFlipType.Rotate270FlipNone,   // left bottom
         };
-
-        private readonly IThumbnailGenerator _thumbnailGenerator;
+        
         private readonly IFileSystem _fileSystem;
 
         [ImportingConstructor]
-        public ImageLoader(IThumbnailGenerator generator, IFileSystem fileSystem)
+        public ImageLoader(IFileSystem fileSystem)
         {
-            _thumbnailGenerator = generator;
             _fileSystem = fileSystem;
 
             var loaderThread = new Thread(ThumbnailLoaderThread)
@@ -92,7 +99,7 @@ namespace Viewer.Images
         /// <returns>Orientation of the entity or 0</returns>
         private static int GetOrientation(IEntity entity)
         {
-            var orientationAttr = entity.GetAttribute(OrientationAttrName)?.Value as IntValue;
+            var orientationAttr = entity.GetValue<IntValue>(OrientationAttrName);
             return orientationAttr?.Value ?? 0;
         }
 
@@ -112,31 +119,17 @@ namespace Viewer.Images
             return _orientationFixTransform[orientation];
         }
 
-        /// <summary>
-        /// Fix image orientation based on the orientation attribute (loaded from the exif orientation tag)
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="image"></param>
-        private void FixImageOrientation(IEntity entity, Image image)
-        {
-            var fix = GetTransformation(entity);
-            if (fix != RotateFlipType.RotateNoneFlipNone)
-            {
-                image.RotateFlip(fix);
-            }
-        }
-
         public Size GetImageSize(IEntity entity)
         {
-            var widthAttr = entity.GetAttribute(WidthAttrName);
-            var heightAttr = entity.GetAttribute(HeightAttrName);
+            var widthAttr = entity.GetValue<IntValue>(WidthAttrName);
+            var heightAttr = entity.GetValue<IntValue>(HeightAttrName);
             if (widthAttr == null || heightAttr == null)
             {
                 return new Size(1, 1);
             }
 
-            var width = (widthAttr.Value as IntValue)?.Value ?? 0;
-            var height = (heightAttr.Value as IntValue)?.Value ?? 0;
+            var width = widthAttr.Value ?? 0;
+            var height = heightAttr.Value ?? 0;
             var orientation = GetOrientation(entity);
             return orientation < 5 ? 
                 new Size(width, height) : 
@@ -145,36 +138,12 @@ namespace Viewer.Images
 
         public Image LoadImage(IEntity entity)
         {
-            var image = Image.FromStream(new MemoryStream(_fileSystem.ReadAllBytes(entity.Path)));
-            FixImageOrientation(entity, image);
+            var orientation = GetTransformation(entity);
+            var image = DecodeImage(new MemoryStream(_fileSystem.ReadAllBytes(entity.Path)), orientation);
             return image;
         }
 
-        public async Task<Image> LoadThumbnailAsync(IEntity entity, Size thumbnailAreaSize)
-        {
-            var thumbnail = await LoadEmbeddedThumbnail(entity, thumbnailAreaSize);
-            if (thumbnail == null)
-            {
-                thumbnail = await LoadNativeThumbnail(entity, thumbnailAreaSize);
-            }
-
-            return thumbnail;
-        }
-
-        private Image LoadThumbnail(Stream input, RotateFlipType orientation, Size thumbnailAreaSize)
-        {
-            using (var image = Image.FromStream(input))
-            {
-                if (orientation != RotateFlipType.RotateNoneFlipNone)
-                {
-                    image.RotateFlip(orientation);
-                }
-
-                return _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize);
-            }
-        }
-
-        private Task<Image> LoadEmbeddedThumbnail(IEntity entity, Size thumbnailAreaSize)
+        public Task<Image> LoadThumbnailAsync(IEntity entity)
         {
             var orientation = GetTransformation(entity);
             var thumbnail = entity.GetValue<ImageValue>(ThumbnailAttrName);
@@ -182,33 +151,42 @@ namespace Viewer.Images
             {
                 return Task.FromResult<Image>(null);
             }
-            return Task.Run(() => LoadThumbnail(new MemoryStream(thumbnail.Value), orientation, thumbnailAreaSize));
+            return Task.Run(() => DecodeImage(new MemoryStream(thumbnail.Value), orientation));
         }
 
-        private Task<Image> LoadNativeThumbnail(IEntity entity, Size thumbnailAreaSize)
+        public Task<Image> LoadImageAsync(IEntity entity)
         {
-            var request = new ThumbnailRequest(entity, thumbnailAreaSize, GetTransformation(entity));
+            var request = new LoadRequest(entity, GetTransformation(entity));
             _requests.Push(request);
             _requestCount.Release();
             return request.TaskCompletion.Task;
         }
 
-        private class ThumbnailRequest
+        private Image DecodeImage(Stream input, RotateFlipType orientation)
+        {
+            var image = Image.FromStream(input);
+            if (orientation != RotateFlipType.RotateNoneFlipNone)
+            {
+                image.RotateFlip(orientation);
+            }
+
+            return image;
+        }
+
+        private class LoadRequest
         {
             public TaskCompletionSource<Image> TaskCompletion { get; } = new TaskCompletionSource<Image>();
             public IEntity Entity { get; }
-            public Size ThumbnailAreaSize { get; }
             public RotateFlipType Orientation { get; }
 
-            public ThumbnailRequest(IEntity entity, Size thumbnailAreaSize, RotateFlipType orientation)
+            public LoadRequest(IEntity entity, RotateFlipType orientation)
             {
                 Entity = entity;
-                ThumbnailAreaSize = thumbnailAreaSize;
                 Orientation = orientation;
             }
         }
 
-        private readonly ConcurrentStack<ThumbnailRequest> _requests = new ConcurrentStack<ThumbnailRequest>();
+        private readonly ConcurrentStack<LoadRequest> _requests = new ConcurrentStack<LoadRequest>();
         private readonly SemaphoreSlim _requestCount = new SemaphoreSlim(0);
 
         private void ThumbnailLoaderThread()
@@ -221,12 +199,10 @@ namespace Viewer.Images
                 {
                     continue; // this should never happen
                 }
-
+                
                 // load the original image
-                var thumbnail = LoadThumbnail(
-                    new FileStream(request.Entity.Path, FileMode.Open, FileAccess.Read),
-                    request.Orientation,
-                    request.ThumbnailAreaSize);
+                var input = new MemoryStream(_fileSystem.ReadAllBytes(request.Entity.Path));
+                var thumbnail = DecodeImage(input, request.Orientation);
                 request.TaskCompletion.SetResult(thumbnail);
             }
         }

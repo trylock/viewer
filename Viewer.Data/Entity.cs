@@ -33,6 +33,14 @@ namespace Viewer.Data
         Attribute GetAttribute(string name);
 
         /// <summary>
+        /// Get value of an attribute named <paramref name="name"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of the value</typeparam>
+        /// <param name="name">Name of the attribute</param>
+        /// <returns>Attribute value or null if there is no such attribute or its type is not T</returns>
+        T GetValue<T>(string name) where T : BaseValue;
+
+        /// <summary>
         /// Set attribute value.
         /// It is thread-safe.
         /// </summary>
@@ -137,6 +145,11 @@ namespace Viewer.Data
             {
                 _attrsLock.ExitReadLock();
             }
+        }
+
+        public T GetValue<T>(string name) where T : BaseValue
+        {
+            return GetAttribute(name)?.Value as T;
         }
         
         public IEntity SetAttribute(Attribute attr)

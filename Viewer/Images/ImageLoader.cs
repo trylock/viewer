@@ -177,7 +177,7 @@ namespace Viewer.Images
         private Task<Image> LoadEmbeddedThumbnail(IEntity entity, Size thumbnailAreaSize)
         {
             var orientation = GetTransformation(entity);
-            var thumbnail = entity.GetAttribute(ThumbnailAttrName)?.Value as ImageValue;
+            var thumbnail = entity.GetValue<ImageValue>(ThumbnailAttrName);
             if (thumbnail == null)
             {
                 return Task.FromResult<Image>(null);

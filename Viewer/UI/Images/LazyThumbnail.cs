@@ -18,6 +18,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Returns currently loaded thumbnail or null if there is none.
         /// This will start loading a thumbnail if a better thumbnail is available.
+        /// This method is non-blocking. 
         /// </summary>
         /// <param name="thumbnailAreaSize">Size of the area for this thumbnail.</param>
         Image GetCurrent(Size thumbnailAreaSize);
@@ -85,21 +86,14 @@ namespace Viewer.UI.Images
 
     public class PhotoThumbnail : ILazyThumbnail
     {
-        private enum State
-        {
-            Default,
-            Embedded,
-            Native
-        }
-
         private readonly IImageLoader _imageLoader;
         private readonly IThumbnailGenerator _thumbnailGenerator;
         private readonly IEntity _entity;
         private Image _current = Default;
         private Task<(Image Picture, bool IsSufficient)> _loading = Task.FromResult((Default, false));
         private Size _loadingThumbnailAreaSize;
-        private State _state = State.Default;
-        
+        private bool _isInitialized = false;
+
         public static Image Default { get; } = Resources.DefaultThumbnail;
 
         public Image GetCurrent(Size thumbnailAreaSize)
@@ -108,38 +102,31 @@ namespace Viewer.UI.Images
             if (_loadingThumbnailAreaSize.Width < thumbnailAreaSize.Width &&
                 _loadingThumbnailAreaSize.Height < thumbnailAreaSize.Height)
             {
-                if (_loading.Status != TaskStatus.RanToCompletion)
-                {
-                    DisposeLoading();
-                }
-                _state = State.Default;
+                Invalidate();
             }
 
             _loadingThumbnailAreaSize = thumbnailAreaSize;
 
             // start loading a new thumbnail if necessary
-            if (_state == State.Default)
+            if (!_isInitialized)
             {
                 _loading = LoadEmbededThumbnail(thumbnailAreaSize);
-                _state = State.Embedded;
+                _isInitialized = true;
             }
-            else if (_state == State.Embedded ||
-                     _state == State.Native)
-            {
-                if (_loading.Status == TaskStatus.RanToCompletion)
-                {
-                    if (_loading.Result.Picture != null && 
-                        _loading.Result.Picture != _current)
-                    {
-                        DisposeCurrent();
-                        _current = _loading.Result.Picture;
-                    }
 
-                    if (!_loading.Result.IsSufficient)
-                    {
-                        _loading = LoadNativeThumbnail(thumbnailAreaSize);
-                        _state = State.Native;
-                    }
+            // if the loading has finished, replace current thumbnail
+            if (_loading.Status == TaskStatus.RanToCompletion)
+            {
+                if (_loading.Result.Picture != null && 
+                    _loading.Result.Picture != _current)
+                {
+                    DisposeCurrent();
+                    _current = _loading.Result.Picture;
+                }
+
+                if (!_loading.Result.IsSufficient)
+                {
+                    _loading = LoadNativeThumbnail(thumbnailAreaSize);
                 }
             }
             
@@ -177,6 +164,16 @@ namespace Viewer.UI.Images
 
         public void Invalidate()
         {
+            var current = _current;
+            _loading.ContinueWith(p =>
+            {
+                if (p.Result.Picture != Default &&
+                    p.Result.Picture != current)
+                {
+                    p.Result.Picture?.Dispose();
+                }
+            });
+            _isInitialized = false;
         }
 
         public void Dispose()
@@ -196,7 +193,7 @@ namespace Viewer.UI.Images
 
         private void DisposeLoading()
         {
-            _loading?.ContinueWith(p =>
+            _loading.ContinueWith(p =>
             {
                 if (p.Result.Picture != Default)
                 {

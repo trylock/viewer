@@ -47,7 +47,7 @@ namespace Viewer.UI.Forms
 
         public object EditingControlFormattedValue
         {
-            get => Value.ToShortDateString();
+            get => Value.ToShortDateString() + " " + Value.ToShortTimeString();
             set
             {
                 if (value is string stringValue)

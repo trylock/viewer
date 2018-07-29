@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -31,7 +31,7 @@ namespace Viewer.UI.Query
         {
             if (persistString == typeof(QueryView).FullName)
             {
-                _editor.OpenNew();
+                return _editor.OpenNew();
             }
             else if (persistString.StartsWith(typeof(QueryView).FullName))
             {

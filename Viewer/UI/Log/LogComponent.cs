@@ -36,6 +36,11 @@ namespace Viewer.UI.Log
             app.AddViewAction(Name, ShowLog);
         }
 
+        public IDockContent Deserialize(string persistString)
+        {
+            return null;
+        }
+
         private void ShowLog()
         {
             if (_log == null)

@@ -50,6 +50,7 @@ namespace Viewer.UI.Attributes
         public event EventHandler<FilterEventArgs> FilterAttributes;
         
         public List<AttributeGroup> Attributes { get; set; } = new List<AttributeGroup>();
+        public string Id { get; set; }
 
         private bool _suspendUpdateEvent = false;
 
@@ -323,6 +324,15 @@ namespace Viewer.UI.Attributes
                 e.SuppressKeyPress = true;
                 SearchTextBox.Text = ""; // reset the filter
             }
+        }
+
+        protected override string GetPersistString()
+        {
+            if (Id != null)
+            {
+                return base.GetPersistString() + ";" + Id;
+            }
+            return base.GetPersistString();
         }
     }
 }

@@ -25,13 +25,7 @@ namespace Viewer.UI.Query
         protected override ExportLifetimeContext<IQueryView> ViewLifetime { get; }
 
         private bool _isUnsaved = false;
-
-        /// <summary>
-        /// Full path to a file which contains this query or
-        /// null if there is no such file.
-        /// </summary>
-        public string FullPath { get; private set; }
-
+        
         [ImportingConstructor]
         public QueryPresenter(
             ExportFactory<IQueryView> viewFactory, 
@@ -58,10 +52,10 @@ namespace Viewer.UI.Query
         /// <param name="content">Query</param>
         public void SetContent(string path, string content)
         {
-            FullPath = path;
-            if (FullPath != null)
+            View.FullPath = path;
+            if (View.FullPath != null)
             {
-                View.Text = Path.GetFileName(FullPath);
+                View.Text = Path.GetFileName(View.FullPath);
             }
 
             View.Query = content;
@@ -100,10 +94,10 @@ namespace Viewer.UI.Query
             }
 
             // this query is not saved in a file
-            if (FullPath == null)
+            if (View.FullPath == null)
             {
-                FullPath = View.PickFileForWrite();
-                if (FullPath == null)
+                View.FullPath = View.PickFileForWrite();
+                if (View.FullPath == null)
                 {
                     // user has not picked a file
                     return;
@@ -113,7 +107,7 @@ namespace Viewer.UI.Query
             // save the query to its file
             try
             {
-                using (var stream = new FileStream(FullPath, FileMode.Create, FileAccess.Write))
+                using (var stream = new FileStream(View.FullPath, FileMode.Create, FileAccess.Write))
                 {
                     var data = Encoding.UTF8.GetBytes(View.Query);
                     await stream.WriteAsync(data, 0, data.Length);
@@ -123,15 +117,15 @@ namespace Viewer.UI.Query
             }
             catch (UnauthorizedAccessException)
             {
-                _dialogErrorView.UnauthorizedAccess(FullPath);
+                _dialogErrorView.UnauthorizedAccess(View.FullPath);
             }
             catch (SecurityException)
             {
-                _dialogErrorView.UnauthorizedAccess(FullPath);
+                _dialogErrorView.UnauthorizedAccess(View.FullPath);
             }
             catch (DirectoryNotFoundException)
             {
-                _dialogErrorView.FileNotFound(FullPath);
+                _dialogErrorView.FileNotFound(View.FullPath);
             }
         }
 

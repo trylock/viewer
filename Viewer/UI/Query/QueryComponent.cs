@@ -24,9 +24,27 @@ namespace Viewer.UI.Query
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction("Query", _editor.OpenNew);
+            app.AddViewAction("Query", () => _editor.OpenNew());
+        }
 
-            _editor.OpenNew();
+        public IDockContent Deserialize(string persistString)
+        {
+            if (persistString == typeof(QueryView).FullName)
+            {
+                _editor.OpenNew();
+            }
+            else if (persistString.StartsWith(typeof(QueryView).FullName))
+            {
+                var parts = persistString.Split(';');
+                if (parts.Length < 2)
+                {
+                    return null;
+                }
+
+                var path = parts[1];
+                return _editor.OpenAsync(path).Result;
+            }
+            return null;
         }
     }
 }

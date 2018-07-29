@@ -105,6 +105,12 @@ namespace Viewer.UI.Attributes
         List<AttributeGroup> Attributes { get; set; }
 
         /// <summary>
+        /// Identification string of this view (i.e. "exif" or "attributes").
+        /// This is used for identification during deserialization.
+        /// </summary>
+        string Id { get; set; }
+
+        /// <summary>
         /// Update all attributes
         /// </summary>
         void UpdateAttributes();

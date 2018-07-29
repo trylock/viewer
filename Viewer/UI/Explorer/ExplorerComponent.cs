@@ -24,12 +24,20 @@ namespace Viewer.UI.Explorer
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction(Resources.ExplorerWindowName, ShowExplorer);
-
-            ShowExplorer();
+            app.AddViewAction(Resources.ExplorerWindowName, () => ShowExplorer());
         }
 
-        private void ShowExplorer()
+        public IDockContent Deserialize(string persistString)
+        {
+            if (persistString == typeof(DirectoryTreeView).FullName)
+            {
+                return ShowExplorer();
+            }
+
+            return null;
+        }
+
+        private IDockContent ShowExplorer()
         {
             if (_explorer == null)
             {
@@ -46,6 +54,8 @@ namespace Viewer.UI.Explorer
             {
                 _explorer.Value.View.EnsureVisible();
             }
+
+            return _explorer.Value.View;
         }
     }
 }

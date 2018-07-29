@@ -34,6 +34,11 @@ namespace Viewer.UI.Images
         {
         }
 
+        public IDockContent Deserialize(string persistString)
+        {
+            return null;
+        }
+
         private void ShowImages(IQuery query)
         {
             if (_images == null)

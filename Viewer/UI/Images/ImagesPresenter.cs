@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -29,6 +29,7 @@ namespace Viewer.UI.Images
     {
         private readonly IFileSystem _fileSystem;
         private readonly IFileSystemErrorView _dialogView;
+        private readonly ISystemExplorer _explorer;
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
@@ -185,7 +186,7 @@ namespace Viewer.UI.Images
                 View.Items.Clear();
             }
         }
-
+        
         /// <summary>
         /// Load entities from the query and put them to a waiting queue.
         /// </summary>
@@ -193,7 +194,7 @@ namespace Viewer.UI.Images
         private void LoadQueryBlocking(IQuery query)
         {
             var directories = new HashSet<string>();
-            
+
             foreach (var entity in query)
             {
                 query.Cancellation.Token.ThrowIfCancellationRequested();

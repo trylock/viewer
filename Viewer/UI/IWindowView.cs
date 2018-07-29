@@ -7,7 +7,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI
 {
-    public interface IWindowView 
+    public interface IWindowView : IDockContent
     {
         /// <summary>
         /// Event called after the view closed.

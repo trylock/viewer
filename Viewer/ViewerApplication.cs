@@ -61,10 +61,38 @@ namespace Viewer
         
         public void InitializeLayout()
         {
+            // invoke startup event
             foreach (var component in _components)
             {
                 component.OnStartup(this);
             }
+
+            // initialize layout
+            try
+            {
+                using (var input = new FileStream(Resources.LayoutFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    _appForm.Panel.LoadFromXml(input, Deserialize);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                // configuration file is missing
+            }
+        }
+
+        private IDockContent Deserialize(string persistString)
+        {
+            foreach (var component in _components)
+            {
+                var content = component.Deserialize(persistString);
+                if (content != null)
+                {
+                    return content;
+                }
+            }
+
+            return null;
         }
 
         public void AddViewAction(string name, Action action)

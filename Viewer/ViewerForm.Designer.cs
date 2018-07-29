@@ -43,21 +43,22 @@
             this.ViewMenuItem});
             this.ViewerMenu.Location = new System.Drawing.Point(0, 0);
             this.ViewerMenu.Name = "ViewerMenu";
+            this.ViewerMenu.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
             this.ViewerMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ViewerMenu.Size = new System.Drawing.Size(1000, 28);
+            this.ViewerMenu.Size = new System.Drawing.Size(750, 24);
             this.ViewerMenu.TabIndex = 1;
             this.ViewerMenu.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // ViewMenuItem
             // 
             this.ViewMenuItem.Name = "ViewMenuItem";
-            this.ViewMenuItem.Size = new System.Drawing.Size(53, 24);
+            this.ViewMenuItem.Size = new System.Drawing.Size(44, 20);
             this.ViewMenuItem.Text = "View";
             // 
             // FileDialog
@@ -66,14 +67,17 @@
             // 
             // ViewerForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AllowDrop = true;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1000, 498);
+            this.ClientSize = new System.Drawing.Size(750, 405);
             this.Controls.Add(this.ViewerMenu);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.ViewerMenu;
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ViewerForm";
             this.Text = "Viewer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ViewerForm_FormClosing);
             this.Resize += new System.EventHandler(this.ViewerForm_Resize);
             this.ViewerMenu.ResumeLayout(false);
             this.ViewerMenu.PerformLayout();

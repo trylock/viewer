@@ -50,7 +50,13 @@ namespace Viewer.UI.Query
         /// Event called when user requests to open a new query
         /// </summary>
         event EventHandler<OpenQueryEventArgs> OpenQuery;
-        
+
+        /// <summary>
+        /// Full path to a file which contains this query or
+        /// null if there is no such file.
+        /// </summary>
+        string FullPath { get; set; }
+
         /// <summary>
         /// Input query
         /// </summary>

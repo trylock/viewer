@@ -21,12 +21,13 @@ namespace Viewer.UI.Query
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <returns>Task completed when the editor window opens</returns>
-        Task OpenAsync(string path);
+        Task<IDockContent> OpenAsync(string path);
 
         /// <summary>
         /// Open new empty editor window
         /// </summary>
-        void OpenNew();
+        /// <returns>Opened dock content</returns>
+        IDockContent OpenNew();
 
         /// <summary>
         /// Close all editor windows
@@ -57,15 +58,15 @@ namespace Viewer.UI.Query
         /// </summary>
         private readonly List<ExportLifetimeContext<QueryPresenter>> _windows = new List<ExportLifetimeContext<QueryPresenter>>();
 
-        public async Task OpenAsync(string path)
+        public async Task<IDockContent> OpenAsync(string path)
         {
             // don't open a new window, if an window with this file is opened already
             var window = _windows.Find(editor => 
-                StringComparer.CurrentCultureIgnoreCase.Compare(editor.Value.FullPath, path) == 0);
+                StringComparer.CurrentCultureIgnoreCase.Compare(editor.Value.View.FullPath, path) == 0);
             if (window != null)
             {
                 window.Value.View.EnsureVisible();
-                return;
+                return window.Value.View;
             }
 
             // otherwise load the file and show it in a new window
@@ -74,6 +75,7 @@ namespace Viewer.UI.Query
                 var data = await _fileSystem.ReadToEndAsync(path);
                 var editor = OpenWindow();
                 editor.SetContent(path, data);
+                return editor.View;
             }
             catch (UnauthorizedAccessException)
             {
@@ -87,11 +89,13 @@ namespace Viewer.UI.Query
             {
                 _dialogView.FileNotFound(path);
             }
+
+            return null;
         }
 
-        public void OpenNew()
+        public IDockContent OpenNew()
         {
-            OpenWindow();
+            return OpenWindow().View;
         }
 
         public void CloseAll()

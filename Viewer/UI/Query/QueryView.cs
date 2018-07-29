@@ -52,6 +52,7 @@ namespace Viewer.UI.Query
         public event EventHandler QueryChanged;
         public event EventHandler SaveQuery;
         public event EventHandler<OpenQueryEventArgs> OpenQuery;
+        public string FullPath { get; set; }
 
         public string Query
         {
@@ -120,6 +121,15 @@ namespace Viewer.UI.Query
         private void QueryTextBox_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Copy;
+        }
+
+        protected override string GetPersistString()
+        {
+            if (FullPath != null)
+            {
+                return base.GetPersistString() + ";" + FullPath;
+            }
+            return base.GetPersistString();
         }
     }
 }

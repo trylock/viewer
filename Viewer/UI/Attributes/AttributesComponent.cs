@@ -12,6 +12,9 @@ namespace Viewer.UI.Attributes
     [Export(typeof(IComponent))]
     public class AttributesComponent : IComponent
     {
+        private const string AttributesId = "attributes";
+        private const string ExifId = "exif";
+
         private readonly ExportFactory<AttributesPresenter> _attributesFactory;
 
         private ExportLifetimeContext<AttributesPresenter> _attributes;
@@ -26,15 +29,25 @@ namespace Viewer.UI.Attributes
         public void OnStartup(IViewerApplication app)
         {
             // add the component to the menu
-            app.AddViewAction("Attributes", ShowAttributes);
-            app.AddViewAction("Exif", ShowExif);
-
-            // create default panel
-            ShowAttributes();
-            ShowExif();
+            app.AddViewAction("Attributes", () => ShowAttributes());
+            app.AddViewAction("Exif", () => ShowExif());
         }
 
-        private void ShowAttributes()
+        public IDockContent Deserialize(string persistString)
+        {
+            if (persistString == typeof(AttributeTableView).FullName + ";" + AttributesId)
+            {
+                return ShowAttributes();
+            }
+            else if (persistString == typeof(AttributeTableView).FullName + ";" + ExifId)
+            {
+                return ShowExif();
+            }
+
+            return null;
+        }
+
+        private IDockContent ShowAttributes()
         {
             if (_attributes == null)
             {
@@ -42,6 +55,7 @@ namespace Viewer.UI.Attributes
                 _attributes.Value.AttributePredicate =
                     attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
                 _attributes.Value.IsEditingEnabled = true;
+                _attributes.Value.View.Id = AttributesId;
                 _attributes.Value.View.CloseView += (sender, args) =>
                 {
                     _attributes.Dispose();
@@ -53,9 +67,11 @@ namespace Viewer.UI.Attributes
             {
                 _attributes.Value.View.EnsureVisible();
             }
+
+            return _attributes.Value.View;
         }
 
-        private void ShowExif()
+        private IDockContent ShowExif()
         {
             if (_exif == null)
             {
@@ -63,6 +79,7 @@ namespace Viewer.UI.Attributes
                 _exif.Value.AttributePredicate = attr => attr.Data.Value.Type != TypeId.Image &&
                                                         (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
                 _exif.Value.IsEditingEnabled = false;
+                _exif.Value.View.Id = ExifId;
                 _exif.Value.View.CloseView += (sender, e) =>
                 {
                     _exif.Dispose();
@@ -74,6 +91,8 @@ namespace Viewer.UI.Attributes
             {
                 _exif.Value.View.EnsureVisible();
             }
+
+            return _exif.Value.View;
         }
     }
 }

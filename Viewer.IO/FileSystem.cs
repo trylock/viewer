@@ -157,6 +157,13 @@ namespace Viewer.IO
         byte[] ReadAllBytes(string path);
 
         /// <summary>
+        /// Read the whole file asynchronously
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        Task<string> ReadToEndAsync(string path);
+
+        /// <summary>
         /// Search given path for files and subdirectories.
         /// <paramref name="directoryCallback"/> will be called for each directory,
         /// <paramref name="fileCallback"/> will be called for each file.
@@ -257,6 +264,14 @@ namespace Viewer.IO
         public byte[] ReadAllBytes(string path)
         {
             return File.ReadAllBytes(path);
+        }
+
+        public async Task<string> ReadToEndAsync(string path)
+        {
+            using (var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, 4096, true)))
+            {
+                return await reader.ReadToEndAsync();
+            }
         }
 
         public void Search(string path, SearchCallback directoryCallback, SearchCallback fileCallback)

@@ -71,8 +71,7 @@ namespace Viewer.UI.Query
             // otherwise load the file and show it in a new window
             try
             {
-                var buffer = await Task.Run(() => _fileSystem.ReadAllBytes(path));
-                var data = Encoding.UTF8.GetString(buffer);
+                var data = await _fileSystem.ReadToEndAsync(path);
                 var editor = OpenWindow();
                 editor.SetContent(path, data);
             }

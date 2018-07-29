@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -42,7 +42,7 @@ namespace Viewer.UI.Query
                 }
 
                 var path = parts[1];
-                return _editor.OpenAsync(path).Result;
+                return _editor.Open(path);
             }
             return null;
         }

@@ -33,6 +33,7 @@ namespace Viewer.UI.Explorer
         private readonly IApplicationState _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IFileSystem _fileSystem;
+        private readonly ISystemExplorer _explorer;
         private readonly IClipboardService _clipboard;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ITaskLoader _taskLoader;
@@ -47,11 +48,13 @@ namespace Viewer.UI.Explorer
             ITaskLoader taskLoader,
             IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
+            ISystemExplorer explorer,
             IClipboardService clipboard)
         {
             _state = state;
             _queryFactory = queryFactory;
             _fileSystem = fileSystem;
+            _explorer = explorer;
             _clipboard = clipboard;
             _dialogView = dialogView;
             _taskLoader = taskLoader;
@@ -246,9 +249,7 @@ namespace Viewer.UI.Explorer
 
         private void View_OpenInExplorer(object sender, DirectoryEventArgs e)
         {
-            Process.Start(
-                Resources.ExplorerProcessName,
-                string.Format(Resources.ExplorerOpenFolderArguments, e.FullPath));
+            _explorer.OpenFile(e.FullPath);
         }
 
         private void View_CopyDirectory(object sender, DirectoryEventArgs e)

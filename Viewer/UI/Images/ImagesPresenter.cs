@@ -83,6 +83,7 @@ namespace Viewer.UI.Images
             ExportFactory<IImagesView> viewFactory,
             IFileSystem fileSystem,
             IFileSystemErrorView dialogView,
+            ISystemExplorer explorer,
             ISelection selection, 
             IEntityManager entityManager,
             IClipboardService clipboard,
@@ -94,6 +95,7 @@ namespace Viewer.UI.Images
             ViewLifetime = viewFactory.CreateExport();
             _fileSystem = fileSystem;
             _dialogView = dialogView;
+            _explorer = explorer;
             _selection = selection;
             _entityManager = entityManager;
             _clipboard = clipboard;
@@ -574,12 +576,7 @@ namespace Viewer.UI.Images
                 throw new ArgumentOutOfRangeException(nameof(e));
             }
 
-            var fullPath = View.Items[e.Index].FullPath;
-
-            Process.Start(
-                Resources.ExplorerProcessName,
-                string.Format(Resources.ExplorerOpenFolderArguments, fullPath)
-            );
+            _explorer.OpenFile(View.Items[e.Index].FullPath);
         }
         
         private async void View_CloseView(object sender, EventArgs eventArgs)

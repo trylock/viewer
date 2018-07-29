@@ -144,6 +144,7 @@
     <Compile Include="UI\Query\QueryView.Designer.cs">
       <DependentUpon>QueryView.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SystemExplorer.cs" />
     <Compile Include="UI\Tasks\TaskLoader.cs" />
     <Compile Include="UI\Tasks\ITaskLoader.cs" />
     <Compile Include="UI\Selection.cs" />

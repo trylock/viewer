@@ -40,6 +40,12 @@ namespace Viewer.UI.Query
             QueryTextBox.Margins[0].Width = 20;
         }
 
+        #region Drop view
+        
+        public event EventHandler<DragEventArgs> OnDrop;
+
+        #endregion
+
         #region View interface
 
         public event EventHandler RunQuery;
@@ -89,7 +95,7 @@ namespace Viewer.UI.Query
         {
             QueryChanged?.Invoke(sender, e);
         }
-
+        
         private void SaveButton_Click(object sender, EventArgs e)
         {
             SaveQuery?.Invoke(sender, e);
@@ -104,6 +110,16 @@ namespace Viewer.UI.Query
             }
 
             OpenQuery?.Invoke(sender, new OpenQueryEventArgs(OpenDialog.FileName));
+        }
+
+        private void QueryTextBox_DragDrop(object sender, DragEventArgs e)
+        {
+            OnDrop?.Invoke(sender, e);
+        }
+
+        private void QueryTextBox_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
         }
     }
 }

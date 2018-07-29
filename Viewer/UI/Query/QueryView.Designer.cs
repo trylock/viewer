@@ -50,23 +50,28 @@ namespace Viewer.UI.Query
             this.TablePanel.Controls.Add(this.ControlBarPanel, 0, 1);
             this.TablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TablePanel.Location = new System.Drawing.Point(0, 0);
+            this.TablePanel.Margin = new System.Windows.Forms.Padding(2);
             this.TablePanel.Name = "TablePanel";
             this.TablePanel.RowCount = 2;
             this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.TablePanel.Size = new System.Drawing.Size(627, 335);
+            this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            this.TablePanel.Size = new System.Drawing.Size(470, 272);
             this.TablePanel.TabIndex = 0;
             // 
             // QueryTextBox
             // 
+            this.QueryTextBox.AllowDrop = true;
             this.QueryTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.QueryTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.QueryTextBox.Location = new System.Drawing.Point(3, 3);
+            this.QueryTextBox.Location = new System.Drawing.Point(2, 2);
+            this.QueryTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.QueryTextBox.Name = "QueryTextBox";
             this.QueryTextBox.ScrollWidth = 200;
-            this.QueryTextBox.Size = new System.Drawing.Size(621, 294);
+            this.QueryTextBox.Size = new System.Drawing.Size(466, 240);
             this.QueryTextBox.TabIndex = 0;
             this.QueryTextBox.TextChanged += new System.EventHandler(this.QueryTextBox_TextChanged);
+            this.QueryTextBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.QueryTextBox_DragDrop);
+            this.QueryTextBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.QueryTextBox_DragEnter);
             this.QueryTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.QueryTextBox_KeyDown);
             // 
             // ControlBarPanel
@@ -75,9 +80,10 @@ namespace Viewer.UI.Query
             this.ControlBarPanel.Controls.Add(this.OpenButton);
             this.ControlBarPanel.Controls.Add(this.RunButton);
             this.ControlBarPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ControlBarPanel.Location = new System.Drawing.Point(3, 303);
+            this.ControlBarPanel.Location = new System.Drawing.Point(2, 246);
+            this.ControlBarPanel.Margin = new System.Windows.Forms.Padding(2);
             this.ControlBarPanel.Name = "ControlBarPanel";
-            this.ControlBarPanel.Size = new System.Drawing.Size(621, 29);
+            this.ControlBarPanel.Size = new System.Drawing.Size(466, 24);
             this.ControlBarPanel.TabIndex = 1;
             // 
             // SaveButton
@@ -86,9 +92,10 @@ namespace Viewer.UI.Query
             this.SaveButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.SaveButton.FlatAppearance.BorderSize = 0;
             this.SaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SaveButton.Location = new System.Drawing.Point(42, 0);
+            this.SaveButton.Location = new System.Drawing.Point(32, 0);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(2);
             this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(38, 29);
+            this.SaveButton.Size = new System.Drawing.Size(28, 24);
             this.SaveButton.TabIndex = 3;
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
@@ -100,9 +107,10 @@ namespace Viewer.UI.Query
             this.OpenButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.OpenButton.FlatAppearance.BorderSize = 0;
             this.OpenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenButton.Location = new System.Drawing.Point(3, 0);
+            this.OpenButton.Location = new System.Drawing.Point(2, 0);
+            this.OpenButton.Margin = new System.Windows.Forms.Padding(2);
             this.OpenButton.Name = "OpenButton";
-            this.OpenButton.Size = new System.Drawing.Size(33, 30);
+            this.OpenButton.Size = new System.Drawing.Size(25, 24);
             this.OpenButton.TabIndex = 2;
             this.OpenButton.UseVisualStyleBackColor = true;
             this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
@@ -115,9 +123,10 @@ namespace Viewer.UI.Query
             this.RunButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.RunButton.FlatAppearance.BorderSize = 0;
             this.RunButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RunButton.Location = new System.Drawing.Point(583, 0);
+            this.RunButton.Location = new System.Drawing.Point(437, 0);
+            this.RunButton.Margin = new System.Windows.Forms.Padding(2);
             this.RunButton.Name = "RunButton";
-            this.RunButton.Size = new System.Drawing.Size(35, 29);
+            this.RunButton.Size = new System.Drawing.Size(26, 24);
             this.RunButton.TabIndex = 1;
             this.RunButton.UseVisualStyleBackColor = true;
             this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
@@ -128,10 +137,11 @@ namespace Viewer.UI.Query
             // 
             // QueryView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(627, 335);
+            this.ClientSize = new System.Drawing.Size(470, 272);
             this.Controls.Add(this.TablePanel);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "QueryView";
             this.Text = "Query";
             this.TablePanel.ResumeLayout(false);

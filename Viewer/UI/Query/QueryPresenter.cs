@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Viewer.Query;
 using Viewer.UI.Explorer;
 
@@ -152,6 +153,23 @@ namespace Viewer.UI.Query
         private void View_QueryChanged(object sender, EventArgs e)
         {
             MarkUnsaved();
+        }
+
+        private async void View_OnDrop(object sender, DragEventArgs e)
+        {
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+            if (files == null)
+            {
+                return;
+            }
+
+            foreach (var file in files)
+            {
+                if (Path.GetExtension(file).ToLowerInvariant() == ".vql")
+                {
+                    await _editor.OpenAsync(file);
+                }
+            }
         }
     }
 }

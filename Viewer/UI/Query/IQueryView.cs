@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Viewer.UI.Query
 {
@@ -20,7 +21,15 @@ namespace Viewer.UI.Query
         }
     }
 
-    public interface IQueryView : IWindowView
+    public interface IDropView
+    {
+        /// <summary>
+        /// Event called when user drops something into the view
+        /// </summary>
+        event EventHandler<DragEventArgs> OnDrop;
+    }
+
+    public interface IQueryView : IDropView, IWindowView
     {
         /// <summary>
         /// Event called when user requests to run the query

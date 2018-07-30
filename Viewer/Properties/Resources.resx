@@ -262,4 +262,8 @@
   <data name="LayoutFilePath" xml:space="preserve">
     <value>Viewer.Layout.xml</value>
   </data>
+  <data name="Progess_Title" xml:space="preserve">
+    <value>{0} ({1}%)</value>
+    <comment>{0} is the task name, {1} is the progress percentage </comment>
+  </data>
 </root>

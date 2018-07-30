@@ -389,6 +389,15 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}%).
+        /// </summary>
+        internal static string Progess_Title {
+            get {
+                return ResourceManager.GetString("Progess_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}% complete.
         /// </summary>
         internal static string Progress_Label {

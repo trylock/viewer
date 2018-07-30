@@ -16,7 +16,12 @@ namespace Viewer.UI.Tasks
     public partial class TaskLoaderView : WindowView
     {
         public IProgress<ILoadingProgress> Progress => _controller;
-        
+
+        /// <summary>
+        /// Name of the task
+        /// </summary>
+        public string OperationName { get; set; }
+
         private readonly ProgressController _controller;
         private readonly CancellationTokenSource _cancellation;
 
@@ -65,6 +70,9 @@ namespace Viewer.UI.Tasks
             TaskProgressBar.Value = finishedCount;
             TaskNameLabel.Text = name;
             ProgressLabel.Text = string.Format(Resources.Progress_Label, progress);
+
+            // update the title
+            Text = string.Format(Resources.Progess_Title, OperationName, progress);
         }
 
         private void TaskLoaderView_FormClosing(object sender, FormClosingEventArgs e)

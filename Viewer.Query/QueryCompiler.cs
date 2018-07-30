@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -74,7 +74,8 @@ namespace Viewer.Query
 
         public IQuery Compile(IParseTree tree)
         {
-            return Visit(tree).Query;
+            var query = Visit(tree).Query;
+            return query.WithText(tree.GetText());
         }
 
         public CompilationResult Visit(IParseTree tree)

@@ -23,6 +23,11 @@ namespace Viewer.Query
     public interface IQuery : IEnumerable<IEntity>
     {
         /// <summary>
+        /// Textual representation of the query
+        /// </summary>
+        string Text { get; }
+
+        /// <summary>
         /// Current comparer to sort the query result
         /// </summary>
         IComparer<IEntity> Comparer { get; }
@@ -66,6 +71,13 @@ namespace Viewer.Query
         /// <param name="entities"></param>
         /// <returns>New query</returns>
         IQuery Intersect(IEnumerable<IEntity> entities);
+
+        /// <summary>
+        /// Create the same query with different textual representation
+        /// </summary>
+        /// <param name="text">Textual representation of this query</param>
+        /// <returns>New query with new textual representation</returns>
+        IQuery WithText(string text);
     }
 
     public interface IQueryFactory
@@ -149,13 +161,19 @@ namespace Viewer.Query
     public class Query : IQuery
     {
         private readonly IEnumerable<IEntity> _source;
-        
+
+        public string Text { get;}
         public IComparer<IEntity> Comparer { get; }
         public CancellationTokenSource Cancellation { get; }
 
-        public Query(IEnumerable<IEntity> source, IComparer<IEntity> comparer, CancellationTokenSource cancellation)
+        public Query(
+            IEnumerable<IEntity> source, 
+            IComparer<IEntity> comparer, 
+            string text,
+            CancellationTokenSource cancellation)
         {
             _source = source;
+            Text = text;
             Comparer = comparer;
             Cancellation = cancellation;
         }
@@ -172,27 +190,32 @@ namespace Viewer.Query
         
         public IQuery Where(Func<IEntity, bool> predicate)
         {
-            return new Query(_source.Where(predicate), Comparer, Cancellation);
+            return new Query(_source.Where(predicate), Comparer, Text, Cancellation);
         }
 
         public IQuery WithComparer(IComparer<IEntity> comparer)
         {
-            return new Query(_source, comparer, Cancellation);
+            return new Query(_source, comparer, Text, Cancellation);
         }
 
         public IQuery Except(IEnumerable<IEntity> entities)
         {
-            return new Query(_source.Except(entities), Comparer, Cancellation);
+            return new Query(_source.Except(entities), Comparer, Text, Cancellation);
         }
 
         public IQuery Union(IEnumerable<IEntity> entities)
         {
-            return new Query(_source.Union(entities), Comparer, Cancellation);
+            return new Query(_source.Union(entities), Comparer, Text, Cancellation);
         }
 
         public IQuery Intersect(IEnumerable<IEntity> entities)
         {
-            return new Query(_source.Intersect(entities), Comparer, Cancellation);
+            return new Query(_source.Intersect(entities), Comparer, Text, Cancellation);
+        }
+
+        public IQuery WithText(string text)
+        {
+            return new Query(_source, Comparer, text, Cancellation);
         }
     }
     
@@ -203,7 +226,9 @@ namespace Viewer.Query
         private readonly IFileSystem _fileSystem;
 
         [ImportingConstructor]
-        public QueryFactory(IEntityManager entities, IFileSystem fileSystem)
+        public QueryFactory(
+            IEntityManager entities, 
+            IFileSystem fileSystem)
         {
             _entities = entities;
             _fileSystem = fileSystem;
@@ -211,13 +236,21 @@ namespace Viewer.Query
 
         public IQuery CreateQuery()
         {
-            return new Query(Enumerable.Empty<IEntity>(), new EntityComparer(), new CancellationTokenSource());
+            return new Query(
+                Enumerable.Empty<IEntity>(), 
+                new EntityComparer(), 
+                "", 
+                new CancellationTokenSource());
         }
 
         public IQuery CreateQuery(string pattern)
         {
             var cancellation = new CancellationTokenSource();
-            return new Query(new EntitySource(_fileSystem, _entities, pattern, cancellation.Token), new EntityComparer(), cancellation);
+            return new Query(
+                new EntitySource(_fileSystem, _entities, pattern, cancellation.Token), 
+                new EntityComparer(), 
+                "SELECT \"" + pattern + "\"",
+                cancellation);
         }
     }
 }

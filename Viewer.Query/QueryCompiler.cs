@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -29,6 +29,13 @@ namespace Viewer.Query
         /// <param name="errorListener">Error reporter</param>
         /// <returns>Compiled query</returns>
         IQuery Compile(TextReader input, IErrorListener errorListener);
+
+        /// <summary>
+        /// Same as Compile(new StringReader(query), defaultQueryErrorListener)
+        /// </summary>
+        /// <param name="query">Query to compile</param>
+        /// <returns>Compiled query or null if there were errors during compilation</returns>
+        IQuery Compile(string query);
     }
 
     internal class CompilationResult
@@ -570,16 +577,18 @@ namespace Viewer.Query
     [Export(typeof(IQueryCompiler))]
     public class QueryCompiler : IQueryCompiler
     {
+        private readonly IErrorListener _queryErrorListener;
         private readonly IQueryFactory _queryFactory;
         private readonly IRuntime _runtime;
 
         public IQueryViewRepository Views { get; }
 
         [ImportingConstructor]
-        public QueryCompiler(IQueryFactory queryFactory, IRuntime runtime, IQueryViewRepository queryViewRepository)
+        public QueryCompiler(IQueryFactory queryFactory, IRuntime runtime, IQueryViewRepository queryViewRepository, IErrorListener errorListener)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;
+            _queryErrorListener = errorListener;
             Views = queryViewRepository;
         }
 
@@ -605,7 +614,7 @@ namespace Viewer.Query
             }
             catch (ParseCanceledException)
             {
-                // an error was reported already
+                // an error has been reported already
                 return null;
             }
             finally
@@ -614,6 +623,11 @@ namespace Viewer.Query
             }
 
             return result;
+        }
+
+        public IQuery Compile(string query)
+        {
+            return Compile(new StringReader(query), _queryErrorListener);
         }
     }
 }

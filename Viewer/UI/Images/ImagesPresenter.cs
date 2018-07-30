@@ -134,6 +134,7 @@ namespace Viewer.UI.Images
             _query = query;
             _waitingQueue = new ConcurrentSortedSet<IFileView>(new FileViewComparer(_query.Comparer));
 
+            View.Query = _query.Text;
             View.Items = new SortedList<IFileView>(_waitingQueue.Comparer);
             View.BeginLoading();
             View.BeginPolling(PollingRate);

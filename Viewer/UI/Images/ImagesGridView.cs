@@ -155,6 +155,8 @@ namespace Viewer.UI.Images
         public event EventHandler<RenameEventArgs> RenameItem;
         public event EventHandler<EntityEventArgs> BeginEditItemName;
         
+        public string Query { get; set; }
+
         public SortedList<IFileView> Items
         {
             get => GridView.Items;
@@ -340,6 +342,15 @@ namespace Viewer.UI.Images
             }
 
             OpenItemInExplorer?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
+        }
+
+        protected override string GetPersistString()
+        {
+            if (Query != null)
+            {
+                return base.GetPersistString() + ";" + Query;
+            }
+            return base.GetPersistString();
         }
     }
 }

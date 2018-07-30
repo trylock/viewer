@@ -17,15 +17,21 @@ namespace Viewer.UI.Images
     {
         private readonly IApplicationState _state;
         private readonly IQueryFactory _queryFactory;
+        private readonly IQueryCompiler _queryCompiler;
         private readonly ExportFactory<ImagesPresenter> _imagesFactory;
 
         private ExportLifetimeContext<ImagesPresenter> _images;
 
         [ImportingConstructor]
-        public ImagesComponent(IApplicationState state, IQueryFactory queryFactory, ExportFactory<ImagesPresenter> images)
+        public ImagesComponent(
+            IApplicationState state, 
+            IQueryFactory queryFactory, 
+            IQueryCompiler queryCompiler,
+            ExportFactory<ImagesPresenter> images)
         {
             _imagesFactory = images;
             _queryFactory = queryFactory;
+            _queryCompiler = queryCompiler;
             _state = state;
             _state.QueryExecuted += (sender, e) => ShowImages(e.Query);
         }
@@ -36,10 +42,28 @@ namespace Viewer.UI.Images
 
         public IDockContent Deserialize(string persistString)
         {
+            if (persistString.StartsWith(typeof(ImagesGridView).FullName))
+            {
+                var parts = persistString.Split(';');
+                if (parts.Length == 1)
+                {
+                    return ShowImages(_queryFactory.CreateQuery());
+                }
+                else if (parts.Length == 2)
+                {
+                    var queryText = parts[1];
+                    var query = _queryCompiler.Compile(new StringReader(queryText), new NullErrorListener());
+                    if (query == null)
+                    {
+                        return ShowImages(_queryFactory.CreateQuery());
+                    }
+                    return ShowImages(query);
+                }
+            }
             return null;
         }
 
-        private void ShowImages(IQuery query)
+        private IDockContent ShowImages(IQuery query)
         {
             if (_images == null)
             {
@@ -57,6 +81,8 @@ namespace Viewer.UI.Images
                 _images.Value.View.EnsureVisible();
                 _images.Value.LoadQueryAsync(query);
             }
+
+            return _images.Value.View;
         }
     }
 }

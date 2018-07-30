@@ -305,7 +305,12 @@ namespace Viewer.UI.Images
         /// Event called when user tries to open an item in system file explorer
         /// </summary>
         event EventHandler<EntityEventArgs> OpenItemInExplorer;
-        
+
+        /// <summary>
+        /// Textual representation of the query of this component
+        /// </summary>
+        string Query { get; set; }
+
         /// <summary>
         /// List of items to show 
         /// </summary>

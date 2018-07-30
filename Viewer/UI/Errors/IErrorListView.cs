@@ -4,29 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer.UI.Log
+namespace Viewer.UI.Errors
 {
     public class RetryEventArgs : EventArgs
     {
         /// <summary>
         /// Entry to retry
         /// </summary>
-        public LogEntry Entry { get; }
+        public ErrorListEntry Entry { get; }
 
-        public RetryEventArgs(LogEntry entry)
+        public RetryEventArgs(ErrorListEntry entry)
         {
             Entry = entry;
         }
     }
 
-    public interface ILogView : IWindowView
+    public interface IErrorListView : IWindowView
     {
         event EventHandler<RetryEventArgs> Retry;
 
         /// <summary>
         /// Entries in the log
         /// </summary>
-        IEnumerable<LogEntry> Entries { get; set; }
+        IEnumerable<ErrorListEntry> Entries { get; set; }
 
         /// <summary>
         /// Update all log entries in the view

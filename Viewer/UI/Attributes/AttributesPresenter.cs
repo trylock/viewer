@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Properties;
-using Viewer.UI.Log;
+using Viewer.UI.Errors;
 using Viewer.UI.Tasks;
 using Attribute = Viewer.Data.Attribute;
 
@@ -27,7 +27,7 @@ namespace Viewer.UI.Attributes
         private readonly IAttributeManager _attributes;
         private readonly IAttributeStorage _storage;
         private readonly IEntityManager _entityManager;
-        private readonly ILogger _log;
+        private readonly IErrorList _errorList;
 
         protected override ExportLifetimeContext<IAttributeView> ViewLifetime { get; }
 
@@ -52,11 +52,11 @@ namespace Viewer.UI.Attributes
             IAttributeManager attrManager,
             IAttributeStorage storage,
             IEntityManager entityManager,
-            ILogger log)
+            IErrorList errorList)
         {
             ViewLifetime = viewFactory.CreateExport();
             _taskLoader = taskLoader;
-            _log = log;
+            _errorList = errorList;
             _storage = storage;
             _attributes = attrManager;
             _entityManager = entityManager;
@@ -72,16 +72,16 @@ namespace Viewer.UI.Attributes
             _selection.Changed -= Selection_Changed;
         }
 
-        private void Log(string message, LogType type, Retry retry)
+        private void Report(string message, LogType type, Retry retry)
         {
-            var entry = new LogEntry
+            var entry = new ErrorListEntry
             {
                 Group = "Attributes",
                 Message = message,
                 Type = type,
                 RetryOperation = retry
             };
-            _log.Add(entry);
+            _errorList.Add(entry);
         }
 
         private static AttributeGroup CreateAddAttributeView()
@@ -238,12 +238,12 @@ namespace Viewer.UI.Attributes
                         }
                         catch (FileNotFoundException)
                         {
-                            Log($"Attribute file {entity.Path} was not found.", LogType.Error, null);
+                            Report($"Attribute file {entity.Path} was not found.", LogType.Error, null);
                         }
                         catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
                                                   e.GetType() == typeof(SecurityException))
                         {
-                            Log($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
+                            Report($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
                         }
                     }
                 }

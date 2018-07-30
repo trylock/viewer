@@ -8,24 +8,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer.UI.Log
+namespace Viewer.UI.Errors
 {
     [Export(typeof(IComponent))]
-    public class LogComponent : IComponent
+    public class ErrorListComponent : IComponent
     {
-        public const string Name = "Event Log";
+        public const string Name = "Error List";
 
-        private readonly ExportFactory<LogPresenter> _logFactory;
+        private readonly ExportFactory<ErrorListPresenter> _errorListFactory;
 
-        private ExportLifetimeContext<LogPresenter> _log;
+        private ExportLifetimeContext<ErrorListPresenter> _errorList;
 
         [ImportingConstructor]
-        public LogComponent(ExportFactory<LogPresenter> factory, ILog log)
+        public ErrorListComponent(ExportFactory<ErrorListPresenter> factory, IErrorList errorList)
         {
-            _logFactory = factory;
+            _errorListFactory = factory;
 
             var context = SynchronizationContext.Current;
-            log.EntryAdded += (sender, args) =>
+            errorList.EntryAdded += (sender, args) =>
             {
                 context.Post(state => ShowLog(), null);
             };
@@ -43,19 +43,19 @@ namespace Viewer.UI.Log
 
         private void ShowLog()
         {
-            if (_log == null)
+            if (_errorList == null)
             {
-                _log = _logFactory.CreateExport();
-                _log.Value.View.CloseView += (sender, e) =>
+                _errorList = _errorListFactory.CreateExport();
+                _errorList.Value.View.CloseView += (sender, e) =>
                 {
-                    _log.Dispose();
-                    _log = null;
+                    _errorList.Dispose();
+                    _errorList = null;
                 };
-                _log.Value.ShowView(Name, DockState.DockBottom);
+                _errorList.Value.ShowView(Name, DockState.DockBottom);
             }
             else
             {
-                _log.Value.View.EnsureVisible();
+                _errorList.Value.View.EnsureVisible();
             }
         }
     }

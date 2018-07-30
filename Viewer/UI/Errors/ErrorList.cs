@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Viewer.UI.Log
+namespace Viewer.UI.Errors
 {
     public enum LogType
     {
@@ -23,7 +23,7 @@ namespace Viewer.UI.Log
     /// </summary>
     public delegate void Retry();
 
-    public class LogEntry
+    public class ErrorListEntry
     {
         /// <summary>
         /// Type of the log entry
@@ -62,24 +62,15 @@ namespace Viewer.UI.Log
         /// <summary>
         /// Log entry
         /// </summary>
-        public LogEntry Entry { get; }
+        public ErrorListEntry Entry { get; }
 
-        public LogEventArgs(LogEntry entry)
+        public LogEventArgs(ErrorListEntry entry)
         {
             Entry = entry;
         }
     }
-
-    public interface ILogger
-    {
-        /// <summary>
-        /// Add a log entry to the log collection
-        /// </summary>
-        /// <param name="entry"></param>
-        void Add(LogEntry entry);
-    }
-
-    public interface ILog : ILogger, IEnumerable<LogEntry>
+    
+    public interface IErrorList : IEnumerable<ErrorListEntry>
     {
         /// <summary>
         /// Event called when a new entry has been added
@@ -92,10 +83,16 @@ namespace Viewer.UI.Log
         event EventHandler EntriesRemoved;
 
         /// <summary>
+        /// Add a log entry to the log collection
+        /// </summary>
+        /// <param name="entry"></param>
+        void Add(ErrorListEntry entry);
+
+        /// <summary>
         /// Remove a log entry from the collection
         /// </summary>
         /// <param name="entry"></param>
-        void Remove(LogEntry entry);
+        void Remove(ErrorListEntry entry);
 
         /// <summary>
         /// Remove all log entries from the collection
@@ -103,16 +100,15 @@ namespace Viewer.UI.Log
         void Clear();
     }
 
-    [Export(typeof(ILog))]
-    [Export(typeof(ILogger))]
-    public class Log : ILog
+    [Export(typeof(IErrorList))]
+    public class ErrorList : IErrorList
     {
-        private readonly List<LogEntry> _entries = new List<LogEntry>();
+        private readonly List<ErrorListEntry> _entries = new List<ErrorListEntry>();
 
         public event EventHandler<LogEventArgs> EntryAdded;
         public event EventHandler EntriesRemoved;
 
-        public void Add(LogEntry entry)
+        public void Add(ErrorListEntry entry)
         {
             lock (_entries)
             {
@@ -121,7 +117,7 @@ namespace Viewer.UI.Log
             EntryAdded?.Invoke(this, new LogEventArgs(entry));
         }
 
-        public void Remove(LogEntry entry)
+        public void Remove(ErrorListEntry entry)
         {
             lock (_entries)
             {
@@ -138,12 +134,12 @@ namespace Viewer.UI.Log
             EntriesRemoved?.Invoke(this, EventArgs.Empty);
         }
 
-        public IEnumerator<LogEntry> GetEnumerator()
+        public IEnumerator<ErrorListEntry> GetEnumerator()
         {
-            LogEntry[] buffer;
+            ErrorListEntry[] buffer;
             lock (_entries)
             {
-                buffer = new LogEntry[_entries.Count];
+                buffer = new ErrorListEntry[_entries.Count];
                 _entries.CopyTo(buffer, 0);
             }
 

@@ -10,7 +10,7 @@ using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.UI;
 using Viewer.UI.Attributes;
-using Viewer.UI.Log;
+using Viewer.UI.Errors;
 using ViewerTest.Data;
 
 namespace ViewerTest.UI.Attributes
@@ -19,7 +19,7 @@ namespace ViewerTest.UI.Attributes
     public class AttributesPresenterTest
     {
         private IAttributeStorage _storage;
-        private Mock<ILogger> _logger;
+        private Mock<IErrorList> _errorList;
         private Mock<ISelection> _selection;
         private Mock<IAttributeView> _view;
         private Mock<IAttributeManager> _attributeManager;
@@ -34,7 +34,7 @@ namespace ViewerTest.UI.Attributes
         {
             _storage = new MemoryAttributeStorage();
             _selection = new Mock<ISelection>();
-            _logger = new Mock<ILogger>();
+            _errorList = new Mock<IErrorList>();
             _attributeManager = new Mock<IAttributeManager>();
             _entityManager = new Mock<IEntityManager>();
 
@@ -47,7 +47,7 @@ namespace ViewerTest.UI.Attributes
             {
                 return new Tuple<IAttributeView, Action>(_view.Object, () => { });
             });
-            _presenter = new AttributesPresenter(viewFactory, null, _selection.Object, _attributeManager.Object, _storage, _entityManager.Object, _logger.Object);
+            _presenter = new AttributesPresenter(viewFactory, null, _selection.Object, _attributeManager.Object, _storage, _entityManager.Object, _errorList.Object);
         }
 
         [TestMethod]

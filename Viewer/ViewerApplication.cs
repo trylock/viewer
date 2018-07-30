@@ -19,7 +19,6 @@ using Viewer.UI;
 using Viewer.UI.Attributes;
 using Viewer.UI.Explorer;
 using Viewer.UI.Images;
-using Viewer.UI.Log;
 using Viewer.UI.Presentation;
 using Viewer.UI.Tasks;
 using WeifenLuo.WinFormsUI.Docking;

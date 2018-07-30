@@ -14,7 +14,6 @@ using Viewer.Data;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.Query;
-using Viewer.UI.Log;
 using Viewer.UI.Tasks;
 
 namespace Viewer.UI.Explorer
@@ -23,8 +22,6 @@ namespace Viewer.UI.Explorer
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class DirectoryTreePresenter : Presenter<IDirectoryTreeView>
     {
-        public const string LogGroupName = "FileSystem";
-
         /// <summary>
         /// Directory with at least one of these flags will be hidden.
         /// </summary>

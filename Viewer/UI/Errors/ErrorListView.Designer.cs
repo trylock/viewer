@@ -1,8 +1,8 @@
 ﻿using Viewer.UI.Forms;
 
-namespace Viewer.UI.Log
+namespace Viewer.UI.Errors
 {
-    partial class LogView
+    partial class ErrorListView
     {
         /// <summary> 
         /// Required designer variable.

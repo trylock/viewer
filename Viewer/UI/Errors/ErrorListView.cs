@@ -10,21 +10,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Properties;
+using Viewer.UI.Errors;
 using Viewer.UI.Forms;
 
-namespace Viewer.UI.Log
+namespace Viewer.UI.Errors
 {
-    [Export(typeof(ILogView))]
-    public partial class LogView : WindowView, ILogView
+    [Export(typeof(IErrorListView))]
+    public partial class ErrorListView : WindowView, IErrorListView
     {
-        private static Image[] _logTypeIcon =
+        private static readonly Image[] _logTypeIcon =
         {
             Resources.ErrorIcon,
             Resources.WarningIcon,
             Resources.MessageIcon
         };
         
-        public LogView()
+        public ErrorListView()
         {
             InitializeComponent();
         }
@@ -33,7 +34,7 @@ namespace Viewer.UI.Log
 
         public event EventHandler<RetryEventArgs> Retry;
 
-        public IEnumerable<LogEntry> Entries { get; set; } = Enumerable.Empty<LogEntry>();
+        public IEnumerable<ErrorListEntry> Entries { get; set; } = Enumerable.Empty<ErrorListEntry>();
 
         public void UpdateEntries()
         {

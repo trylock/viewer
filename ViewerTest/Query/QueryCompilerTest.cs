@@ -42,6 +42,9 @@ namespace ViewerTest.Query
             _query
                 .Setup(mock => mock.WithComparer(It.IsAny<IComparer<IEntity>>()))
                 .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.WithText(It.IsAny<string>()))
+                .Returns(_query.Object);
 
             _factory = new Mock<IQueryFactory>();
             _factory
@@ -52,7 +55,7 @@ namespace ViewerTest.Query
                 .Returns(_query.Object);
             
             _runtime = new Mock<IRuntime>();
-            _compiler = new QueryCompiler(_factory.Object, _runtime.Object, _queryViewRepository.Object);
+            _compiler = new QueryCompiler(_factory.Object, _runtime.Object, _queryViewRepository.Object, new NullErrorListener());
         }
 
         [TestMethod]

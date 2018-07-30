@@ -5,41 +5,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer.UI.Log
+namespace Viewer.UI.Errors
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class LogPresenter : Presenter<ILogView>
+    public class ErrorListPresenter : Presenter<IErrorListView>
     {
-        private readonly ILog _log;
+        private readonly IErrorList _errorList;
         
-        protected override ExportLifetimeContext<ILogView> ViewLifetime { get; }
+        protected override ExportLifetimeContext<IErrorListView> ViewLifetime { get; }
 
         [ImportingConstructor]
-        public LogPresenter(ExportFactory<ILogView> viewFactory, ILog log)
+        public ErrorListPresenter(ExportFactory<IErrorListView> viewFactory, IErrorList errorList)
         {
-            _log = log;
+            _errorList = errorList;
             ViewLifetime = viewFactory.CreateExport();
-            View.Entries = _log;
+            View.Entries = _errorList;
             View.UpdateEntries();
             SubscribeTo(View, "View");
-            
-            _log.EntryAdded += LogOnEntryAdded;
-            _log.EntriesRemoved += LogOnEntriesRemoved;
+
+            _errorList.EntryAdded += LogOnEntryAdded;
+            _errorList.EntriesRemoved += LogOnEntriesRemoved;
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            _log.EntryAdded -= LogOnEntryAdded;
-            _log.EntriesRemoved -= LogOnEntriesRemoved;
+            _errorList.EntryAdded -= LogOnEntryAdded;
+            _errorList.EntriesRemoved -= LogOnEntriesRemoved;
         }
 
         private void LogOnEntryAdded(object sender, LogEventArgs e)
         {
             View.BeginInvoke(new Action(() =>
             {
-                View.Entries = _log;
+                View.Entries = _errorList;
                 View.UpdateEntries();
                 View.EnsureVisible();
             }));
@@ -49,7 +49,7 @@ namespace Viewer.UI.Log
         {
             View.BeginInvoke(new Action(() =>
             {
-                View.Entries = _log;
+                View.Entries = _errorList;
                 View.UpdateEntries();
             }));
         }
@@ -57,7 +57,7 @@ namespace Viewer.UI.Log
         private void View_Retry(object sender, RetryEventArgs e)
         {
             var entry = e.Entry;
-            _log.Remove(entry);
+            _errorList.Remove(entry);
             entry.RetryOperation?.Invoke();
         }
     }

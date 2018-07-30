@@ -220,7 +220,7 @@ namespace Viewer.UI.Attributes
             var cancellation = new CancellationTokenSource();
             var progress = _taskLoader.CreateLoader(Resources.SavingChanges_Label, unsaved.Count, cancellation);
 
-            Task.Run(() =>
+            Task.Factory.StartNew(() =>
             {
                 foreach (var entity in unsaved)
                 {
@@ -247,8 +247,7 @@ namespace Viewer.UI.Attributes
                         }
                     }
                 }
-                cancellation.Token.ThrowIfCancellationRequested();
-            }, cancellation.Token);
+            }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         private static IComparer<AttributeGroup> CreateComparer<TKey>(Func<AttributeGroup, TKey> keySelector, int direction)

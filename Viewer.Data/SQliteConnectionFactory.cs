@@ -16,11 +16,11 @@ namespace Viewer.Data
         {
             get
             {
-                var indexFilePath = string.Format(Resource.CacheFilePath, Environment.CurrentDirectory);
-                var connection = new SQLiteConnection(string.Format(Resource.SqliteConnectionString, indexFilePath));
+                var indexFilePath = string.Format(Resources.CacheFilePath, Environment.CurrentDirectory);
+                var connection = new SQLiteConnection(string.Format(Resources.SqliteConnectionString, indexFilePath));
                 connection.Open();
 
-                var initialization = Resource.SqliteInitializationScript.Split(';');
+                var initialization = Resources.SqliteInitializationScript.Split(';');
                 using (var command = connection.CreateCommand())
                 {
                     foreach (var part in initialization)

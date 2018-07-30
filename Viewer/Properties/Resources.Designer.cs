@@ -79,15 +79,6 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}/../../../cache.db.
-        /// </summary>
-        internal static string CacheFilePath {
-            get {
-                return ResourceManager.GetString("CacheFilePath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Confirm Delete.
         /// </summary>
         internal static string ConfirmDelete_Label {
@@ -441,15 +432,6 @@ namespace Viewer.Properties {
         internal static string SavingChanges_Label {
             get {
                 return ResourceManager.GetString("SavingChanges_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Data Source={0};Version=3;foreign keys=true;synchronous=OFF.
-        /// </summary>
-        internal static string SqliteConnectionString {
-            get {
-                return ResourceManager.GetString("SqliteConnectionString", resourceCulture);
             }
         }
         

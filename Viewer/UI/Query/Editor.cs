@@ -21,7 +21,7 @@ namespace Viewer.UI.Query
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <returns>Task completed when the editor window opens</returns>
-        Task<IDockContent> OpenAsync(string path);
+        Task<IQueryView> OpenAsync(string path);
 
         /// <summary>
         /// Open given file in the editor.
@@ -29,13 +29,13 @@ namespace Viewer.UI.Query
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <returns></returns>
-        IDockContent Open(string path);
+        IQueryView Open(string path);
 
         /// <summary>
         /// Open new empty editor window
         /// </summary>
         /// <returns>Opened dock content</returns>
-        IDockContent OpenNew();
+        IQueryView OpenNew();
 
         /// <summary>
         /// Close all editor windows
@@ -66,7 +66,7 @@ namespace Viewer.UI.Query
         /// </summary>
         private readonly List<ExportLifetimeContext<QueryPresenter>> _windows = new List<ExportLifetimeContext<QueryPresenter>>();
 
-        public async Task<IDockContent> OpenAsync(string path)
+        public async Task<IQueryView> OpenAsync(string path)
         {
             // don't open a new window, if an window with this file is opened already
             var window = FindWindow(path);
@@ -97,7 +97,7 @@ namespace Viewer.UI.Query
             return null;
         }
 
-        public IDockContent Open(string path)
+        public IQueryView Open(string path)
         {
             var window = FindWindow(path);
             if (window != null)
@@ -126,7 +126,7 @@ namespace Viewer.UI.Query
             return null;
         }
 
-        public IDockContent OpenNew()
+        public IQueryView OpenNew()
         {
             return OpenWindow().View;
         }
@@ -139,7 +139,7 @@ namespace Viewer.UI.Query
             }
         }
 
-        private IDockContent FindWindow(string path)
+        private IQueryView FindWindow(string path)
         {
             var window = _windows.Find(editor =>
                 StringComparer.CurrentCultureIgnoreCase.Compare(editor.Value.View.FullPath, path) == 0);
@@ -152,7 +152,7 @@ namespace Viewer.UI.Query
             return null;
         }
 
-        private IDockContent OpenWindow(string path, string content)
+        private IQueryView OpenWindow(string path, string content)
         {
             var editor = OpenWindow();
             editor.SetContent(path, content);

@@ -29,20 +29,26 @@ namespace Viewer.UI.Query
 
         public IDockContent Deserialize(string persistString)
         {
-            if (persistString == typeof(QueryView).FullName)
-            {
-                return _editor.OpenNew();
-            }
-            else if (persistString.StartsWith(typeof(QueryView).FullName))
+            if (persistString.StartsWith(typeof(QueryView).FullName))
             {
                 var parts = persistString.Split(';');
-                if (parts.Length < 2)
-                {
-                    return null;
-                }
+                var content = parts.Length >= 2 ? parts[1] : "";
+                var path = parts.Length >= 3 ? parts[2] : "";
 
-                var path = parts[1];
-                return _editor.Open(path);
+                if (content.Length ==  0 && path.Length == 0)
+                {
+                    return _editor.OpenNew();
+                }
+                else if (path.Length == 0)
+                {
+                    var window = _editor.OpenNew();
+                    window.Query = content;
+                    return window;
+                }
+                else 
+                {
+                    return _editor.Open(path);
+                }
             }
             return null;
         }

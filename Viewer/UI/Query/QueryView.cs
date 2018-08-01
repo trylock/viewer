@@ -125,11 +125,7 @@ namespace Viewer.UI.Query
 
         protected override string GetPersistString()
         {
-            if (FullPath != null)
-            {
-                return base.GetPersistString() + ";" + FullPath;
-            }
-            return base.GetPersistString();
+            return base.GetPersistString() + ";" + Query + ";" + (FullPath ?? "");
         }
     }
 }

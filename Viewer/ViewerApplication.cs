@@ -11,16 +11,8 @@ using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Viewer.Data;
-using Viewer.Data.Storage;
-using Viewer.IO;
 using Viewer.Properties;
 using Viewer.UI;
-using Viewer.UI.Attributes;
-using Viewer.UI.Explorer;
-using Viewer.UI.Images;
-using Viewer.UI.Presentation;
-using Viewer.UI.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer
@@ -55,21 +47,26 @@ namespace Viewer
         public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
         {
             _appForm = appForm;
+            _appForm.Shutdown += OnShutdown;
             _components = components;
         }
-        
+
         public void InitializeLayout()
         {
-            // invoke startup event
+            // invoke the startup event
             foreach (var component in _components)
             {
                 component.OnStartup(this);
             }
+            
+            LoadLayout(Resources.LayoutFilePath);
+        }
 
-            // initialize layout
+        private void LoadLayout(string layoutFilePath)
+        {
             try
             {
-                using (var input = new FileStream(Resources.LayoutFilePath, FileMode.Open, FileAccess.Read))
+                using (var input = new FileStream(layoutFilePath, FileMode.Open, FileAccess.Read))
                 {
                     _appForm.Panel.LoadFromXml(input, Deserialize);
                 }
@@ -78,6 +75,19 @@ namespace Viewer
             {
                 // configuration file is missing
             }
+        }
+
+        private void SaveLayout(string layoutFilePath)
+        {
+            using (var state = new FileStream(layoutFilePath, FileMode.Create, FileAccess.Write))
+            {
+                _appForm.Panel.SaveAsXml(state, Encoding.UTF8);
+            }
+        }
+
+        private void OnShutdown(object sender, EventArgs e)
+        {
+            SaveLayout(Resources.LayoutFilePath);
         }
 
         private IDockContent Deserialize(string persistString)

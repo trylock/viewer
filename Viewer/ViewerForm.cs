@@ -30,7 +30,8 @@ namespace Viewer
     public partial class ViewerForm : Form
     {
         public DockPanel Panel { get; }
-        
+        public EventHandler Shutdown;
+
         public ViewerForm()
         {
             Panel = new DockPanel
@@ -62,10 +63,7 @@ namespace Viewer
 
         private void ViewerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            using (var state = new FileStream(Resources.LayoutFilePath, FileMode.Create, FileAccess.Write))
-            {
-                Panel.SaveAsXml(state, Encoding.UTF8);
-            }
+            Shutdown?.Invoke(sender, e);
         }
     }
 }

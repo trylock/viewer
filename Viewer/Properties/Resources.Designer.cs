@@ -436,6 +436,15 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Viewer.xml.
+        /// </summary>
+        internal static string SettingsFilePath {
+            get {
+                return ResourceManager.GetString("SettingsFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Start {

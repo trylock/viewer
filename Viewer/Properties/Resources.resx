@@ -258,4 +258,7 @@
     <value>{0} ({1}%)</value>
     <comment>{0} is the task name, {1} is the progress percentage </comment>
   </data>
+  <data name="SettingsFilePath" xml:space="preserve">
+    <value>Viewer.xml</value>
+  </data>
 </root>

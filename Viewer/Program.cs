@@ -37,11 +37,6 @@ namespace Viewer
 
             using (var container = new CompositionContainer(catalog))
             {
-                var indexFilePath = string.Format(Resources.CacheFilePath, Environment.CurrentDirectory);
-                var connection = new SQLiteConnection(string.Format(Resources.SqliteConnectionString, indexFilePath));
-                connection.Open();
-                container.ComposeExportedValue(connection);
-
                 var app = container.GetExportedValue<IViewerApplication>();
                 app.InitializeLayout();
                 app.Run();

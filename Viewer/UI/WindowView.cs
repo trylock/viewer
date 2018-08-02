@@ -34,14 +34,12 @@ namespace Viewer.UI
             }
         }
 
-        public void BeginLoading()
+        public virtual void BeginLoading()
         {
-            Cursor.Current = Cursors.WaitCursor;
         }
 
-        public void EndLoading()
+        public virtual void EndLoading()
         {
-            Cursor.Current = Cursors.Default;
         }
 
         private void EnsureVisibleInternal()

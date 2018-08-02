@@ -391,5 +391,15 @@ namespace Viewer.UI.Images
             }
             return base.GetPersistString();
         }
+
+        public override void BeginLoading()
+        {
+            GridView.IsLoading = true;
+        }
+
+        public override void EndLoading()
+        {
+            GridView.IsLoading = false;
+        }
     }
 }

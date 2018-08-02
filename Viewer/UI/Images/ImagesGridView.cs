@@ -149,13 +149,61 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler<EntityEventArgs> OpenItem;
-        public event EventHandler<EntityEventArgs> OpenItemInExplorer;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
         public event EventHandler<RenameEventArgs> RenameItem;
         public event EventHandler<EntityEventArgs> BeginEditItemName;
         
         public string Query { get; set; }
+
+        private IReadOnlyList<IContextOption<IFileView>> _contextOptions;
+        public IReadOnlyList<IContextOption<IFileView>> ContextOptions
+        {
+            get => _contextOptions;
+            set
+            {
+                _contextOptions = value;
+                if (_contextOptions == null)
+                {
+                    return;
+                }
+
+                // remove custom items
+                var remove = new List<ToolStripItem>();
+                foreach (ToolStripItem item in ItemContextMenu.Items)
+                {
+                    if ((string) item.Tag == "custom")
+                    {
+                        remove.Add(item);
+                    }
+                }
+
+                foreach (var item in remove)
+                {
+                    ItemContextMenu.Items.Remove(item);
+                }
+
+                // add new custom items
+                foreach (var option in _contextOptions)
+                {
+                    var optionCapture = option;
+                    var item = new ToolStripMenuItem(option.Name)
+                    {
+                        Tag = "custom",
+                    };
+                    item.Click += (sender, args) =>
+                    {
+                        if (_activeItemIndex < 0)
+                        {
+                            return;
+                        }
+
+                        optionCapture.Run(Items[_activeItemIndex]);
+                    };
+                    ItemContextMenu.Items.Insert(1, item);
+                }
+            }
+        }
 
         public SortedList<IFileView> Items
         {
@@ -333,17 +381,7 @@ namespace Viewer.UI.Images
                 ThumbnailSizeCommit?.Invoke(sender, e);
             }
         }
-
-        private void OpenInExplorerMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_activeItemIndex < 0)
-            {
-                return;
-            }
-
-            OpenItemInExplorer?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
-        }
-
+        
         protected override string GetPersistString()
         {
             if (Query != null)

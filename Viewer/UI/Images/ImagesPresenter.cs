@@ -19,6 +19,7 @@ using Viewer.Properties;
 using Viewer.Query;
 using Viewer.UI.Explorer;
 using Viewer.UI.Presentation;
+using Viewer.UI.Settings;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
@@ -38,6 +39,7 @@ namespace Viewer.UI.Images
         private readonly IQueryFactory _queryFactory;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
+        private readonly ISettings _settings;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
@@ -91,7 +93,8 @@ namespace Viewer.UI.Images
             IImageLoader imageLoader,
             IApplicationState state,
             IQueryFactory queryFactory,
-            ILazyThumbnailFactory thumbnailFactory)
+            ILazyThumbnailFactory thumbnailFactory,
+            ISettings settings)
         {
             ViewLifetime = viewFactory.CreateExport();
             _fileSystem = fileSystem;
@@ -105,9 +108,28 @@ namespace Viewer.UI.Images
             _queryFactory = queryFactory;
             _thumbnailFactory = thumbnailFactory;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
-            
+
+            // initialize context menu options
+            _settings = settings;
+            _settings.Changed += SettingsOnChanged;
+            UpdateContextOptions();
+
+            // initialize view
             View.ItemSize = _currentItemSize;
             SubscribeTo(View, "View");
+        }
+
+        private void SettingsOnChanged(object sender, EventArgs e)
+        {
+            UpdateContextOptions();
+        }
+
+        private void UpdateContextOptions()
+        {
+            View.ContextOptions = (
+                from app in _settings.Applications
+                select new ExternalApplicationOption(app)
+            ).ToList();
         }
         
         public override void Dispose()
@@ -116,6 +138,7 @@ namespace Viewer.UI.Images
             {
                 item.Dispose();
             }
+            _settings.Changed -= SettingsOnChanged;
             _selection.Clear();
             View.Items.Clear();
             base.Dispose();

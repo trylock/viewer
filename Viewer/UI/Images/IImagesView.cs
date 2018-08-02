@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Properties;
+using Viewer.UI.Settings;
 
 namespace Viewer.UI.Images
 {
@@ -130,6 +131,37 @@ namespace Viewer.UI.Images
             }
 
             return _entityComparer.Compare(((FileView) x).Data, ((FileView) y).Data);
+        }
+    }
+
+    public interface IContextOption<T>
+    {
+        /// <summary>
+        /// Name of the context menu option
+        /// </summary>
+        string Name { get; }
+        
+        /// <summary>
+        /// Execute the option for <paramref name="item"/>
+        /// </summary>
+        /// <param name="item"></param>
+        void Run(T item);
+    }
+
+    public sealed class ExternalApplicationOption : IContextOption<IFileView>
+    {
+        private readonly ExternalApplication _app;
+
+        public ExternalApplicationOption(ExternalApplication app)
+        {
+            _app = app;
+        }
+
+        public string Name => _app.Name;
+
+        public void Run(IFileView item)
+        {
+            _app.Run(item.FullPath);
         }
     }
 
@@ -302,14 +334,14 @@ namespace Viewer.UI.Images
         event EventHandler<EntityEventArgs> OpenItem;
 
         /// <summary>
-        /// Event called when user tries to open an item in system file explorer
-        /// </summary>
-        event EventHandler<EntityEventArgs> OpenItemInExplorer;
-
-        /// <summary>
         /// Textual representation of the query of this component
         /// </summary>
         string Query { get; set; }
+
+        /// <summary>
+        /// Context options
+        /// </summary>
+        IReadOnlyList<IContextOption<IFileView>> ContextOptions { get; set; }
 
         /// <summary>
         /// List of items to show 

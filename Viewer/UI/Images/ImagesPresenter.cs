@@ -12,15 +12,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
-using Viewer.Data.Storage;
 using Viewer.Images;
 using Viewer.IO;
-using Viewer.Properties;
 using Viewer.Query;
+using Viewer.Collections;
 using Viewer.UI.Explorer;
-using Viewer.UI.Presentation;
 using Viewer.UI.Settings;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {

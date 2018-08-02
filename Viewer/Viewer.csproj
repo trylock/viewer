@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -93,7 +93,7 @@
     <Compile Include="UI\ClipboardService.cs" />
     <Compile Include="UI\Explorer\ExplorerComponent.cs" />
     <Compile Include="UI\IComponent.cs" />
-    <Compile Include="UI\Images\ConcurrentSortedSet.cs" />
+    <Compile Include="Collections\ConcurrentSortedSet.cs" />
     <Compile Include="UI\Images\GridView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -105,7 +105,7 @@
     <Compile Include="UI\Images\LazyThumbnail.cs" />
     <Compile Include="UI\Images\RectangleSelection.cs" />
     <Compile Include="UI\Forms\ButtonCell.cs" />
-    <Compile Include="UI\Images\SortedList.cs" />
+    <Compile Include="Collections\SortedList.cs" />
     <Compile Include="UI\Images\ThumbnailSizeCalculator.cs" />
     <Compile Include="UI\Errors\IErrorListView.cs" />
     <Compile Include="UI\Errors\ErrorList.cs" />

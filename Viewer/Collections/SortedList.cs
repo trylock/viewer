@@ -6,7 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer.UI.Images
+namespace Viewer.Collections
 {
     public class SortedList<T> : IEnumerable<T>
     {

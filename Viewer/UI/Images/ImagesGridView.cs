@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Properties;
+using Viewer.Collections;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Properties;
+using Viewer.Collections;
 using Viewer.UI.Settings;
 
 namespace Viewer.UI.Images

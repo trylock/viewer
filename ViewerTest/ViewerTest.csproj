@@ -101,6 +101,7 @@
     <Compile Include="IO\PathUtilsTest.cs" />
     <Compile Include="MathUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryRuntime\DateTimeFunctionTest.cs" />
     <Compile Include="Query\QueryCompilerTest.cs" />
     <Compile Include="Query\RuntimeTest.cs" />
     <Compile Include="Query\ValueConverterTest.cs" />

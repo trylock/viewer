@@ -46,15 +46,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ArithmeticOperators.tt</DependentUpon>
     </Compile>
+    <Content Include="LogicOperators.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LogicOperators.cs</LastGenOutput>
+    </Content>
     <Compile Include="ComparisonOperators.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ComparisonOperators.tt</DependentUpon>
     </Compile>
-    <Content Include="LogicOperators.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>LogicOperators.cs</LastGenOutput>
-    </Content>
+    <Compile Include="DateTimeFunctions.cs" />
     <Compile Include="LogicOperators.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Properties;
 using Viewer.UI.Explorer;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -24,7 +25,7 @@ namespace Viewer.UI.Query
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction("Query", () => _editor.OpenNew());
+            app.AddViewAction("Query", () => _editor.OpenNew(), Resources.QueryComponentIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)

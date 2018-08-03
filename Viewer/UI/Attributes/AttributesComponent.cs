@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Attributes
@@ -29,8 +30,8 @@ namespace Viewer.UI.Attributes
         public void OnStartup(IViewerApplication app)
         {
             // add the component to the menu
-            app.AddViewAction("Attributes", () => ShowAttributes());
-            app.AddViewAction("Exif", () => ShowExif());
+            app.AddViewAction("Attributes", () => ShowAttributes(), Resources.AttributesComponentIcon.ToBitmap());
+            app.AddViewAction("Exif", () => ShowExif(), Resources.ExifComponentIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)
@@ -52,10 +53,7 @@ namespace Viewer.UI.Attributes
             if (_attributes == null)
             {
                 _attributes = _attributesFactory.CreateExport();
-                _attributes.Value.AttributePredicate =
-                    attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
-                _attributes.Value.IsEditingEnabled = true;
-                _attributes.Value.View.Id = AttributesId;
+                _attributes.Value.SetType(AttributeViewType.Custom);
                 _attributes.Value.View.CloseView += (sender, args) =>
                 {
                     _attributes.Dispose();
@@ -76,10 +74,7 @@ namespace Viewer.UI.Attributes
             if (_exif == null)
             {
                 _exif = _attributesFactory.CreateExport();
-                _exif.Value.AttributePredicate = attr => attr.Data.Value.Type != TypeId.Image &&
-                                                        (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
-                _exif.Value.IsEditingEnabled = false;
-                _exif.Value.View.Id = ExifId;
+                _exif.Value.SetType(AttributeViewType.Exif);
                 _exif.Value.View.CloseView += (sender, e) =>
                 {
                     _exif.Dispose();

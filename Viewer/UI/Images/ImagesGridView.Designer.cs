@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImagesGridView));
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.ItemContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,44 +73,44 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 126);
+            this.ItemContextMenu.Size = new System.Drawing.Size(145, 104);
             // 
             // OpenMenuItem
             // 
             this.OpenMenuItem.Name = "OpenMenuItem";
-            this.OpenMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.OpenMenuItem.Size = new System.Drawing.Size(144, 22);
             this.OpenMenuItem.Text = "Open";
             this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // CopyMenuItem
             // 
             this.CopyMenuItem.Name = "CopyMenuItem";
             this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.CopyMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.CopyMenuItem.Size = new System.Drawing.Size(144, 22);
             this.CopyMenuItem.Text = "Copy";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(141, 6);
             // 
             // DeleteMenuItem
             // 
             this.DeleteMenuItem.Name = "DeleteMenuItem";
             this.DeleteMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.DeleteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.DeleteMenuItem.Size = new System.Drawing.Size(144, 22);
             this.DeleteMenuItem.Text = "Delete";
             // 
             // RenameMenuItem
             // 
             this.RenameMenuItem.Name = "RenameMenuItem";
             this.RenameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.RenameMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.RenameMenuItem.Size = new System.Drawing.Size(144, 22);
             this.RenameMenuItem.Text = "Rename";
             this.RenameMenuItem.Click += new System.EventHandler(this.RenameMenuItem_Click);
             // 
@@ -130,6 +131,7 @@
             this.GridView.AutoScroll = true;
             this.GridView.ContextMenuStrip = this.ItemContextMenu;
             this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GridView.IsLoading = false;
             this.GridView.ItemPadding = new System.Drawing.Size(8, 8);
             this.GridView.Items = null;
             this.GridView.ItemSize = new System.Drawing.Size(0, 0);
@@ -196,6 +198,7 @@
             this.ClientSize = new System.Drawing.Size(626, 353);
             this.Controls.Add(this.ViewTableLayout);
             this.Controls.Add(this.NameTextBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ImagesGridView";
             this.Text = "Images";

@@ -30,6 +30,7 @@ namespace Viewer.UI.Query
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryView));
             this.TablePanel = new System.Windows.Forms.TableLayoutPanel();
             this.QueryTextBox = new ScintillaNET.Scintilla();
             this.ControlBarPanel = new System.Windows.Forms.Panel();
@@ -141,6 +142,7 @@ namespace Viewer.UI.Query
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(470, 272);
             this.Controls.Add(this.TablePanel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "QueryView";
             this.Text = "Query";

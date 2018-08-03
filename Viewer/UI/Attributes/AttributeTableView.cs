@@ -50,7 +50,19 @@ namespace Viewer.UI.Attributes
         public event EventHandler<FilterEventArgs> FilterAttributes;
         
         public List<AttributeGroup> Attributes { get; set; } = new List<AttributeGroup>();
-        public string Id { get; set; }
+
+        private AttributeViewType _viewType;
+        public AttributeViewType ViewType
+        {
+            get => _viewType;
+            set
+            {
+                _viewType = value;
+                Icon = value == AttributeViewType.Exif
+                    ? Resources.ExifComponentIcon
+                    : Resources.AttributesComponentIcon;
+            }
+        }
 
         private bool _suspendUpdateEvent = false;
 
@@ -328,11 +340,7 @@ namespace Viewer.UI.Attributes
 
         protected override string GetPersistString()
         {
-            if (Id != null)
-            {
-                return base.GetPersistString() + ";" + Id;
-            }
-            return base.GetPersistString();
+            return base.GetPersistString() + ";" + (ViewType == AttributeViewType.Exif ? "exif" : "attributes");
         }
     }
 }

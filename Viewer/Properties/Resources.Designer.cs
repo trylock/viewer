@@ -79,6 +79,16 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon AttributesComponentIcon {
+            get {
+                object obj = ResourceManager.GetObject("AttributesComponentIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Delete.
         /// </summary>
         internal static string ConfirmDelete_Label {
@@ -191,6 +201,36 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon ErrorListIcon {
+            get {
+                object obj = ResourceManager.GetObject("ErrorListIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon ExifComponentIcon {
+            get {
+                object obj = ResourceManager.GetObject("ExifComponentIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon ExplorerComponentIcon {
+            get {
+                object obj = ResourceManager.GetObject("ExplorerComponentIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /select,&quot;{0}&quot;.
         /// </summary>
         internal static string ExplorerOpenFolderArguments {
@@ -270,6 +310,16 @@ namespace Viewer.Properties {
         internal static string FileNotFound_Message {
             get {
                 return ResourceManager.GetString("FileNotFound_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon ImagesComponentIcon {
+            get {
+                object obj = ResourceManager.GetObject("ImagesComponentIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
@@ -394,6 +444,16 @@ namespace Viewer.Properties {
         internal static string Progress_Label {
             get {
                 return ResourceManager.GetString("Progress_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon QueryComponentIcon {
+            get {
+                object obj = ResourceManager.GetObject("QueryComponentIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

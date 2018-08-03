@@ -29,7 +29,8 @@ namespace Viewer
         /// </summary>
         /// <param name="name">Name of the component</param>
         /// <param name="action">Function executed when user clicks on the item</param>
-        void AddViewAction(string name, Action action);
+        /// <param name="icon">Icon shown next to the name</param>
+        void AddViewAction(string name, Action action, Image icon);
 
         /// <summary>
         /// Run the application
@@ -104,9 +105,9 @@ namespace Viewer
             return null;
         }
 
-        public void AddViewAction(string name, Action action)
+        public void AddViewAction(string name, Action action, Image icon)
         {
-            _appForm.AddViewAction(name, action);
+            _appForm.AddViewAction(name, action, icon);
         }
 
         public void Run()

@@ -34,12 +34,12 @@ namespace Viewer.UI.Attributes
         /// <summary>
         /// Funtion which determines for each attribute whether it should be managed by this presenter.
         /// </summary>
-        public Func<AttributeGroup, bool> AttributePredicate { get; set; } = attr => true;
+        private Func<AttributeGroup, bool> _attributePredicate = attr => true;
 
         /// <summary>
         /// true iff it is enabled to remove and update attributes
         /// </summary>
-        public bool IsEditingEnabled { get; set; } = true;
+        public bool IsEditingEnabled => View.ViewType == AttributeViewType.Custom;
 
         private SortColumn _currentSortColumn = SortColumn.Name;
         private SortDirection _currentSortDirection = SortDirection.Ascending;
@@ -72,6 +72,21 @@ namespace Viewer.UI.Attributes
             _selection.Changed -= Selection_Changed;
         }
 
+        public void SetType(AttributeViewType type)
+        {
+            View.ViewType = type;
+
+            if (type == AttributeViewType.Exif)
+            {
+                _attributePredicate = attr => attr.Data.Value.Type != TypeId.Image &&
+                                             (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
+            }
+            else
+            {
+                _attributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
+            }
+        }
+
         private void Report(string message, LogType type, Retry retry)
         {
             var entry = new ErrorListEntry
@@ -102,7 +117,7 @@ namespace Viewer.UI.Attributes
         private IEnumerable<AttributeGroup> GetSelectedAttributes()
         {
             return _attributes.GroupAttributesInSelection()
-                .Where(AttributePredicate)
+                .Where(_attributePredicate)
                 .OrderBy(attr => attr.Data.Name);
         }
 

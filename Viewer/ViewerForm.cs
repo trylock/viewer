@@ -47,9 +47,9 @@ namespace Viewer
             ViewerForm_Resize(this, EventArgs.Empty);
         }
 
-        public void AddViewAction(string name, Action action)
+        public void AddViewAction(string name, Action action, Image icon)
         {
-            var item = new ToolStripMenuItem { Text = name };
+            var item = new ToolStripMenuItem { Text = name, Image = icon };
             item.Click += (sender, args) => action();
             ViewMenuItem.DropDownItems.Add(item);
         }

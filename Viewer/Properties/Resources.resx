@@ -261,4 +261,22 @@
   <data name="SettingsFilePath" xml:space="preserve">
     <value>Viewer.xml</value>
   </data>
+  <data name="AttributesComponentIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AttributesComponentIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ErrorListIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ErrorListIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExifComponentIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ExifComponentIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExplorerComponentIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ExplorerComponentIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ImagesComponentIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ImagesComponentIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="QueryComponentIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\QueryComponentIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

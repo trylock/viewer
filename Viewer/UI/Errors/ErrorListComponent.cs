@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Errors
@@ -23,7 +24,7 @@ namespace Viewer.UI.Errors
         public ErrorListComponent(ExportFactory<ErrorListPresenter> factory, IErrorList errorList)
         {
             _errorListFactory = factory;
-
+            
             var context = SynchronizationContext.Current;
             errorList.EntryAdded += (sender, args) =>
             {
@@ -33,7 +34,7 @@ namespace Viewer.UI.Errors
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction(Name, () => ShowLog());
+            app.AddViewAction(Name, () => ShowLog(), Resources.ErrorListIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)

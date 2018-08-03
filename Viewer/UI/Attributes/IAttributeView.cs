@@ -72,6 +72,19 @@ namespace Viewer.UI.Attributes
         DateTime,
     }
 
+    public enum AttributeViewType
+    {
+        /// <summary>
+        /// This view shows read-only exif tags
+        /// </summary>
+        Exif,
+
+        /// <summary>
+        /// This view shows custom attributes
+        /// </summary>
+        Custom
+    }
+
     public interface IAttributeView : IWindowView
     {
         /// <summary>
@@ -105,10 +118,10 @@ namespace Viewer.UI.Attributes
         List<AttributeGroup> Attributes { get; set; }
 
         /// <summary>
-        /// Identification string of this view (i.e. "exif" or "attributes").
+        /// Identification string of this view.
         /// This is used for identification during deserialization.
         /// </summary>
-        string Id { get; set; }
+        AttributeViewType ViewType { get; set; }
 
         /// <summary>
         /// Update all attributes

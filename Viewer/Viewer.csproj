@@ -261,9 +261,15 @@
     <None Include="Resources\Directory.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\AttributesComponentIcon.ico" />
     <Content Include="Resources\DefaultThumbnail.png" />
     <Content Include="Resources\DirectoryThumbnail.png" />
+    <None Include="Resources\ExifComponentIcon.ico" />
+    <None Include="Resources\ExplorerComponentIcon.ico" />
+    <None Include="Resources\ImagesComponentIcon.ico" />
+    <None Include="Resources\ErrorListIcon.ico" />
     <Content Include="Resources\Open.png" />
+    <None Include="Resources\QueryComponentIcon.ico" />
     <Content Include="Resources\Save.png" />
     <None Include="Resources\Start.png" />
     <None Include="Resources\PauseIcon.png" />

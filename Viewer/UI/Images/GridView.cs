@@ -234,7 +234,7 @@ namespace Viewer.UI.Images
 
         private void GridView_Paint(object sender, PaintEventArgs e)
         {
-            StatusLabel.Visible = Items.Count <= 0;
+            StatusLabel.Visible = Items?.Count <= 0;
             StatusLabel.Text = IsLoading ? "LOADING ..." : "EMPTY";
             StatusLabel.Location = new Point(
                 ClientSize.Width / 2 - StatusLabel.Width / 2,

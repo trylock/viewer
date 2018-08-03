@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DirectoryTreeView));
             this.TreeView = new System.Windows.Forms.TreeView();
             this.FileContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,9 +57,10 @@
             this.TreeView.ItemHeight = 24;
             this.TreeView.LabelEdit = true;
             this.TreeView.Location = new System.Drawing.Point(0, 0);
+            this.TreeView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.TreeView.Name = "TreeView";
             this.TreeView.ShowLines = false;
-            this.TreeView.Size = new System.Drawing.Size(373, 363);
+            this.TreeView.Size = new System.Drawing.Size(280, 295);
             this.TreeView.TabIndex = 0;
             this.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
             this.TreeView.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterExpand);
@@ -84,32 +86,32 @@
             this.toolStripSeparator1,
             this.NewFolderMenuItem});
             this.FileContextMenu.Name = "FileContextMenu";
-            this.FileContextMenu.Size = new System.Drawing.Size(217, 190);
+            this.FileContextMenu.Size = new System.Drawing.Size(183, 176);
             // 
             // ToggleMenuItem
             // 
             this.ToggleMenuItem.Name = "ToggleMenuItem";
-            this.ToggleMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.ToggleMenuItem.Size = new System.Drawing.Size(182, 22);
             this.ToggleMenuItem.Text = "Toggle";
             this.ToggleMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
             // 
             // OpenInFileExplorerMenuItem
             // 
             this.OpenInFileExplorerMenuItem.Name = "OpenInFileExplorerMenuItem";
-            this.OpenInFileExplorerMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.OpenInFileExplorerMenuItem.Size = new System.Drawing.Size(182, 22);
             this.OpenInFileExplorerMenuItem.Text = "Open in File Explorer";
             this.OpenInFileExplorerMenuItem.Click += new System.EventHandler(this.OpenInFileExplorerMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(213, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(179, 6);
             // 
             // CopyMenuItem
             // 
             this.CopyMenuItem.Name = "CopyMenuItem";
             this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.CopyMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.CopyMenuItem.Size = new System.Drawing.Size(182, 22);
             this.CopyMenuItem.Text = "Copy";
             this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
             // 
@@ -117,20 +119,20 @@
             // 
             this.PasteMenuItem.Name = "PasteMenuItem";
             this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.PasteMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.PasteMenuItem.Size = new System.Drawing.Size(182, 22);
             this.PasteMenuItem.Text = "Paste";
             this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(213, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(179, 6);
             // 
             // DeleteMenuItem
             // 
             this.DeleteMenuItem.Name = "DeleteMenuItem";
             this.DeleteMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.DeleteMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.DeleteMenuItem.Size = new System.Drawing.Size(182, 22);
             this.DeleteMenuItem.Text = "Delete";
             this.DeleteMenuItem.Click += new System.EventHandler(this.DeleteMenuItem_Click);
             // 
@@ -138,29 +140,31 @@
             // 
             this.RenameMenuItem.Name = "RenameMenuItem";
             this.RenameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.RenameMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.RenameMenuItem.Size = new System.Drawing.Size(182, 22);
             this.RenameMenuItem.Text = "Rename";
             this.RenameMenuItem.Click += new System.EventHandler(this.RenameMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(179, 6);
             // 
             // NewFolderMenuItem
             // 
             this.NewFolderMenuItem.Name = "NewFolderMenuItem";
             this.NewFolderMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.NewFolderMenuItem.Size = new System.Drawing.Size(216, 24);
+            this.NewFolderMenuItem.Size = new System.Drawing.Size(182, 22);
             this.NewFolderMenuItem.Text = "New Folder";
             this.NewFolderMenuItem.Click += new System.EventHandler(this.NewFolderMenuItem_Click);
             // 
             // DirectoryTreeView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(373, 363);
+            this.ClientSize = new System.Drawing.Size(280, 295);
             this.Controls.Add(this.TreeView);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "DirectoryTreeView";
             this.Text = "Explorer";
             this.FileContextMenu.ResumeLayout(false);

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Viewer.Query
 {
+    /// <summary>
+    /// Implementation has to be thread safe.
+    /// </summary>
     public interface IErrorListener
     {
         /// <summary>

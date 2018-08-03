@@ -33,15 +33,19 @@ namespace Viewer.UI.Errors
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction(Name, ShowLog);
+            app.AddViewAction(Name, () => ShowLog());
         }
 
         public IDockContent Deserialize(string persistString)
         {
+            if (persistString == typeof(ErrorListView).FullName)
+            {
+                return ShowLog();
+            }
             return null;
         }
 
-        private void ShowLog()
+        private IErrorListView ShowLog()
         {
             if (_errorList == null)
             {
@@ -57,6 +61,8 @@ namespace Viewer.UI.Errors
             {
                 _errorList.Value.View.EnsureVisible();
             }
+
+            return _errorList.Value.View;
         }
     }
 }

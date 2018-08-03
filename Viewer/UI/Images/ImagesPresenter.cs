@@ -36,6 +36,7 @@ namespace Viewer.UI.Images
         private readonly IQueryFactory _queryFactory;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
+        private readonly IErrorListener _queryErrorListener;
         private readonly ISettings _settings;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
@@ -91,6 +92,7 @@ namespace Viewer.UI.Images
             IApplicationState state,
             IQueryFactory queryFactory,
             ILazyThumbnailFactory thumbnailFactory,
+            IErrorListener queryErrorListener,
             ISettings settings)
         {
             ViewLifetime = viewFactory.CreateExport();
@@ -103,6 +105,7 @@ namespace Viewer.UI.Images
             _imageLoader = imageLoader;
             _state = state;
             _queryFactory = queryFactory;
+            _queryErrorListener = queryErrorListener;
             _thumbnailFactory = thumbnailFactory;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
 
@@ -216,27 +219,34 @@ namespace Viewer.UI.Images
         {
             var directories = new HashSet<string>();
 
-            foreach (var entity in query)
+            try
             {
-                query.Cancellation.Token.ThrowIfCancellationRequested();
-
-                // add the file to the result
-                var item = new FileView(entity, GetPhotoThumbnail(entity));
-                _waitingQueue.Add(item);
-
-                // add all subdirectories to the result
-                var dirPath = PathUtils.GetDirectoryPath(entity.Path);
-                if (directories.Contains(dirPath))
-                {
-                    continue;
-                }
-
-                directories.Add(dirPath);
-                foreach (var dir in Directory.EnumerateDirectories(dirPath))
+                foreach (var entity in query)
                 {
                     query.Cancellation.Token.ThrowIfCancellationRequested();
-                    _waitingQueue.Add(new DirectoryView(dir, GetDirectoryThumbnail(dir)));
+
+                    // add the file to the result
+                    var item = new FileView(entity, GetPhotoThumbnail(entity));
+                    _waitingQueue.Add(item);
+
+                    // add all subdirectories to the result
+                    var dirPath = PathUtils.GetDirectoryPath(entity.Path);
+                    if (directories.Contains(dirPath))
+                    {
+                        continue;
+                    }
+
+                    directories.Add(dirPath);
+                    foreach (var dir in Directory.EnumerateDirectories(dirPath))
+                    {
+                        query.Cancellation.Token.ThrowIfCancellationRequested();
+                        _waitingQueue.Add(new DirectoryView(dir, GetDirectoryThumbnail(dir)));
+                    }
                 }
+            }
+            catch (QueryRuntimeException e)
+            {
+                _queryErrorListener.ReportError(0, 0, e.Message);
             }
         }
         

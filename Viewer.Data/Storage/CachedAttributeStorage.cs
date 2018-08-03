@@ -58,7 +58,9 @@ namespace Viewer.Data.Storage
             // try to find the entity in the waiting list
             lock (_modified)
             {
-                if (_modified.TryGetValue(path, out var value))
+                // If an entity is loaded from the cache storage, only its access time has to be updated.
+                // This information is passed to the write thread as an entry with null value, just the path.
+                if (_modified.TryGetValue(path, out var value) && value != null)
                 {
                     return value;
                 }

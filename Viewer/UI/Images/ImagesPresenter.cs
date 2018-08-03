@@ -34,9 +34,8 @@ namespace Viewer.UI.Images
         private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
         private readonly IQueryFactory _queryFactory;
-        private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
-        private readonly IErrorListener _queryErrorListener;
+        private readonly IQueryEvaluatorFactory _queryEvaluatorFactory;
         private readonly ISettings _settings;
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
@@ -60,19 +59,9 @@ namespace Viewer.UI.Images
         private bool _isShift;
 
         /// <summary>
-        /// Last query load task
-        /// </summary>
-        private Task _loadTask = Task.CompletedTask;
-
-        /// <summary>
         /// Currently loaded query
         /// </summary>
-        private IQuery _query;
-        
-        /// <summary>
-        /// Queue of entities loaded from the query which are not shown yet.
-        /// </summary>
-        private ConcurrentSortedSet<IFileView> _waitingQueue;
+        private QueryEvaluator _queryEvaluator;
 
         /// <summary>
         /// Minimal time in milliseconds between 2 poll events.
@@ -91,8 +80,7 @@ namespace Viewer.UI.Images
             IImageLoader imageLoader,
             IApplicationState state,
             IQueryFactory queryFactory,
-            ILazyThumbnailFactory thumbnailFactory,
-            IErrorListener queryErrorListener,
+            IQueryEvaluatorFactory queryEvaluatorFactory,
             ISettings settings)
         {
             ViewLifetime = viewFactory.CreateExport();
@@ -105,8 +93,7 @@ namespace Viewer.UI.Images
             _imageLoader = imageLoader;
             _state = state;
             _queryFactory = queryFactory;
-            _queryErrorListener = queryErrorListener;
-            _thumbnailFactory = thumbnailFactory;
+            _queryEvaluatorFactory = queryEvaluatorFactory;
             _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
 
             // initialize context menu options
@@ -154,22 +141,16 @@ namespace Viewer.UI.Images
             await CancelLoadAsync();
 
             // start loading a new query
-            _query = query;
-            _waitingQueue = new ConcurrentSortedSet<IFileView>(new FileViewComparer(_query.Comparer));
+            _queryEvaluator = _queryEvaluatorFactory.Create(query);
 
-            View.Query = _query.Text;
-            View.Items = new SortedList<IFileView>(_waitingQueue.Comparer);
+            View.Query = _queryEvaluator.Query.Text;
+            View.Items = new SortedList<IFileView>(_queryEvaluator.Comparer);
             View.BeginLoading();
             View.BeginPolling(PollingRate);
 
             try
             {
-                _loadTask = Task.Factory.StartNew(
-                    () => LoadQueryBlocking(query), 
-                    _query.Cancellation.Token, 
-                    TaskCreationOptions.LongRunning, 
-                    TaskScheduler.Default);
-                await _loadTask;
+                await _queryEvaluator.RunAsync();
                 View.UpdateItems();
             }   
             catch (OperationCanceledException)
@@ -183,16 +164,19 @@ namespace Viewer.UI.Images
 
         private async Task CancelLoadAsync()
         {
-            // cancel previous load operation
-            _query?.Cancellation.Cancel();
+            if (_queryEvaluator != null)
+            {
+                // cancel previous load operation
+                _queryEvaluator.Cancellation.Cancel();
 
-            // wait for it to end
-            try
-            {
-                await _loadTask;
-            }
-            catch (OperationCanceledException)
-            {
+                // wait for it to end
+                try
+                {
+                    await _queryEvaluator.LoadTask;
+                }
+                catch (OperationCanceledException)
+                {
+                }
             }
 
             // reset state
@@ -211,65 +195,6 @@ namespace Viewer.UI.Images
             }
         }
         
-        /// <summary>
-        /// Load entities from the query and put them to a waiting queue.
-        /// </summary>
-        /// <param name="query">Query to load</param>
-        private void LoadQueryBlocking(IQuery query)
-        {
-            var directories = new HashSet<string>();
-
-            try
-            {
-                foreach (var entity in query)
-                {
-                    query.Cancellation.Token.ThrowIfCancellationRequested();
-
-                    // add the file to the result
-                    var item = new FileView(entity, GetPhotoThumbnail(entity));
-                    _waitingQueue.Add(item);
-
-                    // add all subdirectories to the result
-                    var dirPath = PathUtils.GetDirectoryPath(entity.Path);
-                    if (directories.Contains(dirPath))
-                    {
-                        continue;
-                    }
-
-                    directories.Add(dirPath);
-                    foreach (var dir in Directory.EnumerateDirectories(dirPath))
-                    {
-                        query.Cancellation.Token.ThrowIfCancellationRequested();
-                        _waitingQueue.Add(new DirectoryView(dir, GetDirectoryThumbnail(dir)));
-                    }
-                }
-            }
-            catch (QueryRuntimeException e)
-            {
-                _queryErrorListener.ReportError(0, 0, e.Message);
-            }
-        }
-        
-        /// <summary>
-        /// Create lazily initialized thumbnail for a photo
-        /// </summary>
-        /// <param name="item">Entity</param>
-        /// <returns>Thumbnail</returns>
-        private ILazyThumbnail GetPhotoThumbnail(IEntity item)
-        {
-            return _thumbnailFactory.Create(item);
-        }
-
-        /// <summary>
-        /// Create lazily initialized thumbnail for a directory
-        /// </summary>
-        /// <param name="path">Path to the directory</param>
-        /// <returns>Thumbnail</returns>
-        private ILazyThumbnail GetDirectoryThumbnail(string path)
-        {
-            return new DirectoryThumbnail(path);
-        }
-
         /// <summary>
         /// Compute current thumbnail size based on the current minimal thumbnail size
         /// and View.ThumbnailScale
@@ -327,7 +252,7 @@ namespace Viewer.UI.Images
         private void View_Poll(object sender, EventArgs e)
         {
             // get a snapshot of the waiting queue
-            var items = _waitingQueue.Consume();
+            var items = _queryEvaluator.Consume();
             if (items.Count > 0)
             {
                 // update thumbnail size 

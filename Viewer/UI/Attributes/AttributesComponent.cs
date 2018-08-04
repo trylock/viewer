@@ -38,56 +38,70 @@ namespace Viewer.UI.Attributes
         {
             if (persistString == typeof(AttributeTableView).FullName + ";" + AttributesId)
             {
-                return ShowAttributes();
+                return GetAttributes().View;
             }
             else if (persistString == typeof(AttributeTableView).FullName + ";" + ExifId)
             {
-                return ShowExif();
+                return GetExif().View;
             }
 
             return null;
         }
 
-        private IDockContent ShowAttributes()
+        private AttributesPresenter GetAttributes()
         {
             if (_attributes == null)
             {
                 _attributes = _attributesFactory.CreateExport();
                 _attributes.Value.SetType(AttributeViewType.Custom);
+                _attributes.Value.View.Text = "Attributes";
                 _attributes.Value.View.CloseView += (sender, args) =>
                 {
                     _attributes.Dispose();
                     _attributes = null;
                 };
-                _attributes.Value.ShowView("Attributes", DockState.DockRight);
             }
             else
             {
                 _attributes.Value.View.EnsureVisible();
             }
 
-            return _attributes.Value.View;
+            return _attributes.Value;
         }
 
-        private IDockContent ShowExif()
+        private IDockContent ShowAttributes()
+        {
+            var attributes = GetAttributes();
+            attributes.ShowView("Attributes", DockState.DockRight);
+            return attributes.View;
+        }
+
+        private AttributesPresenter GetExif()
         {
             if (_exif == null)
             {
                 _exif = _attributesFactory.CreateExport();
                 _exif.Value.SetType(AttributeViewType.Exif);
+                _exif.Value.View.Text = "Exif";
                 _exif.Value.View.CloseView += (sender, e) =>
                 {
                     _exif.Dispose();
                     _exif = null;
                 };
-                _exif.Value.ShowView("Exif", DockState.DockRight);
             }
             else
             {
                 _exif.Value.View.EnsureVisible();
             }
 
-            return _exif.Value.View;
+            return _exif.Value;
+        }
+
+        private IDockContent ShowExif()
+        {
+            var exif = GetExif();
+            exif.ShowView("Exif", DockState.DockRight);
+            return exif.View;
         }
     }
 }

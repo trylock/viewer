@@ -28,25 +28,25 @@ namespace Viewer.UI.Errors
             var context = SynchronizationContext.Current;
             errorList.EntryAdded += (sender, args) =>
             {
-                context.Post(state => ShowLog(), null);
+                context.Post(state => ShowErrorList(), null);
             };
         }
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction(Name, () => ShowLog(), Resources.ErrorListIcon.ToBitmap());
+            app.AddViewAction(Name, () => ShowErrorList(), Resources.ErrorListIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)
         {
             if (persistString == typeof(ErrorListView).FullName)
             {
-                return ShowLog();
+                return GetErrorList().View;
             }
             return null;
         }
 
-        private IErrorListView ShowLog()
+        private ErrorListPresenter GetErrorList()
         {
             if (_errorList == null)
             {
@@ -56,14 +56,20 @@ namespace Viewer.UI.Errors
                     _errorList.Dispose();
                     _errorList = null;
                 };
-                _errorList.Value.ShowView(Name, DockState.DockBottom);
             }
             else
             {
                 _errorList.Value.View.EnsureVisible();
             }
 
-            return _errorList.Value.View;
+            return _errorList.Value;
+        }
+
+        private IErrorListView ShowErrorList()
+        {
+            var errorList = GetErrorList();
+            errorList.ShowView(Name, DockState.DockBottom);
+            return errorList.View;
         }
     }
 }

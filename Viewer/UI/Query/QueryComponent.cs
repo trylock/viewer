@@ -25,7 +25,7 @@ namespace Viewer.UI.Query
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction("Query", () => _editor.OpenNew(), Resources.QueryComponentIcon.ToBitmap());
+            app.AddViewAction("Query", () => _editor.OpenNew(DockState.Document), Resources.QueryComponentIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)
@@ -38,17 +38,17 @@ namespace Viewer.UI.Query
 
                 if (content.Length ==  0 && path.Length == 0)
                 {
-                    return _editor.OpenNew();
+                    return _editor.OpenNew(DockState.Unknown);
                 }
                 else if (path.Length == 0)
                 {
-                    var window = _editor.OpenNew();
+                    var window = _editor.OpenNew(DockState.Unknown);
                     window.Query = content;
                     return window;
                 }
                 else 
                 {
-                    return _editor.Open(path);
+                    return _editor.Open(path, DockState.Unknown);
                 }
             }
             return null;

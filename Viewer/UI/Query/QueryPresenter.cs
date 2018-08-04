@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Query;
 using Viewer.UI.Explorer;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Query
 {
@@ -131,7 +132,7 @@ namespace Viewer.UI.Query
 
         private void View_OpenQuery(object sender, OpenQueryEventArgs e)
         {
-            _editor.OpenAsync(e.FullPath);
+            _editor.OpenAsync(e.FullPath, DockState.Document);
         }
 
         private async void View_RunQuery(object sender, EventArgs e)
@@ -161,7 +162,7 @@ namespace Viewer.UI.Query
             {
                 if (Path.GetExtension(file).ToLowerInvariant() == ".vql")
                 {
-                    await _editor.OpenAsync(file);
+                    await _editor.OpenAsync(file, DockState.Document);
                 }
             }
         }

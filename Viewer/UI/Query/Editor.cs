@@ -20,22 +20,25 @@ namespace Viewer.UI.Query
         /// If the file is opened already, the editor will just make its window visible to user.
         /// </summary>
         /// <param name="path">Path to a file</param>
+        /// <param name="dockState">Unknown value won't show the window</param>
         /// <returns>Task completed when the editor window opens</returns>
-        Task<IQueryView> OpenAsync(string path);
+        Task<IQueryView> OpenAsync(string path, DockState dockState);
 
         /// <summary>
         /// Open given file in the editor.
         /// If the file is opened already, the editor will just make its window visible to user.
         /// </summary>
         /// <param name="path">Path to a file</param>
+        /// <param name="dockState">Unknown value won't show the window</param>
         /// <returns></returns>
-        IQueryView Open(string path);
+        IQueryView Open(string path, DockState dockState);
 
         /// <summary>
         /// Open new empty editor window
         /// </summary>
+        /// <param name="dockState">Unknown value won't show the window</param>
         /// <returns>Opened dock content</returns>
-        IQueryView OpenNew();
+        IQueryView OpenNew(DockState dockState);
 
         /// <summary>
         /// Close all editor windows
@@ -44,7 +47,7 @@ namespace Viewer.UI.Query
     }
 
     [Export(typeof(IEditor))]
-    public class Editor : IEditor
+    public class Editor :  IEditor
     {
         private readonly IFileSystemErrorView _dialogView;
         private readonly IFileSystem _fileSystem;
@@ -66,7 +69,7 @@ namespace Viewer.UI.Query
         /// </summary>
         private readonly List<ExportLifetimeContext<QueryPresenter>> _windows = new List<ExportLifetimeContext<QueryPresenter>>();
 
-        public async Task<IQueryView> OpenAsync(string path)
+        public async Task<IQueryView> OpenAsync(string path, DockState dockState)
         {
             // don't open a new window, if an window with this file is opened already
             var window = FindWindow(path);
@@ -79,7 +82,7 @@ namespace Viewer.UI.Query
             try
             {
                 var data = await _fileSystem.ReadToEndAsync(path);
-                return OpenWindow(path, data);
+                return OpenWindow(path, data, dockState);
             }
             catch (UnauthorizedAccessException)
             {
@@ -97,7 +100,7 @@ namespace Viewer.UI.Query
             return null;
         }
 
-        public IQueryView Open(string path)
+        public IQueryView Open(string path, DockState dockState)
         {
             var window = FindWindow(path);
             if (window != null)
@@ -108,7 +111,7 @@ namespace Viewer.UI.Query
             try
             {
                 var data = Encoding.UTF8.GetString(_fileSystem.ReadAllBytes(path));
-                return OpenWindow(path, data);
+                return OpenWindow(path, data, dockState);
             }
             catch (UnauthorizedAccessException)
             {
@@ -126,9 +129,9 @@ namespace Viewer.UI.Query
             return null;
         }
 
-        public IQueryView OpenNew()
+        public IQueryView OpenNew(DockState dockState)
         {
-            return OpenWindow().View;
+            return OpenWindow(dockState).View;
         }
 
         public void CloseAll()
@@ -152,17 +155,21 @@ namespace Viewer.UI.Query
             return null;
         }
 
-        private IQueryView OpenWindow(string path, string content)
+        private IQueryView OpenWindow(string path, string content, DockState dockState)
         {
-            var editor = OpenWindow();
+            var editor = OpenWindow(dockState);
             editor.SetContent(path, content);
             return editor.View;
         }
-
-        private QueryPresenter OpenWindow()
+        
+        private QueryPresenter OpenWindow(DockState dockState)
         {
             var editor = _editorFactory.CreateExport();
-            editor.Value.ShowView("Query", DockState.Document);
+            if (dockState != DockState.Unknown)
+            {
+                editor.Value.ShowView("Query", dockState);
+            }
+
             editor.Value.View.CloseView += (sender, args) =>
             {
                 _windows.Remove(editor);

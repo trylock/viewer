@@ -47,7 +47,9 @@ namespace Viewer.UI.Images
                 var parts = persistString.Split(';');
                 if (parts.Length == 1)
                 {
-                    return ShowImages(_queryFactory.CreateQuery());
+                    var images = GetImages();
+                    images.LoadQueryAsync(_queryFactory.CreateQuery());
+                    return images.View;
                 }
                 else if (parts.Length == 2)
                 {
@@ -55,15 +57,18 @@ namespace Viewer.UI.Images
                     var query = _queryCompiler.Compile(new StringReader(queryText), new NullErrorListener());
                     if (query == null)
                     {
-                        return ShowImages(_queryFactory.CreateQuery());
+                        query = _queryFactory.CreateQuery();
                     }
-                    return ShowImages(query);
+
+                    var images = GetImages();
+                    images.LoadQueryAsync(query);
+                    return images.View;
                 }
             }
             return null;
         }
 
-        private IDockContent ShowImages(IQuery query)
+        private ImagesPresenter GetImages()
         {
             if (_images == null)
             {
@@ -73,16 +78,21 @@ namespace Viewer.UI.Images
                     _images.Dispose();
                     _images = null;
                 };
-                _images.Value.ShowView("Images", DockState.Document);
-                _images.Value.LoadQueryAsync(query);
             }
             else
             {
                 _images.Value.View.EnsureVisible();
-                _images.Value.LoadQueryAsync(query);
             }
 
-            return _images.Value.View;
+            return _images.Value;
+        }
+
+        private IDockContent ShowImages(IQuery query)
+        {
+            var images = GetImages();
+            images.LoadQueryAsync(query);
+            images.ShowView("Images", DockState.Document);
+            return images.View;
         }
     }
 }

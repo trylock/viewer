@@ -31,13 +31,13 @@ namespace Viewer.UI.Explorer
         {
             if (persistString == typeof(DirectoryTreeView).FullName)
             {
-                return ShowExplorer();
+                return GetExplorer().View;
             }
 
             return null;
         }
 
-        private IDockContent ShowExplorer()
+        private DirectoryTreePresenter GetExplorer()
         {
             if (_explorer == null)
             {
@@ -48,14 +48,20 @@ namespace Viewer.UI.Explorer
                     _explorer.Dispose();
                     _explorer = null;
                 };
-                _explorer.Value.ShowView(Resources.ExplorerWindowName, DockState.DockLeft);
             }
             else
             {
                 _explorer.Value.View.EnsureVisible();
             }
 
-            return _explorer.Value.View;
+            return _explorer.Value;
+        }
+
+        private IDockContent ShowExplorer()
+        {
+            var explorer = GetExplorer();
+            explorer.ShowView(Resources.ExplorerWindowName, DockState.DockLeft);
+            return explorer.View;
         }
     }
 }

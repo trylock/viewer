@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
 using Viewer.Images;
@@ -132,13 +134,24 @@ namespace Viewer.UI.Images
             
             return _current;
         }
+
+        private static readonly SemaphoreSlim Sync = new SemaphoreSlim(1);
         
         private async Task<(Image, bool)> LoadNativeThumbnail(Size thumbnailAreaSize)
         {
-            using (var image = await _imageLoader.LoadImageAsync(_entity).ConfigureAwait(false))
+            await Sync.WaitAsync().ConfigureAwait(false);
+            try
             {
-                var thumbnail = _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize);
-                return (thumbnail, true);
+                // TODO: this still creates an enormous GC pressure. Can we preallocate memory, maybe?
+                using (var image = await _imageLoader.LoadImageAsync(_entity).ConfigureAwait(false))
+                {
+                    var thumbnail = _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize);
+                    return (thumbnail, true);
+                }
+            }
+            finally
+            {
+                Sync.Release();
             }
         }
 
@@ -154,7 +167,7 @@ namespace Viewer.UI.Images
                 return (thumbnail, isSufficient);
             }
         }
-
+        
         public PhotoThumbnail(IImageLoader loader, IThumbnailGenerator thumbnailGenerator, IEntity entity)
         {
             _imageLoader = loader;

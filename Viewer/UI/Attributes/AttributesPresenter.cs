@@ -112,6 +112,7 @@ namespace Viewer.UI.Attributes
         private void Selection_Changed(object sender, EventArgs eventArgs)
         {
             ViewAttributes();
+            View_Search(sender, eventArgs);
         }
 
         private IEnumerable<AttributeGroup> GetSelectedAttributes()
@@ -325,7 +326,7 @@ namespace Viewer.UI.Attributes
             View.UpdateAttributes();
         }
 
-        private void View_FilterAttributes(object sender, FilterEventArgs e)
+        private void View_Search(object sender, EventArgs e)
         {
             if (IsSelectionEmpty())
             {
@@ -334,13 +335,13 @@ namespace Viewer.UI.Attributes
 
             var lastRow = View.Attributes.LastOrDefault();
             var attrs = GetSelectedAttributes();
-            if (e.FilterText.Length == 0)
+            if (View.SearchQuery.Length == 0)
             {
                 View.Attributes = attrs.ToList();
             }
             else
             {
-                var filter = e.FilterText.ToLower();
+                var filter = View.SearchQuery.ToLower();
                 View.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().Contains(filter)).ToList();
             }
 

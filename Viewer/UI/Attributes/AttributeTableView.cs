@@ -47,7 +47,6 @@ namespace Viewer.UI.Attributes
         public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
         public event EventHandler<AttributeDeletedEventArgs> AttributeDeleted;
         public event EventHandler<SortEventArgs> SortAttributes;
-        public event EventHandler<FilterEventArgs> FilterAttributes;
         
         public List<AttributeGroup> Attributes { get; set; } = new List<AttributeGroup>();
 
@@ -121,6 +120,18 @@ namespace Viewer.UI.Attributes
                 Resources.AttributeNameEmpty_Label, 
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
+        }
+
+        #endregion
+
+        #region Search View
+        
+        public event EventHandler Search;
+
+        public string SearchQuery
+        {
+            get => SearchTextBox.Text;
+            set => SearchTextBox.Text = value;
         }
 
         #endregion
@@ -320,15 +331,7 @@ namespace Viewer.UI.Attributes
         {
             SaveAttributes?.Invoke(sender, e);
         }
-
-        private void SearchTextBox_TextChanged(object sender, EventArgs e)
-        {
-            FilterAttributes?.Invoke(sender, new FilterEventArgs
-            {
-                FilterText = SearchTextBox.Text
-            });
-        }
-
+        
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -336,6 +339,11 @@ namespace Viewer.UI.Attributes
                 e.SuppressKeyPress = true;
                 SearchTextBox.Text = ""; // reset the filter
             }
+        }
+
+        private void SearchTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Search?.Invoke(sender, e);
         }
 
         protected override string GetPersistString()

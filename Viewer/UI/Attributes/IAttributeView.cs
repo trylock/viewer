@@ -42,14 +42,6 @@ namespace Viewer.UI.Attributes
         public SortColumn Column { get; set; }
     }
 
-    public class FilterEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Text of the filter
-        /// </summary>
-        public string FilterText { get; set; }
-    }
-
     public enum SortColumn
     {
         None,
@@ -85,7 +77,20 @@ namespace Viewer.UI.Attributes
         Custom
     }
 
-    public interface IAttributeView : IWindowView
+    public interface ISearchView
+    {
+        /// <summary>
+        /// Event called when user enters a new query
+        /// </summary>
+        event EventHandler Search;
+
+        /// <summary>
+        /// Current search query
+        /// </summary>
+        string SearchQuery { get; set; }
+    }
+
+    public interface IAttributeView : ISearchView, IWindowView
     {
         /// <summary>
         /// User requested to save all attributes to selected files.
@@ -107,11 +112,6 @@ namespace Viewer.UI.Attributes
         /// </summary>
         event EventHandler<SortEventArgs> SortAttributes;
 
-        /// <summary>
-        /// Filter attributes by name
-        /// </summary>
-        event EventHandler<FilterEventArgs> FilterAttributes;
-        
         /// <summary>
         /// Attributes shown in the view
         /// </summary>

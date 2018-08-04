@@ -25,10 +25,14 @@ namespace Viewer.UI.Presentation
 
         protected override ExportLifetimeContext<IPresentationView> ViewLifetime { get; }
 
+        /// <summary>
+        /// Number of loaded images at any given time
+        /// </summary>
+        public const int WindowSize = 5;
+
         // state
         private readonly List<IEntity> _entities = new List<IEntity>();
-        private Image _image;
-        private int _entityIndex;
+        private ImageWindow _window;
 
         /// <summary>
         /// Last time an image was changed in the presentation
@@ -53,27 +57,24 @@ namespace Viewer.UI.Presentation
         {
             _entities.Clear();
             _entities.AddRange(entities);
-            _entityIndex = index;
+            _window = new ImageWindow(_imageLoader, _entities, WindowSize);
+            await _window.LoadPositionAsync(index);
             await LoadCurrentEntityAsync();
         }
         
         private async Task LoadCurrentEntityAsync()
         {
             // replace selection
-            _selection.Replace(new[]{ _entities[_entityIndex] });
+            _selection.Replace(new[]{ _entities[_window.Index] });
 
             // load new image
-            var entity = _entities[_entityIndex];
+            var entity = _entities[_window.Index];
             try
             {
-                var image = await Task.Run(() => _imageLoader.LoadImage(entity));
-
-                // replace old image with the new one
-                _image?.Dispose();
-                _image = image;
-
+                var image = await _window.Current;
+                
                 // update view
-                View.Picture = _image;
+                View.Picture = image;
                 View.UpdateImage();
             }
             catch (UnauthorizedAccessException)
@@ -92,15 +93,13 @@ namespace Viewer.UI.Presentation
         
         private async void View_NextImage(object sender, EventArgs e)
         {
-            _entityIndex = (_entityIndex + 1) % _entities.Count;
+            _window.TryToMoveForward();
             await LoadCurrentEntityAsync();
         }
 
         private async void View_PrevImage(object sender, EventArgs e)
         {
-            --_entityIndex;
-            if (_entityIndex < 0)
-                _entityIndex = _entities.Count - 1;
+            _window.TryToMoveBackward();
             await LoadCurrentEntityAsync();
         }
 
@@ -140,13 +139,13 @@ namespace Viewer.UI.Presentation
             {
                 return;
             }
-            _selection.Replace(new []{ _entities[_entityIndex] });
+            _selection.Replace(new []{ _entities[_window.Index] });
         }
 
         private void View_CloseView(object sender, EventArgs e)
         {
             _selection.Clear();
-            _image?.Dispose();
+            _window?.Dispose();
         }
     }
 }

@@ -157,6 +157,13 @@ namespace Viewer.IO
         byte[] ReadAllBytes(string path);
 
         /// <summary>
+        /// Read the whole file into main memory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        Task<byte[]> ReadAllBytesAsync(string path);
+
+        /// <summary>
         /// Read the whole file asynchronously
         /// </summary>
         /// <param name="path"></param>
@@ -264,6 +271,24 @@ namespace Viewer.IO
         public byte[] ReadAllBytes(string path)
         {
             return File.ReadAllBytes(path);
+        }
+
+        public async Task<byte[]> ReadAllBytesAsync(string path)
+        {
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, 4096, true))
+            {
+                // read the whole file into main memory
+                var buffer = new byte[stream.Length];
+                int length, offset = 0;
+                do
+                {
+                    // read length can be less than the buffer size 
+                    length = await stream.ReadAsync(buffer, offset, buffer.Length - offset).ConfigureAwait(false);
+                    offset += length;
+                } while (length > 0);
+
+                return buffer;
+            }
         }
 
         public async Task<string> ReadToEndAsync(string path)

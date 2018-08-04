@@ -84,12 +84,6 @@ namespace Viewer.Images
         public ImageLoader(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
-
-            var loaderThread = new Thread(ThumbnailLoaderThread)
-            {
-                IsBackground = true
-            };
-            loaderThread.Start();
         }
 
         /// <summary>
@@ -154,12 +148,11 @@ namespace Viewer.Images
             return Task.Run(() => DecodeImage(new MemoryStream(thumbnail.Value), orientation));
         }
 
-        public Task<Image> LoadImageAsync(IEntity entity)
+        public async Task<Image> LoadImageAsync(IEntity entity)
         {
-            var request = new LoadRequest(entity, GetTransformation(entity));
-            _requests.Push(request);
-            _requestCount.Release();
-            return request.TaskCompletion.Task;
+            var buffer = await _fileSystem.ReadAllBytesAsync(entity.Path).ConfigureAwait(false);
+            var orientation = GetTransformation(entity);
+            return DecodeImage(new MemoryStream(buffer), orientation);
         }
 
         private Image DecodeImage(Stream input, RotateFlipType orientation)
@@ -171,40 +164,6 @@ namespace Viewer.Images
             }
 
             return image;
-        }
-
-        private class LoadRequest
-        {
-            public TaskCompletionSource<Image> TaskCompletion { get; } = new TaskCompletionSource<Image>();
-            public IEntity Entity { get; }
-            public RotateFlipType Orientation { get; }
-
-            public LoadRequest(IEntity entity, RotateFlipType orientation)
-            {
-                Entity = entity;
-                Orientation = orientation;
-            }
-        }
-
-        private readonly ConcurrentStack<LoadRequest> _requests = new ConcurrentStack<LoadRequest>();
-        private readonly SemaphoreSlim _requestCount = new SemaphoreSlim(0);
-
-        private void ThumbnailLoaderThread()
-        {
-            for (;;)
-            {
-                _requestCount.Wait();
-
-                if (!_requests.TryPop(out var request))
-                {
-                    continue; // this should never happen
-                }
-                
-                // load the original image
-                var input = new MemoryStream(_fileSystem.ReadAllBytes(request.Entity.Path));
-                var thumbnail = DecodeImage(input, request.Orientation);
-                request.TaskCompletion.SetResult(thumbnail);
-            }
         }
     }
 }

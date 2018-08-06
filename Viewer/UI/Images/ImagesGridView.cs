@@ -38,11 +38,11 @@ namespace Viewer.UI.Images
 
         public double ThumbnailScale
         {
-            get => 1.0 + (ThumbnailSizeTrackBar.Value - ThumbnailSizeTrackBar.Minimum) /
+            get => (ThumbnailSizeTrackBar.Value - ThumbnailSizeTrackBar.Minimum) /
                    (double)(ThumbnailSizeTrackBar.Maximum - ThumbnailSizeTrackBar.Minimum);
             set
             {
-                if (value < 1.0 || value > 2.0)
+                if (value < 0.0 || value > 1.0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }
@@ -50,7 +50,7 @@ namespace Viewer.UI.Images
                 ThumbnailSizeTrackBar.Value = (int)MathUtils.Lerp(
                     ThumbnailSizeTrackBar.Minimum,
                     ThumbnailSizeTrackBar.Maximum,
-                    value - 1.0
+                    value
                 );
             }
         }

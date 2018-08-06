@@ -40,8 +40,12 @@ namespace Viewer.UI.Images
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
-        private Size _minItemSize = new Size(133, 100);
         private Size _currentItemSize = new Size(133, 100);
+        private Size _minItemSize = new Size(133, 100);
+        private Size MaxItemSize => new Size(
+            _minItemSize.Width * 3,
+            _minItemSize.Height * 3
+        );
 
         /// <summary>
         /// Current state of the rectangle selection
@@ -203,9 +207,11 @@ namespace Viewer.UI.Images
         private Size ComputeThumbnailSize()
         {
             var minimal = _minItemSize;
+            var maximal = MaxItemSize;
+            var weight = View.ThumbnailScale;
             return new Size(
-                (int)(minimal.Width * View.ThumbnailScale),
-                (int)(minimal.Height * View.ThumbnailScale)
+                (int)(MathUtils.Lerp(minimal.Width, maximal.Width, weight)),
+                (int)(MathUtils.Lerp(minimal.Height, maximal.Height, weight))
             );
         }
 

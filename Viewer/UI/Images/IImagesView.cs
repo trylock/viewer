@@ -232,8 +232,8 @@ namespace Viewer.UI.Images
         event EventHandler ThumbnailSizeCommit;
 
         /// <summary>
-        /// Current scale of a thumbnail. It will always be in the [1, 2] internal.
-        /// 1.0 is a minimal thumbnail size, 2.0 is a maximal thumbnail size
+        /// Current scale of a thumbnail. It will always be in the [0, 1] internal.
+        /// 0.0 is the minimal thumbnail size, 1.0 is the maximal thumbnail size
         /// </summary>
         double ThumbnailScale { get; set; }
     }

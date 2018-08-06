@@ -54,7 +54,7 @@
             this.NextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.NextButton.ForeColor = System.Drawing.Color.White;
             this.NextButton.Location = new System.Drawing.Point(540, 0);
-            this.NextButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.NextButton.Margin = new System.Windows.Forms.Padding(2);
             this.NextButton.Name = "NextButton";
             this.NextButton.Size = new System.Drawing.Size(60, 406);
             this.NextButton.TabIndex = 3;
@@ -77,7 +77,7 @@
             this.PrevButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.PrevButton.ForeColor = System.Drawing.Color.White;
             this.PrevButton.Location = new System.Drawing.Point(0, 0);
-            this.PrevButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PrevButton.Margin = new System.Windows.Forms.Padding(2);
             this.PrevButton.Name = "PrevButton";
             this.PrevButton.Size = new System.Drawing.Size(60, 406);
             this.PrevButton.TabIndex = 2;
@@ -98,7 +98,7 @@
             this.PlayPauseButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.PlayPauseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PlayPauseButton.Location = new System.Drawing.Point(178, 0);
-            this.PlayPauseButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PlayPauseButton.Margin = new System.Windows.Forms.Padding(2);
             this.PlayPauseButton.Name = "PlayPauseButton";
             this.PlayPauseButton.Size = new System.Drawing.Size(45, 49);
             this.PlayPauseButton.TabIndex = 0;
@@ -115,7 +115,7 @@
             this.ControlPanel.Controls.Add(this.SpeedTrackBar);
             this.ControlPanel.Controls.Add(this.PlayPauseButton);
             this.ControlPanel.Location = new System.Drawing.Point(197, 357);
-            this.ControlPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ControlPanel.Margin = new System.Windows.Forms.Padding(2);
             this.ControlPanel.Name = "ControlPanel";
             this.ControlPanel.Size = new System.Drawing.Size(225, 47);
             this.ControlPanel.TabIndex = 4;
@@ -154,7 +154,7 @@
             this.SpeedTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SpeedTrackBar.Location = new System.Drawing.Point(0, 4);
-            this.SpeedTrackBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SpeedTrackBar.Margin = new System.Windows.Forms.Padding(2);
             this.SpeedTrackBar.Minimum = 1;
             this.SpeedTrackBar.Name = "SpeedTrackBar";
             this.SpeedTrackBar.Size = new System.Drawing.Size(173, 45);
@@ -166,6 +166,7 @@
             // HideCursorTimer
             // 
             this.HideCursorTimer.Enabled = true;
+            this.HideCursorTimer.Interval = 16;
             this.HideCursorTimer.Tick += new System.EventHandler(this.HideCursorTimer_Tick);
             // 
             // PresentationControl
@@ -177,7 +178,7 @@
             this.Controls.Add(this.NextButton);
             this.Controls.Add(this.PrevButton);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "PresentationControl";
             this.Size = new System.Drawing.Size(600, 406);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PresentationControl_Paint);

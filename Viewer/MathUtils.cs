@@ -43,5 +43,25 @@ namespace Viewer
         {
             return min * (1.0 - param) + max * param;
         }
+
+        /// <summary>
+        /// Clamp value between <paramref name="min"/> and <paramref name="max"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns>
+        ///     <paramref name="min"/> if <paramref name="value"/> is less than <paramref name="min"/>,
+        ///     <paramref name="max"/> if <paramref name="value"/> is more than <paramref name="max"/>,
+        ///     <paramref name="value"/> otherwise
+        /// </returns>
+        public static double Clamp(double value, double min, double max)
+        {
+            if (value < min)
+                return min;
+            if (value > max)
+                return max;
+            return value;
+        }
     }
 }

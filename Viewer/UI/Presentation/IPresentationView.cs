@@ -21,7 +21,26 @@ namespace Viewer.UI.Presentation
         public IEntity Entity { get; set; }
     }
 
-    public interface IPresentationView : IWindowView
+    public interface IZoomableView
+    {
+        /// <summary>
+        /// Event triggered when user tries to zoom in by one step
+        /// </summary>
+        event EventHandler ZoomIn;
+
+        /// <summary>
+        /// Event triggered when user tries to zoom out by one step
+        /// </summary>
+        event EventHandler ZoomOut;
+
+        /// <summary>
+        /// Current zoom (1.0 is original size and it is also the default value).
+        /// It has to be a non-negative number.
+        /// </summary>
+        double Zoom { get; set; }
+    }
+
+    public interface IPresentationView : IZoomableView, IWindowView
     {
         /// <summary>
         /// Event called when user requests to load next image

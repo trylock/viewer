@@ -88,6 +88,24 @@ namespace Viewer.UI.Presentation
             PresentationControl.Refresh();
         }
 
+        public event EventHandler ZoomIn
+        {
+            add => PresentationControl.ZoomIn += value;
+            remove => PresentationControl.ZoomIn -= value;
+        }
+
+        public event EventHandler ZoomOut
+        {
+            add => PresentationControl.ZoomOut += value;
+            remove => PresentationControl.ZoomOut -= value;
+        }
+
+        public double Zoom
+        {
+            get => PresentationControl.Zoom;
+            set => PresentationControl.Zoom = value;
+        }
+
         #endregion
     }
 }

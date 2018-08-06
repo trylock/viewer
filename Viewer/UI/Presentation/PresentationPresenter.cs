@@ -74,6 +74,7 @@ namespace Viewer.UI.Presentation
                 var image = await _window.Current;
                 
                 // update view
+                View.Zoom = 1.0;
                 View.Picture = image;
                 View.UpdateImage();
             }
@@ -146,6 +147,21 @@ namespace Viewer.UI.Presentation
         {
             _selection.Clear();
             _window?.Dispose();
+        }
+
+        private const double ScaleStep = 1.8;
+        private const int StepCount = 5;
+
+        private void View_ZoomIn(object sender, EventArgs e)
+        {
+            View.Zoom = Math.Min(View.Zoom * ScaleStep, Math.Pow(ScaleStep, StepCount));
+            View.UpdateImage();
+        }
+
+        private void View_ZoomOut(object sender, EventArgs e)
+        {
+            View.Zoom = Math.Max(View.Zoom / ScaleStep, Math.Pow(ScaleStep, -StepCount));
+            View.UpdateImage();
         }
     }
 }

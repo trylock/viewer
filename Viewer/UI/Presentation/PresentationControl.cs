@@ -27,6 +27,9 @@ namespace Viewer.UI.Presentation
             remove => HideCursorTimer.Tick -= value;
         }
 
+        public event EventHandler ZoomIn;
+        public event EventHandler ZoomOut;
+
         public Image Picture { get; set; }
         
         private bool _isPlaying = false;
@@ -62,6 +65,21 @@ namespace Viewer.UI.Presentation
                     ToWindow();
             }
         }
+
+        private double _zoom = 1.0;
+        public double Zoom
+        {
+            get => _zoom;
+            set
+            {
+                if (value < 0.0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                _zoom = value;
+            }
+        } 
 
         public int CursorHideDelay { get; set; } = 1000;
 
@@ -145,7 +163,7 @@ namespace Viewer.UI.Presentation
         }
 
         #region Events
-
+        
         private void PresentationControl_Paint(object sender, PaintEventArgs e)
         {
             if (Picture == null)
@@ -157,19 +175,21 @@ namespace Viewer.UI.Presentation
             {
                 e.Graphics.FillRectangle(brush, e.ClipRectangle);
             }
-
-            // find out the image size
-            var clientSize = ClientSize;
-            var scaledSize = ThumbnailGenerator.GetThumbnailSize(Picture.Size, clientSize);
-            var size = new Size(
-                Math.Min(scaledSize.Width, Picture.Size.Width),
-                Math.Min(scaledSize.Height, Picture.Size.Height));
-            var location = new Point(
-                (clientSize.Width - size.Width) / 2,
-                (clientSize.Height - size.Height) / 2);
+            
+            // figure out the draw area bounds
+            var scaledSize = ThumbnailGenerator.GetThumbnailSize(Picture.Size, ClientSize);
+            var drawSize = new Size(
+                (int) (scaledSize.Width * Zoom),
+                (int) (scaledSize.Height * Zoom)
+            );
+            var drawLocation = new Point(
+                ClientSize.Width / 2 - drawSize.Width / 2,
+                ClientSize.Height / 2 - drawSize.Height / 2
+            );
+            var drawBounds = new Rectangle(drawLocation, drawSize);
 
             // draw the image
-            e.Graphics.DrawImage(Picture, new Rectangle(location, size));
+            e.Graphics.DrawImage(Picture, drawBounds);
         }
 
         private void PresentationControl_Resize(object sender, EventArgs e)
@@ -197,11 +217,25 @@ namespace Viewer.UI.Presentation
             // move to the next/previous image
             if (e.Delta >= 120)
             {
-                NextImage?.Invoke(sender, e);
+                if (ModifierKeys.HasFlag(Keys.Control))
+                {
+                    ZoomIn?.Invoke(sender, e);
+                }
+                else
+                {
+                    NextImage?.Invoke(sender, e);
+                }
             }
             else if (e.Delta <= -120)
             {
-                PrevImage?.Invoke(sender, e);
+                if (ModifierKeys.HasFlag(Keys.Control))
+                {
+                    ZoomOut?.Invoke(sender, e);
+                }
+                else
+                {
+                    PrevImage?.Invoke(sender, e);
+                }
             }
         }
 

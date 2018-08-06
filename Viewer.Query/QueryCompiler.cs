@@ -82,7 +82,7 @@ namespace Viewer.Query
         public IQuery Compile(IParseTree tree)
         {
             var query = Visit(tree).Query;
-            return query.WithText(tree.GetText());
+            return query;
         }
 
         public CompilationResult Visit(IParseTree tree)
@@ -611,6 +611,7 @@ namespace Viewer.Query
                 var query = parser.queryExpression();
                 var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, errorListener);
                 result = compiler.Compile(query);
+                result = result.WithText(input.ToString());
             }
             catch (ParseCanceledException)
             {

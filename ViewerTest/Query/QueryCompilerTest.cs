@@ -530,5 +530,13 @@ namespace ViewerTest.Query
             _factory.Verify(mock => mock.CreateQuery("a"), Times.Once);
             _factory.Verify(mock => mock.CreateQuery("b"), Times.Once);
         }
+
+        [TestMethod]
+        public void Compile_CorrectlySetQueryText()
+        {
+            _compiler.Compile(new StringReader("select \"a\" where tag"), new NullErrorListener());
+
+            _query.Verify(mock => mock.WithText("select \"a\" where tag"), Times.Once);
+        }
     }
 }

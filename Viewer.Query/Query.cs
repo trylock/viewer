@@ -178,6 +178,11 @@ namespace Viewer.Query
             Cancellation = cancellation;
         }
 
+        public override string ToString()
+        {
+            return Text;
+        }
+
         public IEnumerator<IEntity> GetEnumerator()
         {
             return _source.GetEnumerator();

@@ -308,11 +308,18 @@ namespace Viewer.UI.Images
 
         private void View_SelectItem(object sender, EntityEventArgs e)
         {
-            var item = View.Items[e.Index];
-            if (!_rectangleSelection.Contains(item))
+            var strategy = SelectionStrategy.Replace;
+            if (_isShift)
             {
-                ChangeSelection(new[] { e.Index });
+                strategy = SelectionStrategy.Union;
             }
+            else if (_isControl)
+            {
+                strategy = SelectionStrategy.SymetricDifference;
+            }
+            _rectangleSelection.Begin(Point.Empty, strategy);
+            ChangeSelection(new[] { e.Index });
+            _rectangleSelection.End();
         }
 
         private void View_BeginDragItems(object sender, EventArgs e)

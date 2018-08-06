@@ -97,14 +97,42 @@ namespace Viewer.UI.Presentation
             }
         }
 
+        /// <summary>
+        /// Find a screen on which lies most area of this component
+        /// </summary>
+        /// <returns>Screen of the component</returns>
+        private Screen GetCurrentScreen()
+        {
+            var screenBounds = new Rectangle(PointToScreen(Location), Bounds.Size);
+            Screen currentScreen = null;
+            int maxIntersection = -1;
+            foreach (var screen in Screen.AllScreens)
+            {
+                var intersectionArea = Rectangle.Intersect(screen.Bounds, screenBounds).Area();
+                if (intersectionArea > maxIntersection)
+                {
+                    maxIntersection = intersectionArea;
+                    currentScreen = screen;
+                }
+            }
+
+            return currentScreen;
+        }
+
         private Control _windowParent;
 
         private void ToFullscreen()
         {
+            var screen = GetCurrentScreen();
             _windowParent = Parent;
             Parent = _fullscreenForm;
             Invalidate();
             Focus();
+
+            // in fullscreen state, we won't be able to modify location
+            _fullscreenForm.WindowState = FormWindowState.Normal;
+            _fullscreenForm.Location = screen.WorkingArea.Location;
+            _fullscreenForm.WindowState = FormWindowState.Maximized;
             _fullscreenForm.Visible = true;
         }
 

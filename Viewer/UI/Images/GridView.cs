@@ -29,7 +29,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Size between thumbnail and an edge of an item
         /// </summary>
-        public Size ItemPadding { get; set; } = new Size(8, 8);
+        public Size ItemPadding { get; set; } = new Size(5, 5);
 
         /// <summary>
         /// Size of a cell in the grid
@@ -105,7 +105,7 @@ namespace Viewer.UI.Images
 
         public GridView()
         {
-            Grid = new Grid { CellMargin = new Size(5, 5) };
+            Grid = new Grid { CellMargin = new Size(10, 10) };
             Grid.Resize(ClientSize.Width);
 
             InitializeComponent();

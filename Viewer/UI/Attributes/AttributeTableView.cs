@@ -170,7 +170,7 @@ namespace Viewer.UI.Attributes
                 _row.Cells.Add(new DataGridViewTextBoxCell
                 {
                     ValueType = typeof(string),
-                    Value = attr.Value
+                    Value = attr.Value,
                 });
                 AddTypeColumn(AttributeType.String);
             }
@@ -241,17 +241,17 @@ namespace Viewer.UI.Attributes
             switch (type)
             {
                 case AttributeType.Int:
-                    return new Attribute(name, new IntValue(value as int?));
+                    return new Attribute(name, new IntValue(value as int? ?? 0));
                 case AttributeType.Double:
-                    return new Attribute(name, new RealValue(value as double?));
+                    return new Attribute(name, new RealValue(value as double? ?? 0));
                 case AttributeType.String:
-                    return new Attribute(name, new StringValue(value as string));
+                    return new Attribute(name, new StringValue(value as string ?? ""));
                 case AttributeType.DateTime:
-                    return new Attribute(name, new DateTimeValue(value as DateTime?));
+                    return new Attribute(name, new DateTimeValue(value as DateTime? ?? DateTime.Now));
                 case null:
                     return null;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(type));
             }
         }
 

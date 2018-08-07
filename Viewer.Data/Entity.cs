@@ -157,7 +157,14 @@ namespace Viewer.Data
             _attrsLock.EnterWriteLock();
             try
             {
-                _attrs[attr.Name] = attr;
+                if (attr.Value.IsNull)
+                {
+                    _attrs.Remove(attr.Name);
+                }
+                else
+                {
+                    _attrs[attr.Name] = attr;
+                }
             }
             finally
             {

@@ -486,8 +486,8 @@ namespace ViewerTest.Query
         public void Compile_View()
         {
             _queryViewRepository
-                .Setup(mock => mock["view"])
-                .Returns("select \"path\" where test1 = 1");
+                .Setup(mock => mock.Find("view"))
+                .Returns(new QueryView("view", "select \"path\" where test1 = 1", null));
 
             _runtime
                 .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(1)))

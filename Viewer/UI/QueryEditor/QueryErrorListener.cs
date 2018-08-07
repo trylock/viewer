@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Viewer.Query;
 using Viewer.UI.Errors;
 
-namespace Viewer.UI.Query
+namespace Viewer.UI.QueryEditor
 {
     [Export(typeof(IErrorListener))]
     public class QueryErrorListener : IErrorListener

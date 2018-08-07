@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -15,6 +13,7 @@ using System.Windows.Forms;
 using Viewer.Properties;
 using Viewer.UI;
 using WeifenLuo.WinFormsUI.Docking;
+using IComponent = Viewer.UI.IComponent;
 
 namespace Viewer
 {

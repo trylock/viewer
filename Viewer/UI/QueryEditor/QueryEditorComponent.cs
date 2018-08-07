@@ -10,27 +10,27 @@ using Viewer.Properties;
 using Viewer.UI.Explorer;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer.UI.Query
+namespace Viewer.UI.QueryEditor
 {
     [Export(typeof(IComponent))]
-    public class QueryComponent : IComponent
+    public class QueryEditorComponent : IComponent
     {
         private readonly IEditor _editor;
 
         [ImportingConstructor]
-        public QueryComponent(IEditor editor)
+        public QueryEditorComponent(IEditor editor)
         {
             _editor = editor;
         }
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction("Query", () => _editor.OpenNew(DockState.Document), Resources.QueryComponentIcon.ToBitmap());
+            app.AddMenuItem(new []{ "View", "Query" }, () => _editor.OpenNew(DockState.Document), Resources.QueryComponentIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)
         {
-            if (persistString.StartsWith(typeof(QueryView).FullName))
+            if (persistString.StartsWith(typeof(QueryEditorView).FullName))
             {
                 var parts = persistString.Split(';');
                 var content = parts.Length >= 2 ? parts[1] : "";

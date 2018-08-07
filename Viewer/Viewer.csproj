@@ -88,7 +88,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\ConcurrentSortedSet.cs" />
+    <Compile Include="Collections\SortedList.cs" />
     <Compile Include="Fraction.cs" />
+    <Compile Include="Images\ImageLoader.cs" />
+    <Compile Include="Images\ThumbnailGenerator.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -97,6 +101,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RectangleExtensions.cs" />
+    <Compile Include="UI\About\AboutComponent.cs" />
+    <Compile Include="UI\About\AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\About\AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ApplicationState.cs" />
     <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesComponent.cs" />
@@ -107,28 +118,25 @@
     <Compile Include="UI\Attributes\AttributeTableView.Designer.cs">
       <DependentUpon>AttributeTableView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Forms\DateTimeCell.cs" />
     <Compile Include="UI\Attributes\IAttributeView.cs" />
+    <Compile Include="UI\ClipboardService.cs" />
+    <Compile Include="UI\Explorer\ExplorerComponent.cs" />
     <Compile Include="UI\Forms\BufferedDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\ClipboardService.cs" />
-    <Compile Include="UI\Explorer\ExplorerComponent.cs" />
+    <Compile Include="UI\Forms\ButtonCell.cs" />
+    <Compile Include="UI\Forms\DateTimeCell.cs" />
     <Compile Include="UI\IComponent.cs" />
-    <Compile Include="Collections\ConcurrentSortedSet.cs" />
     <Compile Include="UI\Images\GridView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\Images\GridView.Designer.cs">
       <DependentUpon>GridView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="UI\Images\ImagesComponent.cs" />
     <Compile Include="UI\Images\LazyThumbnail.cs" />
     <Compile Include="UI\Images\QueryEvaluator.cs" />
     <Compile Include="UI\Images\RectangleSelection.cs" />
-    <Compile Include="UI\Forms\ButtonCell.cs" />
-    <Compile Include="Collections\SortedList.cs" />
     <Compile Include="UI\Images\ThumbnailSizeCalculator.cs" />
     <Compile Include="UI\Errors\IErrorListView.cs" />
     <Compile Include="UI\Errors\ErrorList.cs" />
@@ -140,6 +148,7 @@
     <Compile Include="UI\Errors\ErrorListView.Designer.cs">
       <DependentUpon>ErrorListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\IWindowView.cs" />
     <Compile Include="UI\Presentation\IPresentationView.cs" />
     <Compile Include="UI\Presentation\ImageWindow.cs" />
     <Compile Include="UI\Presentation\PresentationComponent.cs" />
@@ -157,16 +166,16 @@
       <DependentUpon>PresentationView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Presenter.cs" />
-    <Compile Include="UI\Query\Editor.cs" />
-    <Compile Include="UI\Query\IQueryView.cs" />
-    <Compile Include="UI\Query\QueryComponent.cs" />
-    <Compile Include="UI\Query\QueryErrorListener.cs" />
-    <Compile Include="UI\Query\QueryPresenter.cs" />
-    <Compile Include="UI\Query\QueryView.cs">
+    <Compile Include="UI\QueryEditor\Editor.cs" />
+    <Compile Include="UI\QueryEditor\IQueryEditorView.cs" />
+    <Compile Include="UI\QueryEditor\QueryEditorComponent.cs" />
+    <Compile Include="UI\QueryEditor\QueryErrorListener.cs" />
+    <Compile Include="UI\QueryEditor\QueryEditorPresenter.cs" />
+    <Compile Include="UI\QueryEditor\QueryEditorView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Query\QueryView.Designer.cs">
-      <DependentUpon>QueryView.cs</DependentUpon>
+    <Compile Include="UI\QueryEditor\QueryEditorView.Designer.cs">
+      <DependentUpon>QueryEditorView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\Settings.cs" />
     <Compile Include="UI\Settings\SettingsComponent.cs" />
@@ -202,8 +211,6 @@
     <Compile Include="UI\Explorer\IDirectoryTreeView.cs" />
     <Compile Include="UI\Images\ImagesPresenter.cs" />
     <Compile Include="UI\Images\IImagesView.cs" />
-    <Compile Include="Images\ThumbnailGenerator.cs" />
-    <Compile Include="UI\IWindowView.cs" />
     <Compile Include="ViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -216,6 +223,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\About\AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Attributes\AttributeTableView.resx">
       <DependentUpon>AttributeTableView.cs</DependentUpon>
@@ -238,8 +248,8 @@
     <EmbeddedResource Include="UI\Presentation\PresentationView.resx">
       <DependentUpon>PresentationView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Query\QueryView.resx">
-      <DependentUpon>QueryView.cs</DependentUpon>
+    <EmbeddedResource Include="UI\QueryEditor\QueryEditorView.resx">
+      <DependentUpon>QueryEditorView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Tasks\TaskLoaderView.resx">
       <DependentUpon>TaskLoaderView.cs</DependentUpon>

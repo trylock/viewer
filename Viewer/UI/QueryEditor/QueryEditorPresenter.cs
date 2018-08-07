@@ -12,10 +12,10 @@ using Viewer.Query;
 using Viewer.UI.Explorer;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer.UI.Query
+namespace Viewer.UI.QueryEditor
 {
     [Export]
-    public class QueryPresenter : Presenter<IQueryView>
+    public class QueryEditorPresenter : Presenter<IQueryEditorView>
     {
         private readonly IApplicationState _appEvents;
         private readonly IFileSystemErrorView _dialogErrorView;
@@ -23,27 +23,41 @@ namespace Viewer.UI.Query
         private readonly IErrorListener _queryErrorListener;
         private readonly IEditor _editor;
 
-        protected override ExportLifetimeContext<IQueryView> ViewLifetime { get; }
+        protected override ExportLifetimeContext<IQueryEditorView> ViewLifetime { get; }
 
         private bool _isUnsaved = false;
         
         [ImportingConstructor]
-        public QueryPresenter(
-            ExportFactory<IQueryView> viewFactory, 
+        public QueryEditorPresenter(
+            ExportFactory<IQueryEditorView> viewFactory, 
             IApplicationState appEvents, 
             IFileSystemErrorView dialogErrorView, 
             IQueryCompiler queryCompiler, 
+            IQueryViewRepository queryViews,
             IErrorListener queryErrorListener,
             IEditor editor)
         {
             ViewLifetime = viewFactory.CreateExport();
             _dialogErrorView = dialogErrorView;
             _queryCompiler = queryCompiler;
+            _queryCompiler.Views.Changed += ViewsOnChanged;
             _queryErrorListener = queryErrorListener;
             _appEvents = appEvents;
             _editor = editor;
 
             SubscribeTo(View, "View");
+            ViewsOnChanged(this, EventArgs.Empty);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            _queryCompiler.Views.Changed -= ViewsOnChanged;
+        }
+
+        private void ViewsOnChanged(object sender, EventArgs e)
+        {
+            View.Views = _queryCompiler.Views;
         }
 
         /// <summary>
@@ -108,12 +122,8 @@ namespace Viewer.UI.Query
             // save the query to its file
             try
             {
-                using (var stream = new FileStream(View.FullPath, FileMode.Create, FileAccess.Write))
-                {
-                    var data = Encoding.UTF8.GetBytes(View.Query);
-                    await stream.WriteAsync(data, 0, data.Length);
-                }
-
+                await _editor.SaveAsync(View.FullPath, View.Query);
+                
                 MarkSaved();
             }
             catch (UnauthorizedAccessException)

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -57,9 +58,14 @@ namespace Viewer.UI.Settings
     public interface ISettings
     {
         /// <summary>
-        /// Event called whenever the settings changes 
+        /// Event called whenever the settings change
         /// </summary>
         event EventHandler Changed;
+
+        /// <summary>
+        /// Path to a directory with views
+        /// </summary>
+        string QueryViewDirectoryPath { get; }
 
         /// <summary>
         /// List of applications
@@ -85,6 +91,7 @@ namespace Viewer.UI.Settings
     {
         public event EventHandler Changed;
 
+        public string QueryViewDirectoryPath { get; private set; } = "./views";
         public ICollection<ExternalApplication> Applications { get; private set; } = new List<ExternalApplication>();
 
         public void Serialize(Stream output)
@@ -114,9 +121,11 @@ namespace Viewer.UI.Settings
 
         public void ReadXml(XmlReader reader)
         {
-            Applications.Clear();
 
             reader.ReadStartElement("Settings");
+
+            // read applications
+            Applications.Clear();
             reader.ReadStartElement("Applications");
 
             while (reader.IsStartElement())
@@ -133,11 +142,16 @@ namespace Viewer.UI.Settings
             }
 
             reader.ReadEndElement();
+
+            // read view directory path
+            QueryViewDirectoryPath = reader.ReadElementContentAsString("QueryViewDirectoryPath", "");
+
             reader.ReadEndElement();
         }
 
         public void WriteXml(XmlWriter writer)
         {
+            // write ápplications
             writer.WriteStartElement("Applications");
 
             foreach (var item in Applications)
@@ -150,6 +164,9 @@ namespace Viewer.UI.Settings
             }
 
             writer.WriteEndElement();
+
+            // save view directory path
+            writer.WriteElementString("QueryViewDirectoryPath", QueryViewDirectoryPath);
         }
     }
 }

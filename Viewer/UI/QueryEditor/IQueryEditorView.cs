@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Viewer.UI.Query
+namespace Viewer.UI.QueryEditor
 {
     public class OpenQueryEventArgs : EventArgs
     {
@@ -29,7 +29,7 @@ namespace Viewer.UI.Query
         event EventHandler<DragEventArgs> OnDrop;
     }
 
-    public interface IQueryView : IDropView, IWindowView
+    public interface IQueryEditorView : IDropView, IWindowView
     {
         /// <summary>
         /// Event called when user requests to run the query
@@ -50,6 +50,11 @@ namespace Viewer.UI.Query
         /// Event called when user requests to open a new query
         /// </summary>
         event EventHandler<OpenQueryEventArgs> OpenQuery;
+
+        /// <summary>
+        /// List of query views
+        /// </summary>
+        IEnumerable<Viewer.Query.QueryView> Views { get; set; }
 
         /// <summary>
         /// Full path to a file which contains this query or

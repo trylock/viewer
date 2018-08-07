@@ -125,7 +125,6 @@
     <Compile Include="Query\RuntimeTest.cs" />
     <Compile Include="Query\ValueConverterTest.cs" />
     <Compile Include="UI\Attributes\AttributeManagerTest.cs" />
-    <Compile Include="UI\Attributes\AttributesPresenterTest.cs" />
     <Compile Include="UI\ClipboardServiceMock.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
     <Compile Include="UI\Images\LazyImageTest.cs" />

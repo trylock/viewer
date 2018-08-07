@@ -53,7 +53,7 @@ namespace Viewer.IO
             _parts = ParsePattern(directoryPattern);
         }
 
-        private List<string> ParsePattern(string directoryPattern)
+        private static List<string> ParsePattern(string directoryPattern)
         {
             var parts = new List<string>();
             var patternParts = PathUtils.Split(directoryPattern);

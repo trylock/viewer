@@ -212,6 +212,7 @@ namespace Viewer.UI.Presentation
                 _isCursorHidden = false;
             }
         }
+
         private void PresentationControl_MouseWheel(object sender, MouseEventArgs e)
         {
             // move to the next/previous image
@@ -249,6 +250,14 @@ namespace Viewer.UI.Presentation
             }
         }
 
+        private void HideCursorTimer_Tick(object sender, EventArgs e)
+        {
+            if (IsFullscreen)
+            {
+                HideCursor();
+            }
+        }
+
         private void PresentationControl_MouseMove(object sender, MouseEventArgs e)
         {
             PrevButton.Visible = e.Location.X - Location.X <= PrevButton.Width;
@@ -260,14 +269,6 @@ namespace Viewer.UI.Presentation
                 ShowCursor();
             }
             _lastCursorLocation = e.Location;
-        }
-        
-        private void HideCursorTimer_Tick(object sender, EventArgs e)
-        {
-            if (IsFullscreen)
-            {
-                HideCursor();
-            }
         }
 
         private void PresentationControl_KeyDown(object sender, KeyEventArgs e)

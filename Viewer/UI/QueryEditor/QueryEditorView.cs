@@ -9,13 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ScintillaNET;
+using Viewer.Properties;
 
-namespace Viewer.UI.Query
+namespace Viewer.UI.QueryEditor
 {
-    [Export(typeof(IQueryView))]
-    public partial class QueryView : WindowView, IQueryView
+    [Export(typeof(IQueryEditorView))]
+    internal partial class QueryEditorView : WindowView, IQueryEditorView
     {
-        public QueryView()
+        public QueryEditorView()
         {
             InitializeComponent();
 
@@ -53,6 +54,20 @@ namespace Viewer.UI.Query
         public event EventHandler SaveQuery;
         public event EventHandler<OpenQueryEventArgs> OpenQuery;
         public string FullPath { get; set; }
+        
+        public IEnumerable<Viewer.Query.QueryView> Views
+        {
+            get => QueryViewComboBox.Items.OfType<Viewer.Query.QueryView>();
+            set
+            {
+                QueryViewComboBox.DisplayMember = "Name";
+                QueryViewComboBox.Items.Clear();
+                foreach (var item in value)
+                {
+                    QueryViewComboBox.Items.Add(item);
+                }
+            }
+        }
 
         public string Query
         {
@@ -126,6 +141,16 @@ namespace Viewer.UI.Query
         protected override string GetPersistString()
         {
             return base.GetPersistString() + ";" + Query + ";" + (FullPath ?? "");
+        }
+
+        private void QueryViewComboBox_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var view = QueryViewComboBox.SelectedItem as Viewer.Query.QueryView;
+            if (view == null)
+            {
+                return;
+            }
+            OpenQuery?.Invoke(this, new OpenQueryEventArgs(view.Path));
         }
     }
 }

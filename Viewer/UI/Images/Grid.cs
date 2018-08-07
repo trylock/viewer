@@ -63,7 +63,7 @@ namespace Viewer.UI.Images
         /// </summary>
         public Rectangle Bounds => new Rectangle(Location, Size);
 
-        private Grid _grid;
+        private readonly Grid _grid;
         
         public GridCell(Grid grid, int row, int column)
         {

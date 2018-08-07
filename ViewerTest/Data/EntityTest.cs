@@ -22,7 +22,7 @@ namespace ViewerTest.Data
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42)));
             Assert.IsNotNull(attrs.GetAttribute("test"));
             Assert.AreEqual(1, attrs.Count);
-            Assert.AreEqual(42, ((IntValue)attrs.GetAttribute("test").Value).Value);
+            Assert.AreEqual(42, attrs.GetValue<IntValue>("test").Value);
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace ViewerTest.Data
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42)));
             Assert.IsNotNull(attrs.GetAttribute("test"));
             Assert.AreEqual(1, attrs.Count);
-            Assert.AreEqual(42, ((IntValue)attrs.GetAttribute("test").Value).Value);
+            Assert.AreEqual(42, attrs.GetValue<IntValue>("test").Value);
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace ViewerTest.Data
             IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42)));
 
-            var attr = (IntValue) attrs.GetAttribute("test").Value;
+            var attr = attrs.GetValue<IntValue>("test").Value;
             Assert.AreEqual(42, attr.Value);
         }
 
@@ -100,7 +100,7 @@ namespace ViewerTest.Data
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42)));
 
             attrs = attrs.SetAttribute(new Attribute("test", new StringValue("value")));
-            Assert.AreEqual("value", ((StringValue)attrs.GetAttribute("test").Value).Value);
+            Assert.AreEqual("value", attrs.GetValue<StringValue>("test").Value);
         }
     }
 }

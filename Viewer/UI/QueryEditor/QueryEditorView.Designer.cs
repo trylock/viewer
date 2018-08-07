@@ -1,8 +1,8 @@
 ﻿using ScintillaNET;
 
-namespace Viewer.UI.Query
+namespace Viewer.UI.QueryEditor
 {
-    partial class QueryView
+    partial class QueryEditorView
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,10 +30,12 @@ namespace Viewer.UI.Query
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryEditorView));
             this.TablePanel = new System.Windows.Forms.TableLayoutPanel();
             this.QueryTextBox = new ScintillaNET.Scintilla();
             this.ControlBarPanel = new System.Windows.Forms.Panel();
+            this.QueryViewLabel = new System.Windows.Forms.Label();
+            this.QueryViewComboBox = new System.Windows.Forms.ComboBox();
             this.SaveButton = new System.Windows.Forms.Button();
             this.OpenButton = new System.Windows.Forms.Button();
             this.RunButton = new System.Windows.Forms.Button();
@@ -56,7 +58,7 @@ namespace Viewer.UI.Query
             this.TablePanel.RowCount = 2;
             this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.TablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.TablePanel.Size = new System.Drawing.Size(470, 272);
+            this.TablePanel.Size = new System.Drawing.Size(779, 393);
             this.TablePanel.TabIndex = 0;
             // 
             // QueryTextBox
@@ -68,7 +70,7 @@ namespace Viewer.UI.Query
             this.QueryTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.QueryTextBox.Name = "QueryTextBox";
             this.QueryTextBox.ScrollWidth = 200;
-            this.QueryTextBox.Size = new System.Drawing.Size(466, 240);
+            this.QueryTextBox.Size = new System.Drawing.Size(775, 361);
             this.QueryTextBox.TabIndex = 0;
             this.QueryTextBox.TextChanged += new System.EventHandler(this.QueryTextBox_TextChanged);
             this.QueryTextBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.QueryTextBox_DragDrop);
@@ -77,15 +79,39 @@ namespace Viewer.UI.Query
             // 
             // ControlBarPanel
             // 
+            this.ControlBarPanel.Controls.Add(this.QueryViewLabel);
+            this.ControlBarPanel.Controls.Add(this.QueryViewComboBox);
             this.ControlBarPanel.Controls.Add(this.SaveButton);
             this.ControlBarPanel.Controls.Add(this.OpenButton);
             this.ControlBarPanel.Controls.Add(this.RunButton);
             this.ControlBarPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ControlBarPanel.Location = new System.Drawing.Point(2, 246);
+            this.ControlBarPanel.Location = new System.Drawing.Point(2, 367);
             this.ControlBarPanel.Margin = new System.Windows.Forms.Padding(2);
             this.ControlBarPanel.Name = "ControlBarPanel";
-            this.ControlBarPanel.Size = new System.Drawing.Size(466, 24);
+            this.ControlBarPanel.Size = new System.Drawing.Size(775, 24);
             this.ControlBarPanel.TabIndex = 1;
+            // 
+            // QueryViewLabel
+            // 
+            this.QueryViewLabel.AutoSize = true;
+            this.QueryViewLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.QueryViewLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.QueryViewLabel.Location = new System.Drawing.Point(65, 5);
+            this.QueryViewLabel.Name = "QueryViewLabel";
+            this.QueryViewLabel.Size = new System.Drawing.Size(49, 13);
+            this.QueryViewLabel.TabIndex = 5;
+            this.QueryViewLabel.Text = "VIEWS:";
+            // 
+            // QueryViewComboBox
+            // 
+            this.QueryViewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.QueryViewComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.QueryViewComboBox.FormattingEnabled = true;
+            this.QueryViewComboBox.Location = new System.Drawing.Point(120, 1);
+            this.QueryViewComboBox.Name = "QueryViewComboBox";
+            this.QueryViewComboBox.Size = new System.Drawing.Size(121, 21);
+            this.QueryViewComboBox.TabIndex = 4;
+            this.QueryViewComboBox.SelectionChangeCommitted += new System.EventHandler(this.QueryViewComboBox_SelectionChangeCommitted);
             // 
             // SaveButton
             // 
@@ -124,7 +150,7 @@ namespace Viewer.UI.Query
             this.RunButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.RunButton.FlatAppearance.BorderSize = 0;
             this.RunButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RunButton.Location = new System.Drawing.Point(437, 0);
+            this.RunButton.Location = new System.Drawing.Point(746, 0);
             this.RunButton.Margin = new System.Windows.Forms.Padding(2);
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(26, 24);
@@ -136,18 +162,23 @@ namespace Viewer.UI.Query
             // 
             this.OpenDialog.FileName = "openFileDialog1";
             // 
+            // SaveDialog
+            // 
+            this.SaveDialog.DefaultExt = "vql";
+            // 
             // QueryView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(470, 272);
+            this.ClientSize = new System.Drawing.Size(779, 393);
             this.Controls.Add(this.TablePanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "QueryView";
+            this.Name = "QueryEditorView";
             this.Text = "Query";
             this.TablePanel.ResumeLayout(false);
             this.ControlBarPanel.ResumeLayout(false);
+            this.ControlBarPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -162,5 +193,7 @@ namespace Viewer.UI.Query
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.OpenFileDialog OpenDialog;
         private System.Windows.Forms.SaveFileDialog SaveDialog;
+        private System.Windows.Forms.ComboBox QueryViewComboBox;
+        private System.Windows.Forms.Label QueryViewLabel;
     }
 }

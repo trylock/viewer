@@ -25,9 +25,10 @@ namespace Viewer.UI.Explorer
         public void OnStartup(IViewerApplication app)
         {
             app.AddMenuItem(new []{ "View", Resources.ExplorerWindowName }, () => ShowExplorer(), Resources.ExplorerComponentIcon.ToBitmap());
+            app.AddLayoutDeserializeCallback(Deserialize);
         }
 
-        public IDockContent Deserialize(string persistString)
+        private IDockContent Deserialize(string persistString)
         {
             if (persistString == typeof(DirectoryTreeView).FullName)
             {

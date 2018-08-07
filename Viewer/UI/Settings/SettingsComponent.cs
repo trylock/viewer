@@ -25,11 +25,6 @@ namespace Viewer.UI.Settings
         {
             LoadSettings(Resources.SettingsFilePath);
         }
-
-        public IDockContent Deserialize(string persistString)
-        {
-            return null;
-        }
         
         private void LoadSettings(string settingsFilePath)
         {

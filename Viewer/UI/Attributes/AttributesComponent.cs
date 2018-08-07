@@ -32,9 +32,11 @@ namespace Viewer.UI.Attributes
             // add the component to the menu
             app.AddMenuItem(new []{ "View", "Attributes" }, () => ShowAttributes(), Resources.AttributesComponentIcon.ToBitmap());
             app.AddMenuItem(new[] { "View", "Exif" }, () => ShowExif(), Resources.ExifComponentIcon.ToBitmap());
+
+            app.AddLayoutDeserializeCallback(Deserialize);
         }
 
-        public IDockContent Deserialize(string persistString)
+        private IDockContent Deserialize(string persistString)
         {
             if (persistString == typeof(AttributeTableView).FullName + ";" + AttributesId)
             {

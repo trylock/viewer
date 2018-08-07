@@ -35,9 +35,11 @@ namespace Viewer.UI.Errors
         public void OnStartup(IViewerApplication app)
         {
             app.AddMenuItem(new []{ "View", Name }, () => ShowErrorList(), Resources.ErrorListIcon.ToBitmap());
+
+            app.AddLayoutDeserializeCallback(Deserialize);
         }
 
-        public IDockContent Deserialize(string persistString)
+        private IDockContent Deserialize(string persistString)
         {
             if (persistString == typeof(ErrorListView).FullName)
             {

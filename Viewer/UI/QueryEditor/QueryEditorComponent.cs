@@ -26,9 +26,11 @@ namespace Viewer.UI.QueryEditor
         public void OnStartup(IViewerApplication app)
         {
             app.AddMenuItem(new []{ "View", "Query" }, () => _editor.OpenNew(DockState.Document), Resources.QueryComponentIcon.ToBitmap());
+
+            app.AddLayoutDeserializeCallback(Deserialize);
         }
 
-        public IDockContent Deserialize(string persistString)
+        private IDockContent Deserialize(string persistString)
         {
             if (persistString.StartsWith(typeof(QueryEditorView).FullName))
             {

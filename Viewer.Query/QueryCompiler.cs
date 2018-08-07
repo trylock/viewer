@@ -221,8 +221,8 @@ namespace Viewer.Query
             var viewId = context.ID();
             if (viewId != null)
             {
-                var view = _queryCompiler.Views[viewId.GetText()];
-                query = _queryCompiler.Compile(new StringReader(view), _errorListener);
+                var view = _queryCompiler.Views.Find(viewId.GetText());
+                query = _queryCompiler.Compile(new StringReader(view.Text), _errorListener);
                 if (query == null)
                 {
                     // compilation of the subquery failed

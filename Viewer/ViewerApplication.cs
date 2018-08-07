@@ -33,6 +33,16 @@ namespace Viewer
         void AddMenuItem(IReadOnlyList<string> menuPath, Action action, Image icon);
 
         /// <summary>
+        /// Add layout deserializa callback.
+        /// </summary>
+        /// <param name="callback">
+        ///     The callback gets a persist string to deserialize.
+        ///     If it does not recognize the string, it has to return null.
+        ///     If it returns null, the deserializer will try to use another deserialization function.
+        /// </param>
+        void AddLayoutDeserializeCallback(DeserializeDockContent callback);
+
+        /// <summary>
         /// Run the application
         /// </summary>
         void Run();
@@ -43,7 +53,8 @@ namespace Viewer
     {
         private readonly ViewerForm _appForm;
         private readonly IComponent[] _components;
-        
+        private readonly List<DeserializeDockContent> _layoutDeserializeCallback = new List<DeserializeDockContent>();
+
         [ImportingConstructor]
         public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
         {
@@ -60,12 +71,18 @@ namespace Viewer
                 component.OnStartup(this);
             }
             
+            // deserialize layout
             LoadLayout(Resources.LayoutFilePath);
         }
 
         public void AddMenuItem(IReadOnlyList<string> menuPath, Action action, Image icon)
         {
             _appForm.AddMenuItem(menuPath, action, icon);
+        }
+
+        public void AddLayoutDeserializeCallback(DeserializeDockContent callback)
+        {
+            _layoutDeserializeCallback.Add(callback);
         }
 
         private void LoadLayout(string layoutFilePath)
@@ -98,9 +115,9 @@ namespace Viewer
 
         private IDockContent Deserialize(string persistString)
         {
-            foreach (var component in _components)
+            foreach (var callback in _layoutDeserializeCallback)
             {
-                var content = component.Deserialize(persistString);
+                var content = callback(persistString);
                 if (content != null)
                 {
                     return content;

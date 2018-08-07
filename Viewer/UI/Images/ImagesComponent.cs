@@ -38,9 +38,10 @@ namespace Viewer.UI.Images
 
         public void OnStartup(IViewerApplication app)
         {
+            app.AddLayoutDeserializeCallback(Deserialize);
         }
 
-        public IDockContent Deserialize(string persistString)
+        private IDockContent Deserialize(string persistString)
         {
             if (persistString.StartsWith(typeof(ImagesGridView).FullName))
             {

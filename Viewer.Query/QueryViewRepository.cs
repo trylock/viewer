@@ -8,81 +8,125 @@ using System.Threading.Tasks;
 
 namespace Viewer.Query
 {
-    public interface IQueryViewRepository : IDictionary<string, string>
+    public class QueryView : IEquatable<QueryView>
     {
+        /// <summary>
+        /// View name
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// Query text
+        /// </summary>
+        public string Text { get; }
+
+        /// <summary>
+        /// Path to a file where this view is stored.
+        /// </summary>
+        public string Path { get; }
+
+        public QueryView(string name, string text, string path)
+        {
+            Name = name;
+            Text = text;
+            Path = path;
+        }
+
+        public bool Equals(QueryView other)
+        {
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            return string.Equals(Name, other.Name) && string.Equals(Text, other.Text);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((QueryView) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (Text != null ? Text.GetHashCode() : 0);
+            }
+        }
+    }
+
+    public interface IQueryViewRepository : IEnumerable<QueryView>
+    {
+        /// <summary>
+        /// Event called whenever a view in the repository changes (i.e. it is removed, added, updated)
+        /// </summary>
+        event EventHandler Changed;
+
+        /// <summary>
+        /// Add query view. If a view with the same name exists already, it will be replaced.
+        /// </summary>
+        /// <param name="view">View to add</param>
+        void Add(QueryView view);
+
+        /// <summary>
+        /// Remove view with given name.
+        /// </summary>
+        /// <param name="viewName">Name of the view to remove</param>
+        void Remove(string viewName);
+
+        /// <summary>
+        /// Find a view with given name.
+        /// </summary>
+        /// <param name="viewName">Name of the view</param>
+        /// <returns>View with given name or null if there is none</returns>
+        QueryView Find(string viewName);
     }
 
     [Export(typeof(IQueryViewRepository))]
     public class QueryViewRepository : IQueryViewRepository
     {
-        private readonly Dictionary<string, string> _views = new Dictionary<string, string>();
+        private readonly Dictionary<string, QueryView> _views = new Dictionary<string, QueryView>();
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+        public event EventHandler Changed;
+
+        public void Add(QueryView view)
         {
-            return _views.GetEnumerator();
+            _views[view.Name] = view;
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Remove(string viewName)
+        {
+            if (_views.Remove(viewName))
+            {
+                Changed?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public QueryView Find(string viewName)
+        {
+            if (_views.TryGetValue(viewName, out var view))
+            {
+                return view;
+            }
+
+            return null;
+        }
+
+        public IEnumerator<QueryView> GetEnumerator()
+        {
+            return _views.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-
-        public void Add(KeyValuePair<string, string> item)
-        {
-            ((IDictionary<string, string>) _views).Add(item);
-        }
-
-        public void Clear()
-        {
-            _views.Clear();
-        }
-
-        public bool Contains(KeyValuePair<string, string> item)
-        {
-            return _views.Contains(item);
-        }
-
-        public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)
-        {
-            ((IDictionary<string, string>) _views).CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(KeyValuePair<string, string> item)
-        {
-            return ((IDictionary<string, string>)_views).Remove(item);
-        }
-
-        public int Count => _views.Count;
-
-        public bool IsReadOnly => false;
-
-        public bool ContainsKey(string key)
-        {
-            return _views.ContainsKey(key);
-        }
-
-        public void Add(string key, string value)
-        {
-            _views.Add(key, value);
-        }
-
-        public bool Remove(string key)
-        {
-            return _views.Remove(key);
-        }
-
-        public bool TryGetValue(string key, out string value)
-        {
-            return _views.TryGetValue(key, out value);
-        }
-
-        public string this[string key]
-        {
-            get => _views[key];
-            set => _views[key] = value;
-        }
-
-        public ICollection<string> Keys => _views.Keys;
-        public ICollection<string> Values => _views.Values;
     }
 }

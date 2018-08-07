@@ -27,11 +27,6 @@ namespace Viewer.UI.Presentation
         {
         }
 
-        public IDockContent Deserialize(string persistString)
-        {
-            return null;
-        }
-
         private void ShowPresentation(IEnumerable<IEntity> entities, int index)
         {
             var presentationExport = _presentationFactory.CreateExport();

@@ -205,17 +205,17 @@ namespace Viewer.Query
 
         public IQuery Except(IEnumerable<IEntity> entities)
         {
-            return new Query(_source.Except(entities), Comparer, Text, Cancellation);
+            return new Query(_source.Except(entities, EntityPathEqualityComparer.Default), Comparer, Text, Cancellation);
         }
 
         public IQuery Union(IEnumerable<IEntity> entities)
         {
-            return new Query(_source.Union(entities), Comparer, Text, Cancellation);
+            return new Query(_source.Union(entities, EntityPathEqualityComparer.Default), Comparer, Text, Cancellation);
         }
 
         public IQuery Intersect(IEnumerable<IEntity> entities)
         {
-            return new Query(_source.Intersect(entities), Comparer, Text, Cancellation);
+            return new Query(_source.Intersect(entities, EntityPathEqualityComparer.Default), Comparer, Text, Cancellation);
         }
 
         public IQuery WithText(string text)

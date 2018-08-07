@@ -47,4 +47,23 @@ namespace Viewer.Data
             return Comparer<string>.Default.Compare(x?.Path, y?.Path);
         }
     }
+
+    public class EntityPathEqualityComparer : IEqualityComparer<IEntity>
+    {
+        public static EntityPathEqualityComparer Default { get; } = new EntityPathEqualityComparer();
+
+        public bool Equals(IEntity x, IEntity y)
+        {
+            if (ReferenceEquals(x, y))
+                return true;
+            if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+                return false;
+            return x.Path == y.Path;
+        }
+
+        public int GetHashCode(IEntity obj)
+        {
+            return obj.Path.GetHashCode();
+        }
+    }
 }

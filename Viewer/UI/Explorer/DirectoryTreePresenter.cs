@@ -151,7 +151,8 @@ namespace Viewer.UI.Explorer
             try
             {
                 var directories = await Task.Run(() => GetValidSubdirectories(e.FullPath));
-                View.LoadDirectories(PathUtils.Split(e.FullPath), directories);
+                var pathParts = PathUtils.Split(e.FullPath);
+                View.LoadDirectories(pathParts, directories);
             }
             finally
             {
@@ -162,6 +163,8 @@ namespace Viewer.UI.Explorer
         private void View_OpenDirectory(object sender, DirectoryEventArgs e)
         {
             _state.ExecuteQuery(_queryFactory.CreateQuery(e.FullPath));
+            View.SelectDirectory(PathUtils.Split(e.FullPath));
+            View.EnsureVisible();
         }
         
         private void View_RenameDirectory(object sender, RenameDirectoryEventArgs e)

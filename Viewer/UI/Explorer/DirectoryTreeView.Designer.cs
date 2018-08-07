@@ -57,7 +57,7 @@
             this.TreeView.ItemHeight = 24;
             this.TreeView.LabelEdit = true;
             this.TreeView.Location = new System.Drawing.Point(0, 0);
-            this.TreeView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TreeView.Margin = new System.Windows.Forms.Padding(2);
             this.TreeView.Name = "TreeView";
             this.TreeView.ShowLines = false;
             this.TreeView.Size = new System.Drawing.Size(280, 295);
@@ -164,7 +164,7 @@
             this.ClientSize = new System.Drawing.Size(280, 295);
             this.Controls.Add(this.TreeView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "DirectoryTreeView";
             this.Text = "Explorer";
             this.FileContextMenu.ResumeLayout(false);

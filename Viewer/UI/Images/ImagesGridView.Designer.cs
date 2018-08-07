@@ -39,10 +39,10 @@
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ThumbnailSizeTrackBar = new System.Windows.Forms.TrackBar();
-            this.GridView = new Viewer.UI.Images.GridView();
             this.ItemsCountLabel = new System.Windows.Forms.Label();
             this.ViewTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.ControlPanel = new System.Windows.Forms.Panel();
+            this.GridView = new Viewer.UI.Images.GridView();
             this.PollTimer = new System.Windows.Forms.Timer(this.components);
             this.ItemContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).BeginInit();
@@ -126,29 +126,6 @@
             this.ThumbnailSizeTrackBar.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ThumbnailSizeTrackBar_KeyUp);
             this.ThumbnailSizeTrackBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ThumbnailSizeTrackBar_MouseUp);
             // 
-            // GridView
-            // 
-            this.GridView.AutoScroll = true;
-            this.GridView.ContextMenuStrip = this.ItemContextMenu;
-            this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GridView.IsLoading = false;
-            this.GridView.ItemPadding = new System.Drawing.Size(8, 8);
-            this.GridView.Items = null;
-            this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(2, 2);
-            this.GridView.Margin = new System.Windows.Forms.Padding(2);
-            this.GridView.Name = "GridView";
-            this.GridView.NameHeight = 25;
-            this.GridView.NameSpace = 5;
-            this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(622, 317);
-            this.GridView.TabIndex = 2;
-            this.GridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.GridView_Scroll);
-            this.GridView.DoubleClick += new System.EventHandler(this.GridView_DoubleClick);
-            this.GridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseDown);
-            this.GridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseMove);
-            this.GridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseUp);
-            // 
             // ItemsCountLabel
             // 
             this.ItemsCountLabel.AutoSize = true;
@@ -187,6 +164,30 @@
             this.ControlPanel.Size = new System.Drawing.Size(622, 28);
             this.ControlPanel.TabIndex = 0;
             // 
+            // GridView
+            // 
+            this.GridView.AutoScroll = true;
+            this.GridView.ContextMenuStrip = this.ItemContextMenu;
+            this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GridView.IsLoading = false;
+            this.GridView.ItemPadding = new System.Drawing.Size(8, 8);
+            this.GridView.Items = null;
+            this.GridView.ItemSize = new System.Drawing.Size(0, 0);
+            this.GridView.Location = new System.Drawing.Point(2, 2);
+            this.GridView.Margin = new System.Windows.Forms.Padding(2);
+            this.GridView.Name = "GridView";
+            this.GridView.NameHeight = 25;
+            this.GridView.NameSpace = 5;
+            this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.GridView.Size = new System.Drawing.Size(622, 317);
+            this.GridView.TabIndex = 2;
+            this.GridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.GridView_Scroll);
+            this.GridView.DoubleClick += new System.EventHandler(this.GridView_DoubleClick);
+            this.GridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseDown);
+            this.GridView.MouseLeave += new System.EventHandler(this.GridView_MouseLeave);
+            this.GridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseMove);
+            this.GridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseUp);
+            // 
             // PollTimer
             // 
             this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
@@ -223,10 +224,10 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem DeleteMenuItem;
         private System.Windows.Forms.TrackBar ThumbnailSizeTrackBar;
-        private GridView GridView;
         private System.Windows.Forms.Label ItemsCountLabel;
         private System.Windows.Forms.TableLayoutPanel ViewTableLayout;
         private System.Windows.Forms.Panel ControlPanel;
         private System.Windows.Forms.Timer PollTimer;
+        private GridView GridView;
     }
 }

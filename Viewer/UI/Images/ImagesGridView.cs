@@ -260,25 +260,44 @@ namespace Viewer.UI.Images
 
         #region GridView Events
 
+        private bool _isDragging = false;
+        private Point _dragOrigin;
+
+        /// <summary>
+        /// Distance in pixels after which we can begin the drag operation
+        /// </summary>
+        private const int BeginDragThreshold = 10;
+
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
-            var location = GridView.UnprojectLocation(e.Location);
-            var item = GridView.GetItemAt(location);
-            if (item >= 0)
+            if (e.Button.HasFlag(MouseButtons.Left))
             {
-                // user clicked on an item
-                _activeItemIndex = item;
+                var location = GridView.UnprojectLocation(e.Location);
+                var item = GridView.GetItemAt(location);
+                if (item >= 0)
+                {
+                    // user clicked on an item
+                    _activeItemIndex = item;
+                    SelectItem?.Invoke(sender, new EntityEventArgs(item));
 
-                SelectItem?.Invoke(sender, new EntityEventArgs(item));
-                return;
+                    // start dragging
+                    _isDragging = true;
+                    _dragOrigin = e.Location;
+                }
+                else
+                {
+                    // start a range selection
+                    _isSelectionActive = true;
+                    SelectionBegin?.Invoke(sender,
+                        new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+                }
             }
-
-            _isSelectionActive = true;
-            SelectionBegin?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
         }
 
         private void GridView_MouseUp(object sender, MouseEventArgs e)
         {
+            _isDragging = false;
+
             if (_isSelectionActive)
             {
                 var location = GridView.UnprojectLocation(e.Location);
@@ -305,15 +324,24 @@ namespace Viewer.UI.Images
                 ItemHover?.Invoke(sender, new EntityEventArgs(item));
 
                 // begin the drag operation
-                if (e.Button.HasFlag(MouseButtons.Left))
+                if (_isDragging)
                 {
-                    BeginDragItems?.Invoke(sender, e);
+                    var distanceSquared = e.Location.DistanceSquaredTo(_dragOrigin);
+                    if (distanceSquared >= BeginDragThreshold * BeginDragThreshold)
+                    {
+                        BeginDragItems?.Invoke(sender, e);
+                    }
                 }
             }
         }
-        
-        private void GridView_DoubleClick(object sender, EventArgs e)
+
+        private void GridView_MouseLeave(object sender, EventArgs e)
         {
+            _isDragging = false;
+        }
+
+        private void GridView_DoubleClick(object sender, EventArgs e)
+        { 
             var location = GridView.UnprojectLocation(PointToClient(MousePosition));
             var index = GridView.GetItemAt(location);
             if (index < 0)

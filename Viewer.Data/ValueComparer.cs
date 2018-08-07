@@ -14,6 +14,7 @@ namespace Viewer.Data
         public static ValueComparer Default { get; } = new ValueComparer();
 
         private static readonly NumberVisitor _numberVisitor = new NumberVisitor();
+        private static readonly StringVisitor _stringVisitor = new StringVisitor();
 
         /// <summary>
         /// Convert value to a number or null
@@ -47,6 +48,34 @@ namespace Viewer.Data
             public double? Visit(ImageValue value)
             {
                 return null;
+            }
+        }
+
+        private class StringVisitor : IValueVisitor<string>
+        {
+            public string Visit(IntValue value)
+            {
+                return value.ToString();
+            }
+
+            public string Visit(RealValue value)
+            {
+                return value.ToString();
+            }
+
+            public string Visit(StringValue value)
+            {
+                return value.Value;
+            }
+
+            public string Visit(DateTimeValue value)
+            {
+                return value.ToString();
+            }
+
+            public string Visit(ImageValue value)
+            {
+                return value.ToString();
             }
         }
 
@@ -94,8 +123,11 @@ namespace Viewer.Data
                     (DateTime)yDate.Value);
             }
 
+            var xValue = x.Accept(_stringVisitor);
+            var yValue = y.Accept(_stringVisitor);
+
             // sort strings (string, DateTime) 
-            return Comparer<string>.Default.Compare(x.ToString(), y.ToString());
+            return Comparer<string>.Default.Compare(xValue, yValue);
         }
     }
 }

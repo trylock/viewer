@@ -10,18 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Viewer.Data;
-using Viewer.Data.Storage;
-using Viewer.IO;
-using Viewer.Properties;
-using Viewer.Query;
-using Viewer.UI;
-using Viewer.UI.Attributes;
-using Viewer.UI.Images;
-using Viewer.UI.Explorer;
-using Viewer.UI.Presentation;
-using Viewer.UI.Query;
-using Viewer.UI.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer
@@ -47,11 +35,30 @@ namespace Viewer
             ViewerForm_Resize(this, EventArgs.Empty);
         }
 
-        public void AddViewAction(string name, Action action, Image icon)
+        public void AddMenuItem(IReadOnlyList<string> path, Action action, Image icon)
         {
-            var item = new ToolStripMenuItem { Text = name, Image = icon };
-            item.Click += (sender, args) => action();
-            ViewMenuItem.DropDownItems.Add(item);
+            var items = ViewerMenu.Items;
+            foreach (var name in path)
+            {
+                // find menu item with this name
+                var menuItem = items
+                    .OfType<ToolStripMenuItem>()
+                    .FirstOrDefault(item => StringComparer.CurrentCultureIgnoreCase.Compare(item.Text, name) == 0);
+
+                // if it does not exist, create it
+                if (menuItem == null)
+                {
+                    menuItem = new ToolStripMenuItem(name);
+                    if (name == path[path.Count - 1])
+                    {
+                        menuItem.Image = icon;
+                        menuItem.Click += (sender, e) => action();
+                    }
+                    items.Add(menuItem);
+                }
+
+                items = menuItem.DropDownItems;
+            }
         }
 
         private void ViewerForm_Resize(object sender, EventArgs e)

@@ -34,7 +34,7 @@ namespace Viewer.UI.Errors
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction(Name, () => ShowErrorList(), Resources.ErrorListIcon.ToBitmap());
+            app.AddMenuItem(new []{ "View", Name }, () => ShowErrorList(), Resources.ErrorListIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)

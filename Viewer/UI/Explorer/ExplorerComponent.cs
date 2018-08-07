@@ -24,7 +24,7 @@ namespace Viewer.UI.Explorer
 
         public void OnStartup(IViewerApplication app)
         {
-            app.AddViewAction(Resources.ExplorerWindowName, () => ShowExplorer(), Resources.ExplorerComponentIcon.ToBitmap());
+            app.AddMenuItem(new []{ "View", Resources.ExplorerWindowName }, () => ShowExplorer(), Resources.ExplorerComponentIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)

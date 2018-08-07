@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
@@ -25,12 +26,12 @@ namespace Viewer
         void InitializeLayout();
 
         /// <summary>
-        /// Add an option to the View subtree of the application menu
+        /// Add an option to the main application menu
         /// </summary>
-        /// <param name="name">Name of the component</param>
+        /// <param name="menuPath">Name of the menu where to put this item (last item is the name of the new menu item)</param>
         /// <param name="action">Function executed when user clicks on the item</param>
         /// <param name="icon">Icon shown next to the name</param>
-        void AddViewAction(string name, Action action, Image icon);
+        void AddMenuItem(IReadOnlyList<string> menuPath, Action action, Image icon);
 
         /// <summary>
         /// Run the application
@@ -61,6 +62,11 @@ namespace Viewer
             }
             
             LoadLayout(Resources.LayoutFilePath);
+        }
+
+        public void AddMenuItem(IReadOnlyList<string> menuPath, Action action, Image icon)
+        {
+            _appForm.AddMenuItem(menuPath, action, icon);
         }
 
         private void LoadLayout(string layoutFilePath)
@@ -104,12 +110,7 @@ namespace Viewer
 
             return null;
         }
-
-        public void AddViewAction(string name, Action action, Image icon)
-        {
-            _appForm.AddViewAction(name, action, icon);
-        }
-
+        
         public void Run()
         {
             Application.Run(_appForm);

@@ -30,8 +30,8 @@ namespace Viewer.UI.Attributes
         public void OnStartup(IViewerApplication app)
         {
             // add the component to the menu
-            app.AddViewAction("Attributes", () => ShowAttributes(), Resources.AttributesComponentIcon.ToBitmap());
-            app.AddViewAction("Exif", () => ShowExif(), Resources.ExifComponentIcon.ToBitmap());
+            app.AddMenuItem(new []{ "View", "Attributes" }, () => ShowAttributes(), Resources.AttributesComponentIcon.ToBitmap());
+            app.AddMenuItem(new[] { "View", "Exif" }, () => ShowExif(), Resources.ExifComponentIcon.ToBitmap());
         }
 
         public IDockContent Deserialize(string persistString)

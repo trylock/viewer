@@ -67,6 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query.cs" />
     <Compile Include="QueryCompiler.cs" />
+    <Compile Include="QueryComponent.cs" />
     <Compile Include="QueryLexer.cs" />
     <Compile Include="QueryParser.cs" />
     <Compile Include="QueryViewRepository.cs" />
@@ -74,6 +75,10 @@
     <Compile Include="Runtime.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Viewer.Core\Viewer.Core.csproj">
+      <Project>{1dcd51e0-3059-4ddd-9f7f-3af6daf9d648}</Project>
+      <Name>Viewer.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Viewer.Data\Viewer.Data.csproj">
       <Project>{1d709be7-4906-4af8-b31c-3ee7a1eb3323}</Project>
       <Name>Viewer.Data</Name>

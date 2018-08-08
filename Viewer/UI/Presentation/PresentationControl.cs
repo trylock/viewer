@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -162,6 +163,55 @@ namespace Viewer.UI.Presentation
             _fullscreenForm.Visible = false;
         }
 
+        #region Drag picture
+
+        private bool _isDrag = false;
+        private PointF _lastMouseLocation;
+        private PointF _pictureTranslation = Point.Empty;
+
+        private void BeginDrag(Point location)
+        {
+            _isDrag = true;
+            _lastMouseLocation = location;
+        }
+
+        private void EndDrag()
+        {
+            _isDrag = false;
+        }
+
+        private void Drag(Point location)
+        {
+            if (_isDrag)
+            {
+                _pictureTranslation = new PointF(
+                    (float) (_pictureTranslation.X + (location.X - _lastMouseLocation.X) / Zoom),
+                    (float) (_pictureTranslation.Y + (location.Y - _lastMouseLocation.Y) / Zoom)
+                );
+                _lastMouseLocation = location;
+                Invalidate();
+            }
+        }
+
+        private PointF ClampPictureTranslation(PointF translation)
+        {
+            var scaledSize = ThumbnailGenerator.GetThumbnailSize(Picture.Size, ClientSize);
+            var zoomedSize = new Size(
+                (int)(scaledSize.Width * Zoom),
+                (int)(scaledSize.Height * Zoom)
+            );
+            var dragArea = new Size(
+                (int) (Math.Max(zoomedSize.Width - ClientSize.Width, 0) / 2 / Zoom),
+                (int) (Math.Max(zoomedSize.Height - ClientSize.Height, 0) / 2 / Zoom)
+            );
+            return new PointF(
+                (float) MathUtils.Clamp(translation.X, -dragArea.Width, dragArea.Width),
+                (float) MathUtils.Clamp(translation.Y, -dragArea.Height, dragArea.Height)
+            );
+        }
+
+        #endregion
+
         #region Events
         
         private void PresentationControl_Paint(object sender, PaintEventArgs e)
@@ -175,21 +225,23 @@ namespace Viewer.UI.Presentation
             {
                 e.Graphics.FillRectangle(brush, e.ClipRectangle);
             }
-            
-            // figure out the draw area bounds
-            var scaledSize = ThumbnailGenerator.GetThumbnailSize(Picture.Size, ClientSize);
-            var drawSize = new Size(
-                (int) (scaledSize.Width * Zoom),
-                (int) (scaledSize.Height * Zoom)
-            );
-            var drawLocation = new Point(
-                ClientSize.Width / 2 - drawSize.Width / 2,
-                ClientSize.Height / 2 - drawSize.Height / 2
-            );
-            var drawBounds = new Rectangle(drawLocation, drawSize);
 
-            // draw the image
-            e.Graphics.DrawImage(Picture, drawBounds);
+            var scaledSize = ThumbnailGenerator.GetThumbnailSize(Picture.Size, ClientSize);
+
+            // make sure picture translation is within limits of the zoomed picture
+            _pictureTranslation = ClampPictureTranslation(_pictureTranslation);
+
+            // apply transformations and draw the picture
+            var zoom = (float)Zoom;
+            e.Graphics.TranslateTransform(
+                ClientSize.Width / 2.0f, 
+                ClientSize.Height / 2.0f);
+            e.Graphics.ScaleTransform(zoom, zoom);
+            e.Graphics.TranslateTransform(
+                _pictureTranslation.X - scaledSize.Width / 2.0f, 
+                _pictureTranslation.Y - scaledSize.Height / 2.0f);
+            e.Graphics.DrawImage(Picture, new Rectangle(Point.Empty, scaledSize));
+            e.Graphics.ResetTransform();
         }
 
         private void PresentationControl_Resize(object sender, EventArgs e)
@@ -258,19 +310,6 @@ namespace Viewer.UI.Presentation
             }
         }
 
-        private void PresentationControl_MouseMove(object sender, MouseEventArgs e)
-        {
-            PrevButton.Visible = e.Location.X - Location.X <= PrevButton.Width;
-            NextButton.Visible = Location.X + Width - e.Location.X <= NextButton.Width;
-            ControlPanel.Visible = Height - (e.Location.Y - Location.Y) - _controlPanelMargin <= ControlPanel.Height;
-
-            if (e.Location != _lastCursorLocation)
-            {
-                ShowCursor();
-            }
-            _lastCursorLocation = e.Location;
-        }
-
         private void PresentationControl_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Left)
@@ -291,6 +330,21 @@ namespace Viewer.UI.Presentation
             }
         }
 
+        private void PresentationControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            PrevButton.Visible = e.Location.X - Location.X <= PrevButton.Width;
+            NextButton.Visible = Location.X + Width - e.Location.X <= NextButton.Width;
+            ControlPanel.Visible = Height - (e.Location.Y - Location.Y) - _controlPanelMargin <= ControlPanel.Height;
+
+            if (e.Location != _lastCursorLocation)
+            {
+                ShowCursor();
+            }
+            _lastCursorLocation = e.Location;
+            
+            Drag(e.Location);
+        }
+
         private void PresentationControl_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button.HasFlag(MouseButtons.XButton1))
@@ -301,6 +355,15 @@ namespace Viewer.UI.Presentation
             {
                 NextImage?.Invoke(sender, e);
             }
+            else if (e.Button.HasFlag(MouseButtons.Left))
+            {
+                BeginDrag(e.Location);
+            }
+        }
+
+        private void PresentationControl_MouseUp(object sender, MouseEventArgs e)
+        {
+            EndDrag();
         }
 
         private void PresentationControl_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -321,6 +384,7 @@ namespace Viewer.UI.Presentation
             PrevButton.Visible = false;
             NextButton.Visible = false;
             ControlPanel.Visible = false;
+            EndDrag();
         }
 
         private void PrevButton_Click(object sender, EventArgs e)
@@ -339,5 +403,6 @@ namespace Viewer.UI.Presentation
         }
 
         #endregion
+
     }
 }

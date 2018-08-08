@@ -187,6 +187,7 @@
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseDown);
             this.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PresentationControl_MouseUp);
             this.Resize += new System.EventHandler(this.PresentationControl_Resize);
             this.ControlPanel.ResumeLayout(false);
             this.ControlPanel.PerformLayout();

@@ -68,6 +68,9 @@ namespace Viewer.UI.Images
         private readonly IImageLoader _imageLoader;
         private readonly IThumbnailGenerator _thumbnailGenerator;
 
+        private readonly List<LoadRequest> _requests = new List<LoadRequest>();
+        private readonly SemaphoreSlim _requestCount = new SemaphoreSlim(0);
+
         [ImportingConstructor]
         public ThumbnailLoader(IImageLoader imageLoader, IThumbnailGenerator thumbnailGenerator)
         {
@@ -92,6 +95,30 @@ namespace Viewer.UI.Images
             }
         }
 
+        public Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize)
+        {
+            var req = new LoadRequest(entity, thumbnailAreaSize);
+            return AddLoadRequest(req);
+        }
+        
+        public void Prioritize(string path)
+        {
+            lock (_requests)
+            {
+                // find the request
+                var index = _requests.FindIndex(req => req.Entity.Path == path);
+                if (index < 0)
+                {
+                    return;
+                }
+
+                // move it to the start of the collection
+                var request = _requests[index];
+                _requests.RemoveAt(index);
+                _requests.Add(request);
+            }
+        }
+
         private class LoadRequest
         {
             public TaskCompletionSource<Thumbnail> Completion { get; } = new TaskCompletionSource<Thumbnail>();
@@ -105,9 +132,6 @@ namespace Viewer.UI.Images
                 ThumbnailAreaSize = thumbnailAreaSize;
             }
         }
-        
-        private readonly List<LoadRequest> _requests = new List<LoadRequest>();
-        private readonly SemaphoreSlim _requestCount = new SemaphoreSlim(0);
 
         private void Loader()
         {
@@ -154,30 +178,6 @@ namespace Viewer.UI.Images
             }
             _requestCount.Release();
             return req.Completion.Task;
-        }
-        
-        public Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize)
-        {
-            var req = new LoadRequest(entity, thumbnailAreaSize);
-            return AddLoadRequest(req);
-        }
-
-        public void Prioritize(string path)
-        {
-            lock (_requests)
-            {
-                // find the request
-                var index = _requests.FindIndex(req => req.Entity.Path == path);
-                if (index < 0)
-                {
-                    return;
-                }
-
-                // move it to the start of the collection
-                var request = _requests[index];
-                _requests.RemoveAt(index);
-                _requests.Add(request);
-            }
         }
     }
 }

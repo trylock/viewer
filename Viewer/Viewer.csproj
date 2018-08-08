@@ -88,8 +88,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collections\ConcurrentSortedSet.cs" />
-    <Compile Include="Collections\SortedList.cs" />
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="Images\ThumbnailGenerator.cs" />
     <Compile Include="PointExtensions.cs" />

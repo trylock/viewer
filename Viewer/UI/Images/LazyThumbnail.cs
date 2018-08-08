@@ -128,6 +128,10 @@ namespace Viewer.UI.Images
                     _loading = _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize);
                 }
             }
+            else
+            {
+                _thumbnailLoader.Prioritize(_entity.Path);
+            }
             
             return _current;
         }

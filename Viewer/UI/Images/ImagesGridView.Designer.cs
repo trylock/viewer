@@ -42,8 +42,10 @@
             this.ItemsCountLabel = new System.Windows.Forms.Label();
             this.ViewTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.ControlPanel = new System.Windows.Forms.Panel();
+            this.ShowQueryButton = new System.Windows.Forms.Button();
             this.GridView = new Viewer.UI.Images.GridView();
             this.PollTimer = new System.Windows.Forms.Timer(this.components);
+            this.ShowCodeToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ItemContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).BeginInit();
             this.ViewTableLayout.SuspendLayout();
@@ -155,6 +157,7 @@
             // 
             // ControlPanel
             // 
+            this.ControlPanel.Controls.Add(this.ShowQueryButton);
             this.ControlPanel.Controls.Add(this.ThumbnailSizeTrackBar);
             this.ControlPanel.Controls.Add(this.ItemsCountLabel);
             this.ControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -163,6 +166,21 @@
             this.ControlPanel.Name = "ControlPanel";
             this.ControlPanel.Size = new System.Drawing.Size(622, 28);
             this.ControlPanel.TabIndex = 0;
+            // 
+            // ShowQueryButton
+            // 
+            this.ShowQueryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ShowQueryButton.BackgroundImage = global::Viewer.Properties.Resources.ShowCodeIcon;
+            this.ShowQueryButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.ShowQueryButton.FlatAppearance.BorderSize = 0;
+            this.ShowQueryButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ShowQueryButton.Location = new System.Drawing.Point(458, 0);
+            this.ShowQueryButton.Name = "ShowQueryButton";
+            this.ShowQueryButton.Size = new System.Drawing.Size(27, 27);
+            this.ShowQueryButton.TabIndex = 3;
+            this.ShowCodeToolTip.SetToolTip(this.ShowQueryButton, "Show Code");
+            this.ShowQueryButton.UseVisualStyleBackColor = true;
+            this.ShowQueryButton.Click += new System.EventHandler(this.ShowQueryButton_Click);
             // 
             // GridView
             // 
@@ -229,5 +247,7 @@
         private System.Windows.Forms.Panel ControlPanel;
         private System.Windows.Forms.Timer PollTimer;
         private GridView GridView;
+        private System.Windows.Forms.Button ShowQueryButton;
+        private System.Windows.Forms.ToolTip ShowCodeToolTip;
     }
 }

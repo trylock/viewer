@@ -335,6 +335,11 @@ namespace Viewer.UI.Images
         event EventHandler<EntityEventArgs> OpenItem;
 
         /// <summary>
+        /// Event called when user requests to open code the current query
+        /// </summary>
+        event EventHandler ShowCode;
+
+        /// <summary>
         /// Textual representation of the query of this component
         /// </summary>
         string Query { get; set; }

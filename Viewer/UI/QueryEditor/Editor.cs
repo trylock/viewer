@@ -43,6 +43,14 @@ namespace Viewer.UI.QueryEditor
         IQueryEditorView OpenNew(DockState dockState);
 
         /// <summary>
+        /// Open new empty editor window
+        /// </summary>
+        /// <param name="content">Content of the opened window</param>
+        /// <param name="dockState">Unknown value won't show the window</param>
+        /// <returns>Opened dock content</returns>
+        IQueryEditorView OpenNew(string content, DockState dockState);
+
+        /// <summary>
         /// Save <paramref name="query"/> to <paramref name="path"/>.
         /// If the file exists already, it will be rewritten.
         /// </summary>
@@ -152,6 +160,13 @@ namespace Viewer.UI.QueryEditor
         public IQueryEditorView OpenNew(DockState dockState)
         {
             return OpenWindow(dockState).View;
+        }
+
+        public IQueryEditorView OpenNew(string content, DockState dockState)
+        {
+            var window = OpenWindow(dockState);
+            window.SetContent(null, content);
+            return window.View;
         }
 
         public async Task SaveAsync(string path, string query)

@@ -150,6 +150,7 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler<EntityEventArgs> OpenItem;
+        public event EventHandler ShowCode;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
         public event EventHandler<RenameEventArgs> RenameItem;
@@ -410,7 +411,12 @@ namespace Viewer.UI.Images
                 ThumbnailSizeCommit?.Invoke(sender, e);
             }
         }
-        
+
+        private void ShowQueryButton_Click(object sender, EventArgs e)
+        {
+            ShowCode?.Invoke(sender, e);
+        }
+
         protected override string GetPersistString()
         {
             if (Query != null)

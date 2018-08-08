@@ -17,7 +17,9 @@ using Viewer.IO;
 using Viewer.Query;
 using Viewer.Collections;
 using Viewer.UI.Explorer;
+using Viewer.UI.QueryEditor;
 using Viewer.UI.Settings;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {
@@ -25,6 +27,7 @@ namespace Viewer.UI.Images
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class ImagesPresenter : Presenter<IImagesView>
     {
+        private readonly IEditor _editor;
         private readonly IFileSystem _fileSystem;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISystemExplorer _explorer;
@@ -75,6 +78,7 @@ namespace Viewer.UI.Images
         [ImportingConstructor]
         public ImagesPresenter(
             ExportFactory<IImagesView> viewFactory,
+            IEditor editor,
             IFileSystem fileSystem,
             IFileSystemErrorView dialogView,
             ISystemExplorer explorer,
@@ -88,6 +92,7 @@ namespace Viewer.UI.Images
             ISettings settings)
         {
             ViewLifetime = viewFactory.CreateExport();
+            _editor = editor;
             _fileSystem = fileSystem;
             _dialogView = dialogView;
             _explorer = explorer;
@@ -566,6 +571,11 @@ namespace Viewer.UI.Images
         private void View_ThumbnailSizeCommit(object sender, EventArgs e)
         {
             View.UpdateItems();
+        }
+
+        private void View_ShowCode(object sender, EventArgs e)
+        {
+            _editor.OpenNew(_queryEvaluator.Query.Text, DockState.Document);
         }
 
         #endregion

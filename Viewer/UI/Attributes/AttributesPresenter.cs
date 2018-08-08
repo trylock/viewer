@@ -64,12 +64,19 @@ namespace Viewer.UI.Attributes
             _selection.Changed += Selection_Changed;
 
             SubscribeTo(View, "View");
+            UpdateAttributes();
         }
 
         public override void Dispose()
         {
             base.Dispose();
             _selection.Changed -= Selection_Changed;
+        }
+        
+        private void UpdateAttributes()
+        {
+            ViewAttributes();
+            View_Search(this, EventArgs.Empty);
         }
 
         public void SetType(AttributeViewType type)
@@ -85,6 +92,8 @@ namespace Viewer.UI.Attributes
             {
                 _attributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
             }
+
+            UpdateAttributes();
         }
 
         private void Report(string message, LogType type, Retry retry)
@@ -111,8 +120,7 @@ namespace Viewer.UI.Attributes
         
         private void Selection_Changed(object sender, EventArgs eventArgs)
         {
-            ViewAttributes();
-            View_Search(sender, eventArgs);
+            UpdateAttributes();
         }
 
         private IEnumerable<AttributeGroup> GetSelectedAttributes()

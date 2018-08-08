@@ -332,16 +332,28 @@ namespace Viewer.UI.Presentation
 
         private void PresentationControl_MouseMove(object sender, MouseEventArgs e)
         {
-            PrevButton.Visible = e.Location.X - Location.X <= PrevButton.Width;
-            NextButton.Visible = Location.X + Width - e.Location.X <= NextButton.Width;
-            ControlPanel.Visible = Height - (e.Location.Y - Location.Y) - _controlPanelMargin <= ControlPanel.Height;
+            // show/hide presentation controls
+            if (_isDrag)
+            {
+                PrevButton.Visible = false;
+                NextButton.Visible = false;
+                ControlPanel.Visible = false;
+            }
+            else
+            {
+                PrevButton.Visible = e.Location.X - Location.X <= PrevButton.Width;
+                NextButton.Visible = Location.X + Width - e.Location.X <= NextButton.Width;
+                ControlPanel.Visible = Height - (e.Location.Y - Location.Y) - _controlPanelMargin <= ControlPanel.Height;
+            }
 
+            // show cursor if it moved
             if (e.Location != _lastCursorLocation)
             {
                 ShowCursor();
             }
             _lastCursorLocation = e.Location;
             
+            // handle the drag operation
             Drag(e.Location);
         }
 

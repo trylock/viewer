@@ -103,7 +103,7 @@ namespace Viewer.Data.Storage
             {
                 // remove file (and transitively all attributes)
                 RemoveFile(entity.Path);
-                
+
                 long id = StoreFile(entity.Path);
 
                 // add new attributes

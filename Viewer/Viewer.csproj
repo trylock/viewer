@@ -134,7 +134,6 @@
     <Compile Include="UI\Images\LazyThumbnail.cs" />
     <Compile Include="UI\Images\QueryEvaluator.cs" />
     <Compile Include="UI\Images\RectangleSelection.cs" />
-    <Compile Include="UI\Images\ThumbnailSizeCalculator.cs" />
     <Compile Include="UI\Errors\IErrorListView.cs" />
     <Compile Include="UI\Errors\ErrorList.cs" />
     <Compile Include="UI\Errors\ErrorListComponent.cs" />

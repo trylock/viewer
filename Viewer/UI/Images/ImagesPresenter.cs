@@ -34,10 +34,8 @@ namespace Viewer.UI.Images
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
-        private readonly IImageLoader _imageLoader;
         private readonly IApplicationState _state;
         private readonly IQueryFactory _queryFactory;
-        private readonly IThumbnailSizeCalculator _thumbnailSizeCalculator;
         private readonly IQueryEvaluatorFactory _queryEvaluatorFactory;
         private readonly ISettings _settings;
 
@@ -85,7 +83,6 @@ namespace Viewer.UI.Images
             ISelection selection, 
             IEntityManager entityManager,
             IClipboardService clipboard,
-            IImageLoader imageLoader,
             IApplicationState state,
             IQueryFactory queryFactory,
             IQueryEvaluatorFactory queryEvaluatorFactory,
@@ -99,11 +96,9 @@ namespace Viewer.UI.Images
             _selection = selection;
             _entityManager = entityManager;
             _clipboard = clipboard;
-            _imageLoader = imageLoader;
             _state = state;
             _queryFactory = queryFactory;
             _queryEvaluatorFactory = queryEvaluatorFactory;
-            _thumbnailSizeCalculator = new FrequentRatioThumbnailSizeCalculator(_imageLoader, 100);
 
             // initialize context menu options
             _settings = settings;
@@ -189,7 +184,6 @@ namespace Viewer.UI.Images
             }
 
             // reset state
-            _thumbnailSizeCalculator.Reset();
             _rectangleSelection.Clear();
             _selection.Clear();
 
@@ -266,15 +260,6 @@ namespace Viewer.UI.Images
             var items = _queryEvaluator.Consume();
             if (items.Count > 0)
             {
-                // update thumbnail size 
-                foreach (var item in items)
-                {
-                    if (item is FileView view)
-                    {
-                        _minItemSize = _thumbnailSizeCalculator.AddEntity(view.Data);
-                    }
-                }
-                
                 // show all entities in the snapshot
                 View.Items = View.Items.Merge(items);
                 View.ItemSize = ComputeThumbnailSize();

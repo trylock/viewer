@@ -149,12 +149,20 @@ namespace Viewer.IO
         bool DirectoryExists(string path);
 
         /// <summary>
-        /// Read the whole file into memory
+        /// Read the whole file into memory as a byte array
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
         /// <inheritdoc cref="File.ReadAllBytes"/>
         byte[] ReadAllBytes(string path);
+
+        /// <summary>
+        /// Read the whole file into memory as a string
+        /// </summary>
+        /// <param name="path">Path to a file</param>
+        /// <returns></returns>
+        /// <inheritdoc cref="File.ReadAllText(string)"/>
+        string ReadAllText(string path);
 
         /// <summary>
         /// Read the whole file into main memory
@@ -271,6 +279,11 @@ namespace Viewer.IO
         public byte[] ReadAllBytes(string path)
         {
             return File.ReadAllBytes(path);
+        }
+
+        public string ReadAllText(string path)
+        {
+            return File.ReadAllText(path);
         }
 
         public async Task<byte[]> ReadAllBytesAsync(string path)

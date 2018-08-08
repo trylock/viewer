@@ -109,7 +109,6 @@ namespace Viewer.UI.QueryEditor
             // QueryViewComboBox
             // 
             this.QueryViewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.QueryViewComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.QueryViewComboBox.FormattingEnabled = true;
             this.QueryViewComboBox.Location = new System.Drawing.Point(120, 1);
             this.QueryViewComboBox.Name = "QueryViewComboBox";

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ScintillaNET;
 using Viewer.Properties;
+using Viewer.Query;
 
 namespace Viewer.UI.QueryEditor
 {
@@ -55,9 +56,9 @@ namespace Viewer.UI.QueryEditor
         public event EventHandler<OpenQueryEventArgs> OpenQuery;
         public string FullPath { get; set; }
         
-        public IEnumerable<Viewer.Query.QueryView> Views
+        public IEnumerable<QueryView> Views
         {
-            get => QueryViewComboBox.Items.OfType<Viewer.Query.QueryView>();
+            get => QueryViewComboBox.Items.OfType<QueryView>();
             set
             {
                 QueryViewComboBox.DisplayMember = "Name";
@@ -151,6 +152,8 @@ namespace Viewer.UI.QueryEditor
                 return;
             }
             OpenQuery?.Invoke(this, new OpenQueryEventArgs(view.Path));
+            QueryViewComboBox.SelectedItem = null;
+            QueryTextBox.Focus();
         }
     }
 }

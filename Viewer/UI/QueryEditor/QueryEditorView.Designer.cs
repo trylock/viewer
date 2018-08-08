@@ -30,6 +30,7 @@ namespace Viewer.UI.QueryEditor
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryEditorView));
             this.TablePanel = new System.Windows.Forms.TableLayoutPanel();
             this.QueryTextBox = new ScintillaNET.Scintilla();
@@ -41,6 +42,9 @@ namespace Viewer.UI.QueryEditor
             this.RunButton = new System.Windows.Forms.Button();
             this.OpenDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDialog = new System.Windows.Forms.SaveFileDialog();
+            this.SaveToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.OpenToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.RunToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.TablePanel.SuspendLayout();
             this.ControlBarPanel.SuspendLayout();
             this.SuspendLayout();
@@ -124,6 +128,7 @@ namespace Viewer.UI.QueryEditor
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(28, 24);
             this.SaveButton.TabIndex = 3;
+            this.SaveToolTip.SetToolTip(this.SaveButton, "Ctrl + S");
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
@@ -139,6 +144,7 @@ namespace Viewer.UI.QueryEditor
             this.OpenButton.Name = "OpenButton";
             this.OpenButton.Size = new System.Drawing.Size(25, 24);
             this.OpenButton.TabIndex = 2;
+            this.OpenToolTip.SetToolTip(this.OpenButton, "Ctrl + O");
             this.OpenButton.UseVisualStyleBackColor = true;
             this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
             // 
@@ -155,6 +161,7 @@ namespace Viewer.UI.QueryEditor
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(26, 24);
             this.RunButton.TabIndex = 1;
+            this.RunToolTip.SetToolTip(this.RunButton, "F5");
             this.RunButton.UseVisualStyleBackColor = true;
             this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
@@ -166,7 +173,19 @@ namespace Viewer.UI.QueryEditor
             // 
             this.SaveDialog.DefaultExt = "vql";
             // 
-            // QueryView
+            // SaveToolTip
+            // 
+            this.SaveToolTip.ToolTipTitle = "Save";
+            // 
+            // OpenToolTip
+            // 
+            this.OpenToolTip.ToolTipTitle = "Open";
+            // 
+            // RunToolTip
+            // 
+            this.RunToolTip.ToolTipTitle = "Run";
+            // 
+            // QueryEditorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -195,5 +214,8 @@ namespace Viewer.UI.QueryEditor
         private System.Windows.Forms.SaveFileDialog SaveDialog;
         private System.Windows.Forms.ComboBox QueryViewComboBox;
         private System.Windows.Forms.Label QueryViewLabel;
+        private System.Windows.Forms.ToolTip SaveToolTip;
+        private System.Windows.Forms.ToolTip OpenToolTip;
+        private System.Windows.Forms.ToolTip RunToolTip;
     }
 }

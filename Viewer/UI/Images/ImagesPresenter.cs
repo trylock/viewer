@@ -42,10 +42,10 @@ namespace Viewer.UI.Images
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
         private Size _currentItemSize = new Size(133, 100);
-        private Size _minItemSize = new Size(133, 100);
+        private Size MinItemSize => new Size(133, 100);
         private Size MaxItemSize => new Size(
-            _minItemSize.Width * 3,
-            _minItemSize.Height * 3
+            MinItemSize.Width * 3,
+            MinItemSize.Height * 3
         );
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace Viewer.UI.Images
         /// <returns></returns>
         private Size ComputeThumbnailSize()
         {
-            var minimal = _minItemSize;
+            var minimal = MinItemSize;
             var maximal = MaxItemSize;
             var weight = View.ThumbnailScale;
             return new Size(

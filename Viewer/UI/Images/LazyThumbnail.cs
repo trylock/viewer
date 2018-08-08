@@ -45,19 +45,17 @@ namespace Viewer.UI.Images
     [Export(typeof(ILazyThumbnailFactory))]
     public class PhotoThumbnailFactory : ILazyThumbnailFactory
     {
-        private readonly IImageLoader _imageLoader;
-        private readonly IThumbnailGenerator _thumbnailGenerator;
+        private readonly IThumbnailLoader _thumbnailLoader;
 
         [ImportingConstructor]
-        public PhotoThumbnailFactory(IImageLoader loader, IThumbnailGenerator generator)
+        public PhotoThumbnailFactory(IThumbnailLoader thumbnailLoader)
         {
-            _imageLoader = loader;
-            _thumbnailGenerator = generator;
+            _thumbnailLoader = thumbnailLoader;
         }
 
         public ILazyThumbnail Create(IEntity entity)
         {
-            return new PhotoThumbnail(_imageLoader, _thumbnailGenerator, entity);
+            return new PhotoThumbnail(_thumbnailLoader, entity);
         }
     }
 
@@ -88,11 +86,10 @@ namespace Viewer.UI.Images
 
     public class PhotoThumbnail : ILazyThumbnail
     {
-        private readonly IImageLoader _imageLoader;
-        private readonly IThumbnailGenerator _thumbnailGenerator;
+        private readonly IThumbnailLoader _thumbnailLoader;
         private readonly IEntity _entity;
         private Image _current = Default;
-        private Task<(Image Picture, bool IsSufficient)> _loading = Task.FromResult((Default, false));
+        private Task<Thumbnail> _loading = Task.FromResult(new Thumbnail(Default, Size.Empty));
         private Size _loadingThumbnailAreaSize;
         private bool _isInitialized = false;
 
@@ -112,7 +109,7 @@ namespace Viewer.UI.Images
             // start loading a new thumbnail if necessary
             if (!_isInitialized)
             {
-                _loading = LoadEmbededThumbnail(thumbnailAreaSize);
+                _loading = _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize);
                 _isInitialized = true;
             }
 
@@ -126,52 +123,24 @@ namespace Viewer.UI.Images
                     _current = _loading.Result.Picture;
                 }
 
-                if (!_loading.Result.IsSufficient)
+                if (!IsSufficient(_loading.Result.OriginalSize, _loadingThumbnailAreaSize))
                 {
-                    _loading = LoadNativeThumbnail(thumbnailAreaSize);
+                    _loading = _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize);
                 }
             }
             
             return _current;
         }
-
-        private static readonly SemaphoreSlim Sync = new SemaphoreSlim(1);
         
-        private async Task<(Image, bool)> LoadNativeThumbnail(Size thumbnailAreaSize)
+        private static bool IsSufficient(Size originalImageSize, Size thumbnailAreaSize)
         {
-            await Sync.WaitAsync().ConfigureAwait(false);
-            try
-            {
-                // TODO: this still creates an enormous GC pressure. Can we preallocate memory, maybe?
-                using (var image = await _imageLoader.LoadImageAsync(_entity).ConfigureAwait(false))
-                {
-                    var thumbnail = _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize);
-                    return (thumbnail, true);
-                }
-            }
-            finally
-            {
-                Sync.Release();
-            }
-        }
-
-        private async Task<(Image, bool)> LoadEmbededThumbnail(Size thumbnailAreaSize)
-        {
-            using (var image = await _imageLoader.LoadThumbnailAsync(_entity).ConfigureAwait(false))
-            {
-                var isSufficient = image != null && (
-                                    image.Width >= thumbnailAreaSize.Width ||
-                                    image.Height >= thumbnailAreaSize.Height
-                                );
-                var thumbnail = image == null ? null : _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize);
-                return (thumbnail, isSufficient);
-            }
+            return originalImageSize.Width >= thumbnailAreaSize.Width ||
+                   originalImageSize.Height >= thumbnailAreaSize.Height;
         }
         
-        public PhotoThumbnail(IImageLoader loader, IThumbnailGenerator thumbnailGenerator, IEntity entity)
+        public PhotoThumbnail(IThumbnailLoader thumbnailLoader, IEntity entity)
         {
-            _imageLoader = loader;
-            _thumbnailGenerator = thumbnailGenerator;
+            _thumbnailLoader = thumbnailLoader;
             _entity = entity;
         }
 

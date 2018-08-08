@@ -18,8 +18,7 @@ namespace ViewerTest.UI.Images
     {
         private IEntity _entity;
         private Size _thumbnailSize;
-        private Mock<IImageLoader> _imageLoader;
-        private Mock<IThumbnailGenerator> _thumbnailGenerator;
+        private Mock<IThumbnailLoader> _thumbnailLoader;
         private PhotoThumbnail _thumbnail;
 
         [TestInitialize]
@@ -27,9 +26,8 @@ namespace ViewerTest.UI.Images
         {
             _entity = new Entity("test");
             _thumbnailSize = new Size(100, 100);
-            _imageLoader = new Mock<IImageLoader>();
-            _thumbnailGenerator = new Mock<IThumbnailGenerator>();
-            _thumbnail = new PhotoThumbnail(_imageLoader.Object, _thumbnailGenerator.Object, _entity);
+            _thumbnailLoader = new Mock<IThumbnailLoader>();
+            _thumbnail = new PhotoThumbnail(_thumbnailLoader.Object, _entity);
         }
 
         [TestMethod]
@@ -38,47 +36,49 @@ namespace ViewerTest.UI.Images
             var image = _thumbnail.GetCurrent(_thumbnailSize);
             image = _thumbnail.GetCurrent(_thumbnailSize);
 
-            _imageLoader.Verify(mock => mock.LoadThumbnailAsync(_entity), Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, _thumbnailSize), Times.Once);
         }
 
         [TestMethod]
         public void Current_ReplaceLoadedImageWithCurrentImage()
         {
             var image = new Bitmap(1, 1);
-            var task = Task.FromResult((Image) image);
-            _imageLoader
-                .Setup(mock => mock.LoadThumbnailAsync(_entity))
+            var task = Task.FromResult(new Thumbnail(image, image.Size));
+            _thumbnailLoader
+                .Setup(mock => mock.LoadEmbeddedThumbnailAsync(_entity, _thumbnailSize))
                 .Returns(task);
-            _thumbnailGenerator
-                .Setup(mock => mock.GetThumbnail(image, _thumbnailSize))
-                .Returns(image);
 
             var current = _thumbnail.GetCurrent(_thumbnailSize);
             current = _thumbnail.GetCurrent(_thumbnailSize);
 
             Assert.AreEqual(image, current);
-            _imageLoader.Verify(mock => mock.LoadThumbnailAsync(_entity), Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, It.IsAny<Size>()), Times.Once);
         }
         
         [TestMethod]
         public void Resize_ResizeThumbnailWithLoadedThumbnail()
         {
+            var smallSize = new Size(1, 1);
+            var largeSize = new Size(200, 200);
             var image1 = new Bitmap(1, 1);
             var image2 = new Bitmap(1, 1);
-            _imageLoader
-                .Setup(mock => mock.LoadThumbnailAsync(_entity))
-                .Returns(Task.FromResult((Image)image1));
-            _imageLoader
-                .Setup(mock => mock.LoadThumbnailAsync(_entity))
-                .Returns(Task.FromResult((Image)image2));
+            _thumbnailLoader
+                .Setup(mock => mock.LoadEmbeddedThumbnailAsync(_entity, smallSize))
+                .Returns(Task.FromResult(new Thumbnail(image1, smallSize)));
+            _thumbnailLoader
+                .Setup(mock => mock.LoadNativeThumbnailAsync(_entity, largeSize))
+                .Returns(Task.FromResult(new Thumbnail(image2, largeSize)));
 
-            var current = _thumbnail.GetCurrent(_thumbnailSize);
-            current = _thumbnail.GetCurrent(_thumbnailSize);
+            var current = _thumbnail.GetCurrent(smallSize);
+            current = _thumbnail.GetCurrent(smallSize);
             Assert.AreEqual(image1, current);
-            _thumbnailSize = new Size(200, 200);
-            Assert.AreEqual(image1, current);
-            current = _thumbnail.GetCurrent(_thumbnailSize);
+            current = _thumbnail.GetCurrent(largeSize);
+            current = _thumbnail.GetCurrent(largeSize);
             Assert.AreEqual(image2, current);
+
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(It.IsAny<IEntity>(), smallSize), Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(It.IsAny<IEntity>(), largeSize), Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(It.IsAny<IEntity>(), It.IsAny<Size>()), Times.Once);
         }
     }
 }

@@ -133,7 +133,7 @@ namespace Viewer.Images
         public Image LoadImage(IEntity entity)
         {
             var orientation = GetTransformation(entity);
-            var image = DecodeImage(new MemoryStream(_fileSystem.ReadAllBytes(entity.Path)), orientation);
+            var image = DecodeImage(entity.Path, orientation);
             return image;
         }
 
@@ -158,6 +158,17 @@ namespace Viewer.Images
         private Image DecodeImage(Stream input, RotateFlipType orientation)
         {
             var image = Image.FromStream(input);
+            if (orientation != RotateFlipType.RotateNoneFlipNone)
+            {
+                image.RotateFlip(orientation);
+            }
+
+            return image;
+        }
+
+        private Image DecodeImage(string filePath, RotateFlipType orientation)
+        {
+            var image = Image.FromFile(filePath);
             if (orientation != RotateFlipType.RotateNoneFlipNone)
             {
                 image.RotateFlip(orientation);

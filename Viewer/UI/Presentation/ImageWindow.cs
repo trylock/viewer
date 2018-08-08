@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
 using Viewer.Images;
@@ -138,9 +139,19 @@ namespace Viewer.UI.Presentation
             return (_position + bufferIndex) % _entities.Count;
         }
 
-        private Task<Image> LoadImageAsync(IEntity entity)
+        private readonly SemaphoreSlim _sync = new SemaphoreSlim(1);
+
+        private async Task<Image> LoadImageAsync(IEntity entity)
         {
-            return _imageLoader.LoadImageAsync(entity);
+            await _sync.WaitAsync();
+            try
+            {
+                return await _imageLoader.LoadImageAsync(entity);
+            }
+            finally
+            {
+                _sync.Release();
+            }
         }
 
         public void Dispose()

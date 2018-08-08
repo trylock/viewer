@@ -22,3 +22,6 @@ Viewer.Query/QueryBaseVisitor.cs
 Viewer.QueryRuntime/ArithmeticOperators.cs
 Viewer.QueryRuntime/ComparisonOperators.cs
 Viewer.QueryRuntime/LogicOperators.cs
+
+# Documentation
+docs

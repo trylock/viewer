@@ -178,21 +178,21 @@ namespace Viewer.Query
             Cancellation = cancellation;
         }
 
-        public override string ToString()
-        {
-            return Text;
-        }
-
         public IEnumerator<IEntity> GetEnumerator()
         {
             return _source.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            return Text;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-        
+
         public IQuery Where(Func<IEntity, bool> predicate)
         {
             return new Query(_source.Where(predicate), Comparer, Text, Cancellation);

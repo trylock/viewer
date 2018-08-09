@@ -11,6 +11,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data.Formats.Attributes;
+using Viewer.IO;
 
 namespace Viewer.Data.Storage
 {
@@ -118,17 +119,17 @@ namespace Viewer.Data.Storage
 
         public void Move(string oldPath, string newPath)
         {
-            MoveFile(Entity.UnifyPath(oldPath), Entity.UnifyPath(newPath));
+            MoveFile(PathUtils.UnifyPath(oldPath), PathUtils.UnifyPath(newPath));
         }
 
         public void Remove(string path)
         {
-            RemoveFile(Entity.UnifyPath(path));
+            RemoveFile(PathUtils.UnifyPath(path));
         }
 
         public void Touch(string path)
         {
-            path = Entity.UnifyPath(path);
+            path = PathUtils.UnifyPath(path);
 
             using (var query = new SQLiteCommand(Connection))
             {

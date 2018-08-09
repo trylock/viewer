@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Viewer.IO;
 
 namespace Viewer.Data
 {
@@ -96,7 +97,7 @@ namespace Viewer.Data
 
         public Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
         {
-            Path = UnifyPath(path);
+            Path = PathUtils.UnifyPath(path);
             LastWriteTime = lastWriteTime;
             LastAccessTime = lastAccessTime;
         }
@@ -105,30 +106,6 @@ namespace Viewer.Data
         {
         }
         
-        public static string UnifyPath(string path)
-        {
-            var unifiedPath = new StringBuilder();
-            for (var i = 0; i < path.Length; ++i)
-            {
-                if (path[i] == '/' || path[i] == '\\')
-                {
-                    unifiedPath.Append('/');
-
-                    // remove double separator
-                    if (i + 1 < path.Length && (path[i + 1] == '\\' || path[i + 1] == '/'))
-                    {
-                        ++i;
-                    }
-                }
-                else
-                {
-                    unifiedPath.Append(path[i]);
-                }
-            }
-
-            return unifiedPath.ToString();
-        }
-
         public Attribute GetAttribute(string name)
         {
             _attrsLock.EnterReadLock();
@@ -191,7 +168,7 @@ namespace Viewer.Data
 
         public IEntity ChangePath(string path)
         {
-            Path = UnifyPath(path);
+            Path = PathUtils.UnifyPath(path);
             return this;
         }
 

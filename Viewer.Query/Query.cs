@@ -13,6 +13,7 @@ using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.Data.Storage;
 using Viewer.IO;
+using Path = System.IO.Path;
 
 namespace Viewer.Query
 {
@@ -113,26 +114,46 @@ namespace Viewer.Query
 
         public IEnumerator<IEntity> GetEnumerator()
         {
-            foreach (var file in EnumerateFiles())
+            foreach (var dir in EnumerateDirectories())
             {
                 _cancellationToken.ThrowIfCancellationRequested();
-                
-                // load file
-                IEntity entity = null;
-                try
+
+                // add files
+                foreach (var file in _fileSystem.EnumerateFiles(dir))
                 {
-                    entity = _entities.GetEntity(file);
-                }
-                catch (InvalidDataFormatException)
-                {
+                    _cancellationToken.ThrowIfCancellationRequested();
+
+                    // load jpeg files only
+                    var extension = Path.GetExtension(file).ToLowerInvariant();
+                    if (extension != ".jpg" && extension != ".jpeg")
+                    {
+                        continue;
+                    }
+
+                    // load file
+                    IEntity entity = null;
+                    try
+                    {
+                        entity = _entities.GetEntity(file);
+                    }
+                    catch (InvalidDataFormatException)
+                    {
+                    }
+
+                    if (entity == null)
+                    {
+                        continue;
+                    }
+
+                    yield return entity;
                 }
 
-                if (entity == null)
+                // add directories
+                foreach (var directory in _fileSystem.EnumerateDirectories(dir))
                 {
-                    continue;
+                    _cancellationToken.ThrowIfCancellationRequested();
+                    yield return new DirectoryEntity(directory);
                 }
-
-                yield return entity;
             }
         }
 
@@ -141,7 +162,7 @@ namespace Viewer.Query
             return GetEnumerator();
         }
 
-        private IEnumerable<string> EnumerateFiles()
+        private IEnumerable<string> EnumerateDirectories()
         {
             if (_pattern == null)
             {
@@ -149,12 +170,7 @@ namespace Viewer.Query
             }
 
             var finder = new FileFinder(_fileSystem, _pattern);
-            var files =
-                from path in finder.GetFiles()
-                let extension = Path.GetExtension(path).ToLowerInvariant()
-                where extension == ".jpeg" || extension == ".jpg"
-                select path;
-            return files;
+            return finder.GetDirectories();
         }
     }
 

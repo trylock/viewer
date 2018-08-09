@@ -17,13 +17,13 @@ namespace ViewerTest.Query
         {
             var entitiesA = new[]
             {
-                new Entity("test"),
-                new Entity("test1"),
+                new FileEntity("test"),
+                new FileEntity("test1"),
             };
             var entitiesB = new[]
             {
-                new Entity("test2"),
-                new Entity("test1"), 
+                new FileEntity("test2"),
+                new FileEntity("test1"), 
             };
             var query = new Viewer.Query.Query(
                 entitiesA, 

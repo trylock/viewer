@@ -15,7 +15,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void SetAttribute_NewAttribute()
         {
-            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            IEntity attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
             Assert.IsNull(attrs.GetAttribute("test"));
             Assert.AreEqual(0, attrs.Count);
 
@@ -28,7 +28,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void SetAttribute_ExistingAttribute()
         {
-            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            IEntity attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
 
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(24)));
             Assert.IsNotNull(attrs.GetAttribute("test"));
@@ -44,14 +44,14 @@ namespace ViewerTest.Data
         [ExpectedException(typeof(ArgumentNullException))]
         public void SetAttribute_NullAttributeName()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            var attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
             attrs.SetAttribute(new Attribute(null, new IntValue(42)));
         }
 
         [TestMethod]
         public void GetAttribute_NonExitentAttribute()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            var attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
             Assert.IsNull(attrs.GetAttribute("test"));
             Assert.IsNull(attrs.GetAttribute(""));
         }
@@ -59,7 +59,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void GetAttribute_IntAttribute()
         {
-            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            IEntity attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42)));
 
             var attr = attrs.GetValue<IntValue>("test").Value;
@@ -70,14 +70,14 @@ namespace ViewerTest.Data
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetAttribute_NullAttributeName()
         {
-            var attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            var attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
             attrs.GetAttribute(null);
         }
 
         [TestMethod]
         public void Remove_NonExitentKey()
         {
-            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            IEntity attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
             var newAttrs = attrs.RemoveAttribute("test");
             Assert.AreEqual(newAttrs, attrs);
         }
@@ -85,7 +85,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void Remove_OneKey()
         {
-            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            IEntity attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42)));
             Assert.IsNotNull(attrs.GetAttribute("test"));
 
@@ -96,7 +96,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void Indexer_SetValue()
         {
-            IEntity attrs = new Entity("test", DateTime.Now, DateTime.Now);
+            IEntity attrs = new FileEntity("test", DateTime.Now, DateTime.Now);
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42)));
 
             attrs = attrs.SetAttribute(new Attribute("test", new StringValue("value")));

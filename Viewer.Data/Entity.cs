@@ -70,7 +70,60 @@ namespace Viewer.Data
         IEntity Clone();
     }
 
-    public class Entity : IEntity
+    public sealed class DirectoryEntity : IEntity
+    {
+        public string Path { get; private set; }
+
+        public int Count => 0;
+
+        public DirectoryEntity(string path)
+        {
+            Path = path;
+        }
+
+        public Attribute GetAttribute(string name)
+        {
+            return null;
+        }
+
+        public T GetValue<T>(string name) where T : BaseValue
+        {
+            return null;
+        }
+
+        public IEntity SetAttribute(Attribute attr)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IEntity RemoveAttribute(string name)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IEntity ChangePath(string path)
+        {
+            Path = path;
+            return this;
+        }
+
+        public IEntity Clone()
+        {
+            return new DirectoryEntity(Path);
+        }
+
+        public IEnumerator<Attribute> GetEnumerator()
+        {
+            return Enumerable.Empty<Attribute>().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
+    public sealed class FileEntity : IEntity
     {
         private readonly ReaderWriterLockSlim _attrsLock = new ReaderWriterLockSlim();
         private readonly Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
@@ -95,14 +148,14 @@ namespace Viewer.Data
         /// </summary>
         public int Count => _attrs.Count;
 
-        public Entity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
+        public FileEntity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
         {
             Path = PathUtils.UnifyPath(path);
             LastWriteTime = lastWriteTime;
             LastAccessTime = lastAccessTime;
         }
 
-        public Entity(string path) : this(path, DateTime.Now, DateTime.Now)
+        public FileEntity(string path) : this(path, DateTime.Now, DateTime.Now)
         {
         }
         
@@ -174,7 +227,7 @@ namespace Viewer.Data
 
         public IEntity Clone()
         {
-            var clone = new Entity(Path, LastWriteTime, LastAccessTime);
+            var clone = new FileEntity(Path, LastWriteTime, LastAccessTime);
             _attrsLock.EnterReadLock();
             try
             {

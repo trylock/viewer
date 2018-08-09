@@ -38,7 +38,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void GetEntity_LoadEntity()
         {
-            var entity = new Entity("test");
+            var entity = new FileEntity("test");
             _storage.Setup(mock => mock.Load("test")).Returns(entity);
 
             var result = _entityManager.GetEntity("test");
@@ -53,7 +53,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void MoveEntity_MovesEntityInTheStorage()
         {
-            var entity = new Entity("test");
+            var entity = new FileEntity("test");
 
             _entityManager.SetEntity(entity, true);
             _entityManager.MoveEntity("test", "test2");
@@ -64,7 +64,7 @@ namespace ViewerTest.Data
         [TestMethod]
         public void MoveEntity_DoNotMoveEntityIfTheMoveOperationInStorageFails()
         {
-            _entityManager.SetEntity(new Entity("test"), true);
+            _entityManager.SetEntity(new FileEntity("test"), true);
 
             _storage
                 .Setup(mock => mock.Move("test", "test2"))
@@ -89,8 +89,8 @@ namespace ViewerTest.Data
         [TestMethod]
         public void SetEntity_ModifyTheSameEntityTwice()
         {
-            var entityA = new Entity("test");
-            var entityB = new Entity("test").SetAttribute(new Attribute("a", new IntValue(1)));
+            var entityA = new FileEntity("test");
+            var entityB = new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1)));
             _entityManager.SetEntity(entityA, true);
             _entityManager.SetEntity(entityB, true);
 

@@ -55,6 +55,10 @@ namespace Viewer.UI.Images
 
         public ILazyThumbnail Create(IEntity entity)
         {
+            if (entity is DirectoryEntity)
+            {
+                return new DirectoryThumbnail(entity.Path);
+            }
             return new PhotoThumbnail(_thumbnailLoader, entity);
         }
     }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Properties;
 using Viewer.Collections;
+using Viewer.Data;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
@@ -158,8 +159,8 @@ namespace Viewer.UI.Images
         
         public string Query { get; set; }
 
-        private IReadOnlyList<IContextOption<IFileView>> _contextOptions;
-        public IReadOnlyList<IContextOption<IFileView>> ContextOptions
+        private IReadOnlyList<IContextOption<EntityView>> _contextOptions;
+        public IReadOnlyList<IContextOption<EntityView>> ContextOptions
         {
             get => _contextOptions;
             set
@@ -207,7 +208,7 @@ namespace Viewer.UI.Images
             }
         }
 
-        public SortedList<IFileView> Items
+        public SortedList<EntityView> Items
         {
             get => GridView.Items;
             set => GridView.Items = value;

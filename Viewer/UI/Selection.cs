@@ -10,6 +10,11 @@ using Viewer.Data;
 
 namespace Viewer.UI
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Collection of entities currently selected by the user.
+    /// It contains file and directory entities
+    /// </summary>
     public interface ISelection : IEnumerable<IEntity>
     {
         /// <summary>
@@ -31,7 +36,6 @@ namespace Viewer.UI
         
         /// <summary>
         /// Remove all items from the selection and call the Changed event.
-        /// It will also set Items to null.
         /// </summary>
         void Clear();
     }

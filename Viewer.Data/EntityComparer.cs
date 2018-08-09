@@ -35,6 +35,19 @@ namespace Viewer.Data
 
         public int Compare(IEntity x, IEntity y)
         {
+            if (x is DirectoryEntity && y is DirectoryEntity)
+            {
+                return Comparer<string>.Default.Compare(x.Path, y.Path);
+            }
+            else if (x is DirectoryEntity)
+            {
+                return -1;
+            }
+            else if (y is DirectoryEntity)
+            {
+                return 1;
+            }
+
             foreach (var order in _order)
             {
                 var valueA = order.Getter(x);

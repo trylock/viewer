@@ -16,7 +16,7 @@ namespace ViewerTest.UI
         public void Replace_NoChangedListener()
         {
             var selection = new Selection();
-            selection.Replace(new []{ new Entity("test1"), new Entity("test2") });
+            selection.Replace(new []{ new FileEntity("test1"), new FileEntity("test2") });
             
             Assert.AreEqual(2, selection.Count);
         }
@@ -37,14 +37,14 @@ namespace ViewerTest.UI
         {
             var oldSelection = new[]
             {
-                new Entity("test0"),
-                new Entity("test1"),
+                new FileEntity("test0"),
+                new FileEntity("test1"),
             };
 
             var newSelection = new[]
             {
-                new Entity("test2"),
-                new Entity("test3"),
+                new FileEntity("test2"),
+                new FileEntity("test3"),
             };
 
             var selection = new Selection();

@@ -37,7 +37,7 @@ namespace Viewer.Data.Storage
         public IEntity Load(string inputPath)
         {
             var fileInfo = new FileInfo(inputPath);
-            IEntity entity = new Entity(inputPath, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
+            IEntity entity = new FileEntity(inputPath, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
             
             // load valid attributes
             SQLiteDataReader reader;

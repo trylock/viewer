@@ -51,7 +51,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Current state of the rectangle selection
         /// </summary>
-        private readonly RectangleSelection<IFileView> _rectangleSelection = new RectangleSelection<IFileView>(new FileViewPathComparer());
+        private readonly RectangleSelection<EntityView> _rectangleSelection = new RectangleSelection<EntityView>(new EntityViewPathComparer());
         
         /// <summary>
         /// true iff constrol is pressed
@@ -148,7 +148,7 @@ namespace Viewer.UI.Images
             _queryEvaluator = _queryEvaluatorFactory.Create(query);
 
             View.Query = _queryEvaluator.Query.Text;
-            View.Items = new SortedList<IFileView>(_queryEvaluator.Comparer);
+            View.Items = new SortedList<EntityView>(_queryEvaluator.Comparer);
             View.BeginLoading();
             View.BeginPolling(PollingRate);
 
@@ -234,14 +234,9 @@ namespace Viewer.UI.Images
             // update the view
             foreach (var item in View.Items)
             {
-                if (_rectangleSelection.Contains(item))
-                {
-                    item.State = FileViewState.Selected;
-                }
-                else
-                {
-                    item.State = FileViewState.None;
-                }
+                item.State = _rectangleSelection.Contains(item) ? 
+                    FileViewState.Selected : 
+                    FileViewState.None;
             }
 
             View.UpdateItems();
@@ -249,7 +244,7 @@ namespace Viewer.UI.Images
 
         private IEnumerable<IEntity> GetEntitiesInSelection()
         {
-            return _rectangleSelection.OfType<FileView>().Select(item => item.Data);
+            return _rectangleSelection.Select(item => item.Data);
         }
 
         #region User input
@@ -369,9 +364,8 @@ namespace Viewer.UI.Images
             // rename the file
             try
             {
-                if (item is FileView view)
+                if (item.Data is FileEntity entity)
                 {
-                    var entity = view.Data;
                     _entityManager.MoveEntity(entity.Path, newPath);
                 }
                 else
@@ -435,7 +429,10 @@ namespace Viewer.UI.Images
 
             // delete files 
             var deletedPaths = new HashSet<string>();
-            var filesInSelection = _rectangleSelection.OfType<FileView>().Select(item => item.FullPath);
+            var filesInSelection = _rectangleSelection
+                .Select(item => item.Data)
+                .OfType<FileEntity>()
+                .Select(item => item.Path);
             foreach (var path in filesInSelection)
             {
                 try
@@ -462,7 +459,10 @@ namespace Viewer.UI.Images
             }
 
             // delete folders
-            var foldersInSelection = _rectangleSelection.OfType<DirectoryView>().Select(item => item.FullPath);
+            var foldersInSelection = _rectangleSelection
+                .Select(item => item.Data)
+                .OfType<DirectoryEntity>()
+                .Select(item => item.Path);
             foreach (var folder in foldersInSelection)
             {
                 try
@@ -504,20 +504,20 @@ namespace Viewer.UI.Images
             }
             
             // if the selection contains files only
-            if (_rectangleSelection.All(item => item is FileView))
+            if (_rectangleSelection.All(item => item.Data is FileEntity))
             {
                 // count number of directories before selected item
                 var directoryCount = 0;
                 for (var i = 0; i < e.Index; ++i)
                 {
-                    if (View.Items[i].GetType() != typeof(FileView))
+                    if (View.Items[i].Data.GetType() != typeof(FileEntity))
                     {
                         ++directoryCount;
                     }
                 }
 
                 // find index of the selected item after removing all directories
-                var entities = View.Items.OfType<FileView>().Select(item => item.Data);
+                var entities = View.Items.Select(item => item.Data).OfType<FileEntity>();
                 var entityIndex = e.Index - directoryCount;
                 _state.OpenEntity(entities, entityIndex);
             }
@@ -564,6 +564,5 @@ namespace Viewer.UI.Images
         }
 
         #endregion
-        
     }
 }

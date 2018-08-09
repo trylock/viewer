@@ -151,7 +151,7 @@ namespace Viewer.Query
             var finder = new FileFinder(_fileSystem, _pattern);
             var files =
                 from path in finder.GetFiles()
-                let extension = System.IO.Path.GetExtension(path).ToLowerInvariant()
+                let extension = Path.GetExtension(path).ToLowerInvariant()
                 where extension == ".jpeg" || extension == ".jpg"
                 select path;
             return files;

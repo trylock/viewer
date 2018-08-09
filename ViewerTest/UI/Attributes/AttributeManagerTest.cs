@@ -47,7 +47,7 @@ namespace ViewerTest.UI.Attributes
             var oldAttr = new Attribute("oldAttr", new IntValue(42));
             var newAttr = new Attribute("attr", new StringValue("value"));
 
-            var entity = new Entity("test").SetAttribute(oldAttr);
+            var entity = new FileEntity("test").SetAttribute(oldAttr);
             var selectedEntities = new List<IEntity>
             {
                 entity
@@ -75,8 +75,8 @@ namespace ViewerTest.UI.Attributes
         {
             var selectedEntities = new List<IEntity>
             {
-                new Entity("test1"),
-                new Entity("test2"),
+                new FileEntity("test1"),
+                new FileEntity("test2"),
             };
 
             _selection
@@ -110,7 +110,7 @@ namespace ViewerTest.UI.Attributes
         {
             var selectedEntities = new List<IEntity>
             {
-                new Entity("test"),
+                new FileEntity("test"),
             };
 
             _selection
@@ -126,8 +126,8 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void RemoveAttribute_MultipleEntitiesWithDifferentValue()
         {
-            var entity1 = new Entity("test1").SetAttribute(new Attribute("attr", new StringValue("value")));
-            var entity2 = new Entity("test2").SetAttribute(new Attribute("attr", new IntValue(42)));
+            var entity1 = new FileEntity("test1").SetAttribute(new Attribute("attr", new StringValue("value")));
+            var entity2 = new FileEntity("test2").SetAttribute(new Attribute("attr", new IntValue(42)));
             
             var selectedEntities = new List<IEntity>
             {
@@ -163,8 +163,8 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void GetSelectedEntities_MissingAttributeOnAnEntity()
         {
-            var entity1 = new Entity("test1").SetAttribute(new Attribute("attr", new IntValue(42)));
-            var entity2 = new Entity("test2");
+            var entity1 = new FileEntity("test1").SetAttribute(new Attribute("attr", new IntValue(42)));
+            var entity2 = new FileEntity("test2");
 
             var selectedEntities = new List<IEntity>
             {

@@ -41,6 +41,16 @@ namespace Viewer.UI.Attributes
     public interface IAttributeManager
     {
         /// <summary>
+        /// Event called when selection changes
+        /// </summary>
+        event EventHandler SelectionChanged;
+
+        /// <summary>
+        /// Check whether the selection is empty
+        /// </summary>
+        bool IsSelectionEmpty { get; }
+
+        /// <summary>
         /// Set attribute to all entities in selection
         /// </summary>
         /// <param name="oldName">Old name of the attribute</param>
@@ -66,6 +76,14 @@ namespace Viewer.UI.Attributes
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
 
+        public event EventHandler SelectionChanged
+        {
+            add => _selection.Changed += value;
+            remove => _selection.Changed -= value;
+        }
+
+        public bool IsSelectionEmpty => !GetFilesInSelection().Any();
+
         [ImportingConstructor]
         public AttributeManager(ISelection selection, IEntityManager entityManager)
         {
@@ -73,11 +91,16 @@ namespace Viewer.UI.Attributes
             _entityManager = entityManager;
         }
 
+        private IEnumerable<FileEntity> GetFilesInSelection()
+        {
+            return _selection.OfType<FileEntity>();
+        }
+
         public IEnumerable<AttributeGroup> GroupAttributesInSelection()
         {
             // find all attributes in the selection
             var attrs = new Dictionary<string, AttributeGroup>();
-            foreach (var entity in _selection)
+            foreach (var entity in GetFilesInSelection())
             {
                 foreach (var attr in entity)
                 {
@@ -102,17 +125,19 @@ namespace Viewer.UI.Attributes
                 }
             }
 
+            var selectedItemCount = GetFilesInSelection().Count();
             foreach (var pair in attrs)
             {
-                pair.Value.IsGlobal = pair.Value.EntityCount == _selection.Count;
+                pair.Value.IsGlobal = pair.Value.EntityCount == selectedItemCount;
             }
 
             return attrs.Values;
         }
-        
+
+
         public void SetAttribute(string oldName, Attribute attr)
         {
-            foreach (var entity in _selection)
+            foreach (var entity in GetFilesInSelection())
             {
                 entity.RemoveAttribute(oldName).SetAttribute(attr);
                 _entityManager.SetEntity(entity, true);
@@ -121,7 +146,7 @@ namespace Viewer.UI.Attributes
 
         public void RemoveAttribute(string name)
         {
-            foreach (var entity in _selection)
+            foreach (var entity in GetFilesInSelection())
             { 
                 entity.RemoveAttribute(name);
                 _entityManager.SetEntity(entity, true);

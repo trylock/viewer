@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Collections;
+using Viewer.Data;
 using Viewer.IO;
 using Viewer.Query;
 
@@ -19,7 +20,7 @@ namespace Viewer.UI.Images
         private readonly IErrorListener _queryErrorListener;
 
         // state
-        private readonly ConcurrentSortedSet<IFileView> _waitingQueue;
+        private readonly ConcurrentSortedSet<EntityView> _waitingQueue;
         
         /// <summary>
         /// Cancellation of the query evaluation
@@ -29,7 +30,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Comparer of the result set
         /// </summary>
-        public IComparer<IFileView> Comparer => _waitingQueue.Comparer;
+        public IComparer<EntityView> Comparer => _waitingQueue.Comparer;
 
         /// <summary>
         /// Current query
@@ -46,7 +47,7 @@ namespace Viewer.UI.Images
             _thumbnailFactory = thumbnailFactory;
             _queryErrorListener = queryErrorListener;
             Query = query;
-            _waitingQueue = new ConcurrentSortedSet<IFileView>(new FileViewComparer(Query.Comparer));
+            _waitingQueue = new ConcurrentSortedSet<EntityView>(new EntityViewComparer(Query.Comparer));
         }
 
         /// <summary>
@@ -68,31 +69,12 @@ namespace Viewer.UI.Images
         /// </summary>
         public void Run()
         {
-            var directories = new HashSet<string>();
-
             try
             {
                 foreach (var entity in Query)
                 {
                     Cancellation.Token.ThrowIfCancellationRequested();
-
-                    // add the file to the result
-                    var item = new FileView(entity, _thumbnailFactory.Create(entity));
-                    _waitingQueue.Add(item);
-
-                    // add all subdirectories to the result
-                    var dirPath = PathUtils.GetDirectoryPath(entity.Path);
-                    if (directories.Contains(dirPath))
-                    {
-                        continue;
-                    }
-
-                    directories.Add(dirPath);
-                    foreach (var dir in Directory.EnumerateDirectories(dirPath))
-                    {
-                        Cancellation.Token.ThrowIfCancellationRequested();
-                        _waitingQueue.Add(new DirectoryView(dir, new DirectoryThumbnail(dir)));
-                    }
+                    AddEntity(entity);
                 }
             }
             catch (QueryRuntimeException e)
@@ -101,11 +83,17 @@ namespace Viewer.UI.Images
             }
         }
 
+        private void AddEntity(IEntity entity)
+        {
+            _waitingQueue.Add(new EntityView(entity, _thumbnailFactory.Create(entity)));
+        }
+        
+
         /// <summary>
         /// Remove all loaded views so far and return them.
         /// </summary>
         /// <returns></returns>
-        public IReadOnlyList<IFileView> Consume()
+        public IReadOnlyList<EntityView> Consume()
         {
             return _waitingQueue.Consume();
         }

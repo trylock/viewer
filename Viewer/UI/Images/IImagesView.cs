@@ -19,31 +19,8 @@ namespace Viewer.UI.Images
         Active,
         Selected,
     }
-
-    public interface IFileView : IDisposable
-    {
-        /// <summary>
-        /// Name of the file which is shown to the user
-        /// </summary>
-        string Name { get; }
-
-        /// <summary>
-        /// Full path to the file
-        /// </summary>
-        string FullPath { get; set; }
-
-        /// <summary>
-        /// Current state of the item
-        /// </summary>
-        FileViewState State { get; set; }
-
-        /// <summary>
-        /// Image representation of the file
-        /// </summary>
-        ILazyThumbnail Thumbnail { get; }
-    }
-
-    public sealed class FileView : IFileView
+    
+    public sealed class EntityView : IDisposable
     {
         public string Name => Path.GetFileNameWithoutExtension(Data.Path);
 
@@ -56,10 +33,10 @@ namespace Viewer.UI.Images
         public ILazyThumbnail Thumbnail { get; }
         public IEntity Data { get; }
         
-        public FileView(IEntity data, ILazyThumbnail thumbnail)
+        public EntityView(IEntity data, ILazyThumbnail thumbnail)
         {
-            Data = data;
-            Thumbnail = thumbnail;
+            Data = data ?? throw new ArgumentNullException(nameof(data));
+            Thumbnail = thumbnail ?? throw new ArgumentNullException(nameof(thumbnail));
         }
 
         public void Dispose()
@@ -67,29 +44,10 @@ namespace Viewer.UI.Images
             Thumbnail?.Dispose();
         }
     }
-
-    public sealed class DirectoryView : IFileView
+   
+    public class EntityViewPathComparer : IEqualityComparer<EntityView>
     {
-        public string Name => Path.GetFileNameWithoutExtension(FullPath);
-        public string FullPath { get; set; }
-        public FileViewState State { get; set; } = FileViewState.None;
-        public ILazyThumbnail Thumbnail { get; }
-
-        public DirectoryView(string path, ILazyThumbnail thumbnail)
-        {
-            FullPath = path;
-            Thumbnail = thumbnail;
-        }
-
-        public void Dispose()
-        {
-            Thumbnail?.Dispose();
-        }
-    }
-
-    public class FileViewPathComparer : IEqualityComparer<IFileView>
-    {
-        public bool Equals(IFileView x, IFileView y)
+        public bool Equals(EntityView x, EntityView y)
         {
             if (x == null && y == null)
                 return true;
@@ -98,40 +56,28 @@ namespace Viewer.UI.Images
             return x.FullPath == y.FullPath;
         }
 
-        public int GetHashCode(IFileView obj)
+        public int GetHashCode(EntityView obj)
         {
             return obj.FullPath.GetHashCode();
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
     /// EntityView comparer which compares entity views by their underlying entity.
     /// </summary>
-    public class FileViewComparer : IComparer<IFileView>
+    public class EntityViewComparer : IComparer<EntityView>
     {
         private readonly IComparer<IEntity> _entityComparer;
 
-        public FileViewComparer(IComparer<IEntity> entityComparer)
+        public EntityViewComparer(IComparer<IEntity> entityComparer)
         {
             _entityComparer = entityComparer;
         }
 
-        public int Compare(IFileView x, IFileView y)
+        public int Compare(EntityView x, EntityView y)
         {
-            if (x is DirectoryView && y is DirectoryView)
-            {
-                return Comparer<string>.Default.Compare(x.FullPath, y.FullPath);
-            }
-            else if (x is DirectoryView)
-            {
-                return -1;
-            }
-            else if (y is DirectoryView)
-            {
-                return 1;
-            }
-
-            return _entityComparer.Compare(((FileView) x).Data, ((FileView) y).Data);
+            return _entityComparer.Compare(x.Data, y.Data);
         }
     }
 
@@ -149,7 +95,7 @@ namespace Viewer.UI.Images
         void Run(T item);
     }
 
-    public sealed class ExternalApplicationOption : IContextOption<IFileView>
+    public sealed class ExternalApplicationOption : IContextOption<EntityView>
     {
         private readonly ExternalApplication _app;
 
@@ -160,7 +106,7 @@ namespace Viewer.UI.Images
 
         public string Name => _app.Name;
 
-        public void Run(IFileView item)
+        public void Run(EntityView item)
         {
             _app.Run(item.FullPath);
         }
@@ -347,12 +293,12 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Context options
         /// </summary>
-        IReadOnlyList<IContextOption<IFileView>> ContextOptions { get; set; }
+        IReadOnlyList<IContextOption<EntityView>> ContextOptions { get; set; }
 
         /// <summary>
         /// List of items to show 
         /// </summary>
-        SortedList<IFileView> Items { get; set; }
+        SortedList<EntityView> Items { get; set; }
 
         /// <summary>
         /// Set an item size

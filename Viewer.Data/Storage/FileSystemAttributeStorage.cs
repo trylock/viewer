@@ -65,7 +65,7 @@ namespace Viewer.Data.Storage
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
             {
                 fileInfo = new FileInfo(path);
-                attrs = new Entity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
+                attrs = new FileEntity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
 
                 for (;;)
                 {

@@ -23,7 +23,6 @@ namespace Viewer.UI.Attributes
     public class AttributesPresenter : Presenter<IAttributeView>
     {
         private readonly ITaskLoader _taskLoader;
-        private readonly ISelection _selection;
         private readonly IAttributeManager _attributes;
         private readonly IAttributeStorage _storage;
         private readonly IEntityManager _entityManager;
@@ -48,7 +47,6 @@ namespace Viewer.UI.Attributes
         public AttributesPresenter(
             ExportFactory<IAttributeView> viewFactory, 
             ITaskLoader taskLoader, 
-            ISelection selection,
             IAttributeManager attrManager,
             IAttributeStorage storage,
             IEntityManager entityManager,
@@ -58,10 +56,9 @@ namespace Viewer.UI.Attributes
             _taskLoader = taskLoader;
             _errorList = errorList;
             _storage = storage;
-            _attributes = attrManager;
             _entityManager = entityManager;
-            _selection = selection;
-            _selection.Changed += Selection_Changed;
+            _attributes = attrManager;
+            _attributes.SelectionChanged += Selection_Changed;
 
             SubscribeTo(View, "View");
             UpdateAttributes();
@@ -70,7 +67,7 @@ namespace Viewer.UI.Attributes
         public override void Dispose()
         {
             base.Dispose();
-            _selection.Changed -= Selection_Changed;
+            _attributes.SelectionChanged -= Selection_Changed;
         }
         
         private void UpdateAttributes()
@@ -134,17 +131,12 @@ namespace Viewer.UI.Attributes
         {
             return GetSelectedAttributes().Any(attr => attr.Data.Name == name);
         }
-
-        private bool IsSelectionEmpty()
-        {
-            return _selection.Count == 0;
-        }
-
+        
         private void ViewAttributes()
         {
             // add existing attributes + an empty row for a new attribute
             View.Attributes = GetSelectedAttributes().ToList();
-            if (_selection.Count > 0 && IsEditingEnabled)
+            if (!_attributes.IsSelectionEmpty && IsEditingEnabled)
             {
                 View.Attributes.Add(CreateAddAttributeView());
             }
@@ -154,12 +146,7 @@ namespace Viewer.UI.Attributes
         }
 
         #region View
-
-        private void View_CloseView(object sender, EventArgs e)
-        {
-            _selection.Changed -= Selection_Changed;
-        }
-
+        
         private void View_AttributeChanged(object sender, AttributeChangedEventArgs e)
         {
             if (!IsEditingEnabled)
@@ -281,7 +268,7 @@ namespace Viewer.UI.Attributes
         
         private void View_SortAttributes(object sender, SortEventArgs e)
         {
-            if (IsSelectionEmpty())
+            if (_attributes.IsSelectionEmpty)
             {
                 return;
             }
@@ -336,7 +323,7 @@ namespace Viewer.UI.Attributes
 
         private void View_Search(object sender, EventArgs e)
         {
-            if (IsSelectionEmpty())
+            if (_attributes.IsSelectionEmpty)
             {
                 return;
             }

@@ -22,7 +22,18 @@ namespace Viewer.UI.Images
     
     public sealed class EntityView : IDisposable
     {
-        public string Name => Path.GetFileNameWithoutExtension(Data.Path);
+        public string Name
+        {
+            get
+            {
+                if (Data is FileEntity)
+                {
+                    return Path.GetFileNameWithoutExtension(Data.Path);
+                }
+
+                return Path.GetFileName(Data.Path);
+            }
+        } 
 
         public string FullPath
         {

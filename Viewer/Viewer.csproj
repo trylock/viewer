@@ -122,6 +122,12 @@
     </Compile>
     <Compile Include="UI\Forms\ButtonCell.cs" />
     <Compile Include="UI\Forms\DateTimeCell.cs" />
+    <Compile Include="UI\Forms\IconButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\IconButton.Designer.cs">
+      <DependentUpon>IconButton.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Images\GridView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -184,6 +190,7 @@
     <Compile Include="UI\Tasks\TaskLoaderView.Designer.cs">
       <DependentUpon>TaskLoaderView.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ValueFormat.cs" />
     <Compile Include="ViewerApplication.cs" />
     <Compile Include="UI\WindowView.cs">
       <SubType>Form</SubType>
@@ -302,6 +309,12 @@
     <None Include="Resources\ErrorListIcon.ico" />
     <Content Include="Resources\Open.png" />
     <None Include="Resources\QueryComponentIcon.ico" />
+    <None Include="Resources\Presentation\Fullscreen.png" />
+    <None Include="Resources\Presentation\Pause.png" />
+    <None Include="Resources\Presentation\Play.png" />
+    <None Include="Resources\Presentation\Windowed.png" />
+    <None Include="Resources\Presentation\ZoomIn.png" />
+    <None Include="Resources\Presentation\ZoomOut.png" />
     <Content Include="Resources\Save.png" />
     <None Include="Resources\Start.png" />
     <None Include="Resources\PauseIcon.png" />

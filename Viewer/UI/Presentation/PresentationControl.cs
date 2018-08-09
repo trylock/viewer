@@ -41,7 +41,7 @@ namespace Viewer.UI.Presentation
             set
             {
                 _isPlaying = value;
-                PlayPauseButton.BackgroundImage = _isPlaying ? Resources.PauseIcon : Resources.PlayIcon;
+                PlayPauseButton.Icon = _isPlaying ? Resources.Pause : Resources.Play;
                 PlayPauseButton.Invalidate();
             }
         }
@@ -59,6 +59,8 @@ namespace Viewer.UI.Presentation
             {
                 if (IsFullscreen == value)
                     return;
+
+                ToggleFullscreenButton.Icon = value ? Resources.Windowed : Resources.Fullscreen;
 
                 if (value)
                     ToFullscreen();
@@ -89,12 +91,14 @@ namespace Viewer.UI.Presentation
 
         public PresentationControl()
         {
+            DoubleBuffered = true;
             InitializeComponent();
 
             MouseWheel += PresentationControl_MouseWheel;
 
             MinDelayLabel.Text = SpeedTrackBar.Minimum + "s";
             MaxDelayLabel.Text = SpeedTrackBar.Maximum + "s";
+            PlayPauseButton.IconColorTint = Color.FromArgb(0, 120, 215);
             
             _fullscreenForm = new Form
             {
@@ -328,6 +332,10 @@ namespace Viewer.UI.Presentation
             {
                 ExitFullscreen?.Invoke(sender, e);
             }
+            else if (e.KeyCode == Keys.P)
+            {
+                PlayPausePresentation?.Invoke(sender, e);
+            }
         }
 
         private void PresentationControl_MouseMove(object sender, MouseEventArgs e)
@@ -408,13 +416,27 @@ namespace Viewer.UI.Presentation
         {
             NextImage?.Invoke(sender, e);
         }
-        
-        private void PausePlayButton_Click(object sender, EventArgs e)
+
+        private void PlayPauseButton_Click(object sender, EventArgs e)
         {
             PlayPausePresentation?.Invoke(sender, e);
         }
 
-        #endregion
+        private void ZoomOutButton_Click(object sender, EventArgs e)
+        {
+            ZoomOut?.Invoke(sender, e);
+        }
 
+        private void ZoomInButton_Click(object sender, EventArgs e)
+        {
+            ZoomIn?.Invoke(sender, e);
+        }
+
+        private void ToggleFullscreenButton_Click(object sender, EventArgs e)
+        {
+            IsFullscreen = !IsFullscreen;
+        }
+
+        #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +34,7 @@ namespace ViewerTest.UI.Attributes
         public void SetAttribute_EmptySelection()
         {
             _selection
+                .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(new List<IEntity>().GetEnumerator());
 
@@ -53,6 +55,7 @@ namespace ViewerTest.UI.Attributes
                 entity
             };
             _selection
+                .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
             _selection
@@ -80,6 +83,7 @@ namespace ViewerTest.UI.Attributes
             };
 
             _selection
+                .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
             _selection
@@ -114,6 +118,7 @@ namespace ViewerTest.UI.Attributes
             };
 
             _selection
+                .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
             _selection
@@ -136,6 +141,7 @@ namespace ViewerTest.UI.Attributes
             };
 
             _selection
+                .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
             _selection
@@ -173,6 +179,7 @@ namespace ViewerTest.UI.Attributes
             };
 
             _selection
+                .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
             _selection

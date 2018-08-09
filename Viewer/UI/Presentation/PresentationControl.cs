@@ -24,8 +24,8 @@ namespace Viewer.UI.Presentation
         public event EventHandler PlayPausePresentation;
         public event EventHandler TimerTick
         {
-            add => HideCursorTimer.Tick += value;
-            remove => HideCursorTimer.Tick -= value;
+            add => UpdateTimer.Tick += value;
+            remove => UpdateTimer.Tick -= value;
         }
 
         public event EventHandler ZoomIn;
@@ -120,6 +120,8 @@ namespace Viewer.UI.Presentation
             }
         }
 
+        #region Fullscreen
+
         /// <summary>
         /// Find a screen on which lies most area of this component
         /// </summary>
@@ -167,6 +169,8 @@ namespace Viewer.UI.Presentation
             _fullscreenForm.Visible = false;
         }
 
+        #endregion
+
         #region Drag picture
 
         private bool _isDrag = false;
@@ -182,6 +186,7 @@ namespace Viewer.UI.Presentation
         private void EndDrag()
         {
             _isDrag = false;
+            Invalidate(); 
         }
 
         private void Drag(Point location)
@@ -217,25 +222,34 @@ namespace Viewer.UI.Presentation
         #endregion
 
         #region Events
-        
+
+        private Matrix _lastTransformation;
+        private bool _needsRepaint = false;
+        private DateTime _repaintSchedule = DateTime.Now;
+
+        /// <summary>
+        /// Using the fast version of the paint method (due to recent changes to draw parameters) will
+        /// schedule a repaint event triggered by the UpdateTimer tick. This is the minimal time after
+        /// which this repaint event will be triggered.
+        /// </summary>
+        private static readonly TimeSpan RepaintDelay = new TimeSpan(0, 0, 0, 0, 200);
+
         private void PresentationControl_Paint(object sender, PaintEventArgs e)
         {
             if (Picture == null)
             {
                 return;
             }
-
-            using (var brush = new SolidBrush(BackColor))
-            {
-                e.Graphics.FillRectangle(brush, e.ClipRectangle);
-            }
-
+            
+            // clear background
+            e.Graphics.FillRectangle(Brushes.Black, e.ClipRectangle);
+            
             var scaledSize = ThumbnailGenerator.GetThumbnailSize(Picture.Size, ClientSize);
 
             // make sure picture translation is within limits of the zoomed picture
             _pictureTranslation = ClampPictureTranslation(_pictureTranslation);
 
-            // apply transformations and draw the picture
+            // apply transformations 
             var zoom = (float)Zoom;
             e.Graphics.TranslateTransform(
                 ClientSize.Width / 2.0f, 
@@ -244,6 +258,21 @@ namespace Viewer.UI.Presentation
             e.Graphics.TranslateTransform(
                 _pictureTranslation.X - scaledSize.Width / 2.0f, 
                 _pictureTranslation.Y - scaledSize.Height / 2.0f);
+
+            // If we have made changes to draw parameters (e.g. due to resizing, zooming, dragging etc.),
+            // use a fast version of the draw method and schedule a repaint event. This event is triggered by
+            // the Update timer tick.
+            var useFastPaint = 
+                _lastTransformation != null &&
+                !_lastTransformation.Elements.SequenceEqual(e.Graphics.Transform.Elements);
+            _needsRepaint = useFastPaint;
+            _lastTransformation = e.Graphics.Transform;
+            _repaintSchedule = DateTime.Now + RepaintDelay;
+
+            // draw the picture
+            e.Graphics.InterpolationMode = useFastPaint ? 
+                InterpolationMode.NearestNeighbor : 
+                InterpolationMode.HighQualityBicubic;
             e.Graphics.DrawImage(Picture, new Rectangle(Point.Empty, scaledSize));
             e.Graphics.ResetTransform();
         }
@@ -306,11 +335,16 @@ namespace Viewer.UI.Presentation
             }
         }
 
-        private void HideCursorTimer_Tick(object sender, EventArgs e)
+        private void UpdateTimer_Tick(object sender, EventArgs e)
         {
             if (IsFullscreen)
             {
                 HideCursor();
+            }
+
+            if (_needsRepaint && DateTime.Now >= _repaintSchedule)
+            {
+                Invalidate();
             }
         }
 

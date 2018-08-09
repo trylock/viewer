@@ -35,7 +35,7 @@
             this.MaxDelayLabel = new System.Windows.Forms.Label();
             this.MinDelayLabel = new System.Windows.Forms.Label();
             this.SpeedTrackBar = new System.Windows.Forms.TrackBar();
-            this.HideCursorTimer = new System.Windows.Forms.Timer(this.components);
+            this.UpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.ToggleFullscreenButton = new Viewer.UI.Forms.IconButton();
             this.ZoomInButton = new Viewer.UI.Forms.IconButton();
             this.ZoomOutButton = new Viewer.UI.Forms.IconButton();
@@ -153,11 +153,11 @@
             this.SpeedTrackBar.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PresentationControl_KeyDown);
             this.SpeedTrackBar.MouseLeave += new System.EventHandler(this.PresentationControl_MouseLeave);
             // 
-            // HideCursorTimer
+            // UpdateTimer
             // 
-            this.HideCursorTimer.Enabled = true;
-            this.HideCursorTimer.Interval = 16;
-            this.HideCursorTimer.Tick += new System.EventHandler(this.HideCursorTimer_Tick);
+            this.UpdateTimer.Enabled = true;
+            this.UpdateTimer.Interval = 16;
+            this.UpdateTimer.Tick += new System.EventHandler(this.UpdateTimer_Tick);
             // 
             // ToggleFullscreenButton
             // 
@@ -262,7 +262,7 @@
         private System.Windows.Forms.TrackBar SpeedTrackBar;
         private System.Windows.Forms.Label MinDelayLabel;
         private System.Windows.Forms.Label MaxDelayLabel;
-        private System.Windows.Forms.Timer HideCursorTimer;
+        private System.Windows.Forms.Timer UpdateTimer;
         private Forms.IconButton PlayPauseButton;
         private Forms.IconButton ZoomOutButton;
         private Forms.IconButton ZoomInButton;

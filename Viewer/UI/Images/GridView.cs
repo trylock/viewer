@@ -314,7 +314,7 @@ namespace Viewer.UI.Images
             var thumbnailSize = ThumbnailGenerator.GetThumbnailSize(thumbnail.Size, ItemSize);
             var thumbnailLocation = GetThumbnailLocation(bounds, thumbnailSize);
             // we don't really need an interpolation as we are drawing the image in its original size
-            graphics.InterpolationMode = InterpolationMode.Low;
+            graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
             graphics.DrawImage(thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
         }
 

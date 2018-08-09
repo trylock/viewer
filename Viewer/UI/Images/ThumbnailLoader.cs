@@ -106,7 +106,14 @@ namespace Viewer.UI.Images
             lock (_requests)
             {
                 // find the request
-                var index = _requests.FindIndex(req => req.Entity.Path == path);
+                var index = _requests.Count - 1;
+                for (; index >= 0; --index)
+                {
+                    if (_requests[index].Entity.Path == path)
+                    {
+                        break;
+                    }
+                }
                 if (index < 0)
                 {
                     return;

@@ -56,24 +56,25 @@ namespace ViewerTest.Data
             var entity = new FileEntity("test");
 
             _entityManager.SetEntity(entity, true);
-            _entityManager.MoveEntity("test", "test2");
+            _entityManager.MoveEntity(entity, "test2");
 
-            _storage.Verify(mock => mock.Move("test", "test2"), Times.Once);
+            _storage.Verify(mock => mock.Move(entity, "test2"), Times.Once);
         }
 
         [TestMethod]
         public void MoveEntity_DoNotMoveEntityIfTheMoveOperationInStorageFails()
         {
-            _entityManager.SetEntity(new FileEntity("test"), true);
+            var entity = new FileEntity("test");
+            _entityManager.SetEntity(entity, true);
 
             _storage
-                .Setup(mock => mock.Move("test", "test2"))
+                .Setup(mock => mock.Move(entity, "test2"))
                 .Throws(new UnauthorizedAccessException());
 
             var throws = false;
             try
             {
-                _entityManager.MoveEntity("test", "test2");
+                _entityManager.MoveEntity(entity, "test2");
             }
             catch (UnauthorizedAccessException)
             {
@@ -84,6 +85,7 @@ namespace ViewerTest.Data
             var modified = _entityManager.GetModified().ToArray();
             Assert.AreEqual(1, modified.Length);
             Assert.AreEqual("test", modified[0].Path);
+            Assert.AreEqual("test", entity.Path);
         }
 
         [TestMethod]

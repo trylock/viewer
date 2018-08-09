@@ -48,15 +48,15 @@ namespace Viewer.Data.Storage
         /// <summary>
         /// Permanently remove entity at given path
         /// </summary>
-        /// <param name="path">Path to an entity</param>
-        void Remove(string path);
+        /// <param name="entity">Entity to remove</param>
+        void Remove(IEntity entity);
 
         /// <summary>
-        /// Move an entity from <paramref name="oldPath"/> to <paramref name="newPath"/>.
+        /// Move an <paramref name="entity"/> to <paramref name="newPath"/>.
         /// </summary>
-        /// <param name="oldPath">Old path of an entity</param>
+        /// <param name="entity">Entity to move</param>
         /// <param name="newPath">New path to entity</param>
-        void Move(string oldPath, string newPath);
+        void Move(IEntity entity, string newPath);
     }
 
     public interface ICacheAttributeStorage : IAttributeStorage

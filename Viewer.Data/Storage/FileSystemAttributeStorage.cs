@@ -141,14 +141,36 @@ namespace Viewer.Data.Storage
             }
         }
         
-        public void Remove(string path)
+        public void Remove(IEntity entity)
         {
-            _fileSystem.DeleteFile(path);
+            if (entity is FileEntity)
+            {
+                _fileSystem.DeleteFile(entity.Path);
+            }
+            else if (entity is DirectoryEntity)
+            {
+                _fileSystem.DeleteDirectory(entity.Path, true);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(entity));
+            }
         }
 
-        public void Move(string oldPath, string newPath)
+        public void Move(IEntity entity, string newPath)
         {
-            _fileSystem.MoveFile(oldPath, newPath);
+            if (entity is FileEntity)
+            {
+                _fileSystem.MoveFile(entity.Path, newPath);
+            }
+            else if (entity is DirectoryEntity)
+            {
+                _fileSystem.MoveDirectory(entity.Path, newPath);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(entity));
+            }
         }
 
         private byte[] Serialize(IEnumerable<Attribute> attrs)

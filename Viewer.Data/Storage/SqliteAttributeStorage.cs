@@ -117,14 +117,14 @@ namespace Viewer.Data.Storage
             }
         }
 
-        public void Move(string oldPath, string newPath)
+        public void Move(IEntity entity, string newPath)
         {
-            MoveFile(PathUtils.UnifyPath(oldPath), PathUtils.UnifyPath(newPath));
+            MoveFile(PathUtils.UnifyPath(entity.Path), PathUtils.UnifyPath(newPath));
         }
 
-        public void Remove(string path)
+        public void Remove(IEntity entity)
         {
-            RemoveFile(PathUtils.UnifyPath(path));
+            RemoveFile(PathUtils.UnifyPath(entity.Path));
         }
 
         public void Touch(string path)

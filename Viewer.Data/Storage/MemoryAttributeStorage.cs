@@ -44,23 +44,20 @@ namespace Viewer.Data.Storage
             }
         }
 
-        public void Remove(string path)
+        public void Remove(IEntity entity)
         {
             lock (_files)
             {
-                _files.Remove(path);
+                _files.Remove(entity.Path);
             }
         }
 
-        public void Move(string oldPath, string newPath)
+        public void Move(IEntity entity, string newPath)
         {
             lock (_files)
             {
-                if (_files.TryGetValue(oldPath, out var entity))
-                {
-                    _files[newPath] = entity;
-                    _files.Remove(oldPath);
-                }
+                _files[newPath] = entity;
+                _files.Remove(entity.Path);
             }
         }
 

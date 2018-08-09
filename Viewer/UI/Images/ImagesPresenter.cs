@@ -364,15 +364,7 @@ namespace Viewer.UI.Images
             // rename the file
             try
             {
-                if (item.Data is FileEntity entity)
-                {
-                    _entityManager.MoveEntity(entity.Path, newPath);
-                }
-                else
-                {
-                    _fileSystem.MoveDirectory(item.FullPath, newPath);
-                }
-                item.FullPath = newPath;
+                _entityManager.MoveEntity(item.Data, newPath);
                 View.UpdateItems();
             }
             catch (PathTooLongException)
@@ -427,58 +419,32 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            // delete files 
+            // delete entities
             var deletedPaths = new HashSet<string>();
-            var filesInSelection = _rectangleSelection
-                .Select(item => item.Data)
-                .OfType<FileEntity>()
-                .Select(item => item.Path);
-            foreach (var path in filesInSelection)
+            var entitiesInSelection = _rectangleSelection.Select(item => item.Data);
+            foreach (var entity in entitiesInSelection)
             {
                 try
                 {
-                    _entityManager.RemoveEntity(path);
-                    deletedPaths.Add(path);
+                    _entityManager.RemoveEntity(entity);
+                    deletedPaths.Add(entity.Path);
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    _dialogView.UnauthorizedAccess(path);
-                }
-                catch (DirectoryNotFoundException ex)
-                {
-                    _dialogView.DirectoryNotFound(ex.Message);
-                }
-                catch (PathTooLongException)
-                {
-                    _dialogView.PathTooLong(path);
-                }
-                catch (IOException)
-                {
-                    _dialogView.FileInUse(path);
-                }
-            }
-
-            // delete folders
-            var foldersInSelection = _rectangleSelection
-                .Select(item => item.Data)
-                .OfType<DirectoryEntity>()
-                .Select(item => item.Path);
-            foreach (var folder in foldersInSelection)
-            {
-                try
-                {
-                    _fileSystem.DeleteDirectory(folder, true);
-
-                    deletedPaths.Add(folder);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    _dialogView.UnauthorizedAccess(folder);
+                    _dialogView.UnauthorizedAccess(entity.Path);
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    // ignore directory not found
-                    deletedPaths.Add(folder);
+                    // ignore
+                    deletedPaths.Add(entity.Path);
+                }
+                catch (PathTooLongException)
+                {
+                    _dialogView.PathTooLong(entity.Path);
+                }
+                catch (IOException)
+                {
+                    _dialogView.FileInUse(entity.Path);
                 }
             }
 

@@ -94,16 +94,16 @@ namespace Viewer.Data.Storage
             Cache(entity.Path, entity);
         }
 
-        public void Remove(string path)
+        public void Remove(IEntity entity)
         {
-            _persistentStorage.Remove(path);
-            _cacheStorage.Remove(path);
+            _persistentStorage.Remove(entity);
+            _cacheStorage.Remove(entity);
         }
 
-        public void Move(string oldPath, string newPath)
+        public void Move(IEntity entity, string newPath)
         {
-            _persistentStorage.Move(oldPath, newPath);
-            _cacheStorage.Move(oldPath, newPath);
+            _persistentStorage.Move(entity, newPath);
+            _cacheStorage.Move(entity, newPath);
         }
 
         private void Cache(string path, IEntity value)

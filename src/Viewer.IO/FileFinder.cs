@@ -13,17 +13,29 @@ namespace Viewer.IO
 {
     /// <summary>
     /// Find files and directories based on a directory path pattern.
-    /// The pattern can contain special characters *, ? and **
-    /// * matches any sequence of characters except a directory separator
-    /// ? matches any character except a directory separator
-    /// ** matches any sequence of characters (even a directory separator)
-    /// ** must be delimited with a directory separator from both sides or it has to be at the start or at the end
-    /// ** matches even empty string (i.e. a/**/b matches a/b, a/x/b, a/x/y/b etc.)
+    /// The pattern can contain special characters <c>*</c>, <c>?</c> and <c>**</c>:
+    /// <list type="bullet">
+    ///     <item>
+    ///         <description><c>*</c> matches any sequence of characters except a directory separator</description>
+    ///     </item>
+    ///     <item>
+    ///         <description><c>?</c> matches any character except a directory separator</description>
+    ///     </item>
+    ///     <item>
+    ///         <description>
+    ///             <c>**</c> matches any sequence of characters (even a directory separator).
+    ///             It has to be delimited by directory separator from both sides (i.e., <c>a/b**/c</c> is invalid, but it can be replaced with <c>a/b*/**/c</c>).
+    ///             It matches even an empty string (i.e., <c>a/**/b</c> matches <c>a/b</c>, <c>a/x/b</c>, <c>a/x/y/b</c> etc.)
+    ///         </description>
+    ///     </item>
+    /// </list>
     /// </summary>
     /// <example>
-    ///     var finder = new FileFinder("C:/photos/**/vacation/*2017");
-    ///     foreach (var directoryPath in finder.GetDirectories()) { ... }
-    ///     foreach (var filePath in finder.GetFiles()) { ... }
+    ///     <code>
+    ///         var finder = new FileFinder(fileSystem, "C:/photos/**/vacation/*2017");
+    ///         foreach (var directoryPath in finder.GetDirectories()) { ... }
+    ///         foreach (var filePath in finder.GetFiles()) { ... }
+    ///     </code>
     /// </example>
     public class FileFinder 
     {
@@ -42,6 +54,12 @@ namespace Viewer.IO
         private readonly IFileSystem _fileSystem;
         private readonly IReadOnlyList<string> _parts;
 
+        /// <summary>
+        /// Create a file finder with <paramref name="directoryPattern"/>.
+        /// </summary>
+        /// <param name="fileSystem">Wrapper used to access file system</param>
+        /// <param name="directoryPattern">Directory path pattern. See <see cref="FileFinder"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="fileSystem"/> or <paramref name="directoryPattern"/> is null</exception>
         public FileFinder(IFileSystem fileSystem, string directoryPattern)
         {
             if (directoryPattern == null)
@@ -87,9 +105,10 @@ namespace Viewer.IO
 
             return parts;
         }
-        
+
         /// <summary>
-        /// Get directories matching given pattern
+        /// Find all directories which match given pattern.
+        /// This function will skip folders which throw <see cref="UnauthorizedAccessException"/> or <see cref="SecurityException"/>.
         /// </summary>
         /// <returns>List of directories matching the pattern</returns>
         public IEnumerable<string> GetDirectories()
@@ -202,7 +221,7 @@ namespace Viewer.IO
         }
 
         /// <summary>
-        /// Get files in directories matching the pattern
+        /// Find all files in directories which match given pattern
         /// </summary>
         /// <returns>List of files in directories which match the pattern</returns>
         public IEnumerable<string> GetFiles()

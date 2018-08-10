@@ -185,10 +185,6 @@ namespace Viewer.Core.Collections
             _values.RemoveAll(predicate);
         }
 
-        public T this[int index]
-        {
-            get => _values[index];
-            set => _values[index] = value;
-        }
+        public T this[int index] => _values[index];
     }
 }

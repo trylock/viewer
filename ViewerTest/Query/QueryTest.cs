@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
+using Viewer.Query;
 
 namespace ViewerTest.Query
 {
@@ -26,11 +27,10 @@ namespace ViewerTest.Query
                 new FileEntity("test1"), 
             };
             var query = new Viewer.Query.Query(
-                entitiesA, 
+                new MemoryQuery(entitiesA), 
                 Comparer<IEntity>.Default,
-                null,
-                new CancellationTokenSource());
-            var result = query.Union(entitiesB).ToArray();
+                null);
+            var result = query.Union(new MemoryQuery(entitiesB)).Evaluate(CancellationToken.None).ToArray();
 
             CollectionAssert.AreEqual(new[]
             {

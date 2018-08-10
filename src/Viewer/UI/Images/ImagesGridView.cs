@@ -273,27 +273,24 @@ namespace Viewer.UI.Images
 
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button.HasFlag(MouseButtons.Left))
+            var location = GridView.UnprojectLocation(e.Location);
+            var item = GridView.GetItemAt(location);
+            if (item >= 0)
             {
-                var location = GridView.UnprojectLocation(e.Location);
-                var item = GridView.GetItemAt(location);
-                if (item >= 0)
-                {
-                    // user clicked on an item
-                    _activeItemIndex = item;
-                    SelectItem?.Invoke(sender, new EntityEventArgs(item));
+                // user clicked on an item
+                _activeItemIndex = item;
+                SelectItem?.Invoke(sender, new EntityEventArgs(item));
 
-                    // start dragging
-                    _isDragging = true;
-                    _dragOrigin = e.Location;
-                }
-                else
-                {
-                    // start a range selection
-                    _isSelectionActive = true;
-                    SelectionBegin?.Invoke(sender,
-                        new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-                }
+                // start dragging
+                _isDragging = true;
+                _dragOrigin = e.Location;
+            }
+            else if (e.Button.HasFlag(MouseButtons.Left))
+            {
+                // start a range selection
+                _isSelectionActive = true;
+                SelectionBegin?.Invoke(sender,
+                    new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
             }
         }
 

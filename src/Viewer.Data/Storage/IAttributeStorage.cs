@@ -9,22 +9,21 @@ using Viewer.Data.Formats;
 namespace Viewer.Data.Storage
 {
     /// <summary>
-    /// Attribute storage manages loading and storing attributes.
+    /// Attribute storage manages loading and storing attributes. Implementation of this interface has to be thread safe.
     /// </summary>
     /// <example>
-    ///     This example loads attributes from file, changes them and stores them back to the file.
+    ///     This example loads all attributes from the file <c>C:/photo.jpeg</c>, changes/adds one attribute and stores them back to the file.
     ///     <code>
     ///         IAttributeStorage storage = ...;
-    ///         var attrs = storage.Load("C:/path.jpeg");
-    ///         attrs = attrs.SetAttribute(new IntAttribute("visited", 1));
-    ///         storage.Store(attrs);
+    ///         var entity = storage.Load("C:/photo.jpeg");
+    ///         entity.SetAttribute(new Attribute("place", new StringValue("Edinburgh")));
+    ///         storage.Store(entity);
     ///     </code>
     /// </example>
     public interface IAttributeStorage
     {
         /// <summary>
         /// Load attributes from given path.
-        /// This is a blocking operation.
         /// </summary>
         /// <param name="path">Path to a file which contains some attributes</param>
         /// <exception cref="InvalidDataFormatException">

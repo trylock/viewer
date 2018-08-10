@@ -30,6 +30,14 @@ namespace Viewer.Data.Storage
         private readonly IAttributeWriterFactory _attrWriterFactory;
         private readonly IEnumerable<IAttributeReaderFactory> _attrReaderFactories;
 
+        /// <summary>
+        /// Create a file system attribute storage
+        /// </summary>
+        /// <param name="fileSystem">A service used to access file system.</param>
+        /// <param name="segmentReaderFactory">Factory which creates <see cref="IJpegSegmentReader"/> to read JPEG segments from a file</param>
+        /// <param name="segmentWriterFactory">Factory which creates <see cref="IJpegSegmentWriter"/> to write JPEG segments to a file</param>
+        /// <param name="attrWriterFactory">Factory which creates <see cref="IAttributeWriter"/> to write attributes to the Attributes segment</param>
+        /// <param name="attrReaderFactories">List of factories which create <see cref="IAttributeReader"/> to read attributes from various JPEG segments</param>
         [ImportingConstructor]
         public FileSystemAttributeStorage(
             IFileSystem fileSystem,
@@ -44,15 +52,29 @@ namespace Viewer.Data.Storage
             _attrReaderFactories = attrReaderFactories;
             _attrWriterFactory = attrWriterFactory;
         }
-        
+
         /// <inheritdoc />
         /// <summary>
         /// Load attributes from given file.
         /// Read algorithm:
-        /// (1) read all JPEG segments to memory
-        /// (2) for each attribute reader in _attrReaderFactories:
-        /// (2.1) create the reader from read segments
-        /// (2.2) read all attributes and add them to the attributes collection 
+        /// <list type="number">
+        ///     <item>
+        ///         <description>read all JPEG segments to memory</description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             for each attribute reader in _attrReaderFactories:
+        ///             <list type="number">
+        ///                 <item>
+        ///                     <description>create the reader from read segments</description>
+        ///                 </item>
+        ///                 <item>
+        ///                     <description>read all attributes and add them to the attributes collection </description>
+        ///                 </item>
+        ///             </list>
+        ///         </description>
+        ///     </item>
+        /// </list>
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <returns>Collection of attributes read from the file</returns>

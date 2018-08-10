@@ -35,6 +35,7 @@ namespace Viewer.Data
 
         /// <summary>
         /// Get value of an attribute named <paramref name="name"/>.
+        /// It is thread-safe.
         /// </summary>
         /// <typeparam name="T">Type of the value</typeparam>
         /// <param name="name">Name of the attribute</param>
@@ -46,6 +47,7 @@ namespace Viewer.Data
         /// It is thread-safe.
         /// </summary>
         /// <param name="attr">Attribute to set</param>
+        /// <returns>This Entity</returns>
         IEntity SetAttribute(Attribute attr);
 
         /// <summary>
@@ -54,13 +56,14 @@ namespace Viewer.Data
         /// It is thread-safe.
         /// </summary>
         /// <param name="name">Name of an attribute to remove.</param>
+        /// <returns>This Entity</returns>
         IEntity RemoveAttribute(string name);
 
         /// <summary>
         /// Change path of the entity
         /// </summary>
         /// <param name="path">New path</param>
-        /// <returns></returns>
+        /// <returns>This Entity</returns>
         IEntity ChangePath(string path);
 
         /// <summary>

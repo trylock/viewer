@@ -29,7 +29,6 @@ namespace Viewer.UI.Images
     public class ImagesPresenter : Presenter<IImagesView>
     {
         private readonly IEditor _editor;
-        private readonly IFileSystem _fileSystem;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISystemExplorer _explorer;
         private readonly ISelection _selection;
@@ -78,7 +77,6 @@ namespace Viewer.UI.Images
         public ImagesPresenter(
             ExportFactory<IImagesView> viewFactory,
             IEditor editor,
-            IFileSystem fileSystem,
             IFileSystemErrorView dialogView,
             ISystemExplorer explorer,
             ISelection selection, 
@@ -91,7 +89,6 @@ namespace Viewer.UI.Images
         {
             ViewLifetime = viewFactory.CreateExport();
             _editor = editor;
-            _fileSystem = fileSystem;
             _dialogView = dialogView;
             _explorer = explorer;
             _selection = selection;
@@ -181,6 +178,11 @@ namespace Viewer.UI.Images
                 }
                 catch (OperationCanceledException)
                 {
+                }
+                finally
+                {
+                    _queryEvaluator.Dispose();
+                    _queryEvaluator = null;
                 }
             }
 

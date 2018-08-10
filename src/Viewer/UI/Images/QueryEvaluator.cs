@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Viewer.Collections;
+using Viewer.Core.Collections;
 using Viewer.Data;
 using Viewer.IO;
 using Viewer.Query;

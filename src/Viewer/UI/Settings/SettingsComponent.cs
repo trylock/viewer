@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Core;
 using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 

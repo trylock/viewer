@@ -10,10 +10,11 @@ using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core;
 using Viewer.Properties;
 using Viewer.UI;
 using WeifenLuo.WinFormsUI.Docking;
-using IComponent = Viewer.IComponent;
+using IComponent = Viewer.Core.IComponent;
 
 namespace Viewer
 {

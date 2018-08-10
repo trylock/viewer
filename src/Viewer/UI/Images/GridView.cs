@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Images;
-using Viewer.Collections;
+using Viewer.Core.Collections;
 
 namespace Viewer.UI.Images
 {

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core;
 using Viewer.Images;
 using Viewer.Properties;
 using Viewer.UI.Images;

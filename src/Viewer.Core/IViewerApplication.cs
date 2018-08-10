@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer
+namespace Viewer.Core
 {
     public interface IViewerApplication
     {

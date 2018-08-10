@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer
+namespace Viewer.Core
 {
     public interface IComponent
     {

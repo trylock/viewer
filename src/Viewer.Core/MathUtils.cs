@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer
+namespace Viewer.Core
 {
+    /// <summary>
+    /// Utility functions on numbers.
+    /// </summary>
     public static class MathUtils
     {
         /// <summary>

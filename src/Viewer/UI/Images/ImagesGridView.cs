@@ -10,8 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core;
 using Viewer.Properties;
-using Viewer.Collections;
+using Viewer.Core.Collections;
 using Viewer.Data;
 using WeifenLuo.WinFormsUI.Docking;
 

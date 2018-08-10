@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
@@ -7,7 +8,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Properties;
+using Viewer.Core;
 using WeifenLuo.WinFormsUI.Docking;
+using IComponent = Viewer.Core.IComponent;
 
 namespace Viewer.UI.Errors
 {

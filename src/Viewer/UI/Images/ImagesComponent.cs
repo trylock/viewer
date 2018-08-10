@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Core;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Query;

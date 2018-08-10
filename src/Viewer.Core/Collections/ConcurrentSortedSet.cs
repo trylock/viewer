@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Viewer.Collections
+namespace Viewer.Core.Collections
 {
     /// <summary>
     /// Thread safe collection for sharing sorted collection among producer and consumer threads.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Viewer
+namespace Viewer.Core
 {
     public struct Fraction : IEquatable<Fraction>
     {

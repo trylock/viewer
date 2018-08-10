@@ -41,8 +41,9 @@ namespace Viewer.Images
         /// The thumbnail is loaded in its original size.
         /// </summary>
         /// <param name="entity">Entity to load</param>
+        /// <param name="cancellationToken">Cancellation token of the load operation</param>
         /// <returns>Task which loads the thumbnail. The task will return null if there is no thumbnail.</returns>
-        Task<Image> LoadThumbnailAsync(IEntity entity);
+        Task<Image> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken);
 
         /// <summary>
         /// Load the whole image asynchronously.
@@ -137,7 +138,7 @@ namespace Viewer.Images
             return image;
         }
 
-        public Task<Image> LoadThumbnailAsync(IEntity entity)
+        public Task<Image> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken)
         {
             var orientation = GetTransformation(entity);
             var thumbnail = entity.GetValue<ImageValue>(ThumbnailAttrName);
@@ -145,7 +146,7 @@ namespace Viewer.Images
             {
                 return Task.FromResult<Image>(null);
             }
-            return Task.Run(() => DecodeImage(new MemoryStream(thumbnail.Value), orientation));
+            return Task.Run(() => DecodeImage(new MemoryStream(thumbnail.Value), orientation), cancellationToken);
         }
 
         public async Task<Image> LoadImageAsync(IEntity entity)

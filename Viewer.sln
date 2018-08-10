@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer", "Viewer\Viewer.csproj", "{EE97E5F1-CE89-4D1E-9A3B-797505982594}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer", "src\Viewer\Viewer.csproj", "{EE97E5F1-CE89-4D1E-9A3B-797505982594}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewerTest", "ViewerTest\ViewerTest.csproj", "{B4BC3EBD-1DC2-40A5-9939-7F2F5BAA26EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewerTest", "tests\ViewerTest.csproj", "{B4BC3EBD-1DC2-40A5-9939-7F2F5BAA26EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.QueryRuntime", "Viewer.QueryRuntime\Viewer.QueryRuntime.csproj", "{01D83BBE-3569-4B73-B249-F85680B58FE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.QueryRuntime", "src\Viewer.QueryRuntime\Viewer.QueryRuntime.csproj", "{01D83BBE-3569-4B73-B249-F85680B58FE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.Data", "Viewer.Data\Viewer.Data.csproj", "{1D709BE7-4906-4AF8-B31C-3EE7A1EB3323}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.Data", "src\Viewer.Data\Viewer.Data.csproj", "{1D709BE7-4906-4AF8-B31C-3EE7A1EB3323}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.IO", "Viewer.IO\Viewer.IO.csproj", "{E5D95203-8D44-46F1-8AF0-43C1B7F6AD33}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.IO", "src\Viewer.IO\Viewer.IO.csproj", "{E5D95203-8D44-46F1-8AF0-43C1B7F6AD33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.Query", "Viewer.Query\Viewer.Query.csproj", "{A09EE86C-981C-4F59-9554-C89FC8064C25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.Query", "src\Viewer.Query\Viewer.Query.csproj", "{A09EE86C-981C-4F59-9554-C89FC8064C25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.Core", "Viewer.Core\Viewer.Core.csproj", "{1DCD51E0-3059-4DDD-9F7F-3AF6DAF9D648}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.Core", "src\Viewer.Core\Viewer.Core.csproj", "{1DCD51E0-3059-4DDD-9F7F-3AF6DAF9D648}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

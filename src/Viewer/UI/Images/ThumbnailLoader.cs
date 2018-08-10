@@ -42,8 +42,9 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="entity">Entity for which you want to load an embedded thumbnail</param>
         /// <param name="thumbnailAreaSize">Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this area.</param>
+        /// <param name="cancellationToken">Cancellation token of the load operation.</param>
         /// <returns>Task finished when the thumbnail is decoded</returns>
-        Task<Thumbnail> LoadEmbeddedThumbnailAsync(IEntity entity, Size thumbnailAreaSize);
+        Task<Thumbnail> LoadEmbeddedThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken);
 
         /// <summary>
         /// Load the original image of <paramref name="entity"/> and scale it down to <paramref name="thumbnailAreaSize"/>.
@@ -51,8 +52,9 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="thumbnailAreaSize"></param>
+        /// <param name="cancellationToken">Cancellation token of the load operation.</param>
         /// <returns></returns>
-        Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize);
+        Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken);
 
         /// <summary>
         /// Increase priority of given entity so that it is loaded before any other entity waiting in the queue.
@@ -84,10 +86,12 @@ namespace Viewer.UI.Images
             thread.Start();
         }
 
-        public async Task<Thumbnail> LoadEmbeddedThumbnailAsync(IEntity entity, Size thumbnailAreaSize)
+        public async Task<Thumbnail> LoadEmbeddedThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
         {
-            using (var image = await _imageLoader.LoadThumbnailAsync(entity).ConfigureAwait(false))
+            using (var image = await _imageLoader.LoadThumbnailAsync(entity, cancellationToken).ConfigureAwait(false))
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var thumbnail = image != null ? 
                     _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize) : 
                     null;
@@ -95,9 +99,9 @@ namespace Viewer.UI.Images
             }
         }
 
-        public Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize)
+        public Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
         {
-            var req = new LoadRequest(entity, thumbnailAreaSize);
+            var req = new LoadRequest(entity, thumbnailAreaSize, cancellationToken);
             return AddLoadRequest(req);
         }
         
@@ -130,13 +134,15 @@ namespace Viewer.UI.Images
         {
             public TaskCompletionSource<Thumbnail> Completion { get; } = new TaskCompletionSource<Thumbnail>();
 
+            public CancellationToken Cancellation { get; }
             public IEntity Entity { get; }
             public Size ThumbnailAreaSize { get; }
 
-            public LoadRequest(IEntity entity, Size thumbnailAreaSize)
+            public LoadRequest(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
             {
                 Entity = entity;
                 ThumbnailAreaSize = thumbnailAreaSize;
+                Cancellation = cancellationToken;
             }
         }
 
@@ -152,8 +158,13 @@ namespace Viewer.UI.Images
 
                 try
                 {
+                    if (req.Cancellation.IsCancellationRequested)
+                        continue;
+
                     using (var image = _imageLoader.LoadImage(req.Entity))
                     {
+                        if (req.Cancellation.IsCancellationRequested)
+                            continue;
                         var thumbnail = _thumbnailGenerator.GetThumbnail(image, req.ThumbnailAreaSize);
                         req.Completion.SetResult(new Thumbnail(thumbnail, image.Size));
                     }

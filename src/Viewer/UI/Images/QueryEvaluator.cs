@@ -13,7 +13,7 @@ using Viewer.Query;
 
 namespace Viewer.UI.Images
 {
-    public class QueryEvaluator
+    public class QueryEvaluator : IDisposable
     {
         // dependencies
         private readonly ILazyThumbnailFactory _thumbnailFactory;
@@ -21,11 +21,11 @@ namespace Viewer.UI.Images
 
         // state
         private readonly ConcurrentSortedSet<EntityView> _waitingQueue;
-        
+
         /// <summary>
         /// Cancellation of the query evaluation
         /// </summary>
-        public CancellationTokenSource Cancellation => Query.Cancellation;
+        public CancellationTokenSource Cancellation { get; }
 
         /// <summary>
         /// Comparer of the result set
@@ -46,12 +46,15 @@ namespace Viewer.UI.Images
         {
             _thumbnailFactory = thumbnailFactory;
             _queryErrorListener = queryErrorListener;
+            Cancellation = new CancellationTokenSource();
             Query = query;
             _waitingQueue = new ConcurrentSortedSet<EntityView>(new EntityViewComparer(Query.Comparer));
         }
 
         /// <summary>
         /// Evaluate the query on a differet thread.
+        /// Found entities will be added to a waiting queue.
+        /// Use <see cref="Consume"/> to get all entities loaded so far.
         /// </summary>
         /// <returns>Task finished when the evaluation ends</returns>
         public Task RunAsync()
@@ -65,16 +68,17 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Load the query synchronously 
+        /// Load the query synchronously. See <see cref="RunAsync"/>
         /// </summary>
         public void Run()
         {
             try
             {
-                foreach (var entity in Query)
+                foreach (var entity in Query.Evaluate(Cancellation.Token))
                 {
                     Cancellation.Token.ThrowIfCancellationRequested();
-                    AddEntity(entity);
+
+                    _waitingQueue.Add(new EntityView(entity, _thumbnailFactory.Create(entity)));
                 }
             }
             catch (QueryRuntimeException e)
@@ -83,12 +87,6 @@ namespace Viewer.UI.Images
             }
         }
 
-        private void AddEntity(IEntity entity)
-        {
-            _waitingQueue.Add(new EntityView(entity, _thumbnailFactory.Create(entity)));
-        }
-        
-
         /// <summary>
         /// Remove all loaded views so far and return them.
         /// </summary>
@@ -96,6 +94,11 @@ namespace Viewer.UI.Images
         public IReadOnlyList<EntityView> Consume()
         {
             return _waitingQueue.Consume();
+        }
+
+        public void Dispose()
+        {
+            Cancellation.Dispose();
         }
     }
 

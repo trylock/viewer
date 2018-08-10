@@ -94,6 +94,7 @@ namespace Viewer.UI.Images
         private readonly IEntity _entity;
         private Image _current = Default;
         private Task<Thumbnail> _loading = Task.FromResult(new Thumbnail(Default, Size.Empty));
+        private CancellationTokenSource _loadingCancellation;
         private Size _loadingThumbnailAreaSize;
         private bool _isInitialized = false;
 
@@ -113,7 +114,9 @@ namespace Viewer.UI.Images
             // start loading a new thumbnail if necessary
             if (!_isInitialized)
             {
-                _loading = _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize);
+                _loadingCancellation?.Dispose();
+                _loadingCancellation = new CancellationTokenSource();
+                _loading = _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize, _loadingCancellation.Token);
                 _isInitialized = true;
             }
 
@@ -129,7 +132,9 @@ namespace Viewer.UI.Images
 
                 if (!IsSufficient(_loading.Result.OriginalSize, _loadingThumbnailAreaSize))
                 {
-                    _loading = _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize);
+                    _loadingCancellation?.Dispose();
+                    _loadingCancellation = new CancellationTokenSource();
+                    _loading = _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize, _loadingCancellation.Token);
                 }
             }
             else
@@ -168,6 +173,8 @@ namespace Viewer.UI.Images
 
         public void Dispose()
         {
+            _loadingCancellation?.Cancel();
+            _loadingCancellation?.Dispose();
             DisposeCurrent();
             DisposeLoading();
         }

@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 
 namespace Viewer.IO
 {
+    /// <summary>
+    /// Utility functions for file system paths.
+    /// </summary>
     public static class PathUtils
     {
         /// <summary>
-        /// List of characters that could be used as a path separators
+        /// List of characters that could be used as path separators
         /// </summary>
         public static char[] PathSeparators =
         {
@@ -20,12 +23,17 @@ namespace Viewer.IO
         };
 
         /// <summary>
-        /// Split filesystem path to parts (file and directory names)
+        /// Split filesystem path to parts (file and directory names) using <see cref="PathSeparators"/> as delimiters 
         /// </summary>
         /// <param name="fullPath">Path to a directory/file</param>
         /// <returns>Parts of the path</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="fullPath"/> is null</exception>
         public static IEnumerable<string> Split(string fullPath)
         {
+            if (fullPath == null)
+            {
+                throw new ArgumentNullException(nameof(fullPath));
+            }
             return fullPath.Split(PathSeparators, StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -35,6 +43,7 @@ namespace Viewer.IO
         /// </summary>
         /// <param name="path">Path to a file or folder</param>
         /// <returns>Last part of the path</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="path"/> is null</exception>
         public static string GetLastPart(string path)
         {
             if (path == null)
@@ -70,10 +79,19 @@ namespace Viewer.IO
             return path.Substring(separatorIndex + 1, lastPartLength);
         }
 
+        /// <summary>
+        /// Get path to the parent directory of the file/directory at <paramref name="path"/>.
+        /// </summary>
+        /// <param name="path">Path to a file or directory</param>
+        /// <returns>
+        ///     Path to the parent directory of <paramref name="path"/>.
+        ///     If <paramref name="path"/> is an empty string, it will return an empty string.
+        ///     It will return null, iff <paramref name="path"/> is null.
+        /// </returns>
         public static string GetDirectoryPath(string path)
         {
             if (path == null)
-                throw new ArgumentNullException(nameof(path));
+                return null;
             if (path.Length == 0)
                 return "";
 
@@ -105,7 +123,7 @@ namespace Viewer.IO
         /// Check whether given string could be a valid file/folder name
         /// </summary>
         /// <param name="name">Name of a file</param>
-        /// <returns>true iff given value could be a valid file/folder name</returns>
+        /// <returns>true iff given value could be a valid file/folder name. It returns false, if <paramref name="name"/> is null.</returns>
         public static bool IsValidFileName(string name)
         {
             return !string.IsNullOrEmpty(name) &&
@@ -144,8 +162,18 @@ namespace Viewer.IO
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Unify a file system path to a common format so that it can be compared to other unified paths.
+        /// </summary>
+        /// <param name="path">Path to a file/folder.</param>
+        /// <returns>Unified path to the same file/folder. If <paramref name="path"/> is null, it will return null.</returns>
         public static string UnifyPath(string path)
         {
+            if (path == null)
+            {
+                return null;
+            }
+
             var unifiedPath = new StringBuilder();
             for (var i = 0; i < path.Length; ++i)
             {

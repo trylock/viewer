@@ -23,6 +23,8 @@ namespace Viewer.Data
     {
         private readonly List<ValueOrder> _order;
 
+        public static EntityComparer Default { get; } = new EntityComparer();
+
         public EntityComparer()
         {
             _order = new List<ValueOrder>();

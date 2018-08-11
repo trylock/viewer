@@ -119,6 +119,13 @@ namespace Viewer.UI.Images
 
         #endregion
 
+        #region IHistoryView
+        
+        public event EventHandler GoBackInHistory;
+        public event EventHandler GoForwardInHistory;
+
+        #endregion
+
         #region IImagesView
 
         /// <summary>
@@ -293,6 +300,16 @@ namespace Viewer.UI.Images
                 SelectionBegin?.Invoke(sender,
                     new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
             }
+
+            // invoke history events
+            if (e.Button.HasFlag(MouseButtons.XButton1))
+            {
+                GoBackInHistory?.Invoke(sender, e);
+            }
+            else if (e.Button.HasFlag(MouseButtons.XButton2))
+            {
+                GoForwardInHistory?.Invoke(sender, e);
+            }
         }
 
         private void GridView_MouseUp(object sender, MouseEventArgs e)
@@ -415,6 +432,16 @@ namespace Viewer.UI.Images
         private void ShowQueryButton_Click(object sender, EventArgs e)
         {
             ShowCode?.Invoke(sender, e);
+        }
+
+        private void BackButton_Click(object sender, EventArgs e)
+        {
+            GoBackInHistory?.Invoke(sender, e);
+        }
+
+        private void ForwardButton_Click(object sender, EventArgs e)
+        {
+            GoForwardInHistory?.Invoke(sender, e);
         }
 
         protected override string GetPersistString()

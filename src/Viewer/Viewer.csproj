@@ -102,7 +102,7 @@
     <Compile Include="UI\About\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\ApplicationState.cs" />
+    <Compile Include="UI\QueryEvents.cs" />
     <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesComponent.cs" />
     <Compile Include="UI\Attributes\AttributesPresenter.cs" />
@@ -304,6 +304,8 @@
     <None Include="Resources\Presentation\Windowed.png" />
     <None Include="Resources\Presentation\ZoomIn.png" />
     <None Include="Resources\Presentation\ZoomOut.png" />
+    <None Include="Resources\Query\Back.png" />
+    <None Include="Resources\Query\Forward.png" />
     <Content Include="Resources\Save.png" />
     <None Include="Resources\Start.png" />
     <None Include="Resources\PauseIcon.png" />

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace Viewer.UI.Images
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
-        private readonly IApplicationState _state;
+        private readonly IQueryEvents _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IQueryEvaluatorFactory _queryEvaluatorFactory;
 
@@ -96,7 +96,7 @@ namespace Viewer.UI.Images
             ISelection selection, 
             IEntityManager entityManager,
             IClipboardService clipboard,
-            IApplicationState state,
+            IQueryEvents state,
             IQueryFactory queryFactory,
             IQueryEvaluatorFactory queryEvaluatorFactory)
         {
@@ -505,6 +505,16 @@ namespace Viewer.UI.Images
         private void View_ShowCode(object sender, EventArgs e)
         {
             _editor.OpenNew(_queryEvaluator.Query.Text, DockState.Document);
+        }
+
+        private void View_GoBackInHistory(object sender, EventArgs e)
+        {
+            _state.Back();
+        }
+
+        private void View_GoForwardInHistory(object sender, EventArgs e)
+        {
+            _state.Forward();
         }
 
         #endregion

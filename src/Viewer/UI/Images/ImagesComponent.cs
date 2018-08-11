@@ -17,7 +17,7 @@ namespace Viewer.UI.Images
     [Export(typeof(IComponent))]
     public class ImagesComponent : IComponent
     {
-        private readonly IApplicationState _state;
+        private readonly IQueryEvents _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IQueryCompiler _queryCompiler;
         private readonly ExportFactory<ImagesPresenter> _imagesFactory;
@@ -26,7 +26,7 @@ namespace Viewer.UI.Images
 
         [ImportingConstructor]
         public ImagesComponent(
-            IApplicationState state, 
+            IQueryEvents state, 
             IQueryFactory queryFactory, 
             IQueryCompiler queryCompiler,
             ExportFactory<ImagesPresenter> images)

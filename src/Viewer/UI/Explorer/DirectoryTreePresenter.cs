@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.Composition;
@@ -28,7 +28,7 @@ namespace Viewer.UI.Explorer
         /// </summary>
         public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
 
-        private readonly IApplicationState _state;
+        private readonly IQueryEvents _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IFileSystem _fileSystem;
         private readonly ISystemExplorer _explorer;
@@ -41,7 +41,7 @@ namespace Viewer.UI.Explorer
         [ImportingConstructor]
         public DirectoryTreePresenter(
             ExportFactory<IDirectoryTreeView> viewFactory,
-            IApplicationState state,
+            IQueryEvents state,
             IQueryFactory queryFactory,
             ITaskLoader taskLoader,
             IFileSystemErrorView dialogView,

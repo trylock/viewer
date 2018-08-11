@@ -18,7 +18,7 @@ namespace Viewer.UI.QueryEditor
     [Export]
     public class QueryEditorPresenter : Presenter<IQueryEditorView>
     {
-        private readonly IApplicationState _appEvents;
+        private readonly IQueryEvents _appEvents;
         private readonly IFileSystemErrorView _dialogErrorView;
         private readonly IQueryCompiler _queryCompiler;
         private readonly IErrorListener _queryErrorListener;
@@ -31,7 +31,7 @@ namespace Viewer.UI.QueryEditor
         [ImportingConstructor]
         public QueryEditorPresenter(
             ExportFactory<IQueryEditorView> viewFactory, 
-            IApplicationState appEvents, 
+            IQueryEvents appEvents, 
             IFileSystemErrorView dialogErrorView, 
             IQueryCompiler queryCompiler, 
             IQueryViewRepository queryViews,

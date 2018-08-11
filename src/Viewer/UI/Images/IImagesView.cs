@@ -125,6 +125,19 @@ namespace Viewer.UI.Images
         }
     }
 
+    public interface IHistoryView
+    {
+        /// <summary>
+        /// Event called when user wants to go back in history
+        /// </summary>
+        event EventHandler GoBackInHistory;
+
+        /// <summary>
+        /// Event called when user wants to go forward in history
+        /// </summary>
+        event EventHandler GoForwardInHistory;
+    }
+
     public interface IPolledView
     {
         /// <summary>
@@ -216,7 +229,7 @@ namespace Viewer.UI.Images
         int GetItemAt(Point location);
     }
 
-    public interface IImagesView : IWindowView, IPolledView, IThumbnailView, ISelectionView
+    public interface IImagesView : IWindowView, IPolledView, IThumbnailView, ISelectionView, IHistoryView
     {
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;

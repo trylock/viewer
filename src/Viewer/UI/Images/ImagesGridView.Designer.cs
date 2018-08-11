@@ -43,9 +43,11 @@
             this.ViewTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.ControlPanel = new System.Windows.Forms.Panel();
             this.ShowQueryButton = new System.Windows.Forms.Button();
-            this.GridView = new Viewer.UI.Images.GridView();
             this.PollTimer = new System.Windows.Forms.Timer(this.components);
             this.ShowCodeToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.ForwardButton = new Viewer.UI.Forms.IconButton();
+            this.BackButton = new Viewer.UI.Forms.IconButton();
+            this.GridView = new Viewer.UI.Images.GridView();
             this.ItemContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).BeginInit();
             this.ViewTableLayout.SuspendLayout();
@@ -157,6 +159,8 @@
             // 
             // ControlPanel
             // 
+            this.ControlPanel.Controls.Add(this.ForwardButton);
+            this.ControlPanel.Controls.Add(this.BackButton);
             this.ControlPanel.Controls.Add(this.ShowQueryButton);
             this.ControlPanel.Controls.Add(this.ThumbnailSizeTrackBar);
             this.ControlPanel.Controls.Add(this.ItemsCountLabel);
@@ -182,6 +186,36 @@
             this.ShowQueryButton.UseVisualStyleBackColor = true;
             this.ShowQueryButton.Click += new System.EventHandler(this.ShowQueryButton_Click);
             // 
+            // PollTimer
+            // 
+            this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
+            // 
+            // ForwardButton
+            // 
+            this.ForwardButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ForwardButton.Icon = global::Viewer.Properties.Resources.Forward;
+            this.ForwardButton.IconColorTint = System.Drawing.Color.DimGray;
+            this.ForwardButton.IconSize = new System.Drawing.Size(0, 0);
+            this.ForwardButton.Location = new System.Drawing.Point(429, 3);
+            this.ForwardButton.Name = "ForwardButton";
+            this.ForwardButton.Size = new System.Drawing.Size(23, 23);
+            this.ForwardButton.TabIndex = 5;
+            this.ForwardButton.Text = "iconButton1";
+            this.ForwardButton.Click += new System.EventHandler(this.ForwardButton_Click);
+            // 
+            // BackButton
+            // 
+            this.BackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BackButton.Icon = global::Viewer.Properties.Resources.Back;
+            this.BackButton.IconColorTint = System.Drawing.Color.DimGray;
+            this.BackButton.IconSize = new System.Drawing.Size(0, 0);
+            this.BackButton.Location = new System.Drawing.Point(400, 3);
+            this.BackButton.Name = "BackButton";
+            this.BackButton.Size = new System.Drawing.Size(23, 23);
+            this.BackButton.TabIndex = 4;
+            this.BackButton.Text = "iconButton1";
+            this.BackButton.Click += new System.EventHandler(this.BackButton_Click);
+            // 
             // GridView
             // 
             this.GridView.AutoScroll = true;
@@ -205,10 +239,6 @@
             this.GridView.MouseLeave += new System.EventHandler(this.GridView_MouseLeave);
             this.GridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseMove);
             this.GridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseUp);
-            // 
-            // PollTimer
-            // 
-            this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
             // 
             // ImagesGridView
             // 
@@ -249,5 +279,7 @@
         private GridView GridView;
         private System.Windows.Forms.Button ShowQueryButton;
         private System.Windows.Forms.ToolTip ShowCodeToolTip;
+        private Forms.IconButton BackButton;
+        private Forms.IconButton ForwardButton;
     }
 }

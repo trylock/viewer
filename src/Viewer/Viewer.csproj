@@ -90,13 +90,11 @@
   <ItemGroup>
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="Images\ThumbnailGenerator.cs" />
-    <Compile Include="PointExtensions.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RectangleExtensions.cs" />
     <Compile Include="UI\About\AboutComponent.cs" />
     <Compile Include="UI\About\AboutForm.cs">
       <SubType>Form</SubType>

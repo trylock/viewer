@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer
+namespace Viewer.Core
 {
     public static class RectangleExtensions
     {

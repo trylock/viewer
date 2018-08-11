@@ -22,6 +22,8 @@ namespace Viewer.Core.UI
             GotFocus += OnGotFocus;
         }
 
+        public Keys ModifierKeyState => ModifierKeys;
+
         public void EnsureVisible()
         {
             if (InvokeRequired)

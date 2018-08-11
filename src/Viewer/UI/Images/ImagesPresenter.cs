@@ -52,16 +52,6 @@ namespace Viewer.UI.Images
         /// Current state of the rectangle selection
         /// </summary>
         private readonly RectangleSelection<EntityView> _rectangleSelection = new RectangleSelection<EntityView>(new EntityViewPathComparer());
-        
-        /// <summary>
-        /// true iff constrol is pressed
-        /// </summary>
-        private bool _isControl;
-
-        /// <summary>
-        /// true iff shift is pressed
-        /// </summary>
-        private bool _isShift;
 
         /// <summary>
         /// Currently loaded query
@@ -72,6 +62,30 @@ namespace Viewer.UI.Images
         /// Minimal time in milliseconds between 2 poll events.
         /// </summary>
         private const int PollingRate = 200;
+        
+        /// <summary>
+        /// Get current selection strategy based on the state of modifier keys.
+        /// If a shift key is pressed, use <see cref="SelectionStrategy.Union"/>.
+        /// If a control key is pressed, use <see cref="SelectionStrategy.SymetricDifference"/>.
+        /// Otherwise, use <see cref="SelectionStrategy.Replace"/>.
+        /// </summary>
+        public SelectionStrategy CurrentSelectionStrategy
+        {
+            get
+            {
+                var strategy = SelectionStrategy.Replace;
+                if (View.ModifierKeyState.HasFlag(Keys.Shift))
+                {
+                    strategy = SelectionStrategy.Union;
+                }
+                else if (View.ModifierKeyState.HasFlag(Keys.Control))
+                {
+                    strategy = SelectionStrategy.SymetricDifference;
+                }
+
+                return strategy;
+            }
+        }
         
         [ImportingConstructor]
         public ImagesPresenter(
@@ -256,16 +270,7 @@ namespace Viewer.UI.Images
 
         private void View_SelectionBegin(object sender, MouseEventArgs e)
         {
-            var strategy = SelectionStrategy.Replace;
-            if (_isShift)
-            {
-                strategy = SelectionStrategy.Union;
-            }
-            else if (_isControl)
-            {
-                strategy = SelectionStrategy.SymetricDifference;
-            }
-            _rectangleSelection.Begin(e.Location, strategy);
+            _rectangleSelection.Begin(e.Location, CurrentSelectionStrategy);
             UpdateSelectedItems();
         }
 
@@ -290,16 +295,7 @@ namespace Viewer.UI.Images
 
         private void View_SelectItem(object sender, EntityEventArgs e)
         {
-            var strategy = SelectionStrategy.Replace;
-            if (_isShift)
-            {
-                strategy = SelectionStrategy.Union;
-            }
-            else if (_isControl)
-            {
-                strategy = SelectionStrategy.SymetricDifference;
-            }
-            _rectangleSelection.Begin(Point.Empty, strategy);
+            _rectangleSelection.Begin(Point.Empty, CurrentSelectionStrategy);
             ChangeSelection(new[] { e.Index });
             _rectangleSelection.End();
         }
@@ -313,21 +309,12 @@ namespace Viewer.UI.Images
         
         private void View_HandleKeyDown(object sender, KeyEventArgs e)
         {
-            _isControl = e.Control;
-            _isShift = e.Shift;
-
             if (e.Control && e.KeyCode == Keys.A)
             {
                 ChangeSelection(Enumerable.Range(0, View.Items.Count));
             }
         }
         
-        private void View_HandleKeyUp(object sender, KeyEventArgs e)
-        {
-            _isControl = e.Control;
-            _isShift = e.Shift;
-        }
-
         private void View_BeginEditItemName(object sender, EntityEventArgs e)
         {
             View.ShowItemEditForm(e.Index);

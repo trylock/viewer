@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.Core.UI
@@ -31,7 +32,10 @@ namespace Viewer.Core.UI
         /// </summary>
         bool InvokeRequired { get; }
 
-        bool IsActivated { get; }
+        /// <summary>
+        /// Get currently pressed modified keys (i.e., state of Control, Shift and Alt keys)
+        /// </summary>
+        Keys ModifierKeyState { get; }
 
         /// <summary>
         /// Show the window in <paramref name="dockPanel"/> with <paramref name="dockState"/>

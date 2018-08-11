@@ -80,44 +80,51 @@ namespace Viewer.Data.Storage
         /// <returns>Collection of attributes read from the file</returns>
         public IEntity Load(string path)
         {
-            // read all JPEG segments to memory
-            IEntity attrs;
-            FileInfo fileInfo;
-            var segments = new List<JpegSegment>();
-            using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
+            try
             {
-                fileInfo = new FileInfo(path);
-                attrs = new FileEntity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
-
-                for (;;)
+                // read all JPEG segments to memory
+                IEntity attrs;
+                FileInfo fileInfo;
+                var segments = new List<JpegSegment>();
+                using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
                 {
-                    // read segment
-                    var segment = segmentReader.ReadSegment();
-                    if (segment == null)
-                        break;
+                    fileInfo = new FileInfo(path);
+                    attrs = new FileEntity(path, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
 
-                    // we only parse data in APP1 segments
-                    if (segment.Type != JpegSegmentType.App1)
-                        continue;
+                    for (;;)
+                    {
+                        // read segment
+                        var segment = segmentReader.ReadSegment();
+                        if (segment == null)
+                            break;
 
-                    segments.Add(segment);
+                        // we only parse data in APP1 segments
+                        if (segment.Type != JpegSegmentType.App1)
+                            continue;
+
+                        segments.Add(segment);
+                    }
                 }
-            }
 
-            // read attributes from all sources and add them to the collection
-            foreach (var factory in _attrReaderFactories)
+                // read attributes from all sources and add them to the collection
+                foreach (var factory in _attrReaderFactories)
+                {
+                    var attrReader = factory.CreateFromSegments(fileInfo, segments);
+                    for (;;)
+                    {
+                        var attr = attrReader.Read();
+                        if (attr == null)
+                            break;
+                        attrs = attrs.SetAttribute(attr);
+                    }
+                }
+
+                return attrs;
+            }
+            catch (FileNotFoundException)
             {
-                var attrReader = factory.CreateFromSegments(fileInfo, segments);
-                for (;;)
-                {
-                    var attr = attrReader.Read();
-                    if (attr == null)
-                        break;
-                    attrs = attrs.SetAttribute(attr);
-                }
+                return null;
             }
-
-            return attrs;
         }
         
         public void Store(IEntity entity)

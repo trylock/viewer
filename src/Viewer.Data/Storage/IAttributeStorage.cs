@@ -26,16 +26,13 @@ namespace Viewer.Data.Storage
         /// Load attributes from given path.
         /// </summary>
         /// <param name="path">Path to a file which contains some attributes</param>
-        /// <exception cref="InvalidDataFormatException">
-        ///     Attribute format in the file is invalid
-        /// </exception>
-        /// <exception cref="FileNotFoundException">
-        ///     File was not found
-        /// </exception>
         /// <returns>
         ///     Collection of attributes found in given file.
         ///     The collection will be empty if there are no attributes.
         /// </returns>
+        /// <exception cref="InvalidDataFormatException">
+        ///     Attribute format in the file is invalid
+        /// </exception>
         IEntity Load(string path);
 
         /// <summary>

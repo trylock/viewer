@@ -69,6 +69,7 @@ namespace Viewer.UI
         /// Additionally, this sets current query in history to <paramref name="query"/>.
         /// </summary>
         /// <param name="query">Query to execute</param>
+        /// <exception cref="ArgumentNullException"><paramref name="query"/> is null</exception>
         void ExecuteQuery(IQuery query);
 
         /// <summary>
@@ -112,18 +113,26 @@ namespace Viewer.UI
 
         public void ExecuteQuery(IQuery query)
         {
-            // remove all entries in history after _historyHead
-            var index = _history.Count - 1;
-            while (index > _historyHead)
-            {
-                _history.RemoveAt(index--);
-            }
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
 
-            // add a new query to history and make it the current query
-            _history.Add(query);
-            ++_historyHead;
-            
-            Debug.Assert(_historyHead == _history.Count - 1);
+            // only modify the history if the queries differ 
+            if (Current == null ||
+                StringComparer.CurrentCultureIgnoreCase.Compare(query.Text, Current.Text) != 0)
+            {
+                // remove all entries in history after _historyHead
+                var index = _history.Count - 1;
+                while (index > _historyHead)
+                {
+                    _history.RemoveAt(index--);
+                }
+
+                // add a new query to history and make it the current query
+                _history.Add(query);
+                ++_historyHead;
+
+                Debug.Assert(_historyHead == _history.Count - 1);
+            }
 
             // trigger query executed event
             QueryExecuted?.Invoke(this, new QueryEventArgs(query));

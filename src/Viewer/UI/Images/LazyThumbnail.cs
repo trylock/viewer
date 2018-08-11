@@ -38,8 +38,9 @@ namespace Viewer.UI.Images
         /// Create lazy thumbnail for given entity
         /// </summary>
         /// <param name="entity"></param>
+        /// <param name="cancellationToken">Cancellation token used to cancel thumbnail loading tasks.</param>
         /// <returns></returns>
-        ILazyThumbnail Create(IEntity entity);
+        ILazyThumbnail Create(IEntity entity, CancellationToken cancellationToken);
     }
 
     [Export(typeof(ILazyThumbnailFactory))]
@@ -53,13 +54,13 @@ namespace Viewer.UI.Images
             _thumbnailLoader = thumbnailLoader;
         }
 
-        public ILazyThumbnail Create(IEntity entity)
+        public ILazyThumbnail Create(IEntity entity, CancellationToken cancellationToken)
         {
             if (entity is DirectoryEntity)
             {
                 return new DirectoryThumbnail(entity.Path);
             }
-            return new PhotoThumbnail(_thumbnailLoader, entity);
+            return new PhotoThumbnail(_thumbnailLoader, entity, cancellationToken);
         }
     }
 
@@ -90,11 +91,11 @@ namespace Viewer.UI.Images
 
     public class PhotoThumbnail : ILazyThumbnail
     {
+        private readonly CancellationToken _cancellationToken;
         private readonly IThumbnailLoader _thumbnailLoader;
         private readonly IEntity _entity;
         private Image _current = Default;
         private Task<Thumbnail> _loading = Task.FromResult(new Thumbnail(Default, Size.Empty));
-        private CancellationTokenSource _loadingCancellation;
         private Size _loadingThumbnailAreaSize;
         private bool _isInitialized = false;
 
@@ -114,9 +115,7 @@ namespace Viewer.UI.Images
             // start loading a new thumbnail if necessary
             if (!_isInitialized)
             {
-                _loadingCancellation?.Dispose();
-                _loadingCancellation = new CancellationTokenSource();
-                _loading = _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize, _loadingCancellation.Token);
+                _loading = _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
                 _isInitialized = true;
             }
 
@@ -132,9 +131,7 @@ namespace Viewer.UI.Images
 
                 if (!IsSufficient(_loading.Result.OriginalSize, _loadingThumbnailAreaSize))
                 {
-                    _loadingCancellation?.Dispose();
-                    _loadingCancellation = new CancellationTokenSource();
-                    _loading = _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize, _loadingCancellation.Token);
+                    _loading = _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
                 }
             }
             else
@@ -151,8 +148,9 @@ namespace Viewer.UI.Images
                    originalImageSize.Height >= thumbnailAreaSize.Height;
         }
         
-        public PhotoThumbnail(IThumbnailLoader thumbnailLoader, IEntity entity)
+        public PhotoThumbnail(IThumbnailLoader thumbnailLoader, IEntity entity, CancellationToken cancellationToken)
         {
+            _cancellationToken = cancellationToken;
             _thumbnailLoader = thumbnailLoader;
             _entity = entity;
         }
@@ -173,8 +171,6 @@ namespace Viewer.UI.Images
 
         public void Dispose()
         {
-            _loadingCancellation?.Cancel();
-            _loadingCancellation?.Dispose();
             DisposeCurrent();
             DisposeLoading();
         }

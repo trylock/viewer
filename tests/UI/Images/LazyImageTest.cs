@@ -28,7 +28,7 @@ namespace ViewerTest.UI.Images
             _entity = new FileEntity("test");
             _thumbnailSize = new Size(100, 100);
             _thumbnailLoader = new Mock<IThumbnailLoader>();
-            _thumbnail = new PhotoThumbnail(_thumbnailLoader.Object, _entity);
+            _thumbnail = new PhotoThumbnail(_thumbnailLoader.Object, _entity, CancellationToken.None);
         }
 
         [TestMethod]

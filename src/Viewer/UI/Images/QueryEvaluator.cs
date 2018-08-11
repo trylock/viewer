@@ -78,7 +78,7 @@ namespace Viewer.UI.Images
                 {
                     Cancellation.Token.ThrowIfCancellationRequested();
 
-                    _waitingQueue.Add(new EntityView(entity, _thumbnailFactory.Create(entity)));
+                    _waitingQueue.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
                 }
             }
             catch (QueryRuntimeException e)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Viewer.Collections;
+using Viewer.Core.Collections;
 using Viewer.UI.Images;
 
 namespace ViewerTest.Collections

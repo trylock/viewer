@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core.UI;
 using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 

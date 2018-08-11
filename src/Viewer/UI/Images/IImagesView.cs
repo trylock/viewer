@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Viewer.Data;
 using Viewer.Properties;
 using Viewer.Core.Collections;
+using Viewer.Core.UI;
 using Viewer.UI.Settings;
 
 namespace Viewer.UI.Images

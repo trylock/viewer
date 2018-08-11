@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data.Formats;
@@ -30,9 +31,14 @@ namespace Viewer.Data.Storage
         ///     Collection of attributes found in given file.
         ///     The collection will be empty if there are no attributes.
         /// </returns>
-        /// <exception cref="InvalidDataFormatException">
-        ///     Attribute format in the file is invalid
-        /// </exception>
+        /// <exception cref="ArgumentException"><paramref name="path"/> is an invalid file path.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="path"/> is null.</exception>
+        /// <exception cref="InvalidDataFormatException">File is in an invalid format.</exception>
+        /// <exception cref="IOException"><paramref name="path"/> is opened by another application.</exception>
+        /// <exception cref="NotSupportedException"><paramref name="path"/> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in a non-NTFS environment.</exception>
+        /// <exception cref="PathTooLongException"><paramref name="path"/> is too long.</exception>
+        /// <exception cref="SecurityException">The caller does not have the required permission.</exception>
+        /// <exception cref="UnauthorizedAccessException">The caller is not authorized to access <paramref name="path"/>.</exception>
         IEntity Load(string path);
 
         /// <summary>

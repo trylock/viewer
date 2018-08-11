@@ -33,6 +33,8 @@ namespace Viewer
             _components = components;
         }
 
+        public DockPanel Panel => _appForm.Panel;
+
         public void InitializeLayout()
         {
             // invoke the startup event

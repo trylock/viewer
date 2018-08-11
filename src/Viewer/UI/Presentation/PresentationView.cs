@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core.UI;
 using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation

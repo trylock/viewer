@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -159,7 +160,7 @@ namespace Viewer.Query
                 cancellationToken.ThrowIfCancellationRequested();
 
                 // add files
-                foreach (var file in _fileSystem.EnumerateFiles(dir))
+                foreach (var file in EnumerateFiles(dir))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -181,13 +182,43 @@ namespace Viewer.Query
                 }
 
                 // add directories
-                foreach (var directory in _fileSystem.EnumerateDirectories(dir))
+                foreach (var directory in EnumerateDirectories(dir))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
                     yield return new DirectoryEntity(directory);
                 }
             }
+        }
+
+        private IEnumerable<string> EnumerateFiles(string path)
+        {
+            try
+            {
+                return _fileSystem.EnumerateFiles(path);
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            catch (SecurityException)
+            {
+            }
+            return Enumerable.Empty<string>();
+        }
+
+        private IEnumerable<string> EnumerateDirectories(string path)
+        {
+            try
+            {
+                return _fileSystem.EnumerateDirectories(path);
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            catch (SecurityException)
+            {
+            }
+            return Enumerable.Empty<string>();
         }
 
         private IEntity LoadEntity(string path)
@@ -198,6 +229,19 @@ namespace Viewer.Query
             }
             catch (InvalidDataFormatException)
             {
+            }
+            catch (PathTooLongException)
+            {
+            }
+            catch (ArgumentException)
+            {
+            }
+            catch (IOException)
+            {
+            }
+            catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) || e.GetType() == typeof(SecurityException))
+            {
+                // skip these 
             }
 
             return null;

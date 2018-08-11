@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ScintillaNET;
+using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.Query;
 

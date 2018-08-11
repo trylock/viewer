@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer.UI
+namespace Viewer.Core.UI
 {
     public class WindowView : DockContent, IWindowView
     {
@@ -67,6 +67,5 @@ namespace Viewer.UI
         {
             ViewGotFocus?.Invoke(sender, e);
         }
-
     }
 }

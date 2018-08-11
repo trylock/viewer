@@ -30,6 +30,7 @@ namespace Viewer
 
             var catalog = new AggregateCatalog(
                 new AssemblyCatalog(Assembly.GetExecutingAssembly()),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Core.Fraction))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Data.IEntity))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Query.IRuntime))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.QueryRuntime.IntValueAdditionFunction))),

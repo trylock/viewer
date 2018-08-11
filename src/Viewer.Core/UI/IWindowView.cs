@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer.UI
+namespace Viewer.Core.UI
 {
     public interface IWindowView : IDockContent
     {

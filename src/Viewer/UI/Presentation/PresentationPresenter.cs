@@ -8,6 +8,7 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Images;
 using Viewer.UI.Explorer;

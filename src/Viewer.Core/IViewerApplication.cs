@@ -11,6 +11,11 @@ namespace Viewer.Core
     public interface IViewerApplication
     {
         /// <summary>
+        /// Main application dock panel
+        /// </summary>
+        DockPanel Panel { get; }
+
+        /// <summary>
         /// Initialize components of the application
         /// </summary>
         void InitializeLayout();

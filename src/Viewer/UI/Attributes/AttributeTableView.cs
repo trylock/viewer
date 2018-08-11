@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Properties;

@@ -17,6 +17,7 @@ using Viewer.Images;
 using Viewer.IO;
 using Viewer.Query;
 using Viewer.Core.Collections;
+using Viewer.Core.UI;
 using Viewer.UI.Explorer;
 using Viewer.UI.QueryEditor;
 using Viewer.UI.Settings;

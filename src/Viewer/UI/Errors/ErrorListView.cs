@@ -9,6 +9,7 @@ using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.UI.Errors;
 using Viewer.UI.Forms;

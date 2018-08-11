@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Viewer.UI
+namespace Viewer.Core.UI
 {
     public abstract class Presenter<TView> : IDisposable where TView : class, IWindowView
     {
@@ -42,7 +42,7 @@ namespace Viewer.UI
 #pragma warning disable 0649
 
         [Import]
-        private ViewerForm _appForm;
+        private IViewerApplication _app;
 
 #pragma warning restore 0649
 
@@ -69,7 +69,7 @@ namespace Viewer.UI
         public virtual void ShowView(string title, DockState dockState)
         {
             View.Text = title;
-            View.Show(_appForm.Panel, dockState);
+            View.Show(_app.Panel, dockState);
         }
 
         /// <summary>

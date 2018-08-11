@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Viewer.UI
+namespace Viewer.Core.UI
 {
     public interface IClipboardService
     {

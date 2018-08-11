@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using Viewer.Core;
 using Viewer.Properties;
 using Viewer.Core.Collections;
+using Viewer.Core.UI;
 using Viewer.Data;
 using WeifenLuo.WinFormsUI.Docking;
 

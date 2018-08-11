@@ -115,8 +115,16 @@
       <DependentUpon>AttributeTableView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Attributes\IAttributeView.cs" />
-    <Compile Include="UI\ClipboardService.cs" />
+    <Compile Include="UI\Explorer\DirectoryTreePresenter.cs" />
+    <Compile Include="UI\Explorer\DirectoryTreeView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Explorer\DirectoryTreeView.Designer.cs">
+      <DependentUpon>DirectoryTreeView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Explorer\ExplorerComponent.cs" />
+    <Compile Include="UI\Explorer\FileSystemErrorView.cs" />
+    <Compile Include="UI\Explorer\IDirectoryTreeView.cs" />
     <Compile Include="UI\Forms\BufferedDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -149,7 +157,6 @@
       <DependentUpon>ErrorListView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Images\ThumbnailLoader.cs" />
-    <Compile Include="UI\IWindowView.cs" />
     <Compile Include="UI\Presentation\IPresentationView.cs" />
     <Compile Include="UI\Presentation\PresentationComponent.cs" />
     <Compile Include="UI\Presentation\PresentationControl.cs">
@@ -165,7 +172,6 @@
     <Compile Include="UI\Presentation\PresentationView.Designer.cs">
       <DependentUpon>PresentationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Presenter.cs" />
     <Compile Include="UI\QueryEditor\Editor.cs" />
     <Compile Include="UI\QueryEditor\IQueryEditorView.cs" />
     <Compile Include="UI\QueryEditor\QueryEditorComponent.cs" />
@@ -190,18 +196,6 @@
       <DependentUpon>TaskLoaderView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ValueFormat.cs" />
-    <Compile Include="ViewerApplication.cs" />
-    <Compile Include="UI\WindowView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Explorer\DirectoryTreeView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Explorer\DirectoryTreeView.Designer.cs">
-      <DependentUpon>DirectoryTreeView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Explorer\DirectoryTreePresenter.cs" />
-    <Compile Include="UI\Explorer\FileSystemErrorView.cs" />
     <Compile Include="UI\Images\Grid.cs" />
     <Compile Include="UI\Images\ImagesGridView.cs">
       <SubType>Form</SubType>
@@ -209,9 +203,9 @@
     <Compile Include="UI\Images\ImagesGridView.Designer.cs">
       <DependentUpon>ImagesGridView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Explorer\IDirectoryTreeView.cs" />
     <Compile Include="UI\Images\ImagesPresenter.cs" />
     <Compile Include="UI\Images\IImagesView.cs" />
+    <Compile Include="ViewerApplication.cs" />
     <Compile Include="ViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -486,6 +486,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File In Use.
+        /// </summary>
+        internal static string RetryFileInUse_Label {
+            get {
+                return ResourceManager.GetString("RetryFileInUse_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File is opened by another application and cannot be opened. Please close the external application and try again..
+        /// </summary>
+        internal static string RetryFileInUse_Message {
+            get {
+                return ResourceManager.GetString("RetryFileInUse_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap RightArrowIcon {

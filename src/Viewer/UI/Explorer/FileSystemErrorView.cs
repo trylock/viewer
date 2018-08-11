@@ -70,6 +70,14 @@ namespace Viewer.UI.Explorer
         /// </summary>
         /// <param name="path">Path to a file</param>
         void FileInUse(string path);
+
+        /// <summary>
+        /// Notifies user that the previous operation on <paramref name="path"/> has failed and
+        /// prompts the user to retry the operation.
+        /// </summary>
+        /// <param name="path">Path to a file</param>
+        /// <returns>true iff user has confirmed to perform the previous operation again</returns>
+        bool RetryFileInUse(string path);
     }
 
     [Export(typeof(IFileSystemErrorView))]
@@ -175,6 +183,15 @@ namespace Viewer.UI.Explorer
                 Resources.FileInUse_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
+        }
+
+        public bool RetryFileInUse(string filePath)
+        {
+            return MessageBox.Show(
+                string.Format(Resources.RetryFileInUse_Message, filePath),
+                Resources.FileInUse_Label,
+                MessageBoxButtons.RetryCancel,
+                MessageBoxIcon.Warning) == DialogResult.Retry;
         }
     }
 }

@@ -25,14 +25,9 @@ namespace Viewer.UI.Presentation
 
         protected override ExportLifetimeContext<IPresentationView> ViewLifetime { get; }
 
-        /// <summary>
-        /// Number of loaded images at any given time
-        /// </summary>
-        public const int WindowSize = 5;
-
         // state
         private readonly List<IEntity> _entities = new List<IEntity>();
-        private ImageWindow _window;
+        private int _position;
 
         /// <summary>
         /// Last time an image was changed in the presentation
@@ -57,24 +52,28 @@ namespace Viewer.UI.Presentation
         {
             _entities.Clear();
             _entities.AddRange(entities);
-            _window = new ImageWindow(_imageLoader, _entities, WindowSize);
-            await _window.LoadPositionAsync(index);
+            _position = index;
             await LoadCurrentEntityAsync();
         }
         
         private async Task LoadCurrentEntityAsync()
         {
             // replace selection
-            _selection.Replace(new[]{ _entities[_window.Index] });
+            var position = _position;
+            var entity = _entities[position];
+            _selection.Replace(new[]
+            {
+                entity
+            });
 
             // load new image
-            var entity = _entities[_window.Index];
             try
             {
-                var image = await _window.Current;
-                
+                var image = await _imageLoader.LoadImageAsync(entity);
+
                 // update view
                 View.Zoom = 1.0;
+                View.Picture?.Dispose();
                 View.Picture = image;
                 View.UpdateImage();
             }
@@ -90,17 +89,29 @@ namespace Viewer.UI.Presentation
             {
                 _dialogView.FileNotFound(entity.Path);
             }
+            catch (IOException)
+            {
+                var confirmRetry = _dialogView.RetryFileInUse(entity.Path);
+                if (confirmRetry)
+                {
+                    await LoadCurrentEntityAsync();
+                }
+            }
         }
         
         private async void View_NextImage(object sender, EventArgs e)
         {
-            _window.TryToMoveForward();
+            _position = (_position + 1) % _entities.Count;
             await LoadCurrentEntityAsync();
         }
 
         private async void View_PrevImage(object sender, EventArgs e)
         {
-            _window.TryToMoveBackward();
+            --_position;
+            if (_position < 0)
+            {
+                _position = _entities.Count - 1;
+            }
             await LoadCurrentEntityAsync();
         }
 
@@ -140,13 +151,12 @@ namespace Viewer.UI.Presentation
             {
                 return;
             }
-            _selection.Replace(new []{ _entities[_window.Index] });
+            _selection.Replace(new []{ _entities[_position] });
         }
 
         private void View_CloseView(object sender, EventArgs e)
         {
             _selection.Clear();
-            _window?.Dispose();
         }
 
         private const double ScaleStep = 1.8;

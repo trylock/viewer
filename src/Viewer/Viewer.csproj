@@ -151,7 +151,6 @@
     <Compile Include="UI\Images\ThumbnailLoader.cs" />
     <Compile Include="UI\IWindowView.cs" />
     <Compile Include="UI\Presentation\IPresentationView.cs" />
-    <Compile Include="UI\Presentation\ImageWindow.cs" />
     <Compile Include="UI\Presentation\PresentationComponent.cs" />
     <Compile Include="UI\Presentation\PresentationControl.cs">
       <SubType>UserControl</SubType>

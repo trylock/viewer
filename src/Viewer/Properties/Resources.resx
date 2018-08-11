@@ -303,4 +303,10 @@
   <data name="PresentationPosition_Label" xml:space="preserve">
     <value>{0} / {1}</value>
   </data>
+  <data name="RetryFileInUse_Label" xml:space="preserve">
+    <value>File In Use</value>
+  </data>
+  <data name="RetryFileInUse_Message" xml:space="preserve">
+    <value>File is opened by another application and cannot be opened. Please close the external application and try again.</value>
+  </data>
 </root>

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
 using Viewer.IO;
+using Viewer.Query.Properties;
 
 namespace Viewer.Query
 {
@@ -26,7 +27,7 @@ namespace Viewer.Query
 
         public void OnStartup(IViewerApplication app)
         {
-            LoadQueryViews("./views");
+            LoadQueryViews(Settings.Default.QueryViewDirectoryPath);
         }
 
         private void LoadQueryViews(string directoryPath)

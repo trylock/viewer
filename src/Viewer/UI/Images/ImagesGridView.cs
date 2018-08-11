@@ -161,8 +161,8 @@ namespace Viewer.UI.Images
         
         public string Query { get; set; }
 
-        private IReadOnlyList<IContextOption<EntityView>> _contextOptions;
-        public IReadOnlyList<IContextOption<EntityView>> ContextOptions
+        private IReadOnlyList<ExternalApplication> _contextOptions;
+        public IReadOnlyList<ExternalApplication> ContextOptions
         {
             get => _contextOptions;
             set
@@ -203,7 +203,7 @@ namespace Viewer.UI.Images
                             return;
                         }
 
-                        optionCapture.Run(Items[_activeItemIndex]);
+                        optionCapture.Run(Items[_activeItemIndex].FullPath);
                     };
                     ItemContextMenu.Items.Insert(1, item);
                 }

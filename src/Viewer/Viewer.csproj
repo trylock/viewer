@@ -183,8 +183,6 @@
     <Compile Include="UI\QueryEditor\QueryEditorView.Designer.cs">
       <DependentUpon>QueryEditorView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Settings\Settings.cs" />
-    <Compile Include="UI\Settings\SettingsComponent.cs" />
     <Compile Include="UI\SystemExplorer.cs" />
     <Compile Include="UI\Tasks\TaskLoader.cs" />
     <Compile Include="UI\Tasks\ITaskLoader.cs" />

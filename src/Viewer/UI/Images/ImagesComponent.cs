@@ -9,6 +9,7 @@ using Viewer.Core;
 using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Query;
+using Viewer.Query.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images

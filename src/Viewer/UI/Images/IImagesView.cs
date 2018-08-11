@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core;
 using Viewer.Data;
 using Viewer.Properties;
 using Viewer.Core.Collections;
 using Viewer.Core.UI;
-using Viewer.UI.Settings;
 
 namespace Viewer.UI.Images
 {
@@ -93,37 +93,6 @@ namespace Viewer.UI.Images
         }
     }
 
-    public interface IContextOption<T>
-    {
-        /// <summary>
-        /// Name of the context menu option
-        /// </summary>
-        string Name { get; }
-        
-        /// <summary>
-        /// Execute the option for <paramref name="item"/>
-        /// </summary>
-        /// <param name="item"></param>
-        void Run(T item);
-    }
-
-    public sealed class ExternalApplicationOption : IContextOption<EntityView>
-    {
-        private readonly ExternalApplication _app;
-
-        public ExternalApplicationOption(ExternalApplication app)
-        {
-            _app = app;
-        }
-
-        public string Name => _app.Name;
-
-        public void Run(EntityView item)
-        {
-            _app.Run(item.FullPath);
-        }
-    }
-
     public class RenameEventArgs : EventArgs
     {
         /// <summary>
@@ -155,7 +124,7 @@ namespace Viewer.UI.Images
             Index = index;
         }
     }
-    
+
     public interface IPolledView
     {
         /// <summary>
@@ -305,7 +274,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Context options
         /// </summary>
-        IReadOnlyList<IContextOption<EntityView>> ContextOptions { get; set; }
+        IReadOnlyList<ExternalApplication> ContextOptions { get; set; }
 
         /// <summary>
         /// List of items to show 

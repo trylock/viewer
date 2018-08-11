@@ -8,9 +8,10 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.IO;
+using Viewer.Properties;
 using Viewer.Query;
+using Viewer.Query.Properties;
 using Viewer.UI.Explorer;
-using Viewer.UI.Settings;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.QueryEditor
@@ -71,7 +72,6 @@ namespace Viewer.UI.QueryEditor
     [Export(typeof(IEditor))]
     public class Editor :  IEditor
     {
-        private readonly ISettings _settings;
         private readonly IQueryViewRepository _queryViews;
         private readonly IFileSystemErrorView _dialogView;
         private readonly IFileSystem _fileSystem;
@@ -80,12 +80,10 @@ namespace Viewer.UI.QueryEditor
         [ImportingConstructor]
         public Editor(
             ExportFactory<QueryEditorPresenter> editorFactory, 
-            ISettings settings,
             IFileSystem fileSystem,
             IFileSystemErrorView dialogView,
             IQueryViewRepository queryViews)
         {
-            _settings = settings;
             _queryViews = queryViews;
             _dialogView = dialogView;
             _fileSystem = fileSystem;
@@ -180,7 +178,7 @@ namespace Viewer.UI.QueryEditor
 
             // update views if we have saved the view to the query view directory
             var directory = Path.GetDirectoryName(fullPath);
-            var viewsDirectory = Path.GetFullPath(_settings.QueryViewDirectoryPath);
+            var viewsDirectory = Path.GetFullPath(Settings.Default.QueryViewDirectoryPath);
             if (directory == viewsDirectory)
             {
                 _queryViews.Add(new Viewer.Query.QueryView(Path.GetFileNameWithoutExtension(fullPath), query, fullPath));

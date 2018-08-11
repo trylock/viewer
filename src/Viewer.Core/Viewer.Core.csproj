@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Collections\ConcurrentSortedSet.cs" />
     <Compile Include="Collections\SortedList.cs" />
+    <Compile Include="ExternalApplication.cs" />
     <Compile Include="Fraction.cs" />
     <Compile Include="IComponent.cs" />
     <Compile Include="IViewerApplication.cs" />

@@ -18,11 +18,12 @@ namespace Viewer.UI.Images
     public interface ILazyThumbnail : IDisposable
     {
         /// <summary>
-        /// Returns currently loaded thumbnail or null if there is none.
-        /// This will start loading a thumbnail if a better thumbnail is available.
-        /// This method is non-blocking. 
+        /// Returns currently loaded thumbnail or null if there is none. This will start loading a new thumbnail
+        /// if a better thumbnail is available. This method is non-blocking. Even if a loading operation is started,
+        /// this method returns currently loaded image.
         /// </summary>
         /// <param name="thumbnailAreaSize">Size of the area for this thumbnail.</param>
+        /// <returns>Currently loaded thumbnail or null if no thumbnail is currently loaded.</returns>
         Image GetCurrent(Size thumbnailAreaSize);
 
         /// <summary>
@@ -44,12 +45,12 @@ namespace Viewer.UI.Images
     }
 
     [Export(typeof(ILazyThumbnailFactory))]
-    public class PhotoThumbnailFactory : ILazyThumbnailFactory
+    public class ThumbnailFactory : ILazyThumbnailFactory
     {
         private readonly IThumbnailLoader _thumbnailLoader;
 
         [ImportingConstructor]
-        public PhotoThumbnailFactory(IThumbnailLoader thumbnailLoader)
+        public ThumbnailFactory(IThumbnailLoader thumbnailLoader)
         {
             _thumbnailLoader = thumbnailLoader;
         }
@@ -88,17 +89,45 @@ namespace Viewer.UI.Images
         {
         }
     }
-
+    
     public class PhotoThumbnail : ILazyThumbnail
     {
+        private enum LoadingType
+        {
+            /// <summary>
+            /// _loading is the default completed task
+            /// </summary>
+            None,
+
+            /// <summary>
+            /// _loading is a task which loads an embedded thumbnail
+            /// </summary>
+            EmbeddedThumbnail,
+
+            /// <summary>
+            /// _loading is a task which loads a native thumbnail
+            /// </summary>
+            NativeThumbnail
+        }
+
         private readonly CancellationToken _cancellationToken;
         private readonly IThumbnailLoader _thumbnailLoader;
         private readonly IEntity _entity;
         private Image _current = Default;
         private Task<Thumbnail> _loading = Task.FromResult(new Thumbnail(Default, Size.Empty));
+        private LoadingType _loadingType = LoadingType.None;
         private Size _loadingThumbnailAreaSize;
-        private bool _isInitialized = false;
 
+        /// <summary>
+        /// If a loading task fails due its file being busy (opened by another process), we want to retry the load
+        /// operation. This the delay between the failed load and the next retry operation.
+        /// </summary>
+        public static readonly TimeSpan RetryDelay = new TimeSpan(0, 0, 0, 2);
+
+        /// <summary>
+        /// Default thumbnail image. <see cref="GetCurrent"/> will return this value if no other image is currently
+        /// available (e.g., on the first call to the <see cref="GetCurrent"/>)
+        /// </summary>
         public static Image Default { get; } = Resources.DefaultThumbnail;
 
         public Image GetCurrent(Size thumbnailAreaSize)
@@ -112,34 +141,71 @@ namespace Viewer.UI.Images
 
             _loadingThumbnailAreaSize = thumbnailAreaSize;
 
-            // start loading a new thumbnail if necessary
-            if (!_isInitialized)
+            // start loading an embedded thumbnail
+            if (_loadingType == LoadingType.None)
             {
-                _loading = _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
-                _isInitialized = true;
+                _loading = LoadEmbeddedThumbnailAsync(thumbnailAreaSize);
+                _loadingType = LoadingType.EmbeddedThumbnail;
             }
 
             // if the loading has finished, replace current thumbnail
             if (_loading.Status == TaskStatus.RanToCompletion)
             {
-                if (_loading.Result.Picture != null && 
-                    _loading.Result.Picture != _current)
+                if (_loading.Result.ThumbnailImage != null && 
+                    _loading.Result.ThumbnailImage != _current)
                 {
                     DisposeCurrent();
-                    _current = _loading.Result.Picture;
+                    _current = _loading.Result.ThumbnailImage;
                 }
 
                 if (!IsSufficient(_loading.Result.OriginalSize, _loadingThumbnailAreaSize))
                 {
-                    _loading = _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
+                    _loading = LoadNativeThumbnailAsync(thumbnailAreaSize);
+                    _loadingType = LoadingType.NativeThumbnail;
                 }
             }
-            else
+            else if (_loading.Status == TaskStatus.Faulted) // the loading has failed unexpectedly
+            {
+                // if we have failed to load an embedded thumbnail, try loading a native thumbnail
+                if (_loadingType == LoadingType.EmbeddedThumbnail)
+                {
+                    _loading = LoadNativeThumbnailAsync(thumbnailAreaSize);
+                    _loadingType = LoadingType.NativeThumbnail;
+                }
+                else if (_loadingType == LoadingType.NativeThumbnail)
+                {
+                    // check whether it has failed due to the file being opened by another process
+                    var isFileBusy = _loading.Exception?.InnerExceptions.OfType<IOException>().Any() ?? false;
+                    if (isFileBusy)
+                    {
+                        // retry after a set amount of time
+                        _loading = LoadNativeThumbnailDelayedAsync(thumbnailAreaSize, RetryDelay);
+                        _loadingType = LoadingType.NativeThumbnail;
+                    }
+                }
+            }
+            else if (_loading.Status != TaskStatus.Canceled) // the loading is in process
             {
                 _thumbnailLoader.Prioritize(_entity.Path);
             }
             
             return _current;
+        }
+
+        private async Task<Thumbnail> LoadNativeThumbnailDelayedAsync(Size thumbnailAreaSize, TimeSpan delay)
+        {
+            await Task.Delay(delay, _cancellationToken).ConfigureAwait(false);
+            return await LoadNativeThumbnailAsync(thumbnailAreaSize);
+        }
+
+        private Task<Thumbnail> LoadEmbeddedThumbnailAsync(Size thumbnailAreaSize)
+        {
+            return _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
+        }
+
+        private Task<Thumbnail> LoadNativeThumbnailAsync(Size thumbnailAreaSize)
+        {
+            return _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
         }
         
         private static bool IsSufficient(Size originalImageSize, Size thumbnailAreaSize)
@@ -160,15 +226,20 @@ namespace Viewer.UI.Images
             var current = _current;
             _loading.ContinueWith(p =>
             {
-                if (p.Result.Picture != Default &&
-                    p.Result.Picture != current)
+                if (p.Result.ThumbnailImage != Default &&
+                    p.Result.ThumbnailImage != current)
                 {
-                    p.Result.Picture?.Dispose();
+                    p.Result.ThumbnailImage?.Dispose();
                 }
             });
-            _isInitialized = false;
+            _loadingType = LoadingType.None;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Dispose current and loading thumbnail images.
+        /// This does **not** cancel any pending loading operation. Use <see cref="CancellationTokenSource"/> to cancel loading operations.
+        /// </summary>
         public void Dispose()
         {
             DisposeCurrent();
@@ -188,9 +259,9 @@ namespace Viewer.UI.Images
         {
             _loading.ContinueWith(p =>
             {
-                if (p.Result.Picture != Default)
+                if (p.Result.ThumbnailImage != Default)
                 {
-                    p.Result.Picture?.Dispose();
+                    p.Result.ThumbnailImage?.Dispose();
                 }
             });
         }

@@ -9,6 +9,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -19,21 +20,35 @@ using Image = System.Drawing.Image;
 
 namespace Viewer.Images
 {
+    /// <summary>
+    /// Purpose of this class is to read an image of an entity and decode it correctly. This class takes
+    /// into account file metadata such as the Exif Orientation tag used to rotate and flip images without
+    /// altering image data. 
+    /// </summary>
     public interface IImageLoader
     {
         /// <summary>
-        /// Get size of the image of entity without reading the whole image
+        /// Get image dimensions of <paramref name="entity"/> without any additional I/O.
+        /// The image size is read from image metadata loaded in <paramref name="entity"/>.
         /// </summary>
         /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <returns>
+        ///     Dimensions of the original image of entity (i.e., image at <see cref="IEntity.Path"/>).
+        ///     If <paramref name="entity"/> does not contain metadata about its image dimensions, <c>new Size(1, 1)</c> will be returned.
+        /// </returns>
         Size GetImageSize(IEntity entity);
 
         /// <summary>
         /// Load image of an entity entirely to main memory.
-        /// Underlying file will be closed after this method finishes.
         /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>Full image of the entity</returns>
+        /// <param name="entity">Entity for which you want to load the image</param>
+        /// <returns>Decoded image of the entity</returns>
+        /// <exception cref="ArgumentException">File <see cref="IEntity.Path"/> does not contain a valid image or <see cref="IEntity.Path"/> is an invalid path to a file.</exception>
+        /// <exception cref="FileNotFoundException">File <see cref="IEntity.Path"/> was not found.</exception>
+        /// <exception cref="IOException">File <see cref="IEntity.Path"/> is used by another process.</exception>
+        /// <exception cref="NotSupportedException"><see cref="IEntity.Path"/> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in a non-NTFS environment.</exception>
+        /// <exception cref="SecurityException">The caller does not have the required permission.</exception>
+        /// <exception cref="UnauthorizedAccessException">Unauthorized access to the file <see cref="IEntity.Path"/>.</exception>
         Image LoadImage(IEntity entity);
 
         /// <summary>
@@ -118,13 +133,9 @@ namespace Viewer.Images
         {
             var widthAttr = entity.GetValue<IntValue>(WidthAttrName);
             var heightAttr = entity.GetValue<IntValue>(HeightAttrName);
-            if (widthAttr == null || heightAttr == null)
-            {
-                return new Size(1, 1);
-            }
-
-            var width = widthAttr.Value ?? 0;
-            var height = heightAttr.Value ?? 0;
+            
+            var width = widthAttr?.Value ?? 1;
+            var height = heightAttr?.Value ?? 1;
             var orientation = GetOrientation(entity);
             return orientation < 5 ? 
                 new Size(width, height) : 
@@ -134,7 +145,7 @@ namespace Viewer.Images
         public Image LoadImage(IEntity entity)
         {
             var orientation = GetTransformation(entity);
-            var image = DecodeImage(entity.Path, orientation);
+            var image = DecodeImage(new FileStream(entity.Path, FileMode.Open, FileAccess.Read), orientation);
             return image;
         }
 

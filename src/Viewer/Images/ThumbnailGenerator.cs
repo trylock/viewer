@@ -12,13 +12,13 @@ namespace Viewer.Images
     public interface IThumbnailGenerator
     {
         /// <summary>
-        /// Generate thumbnail image of <paramref name="original"/>.
-        /// The thumbnail is scaled down/up to fill in <paramref name="thumbnailArea"/> 
-        /// in one direction.
+        /// Generate thumbnail image for <paramref name="original"/>.
+        /// The thumbnail is scaled down/up to fill in <paramref name="thumbnailArea"/> in one dimension.
         /// </summary>
         /// <param name="original">Original image</param>
         /// <param name="thumbnailArea">Size of an area for the thumbnail</param>
         /// <returns>Thumbnail image</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="original"/> is null</exception>
         Image GetThumbnail(Image original, Size thumbnailArea);
     }
 
@@ -27,6 +27,9 @@ namespace Viewer.Images
     {
         public Image GetThumbnail(Image originalImage, Size thumbnailArea)
         {
+            if (originalImage == null)
+                throw new ArgumentNullException(nameof(originalImage));
+
             var thumbnailSize = GetThumbnailSize(originalImage.Size, thumbnailArea);
             var thumbnail = new Bitmap(thumbnailSize.Width, thumbnailSize.Height);
             using (var graphics = Graphics.FromImage(thumbnail))

@@ -19,48 +19,75 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Thumbnail picture
         /// </summary>
-        public Image Picture { get; }
+        public Image ThumbnailImage { get; }
 
         /// <summary>
-        /// Size of the original image from wich Picture is generated.
+        /// Size of the original image from wich <see cref="ThumbnailImage"/> is generated.
         /// </summary>
         public Size OriginalSize { get; }
 
-        public Thumbnail(Image picture, Size originalSize)
+        public Thumbnail(Image thumbnailImage, Size originalSize)
         {
-            Picture = picture;
+            ThumbnailImage = thumbnailImage;
             OriginalSize = originalSize;
         }
     }
 
+    /// <summary>
+    /// Thumbnail loader loads thumbnails using <see cref="IImageLoader"/> and resizes them using <see cref="IThumbnailGenerator"/>.
+    /// </summary>
     public interface IThumbnailLoader
     {
         /// <summary>
-        /// Load embedded thumbnail of <paramref name="entity"/>.
-        /// This does not trigger any IO. If <paramref name="entity"/> does not have an embedded thumbnail,
-        /// this function returns null immediately.
+        /// Load embedded thumbnail of <paramref name="entity"/> and resize it to fit in <paramref name="thumbnailAreaSize"/> so that it presrves its aspect ratio.
+        /// This does not trigger any I/O. It uses thumbnail loaded in <paramref name="entity"/>.
         /// </summary>
         /// <param name="entity">Entity for which you want to load an embedded thumbnail</param>
         /// <param name="thumbnailAreaSize">Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this area.</param>
         /// <param name="cancellationToken">Cancellation token of the load operation.</param>
-        /// <returns>Task finished when the thumbnail is decoded</returns>
+        /// <returns>
+        ///     <para>Task finished when the thumbnail is loaded.</para>
+        ///     <para>
+        ///         If <paramref name="entity"/> does not have an embedded thumbnail, this function
+        ///         returns immediately with a completed task where <see cref="Thumbnail.ThumbnailImage"/> is null
+        ///         and <see cref="Thumbnail.OriginalSize"/> is <see cref="Size.Empty"/>.
+        ///     </para>
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
+        /// <seealso cref="IImageLoader.LoadThumbnailAsync(IEntity, CancellationToken)">
+        ///     For the list of possible exceptions returned by the task.
+        /// </seealso>
+        /// <seealso cref="IThumbnailGenerator.GetThumbnail">
+        ///     For the list of possible exceptions returned by the task.
+        /// </seealso>
         Task<Thumbnail> LoadEmbeddedThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Load the original image of <paramref name="entity"/> and scale it down to <paramref name="thumbnailAreaSize"/>.
-        /// This function reads the whole file of <paramref name="entity"/>.
+        /// Load the original image of <paramref name="entity"/> and and resize it to fit in <paramref name="thumbnailAreaSize"/> so that it presrves its aspect ratio.
+        /// This function reads the whole file of <paramref name="entity"/> on a background thread.
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="thumbnailAreaSize"></param>
+        /// <param name="entity">Entity whose file will be loaded.</param>
+        /// <param name="thumbnailAreaSize">Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this area.</param>
         /// <param name="cancellationToken">Cancellation token of the load operation.</param>
-        /// <returns></returns>
+        /// <returns>
+        ///     Task finished when the thumbnail is loaded.
+        ///     See <see cref="IImageLoader.LoadImage"/> for the list of possible exceptions returned by this task.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
+        /// <seealso cref="IImageLoader.LoadImage">
+        ///     For the list of possible exceptions returned by the task.
+        /// </seealso>
+        /// <seealso cref="IThumbnailGenerator.GetThumbnail">
+        ///     For the list of possible exceptions returned by the task.
+        /// </seealso>
         Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken);
 
         /// <summary>
         /// Increase priority of given entity so that it is loaded before any other entity waiting in the queue.
-        /// This won't change priorities if there is no entity with <paramref name="path"/> in the waiting queue.
+        /// This won't change any priorities if there is no entity with <paramref name="path"/> in the waiting queue.
         /// </summary>
         /// <param name="path">Path to an entity to prioritize</param>
+        /// <exception cref="ArgumentNullException"><paramref name="path"/> is null</exception>
         void Prioritize(string path);
     }
 
@@ -86,7 +113,18 @@ namespace Viewer.UI.Images
             thread.Start();
         }
 
-        public async Task<Thumbnail> LoadEmbeddedThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
+        public Task<Thumbnail> LoadEmbeddedThumbnailAsync(
+            IEntity entity, 
+            Size thumbnailAreaSize,
+            CancellationToken cancellationToken)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            return LoadEmbeddedThumbnailAsyncImpl(entity, thumbnailAreaSize, cancellationToken);
+        }
+
+        private async Task<Thumbnail> LoadEmbeddedThumbnailAsyncImpl(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
         {
             using (var image = await _imageLoader.LoadThumbnailAsync(entity, cancellationToken).ConfigureAwait(false))
             {
@@ -101,12 +139,18 @@ namespace Viewer.UI.Images
 
         public Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             var req = new LoadRequest(entity, thumbnailAreaSize, cancellationToken);
             return AddLoadRequest(req);
         }
         
         public void Prioritize(string path)
         {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
             lock (_requests)
             {
                 // find the request

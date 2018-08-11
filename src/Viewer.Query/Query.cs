@@ -320,7 +320,7 @@ namespace Viewer.Query
 
         public IQuery WithText(string text)
         {
-            return new Query(_source, Comparer, Text);
+            return new Query(_source, Comparer, text);
         }
 
         public IQuery Where(Func<IEntity, bool> predicate)

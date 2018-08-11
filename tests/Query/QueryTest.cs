@@ -39,5 +39,14 @@ namespace ViewerTest.Query
                 entitiesB[0]
             }, result);
         }
+
+        [TestMethod]
+        public void WithText_ChangeQueryText()
+        {
+            var query = new Viewer.Query.Query(EmptyQuery.Default, EntityComparer.Default, "test1");
+            var modified = query.WithText("test2");
+            Assert.AreEqual("test1", query.Text);
+            Assert.AreEqual("test2", modified.Text);
+        }
     }
 }

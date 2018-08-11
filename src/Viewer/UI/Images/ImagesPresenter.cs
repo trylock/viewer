@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -330,7 +330,7 @@ namespace Viewer.UI.Images
             // check the new file name 
             if (!PathUtils.IsValidFileName(e.NewName))
             {
-                _dialogView.InvalidFileName(e.NewName, PathUtils.GetInvalidFileCharacters());
+                _dialogView.InvalidFileName(e.NewName);
                 return;
             }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.Composition;
@@ -172,7 +172,7 @@ namespace Viewer.UI.Explorer
         {
             if (!PathUtils.IsValidFileName(e.NewName))
             {
-                _dialogView.InvalidFileName(e.NewName, PathUtils.GetInvalidFileCharacters());
+                _dialogView.InvalidFileName(e.NewName);
                 return;
             }
 

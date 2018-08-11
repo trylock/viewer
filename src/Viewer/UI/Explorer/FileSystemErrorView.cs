@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.IO;
 using Viewer.Properties;
 
 namespace Viewer.UI.Explorer
@@ -35,8 +36,7 @@ namespace Viewer.UI.Explorer
         /// Show the invalid file name error message to the user
         /// </summary>
         /// <param name="fileName">Invalid file name</param>
-        /// <param name="invalidCharacters">Invalid characters in file name</param>
-        void InvalidFileName(string fileName, string invalidCharacters);
+        void InvalidFileName(string fileName);
 
         /// <summary>
         /// Show confirm dialog of file deletion. 
@@ -101,10 +101,10 @@ namespace Viewer.UI.Explorer
                 MessageBoxIcon.Warning);
         }
 
-        public void InvalidFileName(string fileName, string invalidCharacters)
+        public void InvalidFileName(string fileName)
         {
             MessageBox.Show(
-                string.Format(Resources.InvalidFileName_Message, fileName, invalidCharacters),
+                string.Format(Resources.InvalidFileName_Message, fileName, PathUtils.GetInvalidFileCharacters()),
                 Resources.InvalidFileName_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);

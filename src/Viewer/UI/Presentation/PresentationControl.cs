@@ -99,7 +99,7 @@ namespace Viewer.UI.Presentation
 
             MinDelayLabel.Text = SpeedTrackBar.Minimum + "s";
             MaxDelayLabel.Text = SpeedTrackBar.Maximum + "s";
-            PlayPauseButton.IconColorTint = Color.FromArgb(0, 120, 215);
+            PlayPauseButton.IconColor = Color.FromArgb(0, 120, 215);
             
             _fullscreenForm = new Form
             {

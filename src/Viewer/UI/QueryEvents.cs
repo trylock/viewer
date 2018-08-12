@@ -89,6 +89,16 @@ namespace Viewer.UI
         /// This will trigger the <see cref="QueryExecuted"/> event iff current query is not the last query in history.
         /// </summary>
         void Forward();
+
+        /// <summary>
+        /// Get previous query or null if current query is the first query in history.
+        /// </summary>
+        IQuery Previous { get; }
+
+        /// <summary>
+        /// Get next query or null if current query is the last query in history.
+        /// </summary>
+        IQuery Next { get; }
     }
 
     [Export(typeof(IQueryEvents))]
@@ -101,6 +111,8 @@ namespace Viewer.UI
         public event EventHandler<EntityEventArgs> EntityOpened;
 
         public IQuery Current => _historyHead < 0 ? null : _history[_historyHead];
+        public IQuery Previous => _historyHead <= 0 ? null : _history[_historyHead - 1];
+        public IQuery Next => _historyHead >= _history.Count - 1 ? null : _history[_historyHead + 1];
 
         public void OpenEntity(IEnumerable<IEntity> entities, int index)
         {

@@ -193,6 +193,8 @@ namespace Viewer.UI.Images
             _selection.Clear();
 
             // reset view
+            View.PreviousInHistory = _state.Previous?.Text;
+            View.NextInHistory = _state.Next?.Text;
             if (View.Items != null)
             {
                 foreach (var item in View.Items)

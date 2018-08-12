@@ -16,7 +16,9 @@ namespace Viewer.UI.Forms
     {
         private Image _icon;
         private Size _iconSize = Size.Empty;
-        private Color _iconColorTint = Color.White;
+        private Color _iconColor = Color.White;
+        private Color _iconEnabledColor = Color.White;
+        private Color _iconDisabledColor = Color.White;
         private readonly ImageAttributes _imageAttributes = new ImageAttributes();
 
         public new event EventHandler Click;
@@ -49,19 +51,41 @@ namespace Viewer.UI.Forms
         }
 
         /// <summary>
-        /// Modify icon color.
+        /// Modify icon color when the button is enabled.
         /// The color will be multiplied with this tint color to get the result.
         /// That is, if the icon is black, this won't have any effect.
         /// If the icon is white, this will effectively change the color of this icon.
         /// </summary>
-        public Color IconColorTint
+        public Color IconColor
         {
-            get => _iconColorTint;
+            get => _iconEnabledColor;
             set
             {
-                _iconColorTint = value;
-                UpdateColorMatrix();
-                Invalidate();
+                _iconEnabledColor = value;
+                if (Enabled)
+                {
+                    _iconColor = value;
+                    UpdateColorMatrix();
+                    Invalidate();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Modify icon color when the button is disabled.
+        /// </summary>
+        public Color IconDisabledColor
+        {
+            get => _iconDisabledColor;
+            set
+            {
+                _iconDisabledColor = value;
+                if (!Enabled)
+                {
+                    _iconColor = value;
+                    UpdateColorMatrix();
+                    Invalidate();
+                }
             }
         }
         
@@ -73,6 +97,14 @@ namespace Viewer.UI.Forms
             SetStyle(ControlStyles.StandardClick, false);
             
             MouseDown += OnMouseDown;
+            EnabledChanged += OnEnabledChanged;
+        }
+
+        private void OnEnabledChanged(object sender, EventArgs e)
+        {
+            _iconColor = Enabled ? _iconEnabledColor : _iconDisabledColor;
+            UpdateColorMatrix();
+            Invalidate();
         }
 
         private void OnMouseDown(object sender, MouseEventArgs e)
@@ -101,10 +133,10 @@ namespace Viewer.UI.Forms
         {
             var matrix = new ColorMatrix(new[]
             {
-                new[]{ _iconColorTint.R / 255.0f, 0, 0, 0, 0 },
-                new[]{ 0, _iconColorTint.G / 255.0f, 0, 0, 0 },
-                new[]{ 0, 0, _iconColorTint.B / 255.0f, 0, 0 },
-                new[]{ 0, 0, 0, _iconColorTint.A / 255.0f, 0 },
+                new[]{ _iconColor.R / 255.0f, 0, 0, 0, 0 },
+                new[]{ 0, _iconColor.G / 255.0f, 0, 0, 0 },
+                new[]{ 0, 0, _iconColor.B / 255.0f, 0, 0 },
+                new[]{ 0, 0, 0, _iconColor.A / 255.0f, 0 },
                 new[]{ 0, 0, 0, 0, 1.0f },
             });
             _imageAttributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);

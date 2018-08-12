@@ -162,7 +162,7 @@
             // ToggleFullscreenButton
             // 
             this.ToggleFullscreenButton.Icon = global::Viewer.Properties.Resources.Fullscreen;
-            this.ToggleFullscreenButton.IconColorTint = System.Drawing.Color.Black;
+            this.ToggleFullscreenButton.IconColor = System.Drawing.Color.Black;
             this.ToggleFullscreenButton.IconSize = new System.Drawing.Size(16, 16);
             this.ToggleFullscreenButton.Location = new System.Drawing.Point(200, 0);
             this.ToggleFullscreenButton.Name = "ToggleFullscreenButton";
@@ -175,7 +175,7 @@
             // ZoomInButton
             // 
             this.ZoomInButton.Icon = global::Viewer.Properties.Resources.ZoomIn;
-            this.ZoomInButton.IconColorTint = System.Drawing.Color.Black;
+            this.ZoomInButton.IconColor = System.Drawing.Color.Black;
             this.ZoomInButton.IconSize = new System.Drawing.Size(16, 16);
             this.ZoomInButton.Location = new System.Drawing.Point(176, 0);
             this.ZoomInButton.Name = "ZoomInButton";
@@ -188,7 +188,7 @@
             // ZoomOutButton
             // 
             this.ZoomOutButton.Icon = global::Viewer.Properties.Resources.ZoomOut;
-            this.ZoomOutButton.IconColorTint = System.Drawing.Color.Black;
+            this.ZoomOutButton.IconColor = System.Drawing.Color.Black;
             this.ZoomOutButton.IconSize = new System.Drawing.Size(16, 16);
             this.ZoomOutButton.Location = new System.Drawing.Point(152, 0);
             this.ZoomOutButton.Name = "ZoomOutButton";
@@ -201,7 +201,7 @@
             // PlayPauseButton
             // 
             this.PlayPauseButton.Icon = global::Viewer.Properties.Resources.Play;
-            this.PlayPauseButton.IconColorTint = System.Drawing.Color.Black;
+            this.PlayPauseButton.IconColor = System.Drawing.Color.Black;
             this.PlayPauseButton.IconSize = new System.Drawing.Size(16, 16);
             this.PlayPauseButton.Location = new System.Drawing.Point(129, 0);
             this.PlayPauseButton.Name = "PlayPauseButton";

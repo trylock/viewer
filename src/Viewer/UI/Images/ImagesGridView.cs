@@ -124,6 +124,36 @@ namespace Viewer.UI.Images
         public event EventHandler GoBackInHistory;
         public event EventHandler GoForwardInHistory;
 
+        private string _previousInHistory;
+        public string PreviousInHistory
+        {
+            get => _previousInHistory;
+            set
+            {
+                _previousInHistory = value;
+                BackButton.Enabled = value != null;
+                if (value != null)
+                {
+                    BackToolTip.SetToolTip(BackButton, value);
+                }
+            }
+        }
+
+        private string _nextInHistory;
+        public string NextInHistory
+        {
+            get => _nextInHistory;
+            set
+            {
+                _nextInHistory = value;
+                ForwardButton.Enabled = value != null;
+                if (value != null)
+                {
+                    ForwardToolTip.SetToolTip(ForwardButton, value);
+                }
+            }
+        }
+
         #endregion
 
         #region IImagesView
@@ -231,7 +261,6 @@ namespace Viewer.UI.Images
 
         private void UpdateItemCount()
         {
-            ControlPanel.Visible = Items.Count > 0;
             ItemsCountLabel.Text = string.Format(Resources.ItemCount_Label, Items.Count.ToString("N0"));
             GridView.UpdateItemCount();
         }

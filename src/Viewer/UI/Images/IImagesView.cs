@@ -136,6 +136,16 @@ namespace Viewer.UI.Images
         /// Event called when user wants to go forward in history
         /// </summary>
         event EventHandler GoForwardInHistory;
+
+        /// <summary>
+        /// Name of the previous item in history or null if there is none
+        /// </summary>
+        string PreviousInHistory { get; set; }
+
+        /// <summary>
+        /// Name of the next item in history or null if there is none
+        /// </summary>
+        string NextInHistory { get; set; }
     }
 
     public interface IPolledView

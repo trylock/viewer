@@ -223,12 +223,6 @@ namespace Viewer.IO
                 if (path[i] == '/' || path[i] == '\\')
                 {
                     unifiedPath.Append('/');
-
-                    // remove double separator
-                    if (i + 1 < path.Length && (path[i + 1] == '\\' || path[i + 1] == '/'))
-                    {
-                        ++i;
-                    }
                 }
                 else
                 {

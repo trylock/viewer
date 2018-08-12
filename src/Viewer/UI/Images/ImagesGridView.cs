@@ -79,12 +79,12 @@ namespace Viewer.UI.Images
             GridView.SelectionBounds = Rectangle.Empty;
         }
         
-        public IEnumerable<int> GetItemsIn(Rectangle bounds)
+        public IEnumerable<EntityView> GetItemsIn(Rectangle bounds)
         {
             return GridView.GetItemsIn(bounds);
         }
 
-        public int GetItemAt(Point location)
+        public EntityView GetItemAt(Point location)
         {
             return GridView.GetItemAt(location);
         }
@@ -161,7 +161,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Index of the last item user clicked on with left mouse button.
         /// </summary>
-        private int _activeItemIndex = -1;
+        private EntityView _activeItem = null;
         
         public event KeyEventHandler HandleKeyDown
         {
@@ -235,12 +235,12 @@ namespace Viewer.UI.Images
                     };
                     item.Click += (sender, args) =>
                     {
-                        if (_activeItemIndex < 0)
+                        if (_activeItem == null)
                         {
                             return;
                         }
 
-                        optionCapture.Run(Items[_activeItemIndex].FullPath);
+                        optionCapture.Run(_activeItem.FullPath);
                     };
                     ItemContextMenu.Items.Insert(1, item);
                 }
@@ -276,16 +276,16 @@ namespace Viewer.UI.Images
             DoDragDrop(data, effect);
         }
 
-        public void ShowItemEditForm(int index)
+        public void ShowItemEditForm(EntityView entityView)
         {
-            if (index < 0 || index >= Items.Count)
-                return;
+            if (entityView == null)
+                throw new ArgumentNullException(nameof(entityView));
 
-            var item = Items[index];
+            var index = Items.IndexOf(entityView);
             var cell = GridView.Grid.GetCell(index);
 
             NameTextBox.Visible = true;
-            NameTextBox.Text = item.Name;
+            NameTextBox.Text = entityView.Name;
             NameTextBox.Location = GridView.ProjectLocation(GridView.GetNameLocation(cell.Bounds));
             NameTextBox.Size = GridView.GetNameSize(cell.Bounds);
             NameTextBox.Focus();
@@ -310,28 +310,6 @@ namespace Viewer.UI.Images
 
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button.HasFlag(MouseButtons.Left))
-            {
-                var location = GridView.UnprojectLocation(e.Location);
-                var item = GridView.GetItemAt(location);
-                if (item >= 0)
-                {
-                    // user clicked on an item
-                    _activeItemIndex = item;
-
-                    // start dragging
-                    _isDragging = true;
-                    _dragOrigin = e.Location;
-                }
-                else
-                {
-                    // start a range selection
-                    _isSelectionActive = true;
-                    SelectionBegin?.Invoke(sender,
-                        new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-                }
-            }
-
             // invoke history events
             if (e.Button.HasFlag(MouseButtons.XButton1))
             {
@@ -340,6 +318,33 @@ namespace Viewer.UI.Images
             else if (e.Button.HasFlag(MouseButtons.XButton2))
             {
                 GoForwardInHistory?.Invoke(sender, e);
+            }
+
+            // process events on grid view item
+            var location = GridView.UnprojectLocation(e.Location);
+            var item = GridView.GetItemAt(location);
+            if (item != null)
+            {
+                // user clicked on an item
+                _activeItem = item;
+                if (_activeItem.State != FileViewState.Selected)
+                {
+                    SelectItem?.Invoke(sender, new EntityEventArgs(_activeItem));
+                }
+
+                // start dragging
+                if (e.Button.HasFlag(MouseButtons.Left))
+                {
+                    _isDragging = true;
+                    _dragOrigin = e.Location;
+                }
+            }
+            else if (e.Button.HasFlag(MouseButtons.Left))
+            {
+                // start a range selection
+                _isSelectionActive = true;
+                SelectionBegin?.Invoke(sender,
+                    new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
             }
         }
 
@@ -358,9 +363,9 @@ namespace Viewer.UI.Images
             else if (e.Button.HasFlag(MouseButtons.Left))
             {
                 // select item
-                if (_activeItemIndex >= 0)
+                if (_activeItem != null)
                 {
-                    SelectItem?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
+                    SelectItem?.Invoke(sender, new EntityEventArgs(_activeItem));
                 }
             }
         }
@@ -376,10 +381,11 @@ namespace Viewer.UI.Images
             {
                 // trigger the ItemHover event
                 var item = GridView.GetItemAt(location);
-                if (item < 0)
+                if (item == null)
                 {
                     return;
                 }
+                
                 ItemHover?.Invoke(sender, new EntityEventArgs(item));
 
                 // begin the drag operation
@@ -402,12 +408,13 @@ namespace Viewer.UI.Images
         private void GridView_DoubleClick(object sender, EventArgs e)
         { 
             var location = GridView.UnprojectLocation(PointToClient(MousePosition));
-            var index = GridView.GetItemAt(location);
-            if (index < 0)
+            var item = GridView.GetItemAt(location);
+            if (item == null)
             {
                 return;
             }
-            OpenItem?.Invoke(sender, new EntityEventArgs(index));
+            
+            OpenItem?.Invoke(sender, new EntityEventArgs(item));
         }
 
         private void GridView_Scroll(object sender, ScrollEventArgs e)
@@ -437,24 +444,29 @@ namespace Viewer.UI.Images
             else if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
-                RenameItem?.Invoke(sender, new RenameEventArgs(_activeItemIndex, NameTextBox.Text));
+                RenameItem?.Invoke(sender, new RenameEventArgs(_activeItem, NameTextBox.Text));
             }
         }
 
         private void OpenMenuItem_Click(object sender, EventArgs e)
         {
-            if (_activeItemIndex < 0)
+            if (_activeItem == null)
             {
                 return;
             }
-
-            OpenItem?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
+            
+            OpenItem?.Invoke(sender, new EntityEventArgs(_activeItem));
         }
 
         private void RenameMenuItem_Click(object sender, EventArgs e)
         {
+            if (_activeItem == null)
+            {
+                return;
+            }
+            
             NameTextBox.BringToFront();
-            BeginEditItemName?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
+            BeginEditItemName?.Invoke(sender, new EntityEventArgs(_activeItem));
         }
 
         private void ThumbnailSizeTrackBar_MouseUp(object sender, MouseEventArgs e)

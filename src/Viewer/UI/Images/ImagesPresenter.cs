@@ -341,6 +341,9 @@ namespace Viewer.UI.Images
             try
             {
                 _entityManager.MoveEntity(item.Data, newPath);
+                // make sure items in the view are still sorted
+                View.Items.Remove(item);
+                View.Items.Add(item);
                 View.UpdateItems();
             }
             catch (PathTooLongException)

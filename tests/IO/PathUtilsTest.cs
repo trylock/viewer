@@ -42,5 +42,55 @@ namespace ViewerTest.IO
             Assert.AreEqual("..", PathUtils.GetLastPart(Path.Combine("C:/", "ipsum", "..")));
             Assert.AreEqual(".", PathUtils.GetLastPart(Path.Combine("C:/", "dolor", ".")));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Split_NullPath()
+        {
+            PathUtils.Split(null);
+        }
+
+        [TestMethod]
+        public void Split_EmptyPath()
+        {
+            var parts = PathUtils.Split("");
+            CollectionAssert.AreEqual(new[]{ "" }, parts.ToArray());
+        }
+
+        [TestMethod]
+        public void Split_OnePartPath()
+        {
+            var parts = PathUtils.Split("C:");
+            CollectionAssert.AreEqual(new[] { "C:" }, parts.ToArray());
+
+            parts = PathUtils.Split("C:/");
+            CollectionAssert.AreEqual(new[] { "C:" }, parts.ToArray());
+
+            parts = PathUtils.Split("C:\\");
+            CollectionAssert.AreEqual(new[] { "C:" }, parts.ToArray());
+
+            parts = PathUtils.Split("C://");
+            CollectionAssert.AreEqual(new[] { "C:" }, parts.ToArray());
+        }
+
+        [TestMethod]
+        public void Split_MultipleParts()
+        {
+            var parts = PathUtils.Split("abc/x/d");
+            CollectionAssert.AreEqual(new[] { "abc", "x", "d" }, parts.ToArray());
+
+            parts = PathUtils.Split("abc/x\\d");
+            CollectionAssert.AreEqual(new[] { "abc", "x", "d" }, parts.ToArray());
+        }
+
+        [TestMethod]
+        public void Split_PathSeparatorAtTheStart()
+        {
+            var parts = PathUtils.Split("\\\\NAS\\Photos");
+            CollectionAssert.AreEqual(new[]{ "\\\\NAS", "Photos" }, parts.ToArray());
+
+            parts = PathUtils.Split("\\\\NAS\\Photos\\");
+            CollectionAssert.AreEqual(new[] { "\\\\NAS", "Photos" }, parts.ToArray());
+        }
     }
 }

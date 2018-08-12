@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Viewer.IO
@@ -31,11 +32,53 @@ namespace Viewer.IO
         public static IEnumerable<string> Split(string fullPath)
         {
             if (fullPath == null)
-            {
                 throw new ArgumentNullException(nameof(fullPath));
-            }
-            return fullPath.Split(PathSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            return SplitImpl(fullPath);
         }
+
+        private static IEnumerable<string> SplitImpl(string fullPath)
+        {
+            if (fullPath == "")
+            {
+                yield return "";
+                yield break;
+            }
+
+            var index = 0;
+            var part = new StringBuilder();
+
+            // skip path separator at the start of the path
+            while (index < fullPath.Length && PathSeparators.Contains(fullPath[index]))
+            {
+                part.Append(fullPath[index]);
+                ++index;
+            }
+
+            while (index < fullPath.Length)
+            {
+                if (PathSeparators.Contains(fullPath[index]))
+                {
+                    if (part.Length > 0)
+                    {
+                        var partString = part.ToString();
+                        part = new StringBuilder();
+                        yield return partString;
+                    }
+                }
+                else
+                {
+                    part.Append(fullPath[index]);
+                }
+                ++index;
+            }
+
+            if (part.Length > 0)
+            {
+                yield return part.ToString();
+            }
+        }
+
 
         /// <summary>
         /// Get last part of given path (i.e. file/folder name).

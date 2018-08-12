@@ -90,9 +90,9 @@ namespace Viewer.UI.Presentation
             {
                 _dialogView.FileNotFound(entity.Path);
             }
-            catch (IOException)
+            catch (IOException e)
             {
-                var confirmRetry = _dialogView.RetryFileInUse(entity.Path);
+                var confirmRetry = _dialogView.FailedToOpenFile(entity.Path, e.Message);
                 if (confirmRetry)
                 {
                     await LoadCurrentEntityAsync();

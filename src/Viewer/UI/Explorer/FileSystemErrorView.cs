@@ -76,8 +76,9 @@ namespace Viewer.UI.Explorer
         /// prompts the user to retry the operation.
         /// </summary>
         /// <param name="path">Path to a file</param>
+        /// <param name="error">Error message</param>
         /// <returns>true iff user has confirmed to perform the previous operation again</returns>
-        bool RetryFileInUse(string path);
+        bool FailedToOpenFile(string path, string error);
     }
 
     [Export(typeof(IFileSystemErrorView))]
@@ -185,11 +186,11 @@ namespace Viewer.UI.Explorer
                 MessageBoxIcon.Warning);
         }
 
-        public bool RetryFileInUse(string filePath)
+        public bool FailedToOpenFile(string filePath, string error)
         {
             return MessageBox.Show(
-                string.Format(Resources.RetryFileInUse_Message, filePath),
-                Resources.FileInUse_Label,
+                string.Format(Resources.FailedToOpenFile_Message, filePath, error),
+                Resources.FailedToOpenFile_Label,
                 MessageBoxButtons.RetryCancel,
                 MessageBoxIcon.Warning) == DialogResult.Retry;
         }

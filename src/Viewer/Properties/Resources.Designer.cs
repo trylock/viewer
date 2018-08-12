@@ -288,6 +288,25 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed To Open File.
+        /// </summary>
+        internal static string FailedToOpenFile_Label {
+            get {
+                return ResourceManager.GetString("FailedToOpenFile_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File {0} could not be opened: {1} 
+        ///Do you want to try again?.
+        /// </summary>
+        internal static string FailedToOpenFile_Message {
+            get {
+                return ResourceManager.GetString("FailedToOpenFile_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File In Use.
         /// </summary>
         internal static string FileInUse_Label {

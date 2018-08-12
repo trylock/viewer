@@ -288,7 +288,7 @@ namespace Viewer.IO
 
         public async Task<byte[]> ReadAllBytesAsync(string path)
         {
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, 4096, true))
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
             {
                 // read the whole file into main memory
                 var buffer = new byte[stream.Length];
@@ -306,7 +306,7 @@ namespace Viewer.IO
 
         public async Task<string> ReadToEndAsync(string path)
         {
-            using (var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, 4096, true)))
+            using (var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)))
             {
                 return await reader.ReadToEndAsync();
             }

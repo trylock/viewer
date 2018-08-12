@@ -145,12 +145,14 @@ namespace Viewer.Query
         private readonly IFileSystem _fileSystem;
         private readonly IEntityManager _entities;
         private readonly string _pattern;
+        private readonly FileAttributes _hiddenFlags;
 
-        public SelectQuery(IFileSystem fileSystem, IEntityManager entities, string pattern)
+        public SelectQuery(IFileSystem fileSystem, IEntityManager entities, string pattern, FileAttributes hiddenFlags)
         {
             _fileSystem = fileSystem;
             _entities = entities;
             _pattern = pattern;
+            _hiddenFlags = hiddenFlags;
         }
 
         public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
@@ -171,6 +173,10 @@ namespace Viewer.Query
                         continue;
                     }
 
+                    // skip files with hidden attributes
+                    if (IsHidden(file))
+                        continue;
+
                     // load file
                     var entity = LoadEntity(file);
                     if (entity == null)
@@ -186,9 +192,18 @@ namespace Viewer.Query
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
+                    // skip files with hidden attributes
+                    if (IsHidden(directory))
+                        continue;
+
                     yield return new DirectoryEntity(directory);
                 }
             }
+        }
+
+        private bool IsHidden(string path)
+        {
+            return (_fileSystem.GetAttributes(path) & _hiddenFlags) != 0;
         }
 
         private IEnumerable<string> EnumerateFiles(string path)
@@ -411,7 +426,7 @@ namespace Viewer.Query
         public IQuery CreateQuery(string pattern)
         {
             return new Query(
-                new SelectQuery(_fileSystem, _entities, pattern), 
+                new SelectQuery(_fileSystem, _entities, pattern, FileAttributes.System | FileAttributes.Temporary), 
                 EntityComparer.Default, 
                 "select \"" + pattern + "\"");
         }

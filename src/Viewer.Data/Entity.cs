@@ -16,7 +16,7 @@ namespace Viewer.Data
     public interface IEntity : IEnumerable<Attribute>
     {
         /// <summary>
-        /// Path to the entity.
+        /// Path to the entity. It is unified using the <see cref="PathUtils.UnifyPath"/> function.
         /// </summary>
         string Path { get; }
 
@@ -81,7 +81,7 @@ namespace Viewer.Data
 
         public DirectoryEntity(string path)
         {
-            Path = path;
+            Path = PathUtils.UnifyPath(path);
         }
 
         public Attribute GetAttribute(string name)
@@ -106,7 +106,7 @@ namespace Viewer.Data
 
         public IEntity ChangePath(string path)
         {
-            Path = path;
+            Path = PathUtils.UnifyPath(path);
             return this;
         }
 

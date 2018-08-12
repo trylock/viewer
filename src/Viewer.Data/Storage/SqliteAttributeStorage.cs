@@ -161,12 +161,19 @@ namespace Viewer.Data.Storage
 
         private void MoveFile(string oldPath, string newPath)
         {
-            using (var query = new SQLiteCommand(Connection))
+            using (var transation = Connection.BeginTransaction())
             {
-                query.CommandText = @"UPDATE files SET path = :newPath WHERE path = :oldPath";
-                query.Parameters.Add(new SQLiteParameter(":oldPath", oldPath));
-                query.Parameters.Add(new SQLiteParameter(":newPath", newPath));
-                query.ExecuteNonQuery();
+                RemoveFile(newPath);
+
+                using (var query = new SQLiteCommand(Connection))
+                {
+                    query.CommandText = @"UPDATE files SET path = :newPath WHERE path = :oldPath";
+                    query.Parameters.Add(new SQLiteParameter(":oldPath", oldPath));
+                    query.Parameters.Add(new SQLiteParameter(":newPath", newPath));
+                    query.ExecuteNonQuery();
+                }
+
+                transation.Commit();
             }
         }
 

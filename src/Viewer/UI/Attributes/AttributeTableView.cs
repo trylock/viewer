@@ -58,9 +58,22 @@ namespace Viewer.UI.Attributes
             set
             {
                 _viewType = value;
-                Icon = value == AttributeViewType.Exif
-                    ? Resources.ExifComponentIcon
-                    : Resources.AttributesComponentIcon;
+
+                if (value == AttributeViewType.Exif)
+                {
+                    Icon = Resources.ExifComponentIcon;
+                    GridView.Size = new Size(
+                        ClientSize.Width,
+                        ClientSize.Height - SearchTextBox.Height
+                    );
+                    SaveButton.Hide();
+                }
+                else
+                {
+                    Icon = Resources.AttributesComponentIcon;
+                }
+
+                Invalidate();
             }
         }
 

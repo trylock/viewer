@@ -358,7 +358,7 @@ namespace Viewer.UI.Images
             else if (e.Button.HasFlag(MouseButtons.Left))
             {
                 // select item
-                if (_activeItemIndex > 0)
+                if (_activeItemIndex >= 0)
                 {
                     SelectItem?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
                 }

@@ -110,7 +110,7 @@ namespace Viewer.UI.Images
 
             InitializeComponent();
 
-            DoubleBuffered = true;
+            SetStyle(ControlStyles.DoubleBuffer, true);
 
             MouseWheel += GridView_MouseWheel;
 

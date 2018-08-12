@@ -31,7 +31,6 @@ namespace Viewer.UI.Images
     {
         private readonly IEditor _editor;
         private readonly IFileSystemErrorView _dialogView;
-        private readonly ISystemExplorer _explorer;
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
@@ -92,7 +91,6 @@ namespace Viewer.UI.Images
             ExportFactory<IImagesView> viewFactory,
             IEditor editor,
             IFileSystemErrorView dialogView,
-            ISystemExplorer explorer,
             ISelection selection, 
             IEntityManager entityManager,
             IClipboardService clipboard,
@@ -103,7 +101,6 @@ namespace Viewer.UI.Images
             ViewLifetime = viewFactory.CreateExport();
             _editor = editor;
             _dialogView = dialogView;
-            _explorer = explorer;
             _selection = selection;
             _entityManager = entityManager;
             _clipboard = clipboard;
@@ -221,10 +218,9 @@ namespace Viewer.UI.Images
             );
         }
 
-        private void ChangeSelection(IEnumerable<int> newSelection)
+        private void ChangeSelection(IEnumerable<EntityView> newSelection)
         {
-            var selectedItems = newSelection.Select(index => View.Items[index]);
-            var changed = _rectangleSelection.Set(selectedItems);
+            var changed = _rectangleSelection.Set(newSelection);
             if (!changed)
             {
                 return;
@@ -298,7 +294,7 @@ namespace Viewer.UI.Images
         private void View_SelectItem(object sender, EntityEventArgs e)
         {
             _rectangleSelection.Begin(Point.Empty, CurrentSelectionStrategy);
-            ChangeSelection(new[] { e.Index });
+            ChangeSelection(new[] { e.Entity });
             _rectangleSelection.End();
         }
 
@@ -313,13 +309,13 @@ namespace Viewer.UI.Images
         {
             if (e.Control && e.KeyCode == Keys.A)
             {
-                ChangeSelection(Enumerable.Range(0, View.Items.Count));
+                ChangeSelection(View.Items);
             }
         }
         
         private void View_BeginEditItemName(object sender, EntityEventArgs e)
         {
-            View.ShowItemEditForm(e.Index);
+            View.ShowItemEditForm(e.Entity);
         }
 
         private void View_CancelEditItemName(object sender, EventArgs e)
@@ -337,7 +333,7 @@ namespace Viewer.UI.Images
             }
 
             // construct the new file path
-            var item = View.Items[e.Index];
+            var item = e.Entity;
             var basePath = PathUtils.GetDirectoryPath(item.FullPath);
             var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.FullPath));
 
@@ -432,57 +428,29 @@ namespace Viewer.UI.Images
             View.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
 
             // clear selection
-            ChangeSelection(Enumerable.Empty<int>());
+            ChangeSelection(Enumerable.Empty<EntityView>());
             
             View.UpdateItems();
         }
 
         private void View_OpenItem(object sender, EntityEventArgs e)
         {
-            if (e.Index < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(e));
-            }
-
             if (!_rectangleSelection.Any())
             {
                 return;
             }
             
-            // if the selection contains files only
-            if (_rectangleSelection.All(item => item.Data is FileEntity))
+            if (e.Entity.Data is FileEntity fileEntity)
             {
-                // count number of directories before selected item
-                var directoryCount = 0;
-                for (var i = 0; i < e.Index; ++i)
-                {
-                    if (View.Items[i].Data.GetType() != typeof(FileEntity))
-                    {
-                        ++directoryCount;
-                    }
-                }
-
-                // find index of the selected item after removing all directories
-                var entities = View.Items.Select(item => item.Data).OfType<FileEntity>();
-                var entityIndex = e.Index - directoryCount;
-                _state.OpenEntity(entities, entityIndex);
+                var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
+                var index = items.IndexOf(fileEntity);
+                _state.OpenEntity(items, index < 0 ? 0 : index);
             }
             else
             {
-                var entity = View.Items[e.Index];
-                var query = _queryFactory.CreateQuery(entity.FullPath);
+                var query = _queryFactory.CreateQuery(e.Entity.FullPath);
                 _state.ExecuteQuery(query);
             }
-        }
-
-        private void View_OpenItemInExplorer(object sender, EntityEventArgs e)
-        {
-            if (e.Index < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(e));
-            }
-
-            _explorer.OpenFile(View.Items[e.Index].FullPath);
         }
         
         private async void View_CloseView(object sender, EventArgs eventArgs)

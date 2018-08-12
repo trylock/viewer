@@ -131,14 +131,27 @@ namespace Viewer.UI.Images
             UpdateScrollableSize();
         }
 
-        public IEnumerable<int> GetItemsIn(Rectangle bounds)
+        public IEnumerable<EntityView> GetItemsIn(Rectangle bounds)
         {
-            return Grid.GetCellsInBounds(bounds).Select(cell => cell.Index);
+            return Grid.GetCellsInBounds(bounds)
+                .Where(cell => cell.Index >= 0 && cell.Index < Items.Count)
+                .Select(cell => Items[cell.Index]);
         }
 
-        public int GetItemAt(Point location)
+        /// <summary>
+        /// Get item at <paramref name="location"/>.
+        /// </summary>
+        /// <param name="location">Queried location</param>
+        /// <returns>Item at <paramref name="location"/> or null if there is no item</returns>
+        public EntityView GetItemAt(Point location)
         {
-            return Grid.GetCellAt(location).Index;
+            var index = Grid.GetCellAt(location).Index;
+            if (index < 0 || index >= Items.Count)
+            {
+                return null;
+            }
+
+            return Items[index];
         }
         
         #endregion

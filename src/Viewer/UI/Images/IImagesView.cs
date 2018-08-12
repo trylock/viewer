@@ -96,32 +96,29 @@ namespace Viewer.UI.Images
     public class RenameEventArgs : EventArgs
     {
         /// <summary>
-        /// Index of an entity whis should be renamed
+        /// Entity which should be renamed
         /// </summary>
-        public int Index { get; }
+        public EntityView Entity { get; }
 
         /// <summary>
         /// New name of the file (just the name without directory separators and file extension)
         /// </summary>
         public string NewName { get; }
 
-        public RenameEventArgs(int index, string newName)
+        public RenameEventArgs(EntityView entity, string newName)
         {
-            Index = index;
+            Entity = entity ?? throw new ArgumentNullException(nameof(entity));
             NewName = newName;
         }
     }
 
     public class EntityEventArgs : EventArgs
     {
-        /// <summary>
-        /// Index of an entity or -1
-        /// </summary>
-        public int Index { get; }
+        public EntityView Entity { get; }
 
-        public EntityEventArgs(int index)
+        public EntityEventArgs(EntityView entity)
         {
-            Index = index;
+            Entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
     }
 
@@ -188,7 +185,11 @@ namespace Viewer.UI.Images
         double ThumbnailScale { get; set; }
     }
 
-    public interface ISelectionView
+    /// <summary>
+    /// View in which user can select items of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">Type of the items in selection</typeparam>
+    public interface ISelectionView<out T>
     {
         /// <summary>
         /// Event called when user starts a new range selection.
@@ -226,7 +227,7 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="bounds">Query area</param>
         /// <returns>Indicies of items in this area</returns>
-        IEnumerable<int> GetItemsIn(Rectangle bounds);
+        IEnumerable<T> GetItemsIn(Rectangle bounds);
 
         /// <summary>
         /// Get index of an item at <paramref name="location"/>.
@@ -236,10 +237,10 @@ namespace Viewer.UI.Images
         ///     Index of an item at <paramref name="location"/>.
         ///     If there is no item at given location, it will return -1.
         /// </returns>
-        int GetItemAt(Point location);
+        T GetItemAt(Point location);
     }
 
-    public interface IImagesView : IWindowView, IPolledView, IThumbnailView, ISelectionView, IHistoryView
+    public interface IImagesView : IWindowView, IPolledView, IThumbnailView, ISelectionView<EntityView>, IHistoryView
     {
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;
@@ -323,13 +324,13 @@ namespace Viewer.UI.Images
 
         /// <summary>
         /// Show edit form for given item.
-        /// Noop, if <paramref name="index"/> is out of range.
         /// </summary>
-        /// <param name="index">Index of an item</param>
-        void ShowItemEditForm(int index);
+        /// <param name="entityView">Entity for which the edit form will be shown</param>
+        void ShowItemEditForm(EntityView entityView);
 
         /// <summary>
         /// Hide item edit form.
+        /// If no edit for is currently visilbe, this will be nop.
         /// </summary>
         void HideItemEditForm();
     }

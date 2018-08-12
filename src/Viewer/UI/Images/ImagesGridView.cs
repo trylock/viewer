@@ -159,7 +159,7 @@ namespace Viewer.UI.Images
         #region IImagesView
 
         /// <summary>
-        /// Index of the last item user clicked on with left or right mouse button.
+        /// Index of the last item user clicked on with left mouse button.
         /// </summary>
         private int _activeItemIndex = -1;
         
@@ -310,24 +310,26 @@ namespace Viewer.UI.Images
 
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
-            var location = GridView.UnprojectLocation(e.Location);
-            var item = GridView.GetItemAt(location);
-            if (item >= 0)
+            if (e.Button.HasFlag(MouseButtons.Left))
             {
-                // user clicked on an item
-                _activeItemIndex = item;
-                SelectItem?.Invoke(sender, new EntityEventArgs(item));
+                var location = GridView.UnprojectLocation(e.Location);
+                var item = GridView.GetItemAt(location);
+                if (item >= 0)
+                {
+                    // user clicked on an item
+                    _activeItemIndex = item;
 
-                // start dragging
-                _isDragging = true;
-                _dragOrigin = e.Location;
-            }
-            else if (e.Button.HasFlag(MouseButtons.Left))
-            {
-                // start a range selection
-                _isSelectionActive = true;
-                SelectionBegin?.Invoke(sender,
-                    new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+                    // start dragging
+                    _isDragging = true;
+                    _dragOrigin = e.Location;
+                }
+                else
+                {
+                    // start a range selection
+                    _isSelectionActive = true;
+                    SelectionBegin?.Invoke(sender,
+                        new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+                }
             }
 
             // invoke history events
@@ -343,13 +345,23 @@ namespace Viewer.UI.Images
 
         private void GridView_MouseUp(object sender, MouseEventArgs e)
         {
+            // finish dragging
             _isDragging = false;
 
+            // finish selection
             if (_isSelectionActive)
             {
                 var location = GridView.UnprojectLocation(e.Location);
                 SelectionEnd?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
                 _isSelectionActive = false;
+            }
+            else if (e.Button.HasFlag(MouseButtons.Left))
+            {
+                // select item
+                if (_activeItemIndex > 0)
+                {
+                    SelectItem?.Invoke(sender, new EntityEventArgs(_activeItemIndex));
+                }
             }
         }
 

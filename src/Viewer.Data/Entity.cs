@@ -128,7 +128,6 @@ namespace Viewer.Data
 
     public sealed class FileEntity : IEntity
     {
-        private readonly ReaderWriterLockSlim _attrsLock = new ReaderWriterLockSlim();
         private readonly Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
         /// <summary>
@@ -164,8 +163,7 @@ namespace Viewer.Data
         
         public Attribute GetAttribute(string name)
         {
-            _attrsLock.EnterReadLock();
-            try
+            lock (_attrs)
             {
                 if (!_attrs.TryGetValue(name, out Attribute attr))
                 {
@@ -173,10 +171,6 @@ namespace Viewer.Data
                 }
 
                 return attr;
-            }
-            finally
-            {
-                _attrsLock.ExitReadLock();
             }
         }
 
@@ -187,8 +181,7 @@ namespace Viewer.Data
         
         public IEntity SetAttribute(Attribute attr)
         {
-            _attrsLock.EnterWriteLock();
-            try
+            lock (_attrs)
             {
                 if (attr.Value.IsNull)
                 {
@@ -199,24 +192,15 @@ namespace Viewer.Data
                     _attrs[attr.Name] = attr;
                 }
             }
-            finally
-            {
-                _attrsLock.ExitWriteLock();
-            }
 
             return this;
         }
         
         public IEntity RemoveAttribute(string name)
         {
-            _attrsLock.EnterWriteLock();
-            try
+            lock (_attrs)
             {
                 _attrs.Remove(name);
-            }
-            finally
-            {
-                _attrsLock.ExitWriteLock();
             }
 
             return this;
@@ -231,17 +215,12 @@ namespace Viewer.Data
         public IEntity Clone()
         {
             var clone = new FileEntity(Path, LastWriteTime, LastAccessTime);
-            _attrsLock.EnterReadLock();
-            try
+            lock (_attrs)
             {
                 foreach (var attr in _attrs)
                 {
                     clone.SetAttribute(attr.Value);
                 }
-            }
-            finally
-            {
-                _attrsLock.ExitReadLock();
             }
 
             return clone;
@@ -249,14 +228,9 @@ namespace Viewer.Data
 
         public IEnumerator<Attribute> GetEnumerator()
         {
-            _attrsLock.EnterReadLock();
-            try
+            lock (_attrs)
             {
                 return _attrs.Values.ToList().GetEnumerator();
-            }
-            finally
-            {
-                _attrsLock.ExitReadLock();
             }
         }
 

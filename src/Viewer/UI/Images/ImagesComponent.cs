@@ -56,15 +56,19 @@ namespace Viewer.UI.Images
                 }
                 else if (parts.Length == 2)
                 {
+                    // get the last query
                     var queryText = parts[1];
                     var query = _queryCompiler.Compile(new StringReader(queryText), new NullErrorListener());
                     if (query == null)
                     {
                         query = _queryFactory.CreateQuery();
                     }
-
+                    
+                    // create the images component
                     var images = GetImages();
-                    images.LoadQueryAsync(query);
+
+                    // execute the query 
+                    _state.ExecuteQuery(query);
                     return images.View;
                 }
             }

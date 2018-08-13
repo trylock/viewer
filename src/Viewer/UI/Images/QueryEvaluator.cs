@@ -22,9 +22,9 @@ namespace Viewer.UI.Images
         private readonly IErrorListener _queryErrorListener;
 
         // state
+        private readonly ConcurrentSortedSet<EntityView> _addRequests;
         private readonly ConcurrentQueue<RenamedEventArgs> _moveRequests;
         private readonly ConcurrentQueue<FileSystemEventArgs> _deleteRequests;
-        private readonly ConcurrentSortedSet<EntityView> _addRequests;
         private SortedList<EntityView> _views;
 
         /// <summary>

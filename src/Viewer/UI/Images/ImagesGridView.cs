@@ -62,8 +62,6 @@ namespace Viewer.UI.Images
 
         #region ISelectionView
 
-        private bool _isSelectionActive = false;
-
         public event MouseEventHandler SelectionBegin;
         public event MouseEventHandler SelectionEnd;
         public event MouseEventHandler SelectionDrag;
@@ -299,7 +297,10 @@ namespace Viewer.UI.Images
         #endregion
 
         #region GridView Events
-
+        
+        // internal state changed by GridView events 
+        private bool _selectItemTriggered = false;
+        private bool _isSelectionActive = false;
         private bool _isDragging = false;
         private Point _dragOrigin;
 
@@ -307,7 +308,7 @@ namespace Viewer.UI.Images
         /// Distance in pixels after which we can begin the drag operation
         /// </summary>
         private const int BeginDragThreshold = 10;
-
+        
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
             // invoke history events
@@ -325,34 +326,50 @@ namespace Viewer.UI.Images
             var item = GridView.GetItemAt(location);
             if (item != null)
             {
-                // user clicked on an item
+                // set last item user clicked on using any button
                 _activeItem = item;
-                if (_activeItem.State != FileViewState.Selected)
-                {
-                    SelectItem?.Invoke(sender, new EntityEventArgs(_activeItem));
-                }
-
-                // start dragging
+                
                 if (e.Button.HasFlag(MouseButtons.Left))
                 {
-                    _isDragging = true;
-                    _dragOrigin = e.Location;
+                    if (item.State != FileViewState.Selected)
+                    {
+                        SelectItem?.Invoke(sender, new EntityEventArgs(item));
+                        _selectItemTriggered = true;
+                    }
+                    else
+                    {
+                        // the MouseMove event will determine whether we will select this item
+                        // on MouseUp or drag the whole selection on MouseMove
+                        _isDragging = true;
+                        _dragOrigin = location;
+                    }
+                }
+                else if (e.Button.HasFlag(MouseButtons.Right))
+                {
+                    if (item.State != FileViewState.Selected)
+                    {
+                        SelectItem?.Invoke(sender, new EntityEventArgs(item));
+                    }
+                    else
+                    {
+                        // just open context menu for the whole selection
+                    }
                 }
             }
-            else if (e.Button.HasFlag(MouseButtons.Left))
+            else // there is no item at current mouse position
             {
-                // start a range selection
-                _isSelectionActive = true;
-                SelectionBegin?.Invoke(sender,
-                    new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+                if (e.Button.HasFlag(MouseButtons.Left))
+                {
+                    // start a range selection
+                    _isSelectionActive = true;
+                    SelectionBegin?.Invoke(sender,
+                        new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+                }
             }
         }
 
         private void GridView_MouseUp(object sender, MouseEventArgs e)
         {
-            // finish dragging
-            _isDragging = false;
-
             // finish selection
             if (_isSelectionActive)
             {
@@ -363,11 +380,15 @@ namespace Viewer.UI.Images
             else if (e.Button.HasFlag(MouseButtons.Left))
             {
                 // select item
-                if (_activeItem != null)
+                if (_activeItem != null && !_selectItemTriggered)
                 {
                     SelectItem?.Invoke(sender, new EntityEventArgs(_activeItem));
                 }
             }
+
+            // reset state
+            _isDragging = false;
+            _selectItemTriggered = false;
         }
 
         private void GridView_MouseMove(object sender, MouseEventArgs e)

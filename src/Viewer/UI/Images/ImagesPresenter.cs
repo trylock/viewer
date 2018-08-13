@@ -56,7 +56,7 @@ namespace Viewer.UI.Images
         /// Currently loaded query
         /// </summary>
         private QueryEvaluator _queryEvaluator;
-
+        
         /// <summary>
         /// Minimal time in milliseconds between 2 poll events.
         /// </summary>
@@ -120,32 +120,42 @@ namespace Viewer.UI.Images
         {
             View.ContextOptions = Settings.Default.ExternalApplications;
         }
+
+        /// <summary>
+        /// Dispose all resources used by current query
+        /// </summary>
+        private void DisposeQuery()
+        {
+            _queryEvaluator?.Dispose();
+            _queryEvaluator = null;
+            View.Items = null; // the items collection is disposed by the query evaluator
+        }
         
         public override void Dispose()
         {
-            foreach (var item in View.Items)
-            {
-                item.Dispose();
-            }
-            _selection.Clear();
-            View.Items.Clear();
+            DisposeQuery();
             base.Dispose();
         }
-
+        
         /// <summary>
         /// Execute given query and show all entities in the result.
         /// </summary>
         /// <param name="query">Query to show</param>
         public async void LoadQueryAsync(IQuery query)
         {
-            // cancel previous load operation and wait for it to end
-            await CancelLoadAsync();
+            // release all resources used by the previous query
+            DisposeQuery();
 
-            // start loading a new query
+            // reset presenter state
+            _rectangleSelection.Clear();
+            _selection.Clear();
+
+            // start the query
             _queryEvaluator = _queryEvaluatorFactory.Create(query);
-
             View.Query = _queryEvaluator.Query.Text;
-            View.Items = new SortedList<EntityView>(_queryEvaluator.Comparer);
+            View.Items = _queryEvaluator.Update();
+            View.PreviousInHistory = _state.Previous?.Text;
+            View.NextInHistory = _state.Next?.Text;
             View.BeginLoading();
             View.BeginPolling(PollingRate);
 
@@ -160,45 +170,6 @@ namespace Viewer.UI.Images
             finally
             {
                 View.EndLoading();
-            }
-        }
-
-        private async Task CancelLoadAsync()
-        {
-            if (_queryEvaluator != null)
-            {
-                // cancel previous load operation
-                _queryEvaluator.Cancellation.Cancel();
-
-                // wait for it to end
-                try
-                {
-                    await _queryEvaluator.LoadTask;
-                }
-                catch (OperationCanceledException)
-                {
-                }
-                finally
-                {
-                    _queryEvaluator.Dispose();
-                    _queryEvaluator = null;
-                }
-            }
-
-            // reset state
-            _rectangleSelection.Clear();
-            _selection.Clear();
-
-            // reset view
-            View.PreviousInHistory = _state.Previous?.Text;
-            View.NextInHistory = _state.Next?.Text;
-            if (View.Items != null)
-            {
-                foreach (var item in View.Items)
-                {
-                    item.Dispose();
-                }
-                View.Items.Clear();
             }
         }
         
@@ -449,9 +420,8 @@ namespace Viewer.UI.Images
             }
         }
         
-        private async void View_CloseView(object sender, EventArgs eventArgs)
+        private void View_CloseView(object sender, EventArgs eventArgs)
         {
-            await CancelLoadAsync();
             Dispose();
         }
 

@@ -45,7 +45,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Current load task
         /// </summary>
-        public Task LoadTask { get; private set; }
+        public Task LoadTask { get; private set; } = Task.CompletedTask;
 
         public QueryEvaluator(IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener queryErrorListener, IQuery query)
         {
@@ -183,11 +183,24 @@ namespace Viewer.UI.Images
         /// <inheritdoc />
         /// <summary>
         /// Dispose this evaluator and all system resources.
+        /// If a load task is in progress, it will be cancelled and disposed asynchronously.
         /// </summary>
         public void Dispose()
         {
-            Cancellation.Dispose();
+            // stop watching file changes
             _fileWatcher.Dispose();
+
+            // cancel current loading operation
+            Cancellation.Cancel();
+            LoadTask.ContinueWith(parent =>
+            {
+                Cancellation.Dispose();
+                foreach (var view in _views)
+                {
+                    view.Dispose();
+                }
+                _views = null;
+            });
         }
     }
 

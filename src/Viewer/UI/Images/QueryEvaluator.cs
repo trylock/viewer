@@ -122,7 +122,16 @@ namespace Viewer.UI.Images
                     var parentDirectory = PathUtils.GetDirectoryPath(entity.Path);
                     if (!directories.Contains(parentDirectory))
                     {
-                        _fileWatcher.Watch(parentDirectory);
+                        try
+                        {
+                            _fileWatcher.Watch(parentDirectory);
+                        }
+                        catch (ArgumentException)
+                        {
+                            // The path is invalid or the directory does not exist anymore.
+                            // Ignore this error, just don't watch the directory.
+                        }
+
                         directories.Add(parentDirectory);
                     }
                     

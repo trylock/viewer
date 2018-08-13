@@ -32,7 +32,10 @@ namespace Viewer
             
             InitializeComponent();
 
-            ViewerForm_Resize(this, EventArgs.Empty);
+            // make the panel resizable
+            Panel.Location = new Point(0, ViewerMenu.Height);
+            Panel.Size = new Size(ClientSize.Width, ClientSize.Height - Panel.Location.Y);
+            Panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
         }
 
         public void AddMenuItem(IReadOnlyList<string> path, Action action, Image icon)
@@ -59,13 +62,6 @@ namespace Viewer
 
                 items = menuItem.DropDownItems;
             }
-        }
-
-        private void ViewerForm_Resize(object sender, EventArgs e)
-        {
-            Panel.Width = ClientSize.Width;
-            Panel.Height = ClientSize.Height - ViewerMenu.Height;
-            Panel.Location = new Point(0, ViewerMenu.Height);
         }
 
         private void ViewerForm_FormClosing(object sender, FormClosingEventArgs e)

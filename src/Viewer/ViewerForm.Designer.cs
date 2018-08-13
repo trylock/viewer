@@ -78,7 +78,6 @@
             this.Name = "ViewerForm";
             this.Text = "Viewer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ViewerForm_FormClosing);
-            this.Resize += new System.EventHandler(this.ViewerForm_Resize);
             this.ViewerMenu.ResumeLayout(false);
             this.ViewerMenu.PerformLayout();
             this.ResumeLayout(false);

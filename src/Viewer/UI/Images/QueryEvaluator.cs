@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -16,11 +17,15 @@ namespace Viewer.UI.Images
     public class QueryEvaluator : IDisposable
     {
         // dependencies
+        private readonly IFileWatcher _fileWatcher;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IErrorListener _queryErrorListener;
 
         // state
-        private readonly ConcurrentSortedSet<EntityView> _waitingQueue;
+        private readonly ConcurrentQueue<RenamedEventArgs> _moveRequests;
+        private readonly ConcurrentQueue<FileSystemEventArgs> _deleteRequests;
+        private readonly ConcurrentSortedSet<EntityView> _addRequests;
+        private SortedList<EntityView> _views;
 
         /// <summary>
         /// Cancellation of the query evaluation
@@ -30,7 +35,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Comparer of the result set
         /// </summary>
-        public IComparer<EntityView> Comparer => _waitingQueue.Comparer;
+        public IComparer<EntityView> Comparer => _addRequests.Comparer;
 
         /// <summary>
         /// Current query
@@ -42,19 +47,51 @@ namespace Viewer.UI.Images
         /// </summary>
         public Task LoadTask { get; private set; }
 
-        public QueryEvaluator(ILazyThumbnailFactory thumbnailFactory, IErrorListener queryErrorListener, IQuery query)
+        public QueryEvaluator(IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener queryErrorListener, IQuery query)
         {
+            _fileWatcher = fileWatcherFactory.Create();
+            _fileWatcher.Renamed += FileWatcherOnRenamed;
+            _fileWatcher.Deleted += FileWatcherOnDeleted;
             _thumbnailFactory = thumbnailFactory;
             _queryErrorListener = queryErrorListener;
             Cancellation = new CancellationTokenSource();
             Query = query;
-            _waitingQueue = new ConcurrentSortedSet<EntityView>(new EntityViewComparer(Query.Comparer));
+            
+            var entityViewComparer = new EntityViewComparer(Query.Comparer);
+            _moveRequests = new ConcurrentQueue<RenamedEventArgs>();
+            _deleteRequests = new ConcurrentQueue<FileSystemEventArgs>();
+            _addRequests = new ConcurrentSortedSet<EntityView>(entityViewComparer);
+            _views = new SortedList<EntityView>(entityViewComparer);
         }
 
+        private static bool IsEntityEvent(FileSystemEventArgs e)
+        {
+            var newExtension = Path.GetExtension(e.FullPath)?.ToLowerInvariant();
+            return newExtension == ".jpeg" || 
+                   newExtension == ".jpg" || 
+                   newExtension == ""; // directory
+        }
+
+        private void FileWatcherOnDeleted(object sender, FileSystemEventArgs e)
+        {
+            if (!IsEntityEvent(e))
+                return; // skip this event
+            _deleteRequests.Enqueue(e);
+        }
+
+        private void FileWatcherOnRenamed(object sender, RenamedEventArgs e)
+        {
+            // note: side effect of this check is that it ignores move operations done during the
+            //       FileSystemAttributeStorage.Store call. 
+            if (!IsEntityEvent(e))
+                return; // skip this event
+            _moveRequests.Enqueue(e);
+        }
+        
         /// <summary>
         /// Evaluate the query on a differet thread.
         /// Found entities will be added to a waiting queue.
-        /// Use <see cref="Consume"/> to get all entities loaded so far.
+        /// Use <see cref="Update"/> to get all entities loaded so far.
         /// </summary>
         /// <returns>Task finished when the evaluation ends</returns>
         public Task RunAsync()
@@ -72,13 +109,25 @@ namespace Viewer.UI.Images
         /// </summary>
         public void Run()
         {
+            var directories = new HashSet<string>();
+
             try
             {
                 foreach (var entity in Query.Evaluate(Cancellation.Token))
                 {
                     Cancellation.Token.ThrowIfCancellationRequested();
 
-                    _waitingQueue.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
+                    // if the entity is in an undiscovered directory,
+                    // start watching changes in this directory
+                    var parentDirectory = PathUtils.GetDirectoryPath(entity.Path);
+                    if (!directories.Contains(parentDirectory))
+                    {
+                        _fileWatcher.Watch(parentDirectory);
+                        directories.Add(parentDirectory);
+                    }
+                    
+                    // add a new entity
+                    _addRequests.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
                 }
             }
             catch (QueryRuntimeException e)
@@ -88,17 +137,57 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Remove all loaded views so far and return them.
+        /// Update current collection.
+        /// It takes all changes made so far and applies them to the local collection of <see cref="EntityView"/>s
         /// </summary>
-        /// <returns></returns>
-        public IReadOnlyList<EntityView> Consume()
+        /// <returns>Modified collection</returns>
+        public SortedList<EntityView> Update()
         {
-            return _waitingQueue.Consume();
+            // process all add requests
+            var added = _addRequests.Consume();
+            if (added.Count > 0)
+            {
+                _views = _views.Merge(added);
+            }
+
+            // process all rename requests
+            while (_moveRequests.TryDequeue(out var req))
+            {
+                var oldPath = PathUtils.UnifyPath(req.OldFullPath);
+                for (var i = 0; i < _views.Count; ++i)
+                {
+                    if (_views[i].FullPath == oldPath)
+                    {
+                        var item = _views[i];
+                        item.FullPath = req.FullPath;
+                        _views.RemoveAt(i);
+                        _views.Add(item);
+                        break;
+                    }
+                }
+            }
+
+            // process all delete requests
+            var deleted = new HashSet<string>();
+            while (_deleteRequests.TryDequeue(out var req))
+            {
+                var path = PathUtils.UnifyPath(req.FullPath);
+                deleted.Add(path);
+            }
+
+            _views.RemoveAll(item => deleted.Contains(item.FullPath));
+
+            return _views;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Dispose this evaluator and all system resources.
+        /// </summary>
         public void Dispose()
         {
             Cancellation.Dispose();
+            _fileWatcher.Dispose();
         }
     }
 
@@ -115,19 +204,21 @@ namespace Viewer.UI.Images
     [Export(typeof(IQueryEvaluatorFactory))]
     public class QueryEvaluatorFactory : IQueryEvaluatorFactory
     {
+        private readonly IFileWatcherFactory _fileWatcherFactory;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IErrorListener _errorListener;
 
         [ImportingConstructor]
-        public QueryEvaluatorFactory(ILazyThumbnailFactory thumbnailFactory, IErrorListener errorListener)
+        public QueryEvaluatorFactory(IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener errorListener)
         {
+            _fileWatcherFactory = fileWatcherFactory;
             _thumbnailFactory = thumbnailFactory;
             _errorListener = errorListener;
         }
 
         public QueryEvaluator Create(IQuery query)
         {
-            return new QueryEvaluator(_thumbnailFactory, _errorListener, query);
+            return new QueryEvaluator(_fileWatcherFactory, _thumbnailFactory, _errorListener, query);
         }
     }
 }

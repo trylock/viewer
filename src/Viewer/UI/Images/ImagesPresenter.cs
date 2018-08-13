@@ -254,15 +254,8 @@ namespace Viewer.UI.Images
 
         private void View_Poll(object sender, EventArgs e)
         {
-            // get a snapshot of the waiting queue
-            var items = _queryEvaluator.Consume();
-            if (items.Count > 0)
-            {
-                // show all entities in the snapshot
-                View.Items = View.Items.Merge(items);
-                View.ItemSize = ComputeThumbnailSize();
-            }
-
+            View.Items = _queryEvaluator.Update();
+            View.ItemSize = ComputeThumbnailSize();
             View.UpdateItems();
         }
 

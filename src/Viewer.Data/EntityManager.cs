@@ -60,7 +60,7 @@ namespace Viewer.Data
     [Export(typeof(IEntityManager))]
     public class EntityManager : IEntityManager
     {
-        private readonly ConcurrentDictionary<string, IEntity> _modified = new ConcurrentDictionary<string, IEntity>();
+        private readonly Dictionary<string, IEntity> _modified = new Dictionary<string, IEntity>();
         private readonly IAttributeStorage _storage;
 
         [ImportingConstructor]
@@ -80,11 +80,20 @@ namespace Viewer.Data
             var clone = entity.Clone();
             if (replace)
             {
-                _modified[path] = clone;
+                lock (_modified)
+                {
+                    _modified[path] = clone;
+                }
             }
             else
             {
-                _modified.TryAdd(path, clone);
+                lock (_modified)
+                {
+                    if (!_modified.ContainsKey(path))
+                    {
+                        _modified.Add(path, clone);
+                    }
+                }
             }
         }
 
@@ -92,12 +101,16 @@ namespace Viewer.Data
         {
             _storage.Move(entity, newPath);
 
-            var oldPath = entity.Path;
-            if (_modified.TryGetValue(oldPath, out var modifiedEntity))
+            lock (_modified)
             {
-                _modified.TryRemove(oldPath, out var oldEntity);
-                _modified[newPath] = modifiedEntity;
+                var oldPath = entity.Path;
+                if (_modified.TryGetValue(oldPath, out var modifiedEntity))
+                {
+                    _modified.Remove(oldPath);
+                    _modified[newPath] = modifiedEntity;
+                }
             }
+
             entity.ChangePath(newPath);
         }
 
@@ -105,13 +118,21 @@ namespace Viewer.Data
         {
             _storage.Remove(entity);
 
-            _modified.TryRemove(entity.Path, out var _);
+            lock (_modified)
+            {
+                _modified.Remove(entity.Path);
+            }
         }
 
         public IReadOnlyList<IEntity> GetModified()
         {
-            var snapshot = _modified.Values.ToArray();
-            _modified.Clear();
+            IReadOnlyList<IEntity> snapshot;
+            lock (_modified)
+            {
+                snapshot = _modified.Values.ToArray();
+                _modified.Clear();
+            }
+
             return snapshot;
         }
     }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core.UI;
+using Viewer.Query;
 
 namespace Viewer.UI.QueryEditor
 {
@@ -55,7 +56,7 @@ namespace Viewer.UI.QueryEditor
         /// <summary>
         /// List of query views
         /// </summary>
-        IEnumerable<Viewer.Query.QueryView> Views { get; set; }
+        IEnumerable<QueryView> Views { get; set; }
 
         /// <summary>
         /// Full path to a file which contains this query or

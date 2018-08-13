@@ -68,6 +68,7 @@ namespace Viewer.UI.QueryEditor
                 {
                     QueryViewComboBox.Items.Add(item);
                 }
+                QueryViewComboBox.Invalidate();
             }
         }
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Viewer.IO;
 using Viewer.Properties;
@@ -77,6 +78,11 @@ namespace Viewer.UI.QueryEditor
         private readonly IFileSystem _fileSystem;
         private readonly ExportFactory<QueryEditorPresenter> _editorFactory;
 
+        /// <summary>
+        /// Opened editor windows
+        /// </summary>
+        private readonly List<ExportLifetimeContext<QueryEditorPresenter>> _windows = new List<ExportLifetimeContext<QueryEditorPresenter>>();
+        
         [ImportingConstructor]
         public Editor(
             ExportFactory<QueryEditorPresenter> editorFactory, 
@@ -90,14 +96,9 @@ namespace Viewer.UI.QueryEditor
             _editorFactory = editorFactory;
         }
 
-        /// <summary>
-        /// Opened editor windows
-        /// </summary>
-        private readonly List<ExportLifetimeContext<QueryEditorPresenter>> _windows = new List<ExportLifetimeContext<QueryEditorPresenter>>();
-
         public async Task<IQueryEditorView> OpenAsync(string path, DockState dockState)
         {
-            // don't open a new window, if an window with this file is opened already
+            // don't open a new window, if a window with this file is opened already
             var window = FindWindow(path);
             if (window != null)
             {
@@ -174,14 +175,6 @@ namespace Viewer.UI.QueryEditor
             {
                 var data = Encoding.UTF8.GetBytes(query);
                 await stream.WriteAsync(data, 0, data.Length);
-            }
-
-            // update views if we have saved the view to the query view directory
-            var directory = Path.GetDirectoryName(fullPath);
-            var viewsDirectory = Path.GetFullPath(Settings.Default.QueryViewDirectoryPath);
-            if (directory == viewsDirectory)
-            {
-                _queryViews.Add(new Viewer.Query.QueryView(Path.GetFileNameWithoutExtension(fullPath), query, fullPath));
             }
         }
 

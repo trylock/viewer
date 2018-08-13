@@ -58,6 +58,18 @@ namespace Viewer.UI.QueryEditor
 
         private void ViewsOnChanged(object sender, EventArgs e)
         {
+            if (View.InvokeRequired)
+            {
+                View.BeginInvoke(new Action(UpdateViews));
+            }
+            else
+            {
+                UpdateViews();
+            }
+        }
+
+        private void UpdateViews()
+        {
             View.Views = _queryCompiler.Views;
         }
 

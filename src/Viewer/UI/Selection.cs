@@ -13,17 +13,18 @@ namespace Viewer.UI
     /// <inheritdoc />
     /// <summary>
     /// Collection of entities currently selected by the user.
-    /// It contains file and directory entities
+    /// It contains file and directory entities.
+    /// This type is *not* thread safe. All functions and properties have to be used from the UI thread.
     /// </summary>
     public interface ISelection : IEnumerable<IEntity>
     {
         /// <summary>
-        /// Event called when the selection changes
+        /// Event occurs when the selection changes.
         /// </summary>
         event EventHandler Changed;
 
         /// <summary>
-        /// Number of items in selection
+        /// Number of items currently in selection.
         /// </summary>
         int Count { get; }
 

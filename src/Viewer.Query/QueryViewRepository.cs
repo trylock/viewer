@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -61,10 +62,15 @@ namespace Viewer.Query
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Query view repository is a thread-safe collection of <see cref="T:Viewer.Query.QueryView" />s.
+    /// <see cref="T:Viewer.Query.QueryView" /> is a query which is used frequently. 
+    /// </summary>
     public interface IQueryViewRepository : IEnumerable<QueryView>
     {
         /// <summary>
-        /// Event called whenever a view in the repository changes (i.e. it is removed, added, updated)
+        /// Event occurs when a view in the repository changes (i.e., it is removed, added, updated).
         /// </summary>
         event EventHandler Changed;
 
@@ -79,6 +85,13 @@ namespace Viewer.Query
         /// </summary>
         /// <param name="viewName">Name of the view to remove</param>
         void Remove(string viewName);
+
+        /// <summary>
+        /// Replace current views with <paramref name="views"/>.
+        /// This change will trigger one <see cref="Changed"/> event.
+        /// </summary>
+        /// <param name="views">New views</param>
+        void Replace(IEnumerable<QueryView> views);
 
         /// <summary>
         /// Find a view with given name.
@@ -97,23 +110,50 @@ namespace Viewer.Query
 
         public void Add(QueryView view)
         {
-            _views[view.Name] = view;
+            lock (_views)
+            {
+                _views[view.Name] = view;
+            }
+
             Changed?.Invoke(this, EventArgs.Empty);
         }
 
         public void Remove(string viewName)
         {
-            if (_views.Remove(viewName))
+            var isRemoved = false;
+            lock (_views)
+            {
+                isRemoved = _views.Remove(viewName);
+            }
+
+            if (isRemoved)
             {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
         }
 
+        public void Replace(IEnumerable<QueryView> views)
+        {
+            lock (_views)
+            {
+                _views.Clear();
+                foreach (var view in views)
+                {
+                    _views[view.Name] = view;
+                }
+            }
+
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
+
         public QueryView Find(string viewName)
         {
-            if (_views.TryGetValue(viewName, out var view))
+            lock (_views)
             {
-                return view;
+                if (_views.TryGetValue(viewName, out var view))
+                {
+                    return view;
+                }
             }
 
             return null;
@@ -121,7 +161,11 @@ namespace Viewer.Query
 
         public IEnumerator<QueryView> GetEnumerator()
         {
-            return _views.Values.GetEnumerator();
+            lock (_views)
+            {
+                var views = _views.Values.ToList();
+                return views.GetEnumerator();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

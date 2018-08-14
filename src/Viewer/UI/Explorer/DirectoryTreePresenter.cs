@@ -373,6 +373,10 @@ namespace Viewer.UI.Explorer
             catch (OperationCanceledException)
             {
             }
+            finally
+            {
+                cancellation.Dispose();
+            }
 
             // update subdirectories in given path
             View.LoadDirectories(

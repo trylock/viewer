@@ -29,23 +29,23 @@ namespace ViewerTest.Data
         [TestMethod]
         public void GetEntity_NonExistentEntity()
         {
-            _storage.Setup(mock => mock.Load("test")).Returns((IEntity) null);
+            _storage.Setup(mock => mock.Load("test")).Returns(new LoadResult(null, 0));
 
             var result = _entityManager.GetEntity("test");
-            Assert.IsNull(result);
+            Assert.IsNull(result.Entity);
         }
 
         [TestMethod]
         public void GetEntity_LoadEntity()
         {
             var entity = new FileEntity("test");
-            _storage.Setup(mock => mock.Load("test")).Returns(entity);
+            _storage.Setup(mock => mock.Load("test")).Returns(new LoadResult(entity, 0));
 
             var result = _entityManager.GetEntity("test");
-            Assert.IsTrue(ReferenceEquals(result, entity));
+            Assert.IsTrue(ReferenceEquals(result.Entity, entity));
 
             result = _entityManager.GetEntity("test");
-            Assert.IsTrue(ReferenceEquals(result, entity));
+            Assert.IsTrue(ReferenceEquals(result.Entity, entity));
 
             _storage.Verify(mock => mock.Load("test"), Times.Exactly(2));
         }

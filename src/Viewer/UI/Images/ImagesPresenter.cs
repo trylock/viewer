@@ -225,8 +225,12 @@ namespace Viewer.UI.Images
 
         private void View_Poll(object sender, EventArgs e)
         {
-            View.Items = _queryEvaluator.Update();
-            View.ItemSize = ComputeThumbnailSize();
+            if (_queryEvaluator != null)
+            {
+                View.Items = _queryEvaluator.Update();
+                View.ItemSize = ComputeThumbnailSize();
+            }
+
             View.UpdateItems();
         }
 

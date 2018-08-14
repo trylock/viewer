@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,9 +34,9 @@ namespace Viewer.UI.Images
         public CancellationTokenSource Cancellation { get; }
 
         /// <summary>
-        /// Comparer of the result set
+        /// Current query execution progress.
         /// </summary>
-        public IComparer<EntityView> Comparer => _addRequests.Comparer;
+        public QueryProgress Progress { get; } = new QueryProgress();
 
         /// <summary>
         /// Current query
@@ -110,10 +111,10 @@ namespace Viewer.UI.Images
         public void Run()
         {
             var directories = new HashSet<string>();
-
+            
             try
             {
-                foreach (var entity in Query.Evaluate(Cancellation.Token))
+                foreach (var entity in Query.Evaluate(Progress, Cancellation.Token))
                 {
                     Cancellation.Token.ThrowIfCancellationRequested();
 
@@ -134,7 +135,7 @@ namespace Viewer.UI.Images
 
                         directories.Add(parentDirectory);
                     }
-                    
+
                     // add a new entity
                     _addRequests.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
                 }
@@ -191,7 +192,7 @@ namespace Viewer.UI.Images
 
         /// <inheritdoc />
         /// <summary>
-        /// Dispose this evaluator and all system resources.
+        /// Dispose this evaluator and all system resources used by this evaluator.
         /// If a load task is in progress, it will be cancelled and disposed asynchronously.
         /// </summary>
         public void Dispose()

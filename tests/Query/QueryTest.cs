@@ -30,7 +30,7 @@ namespace ViewerTest.Query
                 new MemoryQuery(entitiesA), 
                 Comparer<IEntity>.Default,
                 null);
-            var result = query.Union(new MemoryQuery(entitiesB)).Evaluate(CancellationToken.None).ToArray();
+            var result = query.Union(new MemoryQuery(entitiesB)).Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
 
             CollectionAssert.AreEqual(new[]
             {

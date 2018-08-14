@@ -27,6 +27,7 @@ namespace Viewer.Data.Storage
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Load attributes from database.
         /// </summary>
@@ -34,7 +35,7 @@ namespace Viewer.Data.Storage
         /// <returns>
         ///     Valid attributes of the file or null if the attributes in cache are not valid.
         /// </returns>
-        public IEntity Load(string inputPath)
+        public LoadResult Load(string inputPath)
         {
             var fileInfo = new FileInfo(inputPath);
             IEntity entity = new FileEntity(inputPath, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
@@ -92,10 +93,11 @@ namespace Viewer.Data.Storage
 
             if (entity.Count <= 0)
             {
-                return null;
+                // the entity is not in this storage if there are no valid attributes
+                return new LoadResult(null, 0);
             }
 
-            return entity;
+            return new LoadResult(entity, 0);
         }
 
         public void Store(IEntity entity)

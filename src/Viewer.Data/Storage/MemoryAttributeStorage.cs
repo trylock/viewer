@@ -11,29 +11,18 @@ namespace Viewer.Data.Storage
     public class MemoryAttributeStorage : IAttributeStorage
     {
         private readonly Dictionary<string, IEntity> _files = new Dictionary<string, IEntity>();
-
-        public IEnumerable<IEntity> Files
-        {
-            get
-            {
-                foreach (var pair in _files)
-                {
-                    yield return pair.Value;
-                }
-            }
-        }
-
-        public IEntity Load(string path)
+        
+        public LoadResult Load(string path)
         {
             lock (_files)
             {
-                if (_files.TryGetValue(path, out IEntity entity))
+                if (_files.TryGetValue(path, out var entity))
                 {
-                    return entity;
+                    return new LoadResult(entity, 0);
                 }
             }
 
-            return null;
+            return new LoadResult(null, 0);
         }
 
         public void Store(IEntity entity)

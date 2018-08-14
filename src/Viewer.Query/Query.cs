@@ -24,9 +24,10 @@ namespace Viewer.Query
         /// Evaluate this query.
         /// Entities are loaded lazily as much as possible.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken);
+        /// <param name="progress">This class is used to report query execution progress. You can use <see cref="NullQueryProgress"/>.</param>
+        /// <param name="cancellationToken">Cancellation token used to cancel the execution.</param>
+        /// <returns>Matched entities.</returns>
+        IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -112,7 +113,7 @@ namespace Viewer.Query
     {
         public static EmptyQuery Default { get; } = new EmptyQuery();
 
-        public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             return Enumerable.Empty<IEntity>();
         }
@@ -134,9 +135,15 @@ namespace Viewer.Query
             _entities = entities;
         }
 
-        public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            return _entities;
+            progress.Report(new QueryProgressReport(ReportType.BeginExecution, null, 0));
+            foreach (var entity in _entities)
+            {
+                progress.Report(new QueryProgressReport(ReportType.EndLoading, entity.Path, 0));
+                yield return entity;
+            }
+            progress.Report(new QueryProgressReport(ReportType.EndExecution, null, 0));
         }
     }
 
@@ -155,8 +162,10 @@ namespace Viewer.Query
             _hiddenFlags = hiddenFlags;
         }
 
-        public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
+            progress.Report(new QueryProgressReport(ReportType.BeginExecution, null, 0));
+
             foreach (var dir in EnumerateDirectories())
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -176,15 +185,17 @@ namespace Viewer.Query
                     // skip files with hidden attributes
                     if (IsHidden(file))
                         continue;
-
+                    
                     // load file
-                    var entity = LoadEntity(file);
-                    if (entity == null)
+                    progress.Report(new QueryProgressReport(ReportType.BeginLoading, file, 0));
+                    var result = LoadEntity(file);
+                    progress.Report(new QueryProgressReport(ReportType.EndLoading, file, result.BytesRead));
+                    if (result.Entity == null)
                     {
                         continue;
                     }
 
-                    yield return entity;
+                    yield return result.Entity;
                 }
 
                 // add directories
@@ -199,6 +210,8 @@ namespace Viewer.Query
                     yield return new DirectoryEntity(directory);
                 }
             }
+
+            progress.Report(new QueryProgressReport(ReportType.EndExecution, null, 0));
         }
 
         private bool IsHidden(string path)
@@ -236,7 +249,7 @@ namespace Viewer.Query
             return Enumerable.Empty<string>();
         }
 
-        private IEntity LoadEntity(string path)
+        private LoadResult LoadEntity(string path)
         {
             try
             {
@@ -254,12 +267,13 @@ namespace Viewer.Query
             catch (IOException)
             {
             }
-            catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) || e.GetType() == typeof(SecurityException))
+            catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) || 
+                                      e.GetType() == typeof(SecurityException))
             {
                 // skip these 
             }
 
-            return null;
+            return new LoadResult(null, 0);
         }
         
         private IEnumerable<string> EnumerateDirectories()
@@ -285,9 +299,9 @@ namespace Viewer.Query
             _predicate = predicate;
         }
 
-        public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            return _source.Evaluate(cancellationToken).Where(_predicate);
+            return _source.Evaluate(progress, cancellationToken).Where(_predicate);
         }
     }
 
@@ -302,10 +316,10 @@ namespace Viewer.Query
             _second = second;
         }
 
-        public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            var firstEvaluation = _first.Evaluate(cancellationToken);
-            var secondEvaluation = _second.Evaluate(cancellationToken);
+            var firstEvaluation = _first.Evaluate(progress, cancellationToken);
+            var secondEvaluation = _second.Evaluate(progress, cancellationToken);
             return firstEvaluation.Except(secondEvaluation, EntityPathEqualityComparer.Default);
         }
     }
@@ -321,10 +335,10 @@ namespace Viewer.Query
             _second = second;
         }
 
-        public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            var firstEvaluation = _first.Evaluate(cancellationToken);
-            var secondEvaluation = _second.Evaluate(cancellationToken);
+            var firstEvaluation = _first.Evaluate(progress, cancellationToken);
+            var secondEvaluation = _second.Evaluate(progress, cancellationToken);
             return firstEvaluation.Intersect(secondEvaluation, EntityPathEqualityComparer.Default);
         }
     }
@@ -340,10 +354,10 @@ namespace Viewer.Query
             _second = second;
         }
 
-        public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            var firstEvaluation = _first.Evaluate(cancellationToken);
-            var secondEvaluation = _second.Evaluate(cancellationToken);
+            var firstEvaluation = _first.Evaluate(progress, cancellationToken);
+            var secondEvaluation = _second.Evaluate(progress, cancellationToken);
             return firstEvaluation.Union(secondEvaluation, EntityPathEqualityComparer.Default);
         }
     }
@@ -367,9 +381,9 @@ namespace Viewer.Query
             return Text;
         }
         
-        public IEnumerable<IEntity> Evaluate(CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            return _source.Evaluate(cancellationToken);
+            return _source.Evaluate(progress, cancellationToken);
         }
 
         public IQuery WithComparer(IComparer<IEntity> comparer)

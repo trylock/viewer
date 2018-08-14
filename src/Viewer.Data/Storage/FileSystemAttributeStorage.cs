@@ -78,13 +78,14 @@ namespace Viewer.Data.Storage
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <returns>Collection of attributes read from the file</returns>
-        public IEntity Load(string path)
+        public LoadResult Load(string path)
         {
             try
             {
                 // read all JPEG segments to memory
                 IEntity attrs;
                 FileInfo fileInfo;
+                long bytesRead = 0;
                 var segments = new List<JpegSegment>();
                 using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
                 {
@@ -104,6 +105,8 @@ namespace Viewer.Data.Storage
 
                         segments.Add(segment);
                     }
+
+                    bytesRead = segmentReader.BaseStream.Position;
                 }
 
                 // read attributes from all sources and add them to the collection
@@ -119,11 +122,11 @@ namespace Viewer.Data.Storage
                     }
                 }
 
-                return attrs;
+                return new LoadResult(attrs, bytesRead);
             }
             catch (FileNotFoundException)
             {
-                return null;
+                return new LoadResult(null, 0);
             }
         }
         

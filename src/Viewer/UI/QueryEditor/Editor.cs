@@ -132,6 +132,10 @@ namespace Viewer.UI.QueryEditor
                 var data = await _fileSystem.ReadToEndAsync(path);
                 return OpenWindow(path, data, dockState);
             }
+            catch (DirectoryNotFoundException e)
+            {
+                _dialogView.DirectoryNotFound(e.Message);
+            }
             catch (UnauthorizedAccessException)
             {
                 _dialogView.UnauthorizedAccess(path);
@@ -160,6 +164,10 @@ namespace Viewer.UI.QueryEditor
             {
                 var data = Encoding.UTF8.GetString(_fileSystem.ReadAllBytes(path));
                 return OpenWindow(path, data, dockState);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                _dialogView.DirectoryNotFound(Path.GetDirectoryName(path));
             }
             catch (UnauthorizedAccessException)
             {

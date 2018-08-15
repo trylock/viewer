@@ -23,6 +23,10 @@ namespace Viewer.UI.QueryEditor
     public class QueryEditorComponent : IComponent
     {
         private readonly IEditor _editor;
+        private readonly IFileSystem _fileSystem;
+        private readonly IFileWatcher _fileWatcher;
+        private readonly IFileSystemErrorView _dialogView;
+        private readonly IQueryViewRepository _queryViews;
 
         private IToolBarItem _openTool;
         private IToolBarItem _saveTool;
@@ -33,20 +37,69 @@ namespace Viewer.UI.QueryEditor
             IEditor editor, 
             IFileSystem fileSystem, 
             IQueryViewRepository queryViews, 
-            IFileWatcherFactory fileWatcherFactory)
+            IFileWatcherFactory fileWatcherFactory,
+            IFileSystemErrorView dialogView)
         {
             _editor = editor;
+            _fileSystem = fileSystem;
+            _fileWatcher = fileWatcherFactory.Create();
+            _queryViews = queryViews;
+            _dialogView = dialogView;
         }
 
         public void OnStartup(IViewerApplication app)
         {
             app.AddMenuItem(new []{ "View", "Query" }, () => _editor.OpenNew(DockState.Document), Resources.QueryComponentIcon.ToBitmap());
+            app.AddMenuItem(new []{ "File", "Open Query" }, OpenFileInEditor, Resources.Open);
 
             _openTool = app.CreateToolBarItem("editor", "open", "Open Query", Resources.Open, OpenFileInEditor);
             _saveTool = app.CreateToolBarItem("editor", "save", "Save Query", Resources.Save, SaveCurrentEditor);
             _runTool = app.CreateToolBarItem("editor", "run", "Run Query", Resources.Start, RunCurrentEditor);
             
             app.AddLayoutDeserializeCallback(Deserialize);
+
+            // load all query views
+            LoadQueryViews();
+        }
+
+        /// <summary>
+        /// Try to load all query views from the query view directory (specified in user settings).
+        /// If this operation fails, an error message is shown to the user.
+        /// </summary>
+        private void LoadQueryViews()
+        {
+            var viewsDirectory = Path.GetFullPath(Settings.Default.QueryViewDirectoryPath);
+            try
+            {
+                var files = _fileSystem.EnumerateFiles(viewsDirectory, "*.vql");
+                foreach (var file in files)
+                {
+                    var name = Path.GetFileNameWithoutExtension(file);
+                    var content = _fileSystem.ReadAllText(file);
+                    _queryViews.Add(new QueryView(name, content, file));
+                }
+            }
+            catch (ArgumentException)
+            {
+                _dialogView.InvalidFileName(viewsDirectory);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                _fileSystem.CreateDirectory(viewsDirectory);
+            }
+            catch (PathTooLongException)
+            {
+                _dialogView.PathTooLong(viewsDirectory);
+            }
+            catch (IOException) // path is a file name
+            {
+                _dialogView.DirectoryNotFound(viewsDirectory);
+            }
+            catch (Exception e) when (e.GetType() == typeof(SecurityException) ||
+                                      e.GetType() == typeof(UnauthorizedAccessException))
+            {
+                _dialogView.UnauthorizedAccess(viewsDirectory);
+            }
         }
 
         /// <summary>
@@ -102,7 +155,7 @@ namespace Viewer.UI.QueryEditor
                 }
                 else 
                 {
-                    return _editor.Open(path, DockState.Unknown).View;
+                    return _editor.Open(path, DockState.Unknown)?.View;
                 }
             }
             return null;

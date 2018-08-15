@@ -76,7 +76,7 @@ namespace Viewer.UI.Images
             app.AddLayoutDeserializeCallback(Deserialize);
 
             // add staus bar items
-            _thumbnailSize = app.CreateStatusBarSlider(" ", Resources.ThumbnailSize, ToolStripItemAlignment.Right);
+            _thumbnailSize = app.CreateStatusBarSlider("", Resources.ThumbnailSize, ToolStripItemAlignment.Right);
             _thumbnailSize.ValueChanged += ThumbnailSizeOnValueChanged;
 
             // add tool bar items

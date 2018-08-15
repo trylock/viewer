@@ -162,6 +162,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 353);
+            this.ContextMenuStrip = this.ItemContextMenu;
             this.Controls.Add(this.GridView);
             this.Controls.Add(this.NameTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

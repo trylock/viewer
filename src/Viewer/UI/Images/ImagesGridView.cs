@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Viewer.Properties;
 using Viewer.Core.Collections;
 using Viewer.Core.UI;
 using Viewer.Data;
+using Viewer.UI.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
@@ -29,37 +31,14 @@ namespace Viewer.UI.Images
             GridView.MouseWheel += GridView_MouseWheel;
         }
 
-        #region IThumbnailView
+        #region IHistoryView
 
-        public event EventHandler ThumbnailSizeChanged
-        {
-            add => ThumbnailSizeTrackBar.ValueChanged += value;
-            remove => ThumbnailSizeTrackBar.ValueChanged -= value;
-        }
+        public event EventHandler GoBackInHistory;
 
-        public event EventHandler ThumbnailSizeCommit;
-
-        public double ThumbnailScale
-        {
-            get => (ThumbnailSizeTrackBar.Value - ThumbnailSizeTrackBar.Minimum) /
-                   (double)(ThumbnailSizeTrackBar.Maximum - ThumbnailSizeTrackBar.Minimum);
-            set
-            {
-                if (value < 0.0 || value > 1.0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                }
-
-                ThumbnailSizeTrackBar.Value = (int)MathUtils.Lerp(
-                    ThumbnailSizeTrackBar.Minimum,
-                    ThumbnailSizeTrackBar.Maximum,
-                    value
-                );
-            }
-        }
+        public event EventHandler GoForwardInHistory;
 
         #endregion
-
+        
         #region ISelectionView
 
         public event MouseEventHandler SelectionBegin;
@@ -116,44 +95,7 @@ namespace Viewer.UI.Images
         }
 
         #endregion
-
-        #region IHistoryView
         
-        public event EventHandler GoBackInHistory;
-        public event EventHandler GoForwardInHistory;
-
-        private string _previousInHistory;
-        public string PreviousInHistory
-        {
-            get => _previousInHistory;
-            set
-            {
-                _previousInHistory = value;
-                BackButton.Enabled = value != null;
-                if (value != null)
-                {
-                    BackToolTip.SetToolTip(BackButton, value);
-                }
-            }
-        }
-
-        private string _nextInHistory;
-        public string NextInHistory
-        {
-            get => _nextInHistory;
-            set
-            {
-                _nextInHistory = value;
-                ForwardButton.Enabled = value != null;
-                if (value != null)
-                {
-                    ForwardToolTip.SetToolTip(ForwardButton, value);
-                }
-            }
-        }
-
-        #endregion
-
         #region IImagesView
 
         /// <summary>
@@ -188,7 +130,6 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler<EntityEventArgs> OpenItem;
-        public event EventHandler ShowCode;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
         public event EventHandler<RenameEventArgs> RenameItem;
@@ -259,7 +200,6 @@ namespace Viewer.UI.Images
 
         private void UpdateItemCount()
         {
-            ItemsCountLabel.Text = string.Format(Resources.ItemCount_Label, Items.Count.ToString("N0"));
             GridView.UpdateItemCount();
         }
         
@@ -311,7 +251,7 @@ namespace Viewer.UI.Images
         
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
-            // invoke history events
+            // process history events
             if (e.Button.HasFlag(MouseButtons.XButton1))
             {
                 GoBackInHistory?.Invoke(sender, e);
@@ -489,35 +429,7 @@ namespace Viewer.UI.Images
             NameTextBox.BringToFront();
             BeginEditItemName?.Invoke(sender, new EntityEventArgs(_activeItem));
         }
-
-        private void ThumbnailSizeTrackBar_MouseUp(object sender, MouseEventArgs e)
-        {
-            ThumbnailSizeCommit?.Invoke(sender, e);
-        }
-
-        private void ThumbnailSizeTrackBar_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
-            {
-                ThumbnailSizeCommit?.Invoke(sender, e);
-            }
-        }
-
-        private void ShowQueryButton_Click(object sender, EventArgs e)
-        {
-            ShowCode?.Invoke(sender, e);
-        }
-
-        private void BackButton_Click(object sender, EventArgs e)
-        {
-            GoBackInHistory?.Invoke(sender, e);
-        }
-
-        private void ForwardButton_Click(object sender, EventArgs e)
-        {
-            GoForwardInHistory?.Invoke(sender, e);
-        }
-
+        
         protected override string GetPersistString()
         {
             if (Query != null)

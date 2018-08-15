@@ -125,24 +125,14 @@ namespace Viewer.UI.Images
     public interface IHistoryView
     {
         /// <summary>
-        /// Event called when user wants to go back in history
+        /// Event occurs when user wants to go back in query history.
         /// </summary>
         event EventHandler GoBackInHistory;
 
         /// <summary>
-        /// Event called when user wants to go forward in history
+        /// Event occurs when user wantc to go forward in query history.
         /// </summary>
         event EventHandler GoForwardInHistory;
-
-        /// <summary>
-        /// Name of the previous item in history or null if there is none
-        /// </summary>
-        string PreviousInHistory { get; set; }
-
-        /// <summary>
-        /// Name of the next item in history or null if there is none
-        /// </summary>
-        string NextInHistory { get; set; }
     }
 
     public interface IPolledView
@@ -164,25 +154,6 @@ namespace Viewer.UI.Images
         /// Trigger one last Poll event instantaneously and stop triggering the event.
         /// </summary>
         void EndPolling();
-    }
-
-    public interface IThumbnailView
-    {
-        /// <summary>
-        /// Event called when user changes the thumbnail size
-        /// </summary>
-        event EventHandler ThumbnailSizeChanged;
-
-        /// <summary>
-        /// Event called when user set the thumbnail size
-        /// </summary>
-        event EventHandler ThumbnailSizeCommit;
-
-        /// <summary>
-        /// Current scale of a thumbnail. It will always be in the [0, 1] internal.
-        /// 0.0 is the minimal thumbnail size, 1.0 is the maximal thumbnail size
-        /// </summary>
-        double ThumbnailScale { get; set; }
     }
 
     /// <summary>
@@ -240,7 +211,7 @@ namespace Viewer.UI.Images
         T GetItemAt(Point location);
     }
 
-    public interface IImagesView : IWindowView, IPolledView, IThumbnailView, ISelectionView<EntityView>, IHistoryView
+    public interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IHistoryView
     {
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;
@@ -284,11 +255,6 @@ namespace Viewer.UI.Images
         /// Event called when user tries to open an item
         /// </summary>
         event EventHandler<EntityEventArgs> OpenItem;
-
-        /// <summary>
-        /// Event called when user requests to open code the current query
-        /// </summary>
-        event EventHandler ShowCode;
 
         /// <summary>
         /// Textual representation of the query of this component

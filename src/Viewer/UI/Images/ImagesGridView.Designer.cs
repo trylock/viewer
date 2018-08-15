@@ -38,22 +38,12 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ThumbnailSizeTrackBar = new System.Windows.Forms.TrackBar();
-            this.ItemsCountLabel = new System.Windows.Forms.Label();
-            this.ViewTableLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.ControlPanel = new System.Windows.Forms.Panel();
-            this.ForwardButton = new Viewer.UI.Forms.IconButton();
-            this.BackButton = new Viewer.UI.Forms.IconButton();
-            this.ShowQueryButton = new System.Windows.Forms.Button();
-            this.GridView = new Viewer.UI.Images.GridView();
             this.PollTimer = new System.Windows.Forms.Timer(this.components);
             this.ShowCodeToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.BackToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.GridView = new Viewer.UI.Images.GridView();
             this.ItemContextMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).BeginInit();
-            this.ViewTableLayout.SuspendLayout();
-            this.ControlPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // NameTextBox
@@ -120,128 +110,6 @@
             this.RenameMenuItem.Text = "Rename";
             this.RenameMenuItem.Click += new System.EventHandler(this.RenameMenuItem_Click);
             // 
-            // ThumbnailSizeTrackBar
-            // 
-            this.ThumbnailSizeTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ThumbnailSizeTrackBar.Location = new System.Drawing.Point(490, 2);
-            this.ThumbnailSizeTrackBar.Margin = new System.Windows.Forms.Padding(2);
-            this.ThumbnailSizeTrackBar.Name = "ThumbnailSizeTrackBar";
-            this.ThumbnailSizeTrackBar.Size = new System.Drawing.Size(130, 45);
-            this.ThumbnailSizeTrackBar.TabIndex = 1;
-            this.ThumbnailSizeTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.ThumbnailSizeTrackBar.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ThumbnailSizeTrackBar_KeyUp);
-            this.ThumbnailSizeTrackBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ThumbnailSizeTrackBar_MouseUp);
-            // 
-            // ItemsCountLabel
-            // 
-            this.ItemsCountLabel.AutoSize = true;
-            this.ItemsCountLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ItemsCountLabel.Location = new System.Drawing.Point(7, 6);
-            this.ItemsCountLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.ItemsCountLabel.Name = "ItemsCountLabel";
-            this.ItemsCountLabel.Size = new System.Drawing.Size(41, 13);
-            this.ItemsCountLabel.TabIndex = 2;
-            this.ItemsCountLabel.Text = "0 Items";
-            // 
-            // ViewTableLayout
-            // 
-            this.ViewTableLayout.ColumnCount = 1;
-            this.ViewTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.ViewTableLayout.Controls.Add(this.ControlPanel, 0, 1);
-            this.ViewTableLayout.Controls.Add(this.GridView, 0, 0);
-            this.ViewTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ViewTableLayout.Location = new System.Drawing.Point(0, 0);
-            this.ViewTableLayout.Margin = new System.Windows.Forms.Padding(2);
-            this.ViewTableLayout.Name = "ViewTableLayout";
-            this.ViewTableLayout.RowCount = 2;
-            this.ViewTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.ViewTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.ViewTableLayout.Size = new System.Drawing.Size(626, 353);
-            this.ViewTableLayout.TabIndex = 3;
-            // 
-            // ControlPanel
-            // 
-            this.ControlPanel.Controls.Add(this.ForwardButton);
-            this.ControlPanel.Controls.Add(this.BackButton);
-            this.ControlPanel.Controls.Add(this.ShowQueryButton);
-            this.ControlPanel.Controls.Add(this.ThumbnailSizeTrackBar);
-            this.ControlPanel.Controls.Add(this.ItemsCountLabel);
-            this.ControlPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ControlPanel.Location = new System.Drawing.Point(2, 323);
-            this.ControlPanel.Margin = new System.Windows.Forms.Padding(2);
-            this.ControlPanel.Name = "ControlPanel";
-            this.ControlPanel.Size = new System.Drawing.Size(622, 28);
-            this.ControlPanel.TabIndex = 0;
-            // 
-            // ForwardButton
-            // 
-            this.ForwardButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ForwardButton.Icon = global::Viewer.Properties.Resources.Forward;
-            this.ForwardButton.IconColor = System.Drawing.Color.DimGray;
-            this.ForwardButton.IconDisabledColor = System.Drawing.Color.LightGray;
-            this.ForwardButton.IconSize = new System.Drawing.Size(0, 0);
-            this.ForwardButton.Location = new System.Drawing.Point(429, 3);
-            this.ForwardButton.Name = "ForwardButton";
-            this.ForwardButton.Size = new System.Drawing.Size(23, 23);
-            this.ForwardButton.TabIndex = 5;
-            this.ForwardButton.Text = "iconButton1";
-            this.ForwardToolTip.SetToolTip(this.ForwardButton, "Forward");
-            this.ForwardButton.Click += new System.EventHandler(this.ForwardButton_Click);
-            // 
-            // BackButton
-            // 
-            this.BackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BackButton.Icon = global::Viewer.Properties.Resources.Back;
-            this.BackButton.IconColor = System.Drawing.Color.DimGray;
-            this.BackButton.IconDisabledColor = System.Drawing.Color.LightGray;
-            this.BackButton.IconSize = new System.Drawing.Size(0, 0);
-            this.BackButton.Location = new System.Drawing.Point(400, 3);
-            this.BackButton.Name = "BackButton";
-            this.BackButton.Size = new System.Drawing.Size(23, 23);
-            this.BackButton.TabIndex = 4;
-            this.BackButton.Text = "iconButton1";
-            this.BackToolTip.SetToolTip(this.BackButton, "Back");
-            this.BackButton.Click += new System.EventHandler(this.BackButton_Click);
-            // 
-            // ShowQueryButton
-            // 
-            this.ShowQueryButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ShowQueryButton.BackgroundImage = global::Viewer.Properties.Resources.ShowCodeIcon;
-            this.ShowQueryButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ShowQueryButton.FlatAppearance.BorderSize = 0;
-            this.ShowQueryButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ShowQueryButton.Location = new System.Drawing.Point(458, 0);
-            this.ShowQueryButton.Name = "ShowQueryButton";
-            this.ShowQueryButton.Size = new System.Drawing.Size(27, 27);
-            this.ShowQueryButton.TabIndex = 3;
-            this.ShowCodeToolTip.SetToolTip(this.ShowQueryButton, "Show Code");
-            this.ShowQueryButton.UseVisualStyleBackColor = true;
-            this.ShowQueryButton.Click += new System.EventHandler(this.ShowQueryButton_Click);
-            // 
-            // GridView
-            // 
-            this.GridView.AutoScroll = true;
-            this.GridView.ContextMenuStrip = this.ItemContextMenu;
-            this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GridView.IsLoading = false;
-            this.GridView.ItemPadding = new System.Drawing.Size(8, 8);
-            this.GridView.Items = null;
-            this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(2, 2);
-            this.GridView.Margin = new System.Windows.Forms.Padding(2);
-            this.GridView.Name = "GridView";
-            this.GridView.NameHeight = 25;
-            this.GridView.NameSpace = 5;
-            this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(622, 317);
-            this.GridView.TabIndex = 2;
-            this.GridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.GridView_Scroll);
-            this.GridView.DoubleClick += new System.EventHandler(this.GridView_DoubleClick);
-            this.GridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseDown);
-            this.GridView.MouseLeave += new System.EventHandler(this.GridView_MouseLeave);
-            this.GridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseMove);
-            this.GridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseUp);
-            // 
             // PollTimer
             // 
             this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
@@ -254,22 +122,41 @@
             // 
             this.ForwardToolTip.ToolTipTitle = "Forward to";
             // 
+            // GridView
+            // 
+            this.GridView.AutoScroll = true;
+            this.GridView.ContextMenuStrip = this.ItemContextMenu;
+            this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GridView.IsLoading = false;
+            this.GridView.ItemPadding = new System.Drawing.Size(5, 5);
+            this.GridView.Items = null;
+            this.GridView.ItemSize = new System.Drawing.Size(0, 0);
+            this.GridView.Location = new System.Drawing.Point(0, 0);
+            this.GridView.Margin = new System.Windows.Forms.Padding(2);
+            this.GridView.Name = "GridView";
+            this.GridView.NameHeight = 30;
+            this.GridView.NameSpace = 5;
+            this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.GridView.Size = new System.Drawing.Size(626, 353);
+            this.GridView.TabIndex = 1;
+            this.GridView.DoubleClick += new System.EventHandler(this.GridView_DoubleClick);
+            this.GridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseDown);
+            this.GridView.MouseLeave += new System.EventHandler(this.GridView_MouseLeave);
+            this.GridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseMove);
+            this.GridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseUp);
+            // 
             // ImagesGridView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 353);
-            this.Controls.Add(this.ViewTableLayout);
+            this.Controls.Add(this.GridView);
             this.Controls.Add(this.NameTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ImagesGridView";
             this.Text = "Images";
             this.ItemContextMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ThumbnailSizeTrackBar)).EndInit();
-            this.ViewTableLayout.ResumeLayout(false);
-            this.ControlPanel.ResumeLayout(false);
-            this.ControlPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -285,17 +172,10 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem DeleteMenuItem;
-        private System.Windows.Forms.TrackBar ThumbnailSizeTrackBar;
-        private System.Windows.Forms.Label ItemsCountLabel;
-        private System.Windows.Forms.TableLayoutPanel ViewTableLayout;
-        private System.Windows.Forms.Panel ControlPanel;
         private System.Windows.Forms.Timer PollTimer;
-        private GridView GridView;
-        private System.Windows.Forms.Button ShowQueryButton;
         private System.Windows.Forms.ToolTip ShowCodeToolTip;
-        private Forms.IconButton BackButton;
-        private Forms.IconButton ForwardButton;
         private System.Windows.Forms.ToolTip ForwardToolTip;
         private System.Windows.Forms.ToolTip BackToolTip;
+        private GridView GridView;
     }
 }

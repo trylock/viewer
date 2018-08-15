@@ -18,8 +18,10 @@ using Viewer.IO;
 using Viewer.Query;
 using Viewer.Core.Collections;
 using Viewer.Core.UI;
+using Viewer.Properties;
 using Viewer.Query.Properties;
 using Viewer.UI.Explorer;
+using Viewer.UI.Forms;
 using Viewer.UI.QueryEditor;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -46,6 +48,8 @@ namespace Viewer.UI.Images
             MinItemSize.Width * 3,
             MinItemSize.Height * 3
         );
+
+        private double _thumbnailSize = 0;
 
         /// <summary>
         /// Current state of the rectangle selection
@@ -115,7 +119,7 @@ namespace Viewer.UI.Images
             View.ItemSize = _currentItemSize;
             SubscribeTo(View, "View");
         }
-        
+
         private void UpdateContextOptions()
         {
             View.ContextOptions = Settings.Default.ExternalApplications;
@@ -128,7 +132,7 @@ namespace Viewer.UI.Images
         {
             _queryEvaluator?.Dispose();
             _queryEvaluator = null;
-            View.Items = null; // the items collection is disposed by the query evaluator
+            View.Items = null; // the items are disposed by the query evaluator
         }
         
         public override void Dispose()
@@ -154,11 +158,9 @@ namespace Viewer.UI.Images
             _queryEvaluator = _queryEvaluatorFactory.Create(query);
             View.Query = _queryEvaluator.Query.Text;
             View.Items = _queryEvaluator.Update();
-            View.PreviousInHistory = _state.Previous?.Text;
-            View.NextInHistory = _state.Next?.Text;
             View.BeginLoading();
             View.BeginPolling(PollingRate);
-
+            
             try
             {
                 await _queryEvaluator.RunAsync();
@@ -172,17 +174,31 @@ namespace Viewer.UI.Images
                 View.EndLoading();
             }
         }
+
+        /// <summary>
+        /// Set thumbnail size and update the view.
+        /// </summary>
+        /// <param name="thumbnailSize">Thumbnail size in the [0, 1] range</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="thumbnailSize"/> is not in the [0, 1] range</exception>
+        public void SetThumbnailSize(double thumbnailSize)
+        {
+            if (thumbnailSize < 0 || thumbnailSize > 1)
+                throw new ArgumentOutOfRangeException(nameof(thumbnailSize));
+
+            _thumbnailSize = thumbnailSize;
+            View.ItemSize = ComputeThumbnailSize();
+            View.UpdateItems();
+        }
         
         /// <summary>
-        /// Compute current thumbnail size based on the current minimal thumbnail size
-        /// and View.ThumbnailScale
+        /// Compute current thumbnail size.
         /// </summary>
         /// <returns></returns>
         private Size ComputeThumbnailSize()
         {
             var minimal = MinItemSize;
             var maximal = MaxItemSize;
-            var weight = View.ThumbnailScale;
+            var weight = _thumbnailSize;
             return new Size(
                 (int)(MathUtils.Lerp(minimal.Width, maximal.Width, weight)),
                 (int)(MathUtils.Lerp(minimal.Height, maximal.Height, weight))
@@ -428,25 +444,7 @@ namespace Viewer.UI.Images
         {
             Dispose();
         }
-
-        private void View_ThumbnailSizeChanged(object sender, EventArgs e)
-        {
-            View.ItemSize = ComputeThumbnailSize();
-            View.UpdateItems();
-
-            _currentItemSize = View.ItemSize;
-        }
-
-        private void View_ThumbnailSizeCommit(object sender, EventArgs e)
-        {
-            View.UpdateItems();
-        }
-
-        private void View_ShowCode(object sender, EventArgs e)
-        {
-            _editor.OpenNew(_queryEvaluator.Query.Text, DockState.Document);
-        }
-
+        
         private void View_GoBackInHistory(object sender, EventArgs e)
         {
             _state.Back();

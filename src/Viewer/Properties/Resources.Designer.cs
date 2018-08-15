@@ -400,6 +400,16 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ItemCountStatus {
+            get {
+                object obj = ResourceManager.GetObject("ItemCountStatus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Viewer.Layout.xml.
         /// </summary>
         internal static string LayoutFilePath {
@@ -525,6 +535,16 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Refresh {
+            get {
+                object obj = ResourceManager.GetObject("Refresh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File In Use.
         /// </summary>
         internal static string RetryFileInUse_Label {
@@ -581,6 +601,16 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SearchStatus {
+            get {
+                object obj = ResourceManager.GetObject("SearchStatus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Viewer.xml.
         /// </summary>
         internal static string SettingsFilePath {
@@ -605,6 +635,16 @@ namespace Viewer.Properties {
         internal static System.Drawing.Bitmap Start {
             get {
                 object obj = ResourceManager.GetObject("Start", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ThumbnailSize {
+            get {
+                object obj = ResourceManager.GetObject("ThumbnailSize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

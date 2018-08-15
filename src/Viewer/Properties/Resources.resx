@@ -323,4 +323,16 @@
 Do you want to try again?</value>
     <comment>{0} is the file path, {1} is an error message</comment>
   </data>
+  <data name="ItemCountStatus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StatusBar\ItemCountStatus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SearchStatus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StatusBar\SearchStatus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Query\Refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ThumbnailSize" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StatusBar\ThumbnailSize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

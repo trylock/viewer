@@ -335,4 +335,11 @@ Do you want to try again?</value>
   <data name="ThumbnailSize" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StatusBar\ThumbnailSize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ClipboardIsBusy_Label" xml:space="preserve">
+    <value>Clipboard Busy</value>
+  </data>
+  <data name="ClipboardIsBusy_Message" xml:space="preserve">
+    <value>System clipboard cannot be opened. Try again later. System error: {0}</value>
+    <comment>{0} is the system error message</comment>
+  </data>
 </root>

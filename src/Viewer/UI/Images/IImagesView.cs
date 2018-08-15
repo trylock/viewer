@@ -217,34 +217,39 @@ namespace Viewer.UI.Images
         event KeyEventHandler HandleKeyUp;
 
         /// <summary>
-        /// Event called when user moves cursor over an item.
+        /// Event occurs when user moves cursor over an item.
         /// </summary>
         event EventHandler<EntityEventArgs> ItemHover;
 
         /// <summary>
-        /// Event called when user requests to edit file name
+        /// Event occurs when user requests to edit file name
         /// </summary>
         event EventHandler<EntityEventArgs> BeginEditItemName;
 
         /// <summary>
-        /// Event called when user requests to cancel file name edit.
+        /// Event occurs when user requests to cancel file name edit.
         /// </summary>
         event EventHandler CancelEditItemName;
 
         /// <summary>
-        /// Event called when user begins to drag items in selection.
+        /// Event occurs when user begins to drag items in selection.
         /// </summary>
         event EventHandler BeginDragItems;
 
         /// <summary>
-        /// Event called when user requests to rename file
+        /// Event occurs when user requests to rename file
         /// </summary>
         event EventHandler<RenameEventArgs> RenameItem;
 
         /// <summary>
-        /// Event called when user requests to copy items in selection.
+        /// Event occurs when user requests to copy items in selection.
         /// </summary>
         event EventHandler CopyItems;
+
+        /// <summary>
+        /// Event occurs when user requests to cut items in selection.
+        /// </summary>
+        event EventHandler CutItems;
 
         /// <summary>
         /// Event called when user requests to delete items in selection.
@@ -252,7 +257,7 @@ namespace Viewer.UI.Images
         event EventHandler DeleteItems;
 
         /// <summary>
-        /// Event called when user tries to open an item
+        /// Event occurs when user tries to open an item
         /// </summary>
         event EventHandler<EntityEventArgs> OpenItem;
 

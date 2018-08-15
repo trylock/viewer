@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -255,7 +256,14 @@ namespace Viewer.UI.Explorer
 
         private void View_CopyDirectory(object sender, DirectoryEventArgs e)
         {
-            _clipboard.SetFiles(new ClipboardFileDrop(new[] { e.FullPath }, DragDropEffects.Copy));
+            try
+            {
+                _clipboard.SetFiles(new ClipboardFileDrop(new[] {e.FullPath}, DragDropEffects.Copy));
+            }
+            catch (ExternalException ex)
+            {
+                _dialogView.ClipboardIsBusy(ex.Message);
+            }
         }
         
         private void View_PasteToDirectory(object sender, PasteEventArgs e)
@@ -271,8 +279,15 @@ namespace Viewer.UI.Explorer
 
         private void View_PasteClipboardToDirectory(object sender, DirectoryEventArgs e)
         {
-            var files = _clipboard.GetFiles();
-            PasteFiles(e.FullPath, files, files.Effect);
+            try
+            {
+                var files = _clipboard.GetFiles();
+                PasteFiles(e.FullPath, files, files.Effect);
+            }
+            catch (ExternalException ex)
+            {
+                _dialogView.ClipboardIsBusy(ex.Message);
+            }
         }
         
         private class CopyHandle

@@ -123,6 +123,12 @@ namespace Viewer.UI.Images
             remove => CopyMenuItem.Click -= value;
         }
 
+        public event EventHandler CutItems
+        {
+            add => CutMenuItem.Click += value;
+            remove => CutMenuItem.Click -= value;
+        }
+
         public event EventHandler DeleteItems
         {
             add => DeleteMenuItem.Click += value;
@@ -427,7 +433,7 @@ namespace Viewer.UI.Images
             NameTextBox.BringToFront();
             BeginEditItemName?.Invoke(sender, new EntityEventArgs(_activeItem));
         }
-        
+
         protected override string GetPersistString()
         {
             if (Query != null)

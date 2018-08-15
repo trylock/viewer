@@ -79,6 +79,13 @@ namespace Viewer.UI.Explorer
         /// <param name="error">Error message</param>
         /// <returns>true iff user has confirmed to perform the previous operation again</returns>
         bool FailedToOpenFile(string path, string error);
+
+        /// <summary>
+        /// The application tried to access system clipboard but it could not be opened (typically
+        /// because it is being used by another process).
+        /// </summary>
+        /// <param name="errorMessage">System error message</param>
+        void ClipboardIsBusy(string errorMessage);
     }
 
     [Export(typeof(IFileSystemErrorView))]
@@ -193,6 +200,15 @@ namespace Viewer.UI.Explorer
                 Resources.FailedToOpenFile_Label,
                 MessageBoxButtons.RetryCancel,
                 MessageBoxIcon.Warning) == DialogResult.Retry;
+        }
+
+        public void ClipboardIsBusy(string errorMessage)
+        {
+            MessageBox.Show(
+               string.Format(Resources.ClipboardIsBusy_Message, errorMessage),
+               Resources.ClipboardIsBusy_Label,
+               MessageBoxButtons.OK,
+               MessageBoxIcon.Warning);
         }
     }
 }

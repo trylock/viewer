@@ -5,7 +5,9 @@ using System.Collections.Specialized;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MemoryStream = System.IO.MemoryStream;
@@ -61,9 +63,19 @@ namespace Viewer.Core.UI
     public interface IClipboardService
     {
         /// <summary>
-        /// Get files in the clipboard
+        /// Get files in the clipboard. 
         /// </summary>
         /// <returns>List of files in the clipboard with preferred drop effect</returns>
+        /// <exception cref="ExternalException">
+        ///     Data could not be retrieved from the Clipboard. Typically because it is being used by another
+        ///     process.
+        /// </exception>
+        /// <exception cref="ThreadStateException">
+        ///     The current thread is not in single-threaded apartment(STA) mode and the
+        ///     Application.MessageLoop property value is true. Add the STAThreadAttribute to your
+        ///     application's Main method.
+        /// </exception>
+        /// <seealso cref="Clipboard.GetDataObject"/>
         ClipboardFileDrop GetFiles();
 
         /// <summary>
@@ -71,6 +83,16 @@ namespace Viewer.Core.UI
         /// and string (list of file paths).
         /// </summary>
         /// <param name="files">Paths to files which will be added to the clipboard with preferred drag/drop effect</param>
+        /// <exception cref="ExternalException">
+        ///     Data could not be retrieved from the Clipboard. Typically because it is being used by another
+        ///     process.
+        /// </exception>
+        /// <exception cref="ThreadStateException">
+        ///     The current thread is not in single-threaded apartment (STA) mode. Add the STAThreadAttribute
+        ///     to your application's Main method.
+        /// </exception>
+        /// <exception cref="ArgumentNullException"><paramref name="files"/> is null</exception>
+        /// <seealso cref="Clipboard.SetDataObject(object)"/>
         void SetFiles(ClipboardFileDrop files);
     }
     
@@ -97,13 +119,15 @@ namespace Viewer.Core.UI
 
         public void SetFiles(ClipboardFileDrop files)
         {
+            if (files == null)
+                throw new ArgumentNullException(nameof(files));
+
             var fileList = files.ToArray();
             var data = new DataObject(DataFormats.FileDrop, fileList);
             data.SetText(string.Join(", ", fileList));
             data.SetData("Preferred DropEffect", new MemoryStream(BitConverter.GetBytes((int)files.Effect)));
-
-            Clipboard.Clear();
-            Clipboard.SetDataObject(data);
+            
+            Clipboard.SetDataObject(data, true);
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -365,8 +366,27 @@ namespace Viewer.UI.Images
         private void View_CopyItems(object sender, EventArgs e)
         {
             var paths = GetPathsInSelection();
-            _clipboard.SetFiles(new ClipboardFileDrop(paths, DragDropEffects.Copy));
+            try
+            {
+                _clipboard.SetFiles(new ClipboardFileDrop(paths, DragDropEffects.Copy));
+            }
+            catch (ExternalException ex)
+            {
+                _dialogView.ClipboardIsBusy(ex.Message);
+            }
         }
+
+        private void View_CutItems(object sender, EventArgs e)
+        {
+            var paths = GetPathsInSelection();
+            try
+            {
+                _clipboard.SetFiles(new ClipboardFileDrop(paths, DragDropEffects.Move));
+            }
+            catch (ExternalException ex)
+            {
+                _dialogView.ClipboardIsBusy(ex.Message);
+            }
         }
 
         private void View_DeleteItems(object sender, EventArgs e)

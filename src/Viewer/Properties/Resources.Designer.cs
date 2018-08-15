@@ -99,6 +99,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clipboard Busy.
+        /// </summary>
+        internal static string ClipboardIsBusy_Label {
+            get {
+                return ResourceManager.GetString("ClipboardIsBusy_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System clipboard cannot be opened. Try again later. System error: {0}.
+        /// </summary>
+        internal static string ClipboardIsBusy_Message {
+            get {
+                return ResourceManager.GetString("ClipboardIsBusy_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Delete.
         /// </summary>
         internal static string ConfirmDelete_Label {

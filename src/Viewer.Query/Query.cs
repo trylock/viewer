@@ -28,6 +28,14 @@ namespace Viewer.Query
         /// <param name="cancellationToken">Cancellation token used to cancel the execution.</param>
         /// <returns>Matched entities.</returns>
         IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Check whether <paramref name="entity"/> matches the query (i.e., it sould be in the query result)
+        /// </summary>
+        /// <param name="entity">Checkwed entity</param>
+        /// <returns>true iff <paramref name="entity"/> matches the query</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
+        bool Match(IEntity entity);
     }
 
     /// <summary>
@@ -117,6 +125,13 @@ namespace Viewer.Query
         {
             return Enumerable.Empty<IEntity>();
         }
+
+        public bool Match(IEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return false;
+        }
     }
 
     /// <summary>
@@ -145,20 +160,27 @@ namespace Viewer.Query
             }
             progress.Report(new QueryProgressReport(ReportType.EndExecution, null, 0));
         }
+
+        public bool Match(IEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return _entities.Contains(entity);
+        }
     }
 
     internal class SelectQuery : IExecutableQuery
     {
         private readonly IFileSystem _fileSystem;
         private readonly IEntityManager _entities;
-        private readonly string _pattern;
+        private readonly FileFinder _fileFinder;
         private readonly FileAttributes _hiddenFlags;
 
         public SelectQuery(IFileSystem fileSystem, IEntityManager entities, string pattern, FileAttributes hiddenFlags)
         {
+            _fileFinder = new FileFinder(fileSystem, pattern ?? "");
             _fileSystem = fileSystem;
             _entities = entities;
-            _pattern = pattern;
             _hiddenFlags = hiddenFlags;
         }
 
@@ -212,6 +234,19 @@ namespace Viewer.Query
             }
 
             progress.Report(new QueryProgressReport(ReportType.EndExecution, null, 0));
+        }
+
+        public bool Match(IEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            if (IsHidden(entity.Path))
+                return false;
+
+            // the entity is in this query iff its parent diretory matches the path pattern
+            var parentPath = PathUtils.GetDirectoryPath(entity.Path);
+            return _fileFinder.Match(parentPath);
         }
 
         private bool IsHidden(string path)
@@ -278,13 +313,7 @@ namespace Viewer.Query
         
         private IEnumerable<string> EnumerateDirectories()
         {
-            if (_pattern == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            var finder = new FileFinder(_fileSystem, _pattern);
-            return finder.GetDirectories();
+            return _fileFinder.GetDirectories();
         }
     }
 
@@ -302,6 +331,11 @@ namespace Viewer.Query
         public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             return _source.Evaluate(progress, cancellationToken).Where(_predicate);
+        }
+
+        public bool Match(IEntity entity)
+        {
+            return _source.Match(entity) && _predicate(entity);
         }
     }
 
@@ -322,6 +356,11 @@ namespace Viewer.Query
             var secondEvaluation = _second.Evaluate(progress, cancellationToken);
             return firstEvaluation.Except(secondEvaluation, EntityPathEqualityComparer.Default);
         }
+
+        public bool Match(IEntity entity)
+        {
+            return _first.Match(entity) && !_second.Match(entity);
+        }
     }
 
     internal class IntersectQuery : IExecutableQuery
@@ -341,6 +380,11 @@ namespace Viewer.Query
             var secondEvaluation = _second.Evaluate(progress, cancellationToken);
             return firstEvaluation.Intersect(secondEvaluation, EntityPathEqualityComparer.Default);
         }
+
+        public bool Match(IEntity entity)
+        {
+            return _first.Match(entity) && _second.Match(entity);
+        }
     }
 
     internal class UnionQuery : IExecutableQuery
@@ -359,6 +403,11 @@ namespace Viewer.Query
             var firstEvaluation = _first.Evaluate(progress, cancellationToken);
             var secondEvaluation = _second.Evaluate(progress, cancellationToken);
             return firstEvaluation.Union(secondEvaluation, EntityPathEqualityComparer.Default);
+        }
+
+        public bool Match(IEntity entity)
+        {
+            return _first.Match(entity) || _second.Match(entity);
         }
     }
 
@@ -384,6 +433,11 @@ namespace Viewer.Query
         public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             return _source.Evaluate(progress, cancellationToken);
+        }
+
+        public bool Match(IEntity entity)
+        {
+            return _source.Match(entity);
         }
 
         public IQuery WithComparer(IComparer<IEntity> comparer)

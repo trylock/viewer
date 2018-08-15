@@ -77,6 +77,13 @@ namespace Viewer.UI.Tasks
             var finishedCount = _controller.FinishedCount;
 
             // update the view
+            if (finishedCount > TaskProgressBar.Maximum)
+            {
+                // This is an invalid state but, as we are dealing with an asyncrhonous operation,
+                // it could happend that the total number of tasks has increased.
+                TaskProgressBar.Maximum = finishedCount;
+            }
+
             var progress = (int) (TaskProgressBar.Value / (double) TaskProgressBar.Maximum * 100);
             TaskProgressBar.Value = finishedCount;
             TaskNameLabel.Text = name;

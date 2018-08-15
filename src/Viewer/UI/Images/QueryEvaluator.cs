@@ -5,11 +5,13 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Core.Collections;
 using Viewer.Data;
+using Viewer.Data.Formats;
 using Viewer.IO;
 using Viewer.Query;
 
@@ -18,7 +20,9 @@ namespace Viewer.UI.Images
     public class QueryEvaluator : IDisposable
     {
         // dependencies
+        private readonly IEntityManager _entities;
         private readonly IFileWatcher _fileWatcher;
+        private readonly IFileSystem _fileSystem;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IErrorListener _queryErrorListener;
 
@@ -48,11 +52,20 @@ namespace Viewer.UI.Images
         /// </summary>
         public Task LoadTask { get; private set; } = Task.CompletedTask;
 
-        public QueryEvaluator(IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener queryErrorListener, IQuery query)
+        public QueryEvaluator(
+            IFileSystem fileSystem,
+            IFileWatcherFactory fileWatcherFactory, 
+            ILazyThumbnailFactory thumbnailFactory, 
+            IErrorListener queryErrorListener, 
+            IEntityManager entities, 
+            IQuery query)
         {
+            _fileSystem = fileSystem;
+            _entities = entities;
             _fileWatcher = fileWatcherFactory.Create();
             _fileWatcher.Renamed += FileWatcherOnRenamed;
             _fileWatcher.Deleted += FileWatcherOnDeleted;
+            _fileWatcher.Created += FileWatcherOnCreated;
             _thumbnailFactory = thumbnailFactory;
             _queryErrorListener = queryErrorListener;
             Cancellation = new CancellationTokenSource();
@@ -88,7 +101,49 @@ namespace Viewer.UI.Images
                 return; // skip this event
             _moveRequests.Enqueue(e);
         }
-        
+
+        private void FileWatcherOnCreated(object sender, FileSystemEventArgs e)
+        {
+            if (!IsEntityEvent(e))
+                return; // skip this event
+
+            IEntity entity = null;
+            if (_fileSystem.DirectoryExists(e.FullPath)) 
+            {
+                entity = new DirectoryEntity(e.FullPath);
+            }
+            else // if this is a file (or deleted)
+            {
+                try
+                {
+                    entity = _entities.GetEntity(e.FullPath).Entity;
+                } // silently ignore load exceptions
+                catch (InvalidDataFormatException)
+                {
+                }
+                catch (NotSupportedException)
+                {
+                }
+                catch (PathTooLongException)
+                {
+                }
+                catch (SecurityException)
+                {
+                }
+                catch (IOException)
+                {
+                }
+                catch (ArgumentException) // invalid path
+                {
+                }
+            }
+
+            if (entity != null && Query.Match(entity))
+            {
+                _addRequests.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
+            }
+        }
+
         /// <summary>
         /// Evaluate the query on a differet thread.
         /// Found entities will be added to a waiting queue.
@@ -227,21 +282,25 @@ namespace Viewer.UI.Images
     [Export(typeof(IQueryEvaluatorFactory))]
     public class QueryEvaluatorFactory : IQueryEvaluatorFactory
     {
+        private readonly IFileSystem _fileSystem;
         private readonly IFileWatcherFactory _fileWatcherFactory;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IErrorListener _errorListener;
+        private readonly IEntityManager _entities;
 
         [ImportingConstructor]
-        public QueryEvaluatorFactory(IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener errorListener)
+        public QueryEvaluatorFactory(IFileSystem fileSystem, IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener errorListener, IEntityManager entities)
         {
+            _fileSystem = fileSystem;
             _fileWatcherFactory = fileWatcherFactory;
             _thumbnailFactory = thumbnailFactory;
             _errorListener = errorListener;
+            _entities = entities;
         }
 
         public QueryEvaluator Create(IQuery query)
         {
-            return new QueryEvaluator(_fileWatcherFactory, _thumbnailFactory, _errorListener, query);
+            return new QueryEvaluator(_fileSystem, _fileWatcherFactory, _thumbnailFactory, _errorListener, _entities, query);
         }
     }
 }

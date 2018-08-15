@@ -144,7 +144,6 @@ namespace Viewer.UI.Explorer
             var fileCount = (int)_fileSystem.CountFiles(files, true);
             var cancellation = new CancellationTokenSource();
             var progress = _taskLoader.CreateLoader(Resources.CopyingFiles_Label, fileCount, cancellation);
-
             try
             {
                 await Task.Run(() =>
@@ -153,11 +152,11 @@ namespace Viewer.UI.Explorer
                     {
                         var baseDir = PathUtils.GetDirectoryPath(file);
                         var copy = new CopyHandle(
-                            _fileSystem, 
-                            baseDir, 
-                            destinationDirectory, 
+                            _fileSystem,
+                            baseDir,
+                            destinationDirectory,
                             progress,
-                            cancellation.Token, 
+                            cancellation.Token,
                             _dialogView);
                         if ((effect & DragDropEffects.Move) != 0)
                             _fileSystem.Search(file, copy.CreateDirectory, copy.MoveFile);
@@ -166,9 +165,9 @@ namespace Viewer.UI.Explorer
                     }
                 }, cancellation.Token);
             }
-            finally // propagate the OperationCanceledException to the caller
+            finally
             {
-                cancellation.Dispose();
+                progress.Close();
             }
         }
     }

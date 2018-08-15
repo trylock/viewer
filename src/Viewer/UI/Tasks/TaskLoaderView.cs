@@ -16,7 +16,7 @@ namespace Viewer.UI.Tasks
 {
     public partial class TaskLoaderView : WindowView
     {
-        public IProgress<ILoadingProgress> Progress => _controller;
+        public IProgressController Progress => _controller;
 
         /// <summary>
         /// Name of the task
@@ -24,24 +24,38 @@ namespace Viewer.UI.Tasks
         public string OperationName { get; set; }
 
         private readonly ProgressController _controller;
-        private readonly CancellationTokenSource _cancellation;
+        private CancellationTokenSource _cancellation;
 
-        private class ProgressController : IProgress<ILoadingProgress>
+        private class ProgressController : IProgressController
         {
             /// <summary>
             /// Name of a task which is currently loading
             /// </summary>
-            public string LoadingTaskName;
+            public string Message;
 
             /// <summary>
             /// Number of finished tasks
             /// </summary>
             public int FinishedCount;
 
+            private readonly TaskLoaderView _view;
+
+            public ProgressController(TaskLoaderView view)
+            {
+                _view = view;
+            }
+
             public void Report(ILoadingProgress value)
             {
-                LoadingTaskName = value.Name;
+                Message = value.Message;
                 Interlocked.Increment(ref FinishedCount);
+            }
+
+            public void Close()
+            {
+                _view._cancellation?.Dispose();
+                _view._cancellation = null;
+                _view.Close();
             }
         }
 
@@ -49,7 +63,7 @@ namespace Viewer.UI.Tasks
         {
             InitializeComponent();
             
-            _controller = new ProgressController();
+            _controller = new ProgressController(this);
             _cancellation = cancellation;
 
             TaskProgressBar.Minimum = 0;
@@ -59,12 +73,8 @@ namespace Viewer.UI.Tasks
         private void PollTimer_Tick(object sender, EventArgs e)
         {
             // read current state
-            var name = _controller.LoadingTaskName;
+            var name = _controller.Message;
             var finishedCount = _controller.FinishedCount;
-            if (finishedCount >= TaskProgressBar.Maximum)
-            {
-                Close();
-            }
 
             // update the view
             var progress = (int) (TaskProgressBar.Value / (double) TaskProgressBar.Maximum * 100);
@@ -80,13 +90,13 @@ namespace Viewer.UI.Tasks
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                _cancellation.Cancel();
+                _cancellation?.Cancel();
             }
         }
 
         private void CancelTaskButton_Click(object sender, EventArgs e)
         {
-            _cancellation.Cancel();
+            _cancellation?.Cancel();
             Close();
         }
     }

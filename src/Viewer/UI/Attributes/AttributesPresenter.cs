@@ -221,7 +221,7 @@ namespace Viewer.UI.Attributes
             ViewAttributes();
         }
         
-        private void View_SaveAttributes(object sender, EventArgs args)
+        private async void View_SaveAttributes(object sender, EventArgs args)
         {
             var unsaved = _entityManager.GetModified();
             if (unsaved.Count <= 0)
@@ -231,35 +231,41 @@ namespace Viewer.UI.Attributes
             
             var cancellation = new CancellationTokenSource();
             var progress = _taskLoader.CreateLoader(Resources.SavingChanges_Label, unsaved.Count, cancellation);
-
-            Task.Factory.StartNew(() =>
+            try
             {
-                foreach (var entity in unsaved)
+                await Task.Factory.StartNew(() =>
                 {
-                    if (cancellation.IsCancellationRequested)
+                    foreach (var entity in unsaved)
                     {
-                        // put the changes back to the entity manager
-                        _entityManager.SetEntity(entity, false);
+                        if (cancellation.IsCancellationRequested)
+                        {
+                            // put the changes back to the entity manager
+                            _entityManager.SetEntity(entity, false);
+                        }
+                        else
+                        {
+                            progress.Report(new LoadingProgress(entity.Path));
+                            try
+                            {
+                                _storage.Store(entity);
+                            }
+                            catch (FileNotFoundException)
+                            {
+                                Report($"Attribute file {entity.Path} was not found.", LogType.Error, null);
+                            }
+                            catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
+                                                      e.GetType() == typeof(SecurityException))
+                            {
+                                Report($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
+                            }
+                        }
                     }
-                    else
-                    {
-                        progress.Report(new LoadingProgress(entity.Path));
-                        try
-                        {
-                            _storage.Store(entity);
-                        }
-                        catch (FileNotFoundException)
-                        {
-                            Report($"Attribute file {entity.Path} was not found.", LogType.Error, null);
-                        }
-                        catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
-                                                  e.GetType() == typeof(SecurityException))
-                        {
-                            Report($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
-                        }
-                    }
-                }
-            }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            }
+            finally
+            {
+                progress.Close();
+            }
         }
 
         private static IComparer<AttributeGroup> CreateComparer<TKey>(Func<AttributeGroup, TKey> keySelector, int direction)

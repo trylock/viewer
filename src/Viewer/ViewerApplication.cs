@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core;
+using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.UI;
 using WeifenLuo.WinFormsUI.Docking;
@@ -50,6 +51,24 @@ namespace Viewer
         public void AddMenuItem(IReadOnlyList<string> menuPath, Action action, Image icon)
         {
             _appForm.AddMenuItem(menuPath, action, icon);
+        }
+
+        public IToolBarItem CreateToolBarItem(string groupName, string toolName, string toolTipText, Image image, Action action)
+        {
+            var tool = _appForm.AddTool(groupName, toolName, action);
+            tool.ToolTipText = toolTipText;
+            tool.Image = image;
+            return tool;
+        }
+
+        public IStatusBarItem CreateStatusBarItem(string text, Image image, ToolStripItemAlignment alignment)
+        {
+            return _appForm.CreateStatusBarItem(text, image, alignment);
+        }
+
+        public IStatusBarSlider CreateStatusBarSlider(string text, Image image, ToolStripItemAlignment alignment)
+        {
+            return _appForm.CreateStatusBarSlider(text, image, alignment);
         }
 
         public void AddLayoutDeserializeCallback(DeserializeDockContent callback)

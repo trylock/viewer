@@ -491,13 +491,13 @@ namespace Viewer.UI.Images
 
             try
             {
-                if (e.AllowedEffect == DragDropEffects.Copy)
-                {
-                    await _explorer.CopyFilesAsync(e.Entity.FullPath, files);
-                }
-                else if (e.AllowedEffect == DragDropEffects.Move)
+                if ((e.AllowedEffect & DragDropEffects.Move) != 0)
                 {
                     await _explorer.MoveFilesAsync(e.Entity.FullPath, files);
+                }
+                else if ((e.AllowedEffect & DragDropEffects.Copy) != 0)
+                {
+                    await _explorer.CopyFilesAsync(e.Entity.FullPath, files);
                 }
             }
             catch (OperationCanceledException)

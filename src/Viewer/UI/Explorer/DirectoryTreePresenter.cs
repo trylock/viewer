@@ -295,13 +295,13 @@ namespace Viewer.UI.Explorer
         {
             try
             {
-                if (effect == DragDropEffects.Copy)
-                {
-                    await _explorer.CopyFilesAsync(destDir, files);
-                }
-                else
+                if ((effect & DragDropEffects.Move) != 0)
                 {
                     await _explorer.MoveFilesAsync(destDir, files);
+                }
+                else if ((effect & DragDropEffects.Copy) != 0)
+                {
+                    await _explorer.CopyFilesAsync(destDir, files);
                 }
             }
             catch (OperationCanceledException)

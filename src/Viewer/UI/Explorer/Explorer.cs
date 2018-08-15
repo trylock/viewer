@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -99,6 +100,11 @@ namespace Viewer.UI.Explorer
 
             public SearchControl CreateDirectory(string path)
             {
+                if (PathUtils.UnifyPath(_destDir) == PathUtils.UnifyPath(path))
+                {
+                    _dialogView.FailedToMove(path, _destDir);
+                    return SearchControl.None;
+                }
                 var destDir = GetDestinationPath(path);
                 _fileSystem.CreateDirectory(destDir);
                 return SearchControl.Visit;

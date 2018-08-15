@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -364,8 +364,9 @@ namespace Viewer.UI.Images
 
         private void View_CopyItems(object sender, EventArgs e)
         {
-            _clipboard.SetFiles(GetPathsInSelection());
-            _clipboard.SetPreferredEffect(DragDropEffects.Copy);
+            var paths = GetPathsInSelection();
+            _clipboard.SetFiles(new ClipboardFileDrop(paths, DragDropEffects.Copy));
+        }
         }
 
         private void View_DeleteItems(object sender, EventArgs e)

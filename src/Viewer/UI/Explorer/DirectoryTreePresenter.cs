@@ -255,8 +255,7 @@ namespace Viewer.UI.Explorer
 
         private void View_CopyDirectory(object sender, DirectoryEventArgs e)
         {
-            _clipboard.SetFiles(new[] { e.FullPath });
-            _clipboard.SetPreferredEffect(DragDropEffects.Copy);
+            _clipboard.SetFiles(new ClipboardFileDrop(new[] { e.FullPath }, DragDropEffects.Copy));
         }
         
         private void View_PasteToDirectory(object sender, PasteEventArgs e)
@@ -272,7 +271,8 @@ namespace Viewer.UI.Explorer
 
         private void View_PasteClipboardToDirectory(object sender, DirectoryEventArgs e)
         {
-            PasteFiles(e.FullPath, _clipboard.GetFiles(), _clipboard.GetPreferredEffect());
+            var files = _clipboard.GetFiles();
+            PasteFiles(e.FullPath, files, files.Effect);
         }
         
         private class CopyHandle

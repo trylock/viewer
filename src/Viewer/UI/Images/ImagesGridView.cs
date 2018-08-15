@@ -267,7 +267,7 @@ namespace Viewer.UI.Images
             {
                 GoForwardInHistory?.Invoke(sender, e);
             }
-
+            
             // process events on grid view item
             var location = GridView.UnprojectLocation(e.Location);
             var item = GridView.GetItemAt(location);
@@ -335,13 +335,34 @@ namespace Viewer.UI.Images
             _isDragging = false;
             _selectItemTriggered = false;
         }
-
+        
         private void GridView_MouseMove(object sender, MouseEventArgs e)
         {
             var location = GridView.UnprojectLocation(e.Location);
             if (_isSelectionActive)
             {
                 SelectionDrag?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+
+                // scroll up, down if we are outside of the control area
+                if (e.Button.HasFlag(MouseButtons.Left))
+                {
+                    var delta = 0;
+                    if (e.Location.Y < 0)
+                    {
+                        // scroll up
+                        delta = 10;
+                    }
+                    else if (e.Location.Y > ClientSize.Height)
+                    {
+                        // scroll down
+                        delta = -10;
+                    }
+                    
+                    if (delta != 0)
+                    {
+                        GridView.AutoScrollPosition = new Point(0, -GridView.AutoScrollPosition.Y - delta);
+                    }
+                }
             }
             else
             {
@@ -382,12 +403,7 @@ namespace Viewer.UI.Images
             
             OpenItem?.Invoke(sender, new EntityEventArgs(item));
         }
-
-        private void GridView_Scroll(object sender, ScrollEventArgs e)
-        {
-            CancelEditItemName?.Invoke(sender, e);
-        }
-
+        
         private void GridView_MouseWheel(object sender, MouseEventArgs e)
         {
             CancelEditItemName?.Invoke(sender, e);

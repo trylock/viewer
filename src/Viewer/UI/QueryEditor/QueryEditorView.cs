@@ -41,6 +41,8 @@ namespace Viewer.UI.QueryEditor
 
             QueryTextBox.Margins[0].Type = MarginType.Number;
             QueryTextBox.Margins[0].Width = 20;
+
+            QueryTextBox.ClearCmdKey(Keys.Control | Keys.S);
         }
 
         #region Drop view
@@ -56,21 +58,6 @@ namespace Viewer.UI.QueryEditor
         public event EventHandler SaveQuery;
         public event EventHandler<OpenQueryEventArgs> OpenQuery;
         public string FullPath { get; set; }
-        
-        public IEnumerable<QueryView> Views
-        {
-            get => QueryViewComboBox.Items.OfType<QueryView>();
-            set
-            {
-                QueryViewComboBox.DisplayMember = "Name";
-                QueryViewComboBox.Items.Clear();
-                foreach (var item in value)
-                {
-                    QueryViewComboBox.Items.Add(item);
-                }
-                QueryViewComboBox.Invalidate();
-            }
-        }
 
         public string Query
         {
@@ -92,8 +79,7 @@ namespace Viewer.UI.QueryEditor
             {
                 RunQuery?.Invoke(sender, e);
             }
-
-            if (e.Control && e.KeyCode == Keys.S)
+            else if (e.Control && e.KeyCode == Keys.S)
             {
                 e.SuppressKeyPress = true;
                 SaveQuery?.Invoke(sender, e);
@@ -105,19 +91,9 @@ namespace Viewer.UI.QueryEditor
             }
         }
 
-        private void RunButton_Click(object sender, EventArgs e)
-        {
-            RunQuery?.Invoke(sender, e);
-        }
-
         private void QueryTextBox_TextChanged(object sender, EventArgs e)
         {
             QueryChanged?.Invoke(sender, e);
-        }
-        
-        private void SaveButton_Click(object sender, EventArgs e)
-        {
-            SaveQuery?.Invoke(sender, e);
         }
 
         private void OpenButton_Click(object sender, EventArgs e)
@@ -144,18 +120,6 @@ namespace Viewer.UI.QueryEditor
         protected override string GetPersistString()
         {
             return base.GetPersistString() + ";" + Query + ";" + (FullPath ?? "");
-        }
-
-        private void QueryViewComboBox_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            var view = QueryViewComboBox.SelectedItem as Viewer.Query.QueryView;
-            if (view == null)
-            {
-                return;
-            }
-            OpenQuery?.Invoke(this, new OpenQueryEventArgs(view.Path));
-            QueryViewComboBox.SelectedItem = null;
-            QueryTextBox.Focus();
         }
     }
 }

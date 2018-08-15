@@ -41,36 +41,11 @@ namespace Viewer.UI.QueryEditor
             ViewLifetime = viewFactory.CreateExport();
             _dialogErrorView = dialogErrorView;
             _queryCompiler = queryCompiler;
-            _queryCompiler.Views.Changed += ViewsOnChanged;
             _queryErrorListener = queryErrorListener;
             _appEvents = appEvents;
             _editor = editor;
 
             SubscribeTo(View, "View");
-            ViewsOnChanged(this, EventArgs.Empty);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            _queryCompiler.Views.Changed -= ViewsOnChanged;
-        }
-
-        private void ViewsOnChanged(object sender, EventArgs e)
-        {
-            if (View.InvokeRequired)
-            {
-                View.BeginInvoke(new Action(UpdateViews));
-            }
-            else
-            {
-                UpdateViews();
-            }
-        }
-
-        private void UpdateViews()
-        {
-            View.Views = _queryCompiler.Views;
         }
 
         /// <summary>
@@ -88,6 +63,65 @@ namespace Viewer.UI.QueryEditor
 
             View.Query = content;
             MarkSaved();
+        }
+
+        /// <summary>
+        /// Save content of this editor window to its file.
+        /// If the editor does not have a file assigned, this will open a dialog to select a file
+        /// where the query will be saved.
+        /// </summary>
+        /// <returns>Task finished after the query is saved to a file.</returns>
+        public async Task SaveAsync()
+        {
+            if (!_isUnsaved)
+            {
+                return;
+            }
+
+            // this query is not saved in a file
+            if (View.FullPath == null)
+            {
+                View.FullPath = View.PickFileForWrite();
+                if (View.FullPath == null)
+                {
+                    // user has not picked a file
+                    return;
+                }
+            }
+
+            // save the query to its file
+            try
+            {
+                await _editor.SaveAsync(View.FullPath, View.Query);
+
+                MarkSaved();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _dialogErrorView.UnauthorizedAccess(View.FullPath);
+            }
+            catch (SecurityException)
+            {
+                _dialogErrorView.UnauthorizedAccess(View.FullPath);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                _dialogErrorView.FileNotFound(View.FullPath);
+            }
+        }
+
+        /// <summary>
+        /// Run this query.
+        /// </summary>
+        /// <returns>Task completed after query compilation.</returns>
+        public async Task RunAsync()
+        {
+            var input = View.Query;
+            var query = await Task.Run(() => _queryCompiler.Compile(new StringReader(input), _queryErrorListener));
+            if (query != null)
+            {
+                _appEvents.ExecuteQuery(query);
+            }
         }
 
         /// <summary>
@@ -116,41 +150,7 @@ namespace Viewer.UI.QueryEditor
         
         private async void View_SaveQuery(object sender, EventArgs e)
         {
-            if (!_isUnsaved)
-            {
-                return;
-            }
-
-            // this query is not saved in a file
-            if (View.FullPath == null)
-            {
-                View.FullPath = View.PickFileForWrite();
-                if (View.FullPath == null)
-                {
-                    // user has not picked a file
-                    return;
-                }
-            }
-
-            // save the query to its file
-            try
-            {
-                await _editor.SaveAsync(View.FullPath, View.Query);
-                
-                MarkSaved();
-            }
-            catch (UnauthorizedAccessException)
-            {
-                _dialogErrorView.UnauthorizedAccess(View.FullPath);
-            }
-            catch (SecurityException)
-            {
-                _dialogErrorView.UnauthorizedAccess(View.FullPath);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                _dialogErrorView.FileNotFound(View.FullPath);
-            }
+            await SaveAsync();
         }
 
         private void View_OpenQuery(object sender, OpenQueryEventArgs e)
@@ -160,12 +160,7 @@ namespace Viewer.UI.QueryEditor
 
         private async void View_RunQuery(object sender, EventArgs e)
         {
-            var input = View.Query;
-            var query = await Task.Run(() => _queryCompiler.Compile(new StringReader(input), _queryErrorListener));
-            if (query != null)
-            {
-                _appEvents.ExecuteQuery(query);
-            }
+            await RunAsync();
         }
 
         private void View_QueryChanged(object sender, EventArgs e)

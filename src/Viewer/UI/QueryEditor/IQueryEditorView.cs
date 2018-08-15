@@ -54,11 +54,6 @@ namespace Viewer.UI.QueryEditor
         event EventHandler<OpenQueryEventArgs> OpenQuery;
 
         /// <summary>
-        /// List of query views
-        /// </summary>
-        IEnumerable<QueryView> Views { get; set; }
-
-        /// <summary>
         /// Full path to a file which contains this query or
         /// null if there is no such file.
         /// </summary>

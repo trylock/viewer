@@ -119,14 +119,15 @@ namespace Viewer.UI.Images
         private Size _loadingThumbnailAreaSize;
 
         /// <summary>
-        /// If a loading task fails due its file being busy (opened by another process), we want to retry the load
-        /// operation. This the delay between the failed load and the next retry operation.
+        /// If a loading task fails due its file being busy (opened by another process), we want to
+        /// retry the load operation. This is the delay between the failed load and the next retry
+        /// operation.
         /// </summary>
         public static readonly TimeSpan RetryDelay = new TimeSpan(0, 0, 0, 2);
 
         /// <summary>
-        /// Default thumbnail image. <see cref="GetCurrent"/> will return this value if no other image is currently
-        /// available (e.g., on the first call to the <see cref="GetCurrent"/>)
+        /// Default thumbnail image. <see cref="GetCurrent"/> will return this value if no other
+        /// image is currently available (e.g., on the first call to the <see cref="GetCurrent"/>)
         /// </summary>
         public static Image Default { get; } = Resources.DefaultThumbnail;
 

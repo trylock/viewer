@@ -32,10 +32,10 @@ namespace Viewer.UI.Explorer
         private readonly IQueryEvents _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IFileSystem _fileSystem;
-        private readonly ISystemExplorer _explorer;
+        private readonly ISystemExplorer _systemExplorer;
         private readonly IClipboardService _clipboard;
         private readonly IFileSystemErrorView _dialogView;
-        private readonly ITaskLoader _taskLoader;
+        private readonly IExplorer _explorer;
 
         protected override ExportLifetimeContext<IDirectoryTreeView> ViewLifetime { get; }
 
@@ -47,16 +47,17 @@ namespace Viewer.UI.Explorer
             ITaskLoader taskLoader,
             IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
-            ISystemExplorer explorer,
+            ISystemExplorer systemExplorer,
+            IExplorer explorer,
             IClipboardService clipboard)
         {
             _state = state;
             _queryFactory = queryFactory;
             _fileSystem = fileSystem;
-            _explorer = explorer;
+            _systemExplorer = systemExplorer;
             _clipboard = clipboard;
             _dialogView = dialogView;
-            _taskLoader = taskLoader;
+            _explorer = explorer;
             ViewLifetime = viewFactory.CreateExport();
 
             SubscribeTo(View, "View");
@@ -251,7 +252,7 @@ namespace Viewer.UI.Explorer
 
         private void View_OpenInExplorer(object sender, DirectoryEventArgs e)
         {
-            _explorer.OpenFile(e.FullPath);
+            _systemExplorer.OpenFile(e.FullPath);
         }
 
         private void View_CopyDirectory(object sender, DirectoryEventArgs e)
@@ -289,114 +290,28 @@ namespace Viewer.UI.Explorer
                 _dialogView.ClipboardIsBusy(ex.Message);
             }
         }
-        
-        private class CopyHandle
+
+        private async void PasteFiles(string destDir, IEnumerable<string> files, DragDropEffects effect)
         {
-            private readonly IFileSystem _fileSystem;
-            private readonly IProgress<LoadingProgress> _progress;
-            private readonly IFileSystemErrorView _dialogView;
-            private readonly CancellationToken _cancellationToken;
-            private readonly string _baseDir;
-            private readonly string _destDir;
-
-            public CopyHandle(
-                IFileSystem fileSystem, 
-                string baseDir, 
-                string desDir,
-                IProgress<LoadingProgress> progress,
-                CancellationToken cancellationToken,
-                IFileSystemErrorView dialogView)
-            {
-                _fileSystem = fileSystem;
-                _baseDir = baseDir;
-                _destDir = desDir;
-                _dialogView = dialogView;
-                _progress = progress;
-                _cancellationToken = cancellationToken;
-            }
-            
-            private string GetDestinationPath(string path)
-            {
-                var partialPath = path.Substring(_baseDir.Length + 1);
-                return Path.Combine(_destDir, partialPath);
-            }
-            
-            public SearchControl CreateDirectory(string path)
-            {
-                var destDir = GetDestinationPath(path);
-                _fileSystem.CreateDirectory(destDir);
-                return SearchControl.Visit;
-            }
-
-            public SearchControl CopyFile(string path)
-            {
-                return Operation(path, (src, dest) => _fileSystem.CopyFile(src, dest));
-            }
-
-            public SearchControl MoveFile(string path)
-            {
-                return Operation(path, (src, dest) => _fileSystem.MoveFile(src, dest));
-            }
-
-            private SearchControl Operation(string path, Action<string, string> operation)
-            {
-                _cancellationToken.ThrowIfCancellationRequested();
-
-                var destPath = GetDestinationPath(path);
-                _progress.Report(new LoadingProgress(path));
-                try
-                {
-                    operation(path, destPath);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    _dialogView.DirectoryNotFound(path);
-                }
-                catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
-                                          e.GetType() == typeof(SecurityException))
-                {
-                    _dialogView.UnauthorizedAccess(path);
-                }
-
-                return SearchControl.None;
-            }
-        }
-
-        private async void PasteFiles(string destinationDirectory, IEnumerable<string> files, DragDropEffects effect)
-        {
-            // copy files
-            var fileCount = (int)_fileSystem.CountFiles(files, true);
-            var cancellation = new CancellationTokenSource();
-            var progress = _taskLoader.CreateLoader(Resources.CopyingFiles_Label, fileCount, cancellation);
-
             try
             {
-                await Task.Run(() =>
+                if (effect == DragDropEffects.Copy)
                 {
-                    foreach (var file in files)
-                    {
-                        var baseDir = PathUtils.GetDirectoryPath(file);
-                        var copy = new CopyHandle(_fileSystem, baseDir, destinationDirectory, progress,
-                            cancellation.Token, _dialogView);
-                        if ((effect & DragDropEffects.Move) != 0)
-                            _fileSystem.Search(file, copy.CreateDirectory, copy.MoveFile);
-                        else
-                            _fileSystem.Search(file, copy.CreateDirectory, copy.CopyFile);
-                    }
-                }, cancellation.Token);
+                    await _explorer.CopyFilesAsync(destDir, files);
+                }
+                else
+                {
+                    await _explorer.MoveFilesAsync(destDir, files);
+                }
             }
             catch (OperationCanceledException)
             {
             }
-            finally
-            {
-                cancellation.Dispose();
-            }
 
             // update subdirectories in given path
             View.LoadDirectories(
-                PathUtils.Split(destinationDirectory),
-                GetValidSubdirectories(destinationDirectory));
+                PathUtils.Split(destDir),
+                GetValidSubdirectories(destDir));
         }
     }
 }

@@ -276,13 +276,11 @@ namespace Viewer.UI.Images
                         SelectItem?.Invoke(sender, new EntityEventArgs(item));
                         _selectItemTriggered = true;
                     }
-                    else
-                    {
-                        // the MouseMove event will determine whether we will select this item
-                        // on MouseUp or drag the whole selection on MouseMove
-                        _isDragging = true;
-                        _dragOrigin = location;
-                    }
+
+                    // the MouseMove event will determine whether we will select this item
+                    // on MouseUp or drag the whole selection on MouseMove
+                    _isDragging = true;
+                    _dragOrigin = location;
                 }
                 else if (e.Button.HasFlag(MouseButtons.Right))
                 {

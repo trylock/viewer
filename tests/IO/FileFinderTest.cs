@@ -29,6 +29,95 @@ namespace ViewerTest.IO
         }
 
         [TestMethod]
+        public void Match_EmptyPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "");
+
+            Assert.IsTrue(finder.Match(""));
+            Assert.IsFalse(finder.Match("a"));
+        }
+
+        [TestMethod]
+        public void Match_PathWithoutPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "C:/directory/a/b/c");
+
+            Assert.IsFalse(finder.Match("C:/"));
+            Assert.IsFalse(finder.Match("C:/directory"));
+            Assert.IsFalse(finder.Match("C:/directory/a"));
+            Assert.IsFalse(finder.Match("C:/directory/a/b"));
+            Assert.IsTrue(finder.Match("C:/directory/a/b/c"));
+            Assert.IsTrue(finder.Match("C:/directory/a/b/c/"));
+            Assert.IsTrue(finder.Match("C:\\directory\\a\\b\\c"));
+            Assert.IsTrue(finder.Match("C:\\directory\\a\\b\\c\\"));
+        }
+
+        [TestMethod]
+        public void Match_PathWithOneAsteriskPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "C:/a/b*/c");
+
+            Assert.IsFalse(finder.Match("C:/a"));
+            Assert.IsFalse(finder.Match("C:/a/c"));
+            Assert.IsFalse(finder.Match("C:/a/x/c"));
+            Assert.IsTrue(finder.Match("C:/a/b/c"));
+            Assert.IsTrue(finder.Match("C:/a\\b/c\\"));
+            Assert.IsTrue(finder.Match("C:/a/bx/c"));
+            Assert.IsTrue(finder.Match("C:/a/bxy/c"));
+            Assert.IsTrue(finder.Match("C:/a/bxyz/c"));
+        }
+
+        [TestMethod]
+        public void Match_PathWithOneQuestionMarkPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "C:/a/b?/c");
+
+            Assert.IsFalse(finder.Match("C:/a"));
+            Assert.IsFalse(finder.Match("C:/a/c"));
+            Assert.IsFalse(finder.Match("C:/a/x/c"));
+            Assert.IsFalse(finder.Match("C:/a/b/c"));
+            Assert.IsTrue(finder.Match("C:/a/bx/c"));
+            Assert.IsTrue(finder.Match("C:\\a\\bx/c\\"));
+            Assert.IsFalse(finder.Match("C:/a/bxy/c"));
+            Assert.IsFalse(finder.Match("C:/a/bxyz/c"));
+        }
+
+        [TestMethod]
+        public void Match_PathWithGeneralPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "C:/a/**/c");
+
+            Assert.IsFalse(finder.Match("C:/a"));
+            Assert.IsTrue(finder.Match("C:/a/c"));
+            Assert.IsFalse(finder.Match("C:/ac"));
+            Assert.IsFalse(finder.Match("C:/a/bc"));
+            Assert.IsFalse(finder.Match("C:/ab/c"));
+            Assert.IsTrue(finder.Match("C:/a/x/c"));
+            Assert.IsTrue(finder.Match("C:/a/x/y/c"));
+            Assert.IsFalse(finder.Match("C:/a/x/y"));
+        }
+
+        [TestMethod]
+        public void Match_CombinedPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "C:/a/**/b*/c");
+
+            Assert.IsFalse(finder.Match("C:/a"));
+            Assert.IsFalse(finder.Match("C:/a/c"));
+            Assert.IsTrue(finder.Match("C:/a/b/c"));
+            Assert.IsTrue(finder.Match("C:/a/bx/c"));
+            Assert.IsTrue(finder.Match("C:/a/bxy/c"));
+            Assert.IsTrue(finder.Match("C:/a/x/b/c"));
+            Assert.IsFalse(finder.Match("C:/a/x/b"));
+        }
+
+        [TestMethod]
         public void GetDirectories_EmptyPattern()
         {
             var fileSystem = new Mock<IFileSystem>();

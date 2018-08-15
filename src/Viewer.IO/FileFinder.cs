@@ -53,6 +53,7 @@ namespace Viewer.IO
         
         private readonly IFileSystem _fileSystem;
         private readonly IReadOnlyList<string> _parts;
+        private readonly Regex _regex;
 
         /// <summary>
         /// Create a file finder with <paramref name="directoryPattern"/>.
@@ -69,12 +70,22 @@ namespace Viewer.IO
 
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _parts = ParsePattern(directoryPattern);
+            _regex = CompileRegex(directoryPattern);
         }
 
+        /// <summary>
+        /// Split the path using path parts which contain a pattern.
+        /// For example: a/b/c?/d/e/f/**/g/* will be split into 6 parts:
+        /// 'a/b', 'c?', 'd/e/f', '**', 'g' and '*'
+        /// </summary>
+        /// <param name="directoryPattern">Path pattern to split</param>
+        /// <returns>Path parts</returns>
         private static List<string> ParsePattern(string directoryPattern)
         {
             var parts = new List<string>();
             var patternParts = PathUtils.Split(directoryPattern);
+
+            // join parts without a pattern
             var pathBuilder = new StringBuilder();
             foreach (var part in patternParts)
             {
@@ -85,7 +96,7 @@ namespace Viewer.IO
                 }
                 else
                 {
-                    // add preceeding relative path if any
+                    // add preceeding relative path 
                     if (pathBuilder.Length > 0)
                     {
                         var directoryPath = pathBuilder.ToString();
@@ -104,6 +115,42 @@ namespace Viewer.IO
             }
 
             return parts;
+        }
+
+        /// <summary>
+        /// Compile <paramref name="pattern"/> to a regex.
+        /// </summary>
+        /// <param name="pattern">Directory path pattern</param>
+        /// <returns>Compiled regex</returns>
+        private static Regex CompileRegex(string pattern)
+        {
+            var sb = new StringBuilder();
+            sb.Append("^");
+            var parts = PathUtils.Split(pattern).ToArray();
+            var index = 0;
+            foreach (var part in parts)
+            {
+                if (part == "**")
+                {
+                    sb.Append(@"(.*[/\\])?");
+                }
+                else
+                {
+                    var partPattern = part
+                        .Replace("*", @"[^/\\]*")
+                        .Replace("?", @"[^/\\]");
+                    sb.Append(partPattern);
+
+                    if (index < parts.Length - 1)
+                    {
+                        sb.Append(@"[/\\]");
+                    }
+                }
+
+                ++index;
+            }
+            sb.Append(@"[/\\]*$");
+            return new Regex(sb.ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled);
         }
 
         /// <summary>
@@ -186,6 +233,11 @@ namespace Viewer.IO
 
                 states = newLevel;
             }
+        }
+
+        public bool Match(string path)
+        {
+            return _regex.IsMatch(path);
         }
 
         private IEnumerable<string> EnumerateDirectories(string path)

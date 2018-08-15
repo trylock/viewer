@@ -122,6 +122,43 @@ namespace Viewer.UI.Images
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Arguments used in the <see cref="E:Viewer.UI.Images.IImagesView.OnDrop" /> event.
+    /// </summary>
+    public class DropEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Entity on which user dropped some items. This can be null.
+        /// </summary>
+        public EntityView Entity { get; }
+
+        /// <summary>
+        /// Allowed drop effect.
+        /// </summary>
+        public DragDropEffects AllowedEffect { get; }
+
+        /// <summary>
+        /// Dropped data. This will never be null.
+        /// </summary>
+        public IDataObject Data { get; }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Create a new drop event arguments.
+        /// </summary>
+        /// <param name="entity">Entity on which the data was dropped. This can be null.</param>
+        /// <param name="allowedEffect">Allowed effect of the drop operation.</param>
+        /// <param name="data">Data dropped on the entity</param>
+        /// <exception cref="ArgumentNullException"><paramref name="data"/> is null</exception>
+        public DropEventArgs(EntityView entity, DragDropEffects allowedEffect, IDataObject data)
+        {
+            Entity = entity;
+            AllowedEffect = allowedEffect;
+            Data = data ?? throw new ArgumentNullException(nameof(data));
+        }
+    }
+
     public interface IHistoryView
     {
         /// <summary>
@@ -260,6 +297,11 @@ namespace Viewer.UI.Images
         /// Event occurs when user tries to open an item
         /// </summary>
         event EventHandler<EntityEventArgs> OpenItem;
+
+        /// <summary>
+        /// Event occurs when user drops omething into the view.
+        /// </summary>
+        event EventHandler<DropEventArgs> OnDrop;
 
         /// <summary>
         /// Textual representation of the query of this component

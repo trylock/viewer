@@ -136,6 +136,7 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler<EntityEventArgs> OpenItem;
+        public event EventHandler<DropEventArgs> OnDrop;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
         public event EventHandler<RenameEventArgs> RenameItem;
@@ -390,6 +391,25 @@ namespace Viewer.UI.Images
         private void GridView_MouseWheel(object sender, MouseEventArgs e)
         {
             CancelEditItemName?.Invoke(sender, e);
+        }
+
+        private void GridView_DragOver(object sender, DragEventArgs e)
+        {
+            var location = GridView.UnprojectLocation(PointToClient(MousePosition));
+            var item = GridView.GetItemAt(location);
+            e.Effect = item?.Data is DirectoryEntity ? 
+                DragDropEffects.Move : 
+                DragDropEffects.None;
+        }
+
+        private void GridView_DragDrop(object sender, DragEventArgs e)
+        {
+            var location = GridView.UnprojectLocation(PointToClient(MousePosition));
+            var item = GridView.GetItemAt(location);
+            if (item?.Data is DirectoryEntity)
+            {
+                OnDrop?.Invoke(sender, new DropEventArgs(item, e.AllowedEffect, e.Data));
+            }
         }
 
         #endregion

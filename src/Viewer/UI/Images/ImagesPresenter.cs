@@ -32,7 +32,7 @@ namespace Viewer.UI.Images
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class ImagesPresenter : Presenter<IImagesView>
     {
-        private readonly IEditor _editor;
+        private readonly IExplorer _explorer;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
@@ -94,7 +94,7 @@ namespace Viewer.UI.Images
         [ImportingConstructor]
         public ImagesPresenter(
             ExportFactory<IImagesView> viewFactory,
-            IEditor editor,
+            IExplorer explorer,
             IFileSystemErrorView dialogView,
             ISelection selection, 
             IEntityManager entityManager,
@@ -104,7 +104,7 @@ namespace Viewer.UI.Images
             IQueryEvaluatorFactory queryEvaluatorFactory)
         {
             ViewLifetime = viewFactory.CreateExport();
-            _editor = editor;
+            _explorer = explorer;
             _dialogView = dialogView;
             _selection = selection;
             _entityManager = entityManager;
@@ -474,6 +474,35 @@ namespace Viewer.UI.Images
         private void View_GoForwardInHistory(object sender, EventArgs e)
         {
             _state.Forward();
+        }
+        
+        private async void View_OnDrop(object sender, DropEventArgs e)
+        {
+            if (e.Entity == null)
+            {
+                return;
+            }
+
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+            if (files == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (e.AllowedEffect == DragDropEffects.Copy)
+                {
+                    await _explorer.CopyFilesAsync(e.Entity.FullPath, files);
+                }
+                else if (e.AllowedEffect == DragDropEffects.Move)
+                {
+                    await _explorer.MoveFilesAsync(e.Entity.FullPath, files);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
 
         #endregion

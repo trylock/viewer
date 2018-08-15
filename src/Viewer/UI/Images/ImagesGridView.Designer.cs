@@ -35,6 +35,7 @@
             this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.DeleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,7 +44,6 @@
             this.BackToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.GridView = new Viewer.UI.Images.GridView();
-            this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,44 +71,51 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 148);
+            this.ItemContextMenu.Size = new System.Drawing.Size(145, 126);
             // 
             // OpenMenuItem
             // 
             this.OpenMenuItem.Name = "OpenMenuItem";
-            this.OpenMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.OpenMenuItem.Size = new System.Drawing.Size(144, 22);
             this.OpenMenuItem.Text = "Open";
             this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // CopyMenuItem
             // 
             this.CopyMenuItem.Name = "CopyMenuItem";
             this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.CopyMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.CopyMenuItem.Size = new System.Drawing.Size(144, 22);
             this.CopyMenuItem.Text = "Copy";
+            // 
+            // CutMenuItem
+            // 
+            this.CutMenuItem.Name = "CutMenuItem";
+            this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.CutMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.CutMenuItem.Text = "Cut";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(141, 6);
             // 
             // DeleteMenuItem
             // 
             this.DeleteMenuItem.Name = "DeleteMenuItem";
             this.DeleteMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.DeleteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.DeleteMenuItem.Size = new System.Drawing.Size(144, 22);
             this.DeleteMenuItem.Text = "Delete";
             // 
             // RenameMenuItem
             // 
             this.RenameMenuItem.Name = "RenameMenuItem";
             this.RenameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.RenameMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.RenameMenuItem.Size = new System.Drawing.Size(144, 22);
             this.RenameMenuItem.Text = "Rename";
             this.RenameMenuItem.Click += new System.EventHandler(this.RenameMenuItem_Click);
             // 
@@ -126,6 +133,7 @@
             // 
             // GridView
             // 
+            this.GridView.AllowDrop = true;
             this.GridView.AutoScroll = true;
             this.GridView.ContextMenuStrip = this.ItemContextMenu;
             this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -141,18 +149,13 @@
             this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.GridView.Size = new System.Drawing.Size(626, 353);
             this.GridView.TabIndex = 1;
+            this.GridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.GridView_DragDrop);
+            this.GridView.DragOver += new System.Windows.Forms.DragEventHandler(this.GridView_DragOver);
             this.GridView.DoubleClick += new System.EventHandler(this.GridView_DoubleClick);
             this.GridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseDown);
             this.GridView.MouseLeave += new System.EventHandler(this.GridView_MouseLeave);
             this.GridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseMove);
             this.GridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseUp);
-            // 
-            // CutMenuItem
-            // 
-            this.CutMenuItem.Name = "CutMenuItem";
-            this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.CutMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.CutMenuItem.Text = "Cut";
             // 
             // ImagesGridView
             // 

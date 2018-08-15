@@ -285,9 +285,9 @@ namespace Viewer.UI.Images
 
         private void View_BeginDragItems(object sender, EventArgs e)
         {
-            var dragFiles = _rectangleSelection.Select(elem => elem.FullPath).ToArray();
+            var dragFiles = GetPathsInSelection().ToArray();
             var data = new DataObject(DataFormats.FileDrop, dragFiles);
-            View.BeginDragDrop(data, DragDropEffects.Copy);
+            View.BeginDragDrop(data, DragDropEffects.Move);
         }
         
         private void View_HandleKeyDown(object sender, KeyEventArgs e)

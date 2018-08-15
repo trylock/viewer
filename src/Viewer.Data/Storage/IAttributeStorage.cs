@@ -59,8 +59,9 @@ namespace Viewer.Data.Storage
         /// </summary>
         /// <param name="path">Path to a file which contains some attributes</param>
         /// <returns>
-        ///     Collection of attributes found in given file. The collection will be empty
-        ///     if there are no attributes. See <see cref="LoadResult"/>.
+        ///     Collection of attributes found in given file.
+        ///     If there are no attributes, the collection will be empty.
+        ///     If the file does not exist, <see cref="LoadResult.Entity"/> will be null.
         /// </returns>
         /// <exception cref="ArgumentException"><paramref name="path"/> is an invalid file path.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> is null.</exception>

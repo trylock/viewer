@@ -20,7 +20,8 @@ namespace Viewer.Data
     public interface IEntityManager
     {
         /// <summary>
-        /// Load it from an attribute storage.
+        /// Load it from an attribute storage. See <see cref="IAttributeStorage.Load"/> for the list of
+        /// possible exceptions this method can throw.
         /// </summary>
         /// <param name="path">Path to an entity</param>
         /// <returns>Loaded entity</returns>

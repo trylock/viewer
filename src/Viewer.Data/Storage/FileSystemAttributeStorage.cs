@@ -128,6 +128,10 @@ namespace Viewer.Data.Storage
             {
                 return new LoadResult(null, 0);
             }
+            catch (DirectoryNotFoundException)
+            {
+                return new LoadResult(null, 0);
+            }
         }
         
         public void Store(IEntity entity)

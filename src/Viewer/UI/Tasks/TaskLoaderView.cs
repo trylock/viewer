@@ -78,7 +78,10 @@ namespace Viewer.UI.Tasks
 
         private void TaskLoaderView_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _cancellation.Cancel();
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                _cancellation.Cancel();
+            }
         }
 
         private void CancelTaskButton_Click(object sender, EventArgs e)

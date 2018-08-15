@@ -22,7 +22,6 @@ namespace Viewer.UI.Images
         // dependencies
         private readonly IEntityManager _entities;
         private readonly IFileWatcher _fileWatcher;
-        private readonly IFileSystem _fileSystem;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IErrorListener _queryErrorListener;
 
@@ -53,14 +52,12 @@ namespace Viewer.UI.Images
         public Task LoadTask { get; private set; } = Task.CompletedTask;
 
         public QueryEvaluator(
-            IFileSystem fileSystem,
             IFileWatcherFactory fileWatcherFactory, 
             ILazyThumbnailFactory thumbnailFactory, 
             IErrorListener queryErrorListener, 
             IEntityManager entities, 
             IQuery query)
         {
-            _fileSystem = fileSystem;
             _entities = entities;
             _fileWatcher = fileWatcherFactory.Create();
             _fileWatcher.Renamed += FileWatcherOnRenamed;
@@ -108,34 +105,27 @@ namespace Viewer.UI.Images
                 return; // skip this event
 
             IEntity entity = null;
-            if (_fileSystem.DirectoryExists(e.FullPath)) 
+            try
             {
-                entity = new DirectoryEntity(e.FullPath);
+                entity = _entities.GetEntity(e.FullPath).Entity;
+            } // silently ignore load exceptions
+            catch (InvalidDataFormatException)
+            {
             }
-            else // if this is a file (or deleted)
+            catch (NotSupportedException)
             {
-                try
-                {
-                    entity = _entities.GetEntity(e.FullPath).Entity;
-                } // silently ignore load exceptions
-                catch (InvalidDataFormatException)
-                {
-                }
-                catch (NotSupportedException)
-                {
-                }
-                catch (PathTooLongException)
-                {
-                }
-                catch (SecurityException)
-                {
-                }
-                catch (IOException)
-                {
-                }
-                catch (ArgumentException) // invalid path
-                {
-                }
+            }
+            catch (PathTooLongException)
+            {
+            }
+            catch (SecurityException)
+            {
+            }
+            catch (IOException)
+            {
+            }
+            catch (ArgumentException) // invalid path
+            {
             }
 
             if (entity != null && Query.Match(entity))
@@ -282,16 +272,14 @@ namespace Viewer.UI.Images
     [Export(typeof(IQueryEvaluatorFactory))]
     public class QueryEvaluatorFactory : IQueryEvaluatorFactory
     {
-        private readonly IFileSystem _fileSystem;
         private readonly IFileWatcherFactory _fileWatcherFactory;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
         private readonly IErrorListener _errorListener;
         private readonly IEntityManager _entities;
 
         [ImportingConstructor]
-        public QueryEvaluatorFactory(IFileSystem fileSystem, IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener errorListener, IEntityManager entities)
+        public QueryEvaluatorFactory(IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener errorListener, IEntityManager entities)
         {
-            _fileSystem = fileSystem;
             _fileWatcherFactory = fileWatcherFactory;
             _thumbnailFactory = thumbnailFactory;
             _errorListener = errorListener;
@@ -300,7 +288,7 @@ namespace Viewer.UI.Images
 
         public QueryEvaluator Create(IQuery query)
         {
-            return new QueryEvaluator(_fileSystem, _fileWatcherFactory, _thumbnailFactory, _errorListener, _entities, query);
+            return new QueryEvaluator(_fileWatcherFactory, _thumbnailFactory, _errorListener, _entities, query);
         }
     }
 }

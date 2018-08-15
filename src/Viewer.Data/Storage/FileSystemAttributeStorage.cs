@@ -80,6 +80,11 @@ namespace Viewer.Data.Storage
         /// <returns>Collection of attributes read from the file</returns>
         public LoadResult Load(string path)
         {
+            if (_fileSystem.DirectoryExists(path))
+            {
+                return new LoadResult(new DirectoryEntity(path), 0);
+            }
+
             try
             {
                 // read all JPEG segments to memory

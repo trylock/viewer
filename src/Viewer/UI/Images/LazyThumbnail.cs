@@ -185,7 +185,7 @@ namespace Viewer.UI.Images
                     }
                 }
             }
-            else if (_loadingType == LoadingType.EmbeddedThumbnail &&
+            else if (_loadingType == LoadingType.NativeThumbnail &&
                      _loading.Status != TaskStatus.Canceled) // the loading is in process
             {
                 _thumbnailLoader.Prioritize(_entity.Path);

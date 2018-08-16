@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -78,22 +79,42 @@ namespace Viewer.IO
             else
             {
                 // this call has added the watcher => initialize it
-                watcher.Changed += Changed;
-                watcher.Created += Created;
-                watcher.Deleted += Deleted;
-                watcher.Renamed += Renamed;
+                watcher.Changed += WatcherOnChanged;
+                watcher.Created += WatcherOnCreated;
+                watcher.Deleted += WatcherOnDeleted;
+                watcher.Renamed += WatcherOnRenamed;
                 watcher.EnableRaisingEvents = true;
             }
         }
-        
+
+        private void WatcherOnRenamed(object sender, RenamedEventArgs e)
+        {
+            Renamed?.Invoke(sender, e);
+        }
+
+        private void WatcherOnDeleted(object sender, FileSystemEventArgs e)
+        {
+            Deleted?.Invoke(sender, e);
+        }
+
+        private void WatcherOnCreated(object sender, FileSystemEventArgs e)
+        {
+            Created?.Invoke(sender, e);
+        }
+
+        private void WatcherOnChanged(object sender, FileSystemEventArgs e)
+        {
+            Changed?.Invoke(sender, e);
+        }
+
         public void Dispose()
         {
             foreach (var watcher in _watchers)
             {
-                watcher.Value.Changed -= Changed;
-                watcher.Value.Created -= Created;
-                watcher.Value.Deleted -= Deleted;
-                watcher.Value.Renamed -= Renamed;
+                watcher.Value.Changed -= WatcherOnChanged;
+                watcher.Value.Created -= WatcherOnCreated;
+                watcher.Value.Deleted -= WatcherOnDeleted;
+                watcher.Value.Renamed -= WatcherOnRenamed;
                 watcher.Value.EnableRaisingEvents = false;
                 watcher.Value.Dispose();
             }

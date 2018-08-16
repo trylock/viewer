@@ -177,7 +177,7 @@
     <value>Attribute name must not be empty</value>
   </data>
   <data name="ItemCount_Label" xml:space="preserve">
-    <value>{0} items</value>
+    <value>{0:N0} items </value>
   </data>
   <data name="ExplorerOpenFolderArguments" xml:space="preserve">
     <value>/select,"{0}"</value>
@@ -341,5 +341,8 @@ Do you want to try again?</value>
   <data name="ClipboardIsBusy_Message" xml:space="preserve">
     <value>System clipboard cannot be opened. Try again later. System error: {0}</value>
     <comment>{0} is the system error message</comment>
+  </data>
+  <data name="SelectedItemCount_Label" xml:space="preserve">
+    <value>{0:N0} items selected </value>
   </data>
 </root>

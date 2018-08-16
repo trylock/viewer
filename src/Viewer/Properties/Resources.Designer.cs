@@ -409,7 +409,7 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} items.
+        ///   Looks up a localized string similar to {0:N0} items .
         /// </summary>
         internal static string ItemCount_Label {
             get {
@@ -625,6 +625,15 @@ namespace Viewer.Properties {
             get {
                 object obj = ResourceManager.GetObject("SearchStatus", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:N0} items selected .
+        /// </summary>
+        internal static string SelectedItemCount_Label {
+            get {
+                return ResourceManager.GetString("SelectedItemCount_Label", resourceCulture);
             }
         }
         

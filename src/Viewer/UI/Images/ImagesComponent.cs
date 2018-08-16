@@ -23,6 +23,7 @@ namespace Viewer.UI.Images
     {
         private readonly IEditor _editor;
         private readonly IQueryEvents _state;
+        private readonly ISelection _selection;
         private readonly IQueryFactory _queryFactory;
         private readonly IQueryCompiler _queryCompiler;
         private readonly ExportFactory<ImagesPresenter> _imagesFactory;
@@ -35,11 +36,15 @@ namespace Viewer.UI.Images
         private IToolBarItem _refreshTool;
         
         private IStatusBarSlider _thumbnailSize;
+        private IStatusBarItem _statusLabel;
+        private IStatusBarItem _itemCountLabel;
+        private IStatusBarItem _selectionCountLabel;
 
         [ImportingConstructor]
         public ImagesComponent(
             IEditor editor,
             IQueryEvents state, 
+            ISelection selection,
             IQueryFactory queryFactory, 
             IQueryCompiler queryCompiler,
             ExportFactory<ImagesPresenter> images)
@@ -49,7 +54,14 @@ namespace Viewer.UI.Images
             _queryFactory = queryFactory;
             _queryCompiler = queryCompiler;
             _state = state;
-            _state.QueryExecuted += StateOnQueryExecuted;
+            _selection = selection;
+        }
+
+        private void SelectionOnChanged(object sender, EventArgs e)
+        {
+            _selectionCountLabel.Text = _selection.Count > 0
+                ? string.Format(Resources.SelectedItemCount_Label, _selection.Count)
+                : "";
         }
 
         private void StateOnQueryExecuted(object sender, QueryEventArgs e)
@@ -76,6 +88,9 @@ namespace Viewer.UI.Images
             app.AddLayoutDeserializeCallback(Deserialize);
 
             // add staus bar items
+            _statusLabel = app.CreateStatusBarItem("Done.", Resources.SearchStatus, ToolStripItemAlignment.Left);
+            _selectionCountLabel = app.CreateStatusBarItem("", null, ToolStripItemAlignment.Right);
+            _itemCountLabel = app.CreateStatusBarItem("", null, ToolStripItemAlignment.Right);
             _thumbnailSize = app.CreateStatusBarSlider("", Resources.ThumbnailSize, ToolStripItemAlignment.Right);
             _thumbnailSize.ValueChanged += ThumbnailSizeOnValueChanged;
 
@@ -87,6 +102,10 @@ namespace Viewer.UI.Images
 
             _backTool.Enabled = _state.Previous != null;
             _forwardTool.Enabled = _state.Next != null;
+
+            // register event handlers
+            _selection.Changed += SelectionOnChanged;
+            _state.QueryExecuted += StateOnQueryExecuted;
         }
 
         /// <summary>
@@ -150,6 +169,9 @@ namespace Viewer.UI.Images
             if (_images == null)
             {
                 _images = _imagesFactory.CreateExport();
+                _images.Value.SetThumbnailSize(_thumbnailSize.Value);
+                _images.Value.StatusLabel = _statusLabel;
+                _images.Value.ItemCountLabel = _itemCountLabel;
                 _images.Value.View.CloseView += (sender, args) =>
                 {
                     _images.Dispose();

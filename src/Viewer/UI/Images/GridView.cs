@@ -284,7 +284,7 @@ namespace Viewer.UI.Images
             // clear grid cell area
             graphics.FillRectangle(Brushes.White, bounds);
 
-            var drawBounds = Rectangle.Inflate(bounds, -1, -1);
+            var drawBounds = bounds;
             if ((item.State & FileViewState.Selected) != 0)
             {
                 // draw selection 

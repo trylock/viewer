@@ -43,13 +43,15 @@ namespace Viewer.UI.Images
 
         protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
-        private Size _currentItemSize = new Size(133, 100);
-        private Size MinItemSize => new Size(133, 100);
-        private Size MaxItemSize => new Size(
+        private static Size MinItemSize => new Size(133, 100);
+        private static Size MaxItemSize => new Size(
             MinItemSize.Width * 3,
             MinItemSize.Height * 3
         );
-
+        
+        /// <summary>
+        /// Current thumbnail size in the [0, 1] range. See <see cref="SetThumbnailSize"/>.
+        /// </summary>
         private double _thumbnailSize = 0;
 
         /// <summary>
@@ -67,6 +69,17 @@ namespace Viewer.UI.Images
         /// </summary>
         private const int PollingRate = 200;
         
+        /// <summary>
+        /// Label in which status of current query evaluation is shown.
+        /// If this is null, query evaluation status won't be shown.
+        /// </summary>
+        public IStatusBarItem StatusLabel { get; set; }
+
+        /// <summary>
+        /// Label which shows current number of items in the query result set.
+        /// </summary>
+        public IStatusBarItem ItemCountLabel { get; set; }
+
         /// <summary>
         /// Get current selection strategy based on the state of modifier keys.
         /// If a shift key is pressed, use <see cref="SelectionStrategy.Union"/>.
@@ -90,7 +103,24 @@ namespace Viewer.UI.Images
                 return strategy;
             }
         }
-        
+
+        /// <summary>
+        /// Current item size. It depends on current thumbnail size (see <see cref="SetThumbnailSize"/>).
+        /// </summary>
+        public Size CurrentItemSize
+        {
+            get
+            {
+                var minimal = MinItemSize;
+                var maximal = MaxItemSize;
+                var weight = _thumbnailSize;
+                return new Size(
+                    (int)(MathUtils.Lerp(minimal.Width, maximal.Width, weight)),
+                    (int)(MathUtils.Lerp(minimal.Height, maximal.Height, weight))
+                );
+            }
+        }
+
         [ImportingConstructor]
         public ImagesPresenter(
             ExportFactory<IImagesView> viewFactory,
@@ -117,7 +147,7 @@ namespace Viewer.UI.Images
             UpdateContextOptions();
 
             // initialize view
-            View.ItemSize = _currentItemSize;
+            View.ItemSize = CurrentItemSize;
             SubscribeTo(View, "View");
         }
 
@@ -187,23 +217,8 @@ namespace Viewer.UI.Images
                 throw new ArgumentOutOfRangeException(nameof(thumbnailSize));
 
             _thumbnailSize = thumbnailSize;
-            View.ItemSize = ComputeThumbnailSize();
+            View.ItemSize = CurrentItemSize;
             View.UpdateItems();
-        }
-        
-        /// <summary>
-        /// Compute current thumbnail size.
-        /// </summary>
-        /// <returns></returns>
-        private Size ComputeThumbnailSize()
-        {
-            var minimal = MinItemSize;
-            var maximal = MaxItemSize;
-            var weight = _thumbnailSize;
-            return new Size(
-                (int)(MathUtils.Lerp(minimal.Width, maximal.Width, weight)),
-                (int)(MathUtils.Lerp(minimal.Height, maximal.Height, weight))
-            );
         }
 
         private void ChangeSelection(IEnumerable<EntityView> newSelection)
@@ -245,7 +260,21 @@ namespace Viewer.UI.Images
             if (_queryEvaluator != null)
             {
                 View.Items = _queryEvaluator.Update();
-                View.ItemSize = ComputeThumbnailSize();
+                View.ItemSize = CurrentItemSize;
+
+                // update query evaluation status
+                if (StatusLabel != null)
+                {
+                    var loadingFile = _queryEvaluator.Progress.LoadingFile;
+                    var loadedCount = _queryEvaluator.Progress.FileCount;
+                    StatusLabel.Text = loadingFile != null ? $"{loadedCount:N0}: {loadingFile}" : "Done.";
+                }
+
+                // update item count
+                if (ItemCountLabel != null)
+                {
+                    ItemCountLabel.Text = string.Format(Resources.ItemCount_Label, View.Items?.Count);
+                }
             }
 
             View.UpdateItems();

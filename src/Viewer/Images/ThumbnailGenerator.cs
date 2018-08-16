@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SkiaSharp;
 
 namespace Viewer.Images
 {
@@ -19,29 +20,28 @@ namespace Viewer.Images
         /// <param name="thumbnailArea">Size of an area for the thumbnail</param>
         /// <returns>Thumbnail image</returns>
         /// <exception cref="ArgumentNullException"><paramref name="original"/> is null</exception>
-        Image GetThumbnail(Image original, Size thumbnailArea);
+        SKBitmap GetThumbnail(SKBitmap original, Size thumbnailArea);
     }
 
     [Export(typeof(IThumbnailGenerator))]
     public class ThumbnailGenerator : IThumbnailGenerator
     {
-        public Image GetThumbnail(Image originalImage, Size thumbnailArea)
+        public SKBitmap GetThumbnail(SKBitmap originalImage, Size thumbnailArea)
         {
             if (originalImage == null)
                 throw new ArgumentNullException(nameof(originalImage));
 
-            var thumbnailSize = GetThumbnailSize(originalImage.Size, thumbnailArea);
-            var thumbnail = new Bitmap(thumbnailSize.Width, thumbnailSize.Height);
-            using (var graphics = Graphics.FromImage(thumbnail))
+            var originalSize = new Size(originalImage.Width, originalImage.Height);
+            var thumbnailSize = GetThumbnailSize(originalSize, thumbnailArea);
+            var thumbnail = new SKBitmap(thumbnailSize.Width, thumbnailSize.Height);
+            try
             {
-                thumbnail.SetResolution(
-                    originalImage.HorizontalResolution, 
-                    originalImage.VerticalResolution);
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.DrawImage(originalImage,
-                    new Rectangle(0, 0, thumbnailSize.Width, thumbnailSize.Height),
-                    new Rectangle(0, 0, originalImage.Width, originalImage.Height),
-                    GraphicsUnit.Pixel);
+                originalImage.Resize(thumbnail, SKBitmapResizeMethod.Mitchell);
+            }
+            catch (Exception)
+            {
+                thumbnail.Dispose();
+                throw;
             }
 
             return thumbnail;

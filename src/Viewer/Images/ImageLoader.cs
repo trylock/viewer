@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SkiaSharp;
 using Viewer.Data;
 using Viewer.IO;
 using Image = System.Drawing.Image;
@@ -49,7 +50,7 @@ namespace Viewer.Images
         /// <exception cref="NotSupportedException"><see cref="IEntity.Path"/> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in a non-NTFS environment.</exception>
         /// <exception cref="SecurityException">The caller does not have the required permission.</exception>
         /// <exception cref="UnauthorizedAccessException">Unauthorized access to the file <see cref="IEntity.Path"/>.</exception>
-        Image LoadImage(IEntity entity);
+        SKBitmap LoadImage(IEntity entity);
 
         /// <summary>
         /// Load embeded thumbnail asynchronously.
@@ -58,14 +59,7 @@ namespace Viewer.Images
         /// <param name="entity">Entity to load</param>
         /// <param name="cancellationToken">Cancellation token of the load operation</param>
         /// <returns>Task which loads the thumbnail. The task will return null if there is no thumbnail.</returns>
-        Task<Image> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Load the whole image asynchronously.
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>Task which loads the image</returns>
-        Task<Image> LoadImageAsync(IEntity entity);
+        Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken);
     }
     
     [Export(typeof(IImageLoader))]
@@ -142,51 +136,95 @@ namespace Viewer.Images
                 new Size(height, width);
         }
 
-        public Image LoadImage(IEntity entity)
+        public SKBitmap LoadImage(IEntity entity)
         {
             var orientation = GetTransformation(entity);
             var image = DecodeImage(new FileStream(entity.Path, FileMode.Open, FileAccess.Read), orientation);
             return image;
         }
 
-        public Task<Image> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken)
+        public Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken)
         {
             var orientation = GetTransformation(entity);
             var thumbnail = entity.GetValue<ImageValue>(ThumbnailAttrName);
             if (thumbnail == null)
             {
-                return Task.FromResult<Image>(null);
+                return Task.FromResult<SKBitmap>(null);
             }
             return Task.Run(() => DecodeImage(new MemoryStream(thumbnail.Value), orientation), cancellationToken);
         }
 
-        public async Task<Image> LoadImageAsync(IEntity entity)
+        private SKBitmap DecodeImage(Stream input, RotateFlipType orientation)
         {
-            var buffer = await _fileSystem.ReadAllBytesAsync(entity.Path).ConfigureAwait(false);
-            var orientation = GetTransformation(entity);
-            return DecodeImage(new MemoryStream(buffer), orientation);
+            var bitmap = SKBitmap.Decode(input);
+            try
+            {
+                return RotateFlip(bitmap, orientation);
+            }
+            catch (Exception)
+            {
+                bitmap.Dispose();
+                throw;
+            }
         }
 
-        private Image DecodeImage(Stream input, RotateFlipType orientation)
+        private static SKBitmap RotateFlip(SKBitmap bitmap, RotateFlipType rotateFlip)
         {
-            var image = Image.FromStream(input);
-            if (orientation != RotateFlipType.RotateNoneFlipNone)
+            var rotationAngle = 0;
+            var flipX = 1;
+            switch (rotateFlip)
             {
-                image.RotateFlip(orientation);
+                case RotateFlipType.RotateNoneFlipNone:
+                    break;
+                case RotateFlipType.Rotate90FlipNone:
+                    rotationAngle = 90;
+                    break;
+                case RotateFlipType.Rotate180FlipNone:
+                    rotationAngle = 180;
+                    break;
+                case RotateFlipType.Rotate270FlipNone:
+                    rotationAngle = 270;
+                    break;
+                case RotateFlipType.RotateNoneFlipX:
+                    flipX = -1;
+                    break;
+                case RotateFlipType.Rotate90FlipX:
+                    rotationAngle = 90;
+                    flipX = -1;
+                    break;
+                case RotateFlipType.Rotate180FlipX:
+                    rotationAngle = 180;
+                    flipX = -1;
+                    break;
+                case RotateFlipType.Rotate270FlipX:
+                    rotationAngle = 270;
+                    flipX = -1;
+                    break;
             }
 
-            return image;
-        }
-
-        private Image DecodeImage(string filePath, RotateFlipType orientation)
-        {
-            var image = Image.FromFile(filePath);
-            if (orientation != RotateFlipType.RotateNoneFlipNone)
+            // don't transform the bitmap if it's not necessary
+            if (flipX == 1 && rotationAngle == 0)
             {
-                image.RotateFlip(orientation);
+                return bitmap;
             }
 
-            return image;
+            // transform the bitmap according to the rotateFlip value
+            using (bitmap)
+            {
+                var flipDimensions = rotationAngle == 180 || rotationAngle == 0;
+                var transformed = new SKBitmap(
+                    flipDimensions ? bitmap.Width : bitmap.Height,
+                    flipDimensions ? bitmap.Height : bitmap.Width);
+                using (var surface = new SKCanvas(transformed))
+                {
+                    surface.Translate(transformed.Width / 2.0f, transformed.Height / 2.0f);
+                    surface.Scale(flipX, 1);
+                    surface.RotateDegrees(rotationAngle);
+                    surface.Translate(-bitmap.Width / 2.0f, -bitmap.Height / 2.0f);
+                    surface.DrawBitmap(bitmap, 0, 0);
+                }
+                return transformed;
+            }
         }
     }
 }

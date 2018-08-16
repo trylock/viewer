@@ -8,6 +8,7 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SkiaSharp.Views.Desktop;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Images;
@@ -70,7 +71,13 @@ namespace Viewer.UI.Presentation
             // load new image
             try
             {
-                var image = await _imageLoader.LoadImageAsync(entity);
+                var image = await Task.Run(() =>
+                {
+                    using (var skBitmap = _imageLoader.LoadImage(entity))
+                    {
+                        return skBitmap.ToBitmap();
+                    }
+                });
 
                 // update view
                 View.Zoom = 1.0;

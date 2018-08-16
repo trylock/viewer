@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SkiaSharp;
+using SkiaSharp.Views.Desktop;
 using Viewer.Data;
 using Viewer.Images;
 using Viewer.IO;
@@ -128,12 +130,19 @@ namespace Viewer.UI.Images
         {
             using (var image = await _imageLoader.LoadThumbnailAsync(entity, cancellationToken).ConfigureAwait(false))
             {
+                // the entity does not have an embedded thumbnail
+                if (image == null)
+                {
+                    return new Thumbnail(null, Size.Empty);
+                }
+
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var thumbnail = image != null ? 
-                    _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize) : 
-                    null;
-                return new Thumbnail(thumbnail, image?.Size ?? Size.Empty);
+                // the entity does have an embedded thumbnail
+                using (var thumbnail = _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize))
+                {
+                    return new Thumbnail(thumbnail.ToBitmap(), new Size(image.Width, image.Height));
+                }
             }
         }
 
@@ -209,8 +218,12 @@ namespace Viewer.UI.Images
                     {
                         if (req.Cancellation.IsCancellationRequested)
                             continue;
-                        var thumbnail = _thumbnailGenerator.GetThumbnail(image, req.ThumbnailAreaSize);
-                        req.Completion.SetResult(new Thumbnail(thumbnail, image.Size));
+
+                        var imageSize = new Size(image.Width, image.Height);
+                        using (var thumbnail = _thumbnailGenerator.GetThumbnail(image, req.ThumbnailAreaSize))
+                        {
+                            req.Completion.SetResult(new Thumbnail(thumbnail.ToBitmap(), imageSize));
+                        }
                     }
                 }
                 catch (Exception e)

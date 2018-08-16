@@ -67,7 +67,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Minimal time in milliseconds between 2 poll events.
         /// </summary>
-        private const int PollingRate = 200;
+        private const int PollingRate = 100;
         
         /// <summary>
         /// Label in which status of current query evaluation is shown.

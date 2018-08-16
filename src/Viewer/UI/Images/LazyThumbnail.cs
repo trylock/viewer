@@ -152,7 +152,7 @@ namespace Viewer.UI.Images
             // if the loading has finished, replace current thumbnail
             if (_loading.Status == TaskStatus.RanToCompletion)
             {
-                if (_loading.Result.ThumbnailImage != null && 
+                if (_loading.Result.ThumbnailImage != null &&
                     _loading.Result.ThumbnailImage != _current)
                 {
                     DisposeCurrent();
@@ -185,14 +185,15 @@ namespace Viewer.UI.Images
                     }
                 }
             }
-            else if (_loading.Status != TaskStatus.Canceled) // the loading is in process
+            else if (_loadingType == LoadingType.EmbeddedThumbnail &&
+                     _loading.Status != TaskStatus.Canceled) // the loading is in process
             {
                 _thumbnailLoader.Prioritize(_entity.Path);
             }
-            
+
             return _current;
         }
-
+        
         private async Task<Thumbnail> LoadNativeThumbnailDelayedAsync(Size thumbnailAreaSize, TimeSpan delay)
         {
             await Task.Delay(delay, _cancellationToken).ConfigureAwait(false);

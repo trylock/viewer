@@ -69,7 +69,9 @@ namespace Viewer.UI.QueryEditor
 
         private ICollection<string> GetQueryViewNames()
         {
-            return _queryViews.Select(item => item.Name).ToArray();
+            var names = _queryViews.Select(item => item.Name).ToArray();
+            Array.Sort(names);
+            return names;
         }
 
         private void ViewsDropDownOnItemSelected(object sender, SelectedEventArgs e)

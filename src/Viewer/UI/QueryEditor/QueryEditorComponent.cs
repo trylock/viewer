@@ -50,9 +50,11 @@ namespace Viewer.UI.QueryEditor
 
         public void OnStartup(IViewerApplication app)
         {
-            // load all query views
+            // load all query views and watch query view directory for changes
+            var queryViewsDirectory = Path.GetFullPath(Settings.Default.QueryViewDirectoryPath);
             LoadQueryViews();
-            
+            WatchQueryViews(queryViewsDirectory);
+
             // add application menus
             app.AddMenuItem(new []{ "View", "Query" }, () => _editor.OpenNew(DockState.Document), Resources.QueryComponentIcon.ToBitmap());
             app.AddMenuItem(new []{ "File", "Open Query" }, OpenFileInEditor, Resources.Open);
@@ -65,6 +67,13 @@ namespace Viewer.UI.QueryEditor
             _viewsDropDown.ItemSelected += ViewsDropDownOnItemSelected;
 
             app.AddLayoutDeserializeCallback(Deserialize);
+
+            // register event handlers
+            var context = SynchronizationContext.Current;
+            _queryViews.Changed += (sender, args) => context.Post(state =>
+            {
+                _viewsDropDown.Items = GetQueryViewNames();
+            }, null);
         }
 
         private ICollection<string> GetQueryViewNames()
@@ -72,6 +81,11 @@ namespace Viewer.UI.QueryEditor
             var names = _queryViews.Select(item => item.Name).ToArray();
             Array.Sort(names);
             return names;
+        }
+
+        private static bool IsQueryFile(string path)
+        {
+            return Path.GetExtension(path)?.ToLowerInvariant() == ".vql";
         }
 
         private void ViewsDropDownOnItemSelected(object sender, SelectedEventArgs e)
@@ -88,6 +102,66 @@ namespace Viewer.UI.QueryEditor
             }
 
             _editor.OpenAsync(view.Path, DockState.Document);
+        }
+
+        private void WatchQueryViews(string path)
+        {
+            try
+            {
+                _fileWatcher.Watch(path);
+            }
+            catch (ArgumentException)
+            {
+                _dialogView.DirectoryNotFound(path);
+            }
+            catch (PathTooLongException)
+            {
+                _dialogView.PathTooLong(path);
+            }
+            _fileWatcher.Created += FileWatcherOnCreated;
+            _fileWatcher.Deleted += FileWatcherOnDeleted;
+            _fileWatcher.Renamed += FileWatcherOnRenamed;
+        }
+
+        private void FileWatcherOnRenamed(object sender, RenamedEventArgs e)
+        {
+            // remove old query view
+            if (IsQueryFile(e.OldFullPath))
+            {
+                var name = Path.GetFileNameWithoutExtension(e.OldFullPath);
+                _queryViews.Remove(name);
+            }
+
+            // add a new query view
+            if (IsQueryFile(e.FullPath))
+            {
+                var name = Path.GetFileNameWithoutExtension(e.FullPath);
+                var query = _fileSystem.ReadAllText(e.FullPath);
+                _queryViews.Add(new QueryView(name, query, e.FullPath));
+            }
+        }
+
+        private void FileWatcherOnDeleted(object sender, FileSystemEventArgs e)
+        {
+            if (!IsQueryFile(e.FullPath))
+            {
+                return;
+            }
+
+            var name = Path.GetFileNameWithoutExtension(e.FullPath);
+            _queryViews.Remove(name);
+        }
+
+        private void FileWatcherOnCreated(object sender, FileSystemEventArgs e)
+        {
+            if (!IsQueryFile(e.FullPath))
+            {
+                return; 
+            }
+
+            var name = Path.GetFileNameWithoutExtension(e.FullPath);
+            var query = _fileSystem.ReadAllText(e.FullPath);
+            _queryViews.Add(new QueryView(name, query, e.FullPath));
         }
 
         /// <summary>

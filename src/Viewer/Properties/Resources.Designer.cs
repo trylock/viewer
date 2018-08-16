@@ -126,7 +126,8 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you really want to delete {0}?.
+        ///   Looks up a localized string similar to Do you really want to delete:
+        ///{0}.
         /// </summary>
         internal static string ConfirmDelete_Message {
             get {

@@ -31,6 +31,7 @@ namespace Viewer.UI.QueryEditor
         private IToolBarItem _openTool;
         private IToolBarItem _saveTool;
         private IToolBarItem _runTool;
+        private IToolBarDropDown _viewsDropDown;
 
         [ImportingConstructor]
         public QueryEditorComponent(
@@ -49,17 +50,42 @@ namespace Viewer.UI.QueryEditor
 
         public void OnStartup(IViewerApplication app)
         {
+            // load all query views
+            LoadQueryViews();
+            
+            // add application menus
             app.AddMenuItem(new []{ "View", "Query" }, () => _editor.OpenNew(DockState.Document), Resources.QueryComponentIcon.ToBitmap());
             app.AddMenuItem(new []{ "File", "Open Query" }, OpenFileInEditor, Resources.Open);
 
             _openTool = app.CreateToolBarItem("editor", "open", "Open Query", Resources.Open, OpenFileInEditor);
+            _viewsDropDown = app.CreateToolBarSelect("editor", "views", "Open Query View", Resources.View);
             _saveTool = app.CreateToolBarItem("editor", "save", "Save Query", Resources.Save, SaveCurrentEditor);
             _runTool = app.CreateToolBarItem("editor", "run", "Run Query", Resources.Start, RunCurrentEditor);
-            
-            app.AddLayoutDeserializeCallback(Deserialize);
+            _viewsDropDown.Items = GetQueryViewNames();
+            _viewsDropDown.ItemSelected += ViewsDropDownOnItemSelected;
 
-            // load all query views
-            LoadQueryViews();
+            app.AddLayoutDeserializeCallback(Deserialize);
+        }
+
+        private ICollection<string> GetQueryViewNames()
+        {
+            return _queryViews.Select(item => item.Name).ToArray();
+        }
+
+        private void ViewsDropDownOnItemSelected(object sender, SelectedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(e.Value))
+            {
+                return;
+            }
+
+            var view = _queryViews.Find(e.Value);
+            if (view == null)
+            {
+                return;
+            }
+
+            _editor.OpenAsync(view.Path, DockState.Document);
         }
 
         /// <summary>

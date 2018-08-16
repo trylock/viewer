@@ -24,4 +24,34 @@ namespace Viewer.Core.UI
         /// </summary>
         bool Enabled { get; set; }
     }
+
+    public class SelectedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Selected value
+        /// </summary>
+        public string Value { get; }
+        
+        public SelectedEventArgs(string value)
+        {
+            Value = value;
+        }
+    }
+
+    /// <summary>
+    /// A tool bar item which lets users select one item from a predefined collection of items.
+    /// </summary>
+    public interface IToolBarDropDown : IToolBarItem
+    {
+        /// <summary>
+        /// Event occurs whenever user selects an item from the drop down
+        /// </summary>
+        event EventHandler<SelectedEventArgs> ItemSelected;
+
+        /// <summary>
+        /// Items in the toolbar.
+        /// Setting this to null wil throw an <see cref="ArgumentNullException"/>.
+        /// </summary>
+        ICollection<string> Items { get; set; }
+    }
 }

@@ -44,6 +44,17 @@ namespace Viewer.Core
         IToolBarItem CreateToolBarItem(string groupName, string toolName, string toolTipText, Image image, Action action);
 
         /// <summary>
+        /// Create a new tool bar select box named <paramref name="toolName"/> to the group named
+        /// <paramref name="groupName"/>.
+        /// </summary>
+        /// <param name="groupName">Name of the group</param>
+        /// <param name="toolName">Name of the tool</param>
+        /// <param name="toolTipText">Text shown in the tooltip when user points to this item.</param>
+        /// <param name="image">Tool bar icon</param>
+        /// <returns>Select box item</returns>
+        IToolBarDropDown CreateToolBarSelect(string groupName, string toolName, string toolTipText, Image image);
+
+        /// <summary>
         /// Create a new status bar item. This item is added to the application status bar.
         /// </summary>
         /// <param name="text">Text shown to the user</param>

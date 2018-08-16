@@ -89,7 +89,7 @@ namespace Viewer.Data.Properties {
         ///);
         ///CREATE TABLE IF NOT EXISTS `attributes` (
         ///	`id`	INTEGER NOT NULL,
-        ///	`name`	REAL NOT NULL,
+        ///	`name`	TEXT NOT NULL,
         ///	`source`	INTEGER NOT NULL DEFAULT 0,
         ///	`type`	INTEGER NOT NULL DEFAULT 0,
         ///	`value`	BLOB NOT NULL,

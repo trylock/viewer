@@ -43,6 +43,7 @@ namespace Viewer.UI.QueryEditor
             QueryTextBox.Margins[0].Width = 20;
 
             QueryTextBox.ClearCmdKey(Keys.Control | Keys.S);
+            QueryTextBox.ClearCmdKey(Keys.Control | Keys.O);
         }
 
         #region Drop view
@@ -86,8 +87,8 @@ namespace Viewer.UI.QueryEditor
             }
             else if (e.Control && e.KeyCode == Keys.O)
             {
-                e.SuppressKeyPress = true;
                 OpenButton_Click(sender, e);
+                e.SuppressKeyPress = true;
             }
         }
 

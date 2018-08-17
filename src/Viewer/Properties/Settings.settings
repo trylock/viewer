@@ -3,17 +3,18 @@
   <Profiles />
   <Settings>
     <Setting Name="QueryViewDirectoryPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">./views</Value>
+      <Value Profile="(Default)">%userprofile%/Documents/Viewer/Views</Value>
     </Setting>
     <Setting Name="ExternalApplications" Type="Viewer.Core.ExternalApplicationList" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfExternalApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ExternalApplication&gt;
-    &lt;Name&gt;Open in Explorer&lt;/Name&gt;
-    &lt;Command&gt;explorer.exe&lt;/Command&gt;
-    &lt;Arguments&gt;/select,"{0}"&lt;/Arguments&gt;
-
-  &lt;/ExternalApplication&gt;&lt;/ArrayOfExternalApplication&gt;</Value>
+      <Value Profile="(Default)">
+                    &lt;ArrayOfExternalApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+                        &lt;ExternalApplication&gt;
+                            &lt;Name&gt;Open in Explorer&lt;/Name&gt;
+                            &lt;Command&gt;explorer.exe&lt;/Command&gt;
+                            &lt;Arguments&gt;/select,"{0}"&lt;/Arguments&gt;
+                        &lt;/ExternalApplication&gt;
+                    &lt;/ArrayOfExternalApplication&gt;
+                </Value>
     </Setting>
   </Settings>
 </SettingsFile>

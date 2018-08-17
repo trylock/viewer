@@ -25,7 +25,7 @@ namespace Viewer.Query.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("./views")]
+        [global::System.Configuration.DefaultSettingValueAttribute("%userprofile%/Documents/Viewer/Views")]
         public string QueryViewDirectoryPath {
             get {
                 return ((string)(this["QueryViewDirectoryPath"]));
@@ -37,14 +37,15 @@ namespace Viewer.Query.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfExternalApplication xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <ExternalApplication>
-    <Name>Open in Explorer</Name>
-    <Command>explorer.exe</Command>
-    <Arguments>/select,""{0}""</Arguments>
-
-  </ExternalApplication></ArrayOfExternalApplication>")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"
+                    <ArrayOfExternalApplication xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+                        <ExternalApplication>
+                            <Name>Open in Explorer</Name>
+                            <Command>explorer.exe</Command>
+                            <Arguments>/select,""{0}""</Arguments>
+                        </ExternalApplication>
+                    </ArrayOfExternalApplication>
+                ")]
         public global::Viewer.Core.ExternalApplicationList ExternalApplications {
             get {
                 return ((global::Viewer.Core.ExternalApplicationList)(this["ExternalApplications"]));

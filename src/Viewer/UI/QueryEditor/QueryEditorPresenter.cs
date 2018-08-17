@@ -178,7 +178,7 @@ namespace Viewer.UI.QueryEditor
 
             foreach (var file in files)
             {
-                if (Path.GetExtension(file).ToLowerInvariant() == ".vql")
+                if (Path.GetExtension(file)?.ToLowerInvariant() == ".vql")
                 {
                     await _editor.OpenAsync(file, DockState.Document);
                 }

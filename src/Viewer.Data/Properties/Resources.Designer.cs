@@ -61,7 +61,7 @@ namespace Viewer.Data.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}/cache.db.
+        ///   Looks up a localized string similar to %userprofile%/Documents/Viewer/cache.db.
         /// </summary>
         internal static string CacheFilePath {
             get {

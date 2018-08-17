@@ -29,12 +29,6 @@ namespace Viewer.UI.Images
         /// <param name="thumbnailAreaSize">Size of the area for this thumbnail.</param>
         /// <returns>Currently loaded thumbnail or null if no thumbnail is currently loaded.</returns>
         Image GetCurrent(Size thumbnailAreaSize);
-
-        /// <summary>
-        /// Causes the class to regenerate the thumbnail next time its value is requested.
-        /// This can be used for resizing, for example.
-        /// </summary>
-        void Invalidate();
     }
 
     public interface ILazyThumbnailFactory
@@ -88,12 +82,13 @@ namespace Viewer.UI.Images
         {
             return Default;
         }
-
-        public void Invalidate()
-        {
-        }
     }
     
+    /// <inheritdoc />
+    /// <summary>
+    /// Decode thumbnail from entity data. If the thumbnail is not large enough or it does not
+    /// have an embedded thumbnail, the thumbnail will be loaded from file.
+    /// </summary>
     public class PhotoThumbnail : ILazyThumbnail
     {
         private enum LoadingType
@@ -227,8 +222,8 @@ namespace Viewer.UI.Images
             _thumbnailLoader = thumbnailLoader;
             _entity = entity;
         }
-
-        public void Invalidate()
+        
+        private void Invalidate()
         {
             var current = _current;
             _loading.ContinueWith(p =>

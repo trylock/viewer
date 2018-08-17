@@ -492,7 +492,15 @@ namespace Viewer.UI.Images
         
         private void View_CloseView(object sender, EventArgs eventArgs)
         {
-            Dispose();
+            if (StatusLabel != null)
+            {
+                StatusLabel.Text = "Done.";
+            }
+
+            if (ItemCountLabel != null)
+            {
+                ItemCountLabel.Text = "";
+            }
         }
         
         private void View_GoBackInHistory(object sender, EventArgs e)

@@ -73,7 +73,7 @@ namespace Viewer.Core
         IStatusBarSlider CreateStatusBarSlider(string text, Image image, ToolStripItemAlignment alignment);
         
         /// <summary>
-        /// Add layout deserializa callback.
+        /// Add layout deserialize callback.
         /// </summary>
         /// <param name="callback">
         ///     The callback gets a persist string to deserialize.

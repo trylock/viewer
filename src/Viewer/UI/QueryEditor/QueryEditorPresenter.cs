@@ -95,6 +95,8 @@ namespace Viewer.UI.QueryEditor
                 await _editor.SaveAsync(View.FullPath, View.Query);
 
                 MarkSaved();
+
+                View.Text = Path.GetFileName(View.FullPath);
             }
             catch (UnauthorizedAccessException)
             {

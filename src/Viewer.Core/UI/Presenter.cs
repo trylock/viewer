@@ -120,6 +120,7 @@ namespace Viewer.Core.UI
             {
                 subscription.Unsubscribe();
             }
+            View.Dispose();
             ViewLifetime.Dispose();
         }
     }

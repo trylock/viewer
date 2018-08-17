@@ -10,6 +10,7 @@ using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Properties;
@@ -89,6 +90,10 @@ namespace Viewer
                 {
                     _appForm.Panel.LoadFromXml(input, Deserialize);
                 }
+            }
+            catch (XmlException)
+            {
+                // configuration file has an invalid format
             }
             catch (FileNotFoundException)
             {

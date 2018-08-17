@@ -11,18 +11,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
+using NLog.Config;
+using NLog.Layouts;
+using NLog.Targets;
 using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.UI;
 using WeifenLuo.WinFormsUI.Docking;
 using IComponent = Viewer.Core.IComponent;
+using LogLevel = NLog.LogLevel;
 
 namespace Viewer
 {
     [Export(typeof(IViewerApplication))]
     public class ViewerApplication : IViewerApplication
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly ViewerForm _appForm;
         private readonly IComponent[] _components;
         private readonly List<DeserializeDockContent> _layoutDeserializeCallback = new List<DeserializeDockContent>();
@@ -33,6 +40,19 @@ namespace Viewer
             _appForm = appForm;
             _appForm.Shutdown += OnShutdown;
             _components = components;
+
+            // register unexpected exception handler
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+        }
+
+        /// <summary>
+        /// Log unhandeled exceptions using the fatal level.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Logger.Fatal(e.ExceptionObject as Exception, "Unhandeled exception");
         }
 
         public DockPanel Panel => _appForm.Panel;
@@ -91,13 +111,25 @@ namespace Viewer
                     _appForm.Panel.LoadFromXml(input, Deserialize);
                 }
             }
-            catch (XmlException)
+            catch (XmlException e)
             {
                 // configuration file has an invalid format
+                Logger.Error(e, "Invalid configuration file.");
+                if (Logger.IsTraceEnabled)
+                {
+                    try
+                    {
+                        Logger.Trace("Log file content:\n{0}", File.ReadAllText(layoutFilePath));
+                    }
+                    catch (Exception)
+                    {
+                        // the file IO has been done purely for debugging purpose
+                    }
+                }
             }
-            catch (FileNotFoundException)
+            catch (FileNotFoundException e)
             {
-                // configuration file is missing
+                Logger.Trace(e, "Missing configuration file.");
             }
         }
 

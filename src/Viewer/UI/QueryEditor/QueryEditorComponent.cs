@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.IO;
@@ -22,6 +23,8 @@ namespace Viewer.UI.QueryEditor
     [Export(typeof(IComponent))]
     public class QueryEditorComponent : IComponent
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IEditor _editor;
         private readonly IFileSystem _fileSystem;
         private readonly IFileWatcher _fileWatcher;
@@ -145,9 +148,7 @@ namespace Viewer.UI.QueryEditor
             // add a new query view
             if (IsQueryFile(e.FullPath))
             {
-                var name = Path.GetFileNameWithoutExtension(e.FullPath);
-                var query = _fileSystem.ReadAllText(e.FullPath);
-                _queryViews.Add(new QueryView(name, query, e.FullPath));
+                UpdateQueryView(e.FullPath);
             }
         }
 
@@ -173,16 +174,22 @@ namespace Viewer.UI.QueryEditor
             // Delaying the event handler will increase probability that we will successfully read the file.
             await Task.Delay(UpdateDelay);
 
-            var name = Path.GetFileNameWithoutExtension(e.FullPath);
+            UpdateQueryView(e.FullPath);
+        }
+
+        private void UpdateQueryView(string filePath)
+        {
+            var name = Path.GetFileNameWithoutExtension(filePath);
             try
             {
-                var content = _fileSystem.ReadAllText(e.FullPath);
+                var content = _fileSystem.ReadAllText(filePath);
                 _queryViews.Remove(name);
-                _queryViews.Add(new QueryView(name, content, e.FullPath));
+                _queryViews.Add(new QueryView(name, content, filePath));
             }
-            catch (SystemException)
+            catch (SystemException ex)
             {
                 // ignore I/O errors 
+                Logger.Error(ex, "Failed to read Query View file.");
             }
         }
 

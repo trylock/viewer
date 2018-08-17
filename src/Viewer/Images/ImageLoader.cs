@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 using SkiaSharp;
 using Viewer.Data;
 using Viewer.IO;
-using Image = System.Drawing.Image;
 
 namespace Viewer.Images
 {
@@ -139,22 +138,33 @@ namespace Viewer.Images
         public SKBitmap LoadImage(IEntity entity)
         {
             var orientation = GetTransformation(entity);
-            var image = DecodeImage(new FileStream(entity.Path, FileMode.Open, FileAccess.Read), orientation);
-            return image;
+            using (var file = new FileStream(entity.Path, FileMode.Open, FileAccess.Read))
+            {
+                var image = DecodeImage(file, orientation);
+                return image;
+            }
         }
 
         public Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken)
         {
+            // isolate these values for the thread which will generate the thumbnail
             var orientation = GetTransformation(entity);
             var thumbnail = entity.GetValue<ImageValue>(ThumbnailAttrName);
             if (thumbnail == null)
             {
                 return Task.FromResult<SKBitmap>(null);
             }
-            return Task.Run(() => DecodeImage(new MemoryStream(thumbnail.Value), orientation), cancellationToken);
+
+            return Task.Run(() =>
+            {
+                using (new MemoryStream(thumbnail.Value))
+                {
+                    return DecodeImage(new MemoryStream(thumbnail.Value), orientation);
+                }
+            }, cancellationToken);
         }
 
-        private SKBitmap DecodeImage(Stream input, RotateFlipType orientation)
+        private static SKBitmap DecodeImage(Stream input, RotateFlipType orientation)
         {
             var bitmap = SKBitmap.Decode(input);
             try

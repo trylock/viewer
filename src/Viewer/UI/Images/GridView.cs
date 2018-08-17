@@ -59,9 +59,8 @@ namespace Viewer.UI.Images
             get => _selectionBounds;
             set
             {
-                Invalidate(ProjectBounds(_selectionBounds));
                 _selectionBounds = value;
-                Invalidate(ProjectBounds(_selectionBounds));
+                Invalidate();
             }
         }
 

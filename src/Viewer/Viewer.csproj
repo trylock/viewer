@@ -222,7 +222,6 @@
     <Compile Include="UI\Tasks\TaskLoaderView.Designer.cs">
       <DependentUpon>TaskLoaderView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\ValueFormat.cs" />
     <Compile Include="UI\Images\Grid.cs" />
     <Compile Include="UI\Images\ImagesGridView.cs">
       <SubType>Form</SubType>

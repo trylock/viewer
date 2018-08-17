@@ -14,8 +14,15 @@ namespace ViewerTest.IO
     public class FileFinderTest
     {
         [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void FileFinder_InvalidCharactersInPathPattern()
+        {
+            var finder = new FileFinder(new Mock<IFileSystem>().Object, "C:/test <");
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void GetDirectories_NullPattern()
+        public void FileFinder_NullPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
             var finder = new FileFinder(fileSystem.Object, null);

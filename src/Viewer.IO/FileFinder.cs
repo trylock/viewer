@@ -56,6 +56,11 @@ namespace Viewer.IO
         private readonly Regex _regex;
 
         /// <summary>
+        /// Pattern of this file finder.
+        /// </summary>
+        public string Pattern { get; }
+
+        /// <summary>
         /// Create a file finder with <paramref name="directoryPattern"/>.
         /// </summary>
         /// <param name="fileSystem">Wrapper used to access file system</param>
@@ -63,14 +68,15 @@ namespace Viewer.IO
         /// <exception cref="ArgumentNullException"><paramref name="fileSystem"/> or <paramref name="directoryPattern"/> is null</exception>
         public FileFinder(IFileSystem fileSystem, string directoryPattern)
         {
-            if (directoryPattern == null)
-            {
-                throw new ArgumentNullException(nameof(directoryPattern));
-            }
-
+            Pattern = directoryPattern ?? throw new ArgumentNullException(nameof(directoryPattern));
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            _parts = ParsePattern(directoryPattern);
-            _regex = CompileRegex(directoryPattern);
+
+            var invalidCharacters = Path.GetInvalidPathChars();
+            if (Pattern.IndexOfAny(invalidCharacters) >= 0)
+                throw new ArgumentException(nameof(directoryPattern) + " contains invalid characters.");
+
+            _parts = ParsePattern(Pattern);
+            _regex = CompileRegex(Pattern);
         }
 
         /// <summary>

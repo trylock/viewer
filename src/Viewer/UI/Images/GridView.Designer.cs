@@ -53,7 +53,6 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "GridView";
             this.Size = new System.Drawing.Size(551, 406);
-            this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.GridView_Scroll);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridView_Paint);
             this.Resize += new System.EventHandler(this.GridView_Resize);
             this.ResumeLayout(false);

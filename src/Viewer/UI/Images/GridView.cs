@@ -112,8 +112,6 @@ namespace Viewer.UI.Images
 
             SetStyle(ControlStyles.DoubleBuffer, true);
 
-            MouseWheel += GridView_MouseWheel;
-
             _highlightFillColor = Color.FromArgb(226, 241, 255);
             _highlightStrokeColor = Color.FromArgb(221, 232, 248);
 
@@ -232,17 +230,6 @@ namespace Viewer.UI.Images
             return new Rectangle(UnprojectLocation(clipBounds.Location), clipBounds.Size);
         }
 
-        /// <summary>
-        /// Move mouse location to UI coordinates
-        /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        public MouseEventArgs ConvertMouseEventArgs(MouseEventArgs e)
-        {
-            var location = UnprojectLocation(e.Location);
-            return new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta);
-        }
-
         #endregion
 
         private void GridView_Paint(object sender, PaintEventArgs e)
@@ -338,14 +325,6 @@ namespace Viewer.UI.Images
         {
             UpdateScrollableSize();
             Refresh();
-        }
-
-        private void GridView_Scroll(object sender, ScrollEventArgs e)
-        {
-        }
-
-        private void GridView_MouseWheel(object sender, MouseEventArgs e)
-        {
         }
 
         private void UpdateScrollableSize()

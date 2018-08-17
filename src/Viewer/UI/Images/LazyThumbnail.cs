@@ -15,12 +15,16 @@ using Viewer.Properties;
 
 namespace Viewer.UI.Images
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Lazily load entity thumbnail by calling <see cref="GetCurrent"/>.
+    /// </summary>
     public interface ILazyThumbnail : IDisposable
     {
         /// <summary>
-        /// Returns currently loaded thumbnail or null if there is none. This will start loading a new thumbnail
-        /// if a better thumbnail is available. This method is non-blocking. Even if a loading operation is started,
-        /// this method returns currently loaded image.
+        /// Returns currently loaded thumbnail or null if there is none. This will start loading
+        /// a new thumbnail if a better thumbnail is available. This method is non-blocking. This
+        /// method returns currently loaded image Even if a loading operation is in progress.
         /// </summary>
         /// <param name="thumbnailAreaSize">Size of the area for this thumbnail.</param>
         /// <returns>Currently loaded thumbnail or null if no thumbnail is currently loaded.</returns>
@@ -176,7 +180,8 @@ namespace Viewer.UI.Images
                 else if (_loadingType == LoadingType.NativeThumbnail)
                 {
                     // check whether it has failed due to the file being opened by another process
-                    var isFileBusy = _loading.Exception?.InnerExceptions.OfType<IOException>().Any() ?? false;
+                    var isFileBusy = _loading.Exception?.InnerExceptions
+                                         .Any(item => item.GetType() == typeof(IOException)) ?? false;
                     if (isFileBusy)
                     {
                         // retry after a set amount of time

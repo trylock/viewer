@@ -38,7 +38,9 @@ namespace ViewerTest.UI.Images
         {
             _thumbnail.GetCurrent(_thumbnailSize);
 
-            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, _thumbnailSize, It.IsAny<CancellationToken>()), Times.Once);
+            _thumbnailLoader.Verify(
+                mock => mock.LoadEmbeddedThumbnailAsync(_entity, _thumbnailSize, It.IsAny<CancellationToken>()),
+                Times.Once);
         }
 
         [TestMethod]
@@ -54,9 +56,11 @@ namespace ViewerTest.UI.Images
             current = _thumbnail.GetCurrent(_thumbnailSize);
 
             Assert.AreEqual(image, current);
-            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, It.IsAny<Size>(), It.IsAny<CancellationToken>()), Times.Once);
+            _thumbnailLoader.Verify(
+                mock => mock.LoadEmbeddedThumbnailAsync(_entity, It.IsAny<Size>(), It.IsAny<CancellationToken>()),
+                Times.Once);
         }
-        
+
         [TestMethod]
         public void GetCurrent_ResizeThumbnailWithLoadedThumbnail()
         {
@@ -78,9 +82,15 @@ namespace ViewerTest.UI.Images
             current = _thumbnail.GetCurrent(largeSize);
             Assert.AreEqual(image2, current);
 
-            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(It.IsAny<IEntity>(), smallSize, It.IsAny<CancellationToken>()), Times.Once);
-            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(It.IsAny<IEntity>(), largeSize, It.IsAny<CancellationToken>()), Times.Once);
-            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(It.IsAny<IEntity>(), It.IsAny<Size>(), It.IsAny<CancellationToken>()), Times.Once);
+            _thumbnailLoader.Verify(
+                mock => mock.LoadEmbeddedThumbnailAsync(It.IsAny<IEntity>(), smallSize, It.IsAny<CancellationToken>()),
+                Times.Once);
+            _thumbnailLoader.Verify(
+                mock => mock.LoadEmbeddedThumbnailAsync(It.IsAny<IEntity>(), largeSize, It.IsAny<CancellationToken>()),
+                Times.Once);
+            _thumbnailLoader.Verify(
+                mock => mock.LoadNativeThumbnailAsync(It.IsAny<IEntity>(), It.IsAny<Size>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [TestMethod]
@@ -100,8 +110,10 @@ namespace ViewerTest.UI.Images
             current = _thumbnail.GetCurrent(size);
             Assert.AreEqual(image, current);
 
-            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None), Times.Once);
-            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None), Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
         }
 
         [TestMethod]
@@ -121,8 +133,10 @@ namespace ViewerTest.UI.Images
             current = _thumbnail.GetCurrent(size);
             Assert.AreEqual(image, current);
 
-            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None), Times.Once);
-            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None), Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
         }
 
         [TestMethod]
@@ -142,8 +156,10 @@ namespace ViewerTest.UI.Images
             current = _thumbnail.GetCurrent(size);
             Assert.AreEqual(image, current);
 
-            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None), Times.Once);
-            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None), Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
         }
 
         [TestMethod]
@@ -169,9 +185,39 @@ namespace ViewerTest.UI.Images
 
             current = _thumbnail.GetCurrent(size);
             Assert.AreEqual(native, current);
-            
-            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None), Times.Once);
-            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None), Times.Exactly(2));
+
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public async Task GetCurrent_DontRetryLoadingNativeThumbnailIfItsFileIsNotBusy()
+        {
+            var embedded = new Bitmap(1, 1);
+            var size = new Size(200, 200);
+            _thumbnailLoader
+                .Setup(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None))
+                .Returns(Task.FromResult(new Thumbnail(embedded, new Size(1, 1))));
+            _thumbnailLoader
+                .Setup(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None))
+                .Returns(Task.FromException<Thumbnail>(new FileNotFoundException()));
+
+            var current = _thumbnail.GetCurrent(size);
+            Assert.AreEqual(embedded, current);
+            current = _thumbnail.GetCurrent(size);
+            Assert.AreEqual(embedded, current);
+
+            await Task.Delay(PhotoThumbnail.RetryDelay + PhotoThumbnail.RetryDelay);
+
+            current = _thumbnail.GetCurrent(size);
+            Assert.AreEqual(embedded, current);
+
+            _thumbnailLoader.Verify(mock => mock.LoadEmbeddedThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
+            _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None),
+                Times.Once);
         }
     }
 }

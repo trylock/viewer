@@ -10,6 +10,7 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.Data.Storage;
@@ -171,6 +172,8 @@ namespace Viewer.Query
 
     internal class SelectQuery : IExecutableQuery
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IFileSystem _fileSystem;
         private readonly IEntityManager _entities;
         private readonly FileFinder _fileFinder;
@@ -260,11 +263,18 @@ namespace Viewer.Query
             {
                 return _fileSystem.EnumerateFiles(path);
             }
-            catch (UnauthorizedAccessException)
+            catch (ArgumentException e)
             {
+                // this should not happen as we have checked the path pattern during query compilation
+                Logger.Error(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
-            catch (SecurityException)
+            catch (UnauthorizedAccessException e)
             {
+                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern);
+            }
+            catch (SecurityException e)
+            {
+                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
             return Enumerable.Empty<string>();
         }
@@ -275,11 +285,18 @@ namespace Viewer.Query
             {
                 return _fileSystem.EnumerateDirectories(path);
             }
-            catch (UnauthorizedAccessException)
+            catch (ArgumentException e)
             {
+                // this should not happen as we have checked the path pattern during query compilation
+                Logger.Error(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
-            catch (SecurityException)
+            catch (UnauthorizedAccessException e)
             {
+                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
+            }
+            catch (SecurityException e)
+            {
+                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
             return Enumerable.Empty<string>();
         }
@@ -290,17 +307,21 @@ namespace Viewer.Query
             {
                 return _entities.GetEntity(path);
             }
-            catch (InvalidDataFormatException)
+            catch (InvalidDataFormatException e)
             {
+                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
-            catch (PathTooLongException)
+            catch (PathTooLongException e)
             {
+                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
+                Logger.Error(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Logger.Debug(e);
             }
             catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) || 
                                       e.GetType() == typeof(SecurityException))

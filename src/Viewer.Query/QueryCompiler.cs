@@ -234,8 +234,19 @@ namespace Viewer.Query
             // set path pattern
             var pattern = context.STRING();
             var pathPattern = pattern.GetText().Substring(1, pattern.GetText().Length - 2);
-            query = _queryFactory.CreateQuery(pathPattern);
-            return new CompilationResult{ Query = query };
+            try
+            {
+                query = _queryFactory.CreateQuery(pathPattern);
+                return new CompilationResult {Query = query};
+            }
+            catch (ArgumentException e) // pathPattern contains invalid characters
+            {
+                _errorListener.ReportError(
+                    pattern.Symbol.Line, 
+                    pattern.Symbol.Column, 
+                    "Invalid characters in path pattern.");
+                throw new ParseCanceledException(e);
+            }
         }
 
         public CompilationResult VisitOptionalWhere(QueryParser.OptionalWhereContext context)
@@ -615,7 +626,7 @@ namespace Viewer.Query
             }
             catch (ParseCanceledException)
             {
-                // an error has been reported already
+                // an error has already been reported 
                 return null;
             }
             finally

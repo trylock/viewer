@@ -32,6 +32,14 @@ namespace Viewer.UI.QueryEditor
         private IToolBarItem _saveTool;
         private IToolBarItem _runTool;
         private IToolBarDropDown _viewsDropDown;
+        
+        /// <summary>
+        /// When a file system watcher detects a change in the query views directory, it fires an event.
+        /// Since the file has been changed, it is possible that a process has the file locked. This is
+        /// the time in milliseconds after which the event handler will try to open the changed file and
+        /// apply changes to query views loaded in this application. 
+        /// </summary>
+        public static int UpdateDelay = 200;
 
         [ImportingConstructor]
         public QueryEditorComponent(
@@ -51,8 +59,10 @@ namespace Viewer.UI.QueryEditor
         public void OnStartup(IViewerApplication app)
         {
             // load all query views and watch query view directory for changes
-            var queryViewsDirectory = Path.GetFullPath(Settings.Default.QueryViewDirectoryPath);
-            LoadQueryViews();
+            var queryViewsDirectory = Path.GetFullPath(
+                Environment.ExpandEnvironmentVariables(Settings.Default.QueryViewDirectoryPath)
+            );
+            LoadQueryViews(queryViewsDirectory);
             WatchQueryViews(queryViewsDirectory);
 
             // add application menus
@@ -118,9 +128,9 @@ namespace Viewer.UI.QueryEditor
             {
                 _dialogView.PathTooLong(path);
             }
-            _fileWatcher.Created += FileWatcherOnCreated;
             _fileWatcher.Deleted += FileWatcherOnDeleted;
             _fileWatcher.Renamed += FileWatcherOnRenamed;
+            _fileWatcher.Changed += FileWatcherOnChanged;
         }
 
         private void FileWatcherOnRenamed(object sender, RenamedEventArgs e)
@@ -151,29 +161,41 @@ namespace Viewer.UI.QueryEditor
             var name = Path.GetFileNameWithoutExtension(e.FullPath);
             _queryViews.Remove(name);
         }
-
-        private void FileWatcherOnCreated(object sender, FileSystemEventArgs e)
+        
+        private async void FileWatcherOnChanged(object sender, FileSystemEventArgs e)
         {
             if (!IsQueryFile(e.FullPath))
             {
-                return; 
+                return;
             }
 
+            // This is necessary. The process which caused this event probably has the file opened.
+            // Delaying the event handler will increase probability that we will successfully read the file.
+            await Task.Delay(UpdateDelay);
+
             var name = Path.GetFileNameWithoutExtension(e.FullPath);
-            var query = _fileSystem.ReadAllText(e.FullPath);
-            _queryViews.Add(new QueryView(name, query, e.FullPath));
+            try
+            {
+                var content = _fileSystem.ReadAllText(e.FullPath);
+                _queryViews.Remove(name);
+                _queryViews.Add(new QueryView(name, content, e.FullPath));
+            }
+            catch (SystemException)
+            {
+                // ignore I/O errors 
+            }
         }
 
         /// <summary>
         /// Try to load all query views from the query view directory (specified in user settings).
         /// If this operation fails, an error message is shown to the user.
         /// </summary>
-        private void LoadQueryViews()
+        /// <param name="path">Path to the query views directory</param>
+        private void LoadQueryViews(string path)
         {
-            var viewsDirectory = Path.GetFullPath(Settings.Default.QueryViewDirectoryPath);
             try
             {
-                var files = _fileSystem.EnumerateFiles(viewsDirectory, "*.vql");
+                var files = _fileSystem.EnumerateFiles(path, "*.vql");
                 foreach (var file in files)
                 {
                     var name = Path.GetFileNameWithoutExtension(file);
@@ -183,24 +205,24 @@ namespace Viewer.UI.QueryEditor
             }
             catch (ArgumentException)
             {
-                _dialogView.InvalidFileName(viewsDirectory);
+                _dialogView.InvalidFileName(path);
             }
             catch (DirectoryNotFoundException)
             {
-                _fileSystem.CreateDirectory(viewsDirectory);
+                _fileSystem.CreateDirectory(path);
             }
             catch (PathTooLongException)
             {
-                _dialogView.PathTooLong(viewsDirectory);
+                _dialogView.PathTooLong(path);
             }
             catch (IOException) // path is a file name
             {
-                _dialogView.DirectoryNotFound(viewsDirectory);
+                _dialogView.DirectoryNotFound(path);
             }
             catch (Exception e) when (e.GetType() == typeof(SecurityException) ||
                                       e.GetType() == typeof(UnauthorizedAccessException))
             {
-                _dialogView.UnauthorizedAccess(viewsDirectory);
+                _dialogView.UnauthorizedAccess(path);
             }
         }
 

@@ -50,6 +50,12 @@ namespace Viewer.UI.Presentation
             SubscribeTo(View, "View");
         }
 
+        public override void Dispose()
+        {
+            View.Picture?.Dispose();
+            base.Dispose();
+        }
+
         public async void ShowEntity(IEnumerable<IEntity> entities, int index)
         {
             _entities.Clear();

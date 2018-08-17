@@ -39,6 +39,12 @@ namespace Viewer.UI.Explorer
         void InvalidFileName(string fileName);
 
         /// <summary>
+        /// <paramref name="path"/> is not a valid file system path.
+        /// </summary>
+        /// <param name="path">Invalid path</param>
+        void InvalidPath(string path);
+
+        /// <summary>
         /// Show confirm dialog of file deletion. 
         /// </summary>
         /// <param name="fileName">Full directory path</param>
@@ -114,6 +120,17 @@ namespace Viewer.UI.Explorer
             MessageBox.Show(
                 string.Format(Resources.InvalidFileName_Message, fileName, PathUtils.GetInvalidFileCharacters()),
                 Resources.InvalidFileName_Label,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
+
+        public void InvalidPath(string path)
+        {
+            MessageBox.Show(
+                string.IsNullOrEmpty(path.Trim())
+                    ? string.Format(Resources.InvalidPath_Message, path)
+                    : Resources.InvalidPath_Empty_Message,
+                Resources.InvalidPath_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }

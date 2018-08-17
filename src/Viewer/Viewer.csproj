@@ -121,6 +121,7 @@
     <Compile Include="UI\Forms\SliderControl.Designer.cs">
       <DependentUpon>SliderControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Presentation\ImageWindow.cs" />
     <Compile Include="UI\QueryEvents.cs" />
     <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesComponent.cs" />

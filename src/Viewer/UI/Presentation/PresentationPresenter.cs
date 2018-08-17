@@ -8,10 +8,12 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using SkiaSharp.Views.Desktop;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Images;
+using Viewer.IO;
 using Viewer.UI.Explorer;
 using Viewer.UI.Images;
 
@@ -23,13 +25,14 @@ namespace Viewer.UI.Presentation
     {
         private readonly ISelection _selection;
         private readonly IImageLoader _imageLoader;
+        private readonly IFileSystem _fileSystem;
         private readonly IFileSystemErrorView _dialogView;
 
         protected override ExportLifetimeContext<IPresentationView> ViewLifetime { get; }
 
         // state
-        private readonly List<IEntity> _entities = new List<IEntity>();
-        private int _position;
+        private IReadOnlyList<IEntity> _entities;
+        private ImageWindow _images;
 
         /// <summary>
         /// Last time an image was changed in the presentation
@@ -41,11 +44,13 @@ namespace Viewer.UI.Presentation
             ExportFactory<IPresentationView> viewFactory, 
             ISelection selection,
             IImageLoader imageLoader,
+            IFileSystem fileSystem,
             IFileSystemErrorView dialogView)
         {
             _selection = selection;
             _imageLoader = imageLoader;
             _dialogView = dialogView;
+            _fileSystem = fileSystem;
             ViewLifetime = viewFactory.CreateExport();
             SubscribeTo(View, "View");
         }
@@ -53,43 +58,54 @@ namespace Viewer.UI.Presentation
         public override void Dispose()
         {
             View.Picture?.Dispose();
+            _images?.Dispose();
             base.Dispose();
         }
 
         public async void ShowEntity(IEnumerable<IEntity> entities, int index)
         {
-            _entities.Clear();
-            _entities.AddRange(entities);
-            _position = index;
+            _entities = entities.ToArray();
+            if (index < 0)
+                index = 0;
+            if (index >= _entities.Count)
+                index = _entities.Count - 1;
+
+            _images?.Dispose();
+            _images = new ImageWindow(_imageLoader, _fileSystem, _entities, 5);
+            _images.SetPosition(index);
             await LoadCurrentEntityAsync();
         }
         
         private async Task LoadCurrentEntityAsync()
         {
-            // replace selection
-            var position = _position;
-            var entity = _entities[position];
-            _selection.Replace(new[]
+            if (_images == null)
             {
-                entity
-            });
+                return;
+            }
+
+            // replace selection
+            var position = _images.CurrnetIndex;
+            var entity = _entities[position];
+            _selection.Replace(new[] { entity });
 
             // load new image
             try
             {
-                var image = await Task.Run(() =>
-                {
-                    using (var skBitmap = _imageLoader.LoadImage(entity))
-                    {
-                        return skBitmap.ToBitmap();
-                    }
-                });
+                var image = await _images.GetCurrentAsync(CancellationToken.None);
 
                 // update view
                 View.Zoom = 1.0;
                 View.Picture?.Dispose();
                 View.Picture = image;
                 View.UpdateImage();
+            }
+            catch (ArgumentException)
+            {
+                _dialogView.InvalidPath(entity.Path);
+            }
+            catch (NotSupportedException)
+            {
+                _dialogView.InvalidPath(entity.Path);
             }
             catch (UnauthorizedAccessException)
             {
@@ -98,6 +114,10 @@ namespace Viewer.UI.Presentation
             catch (SecurityException)
             {
                 _dialogView.UnauthorizedAccess(entity.Path);
+            }
+            catch (PathTooLongException)
+            {
+                _dialogView.PathTooLong(entity.Path);
             }
             catch (FileNotFoundException)
             {
@@ -115,17 +135,13 @@ namespace Viewer.UI.Presentation
         
         private async void View_NextImage(object sender, EventArgs e)
         {
-            _position = (_position + 1) % _entities.Count;
+            _images.Next();
             await LoadCurrentEntityAsync();
         }
 
         private async void View_PrevImage(object sender, EventArgs e)
         {
-            --_position;
-            if (_position < 0)
-            {
-                _position = _entities.Count - 1;
-            }
+            _images.Previous();
             await LoadCurrentEntityAsync();
         }
 
@@ -161,11 +177,11 @@ namespace Viewer.UI.Presentation
 
         private void View_ViewGotFocus(object sender, EventArgs e)
         {
-            if (_entities.Count == 0)
+            if (_entities == null || _entities.Count == 0)
             {
                 return;
             }
-            _selection.Replace(new []{ _entities[_position] });
+            _selection.Replace(new []{ _entities[_images.CurrnetIndex] });
         }
 
         private void View_CloseView(object sender, EventArgs e)

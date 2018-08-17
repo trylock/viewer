@@ -410,6 +410,33 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Path must not be empty..
+        /// </summary>
+        internal static string InvalidPath_Empty_Message {
+            get {
+                return ResourceManager.GetString("InvalidPath_Empty_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Path.
+        /// </summary>
+        internal static string InvalidPath_Label {
+            get {
+                return ResourceManager.GetString("InvalidPath_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not a valid path..
+        /// </summary>
+        internal static string InvalidPath_Message {
+            get {
+                return ResourceManager.GetString("InvalidPath_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0:N0} items .
         /// </summary>
         internal static string ItemCount_Label {

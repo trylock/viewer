@@ -52,6 +52,14 @@ namespace Viewer.Images
         SKBitmap LoadImage(IEntity entity);
 
         /// <summary>
+        /// Decode entity image from a stream.
+        /// </summary>
+        /// <param name="entity">Entity</param>
+        /// <param name="stream">Stream with encoded image data</param>
+        /// <returns>Decoded image</returns>
+        SKBitmap DecodeImage(IEntity entity, Stream stream);
+
+        /// <summary>
         /// Load embeded thumbnail asynchronously.
         /// The thumbnail is loaded in its original size.
         /// </summary>
@@ -143,6 +151,12 @@ namespace Viewer.Images
                 var image = DecodeImage(file, orientation);
                 return image;
             }
+        }
+
+        public SKBitmap DecodeImage(IEntity entity, Stream stream)
+        {
+            var orientation = GetTransformation(entity);
+            return DecodeImage(stream, orientation);
         }
 
         public Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken)

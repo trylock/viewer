@@ -1,4 +1,4 @@
-﻿using ScintillaNET;
+using ScintillaNET;
 
 namespace Viewer.UI.QueryEditor
 {
@@ -33,7 +33,7 @@ namespace Viewer.UI.QueryEditor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryEditorView));
             this.OpenDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDialog = new System.Windows.Forms.SaveFileDialog();
-            this.QueryTextBox = new ScintillaNET.Scintilla();
+            this.QueryTextBox = new EditorControl();
             this.SuspendLayout();
             // 
             // OpenDialog
@@ -75,6 +75,6 @@ namespace Viewer.UI.QueryEditor
         #endregion
         private System.Windows.Forms.OpenFileDialog OpenDialog;
         private System.Windows.Forms.SaveFileDialog SaveDialog;
-        private Scintilla QueryTextBox;
+        private EditorControl QueryTextBox;
     }
 }

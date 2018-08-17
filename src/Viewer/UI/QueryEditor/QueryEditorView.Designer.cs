@@ -1,4 +1,4 @@
-using ScintillaNET;
+﻿using ScintillaNET;
 
 namespace Viewer.UI.QueryEditor
 {
@@ -38,11 +38,13 @@ namespace Viewer.UI.QueryEditor
             // 
             // OpenDialog
             // 
-            this.OpenDialog.FileName = "openFileDialog1";
+            this.OpenDialog.DefaultExt = "vql";
+            this.OpenDialog.Filter = "Query Views (*.vql) |*.vql|All files (*.*)|*.*";
             // 
             // SaveDialog
             // 
             this.SaveDialog.DefaultExt = "vql";
+            this.SaveDialog.Filter = "Query Views (*.vql) |*.vql|All files (*.*)|*.*";
             // 
             // QueryTextBox
             // 

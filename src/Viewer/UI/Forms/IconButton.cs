@@ -95,7 +95,8 @@ namespace Viewer.UI.Forms
             
             SetStyle(ControlStyles.DoubleBuffer, true);
             SetStyle(ControlStyles.StandardClick, false);
-            
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+
             MouseDown += OnMouseDown;
             EnabledChanged += OnEnabledChanged;
         }

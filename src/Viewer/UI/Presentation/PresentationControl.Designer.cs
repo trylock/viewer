@@ -166,8 +166,7 @@ namespace Viewer.UI.Presentation
             this.PlayPauseButton.Name = "PlayPauseButton";
             this.PlayPauseButton.Size = new System.Drawing.Size(24, 43);
             this.PlayPauseButton.TabIndex = 4;
-            this.PlayPauseButton.Text = "iconButton1";
-            this.TogglePlayToolTip.SetToolTip(this.PlayPauseButton, "P");
+            this.TogglePlayToolTip.SetToolTip(this.PlayPauseButton, "Space");
             this.PlayPauseButton.Click += new System.EventHandler(this.PlayPauseButton_Click);
             // 
             // MaxDelayLabel

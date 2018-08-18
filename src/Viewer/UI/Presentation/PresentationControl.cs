@@ -307,7 +307,7 @@ namespace Viewer.UI.Presentation
             {
                 ExitFullscreen?.Invoke(sender, e);
             }
-            else if (e.KeyCode == Keys.P)
+            else if (e.KeyCode == Keys.Space)
             {
                 PlayPausePresentation?.Invoke(sender, e);
             }

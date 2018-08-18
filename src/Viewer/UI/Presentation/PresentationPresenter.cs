@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
@@ -71,7 +71,7 @@ namespace Viewer.UI.Presentation
                 index = _entities.Count - 1;
 
             _images?.Dispose();
-            _images = new ImageWindow(_imageLoader, _fileSystem, _entities, 5);
+            _images = new ImageWindow(_imageLoader, _entities, 5);
             _images.SetPosition(index);
             await LoadCurrentEntityAsync();
         }
@@ -91,7 +91,11 @@ namespace Viewer.UI.Presentation
             // load new image
             try
             {
-                var image = await _images.GetCurrentAsync(CancellationToken.None);
+                var image = await _images.GetCurrentAsync();
+                if (image == null)
+                {
+                    return;
+                }
 
                 // update view
                 View.Zoom = 1.0;

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using Viewer.Core;
 using Viewer.Data;
@@ -20,31 +21,42 @@ namespace Viewer.UI.Presentation
     /// </summary>
     public class ImageWindow : IDisposable
     {
-        private class ImageProxy
+        private class ImageProxy : IDisposable
         {
-            /// <summary>
-            /// Entity of this image.
-            /// </summary>
-            public IEntity Entity { get; }
+            private readonly Task<SKBitmap> _loadTask;
+            private readonly object _lock = new object();
+            private bool _isDisposed = false;
 
-            /// <summary>
-            /// Raw image data loaded from a file. The task can potentially throw many exceptions.
-            /// See <see cref="IFileSystem.ReadAllBytesAsync"/>
-            /// </summary>
-            public Task<byte[]> Data { get; }
-
-            public ImageProxy(IEntity entity, Task<byte[]> data)
+            public ImageProxy(Task<SKBitmap> loadTask)
             {
-                Entity = entity;
-                Data = data;
+                _loadTask = loadTask ?? throw new ArgumentNullException(nameof(loadTask));
+            }
+
+            public async Task<Bitmap> LoadAsync()
+            {
+                var bitmap = await _loadTask.ConfigureAwait(false);
+                lock (_lock)
+                {
+                    return _isDisposed ? null : bitmap.ToBitmap();
+                }
+            }
+
+            public void Dispose()
+            {
+                _loadTask?.ContinueWith(parent =>
+                {
+                    lock (_lock)
+                    {
+                        parent.Result?.Dispose();
+                        _isDisposed = true;
+                    }
+                }, TaskScheduler.Default);
             }
         }
         
-        private readonly SemaphoreSlim _sync = new SemaphoreSlim(1);
         private readonly ImageProxy[] _buffer;
         private readonly IReadOnlyList<IEntity> _entities;
         private readonly IImageLoader _imageLoader;
-        private readonly IFileSystem _fileSystem;
         private int _position;
 
         /// <summary>
@@ -56,21 +68,21 @@ namespace Viewer.UI.Presentation
         /// Create a new image window.
         /// </summary>
         /// <param name="imageLoader">Service used to decode images</param>
-        /// <param name="fileSystem">Service used to load image content</param>
         /// <param name="entities">Entities in the presentation</param>
         /// <param name="windowSize">
         ///     Size of the image window. This has to be an odd number. <c>windowSize / 2</c> images
         ///     will be preloaded before and after currently loaded image.
         /// </param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="windowSize"/> is negative or an even number</exception>
-        public ImageWindow(IImageLoader imageLoader, IFileSystem fileSystem, IReadOnlyList<IEntity> entities, int windowSize)
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="windowSize"/> is negative or an even number
+        /// </exception>
+        public ImageWindow(IImageLoader imageLoader, IReadOnlyList<IEntity> entities, int windowSize)
         {
             if (windowSize < 0 || windowSize % 2 == 0)
                 throw new ArgumentOutOfRangeException(nameof(windowSize));
 
             _entities = entities;
             _imageLoader = imageLoader;
-            _fileSystem = fileSystem;
             _buffer = new ImageProxy[windowSize];
             _position = 0;
         }
@@ -79,22 +91,22 @@ namespace Viewer.UI.Presentation
         /// Get current image. This function transfers ownership of returned image to the caller
         /// (i.e., the caller has to dispose the image)
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns>Task which decodes current image. The caller has to dispose the returned image.</returns>
-        public async Task<Bitmap> GetCurrentAsync(CancellationToken cancellationToken)
+        /// <returns>
+        ///     <para>
+        ///     Task which decodes current image (at the time of this call). The caller has to
+        ///     dispose the returned image.
+        ///     </para>
+        ///
+        ///     <para>
+        ///     It can return null if the image has been disposed. This can happen if you call
+        ///     <see cref="SetPosition"/> or <see cref="Next"/> and <see cref="Previous"/> after
+        ///     this too many times so that the current image will be disposed before it can load.
+        ///     </para>
+        /// </returns>
+        public Task<Bitmap> GetCurrentAsync()
         {
-            // load file content
             var imageProxy = _buffer[_buffer.Length / 2];
-            var data = await imageProxy.Data.ConfigureAwait(false);
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            // decode the image
-            using (var stream = new MemoryStream(data))
-            using (var image = _imageLoader.DecodeImage(imageProxy.Entity, stream))
-            {
-                return image.ToBitmap();
-            }
+            return imageProxy.LoadAsync();
         }
 
         /// <summary>
@@ -102,7 +114,9 @@ namespace Viewer.UI.Presentation
         /// center of the window so that current image and neighboring images are loaded first.
         /// </summary>
         /// <param name="position">New center of the window</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="position"/> is out of range.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="position"/> is out of range.
+        /// </exception>
         public void SetPosition(int position)
         {
             if (position < 0 || position >= _entities.Count)
@@ -114,6 +128,8 @@ namespace Viewer.UI.Presentation
             {
                 _position = _position + _entities.Count;
             }
+
+            DisposeItemsInBuffer();
 
             // preload images from the center of the window
             for (var i = 0; i < _buffer.Length; ++i)
@@ -128,6 +144,13 @@ namespace Viewer.UI.Presentation
         /// </summary>
         public void Next()
         {
+            if (_buffer[0] == null)
+                throw new InvalidOperationException(
+                    "Window is not initialized. Call SetPosition to initialize it.");
+
+            // dispose the first item
+            _buffer[0].Dispose();
+
             // shift the buffer
             for (var i = 0; i < _buffer.Length - 1; ++i)
             {
@@ -148,6 +171,13 @@ namespace Viewer.UI.Presentation
         /// </summary>
         public void Previous()
         {
+            if (_buffer[0] == null)
+                throw new InvalidOperationException(
+                    "Window is not initialized. Call SetPosition to initialize it.");
+
+            // dispose the last item
+            _buffer[_buffer.Length - 1].Dispose();
+
             // shift the buffer
             for (var i = _buffer.Length - 1; i >= 1; --i)
             {
@@ -170,26 +200,34 @@ namespace Viewer.UI.Presentation
 
             var entityIndex = (_position + bufferIndex) % _entities.Count;
             var entity = _entities[entityIndex];
-            var loadTask = ReadAllBytesAsync(entity.Path);
-            _buffer[bufferIndex] = new ImageProxy(entity, loadTask);
+            var loadTask = LoadAsync(entity);
+            _buffer[bufferIndex] = new ImageProxy(loadTask);
         }
 
-        private async Task<byte[]> ReadAllBytesAsync(string path)
+        private readonly object _lock = new object();
+
+        private Task<SKBitmap> LoadAsync(IEntity entity)
         {
-            await _sync.WaitAsync().ConfigureAwait(false);
-            try
+            return Task.Run(() =>
             {
-                return await _fileSystem.ReadAllBytesAsync(path);
-            }
-            finally
+                lock (_lock)
+                {
+                    return _imageLoader.LoadImage(entity);
+                }
+            });
+        }
+
+        private void DisposeItemsInBuffer()
+        {
+            foreach (var proxy in _buffer)
             {
-                _sync.Release();
+                proxy?.Dispose();
             }
         }
 
         public void Dispose()
         {
-            _sync.Dispose();
+            DisposeItemsInBuffer();
         }
     }
 }

@@ -123,6 +123,9 @@
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Explorer\Explorer.cs" />
+    <Compile Include="UI\Forms\BufferedTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\Forms\SliderControl.cs">
       <SubType>Component</SubType>
     </Compile>

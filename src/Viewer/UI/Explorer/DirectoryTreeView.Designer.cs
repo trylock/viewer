@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DirectoryTreeView));
-            this.TreeView = new System.Windows.Forms.TreeView();
+            this.TreeView = new Viewer.UI.Forms.BufferedTreeView();
             this.FileContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenInFileExplorerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -175,7 +175,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TreeView TreeView;
+        private Viewer.UI.Forms.BufferedTreeView TreeView;
         private System.Windows.Forms.ContextMenuStrip FileContextMenu;
         private System.Windows.Forms.ToolStripMenuItem RenameMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

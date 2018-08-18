@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
@@ -25,7 +25,6 @@ namespace Viewer.UI.Presentation
     {
         private readonly ISelection _selection;
         private readonly IImageLoader _imageLoader;
-        private readonly IFileSystem _fileSystem;
         private readonly IFileSystemErrorView _dialogView;
 
         protected override ExportLifetimeContext<IPresentationView> ViewLifetime { get; }
@@ -44,13 +43,11 @@ namespace Viewer.UI.Presentation
             ExportFactory<IPresentationView> viewFactory, 
             ISelection selection,
             IImageLoader imageLoader,
-            IFileSystem fileSystem,
             IFileSystemErrorView dialogView)
         {
             _selection = selection;
             _imageLoader = imageLoader;
             _dialogView = dialogView;
-            _fileSystem = fileSystem;
             ViewLifetime = viewFactory.CreateExport();
             SubscribeTo(View, "View");
         }
@@ -136,17 +133,41 @@ namespace Viewer.UI.Presentation
                 }
             }
         }
+
+        private bool _isLoading = false;
         
         private async void View_NextImage(object sender, EventArgs e)
         {
-            _images.Next();
-            await LoadCurrentEntityAsync();
+            if (_isLoading)
+                return;
+
+            _isLoading = true;
+            try
+            {
+                _images.Next();
+                await LoadCurrentEntityAsync();
+            }
+            finally
+            {
+                _isLoading = false;
+            }
         }
 
         private async void View_PrevImage(object sender, EventArgs e)
         {
-            _images.Previous();
-            await LoadCurrentEntityAsync();
+            if (_isLoading)
+                return;
+
+            _isLoading = true;
+            try
+            {
+                _images.Previous();
+                await LoadCurrentEntityAsync();
+            }
+            finally
+            {
+                _isLoading = false;
+            }
         }
 
         private void View_ToggleFullscreen(object sender, EventArgs e)

@@ -39,19 +39,23 @@
             this.PresentationControl.IsFullscreen = false;
             this.PresentationControl.IsPlaying = false;
             this.PresentationControl.Location = new System.Drawing.Point(0, 0);
+            this.PresentationControl.Margin = new System.Windows.Forms.Padding(2);
             this.PresentationControl.Name = "PresentationControl";
             this.PresentationControl.Picture = null;
-            this.PresentationControl.Size = new System.Drawing.Size(621, 348);
+            this.PresentationControl.Size = new System.Drawing.Size(466, 283);
             this.PresentationControl.Speed = 1000;
             this.PresentationControl.TabIndex = 0;
+            this.PresentationControl.Zoom = 1D;
             // 
             // PresentationView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(621, 348);
+            this.ClientSize = new System.Drawing.Size(466, 283);
             this.Controls.Add(this.PresentationControl);
             this.DoubleBuffered = true;
+            this.KeyPreview = true;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "PresentationView";
             this.Text = "Presentation";
             this.ResumeLayout(false);

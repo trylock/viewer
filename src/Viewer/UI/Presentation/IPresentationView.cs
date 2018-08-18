@@ -4,24 +4,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SkiaSharp;
 using Viewer.Core.UI;
 using Viewer.Data;
 
 namespace Viewer.UI.Presentation
 {
-    public class ImageView
-    {
-        /// <summary>
-        /// Loaded image 
-        /// </summary>
-        public Image Picture { get; set; }
-
-        /// <summary>
-        /// Entity of the image
-        /// </summary>
-        public IEntity Entity { get; set; }
-    }
-
     public interface IZoomableView
     {
         /// <summary>
@@ -76,7 +64,7 @@ namespace Viewer.UI.Presentation
         /// <summary>
         /// Currently loaded image
         /// </summary>
-        Image Picture { get; set; }
+        SKBitmap Picture { get; set; }
 
         /// <summary>
         /// true iff the view is in fullscreen mode

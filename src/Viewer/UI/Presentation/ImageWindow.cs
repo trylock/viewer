@@ -32,12 +32,12 @@ namespace Viewer.UI.Presentation
                 _loadTask = loadTask ?? throw new ArgumentNullException(nameof(loadTask));
             }
 
-            public async Task<Bitmap> LoadAsync()
+            public async Task<SKBitmap> LoadAsync()
             {
                 var bitmap = await _loadTask.ConfigureAwait(false);
                 lock (_lock)
                 {
-                    return _isDisposed ? null : bitmap.ToBitmap();
+                    return _isDisposed ? null : bitmap.Copy();
                 }
             }
 
@@ -103,7 +103,7 @@ namespace Viewer.UI.Presentation
         ///     this too many times so that the current image will be disposed before it can load.
         ///     </para>
         /// </returns>
-        public Task<Bitmap> GetCurrentAsync()
+        public Task<SKBitmap> GetCurrentAsync()
         {
             var imageProxy = _buffer[_buffer.Length / 2];
             return imageProxy.LoadAsync();

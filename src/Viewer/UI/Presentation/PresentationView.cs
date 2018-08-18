@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SkiaSharp;
 using Viewer.Core.UI;
 using Viewer.UI.Images;
 
@@ -60,7 +61,7 @@ namespace Viewer.UI.Presentation
             remove => PresentationControl.TimerTick -= value;
         }
 
-        public Image Picture
+        public SKBitmap Picture
         {
             get => PresentationControl.Picture;
             set => PresentationControl.Picture = value;

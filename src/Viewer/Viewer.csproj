@@ -130,6 +130,9 @@
       <DependentUpon>SliderControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Presentation\ImageWindow.cs" />
+    <Compile Include="UI\Presentation\PreviewControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\QueryEditor\EditorControl.cs">
       <SubType>Component</SubType>
     </Compile>

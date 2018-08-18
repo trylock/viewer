@@ -528,15 +528,23 @@ namespace Viewer.UI.Images
                 return;
             }
 
+            // ignore copy/move dest => dest operation
+            var movedFiles = files.Where(path => 
+                !string.Equals(path, e.Entity.FullPath, StringComparison.CurrentCultureIgnoreCase));
+            if (!movedFiles.Any())
+            {
+                return;
+            }
+
             try
             {
                 if ((e.AllowedEffect & DragDropEffects.Move) != 0)
                 {
-                    await _explorer.MoveFilesAsync(e.Entity.FullPath, files);
+                    await _explorer.MoveFilesAsync(e.Entity.FullPath, movedFiles);
                 }
                 else if ((e.AllowedEffect & DragDropEffects.Copy) != 0)
                 {
-                    await _explorer.CopyFilesAsync(e.Entity.FullPath, files);
+                    await _explorer.CopyFilesAsync(e.Entity.FullPath, movedFiles);
                 }
             }
             catch (OperationCanceledException)

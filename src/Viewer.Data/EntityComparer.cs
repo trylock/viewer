@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,12 +74,12 @@ namespace Viewer.Data
                 return true;
             if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
                 return false;
-            return x.Path == y.Path;
+            return string.Equals(x.Path, y.Path, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public int GetHashCode(IEntity obj)
         {
-            return obj.Path.GetHashCode();
+            return obj.Path.ToLower().GetHashCode();
         }
     }
 }

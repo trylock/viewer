@@ -147,5 +147,69 @@ namespace ViewerTest.Query
             Assert.IsFalse(query.Match(new FileEntity("test1")));
             Assert.IsFalse(query.Match(new FileEntity("test2")));
         }
+
+        [TestMethod]
+        public void Except_IsCaseInsensitive()
+        {
+            var entitiesA = new[]
+            {
+                new FileEntity("test1"),
+                new FileEntity("test2"),
+            };
+            var entitiesB = new[]
+            {
+                new FileEntity("TesT2"),
+                new FileEntity("teST1"), 
+            };
+            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA), EntityComparer.Default, "test");
+            query = query.Except(new MemoryQuery(entitiesB));
+
+            var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
+            CollectionAssert.AreEqual(new IEntity[]{}, result);
+        }
+
+        [TestMethod]
+        public void Union_IsCaseInsensitive()
+        {
+            var entitiesA = new[]
+            {
+                new FileEntity("test1"),
+                new FileEntity("test2"),
+            };
+            var entitiesB = new[]
+            {
+                new FileEntity("TEST3"),
+                new FileEntity("TesT2"),
+            };
+            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA), EntityComparer.Default, "test");
+            query = query.Union(new MemoryQuery(entitiesB));
+
+            var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
+            Assert.AreEqual(3, result.Length);
+            Assert.AreEqual("test1", result[0].Path);
+            Assert.AreEqual("test2", result[1].Path);
+            Assert.AreEqual("TEST3", result[2].Path);
+        }
+
+        [TestMethod]
+        public void Intersect_IsCaseInsensitive()
+        {
+            var entitiesA = new[]
+            {
+                new FileEntity("test1"),
+                new FileEntity("test2"),
+            };
+            var entitiesB = new[]
+            {
+                new FileEntity("TEST3"),
+                new FileEntity("TesT2"),
+            };
+            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA), EntityComparer.Default, "test");
+            query = query.Intersect(new MemoryQuery(entitiesB));
+
+            var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual("test2", result[0].Path);
+        }
     }
 }

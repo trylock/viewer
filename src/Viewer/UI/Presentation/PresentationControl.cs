@@ -279,7 +279,13 @@ namespace Viewer.UI.Presentation
         {
             if (IsFullscreen)
             {
-                HideCursor();
+                var cursor = PointToClient(MousePosition);
+                var child = GetChildAtPoint(cursor);
+                if (child?.GetType() == typeof(PreviewControl))
+                {
+                    // only hide the cursor if it is over the image
+                    HideCursor();
+                }
             }
         }
         

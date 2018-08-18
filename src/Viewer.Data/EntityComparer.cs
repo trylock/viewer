@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StringComparer = System.StringComparer;
 
 namespace Viewer.Data
 {
@@ -74,12 +75,12 @@ namespace Viewer.Data
                 return true;
             if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
                 return false;
-            return string.Equals(x.Path, y.Path, StringComparison.CurrentCultureIgnoreCase);
+            return StringComparer.CurrentCultureIgnoreCase.Equals(x.Path, y.Path);
         }
 
         public int GetHashCode(IEntity obj)
         {
-            return obj.Path.ToLower().GetHashCode();
+            return StringComparer.CurrentCultureIgnoreCase.GetHashCode(obj.Path);
         }
     }
 }

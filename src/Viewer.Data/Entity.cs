@@ -16,7 +16,7 @@ namespace Viewer.Data
     public interface IEntity : IEnumerable<Attribute>
     {
         /// <summary>
-        /// Path to the entity. It is unified using the <see cref="PathUtils.UnifyPath"/> function.
+        /// Path to the entity. It is unified using the <see cref="PathUtils.NormalizePath"/> function.
         /// </summary>
         string Path { get; }
 
@@ -81,7 +81,7 @@ namespace Viewer.Data
 
         public DirectoryEntity(string path)
         {
-            Path = PathUtils.UnifyPath(path);
+            Path = PathUtils.NormalizePath(path);
         }
 
         public Attribute GetAttribute(string name)
@@ -106,7 +106,7 @@ namespace Viewer.Data
 
         public IEntity ChangePath(string path)
         {
-            Path = PathUtils.UnifyPath(path);
+            Path = PathUtils.NormalizePath(path);
             return this;
         }
 
@@ -152,7 +152,7 @@ namespace Viewer.Data
 
         public FileEntity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
         {
-            Path = PathUtils.UnifyPath(path);
+            Path = PathUtils.NormalizePath(path);
             LastWriteTime = lastWriteTime;
             LastAccessTime = lastAccessTime;
         }
@@ -208,7 +208,7 @@ namespace Viewer.Data
 
         public IEntity ChangePath(string path)
         {
-            Path = PathUtils.UnifyPath(path);
+            Path = PathUtils.NormalizePath(path);
             return this;
         }
 

@@ -121,17 +121,17 @@ namespace Viewer.Data.Storage
 
         public void Move(IEntity entity, string newPath)
         {
-            MoveFile(PathUtils.UnifyPath(entity.Path), PathUtils.UnifyPath(newPath));
+            MoveFile(PathUtils.NormalizePath(entity.Path), PathUtils.NormalizePath(newPath));
         }
 
         public void Remove(IEntity entity)
         {
-            RemoveFile(PathUtils.UnifyPath(entity.Path));
+            RemoveFile(PathUtils.NormalizePath(entity.Path));
         }
 
         public void Touch(string path)
         {
-            path = PathUtils.UnifyPath(path);
+            path = PathUtils.NormalizePath(path);
 
             using (var query = new SQLiteCommand(Connection))
             {

@@ -208,7 +208,7 @@ namespace Viewer.UI.Images
             // process all rename requests
             while (_moveRequests.TryDequeue(out var req))
             {
-                var oldPath = PathUtils.UnifyPath(req.OldFullPath);
+                var oldPath = PathUtils.NormalizePath(req.OldFullPath);
                 for (var i = 0; i < _views.Count; ++i)
                 {
                     if (_views[i].FullPath == oldPath)
@@ -226,7 +226,7 @@ namespace Viewer.UI.Images
             var deleted = new HashSet<string>();
             while (_deleteRequests.TryDequeue(out var req))
             {
-                var path = PathUtils.UnifyPath(req.FullPath);
+                var path = PathUtils.NormalizePath(req.FullPath);
                 deleted.Add(path);
             }
 

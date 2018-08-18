@@ -62,7 +62,7 @@ namespace Viewer.IO
 
         public void Watch(string path)
         {
-            var fullPath = PathUtils.UnifyPath(path);
+            var fullPath = PathUtils.NormalizePath(path);
             var watcher = new FileSystemWatcher(path)
             {
                 NotifyFilter = NotifyFilters.LastAccess |

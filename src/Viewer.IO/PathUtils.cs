@@ -206,27 +206,35 @@ namespace Viewer.IO
         }
 
         /// <summary>
-        /// Unify a file system path to a common format so that it can be compared to other unified paths.
+        /// Normalize <paramref name="path"/> to a common format.
         /// </summary>
+        /// <remarks>
+        /// It converts <paramref name="path"/> to an absolute path and replaces all directory
+        /// separators with forward slash (/). It does not change text capitalization.
+        /// </remarks>
         /// <param name="path">Path to a file/folder.</param>
-        /// <returns>Unified path to the same file/folder. If <paramref name="path"/> is null, it will return null.</returns>
-        public static string UnifyPath(string path)
+        /// <returns>
+        ///     Unified path to the same file/folder.
+        ///     If <paramref name="path"/> is null, it will return null.
+        /// </returns>
+        public static string NormalizePath(string path)
         {
             if (path == null)
             {
                 return null;
             }
 
+            path = Path.GetFullPath(path);
             var unifiedPath = new StringBuilder();
-            for (var i = 0; i < path.Length; ++i)
+            foreach (var c in path)
             {
-                if (path[i] == '/' || path[i] == '\\')
+                if (c == '/' || c == '\\')
                 {
                     unifiedPath.Append('/');
                 }
                 else
                 {
-                    unifiedPath.Append(path[i]);
+                    unifiedPath.Append(c);
                 }
             }
 

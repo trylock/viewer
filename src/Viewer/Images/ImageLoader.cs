@@ -21,9 +21,9 @@ using Viewer.IO;
 namespace Viewer.Images
 {
     /// <summary>
-    /// Purpose of this class is to read an image of an entity and decode it correctly. This class takes
-    /// into account file metadata such as the Exif Orientation tag used to rotate and flip images without
-    /// altering image data. 
+    /// Purpose of this class is to read an image of an entity and decode it correctly. This class
+    /// takes into account file metadata such as the Exif Orientation tag used to rotate and flip
+    /// images without altering image data. 
     /// </summary>
     public interface IImageLoader
     {
@@ -34,7 +34,8 @@ namespace Viewer.Images
         /// <param name="entity"></param>
         /// <returns>
         ///     Dimensions of the original image of entity (i.e., image at <see cref="IEntity.Path"/>).
-        ///     If <paramref name="entity"/> does not contain metadata about its image dimensions, <c>new Size(1, 1)</c> will be returned.
+        ///     If <paramref name="entity"/> does not contain metadata about its image dimensions,
+        ///     <c>new Size(1, 1)</c> will be returned.
         /// </returns>
         Size GetImageSize(IEntity entity);
 
@@ -43,12 +44,26 @@ namespace Viewer.Images
         /// </summary>
         /// <param name="entity">Entity for which you want to load the image</param>
         /// <returns>Decoded image of the entity</returns>
-        /// <exception cref="ArgumentException">File <see cref="IEntity.Path"/> does not contain a valid image or <see cref="IEntity.Path"/> is an invalid path to a file.</exception>
-        /// <exception cref="FileNotFoundException">File <see cref="IEntity.Path"/> was not found.</exception>
-        /// <exception cref="IOException">File <see cref="IEntity.Path"/> is used by another process.</exception>
-        /// <exception cref="NotSupportedException"><see cref="IEntity.Path"/> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in a non-NTFS environment.</exception>
-        /// <exception cref="SecurityException">The caller does not have the required permission.</exception>
-        /// <exception cref="UnauthorizedAccessException">Unauthorized access to the file <see cref="IEntity.Path"/>.</exception>
+        /// <exception cref="ArgumentException">
+        ///     File <see cref="IEntity.Path"/> does not contain a valid image or
+        ///     <see cref="IEntity.Path"/> is an invalid path to a file.
+        /// </exception>
+        /// <exception cref="FileNotFoundException">
+        ///     File <see cref="IEntity.Path"/> was not found.
+        /// </exception>
+        /// <exception cref="IOException">
+        ///     File <see cref="IEntity.Path"/> is used by another process.
+        /// </exception>
+        /// <exception cref="NotSupportedException">
+        ///     <see cref="IEntity.Path"/> refers to a non-file device, such as "con:", "com1:",
+        ///     "lpt1:", etc. in a non-NTFS environment.
+        /// </exception>
+        /// <exception cref="SecurityException">
+        ///     The caller does not have the required permission.
+        /// </exception>
+        /// <exception cref="UnauthorizedAccessException">
+        ///     Unauthorized access to the file <see cref="IEntity.Path"/>.
+        /// </exception>
         SKBitmap LoadImage(IEntity entity);
 
         /// <summary>
@@ -65,7 +80,9 @@ namespace Viewer.Images
         /// </summary>
         /// <param name="entity">Entity to load</param>
         /// <param name="cancellationToken">Cancellation token of the load operation</param>
-        /// <returns>Task which loads the thumbnail. The task will return null if there is no thumbnail.</returns>
+        /// <returns>
+        ///     Task which loads the thumbnail. The task will return null if there is no thumbnail.
+        /// </returns>
         Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken);
     }
     

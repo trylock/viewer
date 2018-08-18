@@ -17,6 +17,15 @@ using Viewer.Query;
 
 namespace Viewer.UI.Images
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Query evaluator evaluates query and tries to keep it updated. It will watch changes in
+    /// entity changes in the file system and update the result accordingly.
+    /// </summary>
+    /// <remarks>
+    /// This object is responsible for collection returned from the <see cref="Update"/> method.
+    /// <see cref="Dispose"/>ing this object will dispose items in this collection.
+    /// </remarks>
     public class QueryEvaluator : IDisposable
     {
         // dependencies
@@ -182,7 +191,8 @@ namespace Viewer.UI.Images
                     }
 
                     // add a new entity
-                    _addRequests.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
+                    var thumbnail = _thumbnailFactory.Create(entity, Cancellation.Token);
+                    _addRequests.Add(new EntityView(entity, thumbnail));
                 }
             }
             catch (QueryRuntimeException e)
@@ -192,8 +202,8 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Update current collection.
-        /// It takes all changes made so far and applies them to the local collection of <see cref="EntityView"/>s
+        /// Update current collection. It takes all changes made so far and applies them to
+        /// the local collection of <see cref="EntityView"/>s
         /// </summary>
         /// <returns>Modified collection</returns>
         public SortedList<EntityView> Update()
@@ -211,19 +221,21 @@ namespace Viewer.UI.Images
                 var oldPath = PathUtils.NormalizePath(req.OldFullPath);
                 for (var i = 0; i < _views.Count; ++i)
                 {
-                    if (_views[i].FullPath == oldPath)
+                    if (!string.Equals(_views[i].FullPath, oldPath, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        var item = _views[i];
-                        item.FullPath = req.FullPath;
-                        _views.RemoveAt(i);
-                        _views.Add(item);
-                        break;
+                        continue;
                     }
+
+                    var item = _views[i];
+                    item.FullPath = req.FullPath;
+                    _views.RemoveAt(i);
+                    _views.Add(item);
+                    break;
                 }
             }
 
             // process all delete requests
-            var deleted = new HashSet<string>();
+            var deleted = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
             while (_deleteRequests.TryDequeue(out var req))
             {
                 var path = PathUtils.NormalizePath(req.FullPath);

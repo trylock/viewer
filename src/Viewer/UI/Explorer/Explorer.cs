@@ -100,7 +100,10 @@ namespace Viewer.UI.Explorer
 
             public SearchControl CreateDirectory(string path)
             {
-                if (PathUtils.NormalizePath(_destDir) == PathUtils.NormalizePath(path))
+                if (string.Equals(
+                        PathUtils.NormalizePath(_destDir),
+                        PathUtils.NormalizePath(path),
+                        StringComparison.CurrentCultureIgnoreCase))
                 {
                     _dialogView.FailedToMove(path, _destDir);
                     return SearchControl.None;

@@ -40,19 +40,6 @@ namespace Viewer
             _appForm = appForm;
             _appForm.Shutdown += OnShutdown;
             _components = components;
-
-            // register unexpected exception handler
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-        }
-
-        /// <summary>
-        /// Log unhandeled exceptions using the fatal level.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Logger.Fatal(e.ExceptionObject as Exception, "Unhandeled exception");
         }
 
         public DockPanel Panel => _appForm.Panel;

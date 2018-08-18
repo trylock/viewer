@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 using Viewer.Core;
 using Viewer.Data;
 using Viewer.Properties;
@@ -19,12 +21,16 @@ namespace Viewer
 {
     internal static class Program
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         private static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -42,6 +48,58 @@ namespace Viewer
                 var app = container.GetExportedValue<IViewerApplication>();
                 app.InitializeLayout();
                 app.Run();
+            }
+        }
+
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (e.ExceptionObject is CompositionException compositionException)
+            {
+                // It is useless to log composition exception directly as that would include everything 
+                // but an information about the error.
+                LogCompositionException(compositionException);
+                Logger.Fatal(compositionException, "Unhandeled exception.");
+            }
+            else
+            {
+                Logger.Fatal(e.ExceptionObject as Exception, "Unhandled exception.");
+            }
+        }
+
+        private static void LogCompositionException(CompositionException ce)
+        {
+            foreach (var error in ce.Errors)
+            {
+                if (error.Exception == null)
+                {
+                    continue;
+                }
+
+                LogException(error.Exception);
+            }
+
+            if (ce.InnerException != null)
+            {
+                LogException(ce.InnerException);
+            }
+        }
+        
+        private static void LogException(Exception exception)
+        {
+            if (exception is CompositionException ce)
+            {
+                LogCompositionException(ce);
+            }
+            else if (exception is ComposablePartException cpe)
+            {
+                if (cpe.InnerException != null)
+                {
+                    LogException(cpe.InnerException);
+                }
+            }
+            else if (exception != null)
+            {
+                Logger.Fatal(exception, "Cause of CompositionException whose log follows.");
             }
         }
     }

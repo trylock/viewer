@@ -501,6 +501,8 @@ namespace Viewer.UI.Images
             {
                 ItemCountLabel.Text = "";
             }
+            
+            _selection.Clear();
         }
         
         private void View_GoBackInHistory(object sender, EventArgs e)

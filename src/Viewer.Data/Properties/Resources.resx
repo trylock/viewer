@@ -147,8 +147,9 @@ CREATE TABLE IF NOT EXISTS `attributes` (
 CREATE UNIQUE INDEX IF NOT EXISTS `files_path_index` ON `files` (
 	`path`	ASC
 );
-CREATE INDEX IF NOT EXISTS `attributes_owner_index` ON `attributes` (
-	`owner`	ASC
+CREATE UNIQUE INDEX IF NOT EXISTS `attributes_owner_name_index` ON `attributes` (
+	`owner`	ASC,
+	`name`	ASC
 );
 COMMIT;</value>
   </data>

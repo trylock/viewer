@@ -289,7 +289,7 @@ namespace Viewer.UI.Images
 
                         var value = new ImageValue(dataStrem.ToArray());
                         entity.SetAttribute(new Attribute("thumbnail", value, AttributeSource.Metadata));
-                        _storage.Store(entity, StoreFlags.Metadata);
+                        _storage.StoreThumbnail(entity);
                     }
                 }
                 finally

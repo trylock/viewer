@@ -247,7 +247,7 @@ namespace Viewer.UI.Attributes
                             progress.Report(new LoadingProgress(entity.Path));
                             try
                             {
-                                _storage.Store(entity, StoreFlags.Everything);
+                                _storage.Store(entity);
                             }
                             catch (FileNotFoundException)
                             {

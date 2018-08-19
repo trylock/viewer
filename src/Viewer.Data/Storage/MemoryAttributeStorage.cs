@@ -25,30 +25,30 @@ namespace Viewer.Data.Storage
             return new LoadResult(null, 0);
         }
 
-        public void Store(IEntity entity, StoreFlags flags)
+        public void Store(IEntity entity)
         {
             lock (_files)
             {
-                // add an empty entity if it's not in the storage
-                if (!_files.TryGetValue(entity.Path, out var storedEntity))
-                {
-                    storedEntity = new FileEntity(entity.Path);
-                    _files.Add(storedEntity.Path, storedEntity);
-                }
-                
-                // update attributes in the flags value
-                var attributes = entity.Where(CreateAttributePredicate(flags));
-                foreach (var attr in attributes)
-                {
-                    storedEntity.SetAttribute(attr);
-                }
+                _files[entity.Path] = entity.Clone();
             }
         }
 
-        private static Func<Attribute, bool> CreateAttributePredicate(StoreFlags flags)
+        public void StoreThumbnail(IEntity entity)
         {
-            return attr => (flags.HasFlag(StoreFlags.Metadata) && attr.Source == AttributeSource.Metadata) ||
-                           (flags.HasFlag(StoreFlags.Attribute) && attr.Source == AttributeSource.Custom);
+            lock (_files)
+            {
+                if (!_files.TryGetValue(entity.Path, out var storedEntity))
+                {
+                    return;
+                }
+
+                var thumbnail = entity.GetAttribute("thumbnail");
+                if (thumbnail == null)
+                {
+                    return;
+                }
+                storedEntity.SetAttribute(thumbnail);
+            }
         }
 
         public void Remove(IEntity entity)

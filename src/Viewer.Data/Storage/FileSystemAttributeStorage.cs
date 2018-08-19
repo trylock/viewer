@@ -141,13 +141,8 @@ namespace Viewer.Data.Storage
             }
         }
         
-        public void Store(IEntity entity, StoreFlags flags)
+        public void Store(IEntity entity)
         {
-            if (!flags.HasFlag(StoreFlags.Attribute))
-            {
-                return;
-            }
-
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(entity.Path))
             {
                 string tmpFileName;
@@ -187,6 +182,10 @@ namespace Viewer.Data.Storage
                 // replace the original file with the modified file
                 _fileSystem.ReplaceFile(tmpFileName, entity.Path, null);
             }
+        }
+
+        public void StoreThumbnail(IEntity entity)
+        {
         }
 
         public void Remove(IEntity entity)

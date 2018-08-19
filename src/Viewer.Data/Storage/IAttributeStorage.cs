@@ -39,37 +39,7 @@ namespace Viewer.Data.Storage
             BytesRead = bytesRead;
         }
     }
-
-    [Flags]
-    public enum StoreFlags
-    {
-        /// <summary>
-        /// Noting will be stored. Calling <see cref="IAttributeStorage.Store"/> with this flag
-        /// is basically a nop.
-        /// </summary>
-        None = 0,
-
-        /// <summary>
-        /// Update the access time of this entity.
-        /// </summary>
-        Touch = 0x1,
-
-        /// <summary>
-        /// Store metadata attributes like Exif attributes and thumbnail.
-        /// </summary>
-        Metadata = 0x2,
-
-        /// <summary>
-        /// Store custom attributes assigned by user.
-        /// </summary>
-        Attribute = 0x4,
-
-        /// <summary>
-        /// Store everything.
-        /// </summary>
-        Everything = Touch | Metadata | Attribute
-    }
-
+    
     /// <summary>
     /// Attribute storage manages loading and storing attributes. Implementation of this interface has to be thread safe.
     /// </summary>
@@ -107,12 +77,14 @@ namespace Viewer.Data.Storage
         /// Store attributes to a path.
         /// </summary>
         /// <param name="entity">Attributes to store in this file</param>
-        /// <param name="flags">
-        ///     Determines what will be stored. Storage implementation is free to ignore some
-        ///     values in <paramref name="flags"/> if it does not support storing these values.
-        ///     It must not, however, store anything which is not specified in <paramref name="flags"/>
-        /// </param>
-        void Store(IEntity entity, StoreFlags flags);
+        void Store(IEntity entity);
+
+        /// <summary>
+        /// Store just the thumbnail attribute of this entity. It will be no-op, if the entity is
+        /// not stored in this storage or the storage does not support storing thumbnails. 
+        /// </summary>
+        /// <param name="entity">Entity who's thumbnail will be stored.</param>
+        void StoreThumbnail(IEntity entity);
 
         /// <summary>
         /// Permanently remove entity at given path
@@ -130,6 +102,14 @@ namespace Viewer.Data.Storage
 
     public interface ICacheAttributeStorage : IAttributeStorage
     {
+        /// <summary>
+        /// Update last access time of <paramref name="entity"/>. Last access times determines which
+        /// entities are deleted from the storage. Note, this does *not* change access time of the
+        /// entity's file in file system.
+        /// </summary>
+        /// <param name="entity">Entity whose access time will be modified in this storage.</param>
+        void Touch(IEntity entity);
+
         /// <summary>
         /// Remove all entities with access time older than (NOW - <paramref name="threshold"/>)
         /// </summary>

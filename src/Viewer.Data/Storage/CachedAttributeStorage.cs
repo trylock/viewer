@@ -13,6 +13,13 @@ namespace Viewer.Data.Storage
     [Export(typeof(IAttributeStorage))]
     public class CachedAttributeStorage : IAttributeStorage, IDisposable
     {
+        private enum StoreFlags
+        {
+            Touch,
+            Thumbnail,
+            Everything
+        }
+
         private class StoreRequest
         {
             public IEntity Entity { get; }
@@ -98,13 +105,17 @@ namespace Viewer.Data.Storage
         /// The cache update is non-blocking and it is done asynchronously on a background thread.
         /// </summary>
         /// <param name="entity"></param>
-        /// <param name="flags"></param>
-        public void Store(IEntity entity, StoreFlags flags)
+        public void Store(IEntity entity)
         {
-            _persistentStorage.Store(entity, flags);
-            Cache(entity.Path, new StoreRequest(entity, flags));
+            _persistentStorage.Store(entity);
+            Cache(entity.Path, new StoreRequest(entity, StoreFlags.Everything));
         }
-        
+
+        public void StoreThumbnail(IEntity entity)
+        {
+            Cache(entity.Path, new StoreRequest(entity, StoreFlags.Thumbnail));
+        }
+
         public void Remove(IEntity entity)
         {
             _persistentStorage.Remove(entity);
@@ -150,7 +161,20 @@ namespace Viewer.Data.Storage
                     foreach (var item in items)
                     {
                         var req = item.Value;
-                        _cacheStorage.Store(req.Entity, req.Flags);
+                        switch (req.Flags)
+                        {
+                            case StoreFlags.Touch:
+                                _cacheStorage.Touch(req.Entity);
+                                break;
+                            case StoreFlags.Thumbnail:
+                                _cacheStorage.StoreThumbnail(req.Entity);
+                                break;
+                            case StoreFlags.Everything:
+                                _cacheStorage.Store(req.Entity);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(req.Flags));
+                        }
                     }
                     transaction.Commit();
                 }

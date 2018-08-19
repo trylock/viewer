@@ -117,46 +117,42 @@ namespace Viewer.Data.Storage
             return new LoadResult(entity, 0);
         }
 
-        public void Store(IEntity entity, StoreFlags flags)
+        public void Store(IEntity entity)
         {
-            if ((flags & StoreFlags.Everything) != flags)
-                throw new ArgumentOutOfRangeException(nameof(flags));
-            if (flags == StoreFlags.None)
-                return;
-
-            // if we only have to update record in the files table
-            if (flags == StoreFlags.Touch)
-            {
-                Touch(entity.Path);
-                return;
-            }
-
             // otherwise, we have to update attributes
             using (var transaction = Connection.BeginTransaction())
             {
                 var id = InsertFile(entity.Path);
-
-                // update metadata
-                if ((flags & StoreFlags.Metadata) != 0)
+                RemoveAttributes(id);
+                
+                foreach (var attr in entity)
                 {
-                    RemoveAttributes(id, AttributeSource.Metadata);
-                    foreach (var attr in entity.Where(item => item.Source == AttributeSource.Metadata))
-                    {
-                        StoreAttribute(id, attr);
-                    }
-                }
-
-                // update custom attributes
-                if ((flags & StoreFlags.Attribute) != 0)
-                {
-                    RemoveAttributes(id, AttributeSource.Custom);
-                    foreach (var attr in entity.Where(item => item.Source == AttributeSource.Custom))
-                    {
-                        StoreAttribute(id, attr);
-                    }
+                    StoreAttribute(id, attr);
                 }
 
                 transaction.Commit();
+            }
+        }
+
+        public void StoreThumbnail(IEntity entity)
+        {
+            var thumbnail = entity.GetValue<ImageValue>("thumbnail");
+            if (thumbnail == null)
+            {
+                return;
+            }
+            using (var command = new SQLiteCommand(Connection))
+            {
+                command.CommandText = @"
+                INSERT INTO attributes (name, source, type, value, owner)
+                VALUES ('thumbnail', :source, :type, :value, (
+                    SELECT id FROM files WHERE path = :path
+                ))
+                ON CONFLICT (owner, name) DO UPDATE value = excluded.value";
+                command.Parameters.Add(new SQLiteParameter("source", AttributeSource.Metadata));
+                command.Parameters.Add(new SQLiteParameter("type", AttributeType.Image));
+                command.Parameters.Add(new SQLiteParameter("value", thumbnail.Value));
+                command.Parameters.Add(new SQLiteParameter("path", entity.Path));
             }
         }
 
@@ -169,18 +165,8 @@ namespace Viewer.Data.Storage
         {
             RemoveFile(PathUtils.NormalizePath(entity.Path));
         }
-
-        public void Clean(TimeSpan maxLifespan)
-        {
-            using (var query = new SQLiteCommand(Connection))
-            {
-                query.CommandText = @"DELETE FROM files WHERE lastAccessTime < :threshold";
-                query.Parameters.Add(new SQLiteParameter(":threshold", DateTime.Now - maxLifespan));
-                query.ExecuteNonQuery();
-            }
-        }
-
-        private void Touch(string path)
+        
+        public void Touch(IEntity entity)
         {
             using (var query = new SQLiteCommand(Connection))
             {
@@ -188,7 +174,17 @@ namespace Viewer.Data.Storage
                     UPDATE files 
                     SET lastAccessTime = datetime('now') 
                     WHERE path = :path";
-                query.Parameters.Add(new SQLiteParameter(":path", path));
+                query.Parameters.Add(new SQLiteParameter(":path", entity.Path));
+                query.ExecuteNonQuery();
+            }
+        }
+
+        public void Clean(TimeSpan maxLifespan)
+        {
+            using (var query = new SQLiteCommand(Connection))
+            {
+                query.CommandText = @"DELETE FROM files WHERE lastAccessTime < :threshold";
+                query.Parameters.Add(new SQLiteParameter(":threshold", DateTime.Now - maxLifespan));
                 query.ExecuteNonQuery();
             }
         }
@@ -235,13 +231,12 @@ namespace Viewer.Data.Storage
             }
         }
 
-        private void RemoveAttributes(long fileId, AttributeSource type)
+        private void RemoveAttributes(long fileId)
         {
             using (var query = new SQLiteCommand(Connection))
             {
-                query.CommandText = @"DELETE FROM attributes WHERE owner = :owner AND type = :type";
+                query.CommandText = @"DELETE FROM attributes WHERE owner = :owner";
                 query.Parameters.Add(new SQLiteParameter(":owner", fileId));
-                query.Parameters.Add(new SQLiteParameter("type", type));
                 query.ExecuteNonQuery();
             }
         }

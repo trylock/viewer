@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using Viewer.Data;
+using Viewer.Data.Formats.Exif;
 using Viewer.Data.Storage;
 using Viewer.Images;
 using Viewer.IO;
@@ -288,7 +289,9 @@ namespace Viewer.UI.Images
                         }
 
                         var value = new ImageValue(dataStrem.ToArray());
-                        entity.SetAttribute(new Attribute("thumbnail", value, AttributeSource.Metadata));
+                        entity.SetAttribute(new Attribute(
+                            ExifAttributeReaderFactory.ThumbnailAttrName, 
+                            value, AttributeSource.Metadata));
                         _storage.StoreThumbnail(entity);
                     }
                 }

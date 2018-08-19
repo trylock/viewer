@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SkiaSharp;
 using Viewer.Data;
+using Viewer.Data.Formats.Exif;
 using Viewer.IO;
 
 namespace Viewer.Images
@@ -81,10 +82,6 @@ namespace Viewer.Images
     [Export(typeof(IImageLoader))]
     public class ImageLoader : IImageLoader
     {
-        private const string OrientationAttrName = "orientation";
-        private const string WidthAttrName = "ImageWidth";
-        private const string HeightAttrName = "ImageHeight";
-        private const string ThumbnailAttrName = "thumbnail";
 
         /// <summary>
         /// Rotate/flip transformation which fixes image orientation for each possible orientation value.
@@ -119,7 +116,7 @@ namespace Viewer.Images
         /// <returns>Orientation of the entity or 0</returns>
         private static int GetOrientation(IEntity entity)
         {
-            var orientationAttr = entity.GetValue<IntValue>(OrientationAttrName);
+            var orientationAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.OrientationAttrName);
             return orientationAttr?.Value ?? 0;
         }
 
@@ -141,8 +138,8 @@ namespace Viewer.Images
 
         public Size GetImageSize(IEntity entity)
         {
-            var widthAttr = entity.GetValue<IntValue>(WidthAttrName);
-            var heightAttr = entity.GetValue<IntValue>(HeightAttrName);
+            var widthAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.WidthAttrName);
+            var heightAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.HeightAttrName);
             
             var width = widthAttr?.Value ?? 1;
             var height = heightAttr?.Value ?? 1;
@@ -166,7 +163,7 @@ namespace Viewer.Images
         {
             // isolate these values for the thread which will generate the thumbnail
             var orientation = GetTransformation(entity);
-            var thumbnail = entity.GetValue<ImageValue>(ThumbnailAttrName);
+            var thumbnail = entity.GetValue<ImageValue>(ExifAttributeReaderFactory.ThumbnailAttrName);
             if (thumbnail == null)
             {
                 return Task.FromResult<SKBitmap>(null);

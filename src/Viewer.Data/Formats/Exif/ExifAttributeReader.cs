@@ -92,16 +92,21 @@ namespace Viewer.Data.Formats.Exif
 
         private const string ExifHeader = "Exif\0\0";
 
+        public const string WidthAttrName = "ImageWidth";
+        public const string HeightAttrName = "ImageHeight";
+        public const string OrientationAttrName = "orientation";
+        public const string ThumbnailAttrName = "thumbnail";
+
         public ExifAttributeReaderFactory()
         {
             _tags = new List<IExifAttributeParser>
             {
                 // image metadata
-                new ExifAttributeParser<ExifIfd0Directory>("ImageWidth", ExifIfd0Directory.TagImageWidth, AttributeType.Int),
-                new ExifAttributeParser<ExifIfd0Directory>("ImageHeight", ExifIfd0Directory.TagImageHeight, AttributeType.Int),
+                new ExifAttributeParser<ExifIfd0Directory>(WidthAttrName, ExifIfd0Directory.TagImageWidth, AttributeType.Int),
+                new ExifAttributeParser<ExifIfd0Directory>(HeightAttrName, ExifIfd0Directory.TagImageHeight, AttributeType.Int),
                 new ExifAttributeParser<ExifSubIfdDirectory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
-                new ExifAttributeParser<ExifIfd0Directory>("orientation", ExifIfd0Directory.TagOrientation, AttributeType.Int),
-                new ThumbnaiExifAttributeParser<ExifThumbnailDirectory>("thumbnail"),
+                new ExifAttributeParser<ExifIfd0Directory>(OrientationAttrName, ExifIfd0Directory.TagOrientation, AttributeType.Int),
+                new ThumbnaiExifAttributeParser<ExifThumbnailDirectory>(ThumbnailAttrName),
 
                 // camera metadata
                 new ExifAttributeParser<ExifIfd0Directory>("CameraModel", ExifIfd0Directory.TagModel, AttributeType.String),

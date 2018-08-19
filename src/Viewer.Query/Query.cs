@@ -254,7 +254,35 @@ namespace Viewer.Query
 
         private bool IsHidden(string path)
         {
-            return (_fileSystem.GetAttributes(path) & _hiddenFlags) != 0;
+            try
+            {
+                return (_fileSystem.GetAttributes(path) & _hiddenFlags) != 0;
+            }
+            catch (FileNotFoundException e)
+            {
+                // this is fine, just don't load the file
+                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern); 
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                // this is fine, just don't load the file
+                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern); 
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
+            }
+            catch (SecurityException e)
+            {
+                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
+            }
+            catch (IOException e)
+            {
+                // If the file is being used by another process, skip it.
+                Logger.Warn(e, "SELECT \"{0}\"", _fileFinder.Pattern);
+            }
+
+            return true;
         }
 
         private IEnumerable<string> EnumerateFiles(string path)
@@ -262,6 +290,10 @@ namespace Viewer.Query
             try
             {
                 return _fileSystem.EnumerateFiles(path);
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
             catch (ArgumentException e)
             {
@@ -284,6 +316,10 @@ namespace Viewer.Query
             try
             {
                 return _fileSystem.EnumerateDirectories(path);
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern);
             }
             catch (ArgumentException e)
             {

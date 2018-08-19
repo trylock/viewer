@@ -144,15 +144,15 @@ namespace Viewer.Data.Storage
             using (var command = new SQLiteCommand(Connection))
             {
                 command.CommandText = @"
-                INSERT INTO attributes (name, source, type, value, owner)
+                INSERT OR REPLACE INTO attributes (name, source, type, value, owner)
                 VALUES ('thumbnail', :source, :type, :value, (
                     SELECT id FROM files WHERE path = :path
-                ))
-                ON CONFLICT (owner, name) DO UPDATE value = excluded.value";
+                ))";
                 command.Parameters.Add(new SQLiteParameter("source", AttributeSource.Metadata));
                 command.Parameters.Add(new SQLiteParameter("type", AttributeType.Image));
                 command.Parameters.Add(new SQLiteParameter("value", thumbnail.Value));
                 command.Parameters.Add(new SQLiteParameter("path", entity.Path));
+                command.ExecuteNonQuery();
             }
         }
 

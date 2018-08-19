@@ -112,7 +112,7 @@ namespace ViewerTest.Query
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate => 
                     !predicate(new FileEntity("test")) && 
-                    predicate(new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(4), AttributeFlags.None)))
+                    predicate(new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(4), AttributeSource.Custom)))
             )), Times.Once);
         }
 
@@ -138,13 +138,13 @@ namespace ViewerTest.Query
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(
                 predicate =>
                     !predicate(new FileEntity("test")) &&
-                    !predicate(new FileEntity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))) &&
+                    !predicate(new FileEntity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeSource.Custom))) &&
                     !predicate(new FileEntity("test")
-                        .SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))
-                        .SetAttribute(new Attribute("test2", new IntValue(4), AttributeFlags.None))) &&
+                        .SetAttribute(new Attribute("test1", new IntValue(1), AttributeSource.Custom))
+                        .SetAttribute(new Attribute("test2", new IntValue(4), AttributeSource.Custom))) &&
                     predicate(new FileEntity("test")
-                        .SetAttribute(new Attribute("test1", new IntValue(4), AttributeFlags.None))
-                        .SetAttribute(new Attribute("test2", new IntValue(4), AttributeFlags.None)))
+                        .SetAttribute(new Attribute("test1", new IntValue(4), AttributeSource.Custom))
+                        .SetAttribute(new Attribute("test2", new IntValue(4), AttributeSource.Custom)))
             )), Times.Once);
         }
 
@@ -155,12 +155,12 @@ namespace ViewerTest.Query
 
             _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer => 
                 comparer.Compare(
-                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)),
-                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeFlags.None))
+                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)),
+                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeSource.Custom))
                 ) < 0 &&
                 comparer.Compare(
                     new FileEntity("test"),
-                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeFlags.None))
+                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeSource.Custom))
                 ) > 0
             )));
         }
@@ -182,12 +182,12 @@ namespace ViewerTest.Query
 
             _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer =>
                 comparer.Compare(
-                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)),
-                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeFlags.None))
+                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)),
+                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(2), AttributeSource.Custom))
                 ) == 0 &&
                 comparer.Compare(
-                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)),
-                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(3), AttributeFlags.None))
+                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)),
+                    new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(3), AttributeSource.Custom))
                 ) > 0
             )));
         }
@@ -210,11 +210,11 @@ namespace ViewerTest.Query
             _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer =>
                 comparer.Compare(
                     new FileEntity("test")
-                        .SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))
-                        .SetAttribute(new Attribute("test2", new RealValue(3.14), AttributeFlags.None)),
+                        .SetAttribute(new Attribute("test1", new IntValue(1), AttributeSource.Custom))
+                        .SetAttribute(new Attribute("test2", new RealValue(3.14), AttributeSource.Custom)),
                     new FileEntity("test")
-                        .SetAttribute(new Attribute("test1", new IntValue(2), AttributeFlags.None))
-                        .SetAttribute(new Attribute("test2", new RealValue(2.20), AttributeFlags.None))
+                        .SetAttribute(new Attribute("test1", new IntValue(2), AttributeSource.Custom))
+                        .SetAttribute(new Attribute("test2", new RealValue(2.20), AttributeSource.Custom))
                 ) > 0 
             )));
         }
@@ -254,12 +254,12 @@ namespace ViewerTest.Query
 
             _factory.Verify(mock => mock.CreateQuery("pattern"));
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None))) &&
-                predicate(new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)))
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeSource.Custom))) &&
+                predicate(new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)))
             )));
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
-                predicate(new FileEntity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None))) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeFlags.None)))
+                predicate(new FileEntity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeSource.Custom))) &&
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)))
             )));
         }
 
@@ -331,8 +331,8 @@ namespace ViewerTest.Query
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
                 !predicate(new FileEntity("test")) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("`identifier with spaces and special characters ěščřžýáíéůú`", new IntValue(1), AttributeFlags.None))) &&
-                predicate(new FileEntity("test").SetAttribute(new Attribute("identifier with spaces and special characters ěščřžýáíéůú", new IntValue(1), AttributeFlags.None)))
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("`identifier with spaces and special characters ěščřžýáíéůú`", new IntValue(1), AttributeSource.Custom))) &&
+                predicate(new FileEntity("test").SetAttribute(new Attribute("identifier with spaces and special characters ěščřžýáíéůú", new IntValue(1), AttributeSource.Custom)))
             )));
         }
 
@@ -344,7 +344,7 @@ namespace ViewerTest.Query
             _factory.Verify(mock => mock.CreateQuery("a"));
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
                 !predicate(new FileEntity("test")) &&
-                predicate(new FileEntity("test").SetAttribute(new Attribute("b", new IntValue(1), AttributeFlags.None)))
+                predicate(new FileEntity("test").SetAttribute(new Attribute("b", new IntValue(1), AttributeSource.Custom)))
             )));
         }
 
@@ -380,22 +380,22 @@ namespace ViewerTest.Query
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
                 !predicate(new FileEntity("test")) &&
-                predicate(new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                predicate(new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))) &&
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("b", new IntValue(2), AttributeSource.Custom))) &&
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("c", new IntValue(3), AttributeSource.Custom))) &&
                 predicate(new FileEntity("test")
-                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))
-                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeSource.Custom))) &&
                 predicate(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
-                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))) &&
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeSource.Custom))) &&
                 predicate(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
-                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeSource.Custom))) &&
                 predicate(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
-                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))
-                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None)))
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeSource.Custom)))
             )));
         }
 
@@ -431,22 +431,22 @@ namespace ViewerTest.Query
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
                 !predicate(new FileEntity("test")) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))) &&
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("b", new IntValue(2), AttributeSource.Custom))) &&
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("c", new IntValue(3), AttributeSource.Custom))) &&
                 predicate(new FileEntity("test")
-                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))
-                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeSource.Custom))) &&
                 !predicate(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
-                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))) &&
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeSource.Custom))) &&
                 predicate(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
-                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None))) &&
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeSource.Custom))) &&
                 predicate(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None))
-                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeFlags.None))
-                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeFlags.None)))
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("b", new IntValue(2), AttributeSource.Custom))
+                    .SetAttribute(new Attribute("c", new IntValue(3), AttributeSource.Custom)))
             )));
         }
 
@@ -464,8 +464,8 @@ namespace ViewerTest.Query
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
                 predicate(new FileEntity("test")) &&
-                predicate(new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(null), AttributeFlags.None))) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None)))
+                predicate(new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(null), AttributeSource.Custom))) &&
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom)))
             )));
         }
 
@@ -476,8 +476,8 @@ namespace ViewerTest.Query
 
             _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer =>
                 comparer.Compare(
-                    new FileEntity("a").SetAttribute(new Attribute("a", new IntValue(1), AttributeFlags.None)),
-                    new FileEntity("b").SetAttribute(new Attribute("a", new IntValue(2), AttributeFlags.None))
+                    new FileEntity("a").SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom)),
+                    new FileEntity("b").SetAttribute(new Attribute("a", new IntValue(2), AttributeSource.Custom))
                 ) > 0
             )));
         }
@@ -506,14 +506,14 @@ namespace ViewerTest.Query
             
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
                 !predicate(new FileEntity("test")) &&
-                predicate(new FileEntity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None))) 
+                predicate(new FileEntity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeSource.Custom))) &&
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeSource.Custom))) 
             )));
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
                 !predicate(new FileEntity("test")) &&
-                !predicate(new FileEntity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeFlags.None))) &&
-                predicate(new FileEntity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeFlags.None)))
+                !predicate(new FileEntity("test").SetAttribute(new Attribute("test1", new IntValue(1), AttributeSource.Custom))) &&
+                predicate(new FileEntity("test").SetAttribute(new Attribute("test2", new IntValue(2), AttributeSource.Custom)))
             )));
         }
 

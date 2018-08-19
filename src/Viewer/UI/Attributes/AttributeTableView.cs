@@ -237,7 +237,7 @@ namespace Viewer.UI.Attributes
             }
 
             // disable editing if the attribute is readonly
-            if ((attr.Data.Flags & AttributeFlags.ReadOnly) != 0)
+            if (attr.Data.Source == AttributeSource.Metadata)
             {
                 row.ReadOnly = true;
                 row.DefaultCellStyle.BackColor = _readOnlyBackColor;
@@ -255,13 +255,13 @@ namespace Viewer.UI.Attributes
             switch (type)
             {
                 case AttributeType.Int:
-                    return new Attribute(name, new IntValue(value as int? ?? 0));
+                    return new Attribute(name, new IntValue(value as int? ?? 0), AttributeSource.Custom);
                 case AttributeType.Double:
-                    return new Attribute(name, new RealValue(value as double? ?? 0));
+                    return new Attribute(name, new RealValue(value as double? ?? 0), AttributeSource.Custom);
                 case AttributeType.String:
-                    return new Attribute(name, new StringValue(value as string ?? ""));
+                    return new Attribute(name, new StringValue(value as string ?? ""), AttributeSource.Custom);
                 case AttributeType.DateTime:
-                    return new Attribute(name, new DateTimeValue(value as DateTime? ?? DateTime.Now));
+                    return new Attribute(name, new DateTimeValue(value as DateTime? ?? DateTime.Now), AttributeSource.Custom);
                 case null:
                     return null;
                 default:

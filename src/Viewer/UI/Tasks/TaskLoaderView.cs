@@ -83,7 +83,7 @@ namespace Viewer.UI.Tasks
                 // it could happend that the total number of tasks has increased.
                 TaskProgressBar.Maximum = finishedCount;
             }
-
+            
             var progress = (int) (TaskProgressBar.Value / (double) TaskProgressBar.Maximum * 100);
             TaskProgressBar.Value = finishedCount;
             TaskNameLabel.Text = name;

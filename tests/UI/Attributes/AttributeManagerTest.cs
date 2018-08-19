@@ -38,7 +38,7 @@ namespace ViewerTest.UI.Attributes
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(new List<IEntity>().GetEnumerator());
 
-            _attributes.SetAttribute("test", new Attribute("test", new StringValue("value")));
+            _attributes.SetAttribute("test", new Attribute("test", new StringValue("value"), AttributeSource.Custom));
 
             _entityManager.Verify(mock => mock.SetEntity(It.IsAny<IEntity>(), true), Times.Never);
         }
@@ -46,8 +46,8 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void SetAttribute_OneEntity()
         {
-            var oldAttr = new Attribute("oldAttr", new IntValue(42));
-            var newAttr = new Attribute("attr", new StringValue("value"));
+            var oldAttr = new Attribute("oldAttr", new IntValue(42), AttributeSource.Custom);
+            var newAttr = new Attribute("attr", new StringValue("value"), AttributeSource.Custom);
 
             var entity = new FileEntity("test").SetAttribute(oldAttr);
             var selectedEntities = new List<IEntity>
@@ -90,20 +90,20 @@ namespace ViewerTest.UI.Attributes
                 .Setup(mock => mock.Count)
                 .Returns(selectedEntities.Count);
 
-            var newAttr = new Attribute("attr", new StringValue("value"));
+            var newAttr = new Attribute("attr", new StringValue("value"), AttributeSource.Custom);
             _attributes.SetAttribute("attr", newAttr);
 
             // we have added the attribute to both entities
             _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
-                    item.Path == "test1" &&
+                    item.Path == selectedEntities[0].Path &&
                     item.GetAttribute(newAttr.Name).Equals(newAttr)
                 ), true
             ), Times.Once);
 
             _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
-                    item.Path == "test2" &&
+                    item.Path == selectedEntities[1].Path &&
                     item.GetAttribute(newAttr.Name).Equals(newAttr)
                 ), true
             ), Times.Once);
@@ -131,9 +131,11 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void RemoveAttribute_MultipleEntitiesWithDifferentValue()
         {
-            var entity1 = new FileEntity("test1").SetAttribute(new Attribute("attr", new StringValue("value")));
-            var entity2 = new FileEntity("test2").SetAttribute(new Attribute("attr", new IntValue(42)));
-            
+            var entity1 = new FileEntity("test1").SetAttribute(new Attribute("attr", new StringValue("value"), AttributeSource.Custom));
+            var entity2 = new FileEntity("test2").SetAttribute(new Attribute("attr", new IntValue(42), AttributeSource.Custom));
+            var entity1Path = entity1.Path;
+            var entity2Path = entity2.Path;
+
             var selectedEntities = new List<IEntity>
             {
                 entity1,
@@ -153,14 +155,14 @@ namespace ViewerTest.UI.Attributes
             // we have removed the attribute
             _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
-                    item.Path == "test1" &&
+                    item.Path == entity1Path &&
                     item.GetAttribute("attr") == null
                 ), true
             ), Times.Once);
 
             _entityManager.Verify(mock => mock.SetEntity(
                 It.Is<IEntity>(item =>
-                    item.Path == "test2" &&
+                    item.Path == entity2Path &&
                     item.GetAttribute("attr") == null
                 ), true
             ), Times.Once);
@@ -169,7 +171,7 @@ namespace ViewerTest.UI.Attributes
         [TestMethod]
         public void GetSelectedEntities_MissingAttributeOnAnEntity()
         {
-            var entity1 = new FileEntity("test1").SetAttribute(new Attribute("attr", new IntValue(42)));
+            var entity1 = new FileEntity("test1").SetAttribute(new Attribute("attr", new IntValue(42), AttributeSource.Custom));
             var entity2 = new FileEntity("test2");
 
             var selectedEntities = new List<IEntity>

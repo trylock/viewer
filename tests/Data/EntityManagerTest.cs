@@ -65,6 +65,7 @@ namespace ViewerTest.Data
         public void MoveEntity_DoNotMoveEntityIfTheMoveOperationInStorageFails()
         {
             var entity = new FileEntity("test");
+            var oldPath = entity.Path;
             _entityManager.SetEntity(entity, true);
 
             _storage
@@ -84,15 +85,15 @@ namespace ViewerTest.Data
 
             var modified = _entityManager.GetModified().ToArray();
             Assert.AreEqual(1, modified.Length);
-            Assert.AreEqual("test", modified[0].Path);
-            Assert.AreEqual("test", entity.Path);
+            Assert.AreEqual(oldPath, modified[0].Path);
+            Assert.AreEqual(oldPath, entity.Path);
         }
 
         [TestMethod]
         public void SetEntity_ModifyTheSameEntityTwice()
         {
             var entityA = new FileEntity("test");
-            var entityB = new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1)));
+            var entityB = new FileEntity("test").SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom));
             _entityManager.SetEntity(entityA, true);
             _entityManager.SetEntity(entityB, true);
 

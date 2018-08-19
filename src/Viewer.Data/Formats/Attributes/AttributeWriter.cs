@@ -83,7 +83,7 @@ namespace Viewer.Data.Formats.Attributes
 
         public void Write(Attribute attr)
         {
-            if (attr.Flags.HasFlag(AttributeFlags.ReadOnly))
+            if (attr.Source != AttributeSource.Custom)
             {
                 return;
             }

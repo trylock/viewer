@@ -84,11 +84,11 @@ namespace Viewer.UI.Attributes
             if (type == AttributeViewType.Exif)
             {
                 _attributePredicate = attr => attr.Data.Value.Type != TypeId.Image &&
-                                             (attr.Data.Flags & AttributeFlags.ReadOnly) != 0;
+                                              attr.Data.Source == AttributeSource.Metadata;
             }
             else
             {
-                _attributePredicate = attr => (attr.Data.Flags & AttributeFlags.ReadOnly) == 0;
+                _attributePredicate = attr => attr.Data.Source == AttributeSource.Custom;
             }
 
             UpdateAttributes();
@@ -110,7 +110,7 @@ namespace Viewer.UI.Attributes
         {
             return new AttributeGroup
             {
-                Data = new Attribute("", new StringValue("")),
+                Data = new Attribute("", new StringValue(""), AttributeSource.Custom),
                 IsMixed = false,
                 IsGlobal = true
             };
@@ -247,7 +247,7 @@ namespace Viewer.UI.Attributes
                             progress.Report(new LoadingProgress(entity.Path));
                             try
                             {
-                                _storage.Store(entity);
+                                _storage.Store(entity, StoreFlags.Everything);
                             }
                             catch (FileNotFoundException)
                             {

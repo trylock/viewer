@@ -55,13 +55,13 @@ namespace Viewer.Data.Formats.Exif
                 switch (Type)
                 {
                     case AttributeType.Int:
-                        return new Attribute(Name, new IntValue(directory.GetInt32(Tag)), AttributeFlags.ReadOnly);
+                        return new Attribute(Name, new IntValue(directory.GetInt32(Tag)), AttributeSource.Metadata);
                     case AttributeType.Double:
-                        return new Attribute(Name, new RealValue(directory.GetDouble(Tag)), AttributeFlags.ReadOnly);
+                        return new Attribute(Name, new RealValue(directory.GetDouble(Tag)), AttributeSource.Metadata);
                     case AttributeType.String:
-                        return new Attribute(Name, new StringValue(directory.GetString(Tag)), AttributeFlags.ReadOnly);
+                        return new Attribute(Name, new StringValue(directory.GetString(Tag)), AttributeSource.Metadata);
                     case AttributeType.DateTime:
-                        return new Attribute(Name, new DateTimeValue(directory.GetDateTime(Tag)), AttributeFlags.ReadOnly);
+                        return new Attribute(Name, new DateTimeValue(directory.GetDateTime(Tag)), AttributeSource.Metadata);
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

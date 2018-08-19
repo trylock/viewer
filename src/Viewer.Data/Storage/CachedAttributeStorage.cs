@@ -13,6 +13,18 @@ namespace Viewer.Data.Storage
     [Export(typeof(IAttributeStorage))]
     public class CachedAttributeStorage : IAttributeStorage, IDisposable
     {
+        private class StoreRequest
+        {
+            public IEntity Entity { get; }
+            public StoreFlags Flags { get; }
+
+            public StoreRequest(IEntity entity, StoreFlags flags)
+            {
+                Entity = entity;
+                Flags = flags;
+            }
+        }
+
         private readonly IAttributeStorage _persistentStorage;
         private readonly SqliteAttributeStorage _cacheStorage;
         private readonly AutoResetEvent _notifyWrite = new AutoResetEvent(false);
@@ -21,10 +33,8 @@ namespace Viewer.Data.Storage
 
         /// <summary>
         /// List of modified entities which will be written to the cache.
-        /// If the value is null, only access time is modified.
-        /// If the value is not null, the cache entry is replaced and its access time is modified.
         /// </summary>
-        private readonly Dictionary<string, IEntity> _modified = new Dictionary<string, IEntity>();
+        private readonly Dictionary<string, StoreRequest> _modified = new Dictionary<string, StoreRequest>();
 
         /// <summary>
         /// Maximum time in milliseconds after which the write thread will write all changes to
@@ -60,24 +70,24 @@ namespace Viewer.Data.Storage
             {
                 // If an entity is loaded from the cache storage, only its access time has to be updated.
                 // This information is passed to the write thread as an entry with null value, just the path.
-                if (_modified.TryGetValue(path, out var value) && value != null)
+                if (_modified.TryGetValue(path, out var req))
                 {
-                    return new LoadResult(value, 0);
+                    return new LoadResult(req.Entity, 0);
                 }
             }
 
             // try to load the entity from cache storage
-            var isCached = true;
+            var storeFlags = StoreFlags.Touch;
             var result = _cacheStorage.Load(path);
             if (result.Entity == null)
             {
                 // try to load the entity from the main storage
-                isCached = false;
+                storeFlags = StoreFlags.Everything;
                 result = _persistentStorage.Load(path);
             }
 
             // update access time/cache entry
-            Cache(path, isCached ? null : result.Entity);
+            Cache(path, new StoreRequest(result.Entity, storeFlags));
 
             return result;
         }
@@ -88,12 +98,13 @@ namespace Viewer.Data.Storage
         /// The cache update is non-blocking and it is done asynchronously on a background thread.
         /// </summary>
         /// <param name="entity"></param>
-        public void Store(IEntity entity)
+        /// <param name="flags"></param>
+        public void Store(IEntity entity, StoreFlags flags)
         {
-            _persistentStorage.Store(entity);
-            Cache(entity.Path, entity);
+            _persistentStorage.Store(entity, flags);
+            Cache(entity.Path, new StoreRequest(entity, flags));
         }
-
+        
         public void Remove(IEntity entity)
         {
             _persistentStorage.Remove(entity);
@@ -106,11 +117,11 @@ namespace Viewer.Data.Storage
             _cacheStorage.Move(entity, newPath);
         }
 
-        private void Cache(string path, IEntity value)
+        private void Cache(string path, StoreRequest req)
         {
             lock (_modified)
             {
-                _modified[path] = value;
+                _modified[path] = req;
             }
 
             var writeCount = Interlocked.Increment(ref _writeCount);
@@ -126,7 +137,7 @@ namespace Viewer.Data.Storage
             {
                 _notifyWrite.WaitOne(WriteTimeout);
 
-                KeyValuePair<string, IEntity>[] items;
+                KeyValuePair<string, StoreRequest>[] items;
                 lock (_modified)
                 {
                     items = _modified.ToArray();
@@ -138,14 +149,8 @@ namespace Viewer.Data.Storage
                 {
                     foreach (var item in items)
                     {
-                        if (item.Value == null)
-                        {
-                            _cacheStorage.Touch(item.Key);
-                        }
-                        else
-                        {
-                            _cacheStorage.Store(item.Value);
-                        }
+                        var req = item.Value;
+                        _cacheStorage.Store(req.Entity, req.Flags);
                     }
                     transaction.Commit();
                 }

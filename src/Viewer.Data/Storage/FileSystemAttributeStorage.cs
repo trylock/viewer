@@ -69,7 +69,9 @@ namespace Viewer.Data.Storage
         ///                     <description>create the reader from read segments</description>
         ///                 </item>
         ///                 <item>
-        ///                     <description>read all attributes and add them to the attributes collection </description>
+        ///                     <description>
+        ///                         read all attributes and add them to the attributes collection
+        ///                     </description>
         ///                 </item>
         ///             </list>
         ///         </description>
@@ -80,13 +82,13 @@ namespace Viewer.Data.Storage
         /// <returns>Collection of attributes read from the file</returns>
         public LoadResult Load(string path)
         {
-            if (_fileSystem.DirectoryExists(path))
-            {
-                return new LoadResult(new DirectoryEntity(path), 0);
-            }
-
             try
             {
+                if (_fileSystem.DirectoryExists(path))
+                {
+                    return new LoadResult(new DirectoryEntity(path), 0);
+                }
+
                 // read all JPEG segments to memory
                 IEntity attrs;
                 FileInfo fileInfo;
@@ -139,8 +141,13 @@ namespace Viewer.Data.Storage
             }
         }
         
-        public void Store(IEntity entity)
+        public void Store(IEntity entity, StoreFlags flags)
         {
+            if (!flags.HasFlag(StoreFlags.Attribute))
+            {
+                return;
+            }
+
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(entity.Path))
             {
                 string tmpFileName;
@@ -181,7 +188,7 @@ namespace Viewer.Data.Storage
                 _fileSystem.ReplaceFile(tmpFileName, entity.Path, null);
             }
         }
-        
+
         public void Remove(IEntity entity)
         {
             if (entity is FileEntity)

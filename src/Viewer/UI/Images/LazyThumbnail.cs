@@ -193,7 +193,7 @@ namespace Viewer.UI.Images
 
             return _current;
         }
-        
+
         private async Task<Thumbnail> LoadNativeThumbnailDelayedAsync(Size thumbnailAreaSize, TimeSpan delay)
         {
             await Task.Delay(delay, _cancellationToken).ConfigureAwait(false);

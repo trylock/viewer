@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    [Flags]
-    public enum AttributeFlags
+    public enum AttributeSource
     {
-        None = 0x0,
+        /// <summary>
+        /// Custom attribute set by user.
+        /// </summary>
+        Custom = 0,
 
         /// <summary>
-        /// Attribute can't be changed
+        /// Attribute which describes a feature of the file of entity (e.g. thumbnail, image size etc.)
         /// </summary>
-        ReadOnly = 0x1,
+        Metadata = 1,
     }
 
     public class Attribute : IEquatable<Attribute>
@@ -28,18 +30,18 @@ namespace Viewer.Data
         /// <summary>
         /// Determines location where the attribute is stored
         /// </summary>
-        public AttributeFlags Flags { get; }
+        public AttributeSource Source { get; }
 
         /// <summary>
         /// Value of the attribute
         /// </summary>
         public BaseValue Value { get; }
 
-        public Attribute(string name, BaseValue value, AttributeFlags flags = AttributeFlags.None)
+        public Attribute(string name, BaseValue value, AttributeSource source)
         {
             Name = name;
             Value = value;
-            Flags = flags;
+            Source = source;
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace Viewer.Data
                 return true;
             if (other.GetType() != GetType())
                 return false;
-            if (Name != other.Name || Flags != other.Flags)
+            if (Name != other.Name || Source != other.Source)
                 return false;
             return Value.Equals(other.Value);
         }
@@ -75,7 +77,7 @@ namespace Viewer.Data
         {
             var hashCode = -1038278788;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = hashCode * -1521134295 + Flags.GetHashCode();
+            hashCode = hashCode * -1521134295 + Source.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<BaseValue>.Default.GetHashCode(Value);
             return hashCode;
         }

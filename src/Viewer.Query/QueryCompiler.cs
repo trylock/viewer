@@ -69,7 +69,7 @@ namespace Viewer.Query
         private readonly IRuntime _runtime;
 
         private readonly ParameterExpression _entityParameter = Expression.Parameter(typeof(IEntity), "entity");
-        private readonly Attribute _nullAttribute = new Attribute("", new IntValue(null));
+        private readonly Attribute _nullAttribute = new Attribute("", new IntValue(null), AttributeSource.Custom);
         
         public QueryCompilerVisitor(IQueryFactory queryFactory, IRuntime runtime, IQueryCompiler compiler, IErrorListener errorListener)
         {

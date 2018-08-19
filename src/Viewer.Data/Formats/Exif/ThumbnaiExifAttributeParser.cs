@@ -53,7 +53,7 @@ namespace Viewer.Data.Formats.Exif
             // the offset is from the start of the exif data, not the start of the segment data
             // we have to add 6 for the segment header "Exif\0\0"
             Array.Copy(exif.Segment.Bytes, offset + 6, buffer, 0, length); 
-            return new Attribute(_attributeName, new ImageValue(buffer), AttributeFlags.ReadOnly);
+            return new Attribute(_attributeName, new ImageValue(buffer), AttributeSource.Metadata);
         }
     }
 }

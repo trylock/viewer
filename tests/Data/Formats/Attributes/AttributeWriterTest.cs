@@ -21,7 +21,7 @@ namespace ViewerTest.Data.Formats.Attributes
         {
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new Attribute("test", new IntValue(0x12345678)));
+            attrWriter.Write(new Attribute("test", new IntValue(0x12345678), AttributeSource.Custom));
 
             var actualData = output.ToArray();
             CollectionAssert.AreEqual(new byte[]
@@ -42,7 +42,7 @@ namespace ViewerTest.Data.Formats.Attributes
 
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new Attribute("test", new RealValue(value)));
+            attrWriter.Write(new Attribute("test", new RealValue(value), AttributeSource.Custom));
 
             var bytes = BitConverter.GetBytes(value);
             var actualData = output.ToArray();
@@ -62,7 +62,7 @@ namespace ViewerTest.Data.Formats.Attributes
         {
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new Attribute("test", new StringValue("value")));
+            attrWriter.Write(new Attribute("test", new StringValue("value"), AttributeSource.Custom));
 
             var actualData = output.ToArray();
             CollectionAssert.AreEqual(new byte[]
@@ -83,7 +83,7 @@ namespace ViewerTest.Data.Formats.Attributes
 
             var output = new MemoryStream();
             var attrWriter = new AttributeWriter(new BinaryWriter(output));
-            attrWriter.Write(new Attribute("test", new DateTimeValue(value)));
+            attrWriter.Write(new Attribute("test", new DateTimeValue(value), AttributeSource.Custom));
 
             var actualData = output.ToArray();
             var expectedValue = new List<byte>
@@ -108,7 +108,7 @@ namespace ViewerTest.Data.Formats.Attributes
         {
             var output = new MemoryStream();
             var writer = new AttributeWriter(new BinaryWriter(output));
-            writer.Write(new Attribute("test", new IntValue(null)));
+            writer.Write(new Attribute("test", new IntValue(null), AttributeSource.Custom));
 
             CollectionAssert.AreEqual(new byte[]{}, output.ToArray());
         }

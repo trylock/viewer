@@ -40,6 +40,36 @@ namespace Viewer.Data.Storage
         }
     }
 
+    [Flags]
+    public enum StoreFlags
+    {
+        /// <summary>
+        /// Noting will be stored. Calling <see cref="IAttributeStorage.Store"/> with this flag
+        /// is basically a nop.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Update the access time of this entity.
+        /// </summary>
+        Touch = 0x1,
+
+        /// <summary>
+        /// Store metadata attributes like Exif attributes and thumbnail.
+        /// </summary>
+        Metadata = 0x2,
+
+        /// <summary>
+        /// Store custom attributes assigned by user.
+        /// </summary>
+        Attribute = 0x4,
+
+        /// <summary>
+        /// Store everything.
+        /// </summary>
+        Everything = Touch | Metadata | Attribute
+    }
+
     /// <summary>
     /// Attribute storage manages loading and storing attributes. Implementation of this interface has to be thread safe.
     /// </summary>
@@ -77,7 +107,12 @@ namespace Viewer.Data.Storage
         /// Store attributes to a path.
         /// </summary>
         /// <param name="entity">Attributes to store in this file</param>
-        void Store(IEntity entity);
+        /// <param name="flags">
+        ///     Determines what will be stored. Storage implementation is free to ignore some
+        ///     values in <paramref name="flags"/> if it does not support storing these values.
+        ///     It must not, however, store anything which is not specified in <paramref name="flags"/>
+        /// </param>
+        void Store(IEntity entity, StoreFlags flags);
 
         /// <summary>
         /// Permanently remove entity at given path
@@ -95,13 +130,6 @@ namespace Viewer.Data.Storage
 
     public interface ICacheAttributeStorage : IAttributeStorage
     {
-        /// <summary>
-        /// Update last access time of an entity to the current time.
-        /// Noop if there is no entity at <paramref name="path"/>.
-        /// </summary>
-        /// <param name="path">Path to an entity.</param>
-        void Touch(string path);
-
         /// <summary>
         /// Remove all entities with access time older than (NOW - <paramref name="threshold"/>)
         /// </summary>

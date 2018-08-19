@@ -70,13 +70,13 @@ namespace ViewerTest.Query
             var entities = new[]
             {
                 new FileEntity("test1"),
-                new FileEntity("test2").SetAttribute(new Attribute("attr", new IntValue(4))),
+                new FileEntity("test2").SetAttribute(new Attribute("attr", new IntValue(4), AttributeSource.Custom)),
             };
             IQuery query = new Viewer.Query.Query(new MemoryQuery(entities), EntityComparer.Default, "test");
             query = query.Where(entity => entity.GetValue<IntValue>("attr") != null);
             Assert.IsFalse(query.Match(entities[0]));
             Assert.IsTrue(query.Match(entities[1]));
-            Assert.IsFalse(query.Match(new FileEntity("test1").SetAttribute(new Attribute("attr", new IntValue(4)))));
+            Assert.IsFalse(query.Match(new FileEntity("test1").SetAttribute(new Attribute("attr", new IntValue(4), AttributeSource.Custom))));
         }
 
         [TestMethod]
@@ -186,9 +186,9 @@ namespace ViewerTest.Query
 
             var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
             Assert.AreEqual(3, result.Length);
-            Assert.AreEqual("test1", result[0].Path);
-            Assert.AreEqual("test2", result[1].Path);
-            Assert.AreEqual("TEST3", result[2].Path);
+            Assert.AreEqual(entitiesA[0].Path, result[0].Path);
+            Assert.AreEqual(entitiesA[1].Path, result[1].Path);
+            Assert.AreEqual(entitiesB[0].Path, result[2].Path);
         }
 
         [TestMethod]
@@ -209,7 +209,7 @@ namespace ViewerTest.Query
 
             var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
             Assert.AreEqual(1, result.Length);
-            Assert.AreEqual("test2", result[0].Path);
+            Assert.AreEqual(entitiesA[1].Path, result[0].Path);
         }
     }
 }

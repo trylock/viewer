@@ -7,9 +7,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 using Viewer.Data.Formats.Attributes;
 using Viewer.IO;
 
@@ -19,6 +21,8 @@ namespace Viewer.Data.Storage
     [Export(typeof(SqliteAttributeStorage))]
     public class SqliteAttributeStorage : ICacheAttributeStorage
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public SQLiteConnection Connection { get; }
         
         [ImportingConstructor]
@@ -37,9 +41,22 @@ namespace Viewer.Data.Storage
         /// </returns>
         public LoadResult Load(string inputPath)
         {
-            var fileInfo = new FileInfo(inputPath);
-            IEntity entity = new FileEntity(inputPath, fileInfo.LastWriteTime, fileInfo.LastAccessTime);
-            
+            var lastWriteTime = DateTime.MinValue;
+            try
+            {
+                var fi = new FileInfo(inputPath);
+                lastWriteTime = fi.LastWriteTime;
+            }
+            catch (FileNotFoundException)
+            {
+                return new LoadResult(null, 0);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return new LoadResult(null, 0);
+            }
+            IEntity entity = new FileEntity(inputPath);
+
             // load valid attributes
             SQLiteDataReader reader;
             using (var query = new SQLiteCommand(Connection))
@@ -54,7 +71,7 @@ namespace Viewer.Data.Storage
                     f.lastWriteTime >= :lastWriteTime";
 
                 query.Parameters.Add(new SQLiteParameter(":path", entity.Path));
-                query.Parameters.Add(new SQLiteParameter(":lastWriteTime", fileInfo.LastWriteTime));
+                query.Parameters.Add(new SQLiteParameter(":lastWriteTime", lastWriteTime));
                 reader = query.ExecuteReader();
             }
             
@@ -69,22 +86,22 @@ namespace Viewer.Data.Storage
                 switch ((AttributeType)type)
                 {
                     case AttributeType.Int:
-                        entity = entity.SetAttribute(new Attribute(name, new IntValue(reader.GetInt32(3)), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new IntValue(reader.GetInt32(3)), (AttributeSource)source));
                         break;
                     case AttributeType.Double:
-                        entity = entity.SetAttribute(new Attribute(name, new RealValue(reader.GetDouble(3)), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new RealValue(reader.GetDouble(3)), (AttributeSource)source));
                         break;
                     case AttributeType.String:
-                        entity = entity.SetAttribute(new Attribute(name, new StringValue(reader.GetString(3)), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new StringValue(reader.GetString(3)), (AttributeSource)source));
                         break;
                     case AttributeType.DateTime:
-                        entity = entity.SetAttribute(new Attribute(name, new DateTimeValue(reader.GetDateTime(3)), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new DateTimeValue(reader.GetDateTime(3)), (AttributeSource)source));
                         break;
                     case AttributeType.Image:
                         var buffer = new byte[valueSize];
                         var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
                         Debug.Assert(buffer.Length == length);
-                        entity = entity.SetAttribute(new Attribute(name, new ImageValue(buffer), (AttributeFlags)source));
+                        entity = entity.SetAttribute(new Attribute(name, new ImageValue(buffer), (AttributeSource)source));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -100,19 +117,43 @@ namespace Viewer.Data.Storage
             return new LoadResult(entity, 0);
         }
 
-        public void Store(IEntity entity)
+        public void Store(IEntity entity, StoreFlags flags)
         {
+            if ((flags & StoreFlags.Everything) != flags)
+                throw new ArgumentOutOfRangeException(nameof(flags));
+            if (flags == StoreFlags.None)
+                return;
+
+            // if we only have to update record in the files table
+            if (flags == StoreFlags.Touch)
+            {
+                Touch(entity.Path);
+                return;
+            }
+
+            // otherwise, we have to update attributes
             using (var transaction = Connection.BeginTransaction())
             {
-                // remove file (and transitively all attributes)
-                RemoveFile(entity.Path);
+                var id = InsertFile(entity.Path);
 
-                long id = StoreFile(entity.Path);
-
-                // add new attributes
-                foreach (var attr in entity)
+                // update metadata
+                if ((flags & StoreFlags.Metadata) != 0)
                 {
-                    StoreAttribute(id, attr);
+                    RemoveAttributes(id, AttributeSource.Metadata);
+                    foreach (var attr in entity.Where(item => item.Source == AttributeSource.Metadata))
+                    {
+                        StoreAttribute(id, attr);
+                    }
+                }
+
+                // update custom attributes
+                if ((flags & StoreFlags.Attribute) != 0)
+                {
+                    RemoveAttributes(id, AttributeSource.Custom);
+                    foreach (var attr in entity.Where(item => item.Source == AttributeSource.Custom))
+                    {
+                        StoreAttribute(id, attr);
+                    }
                 }
 
                 transaction.Commit();
@@ -129,24 +170,78 @@ namespace Viewer.Data.Storage
             RemoveFile(PathUtils.NormalizePath(entity.Path));
         }
 
-        public void Touch(string path)
-        {
-            path = PathUtils.NormalizePath(path);
-
-            using (var query = new SQLiteCommand(Connection))
-            {
-                query.CommandText = @"UPDATE files SET lastAccessTime = datetime('now') WHERE path = :path";
-                query.Parameters.Add(new SQLiteParameter(":path", path));
-                query.ExecuteNonQuery();
-            }
-        }
-
         public void Clean(TimeSpan maxLifespan)
         {
             using (var query = new SQLiteCommand(Connection))
             {
                 query.CommandText = @"DELETE FROM files WHERE lastAccessTime < :threshold";
                 query.Parameters.Add(new SQLiteParameter(":threshold", DateTime.Now - maxLifespan));
+                query.ExecuteNonQuery();
+            }
+        }
+
+        private void Touch(string path)
+        {
+            using (var query = new SQLiteCommand(Connection))
+            {
+                query.CommandText = @"
+                    UPDATE files 
+                    SET lastAccessTime = datetime('now') 
+                    WHERE path = :path";
+                query.Parameters.Add(new SQLiteParameter(":path", path));
+                query.ExecuteNonQuery();
+            }
+        }
+
+        private DateTime GetLastWriteTime(string path)
+        {
+            var lastWriteTime = DateTime.MinValue;
+            try
+            {
+                var fi = new FileInfo(path);
+                lastWriteTime = fi.LastWriteTime;
+            }
+            catch (IOException e)
+            {
+                Logger.Warn(e);
+            }
+            return lastWriteTime;
+        }
+        
+        /// <summary>
+        /// Make sure there is a record for file <paramref name="path"/> and return its id.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private long InsertFile(string path)
+        {
+            var lastWriteTime = GetLastWriteTime(path);
+            using (var command = new SQLiteCommand(Connection))
+            {
+                command.CommandText = @"
+                INSERT OR IGNORE INTO files (path, lastWriteTime, lastAccessTime) 
+                VALUES (:path, :lastWriteTime, datetime('now'))";
+                command.Parameters.Add(new SQLiteParameter(":path", path));
+                command.Parameters.Add(new SQLiteParameter(":lastWriteTime", lastWriteTime));
+                command.ExecuteNonQuery();
+            }
+
+            // get the file id
+            using (var query = new SQLiteCommand(Connection))
+            {
+                query.CommandText = "SELECT id FROM files WHERE path = :path";
+                query.Parameters.Add(new SQLiteParameter(":path", path));
+                return (long) query.ExecuteScalar();
+            }
+        }
+
+        private void RemoveAttributes(long fileId, AttributeSource type)
+        {
+            using (var query = new SQLiteCommand(Connection))
+            {
+                query.CommandText = @"DELETE FROM attributes WHERE owner = :owner AND type = :type";
+                query.Parameters.Add(new SQLiteParameter(":owner", fileId));
+                query.Parameters.Add(new SQLiteParameter("type", type));
                 query.ExecuteNonQuery();
             }
         }
@@ -176,19 +271,6 @@ namespace Viewer.Data.Storage
                 }
 
                 transation.Commit();
-            }
-        }
-
-        private long StoreFile(string path)
-        {
-            var fi = new FileInfo(path);
-            using (var command = new SQLiteCommand(Connection))
-            {
-                command.CommandText = "INSERT INTO files (path, lastWriteTime, lastAccessTime) VALUES (:path, :lastWriteTime, datetime('now'))";
-                command.Parameters.Add(new SQLiteParameter(":path", path));
-                command.Parameters.Add(new SQLiteParameter(":lastWriteTime", fi.LastWriteTime));
-                command.ExecuteNonQuery();
-                return Connection.LastInsertRowId;
             }
         }
 
@@ -246,7 +328,7 @@ namespace Viewer.Data.Storage
             {
                 command.CommandText = "INSERT INTO attributes (name, source, type, value, owner) VALUES (:name, :source, :type, :value, :owner)";
                 command.Parameters.Add(new SQLiteParameter(":name", attr.Name));
-                command.Parameters.Add(new SQLiteParameter(":source", (int)attr.Flags));
+                command.Parameters.Add(new SQLiteParameter(":source", (int)attr.Source));
                 command.Parameters.Add(new SQLiteParameter(":owner", fileId));
                 var visitor = new InsertVisitor(command);
                 visitor.Prepare(attr);

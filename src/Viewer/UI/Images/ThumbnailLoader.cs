@@ -11,8 +11,10 @@ using System.Threading.Tasks;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using Viewer.Data;
+using Viewer.Data.Storage;
 using Viewer.Images;
 using Viewer.IO;
+using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Images
 {
@@ -98,15 +100,26 @@ namespace Viewer.UI.Images
     {
         private readonly IImageLoader _imageLoader;
         private readonly IThumbnailGenerator _thumbnailGenerator;
+        private readonly IAttributeStorage _storage;
 
         private readonly List<LoadRequest> _requests = new List<LoadRequest>();
         private readonly SemaphoreSlim _requestCount = new SemaphoreSlim(0);
 
+        /// <summary>
+        /// Quality of thumbnails saved to the cache storage. This number has to be between 0 and 100.
+        /// See <see cref="SKPixmap.Encode(SKWStream, SKBitmap, SKEncodedImageFormat, int)"/>
+        /// </summary>
+        public const int SavedThumbnailQuaity = 75;
+
         [ImportingConstructor]
-        public ThumbnailLoader(IImageLoader imageLoader, IThumbnailGenerator thumbnailGenerator)
+        public ThumbnailLoader(
+            IImageLoader imageLoader, 
+            IThumbnailGenerator thumbnailGenerator, 
+            IAttributeStorage storage)
         {
             _imageLoader = imageLoader;
             _thumbnailGenerator = thumbnailGenerator;
+            _storage = storage;
 
             var thread = new Thread(Loader)
             {
@@ -126,9 +139,13 @@ namespace Viewer.UI.Images
             return LoadEmbeddedThumbnailAsyncImpl(entity, thumbnailAreaSize, cancellationToken);
         }
 
-        private async Task<Thumbnail> LoadEmbeddedThumbnailAsyncImpl(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
+        private async Task<Thumbnail> LoadEmbeddedThumbnailAsyncImpl(
+            IEntity entity, 
+            Size thumbnailAreaSize, 
+            CancellationToken cancellationToken)
         {
-            using (var image = await _imageLoader.LoadThumbnailAsync(entity, cancellationToken).ConfigureAwait(false))
+            using (var image = await _imageLoader.LoadThumbnailAsync(entity, cancellationToken)
+                .ConfigureAwait(false))
             {
                 // the entity does not have an embedded thumbnail
                 if (image == null)
@@ -146,7 +163,10 @@ namespace Viewer.UI.Images
             }
         }
 
-        public Task<Thumbnail> LoadNativeThumbnailAsync(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
+        public Task<Thumbnail> LoadNativeThumbnailAsync(
+            IEntity entity, 
+            Size thumbnailAreaSize,
+            CancellationToken cancellationToken)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -183,9 +203,14 @@ namespace Viewer.UI.Images
             }
         }
 
+        /// <summary>
+        /// Request to generate thumbnail from the original image.
+        /// Requests are synchronized.
+        /// </summary>
         private class LoadRequest
         {
-            public TaskCompletionSource<Thumbnail> Completion { get; } = new TaskCompletionSource<Thumbnail>();
+            public TaskCompletionSource<Thumbnail> Completion { get; } = 
+                new TaskCompletionSource<Thumbnail>();
 
             public CancellationToken Cancellation { get; }
             public IEntity Entity { get; }
@@ -213,16 +238,26 @@ namespace Viewer.UI.Images
                 {
                     if (req.Cancellation.IsCancellationRequested)
                         continue;
-
+                    
                     using (var image = _imageLoader.LoadImage(req.Entity))
                     {
                         if (req.Cancellation.IsCancellationRequested)
                             continue;
 
+                        // generate thumbnail
                         var imageSize = new Size(image.Width, image.Height);
-                        using (var thumbnail = _thumbnailGenerator.GetThumbnail(image, req.ThumbnailAreaSize))
+                        var thumbnail = _thumbnailGenerator.GetThumbnail(image, req.ThumbnailAreaSize);
+                        try
                         {
+                            // finish the task
                             req.Completion.SetResult(new Thumbnail(thumbnail.ToBitmap(), imageSize));
+                            // store the thumbnail
+                            SaveThumbnail(req.Entity, thumbnail);
+                        }
+                        catch (Exception)
+                        {
+                            thumbnail.Dispose();
+                            throw;
                         }
                     }
                 }
@@ -231,6 +266,37 @@ namespace Viewer.UI.Images
                     req.Completion.SetException(e);
                 }
             }
+        }
+
+        private void SaveThumbnail(IEntity entity, SKBitmap thumbnail)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    using (var dataStrem = new MemoryStream())
+                    using (var outputStream = new SKManagedWStream(dataStrem))
+                    {
+                        var isEncoded = SKPixmap.Encode(
+                            outputStream, 
+                            thumbnail, 
+                            SKEncodedImageFormat.Jpeg, 
+                            SavedThumbnailQuaity);
+                        if (!isEncoded)
+                        {
+                            return;
+                        }
+
+                        var value = new ImageValue(dataStrem.ToArray());
+                        entity.SetAttribute(new Attribute("thumbnail", value, AttributeSource.Metadata));
+                        _storage.Store(entity, StoreFlags.Metadata);
+                    }
+                }
+                finally
+                {
+                    thumbnail.Dispose();
+                }
+            });
         }
 
         private LoadRequest ConsumeLoadRequest()

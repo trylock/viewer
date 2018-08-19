@@ -18,12 +18,12 @@ namespace Viewer.Data.Formats
         {
             _attributes = new Attribute[]
             {
-                new Attribute("FileName", new StringValue(fileInfo.Name), AttributeFlags.ReadOnly),
-                new Attribute("FileSize", new IntValue((int)fileInfo.Length), AttributeFlags.ReadOnly),
-                new Attribute("Directory", new StringValue(fileInfo.Directory.Name), AttributeFlags.ReadOnly),
-                new Attribute("LastAccessTime", new DateTimeValue(fileInfo.LastAccessTime), AttributeFlags.ReadOnly),
-                new Attribute("LastWriteTime", new DateTimeValue(fileInfo.LastWriteTime), AttributeFlags.ReadOnly), 
-                new Attribute("CreationTime", new DateTimeValue(fileInfo.CreationTime), AttributeFlags.ReadOnly), 
+                new Attribute("FileName", new StringValue(fileInfo.Name), AttributeSource.Metadata),
+                new Attribute("FileSize", new IntValue((int)fileInfo.Length), AttributeSource.Metadata),
+                new Attribute("Directory", new StringValue(fileInfo.Directory.Name), AttributeSource.Metadata),
+                new Attribute("LastAccessTime", new DateTimeValue(fileInfo.LastAccessTime), AttributeSource.Metadata),
+                new Attribute("LastWriteTime", new DateTimeValue(fileInfo.LastWriteTime), AttributeSource.Metadata), 
+                new Attribute("CreationTime", new DateTimeValue(fileInfo.CreationTime), AttributeSource.Metadata), 
             };
         }
 

@@ -67,14 +67,6 @@ namespace Viewer.Images
         SKBitmap LoadImage(IEntity entity);
 
         /// <summary>
-        /// Decode entity image from a stream.
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        /// <param name="stream">Stream with encoded image data</param>
-        /// <returns>Decoded image</returns>
-        SKBitmap DecodeImage(IEntity entity, Stream stream);
-
-        /// <summary>
         /// Load embeded thumbnail asynchronously.
         /// The thumbnail is loaded in its original size.
         /// </summary>
@@ -170,12 +162,6 @@ namespace Viewer.Images
             }
         }
 
-        public SKBitmap DecodeImage(IEntity entity, Stream stream)
-        {
-            var orientation = GetTransformation(entity);
-            return DecodeImage(stream, orientation);
-        }
-
         public Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken)
         {
             // isolate these values for the thread which will generate the thumbnail
@@ -188,9 +174,9 @@ namespace Viewer.Images
 
             return Task.Run(() =>
             {
-                using (new MemoryStream(thumbnail.Value))
+                using (var inputStream = new MemoryStream(thumbnail.Value))
                 {
-                    return DecodeImage(new MemoryStream(thumbnail.Value), orientation);
+                    return DecodeImage(inputStream, orientation);
                 }
             }, cancellationToken);
         }
@@ -256,14 +242,23 @@ namespace Viewer.Images
                 var transformed = new SKBitmap(
                     flipDimensions ? bitmap.Width : bitmap.Height,
                     flipDimensions ? bitmap.Height : bitmap.Width);
-                using (var surface = new SKCanvas(transformed))
+                try
                 {
-                    surface.Translate(transformed.Width / 2.0f, transformed.Height / 2.0f);
-                    surface.Scale(flipX, 1);
-                    surface.RotateDegrees(rotationAngle);
-                    surface.Translate(-bitmap.Width / 2.0f, -bitmap.Height / 2.0f);
-                    surface.DrawBitmap(bitmap, 0, 0);
+                    using (var surface = new SKCanvas(transformed))
+                    {
+                        surface.Translate(transformed.Width / 2.0f, transformed.Height / 2.0f);
+                        surface.Scale(flipX, 1);
+                        surface.RotateDegrees(rotationAngle);
+                        surface.Translate(-bitmap.Width / 2.0f, -bitmap.Height / 2.0f);
+                        surface.DrawBitmap(bitmap, 0, 0);
+                    }
                 }
+                catch (Exception)
+                {
+                    transformed.Dispose();
+                    throw;
+                }
+
                 return transformed;
             }
         }

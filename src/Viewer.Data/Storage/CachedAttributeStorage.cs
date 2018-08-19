@@ -70,7 +70,7 @@ namespace Viewer.Data.Storage
             cachingThread.Start();
         }
 
-        public LoadResult Load(string path)
+        public IEntity Load(string path)
         {
             // try to find the entity in the waiting list
             lock (_modified)
@@ -79,24 +79,24 @@ namespace Viewer.Data.Storage
                 // This information is passed to the write thread as an entry with null value, just the path.
                 if (_modified.TryGetValue(path, out var req))
                 {
-                    return new LoadResult(req.Entity, 0);
+                    return req.Entity;
                 }
             }
 
             // try to load the entity from cache storage
             var storeFlags = StoreFlags.Touch;
-            var result = _cacheStorage.Load(path);
-            if (result.Entity == null)
+            var entity = _cacheStorage.Load(path);
+            if (entity == null)
             {
                 // try to load the entity from the main storage
                 storeFlags = StoreFlags.Everything;
-                result = _persistentStorage.Load(path);
+                entity = _persistentStorage.Load(path);
             }
 
             // update access time/cache entry
-            Cache(path, new StoreRequest(result.Entity, storeFlags));
+            Cache(path, new StoreRequest(entity, storeFlags));
 
-            return result;
+            return entity;
         }
 
         /// <inheritdoc />

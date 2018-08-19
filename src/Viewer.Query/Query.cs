@@ -153,13 +153,13 @@ namespace Viewer.Query
 
         public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            progress.Report(new QueryProgressReport(ReportType.BeginExecution, null, 0));
+            progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
             foreach (var entity in _entities)
             {
-                progress.Report(new QueryProgressReport(ReportType.EndLoading, entity.Path, 0));
+                progress.Report(new QueryProgressReport(ReportType.EndLoading, entity.Path));
                 yield return entity;
             }
-            progress.Report(new QueryProgressReport(ReportType.EndExecution, null, 0));
+            progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
         }
 
         public bool Match(IEntity entity)
@@ -189,7 +189,7 @@ namespace Viewer.Query
 
         public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            progress.Report(new QueryProgressReport(ReportType.BeginExecution, null, 0));
+            progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
 
             foreach (var dir in EnumerateDirectories())
             {
@@ -212,15 +212,15 @@ namespace Viewer.Query
                         continue;
                     
                     // load file
-                    progress.Report(new QueryProgressReport(ReportType.BeginLoading, file, 0));
-                    var result = LoadEntity(file);
-                    progress.Report(new QueryProgressReport(ReportType.EndLoading, file, result.BytesRead));
-                    if (result.Entity == null)
+                    progress.Report(new QueryProgressReport(ReportType.BeginLoading, file));
+                    var entity = LoadEntity(file);
+                    progress.Report(new QueryProgressReport(ReportType.EndLoading, file));
+                    if (entity == null)
                     {
                         continue;
                     }
 
-                    yield return result.Entity;
+                    yield return entity;
                 }
 
                 // add directories
@@ -236,7 +236,7 @@ namespace Viewer.Query
                 }
             }
 
-            progress.Report(new QueryProgressReport(ReportType.EndExecution, null, 0));
+            progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
         }
 
         public bool Match(IEntity entity)
@@ -301,7 +301,7 @@ namespace Viewer.Query
             return Enumerable.Empty<string>();
         }
 
-        private LoadResult LoadEntity(string path)
+        private IEntity LoadEntity(string path)
         {
             try
             {
@@ -329,7 +329,7 @@ namespace Viewer.Query
                 // skip these 
             }
 
-            return new LoadResult(null, 0);
+            return null;
         }
         
         private IEnumerable<string> EnumerateDirectories()

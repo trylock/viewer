@@ -25,7 +25,7 @@ namespace Viewer.Data
         /// </summary>
         /// <param name="path">Path to an entity</param>
         /// <returns>Loaded entity</returns>
-        LoadResult GetEntity(string path);
+        IEntity GetEntity(string path);
 
         /// <summary>
         /// Add the entity to the modified list.
@@ -70,7 +70,7 @@ namespace Viewer.Data
             _storage = storage;
         }
 
-        public LoadResult GetEntity(string path)
+        public IEntity GetEntity(string path)
         {
             return _storage.Load(path);
         }

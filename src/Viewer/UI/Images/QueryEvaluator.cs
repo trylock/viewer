@@ -116,7 +116,7 @@ namespace Viewer.UI.Images
             IEntity entity = null;
             try
             {
-                entity = _entities.GetEntity(e.FullPath).Entity;
+                entity = _entities.GetEntity(e.FullPath);
             } // silently ignore load exceptions
             catch (InvalidDataFormatException)
             {

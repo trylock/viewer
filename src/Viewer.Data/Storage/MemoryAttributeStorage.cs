@@ -12,17 +12,17 @@ namespace Viewer.Data.Storage
     {
         private readonly Dictionary<string, IEntity> _files = new Dictionary<string, IEntity>();
         
-        public LoadResult Load(string path)
+        public IEntity Load(string path)
         {
             lock (_files)
             {
                 if (_files.TryGetValue(path, out var entity))
                 {
-                    return new LoadResult(entity, 0);
+                    return entity;
                 }
             }
 
-            return new LoadResult(null, 0);
+            return null;
         }
 
         public void Store(IEntity entity)

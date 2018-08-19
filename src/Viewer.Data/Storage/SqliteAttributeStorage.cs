@@ -39,7 +39,7 @@ namespace Viewer.Data.Storage
         /// <returns>
         ///     Valid attributes of the file or null if the attributes in cache are not valid.
         /// </returns>
-        public LoadResult Load(string inputPath)
+        public IEntity Load(string inputPath)
         {
             var lastWriteTime = DateTime.MinValue;
             try
@@ -49,11 +49,11 @@ namespace Viewer.Data.Storage
             }
             catch (FileNotFoundException)
             {
-                return new LoadResult(null, 0);
+                return null;
             }
             catch (DirectoryNotFoundException)
             {
-                return new LoadResult(null, 0);
+                return null;
             }
             IEntity entity = new FileEntity(inputPath);
 
@@ -111,10 +111,10 @@ namespace Viewer.Data.Storage
             if (entity.Count <= 0)
             {
                 // the entity is not in this storage if there are no valid attributes
-                return new LoadResult(null, 0);
+                return null;
             }
 
-            return new LoadResult(entity, 0);
+            return entity;
         }
 
         public void Store(IEntity entity)

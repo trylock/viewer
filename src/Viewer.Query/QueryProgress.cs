@@ -51,25 +51,14 @@ namespace Viewer.Query
         public string FilePath { get; }
 
         /// <summary>
-        /// Number of read bytes from the disk to search the file. It can only be non-zero if
-        /// <see cref="Type"/> is <see cref="ReportType.EndLoading"/>.
-        /// Note: this is a lower bound on the total number of read bytes. It can even be 0 if
-        ///       no I/O was necessary or the storage could not determine at least an approximate
-        ///       ammount of bytes read from a disk.
-        /// </summary>
-        public long BytesRead { get; }
-
-        /// <summary>
         /// Create a new progress report.
         /// </summary>
         /// <param name="type">Type of the report</param>
         /// <param name="filePath">Searched file path</param>
-        /// <param name="bytesRead">Number of bytes read from a disk</param>
-        public QueryProgressReport(ReportType type, string filePath, long bytesRead)
+        public QueryProgressReport(ReportType type, string filePath)
         {
             Type = type;
             FilePath = filePath;
-            BytesRead = bytesRead;
         }
     }
 
@@ -92,7 +81,6 @@ namespace Viewer.Query
     public class QueryProgress : IProgress<QueryProgressReport>
     {
         private long _fileCount;
-        private long _readBytes;
 
         /// <summary>
         /// Path to the file which is currently being loaded. It can be null.
@@ -103,11 +91,6 @@ namespace Viewer.Query
         /// Current number of searched files.
         /// </summary>
         public long FileCount => Interlocked.Read(ref _fileCount);
-
-        /// <summary>
-        /// Lower bound on the total number of bytes read from a disk.
-        /// </summary>
-        public long BytesRead => Interlocked.Read(ref _readBytes);
         
         public void Report(QueryProgressReport value)
         {
@@ -121,7 +104,6 @@ namespace Viewer.Query
                     break;
                 case ReportType.EndLoading:
                     Interlocked.Increment(ref _fileCount);
-                    Interlocked.Add(ref _readBytes, value.BytesRead);
                     break;
             }
         }

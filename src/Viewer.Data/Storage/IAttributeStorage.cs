@@ -10,37 +10,6 @@ using Viewer.Data.Formats;
 namespace Viewer.Data.Storage
 {
     /// <summary>
-    /// Result of the <see cref="IAttributeStorage.Load"/> operation.
-    /// </summary>
-    public struct LoadResult
-    {
-        /// <summary>
-        /// Loaded entity. This value can be null if the entity has not been found.
-        /// If the entity has been found but it does not contain any attributes, this value won't be null.
-        /// Instead, its attributes collection will be empty. 
-        /// </summary>
-        public IEntity Entity { get; }
-
-        /// <summary>
-        /// This is a lower bound on the number or bytes read from a file.
-        /// It can be 0, if no I/O was necessary to retrieve the file.
-        /// It can be 0, if the storage cannot estimate performed I/O (e.g. because it has been done using some library)
-        /// </summary>
-        public long BytesRead { get; }
-        
-        /// <summary>
-        /// Create a new load result
-        /// </summary>
-        /// <param name="entity">Loaded entity</param>
-        /// <param name="bytesRead"></param>
-        public LoadResult(IEntity entity, long bytesRead)
-        {
-            Entity = entity;
-            BytesRead = bytesRead;
-        }
-    }
-    
-    /// <summary>
     /// Attribute storage manages loading and storing attributes. Implementation of this interface has to be thread safe.
     /// </summary>
     /// <example>
@@ -61,7 +30,7 @@ namespace Viewer.Data.Storage
         /// <returns>
         ///     Collection of attributes found in given file.
         ///     If there are no attributes, the collection will be empty.
-        ///     If the file does not exist, <see cref="LoadResult.Entity"/> will be null.
+        ///     It will be null if the file <paramref name="path"/> does not exist.
         /// </returns>
         /// <exception cref="ArgumentException"><paramref name="path"/> is an invalid file path.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> is null.</exception>
@@ -71,7 +40,7 @@ namespace Viewer.Data.Storage
         /// <exception cref="PathTooLongException"><paramref name="path"/> is too long.</exception>
         /// <exception cref="SecurityException">The caller does not have the required permission.</exception>
         /// <exception cref="UnauthorizedAccessException">The caller is not authorized to access <paramref name="path"/>.</exception>
-        LoadResult Load(string path);
+        IEntity Load(string path);
 
         /// <summary>
         /// Store attributes to a path.

@@ -247,7 +247,8 @@
     <value>Saving Changes</value>
   </data>
   <data name="LayoutFilePath" xml:space="preserve">
-    <value>Viewer.Layout.xml</value>
+    <value>%userprofile%/Documents/Viewer/layout.xml</value>
+    <comment>Path to the file where the layout will be stored. Names in between % will be expanded as environment variables</comment>
   </data>
   <data name="Progess_Title" xml:space="preserve">
     <value>{0} ({1}%)</value>

@@ -456,7 +456,7 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Viewer.Layout.xml.
+        ///   Looks up a localized string similar to %userprofile%/Documents/Viewer/layout.xml.
         /// </summary>
         internal static string LayoutFilePath {
             get {

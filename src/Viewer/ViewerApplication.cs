@@ -34,6 +34,12 @@ namespace Viewer
         private readonly IComponent[] _components;
         private readonly List<DeserializeDockContent> _layoutDeserializeCallback = new List<DeserializeDockContent>();
 
+        /// <summary>
+        /// Path to the file with application layout.
+        /// </summary>
+        private static string LayoutFilePath => 
+            Environment.ExpandEnvironmentVariables(Resources.LayoutFilePath);
+
         [ImportingConstructor]
         public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
         {
@@ -53,7 +59,7 @@ namespace Viewer
             }
             
             // deserialize layout
-            LoadLayout(Resources.LayoutFilePath);
+            LoadLayout(LayoutFilePath);
         }
 
         public void AddMenuItem(IReadOnlyList<string> menuPath, Action action, Image icon)
@@ -117,7 +123,7 @@ namespace Viewer
 
         private void OnShutdown(object sender, EventArgs e)
         {
-            SaveLayout(Resources.LayoutFilePath);
+            SaveLayout(LayoutFilePath);
         }
 
         private IDockContent Deserialize(string persistString)

@@ -21,33 +21,34 @@ namespace Viewer
     [Export]
     public partial class ViewerForm : Form
     {
+        /// <summary>
+        /// Application theme
+        /// </summary>
+        public static readonly ThemeBase Theme = new VS2015LightTheme();
+
         public DockPanel Panel { get; }
 
         public EventHandler Shutdown;
 
         private MenuStrip _viewerMenu;
         private StatusStrip _statusBar;
-        private ToolStrip _toolBar;
-
+        
+        [ImportingConstructor]
         public ViewerForm()
         {
-            Panel = new DockPanel
-            {
-                Theme = new VS2015LightTheme()
-            };
+            Panel = new DockPanel{ Theme = Theme };
             Panel.UpdateDockWindowZOrder(DockStyle.Right, true);
             Panel.UpdateDockWindowZOrder(DockStyle.Left, true);
             Controls.Add(Panel);
             
             InitializeComponent();
-            InitializeToolBar();
             InitializeMenu();
             InitializeStatusbar();
 
-            Panel.Location = new Point(0, _viewerMenu.Height + _toolBar.Height);
+            Panel.Location = new Point(0, _viewerMenu.Height);
             Panel.Size = new Size(
                 ClientSize.Width, 
-                ClientSize.Height - _viewerMenu.Height - _statusBar.Height - _toolBar.Height);
+                ClientSize.Height - _viewerMenu.Height - _statusBar.Height);
             Panel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
         }
 
@@ -82,13 +83,6 @@ namespace Viewer
             Shutdown?.Invoke(sender, e);
         }
 
-        private void InitializeToolBar()
-        {
-            _toolBar = new ToolStrip();
-            Panel.Theme.ApplyTo(_toolBar);
-            Controls.Add(_toolBar);
-        }
-
         private void InitializeMenu()
         {
             _viewerMenu = new MenuStrip();
@@ -113,166 +107,6 @@ namespace Viewer
             Panel.Theme.ApplyTo(_statusBar);
             Controls.Add(_statusBar);
         }
-
-        #region ToolBar API
-        
-        /// <summary>
-        /// ToolStripButton wrapper used as a return value from <see cref="ViewerForm.AddToolBarButton"/>
-        /// </summary>
-        private class ToolStripButtonAdapter : IToolBarItem
-        {
-            private readonly ToolStripButton _button;
-
-            public Image Image
-            {
-                get => _button.Image;
-                set => _button.Image = value;
-            }
-
-            public string ToolTipText
-            {
-                get => _button.ToolTipText;
-                set => _button.ToolTipText = value;
-            }
-
-            public bool Enabled
-            {
-                get => _button.Enabled;
-                set => _button.Enabled = value;
-            }
-
-            public ToolStripButtonAdapter(ToolStripButton button)
-            {
-                _button = button;
-            }
-        }
-
-        private class ToolStripDropDownAdapter : IToolBarDropDown
-        {
-            private readonly ToolStripDropDownButton _dropDown;
-
-            public event EventHandler<SelectedEventArgs> ItemSelected;
-
-            public Image Image
-            {
-                get => _dropDown.Image;
-                set => _dropDown.Image = value;
-            }
-
-            public string ToolTipText
-            {
-                get => _dropDown.ToolTipText;
-                set => _dropDown.ToolTipText = value;
-            }
-
-            public bool Enabled
-            {
-                get => _dropDown.Enabled;
-                set => _dropDown.Enabled = value;
-            }
-
-            public ICollection<string> Items
-            {
-                get
-                {
-                    var items = new List<string>();
-                    foreach (ToolStripItem item in _dropDown.DropDownItems)
-                    {
-                        items.Add(item.Text);
-                    }
-
-                    return items;
-                }
-                set
-                {
-                    if (value == null)
-                        throw new ArgumentNullException(nameof(value));
-                    
-                    _dropDown.DropDownItems.Clear();
-                    foreach (var item in value)
-                    {
-                        var menuItem = new ToolStripMenuItem(item);
-                        menuItem.Click += (sender, args) => ItemSelected?.Invoke(sender, new SelectedEventArgs(menuItem.Text));
-                        _dropDown.DropDownItems.Add(menuItem);
-                    }
-                }
-            }
-
-            public ToolStripDropDownAdapter(ToolStripDropDownButton dropDown)
-            {
-                _dropDown = dropDown ?? throw new ArgumentNullException(nameof(dropDown));
-            }
-        }
-
-        private void AddItemToToolBar(string groupName, string toolName, ToolStripItem newItem)
-        {
-            if (groupName == null)
-                throw new ArgumentNullException(nameof(groupName));
-            if (toolName == null)
-                throw new ArgumentNullException(nameof(toolName));
-
-            groupName = groupName.ToLowerInvariant();
-            toolName = toolName.ToLowerInvariant();
-
-            newItem.Tag = groupName;
-            newItem.Name = toolName;
-
-            // find the last item in the group
-            var index = 0;
-            var lastGroupIndex = -1;
-            foreach (ToolStripItem item in _toolBar.Items)
-            {
-                if ((string)item.Tag == groupName)
-                {
-                    lastGroupIndex = index + 1;
-                    if (item.Name == toolName)
-                    {
-                        throw new ArgumentException($"Tool name '{toolName}' is not unique in '{groupName}'");
-                    }
-                }
-
-                ++index;
-            }
-
-            // if the group does not exist, create it
-            if (lastGroupIndex < 0)
-            {
-                if (_toolBar.Items.Count > 0)
-                {
-                    _toolBar.Items.Add(new ToolStripSeparator());
-                }
-
-                lastGroupIndex = _toolBar.Items.Count;
-            }
-            _toolBar.Items.Insert(lastGroupIndex, newItem);
-        }
-        
-        public IToolBarItem AddToolBarButton(string groupName, string toolName, Action action)
-        {
-            if (action == null)
-                throw new ArgumentNullException(nameof(action));
-
-            // add the tool
-            var button = new ToolStripButton();
-            button.Click += (sender, e) => action();
-            AddItemToToolBar(groupName, toolName, button);
-
-            return new ToolStripButtonAdapter(button);
-        }
-
-        public IToolBarDropDown AddToolBarSelect(string groupName, string toolName, string toolTipText, Image image)
-        {
-            var dropDown = new ToolStripDropDownButton()
-            {
-                ToolTipText = toolTipText,
-                Image = image
-            };
-            AddItemToToolBar(groupName, toolName, dropDown);
-
-            return new ToolStripDropDownAdapter(dropDown);
-        }
-
-        #endregion
         
         #region StatusBar API
 

@@ -60,20 +60,7 @@ namespace Viewer
         {
             _appForm.AddMenuItem(menuPath, action, icon);
         }
-
-        public IToolBarItem CreateToolBarItem(string groupName, string toolName, string toolTipText, Image image, Action action)
-        {
-            var tool = _appForm.AddToolBarButton(groupName, toolName, action);
-            tool.ToolTipText = toolTipText;
-            tool.Image = image;
-            return tool;
-        }
-
-        public IToolBarDropDown CreateToolBarSelect(string groupName, string toolName, string toolTipText, Image image)
-        {
-            return _appForm.AddToolBarSelect(groupName, toolName, toolTipText, image);
-        }
-
+        
         public IStatusBarItem CreateStatusBarItem(string text, Image image, ToolStripItemAlignment alignment)
         {
             return _appForm.CreateStatusBarItem(text, image, alignment);

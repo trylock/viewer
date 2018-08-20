@@ -43,6 +43,7 @@
             this.ShowCodeToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.BackToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.StatusLabel = new System.Windows.Forms.Label();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -130,12 +131,24 @@
             // 
             this.ForwardToolTip.ToolTipTitle = "Forward to";
             // 
-            // ImagesGridView
+            // StatusLabel
+            // 
+            this.StatusLabel.AutoSize = true;
+            this.StatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.StatusLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.StatusLabel.Location = new System.Drawing.Point(247, 170);
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(113, 25);
+            this.StatusLabel.TabIndex = 1;
+            this.StatusLabel.Text = "Loading ...";
+            // 
+            // ImagesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 353);
             this.ContextMenuStrip = this.ItemContextMenu;
+            this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.NameTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -162,5 +175,6 @@
         private System.Windows.Forms.ToolTip ForwardToolTip;
         private System.Windows.Forms.ToolTip BackToolTip;
         private System.Windows.Forms.ToolStripMenuItem CutMenuItem;
+        private System.Windows.Forms.Label StatusLabel;
     }
 }

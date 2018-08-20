@@ -10,7 +10,7 @@ namespace Viewer.Core
     public interface IComponent
     {
         /// <summary>
-        /// Function called once when this component should be loaded
+        /// Function called once when this component is loaded.
         /// </summary>
         /// <param name="app">Application</param>
         void OnStartup(IViewerApplication app);

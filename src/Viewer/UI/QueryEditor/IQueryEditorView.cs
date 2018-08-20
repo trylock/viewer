@@ -23,6 +23,19 @@ namespace Viewer.UI.QueryEditor
         }
     }
 
+    public class QueryViewEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Query view argument.
+        /// </summary>
+        public QueryView View { get; }
+
+        public QueryViewEventArgs(QueryView view)
+        {
+            View = view ?? throw new ArgumentNullException(nameof(view));
+        }
+    }
+
     public interface IDropView
     {
         /// <summary>
@@ -52,6 +65,16 @@ namespace Viewer.UI.QueryEditor
         /// Event called when user requests to open a new query
         /// </summary>
         event EventHandler<OpenQueryEventArgs> OpenQuery;
+
+        /// <summary>
+        /// Event occurs when user tries to open a query view.
+        /// </summary>
+        event EventHandler<QueryViewEventArgs> OpenQueryView;
+
+        /// <summary>
+        /// Available query views.
+        /// </summary>
+        ICollection<QueryView> Views { get; set; }
 
         /// <summary>
         /// Full path to a file which contains this query or

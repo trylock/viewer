@@ -22,6 +22,8 @@ namespace Viewer.UI.QueryEditor
         {
             InitializeComponent();
 
+            ViewerForm.Theme.ApplyTo(EditorToolStrip);
+
             // initialize highlighting
             QueryTextBox.StyleResetDefault();
             QueryTextBox.Styles[Style.Default].Font = "Consolas";
@@ -58,6 +60,27 @@ namespace Viewer.UI.QueryEditor
         public event EventHandler QueryChanged;
         public event EventHandler SaveQuery;
         public event EventHandler<OpenQueryEventArgs> OpenQuery;
+        public event EventHandler<QueryViewEventArgs> OpenQueryView;
+
+        private ICollection<QueryView> _views;
+        public ICollection<QueryView> Views
+        {
+            get => _views;
+            set
+            {
+                _views = value;
+                QueryViewsDropDown.DropDownItems.Clear();
+                foreach (var view in value)
+                {
+                    var viewCapture = view;
+                    var item = new ToolStripMenuItem(view.Name);
+                    item.Click += (sender, args) => 
+                        OpenQueryView?.Invoke(sender, new QueryViewEventArgs(viewCapture));
+                    QueryViewsDropDown.DropDownItems.Add(item);
+                }
+            }
+        }
+
         public string FullPath { get; set; }
 
         public string Query
@@ -82,19 +105,27 @@ namespace Viewer.UI.QueryEditor
             }
             else if (e.Control && e.KeyCode == Keys.S)
             {
-                e.SuppressKeyPress = true;
                 SaveQuery?.Invoke(sender, e);
             }
             else if (e.Control && e.KeyCode == Keys.O)
             {
                 OpenButton_Click(sender, e);
-                e.SuppressKeyPress = true;
             }
         }
 
         private void QueryTextBox_TextChanged(object sender, EventArgs e)
         {
             QueryChanged?.Invoke(sender, e);
+        }
+        
+        private void QueryTextBox_DragDrop(object sender, DragEventArgs e)
+        {
+            OnDrop?.Invoke(sender, e);
+        }
+
+        private void QueryTextBox_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
         }
 
         private void OpenButton_Click(object sender, EventArgs e)
@@ -107,15 +138,15 @@ namespace Viewer.UI.QueryEditor
 
             OpenQuery?.Invoke(sender, new OpenQueryEventArgs(OpenDialog.FileName));
         }
-
-        private void QueryTextBox_DragDrop(object sender, DragEventArgs e)
+        
+        private void SaveButton_Click(object sender, EventArgs e)
         {
-            OnDrop?.Invoke(sender, e);
+            SaveQuery?.Invoke(sender, e);
         }
 
-        private void QueryTextBox_DragEnter(object sender, DragEventArgs e)
+        private void RunButton_Click(object sender, EventArgs e)
         {
-            e.Effect = DragDropEffects.Copy;
+            RunQuery?.Invoke(sender, e);
         }
 
         protected override string GetPersistString()

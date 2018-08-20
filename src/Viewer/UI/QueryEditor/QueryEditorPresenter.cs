@@ -22,6 +22,7 @@ namespace Viewer.UI.QueryEditor
         private readonly IFileSystemErrorView _dialogErrorView;
         private readonly IQueryCompiler _queryCompiler;
         private readonly IErrorListener _queryErrorListener;
+        private readonly IQueryViewRepository _queryViews;
         private readonly IEditor _editor;
 
         protected override ExportLifetimeContext<IQueryEditorView> ViewLifetime { get; }
@@ -42,10 +43,37 @@ namespace Viewer.UI.QueryEditor
             _dialogErrorView = dialogErrorView;
             _queryCompiler = queryCompiler;
             _queryErrorListener = queryErrorListener;
+            _queryViews = queryViews;
             _appEvents = appEvents;
             _editor = editor;
 
             SubscribeTo(View, "View");
+
+            _queryViews.Changed += QueryViewsOnChanged;
+            UpdateViews();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            _queryViews.Changed -= QueryViewsOnChanged;
+        }
+
+        private void QueryViewsOnChanged(object sender, EventArgs e)
+        {
+            if (View.InvokeRequired)
+            {
+                View.BeginInvoke(new Action(UpdateViews));
+            }
+            else
+            {
+                UpdateViews();
+            }
+        }
+
+        private void UpdateViews()
+        {
+            View.Views = _queryViews.ToArray();
         }
 
         /// <summary>
@@ -185,6 +213,11 @@ namespace Viewer.UI.QueryEditor
                     await _editor.OpenAsync(file, DockState.Document);
                 }
             }
+        }
+
+        private void View_OpenQueryView(object sender, QueryViewEventArgs e)
+        {
+            _editor.OpenAsync(e.View.Path, DockState.Document);
         }
     }
 }

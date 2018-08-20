@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Viewer.Data.Properties;
 using Viewer.IO;
 
-namespace Viewer.Data
+namespace Viewer.Data.SQLite
 {
     public class SQliteConnectionFactory
     {
@@ -36,6 +36,8 @@ namespace Viewer.Data
                         command.ExecuteNonQuery();
                     }
                 }
+
+                SQLiteFunction.RegisterFunction(typeof(CurrentCultureIgnoreCase));
 
                 return connection;
             }

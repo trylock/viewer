@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attribute.cs" />
+    <Compile Include="SQlite\CurrentCultureIgnoreCase.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityComparer.cs" />
     <Compile Include="EntityManager.cs" />
@@ -109,7 +110,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SQliteConnectionFactory.cs" />
+    <Compile Include="SQlite\SQliteConnectionFactory.cs" />
     <Compile Include="Storage\CachedAttributeStorage.cs" />
     <Compile Include="Storage\FileSystemAttributeStorage.cs" />
     <Compile Include="Storage\IAttributeStorage.cs" />

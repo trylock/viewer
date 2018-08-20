@@ -119,7 +119,7 @@
   </resheader>
   <data name="CacheFilePath" xml:space="preserve">
     <value>%userprofile%/Documents/Viewer/cache.db</value>
-    <comment>{0} is the directory with the viewer executable</comment>
+    <comment>Names between %% will be expanded as environment variables (e.g. %userprofile% is the absolute path to user's profile) </comment>
   </data>
   <data name="SqliteConnectionString" xml:space="preserve">
     <value>Data Source={0};Version=3;foreign keys=true;synchronous=OFF</value>
@@ -129,7 +129,7 @@
     <value>BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS `files` (
 	`id`	INTEGER NOT NULL,
-	`path`	TEXT NOT NULL UNIQUE,
+	`path`	TEXT NOT NULL UNIQUE COLLATE CURRENT_CULTURE_IGNORE_CASE,
 	`lastWriteTime`	TEXT NOT NULL,
 	`lastAccessTime`	TEXT NOT NULL,
 	PRIMARY KEY(`id`)

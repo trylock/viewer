@@ -123,7 +123,7 @@ namespace Viewer.UI.Images
 
         #region View interface
         
-        public void UpdateItemCount()
+        public void UpdateItems()
         {
             UpdateScrollableSize();
         }
@@ -150,7 +150,13 @@ namespace Viewer.UI.Images
 
             return Items[index];
         }
-        
+
+        public Rectangle GetNameBounds(int index)
+        {
+            var cell = Grid.GetCell(index);
+            return new Rectangle(GetNameLocation(cell.Bounds), GetNameSize(cell.Bounds));
+        }
+
         #endregion
 
         public Point GetThumbnailLocation(Rectangle cellBounds, Size thumbnailSize)

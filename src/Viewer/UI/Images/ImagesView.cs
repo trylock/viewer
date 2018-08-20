@@ -22,13 +22,40 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Viewer.UI.Images
 {
     [Export(typeof(IImagesView))]
-    public partial class ImagesGridView : WindowView, IImagesView
+    public partial class ImagesView : WindowView, IImagesView
     {
-        public ImagesGridView()
+        private readonly GridView _gridView;
+        private GridView _view;
+
+        public ImagesView()
         {
             InitializeComponent();
 
-            GridView.MouseWheel += GridView_MouseWheel;
+            _gridView = new GridView
+            {
+                ContextMenuStrip = ItemContextMenu,
+                Dock = DockStyle.Fill,
+                Name = "GridView",
+                TabIndex = 1
+            };
+            RegisterView(_gridView);
+
+            _view = _gridView;
+            Controls.Add(_view);
+        }
+
+        private void RegisterView(Control view)
+        {
+            view.DragDrop += GridView_DragDrop;
+            view.DragOver += GridView_DragOver;
+            view.DoubleClick += GridView_DoubleClick;
+            view.MouseDown += GridView_MouseDown;
+            view.MouseLeave += GridView_MouseLeave;
+            view.MouseMove += GridView_MouseMove;
+            view.MouseUp += GridView_MouseUp;
+            view.MouseWheel += GridView_MouseWheel;
+            view.KeyDown += GridView_KeyDown;
+            view.KeyUp += GridView_KeyUp;
         }
 
         #region IHistoryView
@@ -48,22 +75,22 @@ namespace Viewer.UI.Images
 
         public void ShowSelection(Rectangle bounds)
         {
-            GridView.SelectionBounds = bounds;
+            _view.SelectionBounds = bounds;
         }
 
         public void HideSelection()
         {
-            GridView.SelectionBounds = Rectangle.Empty;
+            _view.SelectionBounds = Rectangle.Empty;
         }
         
         public IEnumerable<EntityView> GetItemsIn(Rectangle bounds)
         {
-            return GridView.GetItemsIn(bounds);
+            return _view.GetItemsIn(bounds);
         }
 
         public EntityView GetItemAt(Point location)
         {
-            return GridView.GetItemAt(location);
+            return _view.GetItemAt(location);
         }
 
         #endregion
@@ -102,18 +129,10 @@ namespace Viewer.UI.Images
         /// Index of the last item user clicked on with left mouse button.
         /// </summary>
         private EntityView _activeItem = null;
-        
-        public event KeyEventHandler HandleKeyDown
-        {
-            add => GridView.KeyDown += value;
-            remove => GridView.KeyDown -= value;
-        }
 
-        public event KeyEventHandler HandleKeyUp
-        {
-            add => GridView.KeyUp += value;
-            remove => GridView.KeyUp -= value;
-        }
+        public event KeyEventHandler HandleKeyDown;
+
+        public event KeyEventHandler HandleKeyUp;
 
         public event EventHandler<EntityEventArgs> ItemHover;
 
@@ -195,24 +214,19 @@ namespace Viewer.UI.Images
 
         public SortedList<EntityView> Items
         {
-            get => GridView.Items;
-            set => GridView.Items = value;
+            get => _view.Items;
+            set => _view.Items = value;
         }
 
         public Size ItemSize
         {
-            get => GridView.ItemSize;
-            set => GridView.ItemSize = value;
-        }
-
-        private void UpdateItemCount()
-        {
-            GridView.UpdateItemCount();
+            get => _view.ItemSize;
+            set => _view.ItemSize = value;
         }
         
         public void UpdateItems()
         {
-            UpdateItemCount();
+            _view.UpdateItems();
             Refresh();
         }
         
@@ -227,12 +241,12 @@ namespace Viewer.UI.Images
                 throw new ArgumentNullException(nameof(entityView));
 
             var index = Items.IndexOf(entityView);
-            var cell = GridView.Grid.GetCell(index);
+            var bounds = _view.GetNameBounds(index);
 
             NameTextBox.Visible = true;
             NameTextBox.Text = entityView.Name;
-            NameTextBox.Location = GridView.ProjectLocation(GridView.GetNameLocation(cell.Bounds));
-            NameTextBox.Size = GridView.GetNameSize(cell.Bounds);
+            NameTextBox.Location = _view.ProjectLocation(bounds.Location);
+            NameTextBox.Size = bounds.Size;
             NameTextBox.Focus();
         }
 
@@ -269,8 +283,8 @@ namespace Viewer.UI.Images
             }
             
             // process events on grid view item
-            var location = GridView.UnprojectLocation(e.Location);
-            var item = GridView.GetItemAt(location);
+            var location = _view.UnprojectLocation(e.Location);
+            var item = _view.GetItemAt(location);
             if (item != null)
             {
                 // set last item user clicked on using any button
@@ -318,7 +332,7 @@ namespace Viewer.UI.Images
             // finish selection
             if (_isSelectionActive)
             {
-                var location = GridView.UnprojectLocation(e.Location);
+                var location = _view.UnprojectLocation(e.Location);
                 SelectionEnd?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
                 _isSelectionActive = false;
             }
@@ -338,7 +352,7 @@ namespace Viewer.UI.Images
         
         private void GridView_MouseMove(object sender, MouseEventArgs e)
         {
-            var location = GridView.UnprojectLocation(e.Location);
+            var location = _view.UnprojectLocation(e.Location);
             if (_isSelectionActive)
             {
                 SelectionDrag?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
@@ -360,14 +374,14 @@ namespace Viewer.UI.Images
                     
                     if (delta != 0)
                     {
-                        GridView.AutoScrollPosition = new Point(0, -GridView.AutoScrollPosition.Y - delta);
+                        _view.AutoScrollPosition = new Point(0, -_view.AutoScrollPosition.Y - delta);
                     }
                 }
             }
             else
             {
                 // trigger the ItemHover event
-                var item = GridView.GetItemAt(location);
+                var item = _view.GetItemAt(location);
                 if (item == null)
                 {
                     return;
@@ -394,8 +408,8 @@ namespace Viewer.UI.Images
 
         private void GridView_DoubleClick(object sender, EventArgs e)
         { 
-            var location = GridView.UnprojectLocation(PointToClient(MousePosition));
-            var item = GridView.GetItemAt(location);
+            var location = _view.UnprojectLocation(PointToClient(MousePosition));
+            var item = _view.GetItemAt(location);
             if (item == null)
             {
                 return;
@@ -411,8 +425,8 @@ namespace Viewer.UI.Images
 
         private void GridView_DragOver(object sender, DragEventArgs e)
         {
-            var location = GridView.UnprojectLocation(PointToClient(MousePosition));
-            var item = GridView.GetItemAt(location);
+            var location = _view.UnprojectLocation(PointToClient(MousePosition));
+            var item = _view.GetItemAt(location);
             e.Effect = item?.Data is DirectoryEntity ? 
                 DragDropEffects.Move : 
                 DragDropEffects.None;
@@ -420,12 +434,22 @@ namespace Viewer.UI.Images
 
         private void GridView_DragDrop(object sender, DragEventArgs e)
         {
-            var location = GridView.UnprojectLocation(PointToClient(MousePosition));
-            var item = GridView.GetItemAt(location);
+            var location = _view.UnprojectLocation(PointToClient(MousePosition));
+            var item = _view.GetItemAt(location);
             if (item?.Data is DirectoryEntity)
             {
                 OnDrop?.Invoke(sender, new DropEventArgs(item, e.AllowedEffect, e.Data));
             }
+        }
+
+        private void GridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            HandleKeyDown?.Invoke(sender, e);
+        }
+
+        private void GridView_KeyUp(object sender, KeyEventArgs e)
+        {
+            HandleKeyUp?.Invoke(sender, e);
         }
 
         #endregion
@@ -481,12 +505,12 @@ namespace Viewer.UI.Images
 
         public override void BeginLoading()
         {
-            GridView.IsLoading = true;
+            _view.IsLoading = true;
         }
 
         public override void EndLoading()
         {
-            GridView.IsLoading = false;
+            _view.IsLoading = false;
         }
     }
 }

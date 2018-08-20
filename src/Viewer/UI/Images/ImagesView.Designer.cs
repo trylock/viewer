@@ -1,6 +1,6 @@
 ﻿namespace Viewer.UI.Images
 {
-    partial class ImagesGridView
+    partial class ImagesView
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImagesGridView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImagesView));
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.ItemContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,7 +43,6 @@
             this.ShowCodeToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.BackToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.GridView = new Viewer.UI.Images.GridView();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -131,43 +130,16 @@
             // 
             this.ForwardToolTip.ToolTipTitle = "Forward to";
             // 
-            // GridView
-            // 
-            this.GridView.AllowDrop = true;
-            this.GridView.AutoScroll = true;
-            this.GridView.ContextMenuStrip = this.ItemContextMenu;
-            this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GridView.IsLoading = false;
-            this.GridView.ItemPadding = new System.Drawing.Size(5, 5);
-            this.GridView.Items = null;
-            this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(0, 0);
-            this.GridView.Margin = new System.Windows.Forms.Padding(2);
-            this.GridView.Name = "GridView";
-            this.GridView.NameHeight = 30;
-            this.GridView.NameSpace = 5;
-            this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(626, 353);
-            this.GridView.TabIndex = 1;
-            this.GridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.GridView_DragDrop);
-            this.GridView.DragOver += new System.Windows.Forms.DragEventHandler(this.GridView_DragOver);
-            this.GridView.DoubleClick += new System.EventHandler(this.GridView_DoubleClick);
-            this.GridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseDown);
-            this.GridView.MouseLeave += new System.EventHandler(this.GridView_MouseLeave);
-            this.GridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseMove);
-            this.GridView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GridView_MouseUp);
-            // 
             // ImagesGridView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 353);
             this.ContextMenuStrip = this.ItemContextMenu;
-            this.Controls.Add(this.GridView);
             this.Controls.Add(this.NameTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "ImagesGridView";
+            this.Name = "ImagesView";
             this.Text = "Images";
             this.ItemContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -189,7 +161,6 @@
         private System.Windows.Forms.ToolTip ShowCodeToolTip;
         private System.Windows.Forms.ToolTip ForwardToolTip;
         private System.Windows.Forms.ToolTip BackToolTip;
-        private GridView GridView;
         private System.Windows.Forms.ToolStripMenuItem CutMenuItem;
     }
 }

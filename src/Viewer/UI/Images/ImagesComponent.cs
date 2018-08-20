@@ -134,7 +134,7 @@ namespace Viewer.UI.Images
 
         private IDockContent Deserialize(string persistString)
         {
-            if (persistString.StartsWith(typeof(ImagesGridView).FullName))
+            if (persistString.StartsWith(typeof(ImagesView).FullName))
             {
                 var parts = persistString.Split(';');
                 if (parts.Length == 1)

@@ -304,6 +304,11 @@ namespace Viewer.UI.Images
         event EventHandler<DropEventArgs> OnDrop;
 
         /// <summary>
+        /// Event occurs when user tries to refresh current query.
+        /// </summary>
+        event EventHandler RefreshQuery;
+
+        /// <summary>
         /// Textual representation of the query of this component
         /// </summary>
         string Query { get; set; }

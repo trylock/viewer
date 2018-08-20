@@ -552,6 +552,14 @@ namespace Viewer.UI.Images
             }
         }
 
+        private void View_RefreshQuery(object sender, EventArgs e)
+        {
+            if (_state.Current != null)
+            {
+                _state.ExecuteQuery(_state.Current);
+            }
+        }
+
         #endregion
     }
 }

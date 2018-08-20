@@ -155,6 +155,12 @@ namespace Viewer.UI.Images
             remove => DeleteMenuItem.Click -= value;
         }
 
+        public event EventHandler RefreshQuery
+        {
+            add => RefreshMenuItem.Click += value;
+            remove => RefreshMenuItem.Click -= value;
+        }
+
         public event EventHandler<EntityEventArgs> OpenItem;
         public event EventHandler<DropEventArgs> OnDrop;
         public event EventHandler CancelEditItemName;

@@ -56,6 +56,7 @@ namespace Viewer.UI.Images
             view.MouseWheel += GridView_MouseWheel;
             view.KeyDown += GridView_KeyDown;
             view.KeyUp += GridView_KeyUp;
+            view.Resize += GridView_Resize;
         }
 
         #region IHistoryView
@@ -215,7 +216,12 @@ namespace Viewer.UI.Images
         public SortedList<EntityView> Items
         {
             get => _view.Items;
-            set => _view.Items = value;
+            set
+            {
+                _view.Items = value;
+                var itemCount = value?.Count ?? 0;
+                StatusLabel.Visible = itemCount <= 0;
+            }
         }
 
         public Size ItemSize
@@ -452,6 +458,14 @@ namespace Viewer.UI.Images
             HandleKeyUp?.Invoke(sender, e);
         }
 
+        private void GridView_Resize(object sender, EventArgs e)
+        {
+            StatusLabel.Location = new Point(
+                ClientSize.Width / 2 - StatusLabel.Width / 2,
+                ClientSize.Height / 2 - StatusLabel.Height / 2
+            );
+        }
+
         #endregion
 
         private void NameTextBox_Leave(object sender, EventArgs e)
@@ -505,12 +519,14 @@ namespace Viewer.UI.Images
 
         public override void BeginLoading()
         {
-            _view.IsLoading = true;
+            StatusLabel.Text = "Loading ...";
         }
 
         public override void EndLoading()
         {
-            _view.IsLoading = false;
+            var itemCount = Items?.Count ?? 0;
+            StatusLabel.Visible = itemCount <= 0;
+            StatusLabel.Text = "Empty";
         }
     }
 }

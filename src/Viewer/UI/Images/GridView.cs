@@ -47,11 +47,6 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// true iff new items are loading
-        /// </summary>
-        public bool IsLoading { get; set; }
-
-        /// <summary>
         /// Bounds of a selection 
         /// </summary>
         public Rectangle SelectionBounds
@@ -239,13 +234,6 @@ namespace Viewer.UI.Images
 
         private void GridView_Paint(object sender, PaintEventArgs e)
         {
-            StatusLabel.Visible = Items?.Count <= 0;
-            StatusLabel.Text = IsLoading ? "LOADING ..." : "EMPTY";
-            StatusLabel.Location = new Point(
-                ClientSize.Width / 2 - StatusLabel.Width / 2,
-                ClientSize.Height / 2 - StatusLabel.Height / 2
-            );
-
             // update invalid items
             var clipBounds = UnprojectBounds(e.ClipRectangle);
             var cells = Grid.GetCellsInBounds(clipBounds);

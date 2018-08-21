@@ -410,8 +410,11 @@ namespace Viewer.Query
         public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             var firstEvaluation = _first.Evaluate(progress, cancellationToken);
-            var secondEvaluation = _second.Evaluate(progress, cancellationToken);
-            return firstEvaluation.Except(secondEvaluation, EntityPathEqualityComparer.Default);
+            foreach (var item in firstEvaluation)
+            {
+                if (!_second.Match(item))
+                    yield return item;
+            }
         }
 
         public bool Match(IEntity entity)
@@ -433,9 +436,21 @@ namespace Viewer.Query
 
         public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
+            var visited = new HashSet<IEntity>(EntityPathEqualityComparer.Default);
             var firstEvaluation = _first.Evaluate(progress, cancellationToken);
+            foreach (var item in firstEvaluation)
+            {
+                visited.Add(item);
+                if (_second.Match(item))
+                    yield return item;
+            }
+
             var secondEvaluation = _second.Evaluate(progress, cancellationToken);
-            return firstEvaluation.Intersect(secondEvaluation, EntityPathEqualityComparer.Default);
+            foreach (var item in secondEvaluation)
+            {
+                if (!visited.Contains(item) && _first.Match(item))
+                    yield return item;
+            }
         }
 
         public bool Match(IEntity entity)

@@ -149,7 +149,7 @@ namespace ViewerTest.Query
         }
 
         [TestMethod]
-        public void Except_IsCaseInsensitive()
+        public void Except_SameEntities()
         {
             var entitiesA = new[]
             {
@@ -158,14 +158,53 @@ namespace ViewerTest.Query
             };
             var entitiesB = new[]
             {
-                new FileEntity("TesT2"),
-                new FileEntity("teST1"), 
+                entitiesA[1],
+                entitiesA[0], 
             };
             IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA), EntityComparer.Default, "test");
             query = query.Except(new MemoryQuery(entitiesB));
 
             var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
             CollectionAssert.AreEqual(new IEntity[]{}, result);
+        }
+
+        [TestMethod]
+        public void Except_NonEmptyIntersection()
+        {
+            var entitiesA = new[]
+            {
+                new FileEntity("test1"),
+                new FileEntity("test2"),
+            };
+            var entitiesB = new[]
+            {
+                entitiesA[1],
+            };
+            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA), EntityComparer.Default, "test");
+            query = query.Except(new MemoryQuery(entitiesB));
+
+            var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
+            CollectionAssert.AreEqual(new[] { entitiesA[0] }, result);
+        }
+
+        [TestMethod]
+        public void Except_EmptyIntersection()
+        {
+            var entitiesA = new[]
+            {
+                new FileEntity("test1"),
+                new FileEntity("test2"),
+            };
+            var entitiesB = new[]
+            {
+                new FileEntity("test3"),
+                new FileEntity("test4"),
+            };
+            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA), EntityComparer.Default, "test");
+            query = query.Except(new MemoryQuery(entitiesB));
+
+            var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
+            CollectionAssert.AreEqual(new[] { entitiesA[0], entitiesA[1] }, result);
         }
 
         [TestMethod]
@@ -192,7 +231,7 @@ namespace ViewerTest.Query
         }
 
         [TestMethod]
-        public void Intersect_IsCaseInsensitive()
+        public void Intersect_NonEmptyIntersection()
         {
             var entitiesA = new[]
             {
@@ -201,8 +240,8 @@ namespace ViewerTest.Query
             };
             var entitiesB = new[]
             {
-                new FileEntity("TEST3"),
-                new FileEntity("TesT2"),
+                new FileEntity("test3"),
+                entitiesA[1],
             };
             IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA), EntityComparer.Default, "test");
             query = query.Intersect(new MemoryQuery(entitiesB));
@@ -210,6 +249,26 @@ namespace ViewerTest.Query
             var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
             Assert.AreEqual(1, result.Length);
             Assert.AreEqual(entitiesA[1].Path, result[0].Path);
+        }
+
+        [TestMethod]
+        public void Intersect_EmptyIntersection()
+        {
+            var entitiesA = new[]
+            {
+                new FileEntity("test1"),
+                new FileEntity("test2"),
+            };
+            var entitiesB = new[]
+            {
+                new FileEntity("test3"),
+                new FileEntity("test4"),
+            };
+            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA), EntityComparer.Default, "test");
+            query = query.Intersect(new MemoryQuery(entitiesB));
+
+            var result = query.Evaluate(new NullQueryProgress(), CancellationToken.None).ToArray();
+            Assert.AreEqual(0, result.Length);
         }
     }
 }

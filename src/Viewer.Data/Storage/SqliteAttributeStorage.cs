@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
@@ -122,8 +122,8 @@ namespace Viewer.Data.Storage
             // otherwise, we have to update attributes
             using (var transaction = Connection.BeginTransaction())
             {
+                RemoveFile(entity.Path);
                 var id = InsertFile(entity.Path);
-                RemoveAttributes(id);
                 
                 foreach (var attr in entity)
                 {
@@ -141,18 +141,34 @@ namespace Viewer.Data.Storage
             {
                 return;
             }
-            using (var command = new SQLiteCommand(Connection))
+
+            // finding file ID and updating it 
+            using (var transaction = Connection.BeginTransaction(IsolationLevel.Serializable))
             {
-                command.CommandText = @"
-                INSERT OR REPLACE INTO attributes (name, source, type, value, owner)
-                VALUES ('thumbnail', :source, :type, :value, (
-                    SELECT id FROM files WHERE path = :path
-                ))";
-                command.Parameters.Add(new SQLiteParameter("source", AttributeSource.Metadata));
-                command.Parameters.Add(new SQLiteParameter("type", AttributeType.Image));
-                command.Parameters.Add(new SQLiteParameter("value", thumbnail.Value));
-                command.Parameters.Add(new SQLiteParameter("path", entity.Path));
-                command.ExecuteNonQuery();
+                long? id;
+                using (var query = new SQLiteCommand(Connection))
+                {
+                    query.CommandText = "SELECT id FROM files WHERE path = :path";
+                    query.Parameters.Add(new SQLiteParameter("path", entity.Path));
+                    id = query.ExecuteScalar() as long?;
+                    if (id == null)
+                    {
+                        return;
+                    }
+                }
+
+                using (var command = new SQLiteCommand(Connection))
+                {
+                    command.CommandText = @"
+                    INSERT OR REPLACE INTO attributes (name, source, type, value, owner)
+                    VALUES ('thumbnail', :source, :type, :value, :owner)";
+                    command.Parameters.Add(new SQLiteParameter("source", AttributeSource.Metadata));
+                    command.Parameters.Add(new SQLiteParameter("type", AttributeType.Image));
+                    command.Parameters.Add(new SQLiteParameter("value", thumbnail.Value));
+                    command.Parameters.Add(new SQLiteParameter("owner", (long) id));
+                    command.ExecuteNonQuery();
+                }
+                transaction.Commit();
             }
         }
 
@@ -225,30 +241,14 @@ namespace Viewer.Data.Storage
             using (var command = new SQLiteCommand(Connection))
             {
                 command.CommandText = @"
-                INSERT OR IGNORE INTO files (path, lastWriteTime, lastAccessTime) 
+                INSERT INTO files (path, lastWriteTime, lastAccessTime) 
                 VALUES (:path, :lastWriteTime, datetime('now'))";
                 command.Parameters.Add(new SQLiteParameter(":path", path));
                 command.Parameters.Add(new SQLiteParameter(":lastWriteTime", lastWriteTime));
                 command.ExecuteNonQuery();
             }
 
-            // get the file id
-            using (var query = new SQLiteCommand(Connection))
-            {
-                query.CommandText = "SELECT id FROM files WHERE path = :path";
-                query.Parameters.Add(new SQLiteParameter(":path", path));
-                return (long) query.ExecuteScalar();
-            }
-        }
-
-        private void RemoveAttributes(long fileId)
-        {
-            using (var query = new SQLiteCommand(Connection))
-            {
-                query.CommandText = @"DELETE FROM attributes WHERE owner = :owner";
-                query.Parameters.Add(new SQLiteParameter(":owner", fileId));
-                query.ExecuteNonQuery();
-            }
+            return Connection.LastInsertRowId;
         }
         
         private void RemoveFile(string path)

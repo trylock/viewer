@@ -70,7 +70,7 @@ namespace Viewer.Data.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source={0};Version=3;foreign keys=true;synchronous=OFF.
+        ///   Looks up a localized string similar to Data Source={0};Version=3;foreign keys=true.
         /// </summary>
         internal static string SqliteConnectionString {
             get {

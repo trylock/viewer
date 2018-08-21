@@ -45,9 +45,9 @@ namespace Viewer.Query.Properties {
     <Arguments>/select,""{0}""</Arguments>
   </ExternalApplication>
 </ArrayOfExternalApplication>")]
-        public global::Viewer.Core.ExternalApplicationList ExternalApplications {
+        public Viewer.Core.ExternalApplication[] ExternalApplications {
             get {
-                return ((global::Viewer.Core.ExternalApplicationList)(this["ExternalApplications"]));
+                return ((Viewer.Core.ExternalApplication[])(this["ExternalApplications"]));
             }
             set {
                 this["ExternalApplications"] = value;

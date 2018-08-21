@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Bundle Name="ViewerInstaller" Version="1.0.0.0" Manufacturer="trylock" UpgradeCode="0c1213a8-9b76-40f1-a2af-ea0829d904a5">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+    <Chain>
+      <PackageGroupRef Id="NetFx46Web"/>
+      <MsiPackage SourceFile="$(var.ViewerSetup.TargetPath)" />
+    </Chain>
+  </Bundle>
+</Wix>

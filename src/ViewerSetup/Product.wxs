@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="Viewer" Language="1033" Version="1.0.0.0" Manufacturer="Drahomir Hanak" UpgradeCode="0babd362-85f4-45f4-9fa7-234b1b1d6ffa">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Viewer is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="Viewer" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Viewer" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponent" Guid="03772981-498b-498d-8592-6174d9620503">
+        <File Source="$(var.Viewer.TargetDir)/Antlr4.Runtime.Standard.dll" />
+        <File Source="$(var.Viewer.TargetDir)/MetadataExtractor.dll" />
+        <File Source="$(var.Viewer.TargetDir)/NLog.config" />
+        <File Source="$(var.Viewer.TargetDir)/NLog.dll" />
+        <File Source="$(var.Viewer.TargetDir)/ScintillaNET.dll" />
+        <File Source="$(var.Viewer.TargetDir)/SkiaSharp.Views.Desktop.dll" />
+        <File Source="$(var.Viewer.TargetDir)/SkiaSharp.Views.Gtk.dll" />
+        <File Source="$(var.Viewer.TargetDir)/SkiaSharp.Views.WPF.dll" />
+        <File Source="$(var.Viewer.TargetDir)/SkiaSharp.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Collections.Immutable.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Data.Common.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Data.SQLite.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Data.SQLite.dll.config" />
+        <File Source="$(var.Viewer.TargetDir)/System.Diagnostics.StackTrace.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Diagnostics.Tracing.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Globalization.Extensions.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.IO.Compression.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Net.Http.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Net.Sockets.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Runtime.Serialization.Primitives.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Security.Cryptography.Algorithms.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Security.SecureString.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Threading.Overlapped.dll" />
+        <File Source="$(var.Viewer.TargetDir)/System.Xml.XPath.XDocument.dll" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.Core.dll" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.Core.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.Data.dll" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.Data.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.IO.dll" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.IO.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.Query.dll" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.Query.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.QueryRuntime.dll" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.QueryRuntime.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.exe" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.exe.config" />
+        <File Source="$(var.Viewer.TargetDir)/Viewer.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" />
+        <File Source="$(var.Viewer.TargetDir)/WeifenLuo.WinFormsUI.Docking.dll" />
+        <File Source="$(var.Viewer.TargetDir)/XmpCore.dll" />
+        <File Source="$(var.Viewer.TargetDir)/atk-sharp.dll" />
+        <File Source="$(var.Viewer.TargetDir)/atk-sharp.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/gdk-sharp.dll" />
+        <File Source="$(var.Viewer.TargetDir)/gdk-sharp.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/glib-sharp.dll" />
+        <File Source="$(var.Viewer.TargetDir)/glib-sharp.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/gtk-sharp.dll" />
+        <File Source="$(var.Viewer.TargetDir)/libSkiaSharp.dll" />
+        <File Source="$(var.Viewer.TargetDir)/libSkiaSharp.dylib" />
+        <File Source="$(var.Viewer.TargetDir)/pango-sharp.dll" />
+        <File Source="$(var.Viewer.TargetDir)/pango-sharp.pdb" />
+        <File Source="$(var.Viewer.TargetDir)/x86/SQLite.Interop.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

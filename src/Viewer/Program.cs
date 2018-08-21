@@ -10,6 +10,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
+using NLog.Config;
+using NLog.Targets;
 using Viewer.Core;
 using Viewer.Data;
 using Viewer.Properties;
@@ -21,6 +23,20 @@ namespace Viewer
     internal static class Program
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        static Program()
+        {
+            var config = new LoggingConfiguration();
+            var logFile = Environment.ExpandEnvironmentVariables(Settings.Default.LogFilePath);
+            var file = new FileTarget("file")
+            {
+                FileName = logFile,
+                Layout = "${longdate}|${level:uppercase=true}|${logger}|${threadid}|${message}|${exception:format=tostring}"
+            };
+
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, file);
+            LogManager.Configuration = config;
+        }
 
         /// <summary>
         /// The main entry point for the application.

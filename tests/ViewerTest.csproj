@@ -142,6 +142,7 @@
     <Compile Include="UI\Attributes\AttributeManagerTest.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
     <Compile Include="UI\Images\LazyImageTest.cs" />
+    <Compile Include="UI\Images\QueryEvaluatorTest.cs" />
     <Compile Include="UI\Images\RectangleSelectionTest.cs" />
     <Compile Include="Images\ThumbnailGeneratorTest.cs" />
     <Compile Include="UI\QueryEventsTest.cs" />

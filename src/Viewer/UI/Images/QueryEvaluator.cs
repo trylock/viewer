@@ -211,7 +211,7 @@ namespace Viewer.UI.Images
                 _queryErrorListener.ReportError(0, 0, e.Message);
             }
         }
-
+        
         /// <summary>
         /// Update current collection. It takes all changes made so far and applies them to
         /// the local collection of <see cref="EntityView"/>s
@@ -252,7 +252,15 @@ namespace Viewer.UI.Images
                 var path = PathUtils.NormalizePath(req.FullPath);
                 deleted.Add(path);
             }
-
+            
+            // dispose removed entities 
+            foreach (var view in _views)
+            {
+                if (deleted.Contains(view.FullPath))
+                {
+                    view.Dispose();
+                }
+            }
             _views.RemoveAll(item => deleted.Contains(item.FullPath));
 
             return _views;

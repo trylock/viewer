@@ -16,7 +16,8 @@ namespace Viewer.Data.SQLite
     {
         public override int Compare(string param1, string param2)
         {
-            return StringComparer.CurrentCultureIgnoreCase.Compare(param1, param2);
+            var result = StringComparer.CurrentCultureIgnoreCase.Compare(param1, param2);
+            return result;
         }
     }
 }

@@ -14,7 +14,6 @@ using Viewer.Core.UI;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.Query;
-using Viewer.Query.Properties;
 using Viewer.UI.Explorer;
 using WeifenLuo.WinFormsUI.Docking;
 

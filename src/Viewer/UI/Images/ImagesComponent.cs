@@ -12,7 +12,6 @@ using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Properties;
 using Viewer.Query;
-using Viewer.Query.Properties;
 using Viewer.UI.QueryEditor;
 using WeifenLuo.WinFormsUI.Docking;
 

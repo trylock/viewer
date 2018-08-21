@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
@@ -179,12 +179,22 @@ namespace Viewer.Data.Storage
             }
         }
 
-        public void Clean(TimeSpan maxLifespan)
+        public void Clean(TimeSpan lastAccessTimeThreshold, int fileCountThreashold)
         {
             using (var query = new SQLiteCommand(Connection))
             {
-                query.CommandText = @"DELETE FROM files WHERE lastAccessTime < :threshold";
-                query.Parameters.Add(new SQLiteParameter(":threshold", DateTime.Now - maxLifespan));
+                query.CommandText = @"
+                DELETE FROM files 
+                WHERE  
+                    lastAccessTime < :accessTimeThreshold OR 
+                    id NOT IN (
+                        SELECT f.id 
+                        FROM files AS f
+                        ORDER BY f.lastAccessTime DESC
+                        LIMIT :countThreshold
+                    )";
+                query.Parameters.Add(new SQLiteParameter(":accessTimeThreshold", DateTime.Now - lastAccessTimeThreshold));
+                query.Parameters.Add(new SQLiteParameter(":countThreshold", fileCountThreashold));
                 query.ExecuteNonQuery();
             }
         }

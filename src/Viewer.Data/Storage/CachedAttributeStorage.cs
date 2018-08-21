@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Viewer.Data.Properties;
 
 namespace Viewer.Data.Storage
 {
@@ -32,10 +33,10 @@ namespace Viewer.Data.Storage
             }
         }
 
+        private readonly IStorageConfiguration _configuration;
         private readonly IAttributeStorage _persistentStorage;
         private readonly SqliteAttributeStorage _cacheStorage;
         private readonly AutoResetEvent _notifyWrite = new AutoResetEvent(false);
-        private readonly TimeSpan _cacheLifespan = new TimeSpan(1, 0, 0, 0);
         private int _writeCount = 0;
 
         /// <summary>
@@ -57,8 +58,10 @@ namespace Viewer.Data.Storage
         [ImportingConstructor]
         public CachedAttributeStorage(
             [Import(typeof(FileSystemAttributeStorage))] IAttributeStorage persistentStorage, 
-            SqliteAttributeStorage cacheStorage)
+            SqliteAttributeStorage cacheStorage,
+            IStorageConfiguration configuration)
         {
+            _configuration = configuration;
             _persistentStorage = persistentStorage;
             _cacheStorage = cacheStorage;
 
@@ -180,7 +183,7 @@ namespace Viewer.Data.Storage
                 }
 
                 // release least recently used photos from the cache
-                _cacheStorage.Clean(_cacheLifespan);
+                _cacheStorage.Clean(_configuration.CacheLifespan, _configuration.CacheMaxFileCount);
             }
         }
 

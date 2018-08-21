@@ -80,9 +80,14 @@ namespace Viewer.Data.Storage
         void Touch(IEntity entity);
 
         /// <summary>
-        /// Remove all entities with access time older than (NOW - <paramref name="threshold"/>)
+        /// Remove all entities with access time older than (NOW - <paramref name="lastAccessTimeThreshold"/>)
         /// </summary>
-        /// <param name="threshold"></param>
-        void Clean(TimeSpan threshold);
+        /// <param name="lastAccessTimeThreshold">
+        ///     Entities which have not been accessed for this period of time will be deleted.
+        /// </param>
+        /// <param name="fileCountThreshold">
+        ///     The files in the cache are sorted by the last access time. Only some records will be kept.
+        /// </param>
+        void Clean(TimeSpan lastAccessTimeThreshold, int fileCountThreshold);
     }
 }

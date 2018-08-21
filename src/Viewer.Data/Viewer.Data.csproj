@@ -114,6 +114,7 @@
     <Compile Include="Storage\CachedAttributeStorage.cs" />
     <Compile Include="Storage\FileSystemAttributeStorage.cs" />
     <Compile Include="Storage\IAttributeStorage.cs" />
+    <Compile Include="Storage\IStorageConfiguration.cs" />
     <Compile Include="Storage\MemoryAttributeStorage.cs" />
     <Compile Include="Storage\SqliteAttributeStorage.cs" />
     <Compile Include="Value.cs" />

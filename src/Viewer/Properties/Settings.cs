@@ -53,5 +53,13 @@ namespace Viewer.Properties
             get => (int) this["CacheMaxFileCount"];
             set => this["CacheMaxFileCount"] = value;
         }
+
+        [UserScopedSetting]
+        [DefaultSettingValue("%userprofile%/Documents/Viewer/Viewer.log")]
+        public string LogFilePath
+        {
+            get => (string) this["LogFilePath"];
+            set => this["LogFilePath"] = value;
+        }
     }
 }

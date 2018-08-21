@@ -179,11 +179,12 @@ namespace Viewer.Data.Storage
                                 throw new ArgumentOutOfRangeException(nameof(req.Flags));
                         }
                     }
+
+                    // release least recently used photos from the cache
+                    _cacheStorage.Clean(_configuration.CacheLifespan, _configuration.CacheMaxFileCount);
+
                     transaction.Commit();
                 }
-
-                // release least recently used photos from the cache
-                _cacheStorage.Clean(_configuration.CacheLifespan, _configuration.CacheMaxFileCount);
             }
         }
 

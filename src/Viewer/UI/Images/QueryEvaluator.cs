@@ -9,6 +9,7 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 using Viewer.Core.Collections;
 using Viewer.Data;
 using Viewer.Data.Formats;
@@ -19,15 +20,19 @@ namespace Viewer.UI.Images
 {
     /// <inheritdoc />
     /// <summary>
-    /// Query evaluator evaluates query and tries to keep it updated. It will watch changes in
-    /// entity changes in the file system and update the result accordingly.
+    /// Query evaluator evaluates query and tries to keep it updated. It will watch entity changes
+    /// in the file system and update the result accordingly.
     /// </summary>
     /// <remarks>
     /// This object is responsible for collection returned from the <see cref="Update"/> method.
-    /// <see cref="Dispose"/>ing this object will dispose items in this collection.
+    /// <see cref="Dispose"/>ing this object will dispose items in this collection. The caller
+    /// must not use the collection after calling <see cref="Dispose"/> except for the
+    /// <see cref="EntityView.Data"/> property of items in the collection.
     /// </remarks>
     public class QueryEvaluator : IDisposable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // dependencies
         private readonly IEntityManager _entities;
         private readonly IFileWatcher _fileWatcher;
@@ -112,29 +117,35 @@ namespace Viewer.UI.Images
         {
             if (!IsEntityEvent(e))
                 return; // skip this event
-
+            
             IEntity entity = null;
             try
             {
                 entity = _entities.GetEntity(e.FullPath);
             } // silently ignore load exceptions
-            catch (InvalidDataFormatException)
+            catch (InvalidDataFormatException ex)
             {
+                Logger.Warn(ex);
             }
-            catch (NotSupportedException)
+            catch (NotSupportedException ex)
             {
+                Logger.Debug(ex);
             }
-            catch (PathTooLongException)
+            catch (PathTooLongException ex)
             {
+                Logger.Debug(ex);
             }
-            catch (SecurityException)
+            catch (SecurityException ex)
             {
+                Logger.Debug(ex);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
+                Logger.Debug(ex);
             }
-            catch (ArgumentException) // invalid path
+            catch (ArgumentException ex) // invalid path
             {
+                Logger.Warn(ex);
             }
 
             if (entity != null && Query.Match(entity))

@@ -134,31 +134,15 @@ namespace Viewer.Data
         /// Path to the file where the attributes are (or will be) stored
         /// </summary>
         public string Path { get; private set; }
-
-        /// <summary>
-        /// Last time these attributes were written to a file
-        /// </summary>
-        public DateTime LastWriteTime { get; }
-
-        /// <summary>
-        /// Last time these attributes were accessed (read from a file)
-        /// </summary>
-        public DateTime LastAccessTime { get; }
         
         /// <summary>
         /// Number or attributes in the collection
         /// </summary>
         public int Count => _attrs.Count;
-
-        public FileEntity(string path, DateTime lastWriteTime, DateTime lastAccessTime)
+        
+        public FileEntity(string path)
         {
             Path = PathUtils.NormalizePath(path);
-            LastWriteTime = lastWriteTime;
-            LastAccessTime = lastAccessTime;
-        }
-
-        public FileEntity(string path) : this(path, DateTime.Now, DateTime.Now)
-        {
         }
         
         public Attribute GetAttribute(string name)
@@ -214,7 +198,7 @@ namespace Viewer.Data
 
         public IEntity Clone()
         {
-            var clone = new FileEntity(Path, LastWriteTime, LastAccessTime);
+            var clone = new FileEntity(Path);
             lock (_attrs)
             {
                 foreach (var attr in _attrs)

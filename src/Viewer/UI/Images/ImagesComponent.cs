@@ -79,26 +79,7 @@ namespace Viewer.UI.Images
             _selection.Changed += SelectionOnChanged;
             _state.QueryExecuted += StateOnQueryExecuted;
         }
-
-        /// <summary>
-        /// Execute current query again.
-        /// </summary>
-        private void RefreshCurrentQuery()
-        {
-            if (_state.Current != null)
-            {
-                _state.ExecuteQuery(_state.Current);
-            }
-        }
-
-        /// <summary>
-        /// Show code of the current query in query editor.
-        /// </summary>
-        private void ShowCurrentQueryCode()
-        {
-            _editor.OpenNew(_state.Current?.Text, DockState.Document);
-        }
-
+        
         private void ThumbnailSizeOnValueChanged(object sender, EventArgs e)
         {
             _images?.Value.SetThumbnailSize(_thumbnailSize.Value);

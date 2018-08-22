@@ -34,10 +34,6 @@ namespace Viewer.UI.Presentation
             this.NextButton = new System.Windows.Forms.Button();
             this.PrevButton = new System.Windows.Forms.Button();
             this.ControlPanel = new System.Windows.Forms.Panel();
-            this.ToggleFullscreenButton = new Viewer.UI.Forms.IconButton();
-            this.ZoomInButton = new Viewer.UI.Forms.IconButton();
-            this.ZoomOutButton = new Viewer.UI.Forms.IconButton();
-            this.PlayPauseButton = new Viewer.UI.Forms.IconButton();
             this.MaxDelayLabel = new System.Windows.Forms.Label();
             this.MinDelayLabel = new System.Windows.Forms.Label();
             this.SpeedTrackBar = new System.Windows.Forms.TrackBar();
@@ -46,9 +42,13 @@ namespace Viewer.UI.Presentation
             this.ZoomOutToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ZoomInToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ToggleFullscreenToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.Preview = new Viewer.UI.Presentation.PreviewControl();
             this.NextImageToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.PrevImageToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.ToggleFullscreenButton = new Viewer.UI.Forms.IconButton();
+            this.ZoomInButton = new Viewer.UI.Forms.IconButton();
+            this.ZoomOutButton = new Viewer.UI.Forms.IconButton();
+            this.PlayPauseButton = new Viewer.UI.Forms.IconButton();
+            this.Preview = new Viewer.UI.Presentation.PreviewControl();
             this.ControlPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SpeedTrackBar)).BeginInit();
             this.SuspendLayout();
@@ -114,61 +114,6 @@ namespace Viewer.UI.Presentation
             this.ControlPanel.Size = new System.Drawing.Size(229, 41);
             this.ControlPanel.TabIndex = 4;
             // 
-            // ToggleFullscreenButton
-            // 
-            this.ToggleFullscreenButton.Icon = global::Viewer.Properties.Resources.Fullscreen;
-            this.ToggleFullscreenButton.IconColor = System.Drawing.Color.Black;
-            this.ToggleFullscreenButton.IconDisabledColor = System.Drawing.Color.White;
-            this.ToggleFullscreenButton.IconSize = new System.Drawing.Size(16, 16);
-            this.ToggleFullscreenButton.Location = new System.Drawing.Point(200, 0);
-            this.ToggleFullscreenButton.Name = "ToggleFullscreenButton";
-            this.ToggleFullscreenButton.Size = new System.Drawing.Size(24, 43);
-            this.ToggleFullscreenButton.TabIndex = 7;
-            this.ToggleFullscreenButton.Text = "iconButton1";
-            this.ToggleFullscreenToolTip.SetToolTip(this.ToggleFullscreenButton, "F5, Double Click");
-            this.ToggleFullscreenButton.Click += new System.EventHandler(this.ToggleFullscreenButton_Click);
-            // 
-            // ZoomInButton
-            // 
-            this.ZoomInButton.Icon = global::Viewer.Properties.Resources.ZoomIn;
-            this.ZoomInButton.IconColor = System.Drawing.Color.Black;
-            this.ZoomInButton.IconDisabledColor = System.Drawing.Color.White;
-            this.ZoomInButton.IconSize = new System.Drawing.Size(16, 16);
-            this.ZoomInButton.Location = new System.Drawing.Point(176, 0);
-            this.ZoomInButton.Name = "ZoomInButton";
-            this.ZoomInButton.Size = new System.Drawing.Size(24, 43);
-            this.ZoomInButton.TabIndex = 6;
-            this.ZoomInButton.Text = "iconButton1";
-            this.ZoomInToolTip.SetToolTip(this.ZoomInButton, "Ctrl + Mouse Wheel Up");
-            this.ZoomInButton.Click += new System.EventHandler(this.ZoomInButton_Click);
-            // 
-            // ZoomOutButton
-            // 
-            this.ZoomOutButton.Icon = global::Viewer.Properties.Resources.ZoomOut;
-            this.ZoomOutButton.IconColor = System.Drawing.Color.Black;
-            this.ZoomOutButton.IconDisabledColor = System.Drawing.Color.White;
-            this.ZoomOutButton.IconSize = new System.Drawing.Size(16, 16);
-            this.ZoomOutButton.Location = new System.Drawing.Point(152, 0);
-            this.ZoomOutButton.Name = "ZoomOutButton";
-            this.ZoomOutButton.Size = new System.Drawing.Size(24, 43);
-            this.ZoomOutButton.TabIndex = 5;
-            this.ZoomOutButton.Text = "iconButton1";
-            this.ZoomOutToolTip.SetToolTip(this.ZoomOutButton, "Ctrl + Mouse Wheel Down");
-            this.ZoomOutButton.Click += new System.EventHandler(this.ZoomOutButton_Click);
-            // 
-            // PlayPauseButton
-            // 
-            this.PlayPauseButton.Icon = global::Viewer.Properties.Resources.Play;
-            this.PlayPauseButton.IconColor = System.Drawing.Color.Black;
-            this.PlayPauseButton.IconDisabledColor = System.Drawing.Color.White;
-            this.PlayPauseButton.IconSize = new System.Drawing.Size(16, 16);
-            this.PlayPauseButton.Location = new System.Drawing.Point(129, 0);
-            this.PlayPauseButton.Name = "PlayPauseButton";
-            this.PlayPauseButton.Size = new System.Drawing.Size(24, 43);
-            this.PlayPauseButton.TabIndex = 4;
-            this.TogglePlayToolTip.SetToolTip(this.PlayPauseButton, "Space");
-            this.PlayPauseButton.Click += new System.EventHandler(this.PlayPauseButton_Click);
-            // 
             // MaxDelayLabel
             // 
             this.MaxDelayLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -229,6 +174,69 @@ namespace Viewer.UI.Presentation
             // 
             this.ToggleFullscreenToolTip.ToolTipTitle = "Toggle Fullscreen";
             // 
+            // NextImageToolTip
+            // 
+            this.NextImageToolTip.ToolTipTitle = "Next";
+            // 
+            // PrevImageToolTip
+            // 
+            this.PrevImageToolTip.ToolTipTitle = "Prev";
+            // 
+            // ToggleFullscreenButton
+            // 
+            this.ToggleFullscreenButton.Icon = global::Viewer.Properties.Resources.Fullscreen;
+            this.ToggleFullscreenButton.IconColor = System.Drawing.Color.Black;
+            this.ToggleFullscreenButton.IconDisabledColor = System.Drawing.Color.White;
+            this.ToggleFullscreenButton.IconSize = new System.Drawing.Size(16, 16);
+            this.ToggleFullscreenButton.Location = new System.Drawing.Point(200, 0);
+            this.ToggleFullscreenButton.Name = "ToggleFullscreenButton";
+            this.ToggleFullscreenButton.Size = new System.Drawing.Size(24, 43);
+            this.ToggleFullscreenButton.TabIndex = 7;
+            this.ToggleFullscreenButton.Text = "iconButton1";
+            this.ToggleFullscreenToolTip.SetToolTip(this.ToggleFullscreenButton, "F5, Double Click");
+            this.ToggleFullscreenButton.Click += new System.EventHandler(this.ToggleFullscreenButton_Click);
+            // 
+            // ZoomInButton
+            // 
+            this.ZoomInButton.Icon = global::Viewer.Properties.Resources.ZoomIn;
+            this.ZoomInButton.IconColor = System.Drawing.Color.Black;
+            this.ZoomInButton.IconDisabledColor = System.Drawing.Color.White;
+            this.ZoomInButton.IconSize = new System.Drawing.Size(16, 16);
+            this.ZoomInButton.Location = new System.Drawing.Point(176, 0);
+            this.ZoomInButton.Name = "ZoomInButton";
+            this.ZoomInButton.Size = new System.Drawing.Size(24, 43);
+            this.ZoomInButton.TabIndex = 6;
+            this.ZoomInButton.Text = "iconButton1";
+            this.ZoomInToolTip.SetToolTip(this.ZoomInButton, "Ctrl + Mouse Wheel Up");
+            this.ZoomInButton.Click += new System.EventHandler(this.ZoomInButton_Click);
+            // 
+            // ZoomOutButton
+            // 
+            this.ZoomOutButton.Icon = global::Viewer.Properties.Resources.ZoomOut;
+            this.ZoomOutButton.IconColor = System.Drawing.Color.Black;
+            this.ZoomOutButton.IconDisabledColor = System.Drawing.Color.White;
+            this.ZoomOutButton.IconSize = new System.Drawing.Size(16, 16);
+            this.ZoomOutButton.Location = new System.Drawing.Point(152, 0);
+            this.ZoomOutButton.Name = "ZoomOutButton";
+            this.ZoomOutButton.Size = new System.Drawing.Size(24, 43);
+            this.ZoomOutButton.TabIndex = 5;
+            this.ZoomOutButton.Text = "iconButton1";
+            this.ZoomOutToolTip.SetToolTip(this.ZoomOutButton, "Ctrl + Mouse Wheel Down");
+            this.ZoomOutButton.Click += new System.EventHandler(this.ZoomOutButton_Click);
+            // 
+            // PlayPauseButton
+            // 
+            this.PlayPauseButton.Icon = global::Viewer.Properties.Resources.Play;
+            this.PlayPauseButton.IconColor = System.Drawing.Color.Black;
+            this.PlayPauseButton.IconDisabledColor = System.Drawing.Color.White;
+            this.PlayPauseButton.IconSize = new System.Drawing.Size(16, 16);
+            this.PlayPauseButton.Location = new System.Drawing.Point(129, 0);
+            this.PlayPauseButton.Name = "PlayPauseButton";
+            this.PlayPauseButton.Size = new System.Drawing.Size(24, 43);
+            this.PlayPauseButton.TabIndex = 4;
+            this.TogglePlayToolTip.SetToolTip(this.PlayPauseButton, "Space");
+            this.PlayPauseButton.Click += new System.EventHandler(this.PlayPauseButton_Click);
+            // 
             // Preview
             // 
             this.Preview.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -244,14 +252,6 @@ namespace Viewer.UI.Presentation
             this.Preview.MouseLeave += new System.EventHandler(this.HideControlsHandler);
             this.Preview.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Preview_MouseMove);
             this.Preview.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Preview_MouseUp);
-            // 
-            // NextImageToolTip
-            // 
-            this.NextImageToolTip.ToolTipTitle = "Next";
-            // 
-            // PrevImageToolTip
-            // 
-            this.PrevImageToolTip.ToolTipTitle = "Prev";
             // 
             // PresentationControl
             // 

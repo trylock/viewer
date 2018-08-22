@@ -42,7 +42,7 @@ namespace Viewer.UI.Images
         // state
         private readonly ConcurrentSortedSet<EntityView> _addRequests;
         private readonly ConcurrentQueue<RenamedEventArgs> _moveRequests;
-        private readonly ConcurrentQueue<FileSystemEventArgs> _deleteRequests;
+        private readonly ConcurrentQueue<string> _deleteRequests;
         private SortedList<EntityView> _views;
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Viewer.UI.Images
             
             var entityViewComparer = new EntityViewComparer(Query.Comparer);
             _moveRequests = new ConcurrentQueue<RenamedEventArgs>();
-            _deleteRequests = new ConcurrentQueue<FileSystemEventArgs>();
+            _deleteRequests = new ConcurrentQueue<string>();
             _addRequests = new ConcurrentSortedSet<EntityView>(entityViewComparer);
             _views = new SortedList<EntityView>(entityViewComparer);
         }
@@ -101,7 +101,7 @@ namespace Viewer.UI.Images
         {
             if (!IsEntityEvent(e))
                 return; // skip this event
-            _deleteRequests.Enqueue(e);
+            Remove(e.FullPath);
         }
 
         private void FileWatcherOnRenamed(object sender, RenamedEventArgs e)
@@ -211,6 +211,16 @@ namespace Viewer.UI.Images
                 _queryErrorListener.ReportError(0, 0, e.Message);
             }
         }
+
+        /// <summary>
+        /// Remove item with path <paramref name="path"/> on next <see cref="Update"/>.
+        /// This method is thread-safe. 
+        /// </summary>
+        /// <param name="path"></param>
+        public void Remove(string path)
+        {
+            _deleteRequests.Enqueue(PathUtils.NormalizePath(path));
+        }
         
         /// <summary>
         /// Update current collection. It takes all changes made so far and applies them to
@@ -247,9 +257,8 @@ namespace Viewer.UI.Images
 
             // process all delete requests
             var deleted = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
-            while (_deleteRequests.TryDequeue(out var req))
+            while (_deleteRequests.TryDequeue(out var path))
             {
-                var path = PathUtils.NormalizePath(req.FullPath);
                 deleted.Add(path);
             }
             

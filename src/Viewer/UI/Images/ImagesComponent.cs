@@ -74,9 +74,10 @@ namespace Viewer.UI.Images
             _selectionCountLabel = app.CreateStatusBarItem("", null, ToolStripItemAlignment.Right);
             _itemCountLabel = app.CreateStatusBarItem("", null, ToolStripItemAlignment.Right);
             _thumbnailSize = app.CreateStatusBarSlider("", Resources.ThumbnailSize, ToolStripItemAlignment.Right);
-            _thumbnailSize.ValueChanged += ThumbnailSizeOnValueChanged;
+            _thumbnailSize.Value = Settings.Default.ThumbnailSize;
 
             // register event handlers
+            _thumbnailSize.ValueChanged += ThumbnailSizeOnValueChanged;
             _selection.Changed += SelectionOnChanged;
             _state.QueryExecuted += StateOnQueryExecuted;
         }
@@ -84,6 +85,7 @@ namespace Viewer.UI.Images
         private void ThumbnailSizeOnValueChanged(object sender, EventArgs e)
         {
             _images?.Value.SetThumbnailSize(_thumbnailSize.Value);
+            Settings.Default.ThumbnailSize = _thumbnailSize.Value;
         }
 
         private IDockContent Deserialize(string persistString)

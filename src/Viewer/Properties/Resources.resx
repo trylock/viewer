@@ -364,4 +364,10 @@ Do you want to try again?</value>
     <value>{0} is not a valid path.</value>
     <comment>{0} is the invalid path</comment>
   </data>
+  <data name="Loading_Label" xml:space="preserve">
+    <value>Loading ...</value>
+  </data>
+  <data name="Empty_Label" xml:space="preserve">
+    <value>Empty</value>
+  </data>
 </root>

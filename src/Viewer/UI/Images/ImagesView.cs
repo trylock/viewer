@@ -522,16 +522,24 @@ namespace Viewer.UI.Images
             return base.GetPersistString();
         }
 
+        private int _loadingCount = 0;
+
         public override void BeginLoading()
         {
-            StatusLabel.Text = "Loading ...";
+            StatusLabel.Text = Resources.Loading_Label;
+            ++_loadingCount;
         }
 
         public override void EndLoading()
         {
+            --_loadingCount;
+            if (_loadingCount > 0)
+            {
+                return;
+            }
             var itemCount = Items?.Count ?? 0;
             StatusLabel.Visible = itemCount <= 0;
-            StatusLabel.Text = "Empty";
+            StatusLabel.Text = Resources.Empty_Label;
         }
     }
 }

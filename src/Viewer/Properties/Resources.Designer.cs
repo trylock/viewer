@@ -220,6 +220,15 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty.
+        /// </summary>
+        internal static string Empty_Label {
+            get {
+                return ResourceManager.GetString("Empty_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ErrorIcon {
@@ -475,6 +484,15 @@ namespace Viewer.Properties {
             get {
                 object obj = ResourceManager.GetObject("LeftArrowIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading ....
+        /// </summary>
+        internal static string Loading_Label {
+            get {
+                return ResourceManager.GetString("Loading_Label", resourceCulture);
             }
         }
         

@@ -70,5 +70,13 @@ namespace Viewer.Properties
             get => (Size) this["FormSize"];
             set => this["FormSize"] = value;
         }
+
+        [UserScopedSetting]
+        [DefaultSettingValue("false")]
+        public bool FormIsMaximized
+        {
+            get => (bool) this["FormIsMaximized"];
+            set => this["FormIsMaximized"] = value;
+        }
     }
 }

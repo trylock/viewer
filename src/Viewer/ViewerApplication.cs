@@ -114,6 +114,8 @@ namespace Viewer
 
             // apply application settings
             _appForm.Size = Settings.Default.FormSize;
+            _appForm.WindowState =
+                Settings.Default.FormIsMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
         }
 
         private void SaveLayout(string layoutFilePath)
@@ -125,6 +127,7 @@ namespace Viewer
 
             // save settings
             Settings.Default.FormSize = _appForm.Size;
+            Settings.Default.FormIsMaximized = _appForm.WindowState == FormWindowState.Maximized;
             Settings.Default.Save();
         }
 

@@ -10,9 +10,9 @@ using Viewer.Data.Storage;
 
 namespace Viewer.Properties
 {
-    [Export(typeof(IStorageConfiguration))]
     internal sealed class Settings : ApplicationSettingsBase, IStorageConfiguration
     {
+        [Export(typeof(IStorageConfiguration))]
         public static Settings Default { get; } = (Settings)Synchronized(new Settings());
 
         [UserScopedSetting]

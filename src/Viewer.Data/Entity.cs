@@ -126,11 +126,8 @@ namespace Viewer.Data
     {
         private readonly Dictionary<string, Attribute> _attrs = new Dictionary<string, Attribute>();
 
-        /// <summary>
-        /// Path to the file where the attributes are (or will be) stored
-        /// </summary>
         public string Path { get; private set; }
-        
+
         public FileEntity(string path)
         {
             Path = PathUtils.NormalizePath(path);

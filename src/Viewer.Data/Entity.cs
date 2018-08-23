@@ -13,17 +13,16 @@ using Viewer.IO;
 
 namespace Viewer.Data
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Collection of attributes. It represents a file on a disk.
+    /// </summary>
     public interface IEntity : IEnumerable<Attribute>
     {
         /// <summary>
         /// Path to the entity. It is unified using the <see cref="PathUtils.NormalizePath"/> function.
         /// </summary>
         string Path { get; }
-
-        /// <summary>
-        /// Number of attributes
-        /// </summary>
-        int Count { get; }
 
         /// <summary>
         /// Find attribute in the collection.
@@ -47,7 +46,7 @@ namespace Viewer.Data
         /// It is thread-safe.
         /// </summary>
         /// <param name="attr">Attribute to set</param>
-        /// <returns>This Entity</returns>
+        /// <returns>Modified entity</returns>
         IEntity SetAttribute(Attribute attr);
 
         /// <summary>
@@ -56,28 +55,26 @@ namespace Viewer.Data
         /// It is thread-safe.
         /// </summary>
         /// <param name="name">Name of an attribute to remove.</param>
-        /// <returns>This Entity</returns>
+        /// <returns>Modified entity</returns>
         IEntity RemoveAttribute(string name);
 
         /// <summary>
         /// Change path of the entity
         /// </summary>
         /// <param name="path">New path</param>
-        /// <returns>This Entity</returns>
+        /// <returns>Modified entity</returns>
         IEntity ChangePath(string path);
 
         /// <summary>
-        /// Copy this entity
+        /// Create copy of this entity.
         /// </summary>
-        /// <returns>New copied entity</returns>
+        /// <returns>Cloned entity</returns>
         IEntity Clone();
     }
 
     public sealed class DirectoryEntity : IEntity
     {
         public string Path { get; private set; }
-
-        public int Count => 0;
 
         public DirectoryEntity(string path)
         {
@@ -106,8 +103,7 @@ namespace Viewer.Data
 
         public IEntity ChangePath(string path)
         {
-            Path = PathUtils.NormalizePath(path);
-            return this;
+            return new DirectoryEntity(Path);
         }
 
         public IEntity Clone()
@@ -135,11 +131,6 @@ namespace Viewer.Data
         /// </summary>
         public string Path { get; private set; }
         
-        /// <summary>
-        /// Number or attributes in the collection
-        /// </summary>
-        public int Count => _attrs.Count;
-        
         public FileEntity(string path)
         {
             Path = PathUtils.NormalizePath(path);
@@ -149,12 +140,7 @@ namespace Viewer.Data
         {
             lock (_attrs)
             {
-                if (!_attrs.TryGetValue(name, out Attribute attr))
-                {
-                    return null;
-                }
-
-                return attr;
+                return _attrs.TryGetValue(name, out var entity) ? entity : null;
             }
         }
 
@@ -165,18 +151,15 @@ namespace Viewer.Data
         
         public IEntity SetAttribute(Attribute attr)
         {
-            lock (_attrs)
+            if (attr.Value.IsNull)
             {
-                if (attr.Value.IsNull)
-                {
-                    _attrs.Remove(attr.Name);
-                }
-                else
-                {
-                    _attrs[attr.Name] = attr;
-                }
+                return RemoveAttribute(attr.Name);
             }
 
+            lock (_attrs)
+            {
+                _attrs[attr.Name] = attr;
+            }
             return this;
         }
         
@@ -186,7 +169,6 @@ namespace Viewer.Data
             {
                 _attrs.Remove(name);
             }
-
             return this;
         }
 
@@ -195,32 +177,33 @@ namespace Viewer.Data
             Path = PathUtils.NormalizePath(path);
             return this;
         }
-
-        public IEntity Clone()
-        {
-            var clone = new FileEntity(Path);
-            lock (_attrs)
-            {
-                foreach (var attr in _attrs)
-                {
-                    clone.SetAttribute(attr.Value);
-                }
-            }
-
-            return clone;
-        }
-
+        
         public IEnumerator<Attribute> GetEnumerator()
         {
             lock (_attrs)
             {
-                return _attrs.Values.ToList().GetEnumerator();
+                IEnumerable<Attribute> attrs = _attrs.Values.ToArray();
+                return attrs.GetEnumerator();
             }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public IEntity Clone()
+        {
+            var copy = new FileEntity(Path);
+            lock (_attrs)
+            {
+                foreach (var attr in _attrs.Values)
+                {
+                    copy.SetAttribute(attr);
+                }
+            }
+
+            return copy;
         }
     }
 }

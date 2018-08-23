@@ -133,14 +133,13 @@ namespace Viewer.UI.Attributes
 
             return attrs.Values;
         }
-
-
+        
         public void SetAttribute(string oldName, Attribute attr)
         {
             foreach (var entity in GetFilesInSelection())
             {
-                entity.RemoveAttribute(oldName).SetAttribute(attr);
-                _entityManager.SetEntity(entity, true);
+                var newEntity = entity.RemoveAttribute(oldName).SetAttribute(attr);
+                _entityManager.SetEntity(newEntity, true);
             }
         }
 
@@ -148,8 +147,8 @@ namespace Viewer.UI.Attributes
         {
             foreach (var entity in GetFilesInSelection())
             { 
-                entity.RemoveAttribute(name);
-                _entityManager.SetEntity(entity, true);
+                var newEntity = entity.RemoveAttribute(name);
+                _entityManager.SetEntity(newEntity, true);
             }
         }
     }

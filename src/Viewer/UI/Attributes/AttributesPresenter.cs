@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -265,6 +265,7 @@ namespace Viewer.UI.Attributes
             finally
             {
                 progress.Close();
+                cancellation.Dispose();
             }
         }
 

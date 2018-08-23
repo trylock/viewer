@@ -53,8 +53,9 @@ namespace Viewer.UI.Images
 
         private void SelectionOnChanged(object sender, EventArgs e)
         {
-            _selectionCountLabel.Text = _selection.Count > 0
-                ? string.Format(Resources.SelectedItemCount_Label, _selection.Count)
+            var selectionCount = _selection.Count();
+            _selectionCountLabel.Text = selectionCount > 0
+                ? string.Format(Resources.SelectedItemCount_Label, selectionCount)
                 : "";
         }
 

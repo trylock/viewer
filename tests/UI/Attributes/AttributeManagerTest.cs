@@ -58,9 +58,6 @@ namespace ViewerTest.UI.Attributes
                 .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
-            _selection
-                .Setup(mock => mock.Count)
-                .Returns(selectedEntities.Count);
 
             _attributes.SetAttribute(oldAttr.Name, newAttr);
 
@@ -86,9 +83,6 @@ namespace ViewerTest.UI.Attributes
                 .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
-            _selection
-                .Setup(mock => mock.Count)
-                .Returns(selectedEntities.Count);
 
             var newAttr = new Attribute("attr", new StringValue("value"), AttributeSource.Custom);
             _attributes.SetAttribute("attr", newAttr);
@@ -121,9 +115,6 @@ namespace ViewerTest.UI.Attributes
                 .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
-            _selection
-                .Setup(mock => mock.Count)
-                .Returns(selectedEntities.Count);
             
             _attributes.RemoveAttribute("attr");
         }
@@ -146,9 +137,6 @@ namespace ViewerTest.UI.Attributes
                 .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
-            _selection
-                .Setup(mock => mock.Count)
-                .Returns(selectedEntities.Count);
 
             _attributes.RemoveAttribute("attr");
 
@@ -184,9 +172,6 @@ namespace ViewerTest.UI.Attributes
                 .As<IEnumerable>()
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(selectedEntities.GetEnumerator());
-            _selection
-                .Setup(mock => mock.Count)
-                .Returns(selectedEntities.Count);
 
             var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(1, attrs.Count);

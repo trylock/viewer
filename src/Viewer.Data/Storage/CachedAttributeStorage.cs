@@ -28,7 +28,7 @@ namespace Viewer.Data.Storage
 
             public StoreRequest(IEntity entity, StoreFlags flags)
             {
-                Entity = entity;
+                Entity = entity ?? throw new ArgumentNullException(nameof(entity));
                 Flags = flags;
             }
         }
@@ -78,8 +78,6 @@ namespace Viewer.Data.Storage
             // try to find the entity in the waiting list
             lock (_modified)
             {
-                // If an entity is loaded from the cache storage, only its access time has to be updated.
-                // This information is passed to the write thread as an entry with null value, just the path.
                 if (_modified.TryGetValue(path, out var req))
                 {
                     return req.Entity;

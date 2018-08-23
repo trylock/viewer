@@ -76,8 +76,10 @@ namespace Viewer.Data.Storage
             }
             
             // add attributes to the collection
+            int attributeCount = 0;
             while (reader.Read())
             {
+                ++attributeCount;
                 var name = reader.GetString(0);
                 var source = reader.GetInt32(1);
                 var type = reader.GetInt32(2);
@@ -108,13 +110,7 @@ namespace Viewer.Data.Storage
                 }
             }
 
-            if (entity.Count <= 0)
-            {
-                // the entity is not in this storage if there are no valid attributes
-                return null;
-            }
-
-            return entity;
+            return attributeCount > 0 ? entity : null;
         }
 
         public void Store(IEntity entity)

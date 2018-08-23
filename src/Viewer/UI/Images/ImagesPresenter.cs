@@ -17,7 +17,6 @@ using Viewer.Data;
 using Viewer.Images;
 using Viewer.IO;
 using Viewer.Query;
-using Viewer.Core.Collections;
 using Viewer.Core.UI;
 using Viewer.Data.Properties;
 using Viewer.Properties;
@@ -355,10 +354,6 @@ namespace Viewer.UI.Images
             try
             {
                 _entityManager.MoveEntity(item.Data, newPath);
-                // make sure items in the view are still sorted
-                View.Items.Remove(item);
-                View.Items.Add(item);
-                View.UpdateItems();
             }
             catch (PathTooLongException)
             {
@@ -379,6 +374,13 @@ namespace Viewer.UI.Images
             finally
             {
                 View.HideItemEditForm();
+            }
+
+            // update view
+            if (_queryEvaluator != null)
+            {
+                View.Items = _queryEvaluator.Update();
+                View.UpdateItems();
             }
         }
 
@@ -433,14 +435,12 @@ namespace Viewer.UI.Images
             }
 
             // delete entities
-            var deletedPaths = new HashSet<string>();
             var entitiesInSelection = _rectangleSelection.Select(item => item.Data);
             foreach (var entity in entitiesInSelection)
             {
                 try
                 {
                     _entityManager.RemoveEntity(entity);
-                    deletedPaths.Add(entity.Path);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -449,7 +449,6 @@ namespace Viewer.UI.Images
                 catch (DirectoryNotFoundException)
                 {
                     // ignore
-                    deletedPaths.Add(entity.Path);
                 }
                 catch (PathTooLongException)
                 {
@@ -461,13 +460,15 @@ namespace Viewer.UI.Images
                 }
             }
 
-            // remove deleted items from the query and the view
-            View.Items.RemoveAll(view => deletedPaths.Contains(view.FullPath));
-
             // clear selection
             ChangeSelection(Enumerable.Empty<EntityView>());
-            
-            View.UpdateItems();
+
+            // update view
+            if (_queryEvaluator != null)
+            {
+                View.Items = _queryEvaluator.Update();
+                View.UpdateItems();
+            }
         }
 
         private void View_OpenItem(object sender, EntityEventArgs e)

@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core;
 using Viewer.Properties;
-using Viewer.Core.Collections;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.UI.Forms;
@@ -219,7 +218,7 @@ namespace Viewer.UI.Images
             }
         }
 
-        public SortedList<EntityView> Items
+        public List<EntityView> Items
         {
             get => _view.Items;
             set
@@ -251,7 +250,7 @@ namespace Viewer.UI.Images
         {
             if (entityView == null)
                 throw new ArgumentNullException(nameof(entityView));
-
+            
             var index = Items.IndexOf(entityView);
             var bounds = _view.GetNameBounds(index);
 

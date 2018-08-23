@@ -22,12 +22,7 @@ namespace Viewer.UI
         /// Event occurs when the selection changes.
         /// </summary>
         event EventHandler Changed;
-
-        /// <summary>
-        /// Number of items currently in selection.
-        /// </summary>
-        int Count { get; }
-
+        
         /// <summary>
         /// Replace current selection with <paramref name="newSelection"/>
         /// </summary>
@@ -47,9 +42,7 @@ namespace Viewer.UI
         private readonly List<IEntity> _currentSelection = new List<IEntity>();
 
         public event EventHandler Changed;
-
-        public int Count => _currentSelection.Count;
-
+        
         public IEnumerator<IEntity> GetEnumerator()
         {
             return _currentSelection.GetEnumerator();

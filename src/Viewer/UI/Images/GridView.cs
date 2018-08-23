@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Images;
-using Viewer.Core.Collections;
 
 namespace Viewer.UI.Images
 {
@@ -67,7 +66,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Items to show in the component
         /// </summary>
-        public SortedList<EntityView> Items
+        public List<EntityView> Items
         {
             get => _items;
             set
@@ -80,7 +79,7 @@ namespace Viewer.UI.Images
 
         private Size _itemSize;
         private Rectangle _selectionBounds;
-        private SortedList<EntityView> _items;
+        private List<EntityView> _items;
         
         #region Graphics settings
 

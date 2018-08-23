@@ -12,6 +12,7 @@ using Viewer.Data;
 using Viewer.IO;
 using Viewer.Query;
 using Viewer.UI.Images;
+using Attribute = Viewer.Data.Attribute;
 
 namespace ViewerTest.UI.Images
 {
@@ -118,6 +119,76 @@ namespace ViewerTest.UI.Images
             thumbnail1.Verify(mock => mock.Dispose(), Times.Once);
             thumbnail2.Verify(mock => mock.Dispose(), Times.Never);
             thumbnail3.Verify(mock => mock.Dispose(), Times.Once);
+        }
+
+        [TestMethod]
+        public void Update_ResortModifiedEntities()
+        {
+            var entities = new[]
+            {
+                new FileEntity("test1"),
+                new FileEntity("test2"),
+                new FileEntity("test3"),
+            };
+            var thumbnail1 = new Mock<ILazyThumbnail>();
+            var thumbnail2 = new Mock<ILazyThumbnail>();
+            var thumbnail3 = new Mock<ILazyThumbnail>();
+            _query.Setup(mock => mock.Evaluate(
+                    It.IsAny<IProgress<QueryProgressReport>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(entities);
+            _thumbnailFactory
+                .SetupSequence(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))
+                .Returns(thumbnail1.Object)
+                .Returns(thumbnail2.Object)
+                .Returns(thumbnail3.Object);
+
+            _evaluator.Run();
+            var items = _evaluator.Update().Select(view => view.Data).ToArray();
+            CollectionAssert.AreEqual(entities, items);
+
+            entities[2].ChangePath("test0");
+            _entities.Raise(mock => mock.Moved += null, new EntityMovedEventArgs("test3", entities[2]));
+
+            items = _evaluator.Update().Select(view => view.Data).ToArray();
+            Assert.AreEqual(entities[2], items[0]);
+            Assert.AreEqual(entities[0], items[1]);
+            Assert.AreEqual(entities[1], items[2]);
+        }
+
+        [TestMethod]
+        public void Update_RenameEntityMovedInFileSystem()
+        {
+            var entities = new[]
+            {
+                new FileEntity("test1"),
+                new FileEntity("test2"),
+            };
+            var thumbnail1 = new Mock<ILazyThumbnail>();
+            var thumbnail2 = new Mock<ILazyThumbnail>();
+            _query.Setup(mock => mock.Evaluate(
+                    It.IsAny<IProgress<QueryProgressReport>>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(entities);
+            _thumbnailFactory
+                .SetupSequence(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))
+                .Returns(thumbnail1.Object)
+                .Returns(thumbnail2.Object);
+
+            _evaluator.Run();
+            var items = _evaluator.Update().Select(view => view.Data).ToArray();
+            CollectionAssert.AreEqual(entities, items);
+            
+            _fileWatcher.Raise(mock => mock.Renamed += null, new RenamedEventArgs(
+                WatcherChangeTypes.Renamed, 
+                Path.GetDirectoryName(entities[1].Path),
+                "test0", 
+                Path.GetFileName(entities[1].Path)));
+
+            items = _evaluator.Update().Select(view => view.Data).ToArray();
+            Assert.AreEqual(entities[1], items[0]);
+            Assert.AreEqual(entities[0], items[1]);
+            Assert.AreEqual(PathUtils.NormalizePath("test0"), entities[1].Path);
         }
     }
 }

@@ -98,7 +98,7 @@ namespace Viewer.UI.Presentation
         ///     </para>
         ///
         ///     <para>
-        ///     It can return null if the image has been disposed. This can happen if you call
+        ///     The task can return null if the image has been disposed. This can happen if you call
         ///     <see cref="SetPosition"/> or <see cref="Next"/> and <see cref="Previous"/> after
         ///     this too many times so that the current image will be disposed before it can load.
         ///     </para>

@@ -47,7 +47,8 @@ namespace Viewer.Data.Storage
                 {
                     return;
                 }
-                storedEntity.SetAttribute(thumbnail);
+                storedEntity = storedEntity.SetAttribute(thumbnail);
+                _files[storedEntity.Path] = storedEntity;
             }
         }
 

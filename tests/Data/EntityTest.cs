@@ -17,11 +17,9 @@ namespace ViewerTest.Data
         {
             IEntity attrs = new FileEntity("test");
             Assert.IsNull(attrs.GetAttribute("test"));
-            Assert.AreEqual(0, attrs.Count);
 
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42), AttributeSource.Custom));
             Assert.IsNotNull(attrs.GetAttribute("test"));
-            Assert.AreEqual(1, attrs.Count);
             Assert.AreEqual(42, attrs.GetValue<IntValue>("test").Value);
         }
 
@@ -32,11 +30,9 @@ namespace ViewerTest.Data
 
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(24), AttributeSource.Custom));
             Assert.IsNotNull(attrs.GetAttribute("test"));
-            Assert.AreEqual(1, attrs.Count);
 
             attrs = attrs.SetAttribute(new Attribute("test", new IntValue(42), AttributeSource.Custom));
             Assert.IsNotNull(attrs.GetAttribute("test"));
-            Assert.AreEqual(1, attrs.Count);
             Assert.AreEqual(42, attrs.GetValue<IntValue>("test").Value);
         }
 

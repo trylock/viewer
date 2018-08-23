@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
@@ -40,10 +41,42 @@ namespace Viewer.UI.Images
         private readonly IErrorListener _queryErrorListener;
 
         // state
-        private readonly ConcurrentSortedSet<EntityView> _addRequests;
-        private readonly ConcurrentQueue<RenamedEventArgs> _moveRequests;
-        private readonly ConcurrentQueue<string> _deleteRequests;
-        private SortedList<EntityView> _views;
+        private List<EntityView> _views;
+        private readonly ConcurrentSortedSet<EntityView> _added;
+        private readonly ConcurrentQueue<Request> _requests = new ConcurrentQueue<Request>();
+
+        private enum RequestType
+        {
+            Modify,
+            Remove,
+            Move
+        }
+
+        private struct Request
+        {
+            public RequestType Type { get; }
+            public string Path { get; }
+            public string NewPath { get; }
+
+            public Request(RequestType type, string path)
+            {
+                Type = type;
+                Path = path;
+                NewPath = null;
+            }
+
+            public Request(string oldPath, string newPath)
+            {
+                Type = RequestType.Move;
+                Path = oldPath;
+                NewPath = newPath;
+            }
+        }
+
+        /// <summary>
+        /// Comparer used to sort items in the query result set.
+        /// </summary>
+        public IComparer<EntityView> Comparer { get; }
 
         /// <summary>
         /// Cancellation of the query evaluation
@@ -74,19 +107,41 @@ namespace Viewer.UI.Images
         {
             _entities = entities;
             _fileWatcher = fileWatcherFactory.Create();
+            _thumbnailFactory = thumbnailFactory;
+            _queryErrorListener = queryErrorListener;
+            Query = query;
+
+            // initialize internal structures
+            Cancellation = new CancellationTokenSource();
+            Comparer = new EntityViewComparer(Query.Comparer);
+            _views = new List<EntityView>();
+            _added = new ConcurrentSortedSet<EntityView>(Comparer);
+
+            // register event handlers
             _fileWatcher.Renamed += FileWatcherOnRenamed;
             _fileWatcher.Deleted += FileWatcherOnDeleted;
             _fileWatcher.Created += FileWatcherOnCreated;
-            _thumbnailFactory = thumbnailFactory;
-            _queryErrorListener = queryErrorListener;
-            Cancellation = new CancellationTokenSource();
-            Query = query;
-            
-            var entityViewComparer = new EntityViewComparer(Query.Comparer);
-            _moveRequests = new ConcurrentQueue<RenamedEventArgs>();
-            _deleteRequests = new ConcurrentQueue<string>();
-            _addRequests = new ConcurrentSortedSet<EntityView>(entityViewComparer);
-            _views = new SortedList<EntityView>(entityViewComparer);
+            _entities.Deleted += EntitiesOnDeleted;
+            _entities.Changed += EntitiesOnChanged;
+            _entities.Moved += EntitiesOnMoved;
+        }
+        
+        #region Event Handlers
+        
+        private void EntitiesOnDeleted(object sender, Data.EntityEventArgs e)
+        {
+            _requests.Enqueue(new Request(RequestType.Remove, e.Value.Path));
+        }
+
+        private void EntitiesOnMoved(object sender, EntityMovedEventArgs e)
+        {
+            // We have already changed entity's path, just have to make sure the list is still sorted.
+            _requests.Enqueue(new Request(RequestType.Modify, e.Value.Path));
+        }
+
+        private void EntitiesOnChanged(object sender, Data.EntityEventArgs e)
+        {
+            _requests.Enqueue(new Request(RequestType.Modify, e.Value.Path));
         }
 
         private static bool IsEntityEvent(FileSystemEventArgs e)
@@ -101,7 +156,8 @@ namespace Viewer.UI.Images
         {
             if (!IsEntityEvent(e))
                 return; // skip this event
-            Remove(e.FullPath);
+            var path = PathUtils.NormalizePath(e.FullPath);
+            _requests.Enqueue(new Request(RequestType.Remove, path));
         }
 
         private void FileWatcherOnRenamed(object sender, RenamedEventArgs e)
@@ -110,7 +166,9 @@ namespace Viewer.UI.Images
             //       FileSystemAttributeStorage.Store call. 
             if (!IsEntityEvent(e))
                 return; // skip this event
-            _moveRequests.Enqueue(e);
+            var oldPath = PathUtils.NormalizePath(e.OldFullPath);
+            var newPath = PathUtils.NormalizePath(e.FullPath);
+            _requests.Enqueue(new Request(oldPath, newPath));
         }
 
         private void FileWatcherOnCreated(object sender, FileSystemEventArgs e)
@@ -150,9 +208,11 @@ namespace Viewer.UI.Images
 
             if (entity != null && Query.Match(entity))
             {
-                _addRequests.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
+                _added.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
             }
         }
+
+        #endregion
 
         /// <summary>
         /// Evaluate the query on a differet thread.
@@ -202,8 +262,7 @@ namespace Viewer.UI.Images
                     }
 
                     // add a new entity
-                    var thumbnail = _thumbnailFactory.Create(entity, Cancellation.Token);
-                    _addRequests.Add(new EntityView(entity, thumbnail));
+                    _added.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
                 }
             }
             catch (QueryRuntimeException e)
@@ -211,68 +270,105 @@ namespace Viewer.UI.Images
                 _queryErrorListener.ReportError(0, 0, e.Message);
             }
         }
-
-        /// <summary>
-        /// Remove item with path <paramref name="path"/> on next <see cref="Update"/>.
-        /// This method is thread-safe. 
-        /// </summary>
-        /// <param name="path"></param>
-        public void Remove(string path)
-        {
-            _deleteRequests.Enqueue(PathUtils.NormalizePath(path));
-        }
         
         /// <summary>
         /// Update current collection. It takes all changes made so far and applies them to
-        /// the local collection of <see cref="EntityView"/>s
+        /// the local collection of <see cref="EntityView"/>s. 
         /// </summary>
         /// <returns>Modified collection</returns>
-        public SortedList<EntityView> Update()
+        public List<EntityView> Update()
         {
-            // process all add requests
-            var added = _addRequests.Consume();
+            // index changes
+            var index = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
+            while (_requests.TryDequeue(out var req))
+            {
+                index[req.Path] = req;
+            }
+
+            var modified = new List<EntityView>();
+            var head = 0;
+            for (var i = 0; i < _views.Count; ++i)
+            {
+                Debug.Assert(head <= i);
+
+                var item = _views[i];
+                if (!index.TryGetValue(item.FullPath, out var req))
+                {
+                    _views[head] = item;
+                    ++head;
+                }
+                else if (req.Type == RequestType.Remove)
+                {
+                    item.Dispose();
+                }
+                else if (req.Type == RequestType.Modify)
+                {
+                    modified.Add(item);
+                }
+                else // if (type == RequestType.Move)
+                {
+                    item.Data.ChangePath(req.NewPath);
+                    modified.Add(item);
+                }
+            }
+            _views.RemoveRange(head, _views.Count - head);
+
+            // re-add modified entities
+            var added = _added.Consume();
+            if (modified.Count > 0)
+            {
+                modified.Sort(Comparer);
+                added = Merge(added, modified);
+            }
+
+            // add new entities
             if (added.Count > 0)
             {
-                _views = _views.Merge(added);
+                _views = Merge(_views, added);
             }
-
-            // process all rename requests
-            while (_moveRequests.TryDequeue(out var req))
-            {
-                var oldPath = PathUtils.NormalizePath(req.OldFullPath);
-                for (var i = 0; i < _views.Count; ++i)
-                {
-                    if (!string.Equals(_views[i].FullPath, oldPath, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        continue;
-                    }
-
-                    var item = _views[i];
-                    item.FullPath = req.FullPath;
-                    _views.RemoveAt(i);
-                    _views.Add(item);
-                    break;
-                }
-            }
-
-            // process all delete requests
-            var deleted = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
-            while (_deleteRequests.TryDequeue(out var path))
-            {
-                deleted.Add(path);
-            }
-            
-            // dispose removed entities 
-            foreach (var view in _views)
-            {
-                if (deleted.Contains(view.FullPath))
-                {
-                    view.Dispose();
-                }
-            }
-            _views.RemoveAll(item => deleted.Contains(item.FullPath));
 
             return _views;
+        }
+
+        private List<EntityView> Merge(IEnumerable<EntityView> firstList, IEnumerable<EntityView> secondList)
+        {
+            var result = new List<EntityView>();
+
+            using (var first = firstList.GetEnumerator())
+            using (var second = secondList.GetEnumerator())
+            {
+                var firstHasNext = first.MoveNext();
+                var secondHasNext = second.MoveNext();
+                while (firstHasNext || secondHasNext)
+                {
+                    if (!secondHasNext)
+                    {
+                        result.Add(first.Current);
+                        firstHasNext = first.MoveNext();
+                    }
+                    else if (!firstHasNext)
+                    {
+                        result.Add(second.Current);
+                        secondHasNext = second.MoveNext();
+                    }
+                    else
+                    {
+                        var cmp = Comparer.Compare(first.Current, second.Current);
+                        if (cmp <= 0)
+                        {
+                            result.Add(first.Current);
+                            firstHasNext = first.MoveNext();
+                        }
+                        else // if (cmp > 0)
+                        {
+                            result.Add(second.Current);
+                            secondHasNext = second.MoveNext();
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <inheritdoc />
@@ -282,6 +378,11 @@ namespace Viewer.UI.Images
         /// </summary>
         public void Dispose()
         {
+            // unsubscribe from events
+            _entities.Moved -= EntitiesOnMoved;
+            _entities.Changed -= EntitiesOnChanged;
+            _entities.Deleted -= EntitiesOnDeleted;
+
             // stop watching file changes
             _fileWatcher.Dispose();
 

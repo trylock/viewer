@@ -90,13 +90,13 @@ namespace Viewer.Data.Storage
                 }
 
                 // read all JPEG segments to memory
-                IEntity attrs;
+                IEntity entity;
                 FileInfo fileInfo;
                 var segments = new List<JpegSegment>();
                 using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
                 {
                     fileInfo = new FileInfo(path);
-                    attrs = new FileEntity(path);
+                    entity = new FileEntity(path);
 
                     for (;;)
                     {
@@ -122,11 +122,11 @@ namespace Viewer.Data.Storage
                         var attr = attrReader.Read();
                         if (attr == null)
                             break;
-                        attrs = attrs.SetAttribute(attr);
+                        entity = entity.SetAttribute(attr);
                     }
                 }
 
-                return attrs;
+                return entity;
             }
             catch (FileNotFoundException)
             {

@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using Viewer.Core;
 using Viewer.Data;
 using Viewer.Properties;
-using Viewer.Core.Collections;
 using Viewer.Core.UI;
 
 namespace Viewer.UI.Images
@@ -36,19 +35,15 @@ namespace Viewer.UI.Images
             }
         } 
 
-        public string FullPath
-        {
-            get => Data.Path;
-            set => Data.ChangePath(value);
-        }
+        public string FullPath => Data.Path;
         public FileViewState State { get; set; } = FileViewState.None;
         public ILazyThumbnail Thumbnail { get; }
         public IEntity Data { get; }
-        
+
         public EntityView(IEntity data, ILazyThumbnail thumbnail)
         {
-            Data = data ?? throw new ArgumentNullException(nameof(data));
-            Thumbnail = thumbnail ?? throw new ArgumentNullException(nameof(thumbnail));
+            Data = data;
+            Thumbnail = thumbnail;
         }
 
         public void Dispose()
@@ -65,7 +60,7 @@ namespace Viewer.UI.Images
                 return true;
             if (x == null || y == null)
                 return false;
-            return x.FullPath == y.FullPath;
+            return x.Data.Path == y.Data.Path;
         }
 
         public int GetHashCode(EntityView obj)
@@ -333,7 +328,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// List of items to show 
         /// </summary>
-        SortedList<EntityView> Items { get; set; }
+        List<EntityView> Items { get; set; }
 
         /// <summary>
         /// Set an item size

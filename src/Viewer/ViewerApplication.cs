@@ -92,10 +92,7 @@ namespace Viewer
                 {
                     // configuration file has an invalid format
                     Logger.Error(e, "Invalid configuration file.");
-                    if (Logger.IsTraceEnabled)
-                    {
-                        Logger.Trace("Layout:\n{0}", layout);
-                    }
+                    Logger.Trace("Layout:\n{0}", layout);
                 }
             }
 

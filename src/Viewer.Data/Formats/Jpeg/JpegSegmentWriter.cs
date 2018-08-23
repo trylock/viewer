@@ -70,6 +70,8 @@ namespace Viewer.Data.Formats.Jpeg
                     break;
                 _writer.Write(buffer, 0, length);
             }
+
+            _writer.Flush();
         }
 
         public void Dispose()

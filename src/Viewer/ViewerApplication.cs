@@ -111,6 +111,9 @@ namespace Viewer
             {
                 Logger.Trace(e, "Missing configuration file.");
             }
+
+            // apply application settings
+            _appForm.Size = Settings.Default.FormSize;
         }
 
         private void SaveLayout(string layoutFilePath)
@@ -119,6 +122,10 @@ namespace Viewer
             {
                 _appForm.Panel.SaveAsXml(state, Encoding.UTF8);
             }
+
+            // save settings
+            Settings.Default.FormSize = _appForm.Size;
+            Settings.Default.Save();
         }
 
         private void OnShutdown(object sender, EventArgs e)

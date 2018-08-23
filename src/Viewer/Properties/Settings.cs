@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,6 +61,14 @@ namespace Viewer.Properties
         {
             get => (string) this["LogFilePath"];
             set => this["LogFilePath"] = value;
+        }
+
+        [UserScopedSetting]
+        [DefaultSettingValue(@"1200, 600")]
+        public Size FormSize
+        {
+            get => (Size) this["FormSize"];
+            set => this["FormSize"] = value;
         }
     }
 }

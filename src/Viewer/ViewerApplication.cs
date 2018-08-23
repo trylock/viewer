@@ -33,13 +33,7 @@ namespace Viewer
         private readonly ViewerForm _appForm;
         private readonly IComponent[] _components;
         private readonly List<DeserializeDockContent> _layoutDeserializeCallback = new List<DeserializeDockContent>();
-
-        /// <summary>
-        /// Path to the file with application layout.
-        /// </summary>
-        private static string LayoutFilePath => 
-            Environment.ExpandEnvironmentVariables(Resources.LayoutFilePath);
-
+        
         [ImportingConstructor]
         public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
         {
@@ -59,7 +53,7 @@ namespace Viewer
             }
             
             // deserialize layout
-            LoadLayout(LayoutFilePath);
+            LoadLayout();
         }
 
         public void AddMenuItem(IReadOnlyList<string> menuPath, Action action, Image icon)
@@ -82,34 +76,27 @@ namespace Viewer
             _layoutDeserializeCallback.Add(callback);
         }
 
-        private void LoadLayout(string layoutFilePath)
+        private void LoadLayout()
         {
-            try
+            var layout = Settings.Default.Layout;
+            if (layout.Length > 0)
             {
-                using (var input = new FileStream(layoutFilePath, FileMode.Open, FileAccess.Read))
+                try
                 {
-                    _appForm.Panel.LoadFromXml(input, Deserialize);
-                }
-            }
-            catch (XmlException e)
-            {
-                // configuration file has an invalid format
-                Logger.Error(e, "Invalid configuration file.");
-                if (Logger.IsTraceEnabled)
-                {
-                    try
+                    using (var input = new MemoryStream(Encoding.UTF8.GetBytes(layout)))
                     {
-                        Logger.Trace("Log file content:\n{0}", File.ReadAllText(layoutFilePath));
-                    }
-                    catch (Exception)
-                    {
-                        // the file IO has been done purely for debugging purpose
+                        _appForm.Panel.LoadFromXml(input, Deserialize);
                     }
                 }
-            }
-            catch (FileNotFoundException e)
-            {
-                Logger.Trace(e, "Missing configuration file.");
+                catch (XmlException e)
+                {
+                    // configuration file has an invalid format
+                    Logger.Error(e, "Invalid configuration file.");
+                    if (Logger.IsTraceEnabled)
+                    {
+                        Logger.Trace("Layout:\n{0}", layout);
+                    }
+                }
             }
 
             // apply application settings
@@ -117,23 +104,19 @@ namespace Viewer
             _appForm.WindowState =
                 Settings.Default.FormIsMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
         }
-
-        private void SaveLayout(string layoutFilePath)
+        
+        private void OnShutdown(object sender, EventArgs e)
         {
-            using (var state = new FileStream(layoutFilePath, FileMode.Create, FileAccess.Write))
+            using (var layout = new MemoryStream())
             {
-                _appForm.Panel.SaveAsXml(state, Encoding.UTF8);
+                _appForm.Panel.SaveAsXml(layout, Encoding.UTF8);
+                Settings.Default.Layout = Encoding.UTF8.GetString(layout.ToArray());
             }
 
             // save settings
             Settings.Default.FormSize = _appForm.Size;
             Settings.Default.FormIsMaximized = _appForm.WindowState == FormWindowState.Maximized;
             Settings.Default.Save();
-        }
-
-        private void OnShutdown(object sender, EventArgs e)
-        {
-            SaveLayout(LayoutFilePath);
         }
 
         private IDockContent Deserialize(string persistString)

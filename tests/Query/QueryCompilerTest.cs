@@ -538,5 +538,14 @@ namespace ViewerTest.Query
 
             _query.Verify(mock => mock.WithText("select \"a\" where tag"), Times.Once);
         }
+
+        [TestMethod]
+        public void Compile_ParseTheEntireInput()
+        {
+            var listener = new Mock<IErrorListener>();
+            _compiler.Compile(new StringReader("select \"a\" asdf"), listener.Object);
+
+            listener.Verify(mock => mock.ReportError(1, 11, It.IsAny<string>()), Times.AtLeastOnce);
+        }
     }
 }

@@ -128,6 +128,11 @@ namespace Viewer.Query
             return new CompilationResult{ Value = expr };
         }
 
+        public CompilationResult VisitEntry(QueryParser.EntryContext context)
+        {
+            return context.queryExpression().Accept(this);
+        }
+
         public CompilationResult VisitQueryExpression(QueryParser.QueryExpressionContext context)
         {
             if (context.queryExpression() == null)
@@ -619,7 +624,7 @@ namespace Viewer.Query
             IQuery result;
             try
             {
-                var query = parser.queryExpression();
+                var query = parser.entry();
                 var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, errorListener);
                 result = compiler.Compile(query);
                 result = result.WithText(input.ToString());

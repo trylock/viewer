@@ -1,5 +1,7 @@
 grammar Query;
 
+entry: queryExpression EOF;
+
 // set operations on queries
 queryExpression: queryExpression UNION_EXCEPT intersection | intersection;
 

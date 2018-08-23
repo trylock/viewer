@@ -39,7 +39,7 @@ namespace Viewer.Properties
         }
 
         [UserScopedSetting]
-        [DefaultSettingValue("03:00:00")]
+        [DefaultSettingValue("1.00:00:00")]
         public TimeSpan CacheLifespan
         {
             get => (TimeSpan) this["CacheLifespan"];

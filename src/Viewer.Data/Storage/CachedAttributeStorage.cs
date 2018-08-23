@@ -142,7 +142,7 @@ namespace Viewer.Data.Storage
                 _notifyWrite.Set();
             }
         }
-
+        
         private void WriteThread()
         {
             for (;;)
@@ -178,11 +178,11 @@ namespace Viewer.Data.Storage
                         }
                     }
 
-                    // release least recently used photos from the cache
-                    _cacheStorage.Clean(_configuration.CacheLifespan, _configuration.CacheMaxFileCount);
-
                     transaction.Commit();
                 }
+
+                // release least recently used photos from the cache
+                _cacheStorage.Clean(_configuration.CacheLifespan, _configuration.CacheMaxFileCount);
             }
         }
 

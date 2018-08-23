@@ -193,21 +193,33 @@ namespace Viewer.Data.Storage
 
         public void Clean(TimeSpan lastAccessTimeThreshold, int fileCountThreashold)
         {
-            using (var query = new SQLiteCommand(Connection))
+            using (var transaction = Connection.BeginTransaction(IsolationLevel.Serializable))
             {
-                query.CommandText = @"
-                DELETE FROM files 
-                WHERE  
-                    lastAccessTime < :accessTimeThreshold OR 
-                    id NOT IN (
-                        SELECT f.id 
-                        FROM files AS f
-                        ORDER BY f.lastAccessTime DESC
-                        LIMIT :countThreshold
-                    )";
-                query.Parameters.Add(new SQLiteParameter(":accessTimeThreshold", DateTime.Now - lastAccessTimeThreshold));
-                query.Parameters.Add(new SQLiteParameter(":countThreshold", fileCountThreashold));
-                query.ExecuteNonQuery();
+                var threshold = DateTime.Now - lastAccessTimeThreshold;
+                using (var query = new SQLiteCommand(Connection))
+                {
+                    query.CommandText = @"
+                    SELECT lastAccessTime 
+                    FROM files 
+                    ORDER BY lastAccessTime DESC
+                    LIMIT 1
+                    OFFSET :offset";
+                    query.Parameters.Add(new SQLiteParameter(":offset", fileCountThreashold));
+                    if (query.ExecuteScalar() is DateTime result && 
+                        threshold.CompareTo(result) > 0)
+                    {
+                        threshold = result;
+                    }
+                }
+
+                using (var query = new SQLiteCommand(Connection))
+                {
+                    query.CommandText = @"DELETE FROM files WHERE lastAccessTime < :threshold";
+                    query.Parameters.Add(new SQLiteParameter(":threshold", threshold));
+                    query.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
             }
         }
 

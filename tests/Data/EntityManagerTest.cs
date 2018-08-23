@@ -101,5 +101,33 @@ namespace ViewerTest.Data
             Assert.AreEqual(1, modified.Count);
             Assert.AreEqual(1, (modified[0].GetAttribute("a")?.Value as IntValue).Value);
         }
+
+        [TestMethod]
+        public void SetEntity_ModifiedListIsAListOfCopies()
+        {
+            var entity = new FileEntity("test");
+            _entityManager.SetEntity(entity, true);
+
+            entity.SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom));
+            Assert.IsNotNull(entity.GetAttribute("test"));
+
+            var modified = _entityManager.GetModified();
+            Assert.AreEqual(1, modified.Count);
+            Assert.AreEqual(entity.Path, modified[0].Path);
+            Assert.IsNull(modified[0].GetAttribute("test"));
+        }
+
+        [TestMethod]
+        public void MoveEntity_ChangesModifiedEntityPath()
+        {
+            var entity = new FileEntity("test");
+
+            _entityManager.SetEntity(entity, true);
+            _entityManager.MoveEntity(entity, "test1");
+
+            var modified = _entityManager.GetModified();
+            Assert.AreEqual(1, modified.Count);
+            Assert.AreEqual(PathUtils.NormalizePath("test1"), modified[0].Path);
+        }
     }
 }

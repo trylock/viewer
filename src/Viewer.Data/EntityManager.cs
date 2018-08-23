@@ -141,12 +141,13 @@ namespace Viewer.Data
         {
             var isAdded = false;
             var path = entity.Path;
+            var clone = entity.Clone();
             if (replace)
             {
                 isAdded = true;
                 lock (_modified)
                 {
-                    _modified[path] = entity;
+                    _modified[path] = clone;
                 }
             }
             else
@@ -155,7 +156,7 @@ namespace Viewer.Data
                 {
                     if (!_modified.ContainsKey(path))
                     {
-                        _modified.Add(path, entity);
+                        _modified.Add(path, clone);
                         isAdded = true;
                     }
                 }
@@ -178,7 +179,7 @@ namespace Viewer.Data
                 if (_modified.TryGetValue(oldPath, out var modifiedEntity))
                 {
                     _modified.Remove(oldPath);
-                    _modified[newPath] = modifiedEntity;
+                    _modified[newPath] = modifiedEntity.ChangePath(newPath);
                 }
             }
 

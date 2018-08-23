@@ -316,7 +316,11 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File {0} could not be opened: {1} 
+        ///   Looks up a localized string similar to {0} 
+        ///could not be opened. 
+        ///
+        ///{1} 
+        ///
         ///Do you want to try again?.
         /// </summary>
         internal static string FailedToOpenFile_Message {

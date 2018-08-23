@@ -63,6 +63,13 @@ namespace Viewer.Core.UI
         IAsyncResult BeginInvoke(Delegate method);
 
         /// <summary>
+        /// Execute <paramref name="method"/> od the thread of this view.
+        /// </summary>
+        /// <param name="method">Method to execute</param>
+        /// <returns></returns>
+        object Invoke(Delegate method);
+
+        /// <summary>
         /// Indicate to the user that the component is loading some data
         /// </summary>
         void BeginLoading();

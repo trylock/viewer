@@ -14,6 +14,7 @@ using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Properties;
 using Viewer.UI.Errors;
+using Viewer.UI.Explorer;
 using Viewer.UI.Tasks;
 using Attribute = Viewer.Data.Attribute;
 
@@ -28,6 +29,7 @@ namespace Viewer.UI.Attributes
         private readonly IAttributeStorage _storage;
         private readonly IEntityManager _entityManager;
         private readonly IErrorList _errorList;
+        private readonly IFileSystemErrorView _dialogView;
 
         protected override ExportLifetimeContext<IAttributeView> ViewLifetime { get; }
 
@@ -51,13 +53,15 @@ namespace Viewer.UI.Attributes
             IAttributeManager attrManager,
             IAttributeStorage storage,
             IEntityManager entityManager,
-            IErrorList errorList)
+            IErrorList errorList,
+            IFileSystemErrorView dialogView)
         {
             ViewLifetime = viewFactory.CreateExport();
             _taskLoader = taskLoader;
             _errorList = errorList;
             _storage = storage;
             _entityManager = entityManager;
+            _dialogView = dialogView;
             _attributes = attrManager;
             _attributes.SelectionChanged += Selection_Changed;
 
@@ -220,6 +224,40 @@ namespace Viewer.UI.Attributes
 
             ViewAttributes();
         }
+
+        private void StoreEntity(IEntity entity)
+        {
+            var retry = false;
+            do
+            {
+                retry = false;
+                try
+                {
+                    _storage.Store(entity);
+                }
+                catch (FileNotFoundException)
+                {
+                    Report($"Attribute file {entity.Path} was not found.", LogType.Error, null);
+                }
+                catch (IOException e)
+                {
+                    View.Invoke(new Action(() =>
+                    {
+                        retry = _dialogView.FailedToOpenFile(entity.Path, e.Message);
+                    }));
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Report($"Unauthorized access to attribute file {entity.Path}.", LogType.Error,
+                        null);
+                }
+                catch (SecurityException)
+                {
+                    Report($"Unauthorized access to attribute file {entity.Path}.", LogType.Error,
+                        null);
+                }
+            } while (retry);
+        }
         
         private async void View_SaveAttributes(object sender, EventArgs args)
         {
@@ -245,19 +283,7 @@ namespace Viewer.UI.Attributes
                         else
                         {
                             progress.Report(new LoadingProgress(entity.Path));
-                            try
-                            {
-                                _storage.Store(entity);
-                            }
-                            catch (FileNotFoundException)
-                            {
-                                Report($"Attribute file {entity.Path} was not found.", LogType.Error, null);
-                            }
-                            catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
-                                                      e.GetType() == typeof(SecurityException))
-                            {
-                                Report($"Unauthorized access to attribute file {entity.Path}.", LogType.Error, null);
-                            }
+                            StoreEntity(entity);
                         }
                     }
                 }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);

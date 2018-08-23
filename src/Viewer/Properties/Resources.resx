@@ -321,7 +321,11 @@
     <value>Failed To Open File</value>
   </data>
   <data name="FailedToOpenFile_Message" xml:space="preserve">
-    <value>File {0} could not be opened: {1} 
+    <value>{0} 
+could not be opened. 
+
+{1} 
+
 Do you want to try again?</value>
     <comment>{0} is the file path, {1} is an error message</comment>
   </data>

@@ -53,7 +53,7 @@ namespace Viewer.Query
         /// <summary>
         /// Value getter for construction of a comparer
         /// </summary>
-        public ValueOrder Order { get; set; }
+        public SortParameter Order { get; set; }
 
         /// <summary>
         /// Entity comparer
@@ -280,7 +280,7 @@ namespace Viewer.Query
 
         public CompilationResult VisitOrderByList(QueryParser.OrderByListContext context)
         {
-            var orderByList = new List<ValueOrder>();
+            var orderByList = new List<SortParameter>();
             foreach (var child in context.orderByKey())
             {
                 var item = child.Accept(this).Order;
@@ -305,7 +305,7 @@ namespace Viewer.Query
 
             return new CompilationResult
             {
-                Order = new ValueOrder
+                Order = new SortParameter
                 {
                     Getter = valueGetter,
                     Direction = direction

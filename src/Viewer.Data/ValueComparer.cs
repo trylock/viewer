@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Compare <see cref="T:Viewer.Data.BaseValue" /> types.
+    /// </summary>
     public class ValueComparer : IComparer<BaseValue>
     {
         /// <summary>
@@ -79,6 +83,46 @@ namespace Viewer.Data
             }
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Compare 2 <see cref="BaseValue"/>s. See the following comparison algorithm. 
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             If both values are null or <see cref="BaseValue.IsNull"/> is true, return 0
+        ///         </description>
+        ///         <description>
+        ///             If <paramref name="x"/> is null or <paramref name="x"/>.<see cref="BaseValue.IsNull"/>
+        ///             is true, return <c>1</c>.
+        ///         </description>
+        ///         <description>
+        ///             If <paramref name="y"/> is null or <paramref name="y"/>.<see cref="BaseValue.IsNull"/>
+        ///             is true, return <c>-1</c>.
+        ///         </description>
+        ///         <description>
+        ///             If <paramref name="x"/> and <paramref name="y"/> are convertible to a number
+        ///             (i.e., <see cref="IntValue"/> or <see cref="RealValue"/>), compare them as
+        ///             <see cref="double"/>s.
+        ///         </description>
+        ///         <description>
+        ///             If only <paramref name="x"/> is convertible to a number, return -1.
+        ///         </description>
+        ///         <description>
+        ///             If only <paramref name="y"/> is convertible to a number, return 1.
+        ///         </description>
+        ///         <description>
+        ///             If <paramref name="x"/> and <paramref name="y"/> are <see cref="DateTimeValue"/>s,
+        ///             compare then as <see cref="DateTime"/>.
+        ///         </description>
+        ///         <description>
+        ///             Otherwise, compare <paramref name="x"/> and <paramref name="y"/> as <see cref="string"/>s.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public int Compare(BaseValue x, BaseValue y)
         {
             // sort null values last
@@ -102,7 +146,7 @@ namespace Viewer.Data
             var numberY = y.Accept(_numberVisitor);
             if (numberX != null && numberY != null)
             {
-                return Comparer<double>.Default.Compare((int)numberX, (int)numberY);
+                return Comparer<double>.Default.Compare((double)numberX, (double)numberY);
             }
             
             if (numberX != null)

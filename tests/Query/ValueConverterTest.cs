@@ -12,12 +12,12 @@ namespace ViewerTest.Query
     [TestClass]
     public class ValueConverterTest
     {
-        private ValueConvertor _converter;
+        private ValueConverter _converter;
 
         [TestInitialize]
         public void Setup()
         {
-            _converter = new ValueConvertor();
+            _converter = new ValueConverter();
         }
 
         [TestMethod]

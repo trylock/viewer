@@ -36,7 +36,7 @@ namespace Viewer.Data
     }
 
     [Export(typeof(IValueConverter))]
-    public class ValueConvertor : IValueConverter
+    public class ValueConverter : IValueConverter
     {
         private class ConversionVisitor : IValueVisitor<BaseValue>
         {

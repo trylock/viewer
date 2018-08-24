@@ -22,25 +22,29 @@ namespace Viewer.Data.SQLite
             {
                 var indexFilePath = Environment.ExpandEnvironmentVariables(Resources.CacheFilePath);
                 var indexFileDirectory = Path.GetDirectoryName(indexFilePath);
-                _fileSystem.CreateDirectory(indexFileDirectory); 
-
-                var connection = new SQLiteConnection(string.Format(Resources.SqliteConnectionString, indexFilePath));
-                connection.Open();
-
-                var initialization = Resources.SqliteInitializationScript.Split(';');
-                using (var command = connection.CreateCommand())
-                {
-                    foreach (var part in initialization)
-                    {
-                        command.CommandText = part;
-                        command.ExecuteNonQuery();
-                    }
-                }
-
-                SQLiteFunction.RegisterFunction(typeof(CurrentCultureIgnoreCase));
-
-                return connection;
+                _fileSystem.CreateDirectory(indexFileDirectory);
+                return Create(indexFilePath);
             }
+        }
+
+        public SQLiteConnection Create(string dataSource)
+        {
+            var connection = new SQLiteConnection(string.Format(Resources.SqliteConnectionString, dataSource));
+            connection.Open();
+
+            var initialization = Resources.SqliteInitializationScript.Split(';');
+            using (var command = connection.CreateCommand())
+            {
+                foreach (var part in initialization)
+                {
+                    command.CommandText = part;
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            SQLiteFunction.RegisterFunction(typeof(CurrentCultureIgnoreCase));
+
+            return connection;
         }
     }
 }

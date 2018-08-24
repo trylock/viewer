@@ -23,12 +23,122 @@ namespace Viewer.Data.Storage
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public SQLiteConnection Connection { get; }
-        
+        private readonly SQLiteConnection _connection;
+        private SavepointTransaction _currentTransaction;
+
+        private class SavepointTransaction : IRecursiveBatch
+        {
+            private enum State
+            {
+                Initialized,
+                Comitted,
+                Rollbacked,
+            }
+
+            private State _state;
+            private readonly SqliteAttributeStorage _storage;
+            private readonly SavepointTransaction _parent;
+            private readonly string _name;
+
+            public IRecursiveBatch Parent => _parent;
+
+            public SavepointTransaction(SavepointTransaction parent, SqliteAttributeStorage storage, string name)
+            {
+                _state = State.Initialized;
+                _storage = storage;
+                _parent = parent;
+                _name = name;
+
+                if (_parent == null)
+                {
+                    _storage._currentTransaction = this;
+                }
+                
+                using (var command = _storage._connection.CreateCommand())
+                {
+                    if (_parent == null)
+                    {
+                        command.CommandText = "BEGIN IMMEDIATE TRANSACTION";
+                    }
+                    else
+                    {
+                        command.CommandText = "SAVEPOINT " + _name;
+                    }
+
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            public void Commit()
+            {
+                CheckTransaction();
+
+                try
+                {
+                    using (var command = _storage._connection.CreateCommand())
+                    {
+                        command.CommandText = _parent == null ? "COMMIT" : "RELEASE " + _name;
+                        command.ExecuteNonQuery();
+                    }
+
+                    _state = State.Comitted;
+                }
+                finally
+                {
+                    if (_parent == null)
+                        _storage._currentTransaction = null;
+                }
+            }
+
+            public void Rollback()
+            {
+                CheckTransaction();
+
+                try
+                {
+                    using (var command = _storage._connection.CreateCommand())
+                    {
+                        command.CommandText = _parent == null ? "ROLLBACK" : "ROLLBACK TO " + _name;
+                        command.ExecuteNonQuery();
+                    }
+
+                    _state = State.Rollbacked;
+                }
+                finally
+                {
+                    if (_parent == null)
+                        _storage._currentTransaction = null;
+                }
+            }
+
+            public void Dispose()
+            {
+                if (_state == State.Initialized &&
+                    (_parent == null || _parent._state == State.Initialized))
+                {
+                    Rollback();
+                }
+            }
+
+            private void CheckTransaction()
+            {
+                if (_parent != null && _parent._state != State.Initialized)
+                {
+                    throw new InvalidOperationException(
+                        "Trying to rollback transaction with resolved parent.");
+                }
+
+                if (_state != State.Initialized)
+                {
+                    throw new InvalidOperationException("This transaction has already been resolved.");
+                }
+            }
+        }
+
         [ImportingConstructor]
         public SqliteAttributeStorage(SQLiteConnection connection)
         {
-            Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         /// <inheritdoc />
@@ -59,7 +169,7 @@ namespace Viewer.Data.Storage
 
             // load valid attributes
             SQLiteDataReader reader;
-            using (var query = new SQLiteCommand(Connection))
+            using (var query = new SQLiteCommand(_connection))
             {
                 query.CommandText = @"
                 SELECT a.name, a.source, a.type, a.value, length(a.value) as size
@@ -115,15 +225,20 @@ namespace Viewer.Data.Storage
 
         public void Store(IEntity entity)
         {
-            // otherwise, we have to update attributes
-            using (var transaction = Connection.BeginTransaction())
+            // make sure the entity will not change so that we will store it in a consistent state
+            var clone = entity.Clone();
+            var hasAttributes = clone.Any();
+            using (var transaction = BeginBatch())
             {
-                RemoveFile(entity.Path);
-                var id = InsertFile(entity.Path);
-                
-                foreach (var attr in entity)
+                RemoveFile(clone.Path);
+                if (hasAttributes)
                 {
-                    StoreAttribute(id, attr);
+                    var id = InsertFile(clone.Path);
+
+                    foreach (var attr in clone)
+                    {
+                        StoreAttribute(id, attr);
+                    }
                 }
 
                 transaction.Commit();
@@ -137,12 +252,11 @@ namespace Viewer.Data.Storage
             {
                 return;
             }
-
-            // finding file ID and updating it 
-            using (var transaction = Connection.BeginTransaction(IsolationLevel.Serializable))
+            
+            using (var transaction = BeginBatch())
             {
                 long? id;
-                using (var query = new SQLiteCommand(Connection))
+                using (var query = new SQLiteCommand(_connection))
                 {
                     query.CommandText = "SELECT id FROM files WHERE path = :path";
                     query.Parameters.Add(new SQLiteParameter("path", entity.Path));
@@ -153,7 +267,7 @@ namespace Viewer.Data.Storage
                     }
                 }
 
-                using (var command = new SQLiteCommand(Connection))
+                using (var command = new SQLiteCommand(_connection))
                 {
                     command.CommandText = @"
                     INSERT OR REPLACE INTO attributes (name, source, type, value, owner)
@@ -180,7 +294,7 @@ namespace Viewer.Data.Storage
         
         public void Touch(IEntity entity)
         {
-            using (var query = new SQLiteCommand(Connection))
+            using (var query = new SQLiteCommand(_connection))
             {
                 query.CommandText = @"
                     UPDATE files 
@@ -193,10 +307,10 @@ namespace Viewer.Data.Storage
 
         public void Clean(TimeSpan lastAccessTimeThreshold, int fileCountThreashold)
         {
-            using (var transaction = Connection.BeginTransaction(IsolationLevel.Serializable))
+            using (var transaction = BeginBatch())
             {
                 var threshold = DateTime.Now - lastAccessTimeThreshold;
-                using (var query = new SQLiteCommand(Connection))
+                using (var query = new SQLiteCommand(_connection))
                 {
                     query.CommandText = @"
                     SELECT lastAccessTime 
@@ -212,7 +326,7 @@ namespace Viewer.Data.Storage
                     }
                 }
 
-                using (var query = new SQLiteCommand(Connection))
+                using (var query = new SQLiteCommand(_connection))
                 {
                     query.CommandText = @"DELETE FROM files WHERE lastAccessTime < :threshold";
                     query.Parameters.Add(new SQLiteParameter(":threshold", threshold));
@@ -221,6 +335,13 @@ namespace Viewer.Data.Storage
 
                 transaction.Commit();
             }
+        }
+
+        private static readonly Random Generator = new Random();
+
+        public IRecursiveBatch BeginBatch()
+        {
+            return new SavepointTransaction(_currentTransaction, this, "savepoint_" + Generator.Next());
         }
 
         private DateTime GetLastWriteTime(string path)
@@ -246,7 +367,7 @@ namespace Viewer.Data.Storage
         private long InsertFile(string path)
         {
             var lastWriteTime = GetLastWriteTime(path);
-            using (var command = new SQLiteCommand(Connection))
+            using (var command = new SQLiteCommand(_connection))
             {
                 command.CommandText = @"
                 INSERT INTO files (path, lastWriteTime, lastAccessTime) 
@@ -256,12 +377,12 @@ namespace Viewer.Data.Storage
                 command.ExecuteNonQuery();
             }
 
-            return Connection.LastInsertRowId;
+            return _connection.LastInsertRowId;
         }
         
         private void RemoveFile(string path)
         {
-            using (var query = new SQLiteCommand(Connection))
+            using (var query = new SQLiteCommand(_connection))
             {
                 query.CommandText = @"DELETE FROM files WHERE path = :path";
                 query.Parameters.Add(new SQLiteParameter(":path", path));
@@ -271,11 +392,11 @@ namespace Viewer.Data.Storage
 
         private void MoveFile(string oldPath, string newPath)
         {
-            using (var transation = Connection.BeginTransaction())
+            using (var transation = BeginBatch())
             {
                 RemoveFile(newPath);
 
-                using (var query = new SQLiteCommand(Connection))
+                using (var query = new SQLiteCommand(_connection))
                 {
                     query.CommandText = @"UPDATE files SET path = :newPath WHERE path = :oldPath";
                     query.Parameters.Add(new SQLiteParameter(":oldPath", oldPath));
@@ -337,7 +458,7 @@ namespace Viewer.Data.Storage
 
         private void StoreAttribute(long fileId, Attribute attr)
         {
-            using (var command = new SQLiteCommand(Connection))
+            using (var command = new SQLiteCommand(_connection))
             {
                 command.CommandText = "INSERT INTO attributes (name, source, type, value, owner) VALUES (:name, :source, :type, :value, :owner)";
                 command.Parameters.Add(new SQLiteParameter(":name", attr.Name));

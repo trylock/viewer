@@ -69,6 +69,42 @@ namespace Viewer.Data.Storage
         void Move(IEntity entity, string newPath);
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents a collection of pending changes. No change will be done to data unless
+    /// <see cref="Commit" /> is called. Batches are recursive. 
+    /// </summary>
+    public interface IRecursiveBatch : IDisposable
+    {
+        /// <summary>
+        /// Parent batch. If there is a parent batch, no changes will be commited on
+        /// <see cref="Commit"/>. <see cref="Commit"/>ted nested batches cannot be
+        /// <see cref="Rollback"/>ed.
+        /// </summary>
+        IRecursiveBatch Parent { get; }
+
+        /// <summary>
+        /// Commit all changes in the batch and all nested batches which have not been rollbacked.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// If this batch has been rollbacked or its <see cref="Parent"/> has been committed/rollbacked.
+        /// </exception>
+        void Commit();
+
+        /// <summary>
+        /// Rollback all changes done in this batch and all nested batches (even if they have been
+        /// commited). This is automatically called when the object is <see cref="IDisposable.Dispose"/>ed
+        /// and <see cref="Commit"/> wasn't called.
+        /// </summary>
+        /// <remarks>
+        /// Changes in <see cref="Parent"/> batch won't be <see cref="Rollback"/>ed.
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">
+        /// If this batch or its <see cref="Parent"/> is commited.
+        /// </exception>
+        void Rollback();
+    }
+
     public interface ICacheAttributeStorage : IAttributeStorage
     {
         /// <summary>
@@ -89,5 +125,12 @@ namespace Viewer.Data.Storage
         ///     The files in the cache are sorted by the last access time. Only some records will be kept.
         /// </param>
         void Clean(TimeSpan lastAccessTimeThreshold, int fileCountThreshold);
+
+        /// <summary>
+        /// Begin a new batch on the data stored in this storage.
+        /// </summary>
+        /// <returns>Newly create batch.</returns>
+        /// <seealso cref="IRecursiveBatch"/>
+        IRecursiveBatch BeginBatch();
     }
 }

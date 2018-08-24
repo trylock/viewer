@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -157,8 +158,10 @@ namespace Viewer.Data.Storage
                 }
 
                 // update access times and attributes of cache entries
-                using (var transaction = _cacheStorage.Connection.BeginTransaction())
+                using (var batch = _cacheStorage.BeginBatch())
                 {
+                    Trace.Assert(batch.Parent == null);
+
                     foreach (var item in items)
                     {
                         var req = item.Value;
@@ -178,7 +181,7 @@ namespace Viewer.Data.Storage
                         }
                     }
 
-                    transaction.Commit();
+                    batch.Commit();
                 }
 
                 // release least recently used photos from the cache

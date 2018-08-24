@@ -233,7 +233,7 @@ namespace Viewer.UI.Images
                 {
                     p.Result.ThumbnailImage?.Dispose();
                 }
-            });
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
             _loadingType = LoadingType.None;
         }
 
@@ -265,7 +265,7 @@ namespace Viewer.UI.Images
                 {
                     p.Result.ThumbnailImage?.Dispose();
                 }
-            });
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
     }
 }

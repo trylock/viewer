@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -78,25 +79,27 @@ namespace Viewer.UI.Images
         /// Load the original image of <paramref name="entity"/> and and resize it to fit in
         /// <paramref name="thumbnailAreaSize"/> so that it presrves its aspect ratio. This
         /// function reads the whole file of <paramref name="entity"/> on a background thread.
-        /// The caller can affect order of the load operations by calling the <see cref="Prioritize"/>
+        /// I/O operations are synchronized and ordered (see <see cref="Prioritize"/>). Other
+        /// operations can run in parallel.
         /// method.
         /// </summary>
+        /// <remarks>
+        /// Side effect of this method is that it encodes the generated thumbnail and replaces
+        /// current embedded thumbnail of <paramref name="entity"/> with it.
+        /// </remarks>
         /// <param name="entity">Entity whose file will be loaded.</param>
         /// <param name="thumbnailAreaSize">
         ///     Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this area.
         /// </param>
         /// <param name="cancellationToken">Cancellation token of the load operation.</param>
         /// <returns>
-        ///     Task finished when the thumbnail is loaded. See <see cref="IImageLoader.LoadImage"/>
+        ///     Task finished when the thumbnail is loaded. See <see cref="IImageLoader.LoadImage(IEntity)"/>
         ///     for the list of possible exceptions returned by this task.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
-        /// <seealso cref="IImageLoader.LoadImage">
-        ///     For the list of possible exceptions returned by the task.
-        /// </seealso>
-        /// <seealso cref="IThumbnailGenerator.GetThumbnail">
-        ///     For the list of possible exceptions returned by the task.
-        /// </seealso>
+        /// <seealso cref="IFileSystem.ReadAllBytes"/>
+        /// <seealso cref="IImageLoader.LoadImage(IEntity, Stream)" />
+        /// <seealso cref="IThumbnailGenerator.GetThumbnail" />
         Task<Thumbnail> LoadNativeThumbnailAsync(
             IEntity entity, 
             Size thumbnailAreaSize, 
@@ -119,9 +122,29 @@ namespace Viewer.UI.Images
         private readonly IImageLoader _imageLoader;
         private readonly IThumbnailGenerator _thumbnailGenerator;
         private readonly IAttributeStorage _storage;
+        private readonly IFileSystem _fileSystem;
+        private Task _loadQueue = Task.CompletedTask;
 
-        private readonly List<LoadRequest> _requests = new List<LoadRequest>();
-        private readonly SemaphoreSlim _requestCount = new SemaphoreSlim(0);
+        /// <summary>
+        /// Request to generate a thumbnail from the original image of <see cref="Entity"/>.
+        /// Disk I/O is synchronized. Request won't compete for bandwidth.
+        /// </summary>
+        private class LoadRequest
+        {
+            public TaskCompletionSource<Thumbnail> Completion { get; } =
+                new TaskCompletionSource<Thumbnail>();
+
+            public CancellationToken Cancellation { get; }
+            public IEntity Entity { get; }
+            public Size ThumbnailAreaSize { get; }
+
+            public LoadRequest(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
+            {
+                Entity = entity;
+                ThumbnailAreaSize = thumbnailAreaSize;
+                Cancellation = cancellationToken;
+            }
+        }
 
         /// <summary>
         /// Quality of thumbnails saved to the cache storage. This number has to be between 0 and 100.
@@ -133,17 +156,13 @@ namespace Viewer.UI.Images
         public ThumbnailLoader(
             IImageLoader imageLoader, 
             IThumbnailGenerator thumbnailGenerator, 
-            IAttributeStorage storage)
+            IAttributeStorage storage,
+            IFileSystem fileSystem)
         {
+            _fileSystem = fileSystem;
             _imageLoader = imageLoader;
             _thumbnailGenerator = thumbnailGenerator;
             _storage = storage;
-
-            var thread = new Thread(Loader)
-            {
-                IsBackground = true
-            };
-            thread.Start();
         }
 
         public Task<Thumbnail> LoadEmbeddedThumbnailAsync(
@@ -180,7 +199,7 @@ namespace Viewer.UI.Images
                 }
             }
         }
-
+        
         public Task<Thumbnail> LoadNativeThumbnailAsync(
             IEntity entity, 
             Size thumbnailAreaSize,
@@ -189,16 +208,119 @@ namespace Viewer.UI.Images
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var req = new LoadRequest(entity, thumbnailAreaSize, cancellationToken);
-            return AddLoadRequest(req);
+            var request = new LoadRequest(entity, thumbnailAreaSize, cancellationToken);
+            var task = AddLoadRequest(request);
+
+            // pick next load request once the previous request has finished
+            _loadQueue = _loadQueue.ContinueWith(_ =>
+            {
+                var req = ConsumeLoadRequest();
+                Debug.Assert(req != null);
+                if (req.Cancellation.IsCancellationRequested)
+                {
+                    req.Completion.SetCanceled();
+                    return;
+                }
+
+                try
+                {
+                    var data = LoadFile(req);
+
+                    // decode it, generate a thumbnail and save it back as entity thumbnail in parallel
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            var result = Generate(Decode(data, req), req);
+                            req.Completion.SetResult(result);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            req.Completion.SetCanceled();
+                        }
+                        catch (Exception e)
+                        {
+                            req.Completion.SetException(e);
+                        }
+                    }, cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    req.Completion.SetCanceled();
+                }
+                catch (Exception e)
+                {
+                    req.Completion.SetException(e);
+                }
+            }, TaskContinuationOptions.None);
+
+            return task;
         }
+
+        private byte[] LoadFile(LoadRequest req)
+        {
+            return _fileSystem.ReadAllBytes(req.Entity.Path);
+        }
+
+        private SKBitmap Decode(byte[] data, LoadRequest req)
+        {
+            req.Cancellation.ThrowIfCancellationRequested();
+
+            using (var input = new MemoryStream(data))
+            {
+                return _imageLoader.LoadImage(req.Entity, input);
+            }
+        }
+
+        private Thumbnail Generate(SKBitmap original, LoadRequest req)
+        {
+            using (original)
+            {
+                req.Cancellation.ThrowIfCancellationRequested();
+
+                using (var thumbnail = _thumbnailGenerator.GetThumbnail(original, req.ThumbnailAreaSize))
+                {
+                    req.Cancellation.ThrowIfCancellationRequested();
+                    SaveThumbnail(req.Entity, thumbnail);
+                    var result = new Thumbnail(thumbnail.ToBitmap(), new Size(original.Width, original.Height));
+                    return result;
+                }
+            }
+        }
+        
+        private void SaveThumbnail(IEntity entity, SKBitmap thumbnail)
+        {
+            using (var dataStrem = new MemoryStream())
+            using (var outputStream = new SKManagedWStream(dataStrem))
+            {
+                var isEncoded = SKPixmap.Encode(
+                    outputStream,
+                    thumbnail,
+                    SKEncodedImageFormat.Jpeg,
+                    SavedThumbnailQuaity);
+                if (!isEncoded)
+                {
+                    return;
+                }
+
+                var value = new ImageValue(dataStrem.ToArray());
+                var newEntity = entity.SetAttribute(new Attribute(
+                    ExifAttributeReaderFactory.ThumbnailAttrName,
+                    value, AttributeSource.Metadata));
+                _storage.StoreThumbnail(newEntity);
+            }
+        }
+
+        #region Request collection
+        
+        private readonly List<LoadRequest> _requests = new List<LoadRequest>();
         
         public void Prioritize(string path)
         {
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
-
-            lock (_requests)
+            
+            lock (_requests) 
             {
                 // find the request
                 var index = _requests.Count - 1;
@@ -221,108 +343,8 @@ namespace Viewer.UI.Images
             }
         }
 
-        /// <summary>
-        /// Request to generate thumbnail from the original image.
-        /// Requests are synchronized.
-        /// </summary>
-        private class LoadRequest
-        {
-            public TaskCompletionSource<Thumbnail> Completion { get; } = 
-                new TaskCompletionSource<Thumbnail>();
-
-            public CancellationToken Cancellation { get; }
-            public IEntity Entity { get; }
-            public Size ThumbnailAreaSize { get; }
-
-            public LoadRequest(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
-            {
-                Entity = entity;
-                ThumbnailAreaSize = thumbnailAreaSize;
-                Cancellation = cancellationToken;
-            }
-        }
-
-        private void Loader()
-        {
-            for (;;)
-            {
-                var req = ConsumeLoadRequest();
-                if (req == null)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    if (req.Cancellation.IsCancellationRequested)
-                        continue;
-                    
-                    using (var image = _imageLoader.LoadImage(req.Entity))
-                    {
-                        if (req.Cancellation.IsCancellationRequested)
-                            continue;
-
-                        // generate thumbnail
-                        var imageSize = new Size(image.Width, image.Height);
-                        var thumbnail = _thumbnailGenerator.GetThumbnail(image, req.ThumbnailAreaSize);
-                        try
-                        {
-                            // finish the task
-                            req.Completion.SetResult(new Thumbnail(thumbnail.ToBitmap(), imageSize));
-                            // store the thumbnail
-                            SaveThumbnail(req.Entity, thumbnail);
-                        }
-                        catch (Exception)
-                        {
-                            thumbnail.Dispose();
-                            throw;
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    req.Completion.SetException(e);
-                }
-            }
-        }
-
-        private void SaveThumbnail(IEntity entity, SKBitmap thumbnail)
-        {
-            Task.Run(() =>
-            {
-                try
-                {
-                    using (var dataStrem = new MemoryStream())
-                    using (var outputStream = new SKManagedWStream(dataStrem))
-                    {
-                        var isEncoded = SKPixmap.Encode(
-                            outputStream, 
-                            thumbnail, 
-                            SKEncodedImageFormat.Jpeg, 
-                            SavedThumbnailQuaity);
-                        if (!isEncoded)
-                        {
-                            return;
-                        }
-
-                        var value = new ImageValue(dataStrem.ToArray());
-                        var newEntity = entity.SetAttribute(new Attribute(
-                            ExifAttributeReaderFactory.ThumbnailAttrName, 
-                            value, AttributeSource.Metadata));
-                        _storage.StoreThumbnail(newEntity);
-                    }
-                }
-                finally
-                {
-                    thumbnail.Dispose();
-                }
-            });
-        }
-
         private LoadRequest ConsumeLoadRequest()
         {
-            _requestCount.Wait();
-
             lock (_requests)
             {
                 var req = _requests[_requests.Count - 1];
@@ -337,8 +359,9 @@ namespace Viewer.UI.Images
             {
                 _requests.Add(req);
             }
-            _requestCount.Release();
             return req.Completion.Task;
         }
+
+        #endregion
     }
 }

@@ -68,6 +68,14 @@ namespace Viewer.Images
         SKBitmap LoadImage(IEntity entity);
 
         /// <summary>
+        /// Decode image from a stream.
+        /// </summary>
+        /// <param name="entity">Entity of the image</param>
+        /// <param name="input">Stream with encoded data</param>
+        /// <returns></returns>
+        SKBitmap LoadImage(IEntity entity, Stream input);
+
+        /// <summary>
         /// Load embeded thumbnail asynchronously.
         /// The thumbnail is loaded in its original size.
         /// </summary>
@@ -82,7 +90,6 @@ namespace Viewer.Images
     [Export(typeof(IImageLoader))]
     public class ImageLoader : IImageLoader
     {
-
         /// <summary>
         /// Rotate/flip transformation which fixes image orientation for each possible orientation value.
         /// Index in this array is a value of the orientation tag as defined in Exif 2.2
@@ -159,6 +166,13 @@ namespace Viewer.Images
             }
         }
 
+        public SKBitmap LoadImage(IEntity entity, Stream input)
+        {
+            var orientation = GetTransformation(entity);
+            var image = DecodeImage(input, orientation);
+            return image;
+        }
+        
         public Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken)
         {
             // isolate these values for the thread which will generate the thumbnail

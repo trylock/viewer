@@ -175,6 +175,7 @@ namespace Viewer.UI.Images
             remove => RefreshMenuItem.Click -= value;
         }
 
+        public event EventHandler ShowQuery;
         public event EventHandler<EntityEventArgs> OpenItem;
         public event EventHandler<DropEventArgs> OnDrop;
         public event EventHandler CancelEditItemName;
@@ -536,6 +537,11 @@ namespace Viewer.UI.Images
         private void NextMenuItem_Click(object sender, EventArgs e)
         {
             GoForwardInHistory?.Invoke(sender, e);
+        }
+
+        private void ShowQueryMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowQuery?.Invoke(sender, e);
         }
 
         protected override string GetPersistString()

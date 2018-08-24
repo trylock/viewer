@@ -31,6 +31,7 @@ namespace Viewer.UI.Images
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class ImagesPresenter : Presenter<IImagesView>
     {
+        private readonly IEditor _editor;
         private readonly IExplorer _explorer;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
@@ -123,6 +124,7 @@ namespace Viewer.UI.Images
         [ImportingConstructor]
         public ImagesPresenter(
             ExportFactory<IImagesView> viewFactory,
+            IEditor editor,
             IExplorer explorer,
             IFileSystemErrorView dialogView,
             ISelection selection, 
@@ -133,6 +135,7 @@ namespace Viewer.UI.Images
             IQueryEvaluatorFactory queryEvaluatorFactory)
         {
             ViewLifetime = viewFactory.CreateExport();
+            _editor = editor;
             _explorer = explorer;
             _dialogView = dialogView;
             _selection = selection;
@@ -560,6 +563,14 @@ namespace Viewer.UI.Images
             if (_state.Current != null)
             {
                 _state.ExecuteQuery(_state.Current);
+            }
+        }
+
+        private void View_ShowQuery(object sender, EventArgs e)
+        {
+            if (_state.Current != null)
+            {
+                _editor.OpenNew(_state.Current.Text, DockState.Document);
             }
         }
 

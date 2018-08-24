@@ -316,7 +316,7 @@ namespace Viewer.UI.Images
         event EventHandler<EntityEventArgs> OpenItem;
 
         /// <summary>
-        /// Event occurs when user drops omething into the view.
+        /// Event occurs when user drops something into the view.
         /// </summary>
         event EventHandler<DropEventArgs> OnDrop;
 
@@ -324,6 +324,11 @@ namespace Viewer.UI.Images
         /// Event occurs when user tries to refresh current query.
         /// </summary>
         event EventHandler RefreshQuery;
+
+        /// <summary>
+        /// Event occurs when user tries to open current query text in query editor.
+        /// </summary>
+        event EventHandler ShowQuery;
 
         /// <summary>
         /// Textual representation of the query of this component

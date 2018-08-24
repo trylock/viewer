@@ -169,6 +169,16 @@ namespace Viewer.UI.Images
     public interface IHistoryView
     {
         /// <summary>
+        /// ture iff user can go forward in query history
+        /// </summary>
+        bool CanGoForwardInHistory { get; set; }
+
+        /// <summary>
+        /// true iff user can go back in query history
+        /// </summary>
+        bool CanGoBackInHistory { get; set; }
+
+        /// <summary>
         /// Event occurs when user wants to go back in query history.
         /// </summary>
         event EventHandler GoBackInHistory;

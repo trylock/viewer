@@ -370,4 +370,10 @@ Do you want to try again?</value>
   <data name="Empty_Label" xml:space="preserve">
     <value>Empty</value>
   </data>
+  <data name="MouseButton4_Label" xml:space="preserve">
+    <value>BUTTON4</value>
+  </data>
+  <data name="MouseButton5_Label" xml:space="preserve">
+    <value>BUTTON5</value>
+  </data>
 </root>

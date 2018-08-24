@@ -30,6 +30,9 @@ namespace Viewer.UI.Images
         {
             InitializeComponent();
 
+            PreviousMenuItem.ShortcutKeyDisplayString = "Alt + Right, MB4";
+            NextMenuItem.ShortcutKeyDisplayString = "Alt + Left, MB5";
+
             _gridView = new GridView
             {
                 ContextMenuStrip = ItemContextMenu,
@@ -59,6 +62,18 @@ namespace Viewer.UI.Images
         }
 
         #region IHistoryView
+        
+        public bool CanGoForwardInHistory
+        {
+            get => NextMenuItem.Enabled;
+            set => NextMenuItem.Enabled = value;
+        }
+
+        public bool CanGoBackInHistory
+        {
+            get => PreviousMenuItem.Enabled;
+            set => PreviousMenuItem.Enabled = value;
+        }
 
         public event EventHandler GoBackInHistory;
 
@@ -511,6 +526,16 @@ namespace Viewer.UI.Images
             
             NameTextBox.BringToFront();
             BeginEditItemName?.Invoke(sender, new EntityEventArgs(_activeItem));
+        }
+
+        private void PreviousMenuItem_Click(object sender, EventArgs e)
+        {
+            GoBackInHistory?.Invoke(sender, e);
+        }
+
+        private void NextMenuItem_Click(object sender, EventArgs e)
+        {
+            GoForwardInHistory?.Invoke(sender, e);
         }
 
         protected override string GetPersistString()

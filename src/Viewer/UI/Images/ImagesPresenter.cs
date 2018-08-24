@@ -188,6 +188,8 @@ namespace Viewer.UI.Images
             _queryEvaluator = _queryEvaluatorFactory.Create(query);
             View.Query = _queryEvaluator.Query.Text;
             View.Items = _queryEvaluator.Update();
+            View.CanGoBackInHistory = _state.Previous != null;
+            View.CanGoForwardInHistory = _state.Next != null;
             View.BeginLoading();
             View.BeginPolling(PollingRate);
             

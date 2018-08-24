@@ -33,6 +33,10 @@
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.ItemContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,8 +48,7 @@
             this.BackToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +71,9 @@
             this.OpenMenuItem,
             this.toolStripSeparator3,
             this.RefreshMenuItem,
+            this.toolStripSeparator4,
+            this.PreviousMenuItem,
+            this.NextMenuItem,
             this.toolStripSeparator1,
             this.CopyMenuItem,
             this.CutMenuItem,
@@ -75,7 +81,7 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 176);
+            this.ItemContextMenu.Size = new System.Drawing.Size(181, 226);
             // 
             // OpenMenuItem
             // 
@@ -83,6 +89,34 @@
             this.OpenMenuItem.Size = new System.Drawing.Size(180, 22);
             this.OpenMenuItem.Text = "Open";
             this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // RefreshMenuItem
+            // 
+            this.RefreshMenuItem.Name = "RefreshMenuItem";
+            this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.RefreshMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.RefreshMenuItem.Text = "Refresh";
+            // 
+            // PreviousMenuItem
+            // 
+            this.PreviousMenuItem.Name = "PreviousMenuItem";
+            this.PreviousMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Left)));
+            this.PreviousMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.PreviousMenuItem.Text = "Previous";
+            this.PreviousMenuItem.Click += new System.EventHandler(this.PreviousMenuItem_Click);
+            // 
+            // NextMenuItem
+            // 
+            this.NextMenuItem.Name = "NextMenuItem";
+            this.NextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Right)));
+            this.NextMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.NextMenuItem.Text = "Next";
+            this.NextMenuItem.Click += new System.EventHandler(this.NextMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -146,17 +180,10 @@
             this.StatusLabel.TabIndex = 1;
             this.StatusLabel.Text = "Loading ...";
             // 
-            // RefreshMenuItem
+            // toolStripSeparator4
             // 
-            this.RefreshMenuItem.Name = "RefreshMenuItem";
-            this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.RefreshMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.RefreshMenuItem.Text = "Refresh";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
             // 
             // ImagesView
             // 
@@ -194,5 +221,8 @@
         private System.Windows.Forms.Label StatusLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem RefreshMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem PreviousMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem NextMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }

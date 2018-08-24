@@ -507,6 +507,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BUTTON4.
+        /// </summary>
+        internal static string MouseButton4_Label {
+            get {
+                return ResourceManager.GetString("MouseButton4_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BUTTON5.
+        /// </summary>
+        internal static string MouseButton5_Label {
+            get {
+                return ResourceManager.GetString("MouseButton5_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Open {

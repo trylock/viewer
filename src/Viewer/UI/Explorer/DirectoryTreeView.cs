@@ -250,6 +250,9 @@ namespace Viewer.UI.Explorer
             }
             
             RenameDirectory?.Invoke(sender, new RenameDirectoryEventArgs(path, e.Label));
+
+            // let the presenter descide whether it will change the name or not
+            e.CancelEdit = true;
         }
         
         private void TreeView_KeyDown(object sender, KeyEventArgs e)

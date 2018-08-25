@@ -68,5 +68,9 @@ namespace Viewer.Data.Storage
                 _files.Remove(entity.Path);
             }
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Viewer.Data.Storage
     ///         storage.Store(entity);
     ///     </code>
     /// </example>
-    public interface IAttributeStorage
+    public interface IAttributeStorage : IDisposable
     {
         /// <summary>
         /// Load attributes from given path.

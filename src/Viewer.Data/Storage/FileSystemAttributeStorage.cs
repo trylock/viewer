@@ -236,5 +236,9 @@ namespace Viewer.Data.Storage
             const string header = AttributeReader.JpegSegmentHeader;
             return JpegSegmentUtils.MatchSegment(segment, JpegSegmentType.App1, header);
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

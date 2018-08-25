@@ -180,7 +180,12 @@ namespace Viewer.UI.Explorer
 
             try
             {
-                var newPath = Path.Combine(Path.GetDirectoryName(e.FullPath), e.NewName);
+                var directory = Path.GetDirectoryName(e.FullPath);
+                if (directory == null) // trying to rename root directory
+                {
+                    return;
+                }
+                var newPath = Path.Combine(directory, e.NewName);
                 _fileSystem.MoveDirectory(e.FullPath, newPath);
                 View.SetDirectory(PathUtils.Split(e.FullPath), new DirectoryView
                 {

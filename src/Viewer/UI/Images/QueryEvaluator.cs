@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -239,7 +239,7 @@ namespace Viewer.UI.Images
             
             try
             {
-                foreach (var entity in Query.Evaluate(Progress, Cancellation.Token))
+                foreach (var entity in Query.Execute(Progress, Cancellation.Token))
                 {
                     Cancellation.Token.ThrowIfCancellationRequested();
 

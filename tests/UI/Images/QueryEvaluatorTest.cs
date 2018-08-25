@@ -66,7 +66,7 @@ namespace ViewerTest.UI.Images
                 .Returns(thumbnail1.Object)
                 .Returns(thumbnail2.Object);
 
-            _query.Setup(mock => mock.Evaluate(
+            _query.Setup(mock => mock.Execute(
                 It.IsAny<IProgress<QueryProgressReport>>(), 
                 It.IsAny<CancellationToken>()))
                 .Returns(new[]{ entity1, entity2 });
@@ -92,7 +92,7 @@ namespace ViewerTest.UI.Images
             var thumbnail2 = new Mock<ILazyThumbnail>();
             var thumbnail3 = new Mock<ILazyThumbnail>();
             
-            _query.Setup(mock => mock.Evaluate(
+            _query.Setup(mock => mock.Execute(
                     It.IsAny<IProgress<QueryProgressReport>>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(entities);
@@ -133,7 +133,7 @@ namespace ViewerTest.UI.Images
             var thumbnail1 = new Mock<ILazyThumbnail>();
             var thumbnail2 = new Mock<ILazyThumbnail>();
             var thumbnail3 = new Mock<ILazyThumbnail>();
-            _query.Setup(mock => mock.Evaluate(
+            _query.Setup(mock => mock.Execute(
                     It.IsAny<IProgress<QueryProgressReport>>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(entities);
@@ -166,7 +166,7 @@ namespace ViewerTest.UI.Images
             };
             var thumbnail1 = new Mock<ILazyThumbnail>();
             var thumbnail2 = new Mock<ILazyThumbnail>();
-            _query.Setup(mock => mock.Evaluate(
+            _query.Setup(mock => mock.Execute(
                     It.IsAny<IProgress<QueryProgressReport>>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(entities);

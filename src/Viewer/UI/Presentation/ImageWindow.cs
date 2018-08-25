@@ -17,7 +17,7 @@ namespace Viewer.UI.Presentation
 {
     /// <inheritdoc />
     /// <summary>
-    /// Image window preloads encoded image data to an internal buffer.
+    /// Image window preloads images within a constant distance from the current image.
     /// </summary>
     public class ImageWindow : IDisposable
     {
@@ -50,7 +50,7 @@ namespace Viewer.UI.Presentation
                         parent.Result?.Dispose();
                         _isDisposed = true;
                     }
-                }, TaskScheduler.Default);
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
             }
         }
         
@@ -200,23 +200,18 @@ namespace Viewer.UI.Presentation
 
             var entityIndex = (_position + bufferIndex) % _entities.Count;
             var entity = _entities[entityIndex];
-            var loadTask = LoadAsync(entity);
+            var loadTask = QueueLoadRequest(entity);
             _buffer[bufferIndex] = new ImageProxy(loadTask);
         }
 
-        private readonly object _lock = new object();
+        private Task<SKBitmap> _loadQueue = Task.FromResult<SKBitmap>(null);
 
-        private Task<SKBitmap> LoadAsync(IEntity entity)
+        private Task<SKBitmap> QueueLoadRequest(IEntity entity)
         {
-            return Task.Run(() =>
-            {
-                lock (_lock)
-                {
-                    return _imageLoader.LoadImage(entity);
-                }
-            });
+            _loadQueue = _loadQueue.ContinueWith(_ => _imageLoader.LoadImage(entity));
+            return _loadQueue;
         }
-
+        
         private void DisposeItemsInBuffer()
         {
             foreach (var proxy in _buffer)

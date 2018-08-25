@@ -60,21 +60,6 @@ namespace ViewerTest.UI.Images
             Assert.AreEqual(null, result.Result.ThumbnailImage);
         }
 
-        private sealed class BitmapMock : SKBitmap
-        {
-            public bool IsDisposed { get; private set; }
-
-            public BitmapMock() : base(1, 1)
-            {
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                base.Dispose(disposing);
-                IsDisposed = true;
-            }
-        }
-
         [TestMethod]
         public async Task LoadEmbeddedThumbnailAsync_InternalResultsAreDisposed()
         {

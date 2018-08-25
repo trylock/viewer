@@ -145,12 +145,14 @@
     <Compile Include="Query\RuntimeTest.cs" />
     <Compile Include="Query\ValueConverterTest.cs" />
     <Compile Include="UI\Attributes\AttributeManagerTest.cs" />
+    <Compile Include="UI\BitmapMock.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
     <Compile Include="UI\Images\ThumbnailLoaderTest.cs" />
     <Compile Include="UI\Images\LazyImageTest.cs" />
     <Compile Include="UI\Images\QueryEvaluatorTest.cs" />
     <Compile Include="UI\Images\RectangleSelectionTest.cs" />
     <Compile Include="Images\ThumbnailGeneratorTest.cs" />
+    <Compile Include="UI\Presentation\ImageWindowTest.cs" />
     <Compile Include="UI\QueryEventsTest.cs" />
     <Compile Include="UI\SelectionTest.cs" />
   </ItemGroup>
@@ -184,9 +186,7 @@
       <Name>Viewer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Presentation\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

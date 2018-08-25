@@ -75,7 +75,7 @@ namespace Viewer.UI.QueryEditor
             this.OpenButton.Name = "OpenButton";
             this.OpenButton.Size = new System.Drawing.Size(23, 22);
             this.OpenButton.Text = "Open query";
-            this.OpenButton.ToolTipText = "Open query";
+            this.OpenButton.ToolTipText = "Open query (Ctrl + O)";
             this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // QueryViewsDropDown
@@ -95,6 +95,7 @@ namespace Viewer.UI.QueryEditor
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(23, 22);
             this.SaveButton.Text = "Save query";
+            this.SaveButton.ToolTipText = "Save query (Ctrl + S)";
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // RunButton
@@ -105,6 +106,7 @@ namespace Viewer.UI.QueryEditor
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(23, 22);
             this.RunButton.Text = "Run query";
+            this.RunButton.ToolTipText = "Run query (F5)";
             this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
             // QueryTextBox

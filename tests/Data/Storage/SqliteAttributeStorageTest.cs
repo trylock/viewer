@@ -21,13 +21,21 @@ namespace ViewerTest.Data.Storage
     [TestClass]
     public class SqliteAttributeStorageTest
     {
+        private class ConfigurationMock : IStorageConfiguration
+        {
+            public TimeSpan CacheLifespan { get; set; } = TimeSpan.FromDays(1);
+            public int CacheMaxFileCount { get; set; } = int.MaxValue;
+        }
+
         private SqliteAttributeStorage _storage;
+        private ConfigurationMock _configuration;
 
         [TestInitialize]
         public void Setup()
         {
             var factory = new SQLiteConnectionFactory(new FileSystem(), "test.db");
-            _storage = new SqliteAttributeStorage(factory);
+            _configuration = new ConfigurationMock();
+            _storage = new SqliteAttributeStorage(factory, _configuration);
         }
 
         [TestCleanup]
@@ -552,6 +560,39 @@ namespace ViewerTest.Data.Storage
             test2 = _storage.Load("test2");
             Assert.IsNull(test1);
             Assert.IsNull(test2);
+        }
+
+        [TestMethod]
+        public async Task ApplyChanges_CleanOutdatedFiles()
+        {
+            _configuration.CacheLifespan = TimeSpan.FromMilliseconds(1000);
+
+            var entity1 = new FileEntity("test1")
+                .SetAttribute(new Attribute("value", new IntValue(1), AttributeSource.Custom));
+            var entity2 = new FileEntity("test2")
+                .SetAttribute(new Attribute("value", new IntValue(1), AttributeSource.Custom));
+
+            _storage.Store(entity1);
+            _storage.Store(entity2);
+            _storage.ApplyChanges();
+
+            var result1 = _storage.Load("test1");
+            var result2 = _storage.Load("test2");
+            Assert.IsNotNull(result1);
+            Assert.IsNotNull(result2);
+
+            await Task.Delay(1100);
+
+            result1 = _storage.Load("test1");
+            Assert.IsNotNull(result1);
+
+            // entity2 has not been accessed so it will be deleted
+            _storage.ApplyChanges();
+
+            result1 = _storage.Load("test1");
+            result2 = _storage.Load("test2");
+            Assert.IsNotNull(result1);
+            Assert.IsNull(result2);
         }
     }
 }

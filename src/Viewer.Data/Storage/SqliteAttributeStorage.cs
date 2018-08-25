@@ -56,6 +56,12 @@ namespace Viewer.Data.Storage
 
         private sealed class TouchRequest : Request
         {
+            public DateTime AccessTime { get; }
+
+            public TouchRequest(DateTime accessTime)
+            {
+                AccessTime = accessTime;
+            }
         }
 
         private sealed class DeleteRequest : Request
@@ -67,14 +73,18 @@ namespace Viewer.Data.Storage
         private readonly SQLiteConnection _readConnection;
         private readonly LoadEntityCommand _loadCommand;
         private readonly object _readConnectionLock = new object();
+        private readonly IStorageConfiguration _configuration;
 
         [ImportingConstructor]
-        public SqliteAttributeStorage(SQLiteConnectionFactory connectionFactory)
+        public SqliteAttributeStorage(
+            SQLiteConnectionFactory connectionFactory, 
+            IStorageConfiguration configuration)
         {
             _connectionFactory = connectionFactory;
             _readConnection = _connectionFactory.Create();
             _loadCommand = new LoadEntityCommand(_readConnection);
             _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
+            _configuration = configuration;
         }
         
         public IEntity Load(string path)
@@ -95,10 +105,15 @@ namespace Viewer.Data.Storage
                     {
                         return null;
                     }
+
+                    if (req is TouchRequest)
+                    {
+                        _requests[path] = new TouchRequest(DateTime.Now);
+                    }
                 }
                 else
                 {
-                    _requests[path] = new TouchRequest();
+                    _requests[path] = new TouchRequest(DateTime.Now);
                 }
             }
 
@@ -286,7 +301,7 @@ namespace Viewer.Data.Storage
             public SQLiteDataReader Execute(string path, DateTime lastWriteTime)
             {
                 _path.Value = path;
-                _lastWriteTime.Value = lastWriteTime;
+                _lastWriteTime.Value = lastWriteTime.ToUniversalTime();
                 return _command.ExecuteReader();
             }
 
@@ -378,7 +393,7 @@ namespace Viewer.Data.Storage
             public void Execute(string path, DateTime lastWriteTime)
             {
                 _path.Value = path;
-                _lastWriteTime.Value = lastWriteTime;
+                _lastWriteTime.Value = lastWriteTime.ToUniversalTime();
                 _command.ExecuteNonQuery();
             }
 
@@ -415,18 +430,21 @@ namespace Viewer.Data.Storage
         private class TouchFileCommand : IDisposable
         {
             private readonly SQLiteParameter _path = new SQLiteParameter(":path");
+            private readonly SQLiteParameter _accessTime = new SQLiteParameter(":accessTime");
             private readonly SQLiteCommand _command;
 
             public TouchFileCommand(SQLiteConnection connection)
             {
                 _command = connection.CreateCommand();
-                _command.CommandText = "UPDATE files SET lastAccessTime = datetime('now') WHERE path = :path";
+                _command.CommandText = "UPDATE files SET lastAccessTime = :accessTime WHERE path = :path";
                 _command.Parameters.Add(_path);
+                _command.Parameters.Add(_accessTime);
             }
 
-            public void Execute(string path)
+            public void Execute(string path, DateTime accessTime)
             {
                 _path.Value = path;
+                _accessTime.Value = accessTime.ToUniversalTime();
                 _command.ExecuteNonQuery();
             }
 
@@ -486,6 +504,37 @@ namespace Viewer.Data.Storage
                 _value.Value = thumbnail;
                 _type.Value = (int) AttributeType.Image;
                 _source.Value = (int) AttributeSource.Metadata;
+                _command.ExecuteNonQuery();
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+            }
+        }
+
+        private class CleanCommand : IDisposable
+        {
+            private readonly SQLiteParameter _lastAccessTimeThreshold = 
+                new SQLiteParameter(":lastAccessTimeThreshold");
+
+            private readonly SQLiteCommand _command;
+
+            public CleanCommand(SQLiteConnection connection)
+            {
+                _command = connection.CreateCommand();
+                _command.CommandText = "DELETE FROM files WHERE lastAccessTime <= :lastAccessTimeThreshold";
+                _command.Parameters.Add(_lastAccessTimeThreshold);
+            }
+
+            /// <summary>
+            /// Remove all files (and their attributes) from the database whose last access time
+            /// is less than <paramref name="lastAccessTimeThreshold"/>.
+            /// </summary>
+            /// <param name="lastAccessTimeThreshold"></param>
+            public void Execute(DateTime lastAccessTimeThreshold)
+            {
+                _lastAccessTimeThreshold.Value = lastAccessTimeThreshold.ToUniversalTime();
                 _command.ExecuteNonQuery();
             }
 
@@ -607,9 +656,9 @@ namespace Viewer.Data.Storage
                                 continue;
                             updateThumbnailCommand.Execute((long)id, thumbnailReq.Thumbnail);
                         }
-                        else if (req.Value is TouchRequest)
+                        else if (req.Value is TouchRequest touchReq)
                         {
-                            touchFileCommand.Execute(req.Key);
+                            touchFileCommand.Execute(req.Key, touchReq.AccessTime);
                         }
                         else if (req.Value is DeleteRequest)
                         {
@@ -626,8 +675,22 @@ namespace Viewer.Data.Storage
                 }
 
                 transaction.Commit();
+
+                // clean outdated files
+                try
+                {
+                    using (var cleanCommand = new CleanCommand(connection))
+                    {
+                        var threshold = DateTime.Now - _configuration.CacheLifespan;
+                        cleanCommand.Execute(threshold);
+                    }
+                }
+                catch (Exception e)
+                {
+                    exceptions.Add(e);
+                }
             }
-            
+
             // if there were errors, throw an exception
             if (exceptions.Count > 0)
             {

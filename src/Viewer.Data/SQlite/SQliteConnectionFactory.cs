@@ -11,39 +11,68 @@ using Viewer.IO;
 
 namespace Viewer.Data.SQLite
 {
-    public class SQliteConnectionFactory
+    [Export]
+    public class SQLiteConnectionFactory
     {
-        [Import] private IFileSystem _fileSystem;
+        private readonly IFileSystem _fileSystem;
+        private readonly string _dataSource;
 
-        [Export(typeof(SQLiteConnection))]
-        public SQLiteConnection Connection 
+        [ImportingConstructor]
+        public SQLiteConnectionFactory(IFileSystem fileSystem) 
+            : this(fileSystem, Environment.ExpandEnvironmentVariables(Resources.CacheFilePath))
         {
-            get
+        }
+        
+        public SQLiteConnectionFactory(IFileSystem fileSystem, string dataSource)
+        {
+            _fileSystem = fileSystem;
+            _dataSource = Path.GetFullPath(dataSource);
+            Initialize(_dataSource);
+        }
+        
+        /// <summary>
+        /// If the default data source is a file, create its directory. This function will create
+        /// expected database structure in the default datasource and registre all custom functions.
+        /// </summary>
+        private void Initialize(string dataSource)
+        {
+            // make sure its directory exists
+            _fileSystem.CreateDirectory(Path.GetDirectoryName(dataSource));
+
+            using (var connection = Create(dataSource))
             {
-                var indexFilePath = Environment.ExpandEnvironmentVariables(Resources.CacheFilePath);
-                var indexFileDirectory = Path.GetDirectoryName(indexFilePath);
-                _fileSystem.CreateDirectory(indexFileDirectory);
-                return Create(indexFilePath);
+                var initialization = Resources.SqliteInitializationScript.Split(';');
+                using (var command = connection.CreateCommand())
+                {
+                    foreach (var part in initialization)
+                    {
+                        command.CommandText = part;
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                SQLiteFunction.RegisterFunction(typeof(CurrentCultureIgnoreCase));
             }
         }
 
-        public SQLiteConnection Create(string dataSource)
+        /// <summary>
+        /// Create a connection to the default datasource.
+        /// </summary>
+        /// <returns>New connection.</returns>
+        public SQLiteConnection Create()
+        {
+            return Create(_dataSource);
+        }
+
+        /// <summary>
+        /// Create a new connection to <paramref name="dataSource"/>.
+        /// </summary>
+        /// <param name="dataSource"></param>
+        /// <returns></returns>
+        private SQLiteConnection Create(string dataSource)
         {
             var connection = new SQLiteConnection(string.Format(Resources.SqliteConnectionString, dataSource));
             connection.Open();
-
-            var initialization = Resources.SqliteInitializationScript.Split(';');
-            using (var command = connection.CreateCommand())
-            {
-                foreach (var part in initialization)
-                {
-                    command.CommandText = part;
-                    command.ExecuteNonQuery();
-                }
-            }
-
-            SQLiteFunction.RegisterFunction(typeof(CurrentCultureIgnoreCase));
-
             return connection;
         }
     }

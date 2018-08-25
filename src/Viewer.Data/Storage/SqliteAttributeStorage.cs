@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
@@ -10,338 +12,151 @@ using System.Linq;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Viewer.Data.Formats.Attributes;
+using Viewer.Data.Formats.Exif;
+using Viewer.Data.SQLite;
 using Viewer.IO;
 
 namespace Viewer.Data.Storage
 {
-    [Export(typeof(ICacheAttributeStorage))]
-    [Export(typeof(SqliteAttributeStorage))]
-    public class SqliteAttributeStorage : ICacheAttributeStorage
+    [Export]
+    public class SqliteAttributeStorage : IDeferredAttributeStorage
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        private readonly SQLiteConnection _connection;
-        private SavepointTransaction _currentTransaction;
-
-        private class SavepointTransaction : IRecursiveBatch
+        
+        private abstract class Request
         {
-            private enum State
+        }
+
+        private sealed class StoreRequest : Request
+        {
+            public IEntity Entity { get; }
+
+            public DateTime LastWriteTime { get; }
+
+            public StoreRequest(IEntity entity, DateTime lastWriteTime)
             {
-                Initialized,
-                Comitted,
-                Rollbacked,
-            }
-
-            private State _state;
-            private readonly SqliteAttributeStorage _storage;
-            private readonly SavepointTransaction _parent;
-            private readonly string _name;
-
-            public IRecursiveBatch Parent => _parent;
-
-            public SavepointTransaction(SavepointTransaction parent, SqliteAttributeStorage storage, string name)
-            {
-                _state = State.Initialized;
-                _storage = storage;
-                _parent = parent;
-                _name = name;
-
-                if (_parent == null)
-                {
-                    _storage._currentTransaction = this;
-                }
-                
-                using (var command = _storage._connection.CreateCommand())
-                {
-                    if (_parent == null)
-                    {
-                        command.CommandText = "BEGIN IMMEDIATE TRANSACTION";
-                    }
-                    else
-                    {
-                        command.CommandText = "SAVEPOINT " + _name;
-                    }
-
-                    command.ExecuteNonQuery();
-                }
-            }
-
-            public void Commit()
-            {
-                CheckTransaction();
-
-                try
-                {
-                    using (var command = _storage._connection.CreateCommand())
-                    {
-                        command.CommandText = _parent == null ? "COMMIT" : "RELEASE " + _name;
-                        command.ExecuteNonQuery();
-                    }
-
-                    _state = State.Comitted;
-                }
-                finally
-                {
-                    if (_parent == null)
-                        _storage._currentTransaction = null;
-                }
-            }
-
-            public void Rollback()
-            {
-                CheckTransaction();
-
-                try
-                {
-                    using (var command = _storage._connection.CreateCommand())
-                    {
-                        command.CommandText = _parent == null ? "ROLLBACK" : "ROLLBACK TO " + _name;
-                        command.ExecuteNonQuery();
-                    }
-
-                    _state = State.Rollbacked;
-                }
-                finally
-                {
-                    if (_parent == null)
-                        _storage._currentTransaction = null;
-                }
-            }
-
-            public void Dispose()
-            {
-                if (_state == State.Initialized &&
-                    (_parent == null || _parent._state == State.Initialized))
-                {
-                    Rollback();
-                }
-            }
-
-            private void CheckTransaction()
-            {
-                if (_parent != null && _parent._state != State.Initialized)
-                {
-                    throw new InvalidOperationException(
-                        "Trying to rollback transaction with resolved parent.");
-                }
-
-                if (_state != State.Initialized)
-                {
-                    throw new InvalidOperationException("This transaction has already been resolved.");
-                }
+                Entity = entity;
+                LastWriteTime = lastWriteTime;
             }
         }
+
+        private sealed class StoreThumbnailRequest : Request
+        {
+            public byte[] Thumbnail { get; }
+
+            public StoreThumbnailRequest(byte[] thumbnail)
+            {
+                Thumbnail = thumbnail;
+            }
+        }
+
+        private sealed class TouchRequest : Request
+        {
+        }
+
+        private sealed class DeleteRequest : Request
+        {
+        }
+
+        private readonly Dictionary<string, Request> _requests;
+        private readonly SQLiteConnectionFactory _connectionFactory;
+        private readonly SQLiteConnection _readConnection;
+        private readonly LoadEntityCommand _loadCommand;
+        private readonly object _readConnectionLock = new object();
 
         [ImportingConstructor]
-        public SqliteAttributeStorage(SQLiteConnection connection)
+        public SqliteAttributeStorage(SQLiteConnectionFactory connectionFactory)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Load attributes from database.
-        /// </summary>
-        /// <param name="inputPath"></param>
-        /// <returns>
-        ///     Valid attributes of the file or null if the attributes in cache are not valid.
-        /// </returns>
-        public IEntity Load(string inputPath)
-        {
-            var lastWriteTime = DateTime.MinValue;
-            try
-            {
-                var fi = new FileInfo(inputPath);
-                lastWriteTime = fi.LastWriteTime;
-            }
-            catch (FileNotFoundException)
-            {
-                return null;
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return null;
-            }
-            IEntity entity = new FileEntity(inputPath);
-
-            // load valid attributes
-            SQLiteDataReader reader;
-            using (var query = new SQLiteCommand(_connection))
-            {
-                query.CommandText = @"
-                SELECT a.name, a.source, a.type, a.value, length(a.value) as size
-                FROM files AS f
-                    INNER JOIN attributes AS a 
-                        ON (f.id = a.owner)
-                WHERE 
-                    f.path = :path AND
-                    f.lastWriteTime >= :lastWriteTime";
-
-                query.Parameters.Add(new SQLiteParameter(":path", entity.Path));
-                query.Parameters.Add(new SQLiteParameter(":lastWriteTime", lastWriteTime));
-                reader = query.ExecuteReader();
-            }
-            
-            // add attributes to the collection
-            int attributeCount = 0;
-            while (reader.Read())
-            {
-                ++attributeCount;
-                var name = reader.GetString(0);
-                var source = reader.GetInt32(1);
-                var type = reader.GetInt32(2);
-                var valueSize = reader.GetInt64(4);
-
-                switch ((AttributeType)type)
-                {
-                    case AttributeType.Int:
-                        entity = entity.SetAttribute(new Attribute(name, new IntValue(reader.GetInt32(3)), (AttributeSource)source));
-                        break;
-                    case AttributeType.Double:
-                        entity = entity.SetAttribute(new Attribute(name, new RealValue(reader.GetDouble(3)), (AttributeSource)source));
-                        break;
-                    case AttributeType.String:
-                        entity = entity.SetAttribute(new Attribute(name, new StringValue(reader.GetString(3)), (AttributeSource)source));
-                        break;
-                    case AttributeType.DateTime:
-                        entity = entity.SetAttribute(new Attribute(name, new DateTimeValue(reader.GetDateTime(3)), (AttributeSource)source));
-                        break;
-                    case AttributeType.Image:
-                        var buffer = new byte[valueSize];
-                        var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
-                        Debug.Assert(buffer.Length == length);
-                        entity = entity.SetAttribute(new Attribute(name, new ImageValue(buffer), (AttributeSource)source));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            return attributeCount > 0 ? entity : null;
-        }
-
-        public void Store(IEntity entity)
-        {
-            // make sure the entity will not change so that we will store it in a consistent state
-            var clone = entity.Clone();
-            var hasAttributes = clone.Any();
-            using (var transaction = BeginBatch())
-            {
-                RemoveFile(clone.Path);
-                if (hasAttributes)
-                {
-                    var id = InsertFile(clone.Path);
-
-                    foreach (var attr in clone)
-                    {
-                        StoreAttribute(id, attr);
-                    }
-                }
-
-                transaction.Commit();
-            }
-        }
-
-        public void StoreThumbnail(IEntity entity)
-        {
-            var thumbnail = entity.GetValue<ImageValue>("thumbnail");
-            if (thumbnail == null)
-            {
-                return;
-            }
-            
-            using (var transaction = BeginBatch())
-            {
-                long? id;
-                using (var query = new SQLiteCommand(_connection))
-                {
-                    query.CommandText = "SELECT id FROM files WHERE path = :path";
-                    query.Parameters.Add(new SQLiteParameter("path", entity.Path));
-                    id = query.ExecuteScalar() as long?;
-                    if (id == null)
-                    {
-                        return;
-                    }
-                }
-
-                using (var command = new SQLiteCommand(_connection))
-                {
-                    command.CommandText = @"
-                    INSERT OR REPLACE INTO attributes (name, source, type, value, owner)
-                    VALUES ('thumbnail', :source, :type, :value, :owner)";
-                    command.Parameters.Add(new SQLiteParameter("source", AttributeSource.Metadata));
-                    command.Parameters.Add(new SQLiteParameter("type", AttributeType.Image));
-                    command.Parameters.Add(new SQLiteParameter("value", thumbnail.Value));
-                    command.Parameters.Add(new SQLiteParameter("owner", (long) id));
-                    command.ExecuteNonQuery();
-                }
-                transaction.Commit();
-            }
-        }
-
-        public void Move(IEntity entity, string newPath)
-        {
-            MoveFile(PathUtils.NormalizePath(entity.Path), PathUtils.NormalizePath(newPath));
-        }
-
-        public void Remove(IEntity entity)
-        {
-            RemoveFile(PathUtils.NormalizePath(entity.Path));
+            _connectionFactory = connectionFactory;
+            _readConnection = _connectionFactory.Create();
+            _loadCommand = new LoadEntityCommand(_readConnection);
+            _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
         }
         
-        public void Touch(IEntity entity)
+        public IEntity Load(string path)
         {
-            using (var query = new SQLiteCommand(_connection))
-            {
-                query.CommandText = @"
-                    UPDATE files 
-                    SET lastAccessTime = datetime('now') 
-                    WHERE path = :path";
-                query.Parameters.Add(new SQLiteParameter(":path", entity.Path));
-                query.ExecuteNonQuery();
-            }
-        }
+            path = PathUtils.NormalizePath(path);
 
-        public void Clean(TimeSpan lastAccessTimeThreshold, int fileCountThreashold)
-        {
-            using (var transaction = BeginBatch())
+            // check if there is a pending change in main memory
+            lock (_requests)
             {
-                var threshold = DateTime.Now - lastAccessTimeThreshold;
-                using (var query = new SQLiteCommand(_connection))
+                if (_requests.TryGetValue(path, out var req))
                 {
-                    query.CommandText = @"
-                    SELECT lastAccessTime 
-                    FROM files 
-                    ORDER BY lastAccessTime DESC
-                    LIMIT 1
-                    OFFSET :offset";
-                    query.Parameters.Add(new SQLiteParameter(":offset", fileCountThreashold));
-                    if (query.ExecuteScalar() is DateTime result && 
-                        threshold.CompareTo(result) > 0)
+                    if (req is StoreRequest store)
                     {
-                        threshold = result;
+                        return store.Entity;
+                    }
+
+                    if (req is DeleteRequest)
+                    {
+                        return null;
                     }
                 }
-
-                using (var query = new SQLiteCommand(_connection))
+                else
                 {
-                    query.CommandText = @"DELETE FROM files WHERE lastAccessTime < :threshold";
-                    query.Parameters.Add(new SQLiteParameter(":threshold", threshold));
-                    query.ExecuteNonQuery();
+                    _requests[path] = new TouchRequest();
                 }
-
-                transaction.Commit();
             }
-        }
 
-        private static readonly Random Generator = new Random();
+            var fi = new FileInfo(path);
+            var lastWriteTime = fi.LastWriteTime;
+            IEntity entity = new FileEntity(path);
 
-        public IRecursiveBatch BeginBatch()
-        {
-            return new SavepointTransaction(_currentTransaction, this, "savepoint_" + Generator.Next());
+            // otherwise, load the entity from the database
+            // make sure this is the only thread which uses _readConnection
+            lock (_readConnectionLock) 
+            {
+                // load valid attributes
+                using (var reader = _loadCommand.Execute(path, lastWriteTime))
+                { 
+                    // add attributes to the collection
+                    int attributeCount = 0;
+                    while (reader.Read())
+                    {
+                        ++attributeCount;
+                        var name = reader.GetString(0);
+                        var source = reader.GetInt32(1);
+                        var type = reader.GetInt32(2);
+                        var valueSize = reader.GetInt64(4);
+
+                        switch ((AttributeType) type)
+                        {
+                            case AttributeType.Int:
+                                entity = entity.SetAttribute(new Attribute(name,
+                                    new IntValue(reader.GetInt32(3)), (AttributeSource) source));
+                                break;
+                            case AttributeType.Double:
+                                entity = entity.SetAttribute(new Attribute(name,
+                                    new RealValue(reader.GetDouble(3)), (AttributeSource) source));
+                                break;
+                            case AttributeType.String:
+                                entity = entity.SetAttribute(new Attribute(name,
+                                    new StringValue(reader.GetString(3)), (AttributeSource) source));
+                                break;
+                            case AttributeType.DateTime:
+                                entity = entity.SetAttribute(new Attribute(name,
+                                    new DateTimeValue(reader.GetDateTime(3)), (AttributeSource) source));
+                                break;
+                            case AttributeType.Image:
+                                var buffer = new byte[valueSize];
+                                var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
+                                Debug.Assert(buffer.Length == length);
+                                entity = entity.SetAttribute(new Attribute(name,
+                                    new ImageValue(buffer), (AttributeSource) source));
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+
+                    var result = attributeCount > 0 ? entity : null;
+                    return result;
+                }
+            }
         }
 
         private DateTime GetLastWriteTime(string path)
@@ -358,116 +173,472 @@ namespace Viewer.Data.Storage
             }
             return lastWriteTime;
         }
-        
-        /// <summary>
-        /// Make sure there is a record for file <paramref name="path"/> and return its id.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private long InsertFile(string path)
-        {
-            var lastWriteTime = GetLastWriteTime(path);
-            using (var command = new SQLiteCommand(_connection))
-            {
-                command.CommandText = @"
-                INSERT INTO files (path, lastWriteTime, lastAccessTime) 
-                VALUES (:path, :lastWriteTime, datetime('now'))";
-                command.Parameters.Add(new SQLiteParameter(":path", path));
-                command.Parameters.Add(new SQLiteParameter(":lastWriteTime", lastWriteTime));
-                command.ExecuteNonQuery();
-            }
 
-            return _connection.LastInsertRowId;
-        }
-        
-        private void RemoveFile(string path)
+        public void Store(IEntity entity)
         {
-            using (var query = new SQLiteCommand(_connection))
+            var request = new StoreRequest(entity.Clone(), GetLastWriteTime(entity.Path));
+            lock (_requests)
             {
-                query.CommandText = @"DELETE FROM files WHERE path = :path";
-                query.Parameters.Add(new SQLiteParameter(":path", path));
-                query.ExecuteNonQuery();
+                _requests[entity.Path] = request;
             }
         }
 
-        private void MoveFile(string oldPath, string newPath)
+        public void StoreThumbnail(IEntity entity)
         {
-            using (var transation = BeginBatch())
+            var thumbnail = entity.GetAttribute(ExifAttributeReaderFactory.ThumbnailAttrName);
+            var thumbnailValue = thumbnail?.Value as ImageValue;
+            if (thumbnailValue == null || thumbnailValue.IsNull)
             {
-                RemoveFile(newPath);
+                return;
+            }
 
-                using (var query = new SQLiteCommand(_connection))
+            lock (_requests)
+            {
+                if (_requests.TryGetValue(entity.Path, out var req))
                 {
-                    query.CommandText = @"UPDATE files SET path = :newPath WHERE path = :oldPath";
-                    query.Parameters.Add(new SQLiteParameter(":oldPath", oldPath));
-                    query.Parameters.Add(new SQLiteParameter(":newPath", newPath));
-                    query.ExecuteNonQuery();
+                    if (req is DeleteRequest)
+                    {
+                        return; // storing thumbnail of a deleted file, this is no-op
+                    }
+
+                    if (req is StoreRequest store)
+                    {
+                        // update pending entity's thumbnail
+                        store.Entity.SetAttribute(thumbnail);
+                        return;
+                    }
+                }
+                _requests[entity.Path] = new StoreThumbnailRequest(thumbnailValue.Value);
+            }
+        }
+
+        public void Remove(IEntity entity)
+        {
+            lock (_requests)
+            {
+                _requests[entity.Path] = new DeleteRequest();
+            }
+        }
+
+        public void Move(IEntity entity, string newPath)
+        {
+            newPath = PathUtils.NormalizePath(newPath);
+
+            lock (_requests)
+            {
+                if (_requests.TryGetValue(entity.Path, out var req))
+                {
+                    if (req is DeleteRequest)
+                    {
+                        // the entity has been deleted, this is no-op
+                        return;
+                    }
+
+                    // apply the request to the entity at the new location
+                    _requests.Remove(entity.Path);
+                    _requests[newPath] = req;
+                }
+            }
+
+            using (var connection = _connectionFactory.Create())
+            using (var transaction = connection.BeginTransaction())
+            using (var deleteFileCommand = new DeleteFileCommand(connection))
+            {
+                // delete file at the newPath if there is any
+                deleteFileCommand.Execute(newPath);
+
+                // move file to newPath
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "UPDATE files SET path = :newPath WHERE path = :oldPath";
+                    command.Parameters.Add(new SQLiteParameter(":oldPath", entity.Path));
+                    command.Parameters.Add(new SQLiteParameter(":newPath", newPath));
+                    command.ExecuteNonQuery();
                 }
 
-                transation.Commit();
+                transaction.Commit();
             }
         }
 
-        /// <summary>
-        /// This visitor prepares given sql command for inserting a new attribute.
-        /// It adds the attribute name and value parameters for each possible value type.
-        /// </summary>
-        private class InsertVisitor : IValueVisitor
+        #region SQL commands
+
+        private class LoadEntityCommand : IDisposable
         {
+            private readonly SQLiteParameter _path = new SQLiteParameter(":path");
+            private readonly SQLiteParameter _lastWriteTime = new SQLiteParameter(":lastWriteTime");
             private readonly SQLiteCommand _command;
 
-            public const string TypeName = ":type";
-            public const string ValueName = ":value";
-
-            public InsertVisitor(SQLiteCommand cmd)
+            public LoadEntityCommand(SQLiteConnection connection)
             {
-                _command = cmd;
+                _command = connection.CreateCommand();
+                _command.CommandText = @"
+                    SELECT a.name, a.source, a.type, a.value, length(a.value) as size
+                    FROM files AS f
+                        INNER JOIN attributes AS a 
+                            ON (f.id = a.owner)
+                    WHERE 
+                        f.path = :path AND
+                        f.lastWriteTime >= :lastWriteTime";
+                _command.Parameters.Add(_path);
+                _command.Parameters.Add(_lastWriteTime);
             }
 
-            public void Prepare(Attribute attr)
+            public SQLiteDataReader Execute(string path, DateTime lastWriteTime)
             {
-                _command.Parameters.Add(new SQLiteParameter(TypeName, (int)attr.Value.Type));
+                _path.Value = path;
+                _lastWriteTime.Value = lastWriteTime;
+                return _command.ExecuteReader();
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+            }
+        }
+        
+        private class InsertAttributeCommand : IValueVisitor, IDisposable
+        {
+            private readonly SQLiteParameter _name = new SQLiteParameter(":name");
+            private readonly SQLiteParameter _type = new SQLiteParameter(":type");
+            private readonly SQLiteParameter _source = new SQLiteParameter(":source");
+            private readonly SQLiteParameter _value = new SQLiteParameter(":value");
+            private readonly SQLiteParameter _owner = new SQLiteParameter(":owner");
+
+            private readonly SQLiteCommand _command;
+
+            public InsertAttributeCommand(SQLiteConnection connection)
+            {
+                _command = connection.CreateCommand();
+                _command.CommandText = "INSERT INTO attributes (name, source, type, value, owner)" +
+                                       "VALUES (:name, :source, :type, :value, :owner)";
+                _command.Parameters.Add(_name);
+                _command.Parameters.Add(_type);
+                _command.Parameters.Add(_source);
+                _command.Parameters.Add(_value);
+                _command.Parameters.Add(_owner);
+            }
+
+            public void Execute(Attribute attr, long owner)
+            {
+                _name.Value = attr.Name;
+                _type.Value = (int) attr.Value.Type;
+                _source.Value = (int) attr.Source;
+                _owner.Value = owner;
+                _value.ResetDbType();
                 attr.Value.Accept(this);
+                _command.ExecuteNonQuery();
             }
 
             void IValueVisitor.Visit(IntValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
+                _value.Value = attr.Value;
             }
 
             void IValueVisitor.Visit(RealValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
+                _value.Value = attr.Value;
             }
 
             void IValueVisitor.Visit(StringValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
+                _value.Value = attr.Value;
             }
 
             void IValueVisitor.Visit(DateTimeValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value?.ToString(DateTimeValue.Format)));
+                _value.Value = attr.Value?.ToString(DateTimeValue.Format);
             }
 
             void IValueVisitor.Visit(ImageValue attr)
             {
-                _command.Parameters.Add(new SQLiteParameter(ValueName, attr.Value));
+                _value.Value = attr.Value;
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
             }
         }
 
-        private void StoreAttribute(long fileId, Attribute attr)
+        private class InsertFileCommand : IDisposable
         {
-            using (var command = new SQLiteCommand(_connection))
+            private readonly SQLiteParameter _path = new SQLiteParameter(":path");
+            private readonly SQLiteParameter _lastWriteTime = new SQLiteParameter(":lastWriteTime");
+            private readonly SQLiteCommand _command;
+
+            public InsertFileCommand(SQLiteConnection connection)
             {
-                command.CommandText = "INSERT INTO attributes (name, source, type, value, owner) VALUES (:name, :source, :type, :value, :owner)";
-                command.Parameters.Add(new SQLiteParameter(":name", attr.Name));
-                command.Parameters.Add(new SQLiteParameter(":source", (int)attr.Source));
-                command.Parameters.Add(new SQLiteParameter(":owner", fileId));
-                var visitor = new InsertVisitor(command);
-                visitor.Prepare(attr);
-                command.ExecuteNonQuery();
+                _command = connection.CreateCommand();
+                _command.CommandText = "INSERT INTO files (path, lastAccessTime, lastWriteTime)" +
+                                       "VALUES (:path, datetime('now'), :lastWriteTime)";
+                _command.Parameters.Add(_path);
+                _command.Parameters.Add(_lastWriteTime);
             }
+
+            public void Execute(string path, DateTime lastWriteTime)
+            {
+                _path.Value = path;
+                _lastWriteTime.Value = lastWriteTime;
+                _command.ExecuteNonQuery();
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+            }
+        }
+
+        private class DeleteFileCommand : IDisposable
+        {
+            private readonly SQLiteParameter _path = new SQLiteParameter(":path");
+            private readonly SQLiteCommand _command;
+
+            public DeleteFileCommand(SQLiteConnection connection)
+            {
+                _command = connection.CreateCommand();
+                _command.CommandText = "DELETE FROM files WHERE path = :path";
+                _command.Parameters.Add(_path);
+            }
+
+            public void Execute(string path)
+            {
+                _path.Value = path;
+                _command.ExecuteNonQuery();
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+            }
+        }
+        
+        private class TouchFileCommand : IDisposable
+        {
+            private readonly SQLiteParameter _path = new SQLiteParameter(":path");
+            private readonly SQLiteCommand _command;
+
+            public TouchFileCommand(SQLiteConnection connection)
+            {
+                _command = connection.CreateCommand();
+                _command.CommandText = "UPDATE files SET lastAccessTime = datetime('now') WHERE path = :path";
+                _command.Parameters.Add(_path);
+            }
+
+            public void Execute(string path)
+            {
+                _path.Value = path;
+                _command.ExecuteNonQuery();
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+            }
+        }
+
+        private class SelectFileCommand : IDisposable
+        {
+            private readonly SQLiteParameter _path = new SQLiteParameter(":path");
+            private readonly SQLiteCommand _command;
+
+            public SelectFileCommand(SQLiteConnection connection)
+            {
+                _command = connection.CreateCommand();
+                _command.CommandText = "SELECT id FROM files WHERE path = :path";
+                _command.Parameters.Add(_path);
+            }
+
+            public long? Execute(string path)
+            {
+                _path.Value = path;
+                return _command.ExecuteScalar() as long?;
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+            }
+        }
+
+        private class UpdateThumbnailCommand : IDisposable
+        {
+            private readonly SQLiteParameter _source = new SQLiteParameter(":source");
+            private readonly SQLiteParameter _type = new SQLiteParameter(":type");
+            private readonly SQLiteParameter _value = new SQLiteParameter(":value");
+            private readonly SQLiteParameter _owner = new SQLiteParameter(":owner");
+            private readonly SQLiteCommand _command;
+
+            public UpdateThumbnailCommand(SQLiteConnection connection)
+            {
+                _command = connection.CreateCommand();
+                _command.CommandText = @" 
+                INSERT OR REPLACE INTO attributes (name, source, type, value, owner)
+                VALUES('thumbnail', :source, :type, :value, :owner)";
+                _command.Parameters.Add(_source);
+                _command.Parameters.Add(_type);
+                _command.Parameters.Add(_value);
+                _command.Parameters.Add(_owner);
+            }
+
+            public void Execute(long owner, byte[] thumbnail)
+            {
+                _owner.Value = owner;
+                _value.Value = thumbnail;
+                _type.Value = (int) AttributeType.Image;
+                _source.Value = (int) AttributeSource.Metadata;
+                _command.ExecuteNonQuery();
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+            }
+        }
+
+        #endregion
+        
+        private class SavepointCommand : IDisposable
+        {
+            private readonly SQLiteConnection _connection;
+            private readonly string _name;
+            private bool _isResolved = false;
+
+            public SavepointCommand(SQLiteConnection connection, string name)
+            {
+                _connection = connection;
+                _name = name;
+
+                using (var command = _connection.CreateCommand())
+                {
+                    command.CommandText = "SAVEPOINT " + _name;
+                    command.ExecuteNonQuery();
+                }
+            }
+            
+            public void Release()
+            {
+                if (_isResolved)
+                    throw new InvalidOperationException("This savepoint has already been resolved.");
+
+                using (var command = _connection.CreateCommand())
+                {
+                    command.CommandText = "RELEASE SAVEPOINT " + _name;
+                    command.ExecuteNonQuery();
+                }
+
+                _isResolved = true;
+            }
+
+            public void Rollback()
+            {
+                if (_isResolved)
+                    throw new InvalidOperationException("This savepoint has already been resolved.");
+
+                using (var command = _connection.CreateCommand())
+                {
+                    command.CommandText = "RELEASE SAVEPOINT " + _name;
+                    command.ExecuteNonQuery();
+                }
+
+                _isResolved = true;
+            }
+
+            public void Dispose()
+            {
+                if (!_isResolved)
+                {
+                    Rollback();
+                }
+            }
+        }
+
+        public void ApplyChanges()
+        {
+            // consume all requests added so far
+            KeyValuePair<string, Request>[] requests;
+            lock (_requests)
+            {
+                requests = _requests.ToArray();
+                _requests.Clear();
+            }
+
+            // don't do anything if there haven't been any changes
+            if (requests.Length <= 0)
+            {
+                return;
+            }
+
+            var exceptions = new List<Exception>();
+            
+            // apply all changes
+            using (var connection = _connectionFactory.Create())
+            using (var transaction = connection.BeginTransaction())
+            using (var selectFileCommand = new SelectFileCommand(connection))
+            using (var touchFileCommand = new TouchFileCommand(connection))
+            using (var removeFileCommand = new DeleteFileCommand(connection))
+            using (var insertFileCommand = new InsertFileCommand(connection))
+            using (var updateThumbnailCommand = new UpdateThumbnailCommand(connection))
+            using (var insertAttributeCommand = new InsertAttributeCommand(connection))
+            {
+                var requestCount = 0;
+                foreach (var req in requests)
+                {
+                    var name = "sp" + requestCount++;
+                    var savepoint = new SavepointCommand(connection, name);
+                    try
+                    {
+                        if (req.Value is StoreRequest storeReq)
+                        {
+                            // re-insert the file (this also deletes all attributes)
+                            removeFileCommand.Execute(req.Key);
+                            insertFileCommand.Execute(req.Key, storeReq.LastWriteTime);
+
+                            // add all attributes
+                            var fileId = connection.LastInsertRowId;
+                            foreach (var attr in storeReq.Entity)
+                            {
+                                insertAttributeCommand.Execute(attr, fileId);
+                            }
+                        }
+                        else if (req.Value is StoreThumbnailRequest thumbnailReq)
+                        {
+                            var id = selectFileCommand.Execute(req.Key);
+                            if (id == null)
+                                continue;
+                            updateThumbnailCommand.Execute((long)id, thumbnailReq.Thumbnail);
+                        }
+                        else if (req.Value is TouchRequest)
+                        {
+                            touchFileCommand.Execute(req.Key);
+                        }
+                        else if (req.Value is DeleteRequest)
+                        {
+                            removeFileCommand.Execute(req.Key);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                        savepoint.Rollback();
+                    }
+
+                    savepoint.Release();
+                }
+
+                transaction.Commit();
+            }
+            
+            // if there were errors, throw an exception
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
+        }
+
+        public void Dispose()
+        {
+            _readConnection?.Dispose();
+            _loadCommand?.Dispose();
         }
     }
 }

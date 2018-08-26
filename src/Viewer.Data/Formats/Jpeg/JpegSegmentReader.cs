@@ -10,7 +10,11 @@ using MetadataExtractor.Formats.Jpeg;
 
 namespace Viewer.Data.Formats.Jpeg
 {
-    public interface IJpegSegmentReader : IDisposable
+    /// <summary>
+    /// JPEG segment reader decodes JPEG segments from <see cref="BaseStream" />. It won't read any
+    /// image data, only metadata.
+    /// </summary>
+    public interface IJpegSegmentReader : IDisposable, IEnumerable<JpegSegment>
     {
         /// <summary>
         /// Underlying stream from which the segments are read
@@ -21,13 +25,13 @@ namespace Viewer.Data.Formats.Jpeg
         /// Read next JPEG segment in an input stream
         /// </summary>
         /// <exception cref="InvalidDataFormatException">
-        ///     JPEG format of given data is invalid.
+        /// JPEG format of given data is invalid.
         /// </exception>
         /// <returns>Next JPEG segment or null if there is none</returns>
         JpegSegment ReadSegment();
     }
 
-    public class JpegSegmentReader : IJpegSegmentReader, IEnumerable<JpegSegment>
+    public class JpegSegmentReader : IJpegSegmentReader
     {
         private readonly BinaryReader _reader;
         private bool _isEnd = false;
@@ -50,10 +54,11 @@ namespace Viewer.Data.Formats.Jpeg
             _offset = _reader.BaseStream.Position;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Read next JPEG segment in an input stream.
-        /// It won't read data past the Start of Scan segment header.
-        /// The Start of Scan segment won't have any data.
+        /// Read next JPEG segment in the input stream. It won't read data past the Start of Scan
+        /// segment header (i.e., actual image data). The Start of Scan segment will be returned but
+        /// it won't have any data.
         /// </summary>
         /// <returns>Next JPEG segment or null if there is none</returns>
         public JpegSegment ReadSegment()

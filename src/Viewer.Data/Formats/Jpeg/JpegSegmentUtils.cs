@@ -64,10 +64,10 @@ namespace Viewer.Data.Formats.Jpeg
         /// <param name="data">Data to split</param>
         /// <param name="type">Type of each JPEG segment</param>
         /// <param name="header">
-        ///     Header of each JPEG segment. All characters have to be ASCII.
+        /// Header of each JPEG segment. All characters have to be ASCII.
         /// </param>
         /// <param name="maxSegmentSize">
-        ///     Maximal size of the JPEG segment (excluding the 2 size bytes)
+        /// Maximal size of the JPEG segment (excluding the 2 size bytes)
         /// </param>
         /// <returns>JPEG segments enumerator</returns>
         public static IEnumerable<JpegSegment> SplitSegmentData(
@@ -79,7 +79,7 @@ namespace Viewer.Data.Formats.Jpeg
             if (header.Length >= maxSegmentSize)
             {
                 throw new ArgumentException(
-                    "Header must fit in the JPEG segmen with some data.");
+                    "Header must fit in the JPEG segment with some data.");
             }
 
             long dataOffset = 0;

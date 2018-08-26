@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -34,10 +35,20 @@ namespace Viewer.Data.Storage
         /// Create a file system attribute storage
         /// </summary>
         /// <param name="fileSystem">A service used to access file system.</param>
-        /// <param name="segmentReaderFactory">Factory which creates <see cref="IJpegSegmentReader"/> to read JPEG segments from a file</param>
-        /// <param name="segmentWriterFactory">Factory which creates <see cref="IJpegSegmentWriter"/> to write JPEG segments to a file</param>
-        /// <param name="attrWriterFactory">Factory which creates <see cref="IAttributeWriter"/> to write attributes to the Attributes segment</param>
-        /// <param name="attrReaderFactories">List of factories which create <see cref="IAttributeReader"/> to read attributes from various JPEG segments</param>
+        /// <param name="segmentReaderFactory">
+        /// Factory which creates <see cref="IJpegSegmentReader"/> to read JPEG segments from a file.
+        /// </param>
+        /// <param name="segmentWriterFactory">
+        /// Factory which creates <see cref="IJpegSegmentWriter"/> to write JPEG segments to a file.
+        /// </param>
+        /// <param name="attrWriterFactory">
+        /// Factory which creates <see cref="IAttributeWriter"/> to write attributes to the Attributes
+        /// segment.
+        /// </param>
+        /// <param name="attrReaderFactories">
+        /// List of factories which create <see cref="IAttributeReader"/> to read attributes from
+        /// various JPEG segments.
+        /// </param>
         [ImportingConstructor]
         public FileSystemAttributeStorage(
             IFileSystem fileSystem,
@@ -59,21 +70,15 @@ namespace Viewer.Data.Storage
         /// Read algorithm:
         /// <list type="number">
         ///     <item>
-        ///         <description>read all JPEG segments to memory</description>
+        ///         <description>
+        ///         read all JPEG segments to memory (using reaader returned by
+        ///         <see cref="IJpegSegmentReaderFactory"/>)
+        ///         </description>
         ///     </item>
         ///     <item>
         ///         <description>
-        ///             for each attribute reader in _attrReaderFactories:
-        ///             <list type="number">
-        ///                 <item>
-        ///                     <description>create the reader from read segments</description>
-        ///                 </item>
-        ///                 <item>
-        ///                     <description>
-        ///                         read all attributes and add them to the attributes collection
-        ///                     </description>
-        ///                 </item>
-        ///             </list>
+        ///         decode data in JPEG segments (using readers returned by all
+        ///         <see cref="IAttributeReaderFactory"/>) to attributes
         ///         </description>
         ///     </item>
         /// </list>
@@ -90,28 +95,9 @@ namespace Viewer.Data.Storage
                 }
 
                 // read all JPEG segments to memory
-                IEntity entity;
-                FileInfo fileInfo;
-                var segments = new List<JpegSegment>();
-                using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
-                {
-                    fileInfo = new FileInfo(path);
-                    entity = new FileEntity(path);
-
-                    for (;;)
-                    {
-                        // read segment
-                        var segment = segmentReader.ReadSegment();
-                        if (segment == null)
-                            break;
-
-                        // we only parse data in APP1 segments
-                        if (segment.Type != JpegSegmentType.App1)
-                            continue;
-
-                        segments.Add(segment);
-                    }
-                }
+                IEntity entity = new FileEntity(path);
+                var fileInfo = new FileInfo(path);
+                var segments = ReadJpegSegments(path);
 
                 // read attributes from all sources and add them to the collection
                 foreach (var factory in _attrReaderFactories)
@@ -125,7 +111,7 @@ namespace Viewer.Data.Storage
                         entity = entity.SetAttribute(attr);
                     }
                 }
-
+                
                 return entity;
             }
             catch (FileNotFoundException)
@@ -135,6 +121,16 @@ namespace Viewer.Data.Storage
             catch (DirectoryNotFoundException)
             {
                 return null;
+            }
+        }
+
+        private List<JpegSegment> ReadJpegSegments(string path)
+        {
+            using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
+            {
+                return segmentReader
+                    .Where(segment => segment.Type == JpegSegmentType.App1)
+                    .ToList();
             }
         }
         
@@ -172,7 +168,7 @@ namespace Viewer.Data.Storage
                         segmentWriter.WriteSegment(segment);
                     }
 
-                    // write image data
+                    // write SOS segment and image data (including the EOI segment at the end)
                     segmentWriter.Finish(segmentReader.BaseStream);
                 }
 

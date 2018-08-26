@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Viewer" Language="1033" Version="1.0.0.0" Manufacturer="Drahomir Hanak" UpgradeCode="0babd362-85f4-45f4-9fa7-234b1b1d6ffa">
+  <Product Id="*" Name="Viewer" Language="1033" Version="1.0.0.2" Manufacturer="Drahomir Hanak" UpgradeCode="0babd362-85f4-45f4-9fa7-234b1b1d6ffa">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Viewer is already installed." />
@@ -24,7 +24,6 @@
       <Component Id="ProductComponent" Guid="03772981-498b-498d-8592-6174d9620503">
         <File Source="$(var.Viewer.TargetDir)/Antlr4.Runtime.Standard.dll" />
         <File Source="$(var.Viewer.TargetDir)/MetadataExtractor.dll" />
-        <File Source="$(var.Viewer.TargetDir)/NLog.config" />
         <File Source="$(var.Viewer.TargetDir)/NLog.dll" />
         <File Source="$(var.Viewer.TargetDir)/ScintillaNET.dll" />
         <File Source="$(var.Viewer.TargetDir)/SkiaSharp.Views.Desktop.dll" />

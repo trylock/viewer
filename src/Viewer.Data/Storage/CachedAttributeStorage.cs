@@ -16,7 +16,6 @@ namespace Viewer.Data.Storage
     [Export(typeof(IAttributeStorage))]
     public class CachedAttributeStorage : IAttributeStorage
     {
-        private readonly IStorageConfiguration _configuration;
         private readonly IAttributeStorage _persistentStorage;
         private readonly IDeferredAttributeStorage _cacheStorage;
         private readonly AutoResetEvent _notifyWrite = new AutoResetEvent(false);
@@ -37,10 +36,8 @@ namespace Viewer.Data.Storage
         [ImportingConstructor]
         public CachedAttributeStorage(
             [Import(typeof(FileSystemAttributeStorage))] IAttributeStorage persistentStorage,
-            [Import(typeof(SqliteAttributeStorage))] IDeferredAttributeStorage cacheStorage,
-            IStorageConfiguration configuration)
+            [Import(typeof(SqliteAttributeStorage))] IDeferredAttributeStorage cacheStorage)
         {
-            _configuration = configuration;
             _persistentStorage = persistentStorage;
             _cacheStorage = cacheStorage;
             

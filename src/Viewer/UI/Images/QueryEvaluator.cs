@@ -318,57 +318,16 @@ namespace Viewer.UI.Images
             if (modified.Count > 0)
             {
                 modified.Sort(Comparer);
-                added = Merge(added, modified);
+                added = added.Merge(modified, Comparer);
             }
 
             // add new entities
             if (added.Count > 0)
             {
-                _views = Merge(_views, added);
+                _views = _views.Merge(added, Comparer);
             }
 
             return _views;
-        }
-
-        private List<EntityView> Merge(IEnumerable<EntityView> firstList, IEnumerable<EntityView> secondList)
-        {
-            var result = new List<EntityView>();
-
-            using (var first = firstList.GetEnumerator())
-            using (var second = secondList.GetEnumerator())
-            {
-                var firstHasNext = first.MoveNext();
-                var secondHasNext = second.MoveNext();
-                while (firstHasNext || secondHasNext)
-                {
-                    if (!secondHasNext)
-                    {
-                        result.Add(first.Current);
-                        firstHasNext = first.MoveNext();
-                    }
-                    else if (!firstHasNext)
-                    {
-                        result.Add(second.Current);
-                        secondHasNext = second.MoveNext();
-                    }
-                    else
-                    {
-                        var cmp = Comparer.Compare(first.Current, second.Current);
-                        if (cmp <= 0)
-                        {
-                            result.Add(first.Current);
-                            firstHasNext = first.MoveNext();
-                        }
-                        else // if (cmp > 0)
-                        {
-                            result.Add(second.Current);
-                            secondHasNext = second.MoveNext();
-                        }
-                    }
-                }
-            }
-
-            return result;
         }
 
         /// <inheritdoc />

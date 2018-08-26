@@ -22,13 +22,13 @@ namespace Viewer.Data.Formats.Jpeg
     [Export(typeof(IJpegSegmentWriterFactory))]
     public class JpegSegmentWriterFactory : IJpegSegmentWriterFactory
     {
-        private Random _random = new Random();
+        private readonly Random _random = new Random();
 
         /// <summary>
         /// Create a temporary file for given file path
         /// </summary>
         /// <param name="filePath"></param>
-        /// <param name="tmpFileName">Path to a file to which we write.</param>
+        /// <param name="tmpFileName">Path to a file to which we'll write.</param>
         /// <returns></returns>
         public IJpegSegmentWriter CreateFromPath(string filePath, out string tmpFileName)
         {
@@ -37,7 +37,13 @@ namespace Viewer.Data.Formats.Jpeg
             {
                 try
                 {
-                    tmpFileName = filePath + ".tmp." + _random.Next();
+                    var number = 0;
+                    lock (_random)
+                    {
+                        number = _random.Next();
+                    }
+
+                    tmpFileName = filePath + ".tmp." + number;
                     input = new FileStream(tmpFileName, FileMode.CreateNew, FileAccess.Write);
                     break;
                 }

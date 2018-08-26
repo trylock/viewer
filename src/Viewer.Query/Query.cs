@@ -28,7 +28,7 @@ namespace Viewer.Query
         /// <param name="progress">This class is used to report query execution progress. You can use <see cref="NullQueryProgress"/>.</param>
         /// <param name="cancellationToken">Cancellation token used to cancel the execution.</param>
         /// <returns>Matched entities.</returns>
-        IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken);
+        IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken);
 
         /// <summary>
         /// Check whether <paramref name="entity"/> matches the query (i.e., it sould be in the query result)
@@ -122,7 +122,7 @@ namespace Viewer.Query
     {
         public static EmptyQuery Default { get; } = new EmptyQuery();
 
-        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             return Enumerable.Empty<IEntity>();
         }
@@ -151,7 +151,7 @@ namespace Viewer.Query
             _entities = entities;
         }
 
-        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
             foreach (var entity in _entities)
@@ -187,7 +187,7 @@ namespace Viewer.Query
             _hiddenFlags = hiddenFlags;
         }
 
-        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
 
@@ -385,9 +385,9 @@ namespace Viewer.Query
             _predicate = predicate;
         }
 
-        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            return _source.Evaluate(progress, cancellationToken).Where(_predicate);
+            return _source.Execute(progress, cancellationToken).Where(_predicate);
         }
 
         public bool Match(IEntity entity)
@@ -407,9 +407,9 @@ namespace Viewer.Query
             _second = second;
         }
 
-        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            var firstEvaluation = _first.Evaluate(progress, cancellationToken);
+            var firstEvaluation = _first.Execute(progress, cancellationToken);
             foreach (var item in firstEvaluation)
             {
                 if (!_second.Match(item))
@@ -434,10 +434,10 @@ namespace Viewer.Query
             _second = second;
         }
 
-        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             var visited = new HashSet<IEntity>(EntityPathEqualityComparer.Default);
-            var firstEvaluation = _first.Evaluate(progress, cancellationToken);
+            var firstEvaluation = _first.Execute(progress, cancellationToken);
             foreach (var item in firstEvaluation)
             {
                 visited.Add(item);
@@ -445,7 +445,7 @@ namespace Viewer.Query
                     yield return item;
             }
 
-            var secondEvaluation = _second.Evaluate(progress, cancellationToken);
+            var secondEvaluation = _second.Execute(progress, cancellationToken);
             foreach (var item in secondEvaluation)
             {
                 if (!visited.Contains(item) && _first.Match(item))
@@ -470,10 +470,10 @@ namespace Viewer.Query
             _second = second;
         }
 
-        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            var firstEvaluation = _first.Evaluate(progress, cancellationToken);
-            var secondEvaluation = _second.Evaluate(progress, cancellationToken);
+            var firstEvaluation = _first.Execute(progress, cancellationToken);
+            var secondEvaluation = _second.Execute(progress, cancellationToken);
             return firstEvaluation.Union(secondEvaluation, EntityPathEqualityComparer.Default);
         }
 
@@ -502,9 +502,9 @@ namespace Viewer.Query
             return Text;
         }
         
-        public IEnumerable<IEntity> Evaluate(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            return _source.Evaluate(progress, cancellationToken);
+            return _source.Execute(progress, cancellationToken);
         }
 
         public bool Match(IEntity entity)

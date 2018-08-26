@@ -211,7 +211,11 @@ namespace Viewer.UI.Explorer
             }
             else if (e.Button == MouseButtons.Left)
             {
-                OpenDirectory?.Invoke(sender, new DirectoryEventArgs(GetPath(e.Node)));
+                var hit = TreeView.HitTest(e.Location);
+                if (hit.Location != TreeViewHitTestLocations.PlusMinus)
+                {
+                    OpenDirectory?.Invoke(sender, new DirectoryEventArgs(GetPath(e.Node)));
+                }
             }
         }
 

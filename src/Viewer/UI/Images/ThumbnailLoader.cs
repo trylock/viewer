@@ -123,7 +123,17 @@ namespace Viewer.UI.Images
         private readonly IThumbnailGenerator _thumbnailGenerator;
         private readonly IAttributeStorage _storage;
         private readonly IFileSystem _fileSystem;
+
+        /// <summary>
+        /// Chained tasks which process I/O operations for <see cref="LoadRequest"/>s in the
+        /// <see cref="_requests"/> list.
+        /// </summary>
         private Task _loadQueue = Task.CompletedTask;
+
+        /// <summary>
+        /// Degree of parallelism for tasks which decode jpeg images and generate thumbnails from them.
+        /// </summary>
+        private readonly SemaphoreSlim _loaderCount = new SemaphoreSlim(Environment.ProcessorCount);
 
         /// <summary>
         /// Request to generate a thumbnail from the original image of <see cref="Entity"/>.
@@ -207,66 +217,79 @@ namespace Viewer.UI.Images
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
-
+            
             var request = new LoadRequest(entity, thumbnailAreaSize, cancellationToken);
             var task = AddLoadRequest(request);
 
             // pick next load request once the previous request has finished
-            _loadQueue = _loadQueue.ContinueWith(_ =>
+            _loadQueue = _loadQueue.ContinueWith(_ => ProcessNextRequest(), TaskContinuationOptions.None);
+            
+            return task;
+        }
+
+        private void ProcessNextRequest()
+        {
+            _loaderCount.Wait();
+            
+            LoadRequest req = null;
+            try
             {
-                var req = ConsumeLoadRequest();
-                Debug.Assert(req != null);
+                req = ConsumeLoadRequest();
+                Trace.Assert(req != null);
                 if (req.Cancellation.IsCancellationRequested)
                 {
                     req.Completion.SetCanceled();
                     return;
                 }
+                
+                // this memory is going to end up on LOH
+                var buffer = LoadFile(req.Entity.Path);
 
-                try
+                // decode JPEG image, generate a thumbnail from it and save it back as entity
+                // thumbnail in parallel
+                Task.Run(() =>
                 {
-                    var data = LoadFile(req);
-
-                    // decode it, generate a thumbnail and save it back as entity thumbnail in parallel
-                    Task.Run(() =>
+                    try
                     {
-                        try
-                        {
-                            var result = Generate(Decode(data, req), req);
-                            req.Completion.SetResult(result);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            req.Completion.SetCanceled();
-                        }
-                        catch (Exception e)
-                        {
-                            req.Completion.SetException(e);
-                        }
-                    }, cancellationToken);
-                }
-                catch (OperationCanceledException)
-                {
-                    req.Completion.SetCanceled();
-                }
-                catch (Exception e)
-                {
-                    req.Completion.SetException(e);
-                }
-            }, TaskContinuationOptions.None);
-
-            return task;
+                        var result = Generate(Decode(buffer, req), req);
+                        req.Completion.SetResult(result);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        req.Completion.SetCanceled();
+                    }
+                    catch (Exception e)
+                    {
+                        req.Completion.SetException(e);
+                    }
+                    finally
+                    {
+                        _loaderCount.Release();
+                    }
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                _loaderCount.Release();
+                req?.Completion.SetCanceled();
+            }
+            catch (Exception e)
+            {
+                _loaderCount.Release();
+                req?.Completion.SetException(e);
+            }
         }
 
-        private byte[] LoadFile(LoadRequest req)
+        private byte[] LoadFile(string path)
         {
-            return _fileSystem.ReadAllBytes(req.Entity.Path);
+            return _fileSystem.ReadAllBytes(path);
         }
 
-        private SKBitmap Decode(byte[] data, LoadRequest req)
+        private SKBitmap Decode(byte[] buffer, LoadRequest req)
         {
             req.Cancellation.ThrowIfCancellationRequested();
 
-            using (var input = new MemoryStream(data))
+            using (var input = new MemoryStream(buffer))
             {
                 return _imageLoader.LoadImage(req.Entity, input);
             }

@@ -73,7 +73,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ComparisonOperators.tt</DependentUpon>
     </Compile>
-    <Compile Include="DateTimeFunctions.cs" />
+    <Compile Include="DateTimeFunction.cs" />
     <Compile Include="LogicOperators.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

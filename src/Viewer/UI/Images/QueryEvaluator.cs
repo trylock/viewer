@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -215,11 +215,10 @@ namespace Viewer.UI.Images
         #endregion
 
         /// <summary>
-        /// Evaluate the query on a differet thread.
-        /// Found entities will be added to a waiting queue.
+        /// Evaluate the query on a differet thread. Found entities will be added to a waiting queue.
         /// Use <see cref="Update"/> to get all entities loaded so far.
         /// </summary>
-        /// <returns>Task finished when the evaluation ends</returns>
+        /// <returns>Task finished when the whole evaluation ends</returns>
         public Task RunAsync()
         {
             LoadTask = Task.Factory.StartNew(
@@ -289,7 +288,7 @@ namespace Viewer.UI.Images
             var head = 0;
             for (var i = 0; i < _views.Count; ++i)
             {
-                Debug.Assert(head <= i);
+                Trace.Assert(head <= i);
 
                 var item = _views[i];
                 if (!index.TryGetValue(item.FullPath, out var req))
@@ -329,7 +328,7 @@ namespace Viewer.UI.Images
 
             return _views;
         }
-
+        
         /// <inheritdoc />
         /// <summary>
         /// Dispose this evaluator and all system resources used by this evaluator.

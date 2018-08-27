@@ -16,26 +16,31 @@ namespace Viewer.IO
     /// The pattern can contain special characters <c>*</c>, <c>?</c> and <c>**</c>:
     /// <list type="bullet">
     ///     <item>
-    ///         <description><c>*</c> matches any sequence of characters except a directory separator</description>
-    ///     </item>
-    ///     <item>
-    ///         <description><c>?</c> matches any character except a directory separator</description>
+    ///         <description>
+    ///         <c>*</c> matches any sequence of characters except a directory separator
+    ///         </description>
     ///     </item>
     ///     <item>
     ///         <description>
-    ///             <c>**</c> matches any sequence of characters (even a directory separator).
-    ///             It has to be delimited by directory separator from both sides (i.e., <c>a/b**/c</c> is invalid, but it can be replaced with <c>a/b*/**/c</c>).
-    ///             It matches even an empty string (i.e., <c>a/**/b</c> matches <c>a/b</c>, <c>a/x/b</c>, <c>a/x/y/b</c> etc.)
+    ///         <c>?</c> matches any character except a directory separator
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <description>
+    ///         <c>**</c> matches any sequence of characters (even a directory separator). It has
+    ///         to be delimited by directory separator from both sides (i.e., <c>a/b**/c</c> is
+    ///         invalid, but it can be replaced with <c>a/b*/**/c</c>). It matches even an empty
+    ///         string (i.e., <c>a/**/b</c> matches <c>a/b</c>, <c>a/x/b</c>, <c>a/x/y/b</c> etc.)
     ///         </description>
     ///     </item>
     /// </list>
     /// </summary>
     /// <example>
-    ///     <code>
-    ///         var finder = new FileFinder(fileSystem, "C:/photos/**/vacation/*2017");
-    ///         foreach (var directoryPath in finder.GetDirectories()) { ... }
-    ///         foreach (var filePath in finder.GetFiles()) { ... }
-    ///     </code>
+    /// <code>
+    /// var finder = new FileFinder(fileSystem, "C:/photos/**/vacation/*2017");
+    /// foreach (var directoryPath in finder.GetDirectories()) { ... }
+    /// foreach (var filePath in finder.GetFiles()) { ... }
+    /// </code>
     /// </example>
     public class FileFinder 
     {
@@ -56,6 +61,12 @@ namespace Viewer.IO
         private readonly Regex _regex;
 
         /// <summary>
+        /// Files and folders with at least one attribute from this list will not be included in
+        /// the result.
+        /// </summary>
+        public FileAttributes HiddenAttributes { get; } = FileAttributes.System;
+
+        /// <summary>
         /// Pattern of this file finder.
         /// </summary>
         public string Pattern { get; }
@@ -64,8 +75,12 @@ namespace Viewer.IO
         /// Create a file finder with <paramref name="directoryPattern"/>.
         /// </summary>
         /// <param name="fileSystem">Wrapper used to access file system</param>
-        /// <param name="directoryPattern">Directory path pattern. See <see cref="FileFinder"/>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="fileSystem"/> or <paramref name="directoryPattern"/> is null</exception>
+        /// <param name="directoryPattern">
+        /// Directory path pattern. See <see cref="FileFinder"/>.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="fileSystem"/> or <paramref name="directoryPattern"/> is null
+        /// </exception>
         public FileFinder(IFileSystem fileSystem, string directoryPattern)
         {
             Pattern = directoryPattern ?? throw new ArgumentNullException(nameof(directoryPattern));
@@ -160,8 +175,8 @@ namespace Viewer.IO
         }
 
         /// <summary>
-        /// Find all directories which match given pattern.
-        /// This function will skip folders which throw <see cref="UnauthorizedAccessException"/> or <see cref="SecurityException"/>.
+        /// Find all directories which match given pattern. This function will skip folders which
+        /// throw <see cref="UnauthorizedAccessException"/> or <see cref="SecurityException"/>.
         /// </summary>
         /// <returns>List of directories matching the pattern</returns>
         public IEnumerable<string> GetDirectories()
@@ -248,9 +263,10 @@ namespace Viewer.IO
 
         private IEnumerable<string> EnumerateDirectories(string path)
         {
+            IEnumerable<string> dirs = null;
             try
             {
-                return _fileSystem.EnumerateDirectories(path);
+                dirs = _fileSystem.EnumerateDirectories(path);
             }
             catch (UnauthorizedAccessException)
             {
@@ -258,15 +274,16 @@ namespace Viewer.IO
             catch (SecurityException)
             {
             }
-
-            return Enumerable.Empty<string>();
+            
+            return SelectDirectories(dirs);
         }
 
         private IEnumerable<string> EnumerateDirectories(string path, string pattern)
         {
+            IEnumerable<string> dirs = null;
             try
             {
-                return _fileSystem.EnumerateDirectories(path, pattern);
+                dirs = _fileSystem.EnumerateDirectories(path, pattern);
             }
             catch (UnauthorizedAccessException)
             {
@@ -275,7 +292,24 @@ namespace Viewer.IO
             {
             }
 
-            return Enumerable.Empty<string>();
+            return SelectDirectories(dirs);
+        }
+
+        private IEnumerable<string> SelectDirectories(IEnumerable<string> dirs)
+        {
+            if (dirs == null)
+            {
+                yield break;
+            }
+
+            foreach (var dir in dirs)
+            {
+                var attrs = _fileSystem.GetAttributes(dir);
+                if ((attrs & HiddenAttributes) == 0)
+                {
+                    yield return dir;
+                }
+            }
         }
 
         /// <summary>

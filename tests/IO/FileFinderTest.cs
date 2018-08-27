@@ -228,5 +228,30 @@ namespace ViewerTest.IO
             Assert.AreEqual("a\\x\\b\\c\\", directories[1]);
             Assert.AreEqual("a\\x\\y\\b\\c\\", directories[2]);
         }
+
+        [TestMethod]
+        public void GetDirectories_IgnoreSystemDirectories()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(mock => mock.DirectoryExists("a\\")).Returns(true);
+            fileSystem.Setup(mock => mock.DirectoryExists("a\\x")).Returns(true);
+            fileSystem.Setup(mock => mock.DirectoryExists("a\\y")).Returns(true);
+            fileSystem.Setup(mock => mock.EnumerateDirectories("a\\", "*")).Returns(new[] { "a\\x", "a\\y" });
+            fileSystem
+                .Setup(mock => mock.GetAttributes("a\\"))
+                .Returns(FileAttributes.Directory);
+            fileSystem
+                .Setup(mock => mock.GetAttributes("a\\x"))
+                .Returns(FileAttributes.Directory | FileAttributes.System);
+            fileSystem
+                .Setup(mock => mock.GetAttributes("a\\y"))
+                .Returns(FileAttributes.Directory);
+
+            var finder = new FileFinder(fileSystem.Object, "a/*");
+            var directories = finder.GetDirectories().ToArray();
+
+            Assert.AreEqual(1, directories.Length);
+            Assert.AreEqual("a\\y", directories[0]);
+        }
     }
 }

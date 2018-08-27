@@ -14,6 +14,9 @@ namespace Viewer.Data.Storage
         
         public IEntity Load(string path)
         {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
             lock (_files)
             {
                 if (_files.TryGetValue(path, out var entity))
@@ -27,6 +30,9 @@ namespace Viewer.Data.Storage
 
         public void Store(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             lock (_files)
             {
                 _files[entity.Path] = entity.Clone();
@@ -35,6 +41,9 @@ namespace Viewer.Data.Storage
 
         public void StoreThumbnail(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             lock (_files)
             {
                 if (!_files.TryGetValue(entity.Path, out var storedEntity))
@@ -54,6 +63,9 @@ namespace Viewer.Data.Storage
 
         public void Remove(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             lock (_files)
             {
                 _files.Remove(entity.Path);
@@ -62,6 +74,11 @@ namespace Viewer.Data.Storage
 
         public void Move(IEntity entity, string newPath)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            if (newPath == null)
+                throw new ArgumentNullException(nameof(newPath));
+
             lock (_files)
             {
                 _files[newPath] = entity;

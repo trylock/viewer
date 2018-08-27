@@ -56,7 +56,10 @@ namespace Viewer.Data.Storage
             {
                 // try to load the entity from the main storage
                 entity = _persistentStorage.Load(path);
-                _cacheStorage.Store(entity);
+                if (entity != null)
+                {
+                    _cacheStorage.Store(entity);
+                }
             }
             
             Notify();
@@ -72,6 +75,9 @@ namespace Viewer.Data.Storage
         /// <param name="entity"></param>
         public void Store(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             _persistentStorage.Store(entity);
             _cacheStorage.Store(entity);
             Notify();
@@ -79,12 +85,18 @@ namespace Viewer.Data.Storage
 
         public void StoreThumbnail(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             _cacheStorage.StoreThumbnail(entity);
             Notify();
         }
 
         public void Remove(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             _persistentStorage.Remove(entity);
             _cacheStorage.Remove(entity);
             Notify();
@@ -92,6 +104,11 @@ namespace Viewer.Data.Storage
 
         public void Move(IEntity entity, string newPath)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            if (newPath == null)
+                throw new ArgumentNullException(nameof(newPath));
+            
             _persistentStorage.Move(entity, newPath);
             _cacheStorage.Move(entity, newPath);
             Notify();

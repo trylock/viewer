@@ -89,6 +89,9 @@ namespace Viewer.Data.Storage
         
         public IEntity Load(string path)
         {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
             path = PathUtils.NormalizePath(path);
 
             // check if there is a pending change in main memory
@@ -191,6 +194,9 @@ namespace Viewer.Data.Storage
 
         public void Store(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             var request = new StoreRequest(entity.Clone(), GetLastWriteTime(entity.Path));
             lock (_requests)
             {
@@ -200,6 +206,9 @@ namespace Viewer.Data.Storage
 
         public void StoreThumbnail(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             var thumbnail = entity.GetAttribute(ExifAttributeReaderFactory.ThumbnailAttrName);
             var thumbnailValue = thumbnail?.Value as ImageValue;
             if (thumbnailValue == null || thumbnailValue.IsNull)
@@ -229,6 +238,9 @@ namespace Viewer.Data.Storage
 
         public void Remove(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             lock (_requests)
             {
                 _requests[entity.Path] = new DeleteRequest();
@@ -237,6 +249,11 @@ namespace Viewer.Data.Storage
 
         public void Move(IEntity entity, string newPath)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            if (newPath == null)
+                throw new ArgumentNullException(nameof(newPath));
+
             newPath = PathUtils.NormalizePath(newPath);
 
             lock (_requests)

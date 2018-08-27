@@ -15,14 +15,14 @@ namespace Viewer.Data.Storage
     /// has to be thread safe.
     /// </summary>
     /// <example>
-    ///     This example loads all attributes from the file <c>C:/photo.jpeg</c>, changes/adds one
-    ///     attribute and stores them back to the file.
-    ///     <code>
-    ///         IAttributeStorage storage = ...;
-    ///         var entity = storage.Load("C:/photo.jpeg");
-    ///         entity.SetAttribute(new Attribute("place", new StringValue("Edinburgh")));
-    ///         storage.Store(entity);
-    ///     </code>
+    /// This example loads all attributes from the file <c>C:/photo.jpeg</c>, changes/adds one
+    /// attribute and stores them back to the file.
+    /// <code>
+    ///     IAttributeStorage storage = ...;
+    ///     var entity = storage.Load("C:/photo.jpeg");
+    ///     entity.SetAttribute(new Attribute("place", new StringValue("Edinburgh")));
+    ///     storage.Store(entity);
+    /// </code>
     /// </example>
     public interface IAttributeStorage : IDisposable
     {
@@ -57,9 +57,10 @@ namespace Viewer.Data.Storage
         IEntity Load(string path);
 
         /// <summary>
-        /// Store attributes to a path.
+        /// Store attributes to a file.
         /// </summary>
         /// <param name="entity">Attributes to store in this file</param>
+        /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
         void Store(IEntity entity);
 
         /// <summary>
@@ -67,12 +68,14 @@ namespace Viewer.Data.Storage
         /// not stored in this storage or the storage does not support storing thumbnails. 
         /// </summary>
         /// <param name="entity">Entity who's thumbnail will be stored.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
         void StoreThumbnail(IEntity entity);
 
         /// <summary>
         /// Permanently remove entity at given path
         /// </summary>
         /// <param name="entity">Entity to remove</param>
+        /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
         void Remove(IEntity entity);
 
         /// <summary>
@@ -80,6 +83,9 @@ namespace Viewer.Data.Storage
         /// </summary>
         /// <param name="entity">Entity to move</param>
         /// <param name="newPath">New path to entity</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="entity"/> or <paramref name="newPath"/> is null
+        /// </exception>
         void Move(IEntity entity, string newPath);
     }
 

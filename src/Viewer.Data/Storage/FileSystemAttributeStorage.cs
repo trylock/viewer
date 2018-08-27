@@ -87,6 +87,9 @@ namespace Viewer.Data.Storage
         /// <returns>Collection of attributes read from the file</returns>
         public IEntity Load(string path)
         {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
             try
             {
                 if (_fileSystem.DirectoryExists(path))
@@ -136,6 +139,9 @@ namespace Viewer.Data.Storage
         
         public void Store(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(entity.Path))
             {
                 string tmpFileName;
@@ -179,10 +185,15 @@ namespace Viewer.Data.Storage
 
         public void StoreThumbnail(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
         }
 
         public void Remove(IEntity entity)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
             if (entity is FileEntity)
             {
                 _fileSystem.DeleteFile(entity.Path);
@@ -199,6 +210,11 @@ namespace Viewer.Data.Storage
 
         public void Move(IEntity entity, string newPath)
         {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            if (newPath == null)
+                throw new ArgumentNullException(nameof(newPath));
+
             if (entity is FileEntity)
             {
                 _fileSystem.MoveFile(entity.Path, newPath);

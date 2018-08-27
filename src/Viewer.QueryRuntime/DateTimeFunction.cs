@@ -86,6 +86,23 @@ namespace Viewer.QueryRuntime
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// DateTime function will return its argument if the argument is a datetime value.
+    /// </summary>
+    [Export(typeof(IFunction))]
+    public class DateTimeIdentityFunciton : IFunction
+    {
+        public string Name => "DateTime";
+
+        public IReadOnlyList<TypeId> Arguments => new[] { TypeId.DateTime };
+
+        public BaseValue Call(IArgumentList arguments)
+        {
+            return arguments.Get<DateTimeValue>(0);
+        }
+    }
+
     [Export(typeof(IFunction))]
     public sealed class DateFunction : FunctionAlias<DateTimeFunction>
     {

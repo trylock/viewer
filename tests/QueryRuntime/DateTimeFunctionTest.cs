@@ -137,5 +137,17 @@ namespace ViewerTest.QueryRuntime
             Assert.AreEqual(28, dateTime.Minute);
             Assert.AreEqual(0, dateTime.Second);
         }
+
+        [TestMethod]
+        public void Call_DateTimeIdentityReturnsItsArgument()
+        {
+            var value = new DateTimeValue(DateTime.Now);
+            var function = new DateTimeIdentityFunciton();
+            var result = function.Call(new ArgumentList(new BaseValue[]
+            {
+                value
+            }));
+            Assert.AreEqual(result, value);
+        }
     }
 }

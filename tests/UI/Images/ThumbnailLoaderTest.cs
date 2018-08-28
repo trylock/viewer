@@ -286,5 +286,22 @@ namespace ViewerTest.UI.Images
             Assert.IsNull(entity.GetValue<ImageValue>(ExifAttributeReaderFactory.ThumbnailAttrName));
             Assert.IsTrue(originalImage.IsDisposed);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(TaskCanceledException))]
+        public async Task LoadNativeThumbnailAsync_ProcessCanceledRequest()
+        {
+            var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+            var entity = new FileEntity("test");
+
+            var tasks = new Task[100];
+            for (var i = 0; i < tasks.Length; ++i)
+            {
+                tasks[i] = _loader.LoadNativeThumbnailAsync(entity, new Size(1, 1), cancellation.Token);
+            }
+            
+            await Task.WhenAll(tasks);
+        }
     }
 }

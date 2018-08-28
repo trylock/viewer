@@ -222,12 +222,18 @@ namespace Viewer.UI.Images
             var task = AddLoadRequest(request);
 
             // pick next load request once the previous request has finished
-            _loadQueue = _loadQueue.ContinueWith(_ => ProcessNextRequest(), TaskContinuationOptions.None);
+            // note: we intentionally don't wait for the task returned by ProcessNextRequestAsync()
+            _loadQueue = _loadQueue.ContinueWith(_ => ProcessNextRequestAsync(), TaskContinuationOptions.None);
             
             return task;
         }
 
-        private void ProcessNextRequest()
+        /// <summary>
+        /// Load content of an image file synchronously and then decode it asynchronously.
+        /// This method blocks until a _loaderCount is available.
+        /// </summary>
+        /// <returns>Task finished when a request is fully processed</returns>
+        private async Task ProcessNextRequestAsync()
         {
             _loaderCount.Wait();
             
@@ -241,13 +247,13 @@ namespace Viewer.UI.Images
                     req.Completion.SetCanceled();
                     return;
                 }
-                
+
                 // this memory is going to end up on LOH
                 var buffer = LoadFile(req.Entity.Path);
 
                 // decode JPEG image, generate a thumbnail from it and save it back as entity
                 // thumbnail in parallel
-                Task.Run(() =>
+                await Task.Run(() =>
                 {
                     try
                     {
@@ -262,21 +268,19 @@ namespace Viewer.UI.Images
                     {
                         req.Completion.SetException(e);
                     }
-                    finally
-                    {
-                        _loaderCount.Release();
-                    }
                 });
             }
             catch (OperationCanceledException)
             {
-                _loaderCount.Release();
                 req?.Completion.SetCanceled();
             }
             catch (Exception e)
             {
-                _loaderCount.Release();
                 req?.Completion.SetException(e);
+            }
+            finally
+            {
+                _loaderCount.Release();
             }
         }
 

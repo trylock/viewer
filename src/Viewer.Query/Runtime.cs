@@ -8,25 +8,6 @@ using Viewer.Data;
 
 namespace Viewer.Query
 {
-    /// <inheritdoc />
-    /// <summary>
-    /// Exception thrown when there is an error in a runtime function
-    /// </summary>
-    public class QueryRuntimeException : Exception
-    {
-        public QueryRuntimeException()
-        {
-        }
-
-        public QueryRuntimeException(string message) : base(message)
-        {
-        }
-
-        public QueryRuntimeException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-    }
-
     public interface IRuntime
     {
         /// <summary>
@@ -52,7 +33,6 @@ namespace Viewer.Query
         /// <param name="function">Function to call</param>
         /// <param name="context">Execution context</param>
         /// <returns>Return value of the function call</returns>
-        /// <exception cref="QueryRuntimeException">An error occurs in the function call</exception>
         BaseValue Call(IFunction function, IExecutionContext context);
 
         /// <summary>
@@ -61,10 +41,6 @@ namespace Viewer.Query
         /// <param name="name"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        /// <exception cref="QueryRuntimeException">
-        ///     An error occurs in the function call or
-        ///     there is no function with the name and arguments.
-        /// </exception>
         BaseValue FindAndCall(string name, IExecutionContext context);
     }
 
@@ -73,11 +49,16 @@ namespace Viewer.Query
     {
         private readonly Dictionary<string, List<IFunction>> _functions = new Dictionary<string, List<IFunction>>();
         private readonly IValueConverter _converter;
+        private readonly IErrorListener _errorListener;
 
         [ImportingConstructor]
-        public Runtime(IValueConverter converter, [ImportMany] IFunction[] functions)
+        public Runtime(
+            IValueConverter converter, 
+            IErrorListener errorListener,
+            [ImportMany] IFunction[] functions)
         {
             _converter = converter;
+            _errorListener = errorListener;
 
             foreach (var function in functions)
             {
@@ -159,7 +140,7 @@ namespace Viewer.Query
                 return Call(function, context);
             }
 
-            // unknown function
+            // unknown function, report an error
             const string argumentSeparator = ", ";
             var sb = new StringBuilder();
             foreach (var arg in context)
@@ -172,7 +153,11 @@ namespace Viewer.Query
             {
                 sb.Remove(sb.Length - argumentSeparator.Length, argumentSeparator.Length);
             }
-            throw new QueryRuntimeException($"Unknown function {name}({sb})");
+            _errorListener.ReportRuntimeError(
+                context.Line, 
+                context.Column, 
+                $"Unknown function {name}({sb})");
+            return new IntValue(null);
         }
 
         private static string NormalizeFunctionName(string name) => name.ToLowerInvariant();

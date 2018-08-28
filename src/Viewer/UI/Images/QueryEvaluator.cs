@@ -235,37 +235,30 @@ namespace Viewer.UI.Images
         {
             var directories = new HashSet<string>();
             
-            try
+            foreach (var entity in Query.Execute(Progress, Cancellation.Token))
             {
-                foreach (var entity in Query.Execute(Progress, Cancellation.Token))
+                Cancellation.Token.ThrowIfCancellationRequested();
+
+                // if the entity is in an undiscovered directory,
+                // start watching changes in this directory
+                var parentDirectory = PathUtils.GetDirectoryPath(entity.Path);
+                if (!directories.Contains(parentDirectory))
                 {
-                    Cancellation.Token.ThrowIfCancellationRequested();
-
-                    // if the entity is in an undiscovered directory,
-                    // start watching changes in this directory
-                    var parentDirectory = PathUtils.GetDirectoryPath(entity.Path);
-                    if (!directories.Contains(parentDirectory))
+                    try
                     {
-                        try
-                        {
-                            _fileWatcher.Watch(parentDirectory);
-                        }
-                        catch (ArgumentException)
-                        {
-                            // The path is invalid or the directory does not exist anymore.
-                            // Ignore this error, just don't watch the directory.
-                        }
-
-                        directories.Add(parentDirectory);
+                        _fileWatcher.Watch(parentDirectory);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // The path is invalid or the directory does not exist anymore.
+                        // Ignore this error, just don't watch the directory.
                     }
 
-                    // add a new entity
-                    _added.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
+                    directories.Add(parentDirectory);
                 }
-            }
-            catch (QueryRuntimeException e)
-            {
-                _queryErrorListener.ReportError(0, 0, e.Message);
+
+                // add a new entity
+                _added.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
             }
         }
         

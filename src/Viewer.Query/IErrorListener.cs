@@ -17,12 +17,21 @@ namespace Viewer.Query
         void BeforeCompilation();
 
         /// <summary>
-        /// Report an error at <paramref name="row"/> and <paramref name="column"/>
+        /// Report an error during compilation at <paramref name="line"/> and
+        /// <paramref name="column"/>.
         /// </summary>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
-        /// <param name="errorMessage"></param>
-        void ReportError(int row, int column, string errorMessage);
+        /// <param name="line">Line of the query at which the error has happened</param>
+        /// <param name="column">Column of the query at which the error has happened</param>
+        /// <param name="errorMessage">Error message</param>
+        void ReportCompilerError(int line, int column, string errorMessage);
+
+        /// <summary>
+        /// Report an error which happened at runtime (e.g. during a function execution).
+        /// </summary>
+        /// <param name="line">Line of the query at which the error has happened</param>
+        /// <param name="column">Column of the query at which the error has happened</param>
+        /// <param name="errorMessage">Error message</param>
+        void ReportRuntimeError(int line, int column, string errorMessage);
 
         /// <summary>
         /// Method called after each compilation
@@ -36,10 +45,14 @@ namespace Viewer.Query
         {
         }
 
-        public void ReportError(int row, int column, string errorMessage)
+        public void ReportCompilerError(int line, int column, string errorMessage)
         {
         }
 
+        public void ReportRuntimeError(int line, int column, string errorMessage)
+        {
+        }
+        
         public void AfterCompilation()
         {
         }

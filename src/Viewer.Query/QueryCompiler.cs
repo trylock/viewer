@@ -246,7 +246,7 @@ namespace Viewer.Query
             }
             catch (ArgumentException e) // pathPattern contains invalid characters
             {
-                _errorListener.ReportError(
+                _errorListener.ReportCompilerError(
                     pattern.Symbol.Line, 
                     pattern.Symbol.Column, 
                     "Invalid characters in path pattern.");
@@ -580,7 +580,7 @@ namespace Viewer.Query
             string msg, 
             RecognitionException e)
         {
-            _errorListener.ReportError(line, charPositionInLine, msg);
+            _errorListener.ReportCompilerError(line, charPositionInLine, msg);
             throw new ParseCanceledException(e);
         }
     }
@@ -603,7 +603,7 @@ namespace Viewer.Query
             string msg, 
             RecognitionException e)
         {
-            _errorListener.ReportError(line, charPositionInLine, msg);
+            _errorListener.ReportCompilerError(line, charPositionInLine, msg);
         }
     }
 
@@ -617,7 +617,11 @@ namespace Viewer.Query
         public IQueryViewRepository Views { get; }
 
         [ImportingConstructor]
-        public QueryCompiler(IQueryFactory queryFactory, IRuntime runtime, IQueryViewRepository queryViewRepository, IErrorListener errorListener)
+        public QueryCompiler(
+            IQueryFactory queryFactory, 
+            IRuntime runtime, 
+            IQueryViewRepository queryViewRepository, 
+            IErrorListener errorListener)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;

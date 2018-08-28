@@ -552,7 +552,7 @@ namespace ViewerTest.Query
             var listener = new Mock<IErrorListener>();
             _compiler.Compile(new StringReader("select \"a\" asdf"), listener.Object);
 
-            listener.Verify(mock => mock.ReportError(1, 11, It.IsAny<string>()), Times.AtLeastOnce);
+            listener.Verify(mock => mock.ReportCompilerError(1, 11, It.IsAny<string>()), Times.AtLeastOnce);
         }
     }
 }

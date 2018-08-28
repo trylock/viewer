@@ -16,16 +16,18 @@ namespace ViewerTest.Query
         private Runtime _runtime;
         private Mock<IFunction> _testFunction;
         private Mock<IValueConverter> _converter;
-        
+        private Mock<IErrorListener> _errorListener;
+
         [TestInitialize]
         public void Setup()
         {
             _converter = new Mock<IValueConverter>();
             _testFunction = new Mock<IFunction>();
+            _errorListener = new Mock<IErrorListener>();
             _testFunction
                 .Setup(mock => mock.Name)
                 .Returns("test");
-            _runtime = new Runtime(_converter.Object, new IFunction[]{ _testFunction.Object });
+            _runtime = new Runtime(_converter.Object, _errorListener.Object, new[]{ _testFunction.Object });
         }
 
         private IExecutionContext Create(params BaseValue[] arguments)
@@ -55,21 +57,25 @@ namespace ViewerTest.Query
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QueryRuntimeException), "Unknown function error(Integer, String)")]
         public void CallAndFind_UnknownFunction()
         {
-            _runtime.FindAndCall("error", Create(new IntValue(4), new StringValue("test")));
+            var result = _runtime.FindAndCall("error", Create(new IntValue(4), new StringValue("test")));
+            Assert.IsTrue(result.IsNull);
+
+            _errorListener.Verify(mock => mock.ReportRuntimeError(0, 0, "Unknown function error(Integer, String)"), Times.Once);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QueryRuntimeException), "Unknown function test(Integer, Integer)")]
         public void CallAndFind_DifferentNumberOfParameters()
         {
             _testFunction
                 .Setup(mock => mock.Arguments)
                 .Returns(new[] { TypeId.Integer });
 
-            _runtime.FindAndCall("test", Create(new IntValue(1), new IntValue(2)));
+            var result = _runtime.FindAndCall("test", Create(new IntValue(1), new IntValue(2)));
+            Assert.IsTrue(result.IsNull);
+
+            _errorListener.Verify(mock => mock.ReportRuntimeError(0, 0, "Unknown function test(Integer, Integer)"), Times.Once);
         }
 
         [TestMethod]

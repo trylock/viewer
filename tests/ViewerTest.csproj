@@ -137,7 +137,6 @@
     <Compile Include="Data\Storage\FileSystemAttributeStorageTest.cs" />
     <Compile Include="Data\Storage\SqliteAttributeStorageTest.cs" />
     <Compile Include="Data\ValueComparerTest.cs" />
-    <Compile Include="FractionTest.cs" />
     <Compile Include="IO\FileFinderTest.cs" />
     <Compile Include="IO\PathUtilsTest.cs" />
     <Compile Include="MathUtilsTest.cs" />

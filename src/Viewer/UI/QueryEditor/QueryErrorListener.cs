@@ -11,8 +11,8 @@ using Viewer.UI.Errors;
 
 namespace Viewer.UI.QueryEditor
 {
-    [Export(typeof(IErrorListener))]
-    public class QueryErrorListener : IErrorListener
+    [Export(typeof(IQueryErrorListener))]
+    public class QueryQueryErrorListener : IQueryErrorListener
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -20,7 +20,7 @@ namespace Viewer.UI.QueryEditor
         private readonly ConcurrentDictionary<string, bool> _reportedRuntimeErrors = new ConcurrentDictionary<string, bool>();
 
         [ImportingConstructor]
-        public QueryErrorListener(IErrorList errorList)
+        public QueryQueryErrorListener(IErrorList errorList)
         {
             _errorList = errorList;
         }
@@ -31,7 +31,7 @@ namespace Viewer.UI.QueryEditor
             _reportedRuntimeErrors.Clear();
         }
 
-        public void ReportCompilerError(int line, int column, string errorMessage)
+        public void OnCompilerError(int line, int column, string errorMessage)
         {
             Logger.Debug("[{0}][{1}] {2}", line, column, errorMessage);
 
@@ -45,7 +45,7 @@ namespace Viewer.UI.QueryEditor
             });
         }
 
-        public void ReportRuntimeError(int line, int column, string errorMessage)
+        public void OnRuntimeError(int line, int column, string errorMessage)
         {
             // Runtime errors can be reported for many entities. We only want to report each
             // error once to the user.

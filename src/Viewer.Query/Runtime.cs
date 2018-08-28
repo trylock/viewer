@@ -49,16 +49,16 @@ namespace Viewer.Query
     {
         private readonly Dictionary<string, List<IFunction>> _functions = new Dictionary<string, List<IFunction>>();
         private readonly IValueConverter _converter;
-        private readonly IErrorListener _errorListener;
+        private readonly IQueryErrorListener _queryErrorListener;
 
         [ImportingConstructor]
         public Runtime(
             IValueConverter converter, 
-            IErrorListener errorListener,
+            IQueryErrorListener queryErrorListener,
             [ImportMany] IFunction[] functions)
         {
             _converter = converter;
-            _errorListener = errorListener;
+            _queryErrorListener = queryErrorListener;
 
             foreach (var function in functions)
             {
@@ -153,7 +153,7 @@ namespace Viewer.Query
             {
                 sb.Remove(sb.Length - argumentSeparator.Length, argumentSeparator.Length);
             }
-            _errorListener.ReportRuntimeError(
+            _queryErrorListener.OnRuntimeError(
                 context.Line, 
                 context.Column, 
                 $"Unknown function {name}({sb})");

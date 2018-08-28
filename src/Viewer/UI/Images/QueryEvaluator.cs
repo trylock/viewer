@@ -37,7 +37,6 @@ namespace Viewer.UI.Images
         private readonly IEntityManager _entities;
         private readonly IFileWatcher _fileWatcher;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
-        private readonly IErrorListener _queryErrorListener;
 
         // state
         private List<EntityView> _views;
@@ -100,14 +99,12 @@ namespace Viewer.UI.Images
         public QueryEvaluator(
             IFileWatcherFactory fileWatcherFactory, 
             ILazyThumbnailFactory thumbnailFactory, 
-            IErrorListener queryErrorListener, 
             IEntityManager entities, 
             IQuery query)
         {
             _entities = entities;
             _fileWatcher = fileWatcherFactory.Create();
             _thumbnailFactory = thumbnailFactory;
-            _queryErrorListener = queryErrorListener;
             Query = query;
 
             // initialize internal structures
@@ -365,21 +362,19 @@ namespace Viewer.UI.Images
     {
         private readonly IFileWatcherFactory _fileWatcherFactory;
         private readonly ILazyThumbnailFactory _thumbnailFactory;
-        private readonly IErrorListener _errorListener;
         private readonly IEntityManager _entities;
 
         [ImportingConstructor]
-        public QueryEvaluatorFactory(IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IErrorListener errorListener, IEntityManager entities)
+        public QueryEvaluatorFactory(IFileWatcherFactory fileWatcherFactory, ILazyThumbnailFactory thumbnailFactory, IEntityManager entities)
         {
             _fileWatcherFactory = fileWatcherFactory;
             _thumbnailFactory = thumbnailFactory;
-            _errorListener = errorListener;
             _entities = entities;
         }
 
         public QueryEvaluator Create(IQuery query)
         {
-            return new QueryEvaluator(_fileWatcherFactory, _thumbnailFactory, _errorListener, _entities, query);
+            return new QueryEvaluator(_fileWatcherFactory, _thumbnailFactory, _entities, query);
         }
     }
 }

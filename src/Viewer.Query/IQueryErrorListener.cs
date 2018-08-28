@@ -9,7 +9,7 @@ namespace Viewer.Query
     /// <summary>
     /// Implementation has to be thread safe.
     /// </summary>
-    public interface IErrorListener
+    public interface IQueryErrorListener
     {
         /// <summary>
         /// Method called before each compilation
@@ -23,7 +23,7 @@ namespace Viewer.Query
         /// <param name="line">Line of the query at which the error has happened</param>
         /// <param name="column">Column of the query at which the error has happened</param>
         /// <param name="errorMessage">Error message</param>
-        void ReportCompilerError(int line, int column, string errorMessage);
+        void OnCompilerError(int line, int column, string errorMessage);
 
         /// <summary>
         /// Report an error which happened at runtime (e.g. during a function execution).
@@ -31,7 +31,7 @@ namespace Viewer.Query
         /// <param name="line">Line of the query at which the error has happened</param>
         /// <param name="column">Column of the query at which the error has happened</param>
         /// <param name="errorMessage">Error message</param>
-        void ReportRuntimeError(int line, int column, string errorMessage);
+        void OnRuntimeError(int line, int column, string errorMessage);
 
         /// <summary>
         /// Method called after each compilation
@@ -39,17 +39,17 @@ namespace Viewer.Query
         void AfterCompilation();
     }
 
-    public class NullErrorListener : IErrorListener
+    public class NullQueryErrorListener : IQueryErrorListener
     {
         public void BeforeCompilation()
         {
         }
 
-        public void ReportCompilerError(int line, int column, string errorMessage)
+        public void OnCompilerError(int line, int column, string errorMessage)
         {
         }
 
-        public void ReportRuntimeError(int line, int column, string errorMessage)
+        public void OnRuntimeError(int line, int column, string errorMessage)
         {
         }
         

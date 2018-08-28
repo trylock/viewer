@@ -16,14 +16,14 @@ namespace ViewerTest.Query
         private Runtime _runtime;
         private Mock<IFunction> _testFunction;
         private Mock<IValueConverter> _converter;
-        private Mock<IErrorListener> _errorListener;
+        private Mock<IQueryErrorListener> _errorListener;
 
         [TestInitialize]
         public void Setup()
         {
             _converter = new Mock<IValueConverter>();
             _testFunction = new Mock<IFunction>();
-            _errorListener = new Mock<IErrorListener>();
+            _errorListener = new Mock<IQueryErrorListener>();
             _testFunction
                 .Setup(mock => mock.Name)
                 .Returns("test");
@@ -62,7 +62,7 @@ namespace ViewerTest.Query
             var result = _runtime.FindAndCall("error", Create(new IntValue(4), new StringValue("test")));
             Assert.IsTrue(result.IsNull);
 
-            _errorListener.Verify(mock => mock.ReportRuntimeError(0, 0, "Unknown function error(Integer, String)"), Times.Once);
+            _errorListener.Verify(mock => mock.OnRuntimeError(0, 0, "Unknown function error(Integer, String)"), Times.Once);
         }
 
         [TestMethod]
@@ -75,7 +75,7 @@ namespace ViewerTest.Query
             var result = _runtime.FindAndCall("test", Create(new IntValue(1), new IntValue(2)));
             Assert.IsTrue(result.IsNull);
 
-            _errorListener.Verify(mock => mock.ReportRuntimeError(0, 0, "Unknown function test(Integer, Integer)"), Times.Once);
+            _errorListener.Verify(mock => mock.OnRuntimeError(0, 0, "Unknown function test(Integer, Integer)"), Times.Once);
         }
 
         [TestMethod]

@@ -26,9 +26,9 @@ namespace Viewer.Query
         /// Compile given query to an internal structure which can then be evaluated.
         /// </summary>
         /// <param name="input">Stream with the query</param>
-        /// <param name="errorListener">Error reporter</param>
+        /// <param name="queryErrorListener">Error reporter</param>
         /// <returns>Compiled query</returns>
-        IQuery Compile(TextReader input, IErrorListener errorListener);
+        IQuery Compile(TextReader input, IQueryErrorListener queryErrorListener);
 
         /// <summary>
         /// Same as Compile(new StringReader(query), defaultQueryErrorListener)
@@ -64,19 +64,19 @@ namespace Viewer.Query
     internal class QueryCompilerVisitor : IQueryVisitor<CompilationResult>
     {
         private readonly IQueryCompiler _queryCompiler;
-        private readonly IErrorListener _errorListener;
+        private readonly IQueryErrorListener _queryErrorListener;
         private readonly IQueryFactory _queryFactory;
         private readonly IRuntime _runtime;
 
         private readonly ParameterExpression _entityParameter = Expression.Parameter(typeof(IEntity), "entity");
         private readonly Attribute _nullAttribute = new Attribute("", new IntValue(null), AttributeSource.Custom);
         
-        public QueryCompilerVisitor(IQueryFactory queryFactory, IRuntime runtime, IQueryCompiler compiler, IErrorListener errorListener)
+        public QueryCompilerVisitor(IQueryFactory queryFactory, IRuntime runtime, IQueryCompiler compiler, IQueryErrorListener queryErrorListener)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;
             _queryCompiler = compiler;
-            _errorListener = errorListener;
+            _queryErrorListener = queryErrorListener;
         }
 
         public IQuery Compile(IParseTree tree)
@@ -227,7 +227,7 @@ namespace Viewer.Query
             if (viewId != null)
             {
                 var view = _queryCompiler.Views.Find(viewId.GetText());
-                query = _queryCompiler.Compile(new StringReader(view.Text), _errorListener);
+                query = _queryCompiler.Compile(new StringReader(view.Text), _queryErrorListener);
                 if (query == null)
                 {
                     // compilation of the subquery failed
@@ -246,7 +246,7 @@ namespace Viewer.Query
             }
             catch (ArgumentException e) // pathPattern contains invalid characters
             {
-                _errorListener.ReportCompilerError(
+                _queryErrorListener.OnCompilerError(
                     pattern.Symbol.Line, 
                     pattern.Symbol.Column, 
                     "Invalid characters in path pattern.");
@@ -564,11 +564,11 @@ namespace Viewer.Query
     
     internal class ParserErrorListener : IAntlrErrorListener<IToken>
     {
-        private readonly IErrorListener _errorListener;
+        private readonly IQueryErrorListener _queryErrorListener;
 
-        public ParserErrorListener(IErrorListener listener)
+        public ParserErrorListener(IQueryErrorListener listener)
         {
-            _errorListener = listener;
+            _queryErrorListener = listener;
         }
 
         public void SyntaxError(
@@ -580,18 +580,18 @@ namespace Viewer.Query
             string msg, 
             RecognitionException e)
         {
-            _errorListener.ReportCompilerError(line, charPositionInLine, msg);
+            _queryErrorListener.OnCompilerError(line, charPositionInLine, msg);
             throw new ParseCanceledException(e);
         }
     }
 
     internal class LexerErrorListener : IAntlrErrorListener<int>
     {
-        private readonly IErrorListener _errorListener;
+        private readonly IQueryErrorListener _queryErrorListener;
 
-        public LexerErrorListener(IErrorListener listener)
+        public LexerErrorListener(IQueryErrorListener listener)
         {
-            _errorListener = listener;
+            _queryErrorListener = listener;
         }
 
         public void SyntaxError(
@@ -603,14 +603,14 @@ namespace Viewer.Query
             string msg, 
             RecognitionException e)
         {
-            _errorListener.ReportCompilerError(line, charPositionInLine, msg);
+            _queryErrorListener.OnCompilerError(line, charPositionInLine, msg);
         }
     }
 
     [Export(typeof(IQueryCompiler))]
     public class QueryCompiler : IQueryCompiler
     {
-        private readonly IErrorListener _queryErrorListener;
+        private readonly IQueryErrorListener _queryQueryErrorListener;
         private readonly IQueryFactory _queryFactory;
         private readonly IRuntime _runtime;
 
@@ -621,32 +621,32 @@ namespace Viewer.Query
             IQueryFactory queryFactory, 
             IRuntime runtime, 
             IQueryViewRepository queryViewRepository, 
-            IErrorListener errorListener)
+            IQueryErrorListener queryErrorListener)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;
-            _queryErrorListener = errorListener;
+            _queryQueryErrorListener = queryErrorListener;
             Views = queryViewRepository;
         }
 
-        public IQuery Compile(TextReader inputQuery, IErrorListener errorListener)
+        public IQuery Compile(TextReader inputQuery, IQueryErrorListener queryErrorListener)
         {
             // create all necessary components to parse a query
             var input = new AntlrInputStream(inputQuery);
             var lexer = new QueryLexer(input);
-            lexer.AddErrorListener(new LexerErrorListener(errorListener));
+            lexer.AddErrorListener(new LexerErrorListener(queryErrorListener));
 
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new QueryParser(tokenStream);
-            parser.AddErrorListener(new ParserErrorListener(errorListener));
+            parser.AddErrorListener(new ParserErrorListener(queryErrorListener));
 
             // parse and compile the query
-            errorListener.BeforeCompilation();
+            queryErrorListener.BeforeCompilation();
             IQuery result;
             try
             {
                 var query = parser.entry();
-                var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, errorListener);
+                var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, queryErrorListener);
                 result = compiler.Compile(query);
                 result = result.WithText(input.ToString());
             }
@@ -657,7 +657,7 @@ namespace Viewer.Query
             }
             finally
             {
-                errorListener.AfterCompilation();
+                queryErrorListener.AfterCompilation();
             }
 
             return result;
@@ -665,7 +665,7 @@ namespace Viewer.Query
 
         public IQuery Compile(string query)
         {
-            return Compile(new StringReader(query), _queryErrorListener);
+            return Compile(new StringReader(query), _queryQueryErrorListener);
         }
     }
 }

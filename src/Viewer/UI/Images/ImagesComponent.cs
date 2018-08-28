@@ -103,7 +103,7 @@ namespace Viewer.UI.Images
                 {
                     // get the last query
                     var queryText = parts[1];
-                    var query = _queryCompiler.Compile(new StringReader(queryText), new NullErrorListener());
+                    var query = _queryCompiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
                     if (query == null)
                     {
                         query = _queryFactory.CreateQuery();

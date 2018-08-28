@@ -72,7 +72,7 @@
   <ItemGroup>
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="Function.cs" />
-    <Compile Include="IErrorListener.cs" />
+    <Compile Include="IQueryErrorListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query.cs" />
     <Compile Include="QueryCompiler.cs" />

@@ -21,7 +21,7 @@ namespace Viewer.UI.QueryEditor
         private readonly IQueryEvents _appEvents;
         private readonly IFileSystemErrorView _dialogErrorView;
         private readonly IQueryCompiler _queryCompiler;
-        private readonly IErrorListener _queryErrorListener;
+        private readonly IQueryErrorListener _queryErrorListener;
         private readonly IQueryViewRepository _queryViews;
         private readonly IEditor _editor;
 
@@ -36,7 +36,7 @@ namespace Viewer.UI.QueryEditor
             IFileSystemErrorView dialogErrorView, 
             IQueryCompiler queryCompiler, 
             IQueryViewRepository queryViews,
-            IErrorListener queryErrorListener,
+            IQueryErrorListener queryErrorListener,
             IEditor editor)
         {
             ViewLifetime = viewFactory.CreateExport();

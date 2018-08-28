@@ -20,7 +20,6 @@ namespace ViewerTest.UI.Images
     public class QueryEvaluatorTest
     {
         private Mock<IFileWatcher> _fileWatcher;
-        private Mock<IErrorListener> _errorListener;
         private Mock<ILazyThumbnailFactory> _thumbnailFactory;
         private Mock<IEntityManager> _entities;
         private Mock<IQuery> _query;
@@ -31,7 +30,6 @@ namespace ViewerTest.UI.Images
         {
             _thumbnailFactory = new Mock<ILazyThumbnailFactory>();
             _fileWatcher = new Mock<IFileWatcher>();
-            _errorListener = new Mock<IErrorListener>();
             _entities = new Mock<IEntityManager>();
             _query = new Mock<IQuery>();
             _query.Setup(mock => mock.Comparer).Returns(EntityComparer.Default);
@@ -41,7 +39,6 @@ namespace ViewerTest.UI.Images
             _evaluator = new QueryEvaluator(
                 factory.Object,
                 _thumbnailFactory.Object, 
-                _errorListener.Object, 
                 _entities.Object, 
                 _query.Object);
         }

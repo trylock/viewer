@@ -46,26 +46,26 @@ namespace Viewer.Query
         IFunction FindFunction(string name, IReadOnlyList<TypeId> arguments);
 
         /// <summary>
-        /// Call <paramref name="function"/> with <paramref name="arguments"/>.
+        /// Call <paramref name="function"/> with <paramref name="context"/>.
         /// Arguments are automatically converted if necessary.
         /// </summary>
         /// <param name="function">Function to call</param>
-        /// <param name="arguments">Actual arguments of the function call</param>
+        /// <param name="context">Execution context</param>
         /// <returns>Return value of the function call</returns>
         /// <exception cref="QueryRuntimeException">An error occurs in the function call</exception>
-        BaseValue Call(IFunction function, params BaseValue[] arguments);
+        BaseValue Call(IFunction function, IExecutionContext context);
 
         /// <summary>
         /// Find function and call it. 
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="arguments"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="QueryRuntimeException">
         ///     An error occurs in the function call or
         ///     there is no function with the name and arguments.
         /// </exception>
-        BaseValue FindAndCall(string name, params BaseValue[] arguments);
+        BaseValue FindAndCall(string name, IExecutionContext context);
     }
 
     [Export(typeof(IRuntime))]
@@ -128,37 +128,41 @@ namespace Viewer.Query
             return minFunction;
         }
 
-        public BaseValue Call(IFunction function, params BaseValue[] arguments)
+        public BaseValue Call(IFunction function, IExecutionContext context)
         {
             if (function == null)
                 throw new ArgumentNullException(nameof(function));
-            if (function.Arguments.Count != arguments.Length)
-                throw new ArgumentOutOfRangeException(nameof(arguments));
+            if (function.Arguments.Count != context.Count)
+                throw new ArgumentOutOfRangeException(nameof(context));
 
             // convert arguments
-            var actualArguments = new BaseValue[arguments.Length];
-            for (var i = 0; i < arguments.Length; ++i)
+            var actualArguments = new BaseValue[context.Count];
+            for (var i = 0; i < context.Count; ++i)
             {
-                actualArguments[i] = ConvertTo(arguments[i], function.Arguments[i]);
+                actualArguments[i] = ConvertTo(context[i], function.Arguments[i]);
             }
 
             // call the function
-            return function.Call(new ArgumentList(actualArguments));
+            return function.Call(new ExecutionContext(
+                actualArguments, 
+                context.Entity, 
+                context.Line, 
+                context.Column));
         }
 
-        public BaseValue FindAndCall(string name, params BaseValue[] arguments)
+        public BaseValue FindAndCall(string name, IExecutionContext context)
         {
-            var argumentList = arguments.Select(item => item.Type).ToArray();
+            var argumentList = context.Select(item => item.Type).ToArray();
             var function = FindFunction(name, argumentList);
             if (function != null)
             {
-                return Call(function, arguments);
+                return Call(function, context);
             }
 
             // unknown function
             const string argumentSeparator = ", ";
             var sb = new StringBuilder();
-            foreach (var arg in arguments)
+            foreach (var arg in context)
             {
                 sb.Append(arg.Type);
                 sb.Append(argumentSeparator);
@@ -169,7 +173,6 @@ namespace Viewer.Query
                 sb.Remove(sb.Length - argumentSeparator.Length, argumentSeparator.Length);
             }
             throw new QueryRuntimeException($"Unknown function {name}({sb})");
-
         }
 
         private static string NormalizeFunctionName(string name) => name.ToLowerInvariant();

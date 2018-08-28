@@ -68,7 +68,7 @@ namespace Viewer.QueryRuntime
             "yyyy-M-d" // time is optional
         };
 
-        public BaseValue Call(IArgumentList arguments)
+        public BaseValue Call(IExecutionContext arguments)
         {
             var date = arguments.Get<StringValue>(0);
             if (string.Equals("now", date.Value, StringComparison.OrdinalIgnoreCase))
@@ -97,7 +97,7 @@ namespace Viewer.QueryRuntime
 
         public IReadOnlyList<TypeId> Arguments => new[] { TypeId.DateTime };
 
-        public BaseValue Call(IArgumentList arguments)
+        public BaseValue Call(IExecutionContext arguments)
         {
             return arguments.Get<DateTimeValue>(0);
         }

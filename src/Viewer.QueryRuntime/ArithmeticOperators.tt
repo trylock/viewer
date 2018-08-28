@@ -35,7 +35,7 @@ namespace Viewer.QueryRuntime
                     TypeId.<#= typeId[i] #>
                 };
 
-                public BaseValue Call(IArgumentList arguments)
+                public BaseValue Call(IExecutionContext arguments)
                 {
                     var lhs = arguments.Get<<#= types[i] #>>(0);
                     var rhs = arguments.Get<<#= types[i] #>>(1);
@@ -58,7 +58,7 @@ namespace Viewer.QueryRuntime
             TypeId.String
         };
 
-        public BaseValue Call(IArgumentList arguments)
+        public BaseValue Call(IExecutionContext arguments)
         {
             var lhs = arguments.Get<StringValue>(0);
             var rhs = arguments.Get<StringValue>(1);

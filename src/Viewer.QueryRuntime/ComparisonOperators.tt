@@ -37,7 +37,7 @@ namespace Viewer.QueryRuntime
                     TypeId.<#= typeId[i] #>
                 };
 
-                public BaseValue Call(IArgumentList arguments)
+                public BaseValue Call(IExecutionContext arguments)
                 {
                     var lhs = arguments.Get<<#= types[i] #>>(0);
                     var rhs = arguments.Get<<#= types[i] #>>(1);

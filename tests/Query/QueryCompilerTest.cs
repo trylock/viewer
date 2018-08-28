@@ -66,11 +66,18 @@ namespace ViewerTest.Query
             _factory.Verify(mock => mock.CreateQuery("a/b/**/cd/e*/f?"), Times.Once);
         }
 
+        private IExecutionContext Context(params BaseValue[] args)
+        {
+            return It.Is<IExecutionContext>(context => 
+                context.Count == args.Length && 
+                context.SequenceEqual(args));
+        }
+        
         [TestMethod]
         public void Compile_WhereConstantExpressionAlwaysTrue()
         {
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(1))))
                 .Returns(new IntValue(1));
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 1"), new NullErrorListener());
@@ -85,7 +92,7 @@ namespace ViewerTest.Query
         public void Compile_WhereConstantExpressionAlwaysFalse()
         {
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(2))))
                 .Returns(new IntValue(null));
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 2"), new NullErrorListener());
@@ -95,15 +102,15 @@ namespace ViewerTest.Query
                 predicate => !(predicate(null) && predicate(new FileEntity("test")))
             )), Times.Once);
         }
-
+        
         [TestMethod]
         public void Compile_WhereComparisonWithAttribute()
         {
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(4), new IntValue(4)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(4), new IntValue(4))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(4)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(4))))
                 .Returns(new IntValue(null));
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test = 4"), new NullErrorListener());
@@ -120,16 +127,16 @@ namespace ViewerTest.Query
         public void Compile_ComparisonBetweenAttributes()
         {
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(null))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(null))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(4)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(4))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(4), new IntValue(4)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(4), new IntValue(4))))
                 .Returns(new IntValue(1));
 
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test1 = test2"), new NullErrorListener());
@@ -171,13 +178,13 @@ namespace ViewerTest.Query
             _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test / 3 DESC"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("/", new IntValue(1), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(1), new IntValue(3))))
                 .Returns(new IntValue(1 / 3));
             _runtime
-                .Setup(mock => mock.FindAndCall("/", new IntValue(2), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(2), new IntValue(3))))
                 .Returns(new IntValue(2 / 3));
             _runtime
-                .Setup(mock => mock.FindAndCall("/", new IntValue(3), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(3), new IntValue(3))))
                 .Returns(new IntValue(3 / 3));
 
             _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer =>
@@ -198,13 +205,13 @@ namespace ViewerTest.Query
             _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test1 / 3 DESC, test2"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("/", new IntValue(1), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(1), new IntValue(3))))
                 .Returns(new IntValue(1 / 3));
             _runtime
-                .Setup(mock => mock.FindAndCall("/", new IntValue(2), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(2), new IntValue(3))))
                 .Returns(new IntValue(2 / 3));
             _runtime
-                .Setup(mock => mock.FindAndCall("/", new IntValue(3), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(3), new IntValue(3))))
                 .Returns(new IntValue(3 / 3));
 
             _query.Verify(mock => mock.WithComparer(It.Is<IComparer<IEntity>>(comparer =>
@@ -225,7 +232,7 @@ namespace ViewerTest.Query
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test(1, \"value\")"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("test", new IntValue(1), new StringValue("value")))
+                .Setup(mock => mock.FindAndCall("test", Context(new IntValue(1), new StringValue("value"))))
                 .Returns(new RealValue(3.14));
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
@@ -240,16 +247,16 @@ namespace ViewerTest.Query
                 new StringReader("SELECT (SELECT \"pattern\" WHERE test = 1 ORDER BY test DESC) WHERE test2 = 2"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(1))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(2), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(2), new IntValue(2))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(1)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(1))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(2))))
                 .Returns(new IntValue(null));
 
             _factory.Verify(mock => mock.CreateQuery("pattern"));
@@ -269,13 +276,13 @@ namespace ViewerTest.Query
             _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 + 2 * 3 = 7"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("+", new IntValue(1), new IntValue(6)))
+                .Setup(mock => mock.FindAndCall("+", Context(new IntValue(1), new IntValue(6))))
                 .Returns(new IntValue(7));
             _runtime
-                .Setup(mock => mock.FindAndCall("*", new IntValue(2), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(2), new IntValue(3))))
                 .Returns(new IntValue(6));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(7), new IntValue(7)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(7), new IntValue(7))))
                 .Returns(new IntValue(1));
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => predicate(new FileEntity("test")))));
@@ -354,28 +361,28 @@ namespace ViewerTest.Query
             _compiler.Compile(new StringReader("SELECT \"a\" WHERE a OR b AND c"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("and", new IntValue(2), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(2), new IntValue(3))))
                 .Returns(new IntValue(3));
             _runtime
-                .Setup(mock => mock.FindAndCall("and", new IntValue(2), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(2), new IntValue(null))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("and", new IntValue(null), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(null), new IntValue(3))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("and", new IntValue(null), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(null), new IntValue(null))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("or", new IntValue(1), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("or", Context(new IntValue(1), new IntValue(3))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("or", new IntValue(1), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("or", Context(new IntValue(1), new IntValue(null))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("or", new IntValue(null), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("or", Context(new IntValue(null), new IntValue(3))))
                 .Returns(new IntValue(3));
             _runtime
-                .Setup(mock => mock.FindAndCall("or", new IntValue(null), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("or", Context(new IntValue(null), new IntValue(null))))
                 .Returns(new IntValue(null));
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
@@ -405,28 +412,28 @@ namespace ViewerTest.Query
             _compiler.Compile(new StringReader("select \"a\" where (a or b) and c"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("and", new IntValue(1), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(1), new IntValue(3))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("and", new IntValue(1), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(1), new IntValue(null))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("and", new IntValue(null), new IntValue(3)))
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(null), new IntValue(3))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("and", new IntValue(null), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(null), new IntValue(null))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("or", new IntValue(1), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("or", Context(new IntValue(1), new IntValue(2))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("or", new IntValue(1), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("or", Context(new IntValue(1), new IntValue(null))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("or", new IntValue(null), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("or", Context(new IntValue(null), new IntValue(2))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("or", new IntValue(null), new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("or", Context(new IntValue(null), new IntValue(null))))
                 .Returns(new IntValue(null));
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate =>
@@ -456,10 +463,10 @@ namespace ViewerTest.Query
             _compiler.Compile(new StringReader("select \"a\" where not a"), new NullErrorListener());
 
             _runtime
-                .Setup(mock => mock.FindAndCall("not", new IntValue(null)))
+                .Setup(mock => mock.FindAndCall("not", Context(new IntValue(null))))
                 .Returns(new IntValue(1));
             _runtime
-                .Setup(mock => mock.FindAndCall("not", new IntValue(1)))
+                .Setup(mock => mock.FindAndCall("not", Context(new IntValue(1))))
                 .Returns(new IntValue(null));
 
             _query.Verify(mock => mock.Where(It.Is<Func<IEntity, bool>>(predicate => 
@@ -490,16 +497,16 @@ namespace ViewerTest.Query
                 .Returns(new QueryView("view", "select \"path\" where test1 = 1", null));
 
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(1)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(1))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(null), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(2))))
                 .Returns(new IntValue(null));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(2), new IntValue(2)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(2), new IntValue(2))))
                 .Returns(new IntValue(2));
             _runtime
-                .Setup(mock => mock.FindAndCall("=", new IntValue(1), new IntValue(1)))
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(1))))
                 .Returns(new IntValue(1));
 
             _compiler.Compile(new StringReader("select view where test2 = 2"), new NullErrorListener());

@@ -9,46 +9,6 @@ using Viewer.Data;
 
 namespace Viewer.Query
 {
-    public interface IArgumentList : IReadOnlyList<BaseValue>
-    {
-        /// <summary>
-        /// Convert ith argumnet to given type
-        /// </summary>
-        /// <typeparam name="T">Type of the argument</typeparam>
-        /// <param name="index">index of an argument</param>
-        /// <returns>Converted argument</returns>
-        T Get<T>(int index) where T : BaseValue;
-    }
-
-    public class ArgumentList : IArgumentList
-    {
-        private readonly IReadOnlyList<BaseValue> _values;
-
-        public int Count => _values.Count;
-
-        public ArgumentList(IReadOnlyList<BaseValue> values)
-        {
-            _values = values;
-        }
-
-        public IEnumerator<BaseValue> GetEnumerator()
-        {
-            return _values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public BaseValue this[int index] => _values[index];
-
-        public T Get<T>(int index) where T : BaseValue
-        {
-            return _values[index] as T;
-        }
-    }
-
     /// <summary>
     /// Represents a function callable from viewer query expression.
     /// </summary>
@@ -72,7 +32,7 @@ namespace Viewer.Query
         /// correct types but some values can be null (e.g. due to a bad conversion).
         /// </param>
         /// <returns>Return value of the function</returns>
-        BaseValue Call(IArgumentList arguments);
+        BaseValue Call(IExecutionContext arguments);
     }
 
     /// <inheritdoc />
@@ -94,6 +54,6 @@ namespace Viewer.Query
 
         public IReadOnlyList<TypeId> Arguments => _original.Arguments;
 
-        public BaseValue Call(IArgumentList arguments) => _original.Call(arguments);
+        public BaseValue Call(IExecutionContext arguments) => _original.Call(arguments);
     }
 }

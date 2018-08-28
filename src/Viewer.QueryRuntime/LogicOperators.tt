@@ -34,7 +34,7 @@ namespace Viewer.QueryRuntime
                 TypeId.<#= typeId[i] #>,
             };
 
-            public BaseValue Call(IArgumentList arguments)
+            public BaseValue Call(IExecutionContext arguments)
             {
                 return arguments[0].IsNull ? arguments[0] : arguments[1];
             }
@@ -51,7 +51,7 @@ namespace Viewer.QueryRuntime
                 TypeId.<#= typeId[i] #>,
             };
 
-            public BaseValue Call(IArgumentList arguments)
+            public BaseValue Call(IExecutionContext arguments)
             {
                 return arguments[0].IsNull ? arguments[1] : arguments[0];
             }
@@ -67,7 +67,7 @@ namespace Viewer.QueryRuntime
                 TypeId.<#= typeId[i] #>,
             };
 
-            public BaseValue Call(IArgumentList arguments)
+            public BaseValue Call(IExecutionContext arguments)
             {
                 return arguments[0].IsNull ? new IntValue(1) : new IntValue(null);
             }

@@ -28,6 +28,11 @@ namespace ViewerTest.Query
             _runtime = new Runtime(_converter.Object, new IFunction[]{ _testFunction.Object });
         }
 
+        private IExecutionContext Create(params BaseValue[] arguments)
+        {
+            return new ExecutionContext(arguments, null, 0, 0);
+        }
+
         [TestMethod]
         public void CallAndFind()
         {
@@ -35,7 +40,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.Arguments)
                 .Returns(new[] {TypeId.String, TypeId.String});
             _testFunction
-                .Setup(mock => mock.Call(It.Is<ArgumentList>(args => 
+                .Setup(mock => mock.Call(It.Is<ExecutionContext>(args => 
                     args.Count == 2 &&
                     args.Get<StringValue>(0).Value == "1" &&
                     args.Get<StringValue>(1).Value == "test"
@@ -45,7 +50,7 @@ namespace ViewerTest.Query
             _converter.Setup(mock => mock.ConvertTo(new IntValue(1), TypeId.String)).Returns(new StringValue("1"));
             _converter.Setup(mock => mock.ConvertTo(new StringValue("test"), TypeId.String)).Returns(new StringValue("test"));
 
-            var result = _runtime.FindAndCall("test", new IntValue(1), new StringValue("test"));
+            var result = _runtime.FindAndCall("test", Create(new IntValue(1), new StringValue("test")));
             Assert.AreEqual("1+test", ((StringValue) result).Value);
         }
 
@@ -53,7 +58,7 @@ namespace ViewerTest.Query
         [ExpectedException(typeof(QueryRuntimeException), "Unknown function error(Integer, String)")]
         public void CallAndFind_UnknownFunction()
         {
-            _runtime.FindAndCall("error", new IntValue(4), new StringValue("test"));
+            _runtime.FindAndCall("error", Create(new IntValue(4), new StringValue("test")));
         }
 
         [TestMethod]
@@ -64,7 +69,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.Arguments)
                 .Returns(new[] { TypeId.Integer });
 
-            _runtime.FindAndCall("test", new IntValue(1), new IntValue(2));
+            _runtime.FindAndCall("test", Create(new IntValue(1), new IntValue(2)));
         }
 
         [TestMethod]
@@ -74,7 +79,7 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.Arguments)
                 .Returns(new[] { TypeId.Integer });
             _testFunction
-                .Setup(mock => mock.Call(It.Is<ArgumentList>(args =>
+                .Setup(mock => mock.Call(It.Is<ExecutionContext>(args =>
                     args.Count == 1 &&
                     args.Get<IntValue>(0).IsNull)
                 ))
@@ -84,8 +89,34 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.ConvertTo(new StringValue("42"), TypeId.Integer))
                 .Returns(new IntValue(null));
 
-            var result = _runtime.FindAndCall("test", new StringValue("42"));
+            var result = _runtime.FindAndCall("test", Create(new StringValue("42")));
             Assert.IsInstanceOfType(result, typeof(StringValue));
+            Assert.IsTrue(result.IsNull);
+        }
+
+        [TestMethod]
+        public void CallAndFind_IncompatibleArgumentTypesWithMultipleArguments()
+        {
+            _testFunction
+                .Setup(mock => mock.Arguments)
+                .Returns(new[] { TypeId.Integer, TypeId.Integer });
+            _testFunction
+                .Setup(mock => mock.Call(It.Is<ExecutionContext>(args =>
+                    args.Count == 2 &&
+                    args.Get<IntValue>(0).IsNull &&
+                    args.Get<IntValue>(1).IsNull
+                )))
+                .Returns(new IntValue(null));
+
+            _converter
+                .Setup(mock => mock.ConvertTo(new StringValue("1"), TypeId.Integer))
+                .Returns(new IntValue(null));
+            _converter
+                .Setup(mock => mock.ConvertTo(new StringValue("2"), TypeId.Integer))
+                .Returns(new IntValue(null));
+
+            var result = _runtime.FindAndCall("test", Create(new StringValue("1"), new StringValue("2")));
+            Assert.IsInstanceOfType(result, typeof(IntValue));
             Assert.IsTrue(result.IsNull);
         }
     }

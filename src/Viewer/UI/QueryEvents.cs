@@ -40,10 +40,11 @@ namespace Viewer.UI
     }
 
     /// <summary>
-    /// QueryEvents keeps track of executed queries in the entire application.
-    /// Executed queries are kept in a history collection.
-    /// A query producer (e.g. a query editor or a file system explorer component) executes query by calling <see cref="ExecuteQuery"/> which triggers the <see cref="QueryExecuted"/> event.
-    /// A query consumer (e.g. a thumbnail grid) listens for <see cref="QueryExecuted"/> event and actually executes given query.
+    /// QueryEvents keeps track of executed queries in the entire application. Executed queries
+    /// are kept in a history collection. A query producer (e.g. a query editor) executes query
+    /// by calling <see cref="ExecuteQuery"/> which triggers the <see cref="QueryExecuted"/> event.
+    /// A query consumer (e.g. a thumbnail grid) listens for <see cref="QueryExecuted"/> event and
+    /// actually executes given query.
     /// </summary>
     public interface IQueryEvents
     {

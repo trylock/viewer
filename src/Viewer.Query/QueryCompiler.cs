@@ -336,10 +336,11 @@ namespace Viewer.Query
             }
 
             // compile OR
+            var symbol = context.OR().Symbol;
             var lhs = left.Accept(this).Value;
             return new CompilationResult
             {
-                Value = RuntimeCall("or", lhs, rhs)
+                Value = RuntimeCall("or", symbol.Line, symbol.Column, lhs, rhs)
             };
         }
 
@@ -357,10 +358,11 @@ namespace Viewer.Query
             }
             
             // compile AND
+            var symbol = context.AND().Symbol;
             var lhs = left.Accept(this).Value;
             return new CompilationResult
             {
-                Value = RuntimeCall("and", lhs, rhs)
+                Value = RuntimeCall("and", symbol.Line, symbol.Column, lhs, rhs)
             };
         }
 
@@ -369,9 +371,10 @@ namespace Viewer.Query
             var value = context.comparison().Accept(this).Value;
             if (context.NOT() != null)
             {
+                var symbol = context.NOT().Symbol;
                 return new CompilationResult
                 {
-                    Value = RuntimeCall("not", new[]{ value })
+                    Value = RuntimeCall("not", symbol.Line, symbol.Column, new[]{ value })
                 };
             }
 
@@ -389,10 +392,10 @@ namespace Viewer.Query
 
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
-            var op = context.REL_OP().Symbol.Text;
+            var op = context.REL_OP().Symbol;
             return new CompilationResult
             {
-                Value = CompileBinaryOperator(op, left.Value, right.Value)
+                Value = CompileBinaryOperator(op.Text, op.Line, op.Column, left.Value, right.Value)
             };
         }
 
@@ -407,10 +410,10 @@ namespace Viewer.Query
 
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
-            var op = context.ADD_SUB().Symbol.Text;
+            var op = context.ADD_SUB().Symbol;
             return new CompilationResult
             {
-                Value = CompileBinaryOperator(op, left.Value, right.Value)
+                Value = CompileBinaryOperator(op.Text, op.Line, op.Column, left.Value, right.Value)
             };
         }
 
@@ -425,10 +428,10 @@ namespace Viewer.Query
             
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
-            var op = context.MULT_DIV().Symbol.Text;
+            var op = context.MULT_DIV().Symbol;
             return new CompilationResult
             {
-                Value = CompileBinaryOperator(op, left.Value, right.Value)
+                Value = CompileBinaryOperator(op.Text, op.Line, op.Column, left.Value, right.Value)
             };
         }
 
@@ -472,7 +475,7 @@ namespace Viewer.Query
                 var arguments = argumentList.Accept(this).Value;
                 return new CompilationResult
                 {
-                    Value = RuntimeCall(id.GetText(), arguments)
+                    Value = RuntimeCall(id.GetText(), id.Symbol.Line, id.Symbol.Column, arguments)
                 };
             }
 
@@ -495,9 +498,9 @@ namespace Viewer.Query
             };
         }
 
-        private Expression CompileBinaryOperator(string op, Expression lhs, Expression rhs)
+        private Expression CompileBinaryOperator(string op, int line, int column, Expression lhs, Expression rhs)
         {
-            var expr = RuntimeCall(op, lhs, rhs);
+            var expr = RuntimeCall(op, line, column, lhs, rhs);
             return expr;
         }
 
@@ -524,24 +527,38 @@ namespace Viewer.Query
         /// Create a runtime function call expression
         /// </summary>
         /// <param name="functionName"></param>
+        /// <param name="line"></param>
+        /// <param name="column"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        private Expression RuntimeCall(string functionName, params Expression[] arguments)
+        private Expression RuntimeCall(string functionName, int line, int column, params Expression[] arguments)
         {
-            return RuntimeCall(functionName, Expression.NewArrayInit(typeof(BaseValue), arguments));
+            var argumentsArray = Expression.NewArrayInit(typeof(BaseValue), arguments);
+            return RuntimeCall(functionName, line, column, argumentsArray);
         }
 
-        private Expression RuntimeCall(string functionName, Expression argumentArray)
+        private Expression RuntimeCall(string functionName, int line, int column, Expression argumentsArray)
         {
-            if (argumentArray.Type != typeof(BaseValue[]))
-                throw new ArgumentOutOfRangeException(nameof(argumentArray));
+            if (argumentsArray.Type != typeof(BaseValue[]))
+                throw new ArgumentOutOfRangeException(nameof(argumentsArray));
+
+            var constructor = typeof(ExecutionContext).GetConstructors()[0];
+            var context = Expression.New(
+                constructor,
+                new Expression[] {
+                    argumentsArray,
+                    _entityParameter,
+                    Expression.Constant(line),
+                    Expression.Constant(column),
+                });
 
             var runtimeCall = _runtime.GetType().GetMethod("FindAndCall");
+
             return Expression.Call(
                 Expression.Constant(_runtime),
                 runtimeCall,
                 Expression.Constant(functionName),
-                argumentArray);
+                context);
         }
     }
     

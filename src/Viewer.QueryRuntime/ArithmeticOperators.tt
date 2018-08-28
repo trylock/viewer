@@ -35,10 +35,18 @@ namespace Viewer.QueryRuntime
                     TypeId.<#= typeId[i] #>
                 };
 
-                public BaseValue Call(IExecutionContext arguments)
+                public BaseValue Call(IExecutionContext context)
                 {
-                    var lhs = arguments.Get<<#= types[i] #>>(0);
-                    var rhs = arguments.Get<<#= types[i] #>>(1);
+                    var lhs = context.Get<<#= types[i] #>>(0);
+                    var rhs = context.Get<<#= types[i] #>>(1);
+                    
+                    <# if (operators[j] == "/" && types[i] == "IntValue") { #>
+                    if (rhs.Value == 0)
+                    {
+                        return context.Error("Division by zero.");
+                    }
+                    <# } #>
+
                     return new <#= types[i] #>(lhs.Value <#= operators[j] #> rhs.Value);
                 }
             }

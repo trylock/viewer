@@ -19,7 +19,7 @@ namespace Viewer.Data
         int ComputeConversionCost(TypeId from, TypeId to);
 
         /// <summary>
-        /// Compute cost of conversion from types <paramref name="from"/> to types <paramref name="to"/>
+        /// Compute cost of conversion from types <paramref name="from"/> to types <paramref name="to"/>.
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>

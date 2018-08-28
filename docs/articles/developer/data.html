@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Viewer.Data </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Viewer.Data ">
+    <meta name="generator" content="docfx 2.37.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc">
+    <meta property="docfx:tocrel" content="../toc">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                <ul class="nav level1 navbar-nav">
+                  <li class="active">
+                    <a href="../../articles/intro.html" title="Articles" class="active">Articles</a>
+                  </li>
+                  <li class="">
+                    <a href="../../api/index.html" title="API Documentation" class="">API Documentation</a>
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="../intro.html" title="Introduction" class="">Introduction</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="../user/ui-overview.html" title="UI overview" class="">UI overview</a>
+                          </li>
+                          <li class="">
+                            <a href="../user/query.html" title="Query language" class="">Query language</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a class="">Developer's manual</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="../developer/getting-started.html" title="Getting started" class="">Getting started</a>
+                          </li>
+                          <li class="">
+                            <a href="../developer/overview.html" title="Application structure overview" class="">Application structure overview</a>
+                          </li>
+                          <li class="active">
+                            <a href="../developer/data.html" title="Viewer.Data" class="active">Viewer.Data</a>
+                          </li>
+                        </ul>  </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="viewerdata">Viewer.Data</h1>
+
+<p>The application works with attributes stored in JPEG files. This namespace contains classes responsible for loading and storing these attributes in various places and formats.</p>
+<h2 id="data-representation-in-the-program">Data representation in the program</h2>
+<p>The namespace works with entities (see <a class="xref" href="../../api/Viewer.Data.IEntity.html">IEntity</a>). Entities are collections of <a class="xref" href="../../api/Viewer.Data.Attribute.html">Attribute</a>s. The application uses <a class="xref" href="../../api/Viewer.Data.FileEntity.html">FileEntity</a> to represent a file in a file system and <a class="xref" href="../../api/Viewer.Data.DirectoryEntity.html">DirectoryEntity</a> to represent a directory in a file system. Directory entities don't have attributes (i.e., it is always an empty collection).</p>
+<p>Attributes have a name, a value and a source and they are immutable. Value is any type derived from <a class="xref" href="../../api/Viewer.Data.BaseValue.html">BaseValue</a>. Source of an attribute designates from where an attribute has been loaded:</p>
+<ul>
+<li><a class="xref" href="../../api/Viewer.Data.AttributeSource.html#Viewer_Data_AttributeSource_Metadata">Metadata</a> for attributes loaded from file metadata such as file system or Exif JPEG segment</li>
+<li><a class="xref" href="../../api/Viewer.Data.AttributeSource.html#Viewer_Data_AttributeSource_Custom">Custom</a> for attributes added by the user (stored in a custom JPEG segment)</li>
+</ul>
+<p>Values are immutable classes. They can be <code>null</code> regardless of their type. This property is only used in query evaluation. An entity will never have an attribute whose value is null. Instead, if you try to <a class="xref" href="../../api/Viewer.Data.IEntity.html#Viewer_Data_IEntity_SetAttribute_Viewer_Data_Attribute_">SetAttribute</a> whose value is null, an attribute with the same name will be removed from the entity.</p>
+<h2 id="storage">Storage</h2>
+<p><a class="xref" href="../../api/Viewer.Data.Storage.IAttributeStorage.html">IAttributeStorage</a> represents a place where an entity can be stored. Currently, entities can be stored in their files, SQLite database or in memory.</p>
+<h3 id="filesystemattributestorage">FileSystemAttributeStorage</h3>
+<p><a class="xref" href="../../api/Viewer.Data.Storage.FileSystemAttributeStorage.html">FileSystemAttributeStorage</a> can store entities to their files and load them. The data is stored in custom APP1 <a href="https://en.wikipedia.org/wiki/JPEG#Syntax_and_structure">JPEG segments</a>. Attributes are first serialized to a binary format and then split into APP1 JPEG segments. Structure of the JPEG segment is following:</p>
+<ul>
+<li>APP1 JPEG segment header (2B): <code>0xFF</code> <code>0xE1</code></li>
+<li>Size of the JPEG segment (2B, big endian, the size includes even the two bytes for the size)</li>
+<li>Segment name (5B, ASCII string <code>&quot;Attr&quot;</code> with the 0 byte at the end): <code>0x41</code> <code>0x74</code> <code>0x74</code> <code>0x72</code> <code>0x00</code></li>
+<li>Segment data (size depends on the size of the JPEG segment, binary format is described below)</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Serialized attributes might not fit into 1 JPEG segment. In this case, the binary data is split into multiple segments at the boundary of the maximal segment size. Segment name (the <code>&quot;Attr&quot;</code> ASCII string) is written to all segments so that they can be identified.</p>
+</div>
+<h4 id="binary-format-of-attributes">Binary format of attributes</h4>
+<p>Attributes are stored consecutively as type, name and value. We will use these types in the format definition:</p>
+<ul>
+<li><code>uint16</code>: unsigned 2 byte integer, little endian</li>
+<li><code>int32</code>: signed 4 byte integer, two's complement, little endian</li>
+<li><code>Double</code>: 8 bytes, IEEE 745, (binary64)</li>
+<li><code>String</code>: UTF8 string with 0 byte at the end</li>
+<li><code>DateTime</code>: String in the W3C DTF format: &quot;YYYY-MM-DDThh:mm:ss.sTZD&quot;</li>
+</ul>
+<p>An attribute is serialized to:</p>
+<ul>
+<li>type (<code>uint16</code>, (numbers are defined by <a class="xref" href="../../api/Viewer.Data.Formats.Attributes.AttributeType.html">AttributeType</a>)</li>
+<li>name (<code>string</code>)</li>
+<li>value (format depends on the type, it can be <code>int32</code>, <code>Double</code>, <code>String</code> or <code>DateTime</code>)</li>
+</ul>
+<h4 id="read-algorithm">Read algorithm</h4>
+<p>The sotrage reads entities as follows:</p>
+<ol>
+<li>read all JPEG segments to memory</li>
+<li>parse attributes from the segments (currently, Exif and Attr segments are parsed)</li>
+</ol>
+<p>This means that only image metadata will be read (usually around ten 4 KiB blocks).</p>
+<h4 id="write-algorithm">Write algorithm</h4>
+<ol>
+<li>create a temporary file on the same disk as the original image</li>
+<li>read all JPEG segments</li>
+<li>write all but attribute segments to the temporary file</li>
+<li>serialize entity to JPEG segments and write them to the temporary file</li>
+<li>write the SOS (Start of Scan) JPEG segment header and copy all remaining data to the temporary file</li>
+<li>replace the original image with the temporary file</li>
+</ol>
+<p>In the first step, it is important that the temporary file is on the same disk as the original. It makes the 6th step as simple as possible which minimizes the probability of corrupting data in the original file.</p>
+<h3 id="sqliteattributestorage">SqliteAttributeStorage</h3>
+<p><a class="xref" href="../../api/Viewer.Data.Storage.SqliteAttributeStorage.html">SqliteAttributeStorage</a> is a special <a class="xref" href="../../api/Viewer.Data.Storage.IDeferredAttributeStorage.html">IDeferredAttributeStorage</a>. This means that write operations can be deferred until the <a class="xref" href="../../api/Viewer.Data.Storage.IDeferredAttributeStorage.html#Viewer_Data_Storage_IDeferredAttributeStorage_ApplyChanges">ApplyChanges</a> method is called. This is the case for a couple of reasons: (1) it is non-blocking (this storage is used as a cache), (2) batching multiple write operations will speed things up as the overhead won't be included with each operation.</p>
+<p>The database has a simple schema:</p>
+<pre><code class="lang-SQL">CREATE TABLE IF NOT EXISTS `files` (
+	`id`	INTEGER NOT NULL,
+	`path`	TEXT NOT NULL UNIQUE COLLATE CURRENT_CULTURE_IGNORE_CASE,
+	`lastWriteTime`	TEXT NOT NULL,
+	`lastAccessTime`	TEXT NOT NULL,
+	PRIMARY KEY(`id`)
+);
+CREATE TABLE IF NOT EXISTS `attributes` (
+	`id`	INTEGER NOT NULL,
+	`name`	TEXT NOT NULL,
+	`source`	INTEGER NOT NULL DEFAULT 0,
+	`type`	INTEGER NOT NULL DEFAULT 0,
+	`value`	BLOB NOT NULL,
+	`owner`	INTEGER NOT NULL,
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`owner`) REFERENCES `files`(`id`) on update cascade on delete cascade
+);
+CREATE UNIQUE INDEX IF NOT EXISTS `files_path_index` ON `files` (
+	`path`	ASC
+);
+CREATE UNIQUE INDEX IF NOT EXISTS `attributes_owner_name_index` ON `attributes` (
+	`owner`	ASC,
+	`name`	ASC
+);
+</code></pre>
+<p>For each file it stores the last write time of the file and the last access time of the record in the database. Notice that a special collation is used to the path. This collation is implemented in C# so that paths are compares using a unicode aware comparer.</p>
+<h2 id="cachedattributestorage">CachedAttributeStorage</h2>
+<p><a class="xref" href="../../api/Viewer.Data.Storage.CachedAttributeStorage.html">CachedAttributeStorage</a> combines 2 attribute storages where one of the storage is deferred. The deferred storage is used as a cache. The load operation first checks if it can find the entity in the cache storage. If it can't, it will load it from the main storage and store the result in the cache storage. All modifying operations are done to both storages. These operations are applied to the cache storage on a background thread after a set ammount of changes have been made or after a set ammount of time (so that all changes will be applied within a time limit).</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/data.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

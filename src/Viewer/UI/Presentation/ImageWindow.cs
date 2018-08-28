@@ -219,7 +219,7 @@ namespace Viewer.UI.Presentation
                 proxy?.Dispose();
             }
         }
-
+        
         public void Dispose()
         {
             DisposeItemsInBuffer();

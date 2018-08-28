@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Getting started </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Getting started ">
+    <meta name="generator" content="docfx 2.37.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc">
+    <meta property="docfx:tocrel" content="../toc">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                <ul class="nav level1 navbar-nav">
+                  <li class="active">
+                    <a href="../../articles/intro.html" title="Articles" class="active">Articles</a>
+                  </li>
+                  <li class="">
+                    <a href="../../api/index.html" title="API Documentation" class="">API Documentation</a>
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="../intro.html" title="Introduction" class="">Introduction</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="../user/ui-overview.html" title="UI overview" class="">UI overview</a>
+                          </li>
+                          <li class="">
+                            <a href="../user/query.html" title="Query language" class="">Query language</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a class="">Developer's manual</a>
+                        
+                        <ul class="nav level2">
+                          <li class="active">
+                            <a href="../developer/getting-started.html" title="Getting started" class="active">Getting started</a>
+                          </li>
+                          <li class="">
+                            <a href="../developer/overview.html" title="Application structure overview" class="">Application structure overview</a>
+                          </li>
+                          <li class="">
+                            <a href="../developer/data.html" title="Viewer.Data" class="">Viewer.Data</a>
+                          </li>
+                        </ul>  </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="getting-started">Getting started</h1>
+
+<h2 id="download">Download</h2>
+<p>The project uses <a href="https://git-scm.com/">git</a> version control system and it is hosted on <a href="https://github.com/trylock/viewer">github</a>. Download it to current directory using <a href="https://git-scm.com/">git</a> command: <code>git clone https://github.com/trylock/viewer.git</code> or use your favourite GUI git client to clone the project. Alternatively, you can <a href="https://github.com/trylock/viewer/archive/master.zip">download zipped project</a> directly from github.</p>
+<h2 id="installation-and-build">Installation and build</h2>
+<ol>
+<li>Download and install <a href="https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio?view=vs-2017">Visual Studio 2017</a> or newer with the .NET Framework 4.7</li>
+<li>Download Java (version 1.6 or higher, required in order to run ANTLR4)</li>
+<li>Download the <code>antlr-4.7.1-complete.jar</code> file from the <a href="http://www.antlr.org/download.html">ANTLR4 website</a></li>
+<li>Place the <code>antlr-4.7.1-complete.jar</code> file into the <code>tools</code> directory located in the project root directory.</li>
+<li>Open the project solution in Visual Studio <code>Viewer.sln</code>. It is located in the project root directory.</li>
+<li>Build the solution (this should also install all necessary packages from NuGet)</li>
+</ol>
+<h3 id="building-the-installer">Building the installer</h3>
+<p>Optionally, if you want to build the project setup and installer, you'll need to follow these steps:</p>
+<ol>
+<li>Download and install the <a href="http://wixtoolset.org/releases/">WiX v3 toolset</a></li>
+<li>Download and install the <a href="https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension">WiX Toolset extension for Visual Studio 2017</a></li>
+<li>Build the <code>ViewerSetup</code> project in Visual Studio</li>
+<li>Build the <code>ViewerInstaller</code> project in Visual Studio</li>
+</ol>
+<h3 id="building-documentation">Building documentation</h3>
+<h2 id="nuget-packages">NuGet packages</h2>
+<p>This is a list of NuGet packages used by the project with a short explanation of why the package is used.</p>
+<ul>
+<li><code>Antlr4.Runtime.Standard</code> for query compilation</li>
+<li><code>DockPanelSuite</code> for UI customization</li>
+<li><code>MetadataExtractor</code> for parsing Exif metadata in JPEG files</li>
+<li><code>Moq</code> for mocking clases in the test project</li>
+<li><code>MSTest</code> for running tests</li>
+<li><code>NLog</code> for logging errors</li>
+<li><code>Scintilla.NET</code> for the query editor component</li>
+<li><code>SkiaSharp</code> for loading and resizing images (since GDI+'s <code>DrawImage</code> is basically useless in a multithreaded environment)</li>
+<li><code>System.Data.SQLite.Core</code> for caching thumbnails and attributes</li>
+<li>Some standard library extensions installed through NuGet: <code>System.Collections.Immutable</code>, <code>System.ValueTuple</code></li>
+</ul>
+<p>See <a href="overview.html">Application structure overview</a> next.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/getting-started.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

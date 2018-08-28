@@ -1,0 +1,15 @@
+- name: Introduction
+  href: intro.md
+  items:
+    - name: UI overview
+      href: user/ui-overview.md
+    - name: Query language
+      href: user/query.md
+- name: Developer's manual
+  items:
+    - name: Getting started
+      href: developer/getting-started.md
+    - name: Application structure overview
+      href: developer/overview.md
+    - name: Viewer.Data
+      href: developer/data.md

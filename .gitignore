@@ -25,6 +25,5 @@ src/Viewer.QueryRuntime/ComparisonOperators.cs
 src/Viewer.QueryRuntime/LogicOperators.cs
 
 # Documentation
-docs/*
-!docs/images
 spec
+src/**/.antlr

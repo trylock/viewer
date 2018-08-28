@@ -38,20 +38,35 @@ namespace Viewer.Query
         /// <param name="index">index of an argument</param>
         /// <returns>Converted argument</returns>
         T Get<T>(int index) where T : BaseValue;
+
+        /// <summary>
+        /// Report an error. Function which encounters an error state returns value returned by
+        /// this function. 
+        /// </summary>
+        /// <param name="message">Error message</param>
+        /// <returns>Error value returned by this function</returns>
+        BaseValue Error(string message);
     }
 
     public class ExecutionContext : IExecutionContext
     {
         private readonly IReadOnlyList<BaseValue> _values;
+        private readonly IQueryErrorListener _listener;
 
         public int Count => _values.Count;
         public IEntity Entity { get; }
         public int Line { get; }
         public int Column { get; }
 
-        public ExecutionContext(IReadOnlyList<BaseValue> values, IEntity entity, int line, int column)
+        public ExecutionContext(
+            IReadOnlyList<BaseValue> values, 
+            IQueryErrorListener listener, 
+            IEntity entity, 
+            int line, 
+            int column)
         {
             _values = values ?? throw new ArgumentNullException(nameof(values));
+            _listener = listener ?? throw new ArgumentNullException(nameof(listener));
             Entity = entity;
             Line = line;
             Column = column;
@@ -72,6 +87,12 @@ namespace Viewer.Query
         public T Get<T>(int index) where T : BaseValue
         {
             return _values[index] as T;
+        }
+
+        public BaseValue Error(string message)
+        {
+            _listener.OnRuntimeError(Line, Column, message);
+            return new IntValue(null);
         }
     }
 }

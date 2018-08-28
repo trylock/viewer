@@ -32,7 +32,7 @@ namespace ViewerTest.Query
 
         private IExecutionContext Create(params BaseValue[] arguments)
         {
-            return new ExecutionContext(arguments, null, 0, 0);
+            return new ExecutionContext(arguments, new NullQueryErrorListener(), null, 0, 0);
         }
 
         [TestMethod]

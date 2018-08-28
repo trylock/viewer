@@ -14,14 +14,16 @@ namespace ViewerTest.QueryRuntime
     [TestClass]
     public class DateTimeFunctionTest
     {
+        private IExecutionContext Create(params BaseValue[] arguments)
+        {
+            return new ExecutionContext(arguments, new NullQueryErrorListener(), null, 0, 0);
+        }
+
         [TestMethod]
         public void Call_NullArgument()
         {
             var function = new DateTimeFunction();
-            var result = function.Call(new ExecutionContext(new BaseValue[]
-            {
-                new StringValue(null), 
-            }, null, 0, 0));
+            var result = function.Call(Create(new StringValue(null)));
 
             Assert.IsTrue(result.Type == TypeId.DateTime);
             Assert.IsTrue(result.IsNull);
@@ -31,10 +33,7 @@ namespace ViewerTest.QueryRuntime
         public void Call_Now()
         {
             var function = new DateTimeFunction();
-            var result = function.Call(new ExecutionContext(new BaseValue[]
-            {
-                new StringValue("nOW"),
-            }, null, 0, 0));
+            var result = function.Call(Create(new StringValue("nOW")));
 
             var now = DateTime.Now;
             var accaptableTimeSpan = new TimeSpan(0, 0, 1, 0);
@@ -49,10 +48,7 @@ namespace ViewerTest.QueryRuntime
         public void Call_DateTime()
         {
             var function = new DateTimeFunction();
-            var result = function.Call(new ExecutionContext(new BaseValue[]
-            {
-                new StringValue("2018-8-2 21:28:00"),
-            }, null, 0, 0));
+            var result = function.Call(Create(new StringValue("2018-8-2 21:28:00")));
             
             Assert.IsTrue(result.Type == TypeId.DateTime);
             Assert.IsFalse(result.IsNull);
@@ -78,10 +74,7 @@ namespace ViewerTest.QueryRuntime
                                  ((i & 0x4) != 0 ? "3:" : "03:") +
                                  ((i & 0x8) != 0 ? "4:" : "04:") +
                                  ((i & 0x10) != 0 ? "5" : "05");
-                var result = function.Call(new ExecutionContext(new BaseValue[]
-                {
-                    new StringValue(stringDate)
-                }, null, 0, 0));
+                var result = function.Call(Create(new StringValue(stringDate)));
 
                 Assert.IsTrue(result.Type == TypeId.DateTime);
                 Assert.IsFalse(result.IsNull);
@@ -100,10 +93,7 @@ namespace ViewerTest.QueryRuntime
         public void Call_TimeIsOptional()
         {
             var function = new DateTimeFunction();
-            var result = function.Call(new ExecutionContext(new BaseValue[]
-            {
-                new StringValue("2019-1-26"), 
-            }, null, 0, 0));
+            var result = function.Call(Create(new StringValue("2019-1-26")));
 
             Assert.IsTrue(result.Type == TypeId.DateTime);
             Assert.IsFalse(result.IsNull);
@@ -121,10 +111,7 @@ namespace ViewerTest.QueryRuntime
         public void Call_DateIsAlias()
         {
             var function = new DateFunction();
-            var result = function.Call(new ExecutionContext(new BaseValue[]
-            {
-                new StringValue("2018-8-2 21:28:00"),
-            }, null, 0, 0));
+            var result = function.Call(Create(new StringValue("2018-8-2 21:28:00")));
 
             Assert.IsTrue(result.Type == TypeId.DateTime);
             Assert.IsFalse(result.IsNull);
@@ -143,10 +130,7 @@ namespace ViewerTest.QueryRuntime
         {
             var value = new DateTimeValue(DateTime.Now);
             var function = new DateTimeIdentityFunciton();
-            var result = function.Call(new ExecutionContext(new BaseValue[]
-            {
-                value
-            }, null, 0, 0));
+            var result = function.Call(Create(value));
             Assert.AreEqual(result, value);
         }
     }

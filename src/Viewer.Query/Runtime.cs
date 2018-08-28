@@ -126,6 +126,7 @@ namespace Viewer.Query
             // call the function
             return function.Call(new ExecutionContext(
                 actualArguments, 
+                _queryErrorListener,
                 context.Entity, 
                 context.Line, 
                 context.Column));

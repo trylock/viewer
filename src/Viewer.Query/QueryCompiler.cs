@@ -547,6 +547,7 @@ namespace Viewer.Query
                 constructor,
                 new Expression[] {
                     argumentsArray,
+                    Expression.Constant(_queryErrorListener),
                     _entityParameter,
                     Expression.Constant(line),
                     Expression.Constant(column),

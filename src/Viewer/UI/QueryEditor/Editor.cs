@@ -21,11 +21,6 @@ namespace Viewer.UI.QueryEditor
     public interface IEditor
     {
         /// <summary>
-        /// Find active editor window. If there is no active editor window, this will return null.
-        /// </summary>
-        QueryEditorPresenter Active { get; }
-
-        /// <summary>
         /// Open given file in the editor.
         /// If the file is opened already, the editor will just make its window visible to user.
         /// </summary>
@@ -79,8 +74,8 @@ namespace Viewer.UI.QueryEditor
     [Export(typeof(IEditor))]
     public class Editor :  IEditor
     {
-        private readonly IFileSystemErrorView _dialogView;
         private readonly IFileSystem _fileSystem;
+        private readonly IFileSystemErrorView _dialogView;
         private readonly ExportFactory<QueryEditorPresenter> _editorFactory;
 
         /// <summary>
@@ -97,23 +92,6 @@ namespace Viewer.UI.QueryEditor
             _dialogView = dialogView;
             _fileSystem = fileSystem;
             _editorFactory = editorFactory;
-        }
-
-        public QueryEditorPresenter Active 
-        {
-            get
-            {
-                foreach (var window in _windows)
-                {
-                    var activeContent = (window.Value.View as DockContent)?.DockPanel.ActiveContent;
-                    if (window.Value.View == activeContent)
-                    {
-                        return window.Value;
-                    }
-                }
-
-                return null;
-            }
         }
 
         public async Task<QueryEditorPresenter> OpenAsync(string path, DockState dockState)

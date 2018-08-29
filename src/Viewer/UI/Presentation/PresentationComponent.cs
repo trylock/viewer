@@ -13,11 +13,11 @@ namespace Viewer.UI.Presentation
     [Export(typeof(IComponent))]
     public class PresentationComponent : IComponent
     {
-        private readonly IQueryEvents _state;
+        private readonly IQueryHistory _state;
         private readonly ExportFactory<PresentationPresenter> _presentationFactory;
 
         [ImportingConstructor]
-        public PresentationComponent(IQueryEvents state, ExportFactory<PresentationPresenter> presentationFactory)
+        public PresentationComponent(IQueryHistory state, ExportFactory<PresentationPresenter> presentationFactory)
         {
             _presentationFactory = presentationFactory;
             _state = state;

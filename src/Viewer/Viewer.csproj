@@ -135,7 +135,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\QueryEditor\QueryViewManager.cs" />
-    <Compile Include="UI\QueryEvents.cs" />
+    <Compile Include="UI\QueryHistory.cs" />
     <Compile Include="UI\Attributes\AttributeManager.cs" />
     <Compile Include="UI\Attributes\AttributesComponent.cs" />
     <Compile Include="UI\Attributes\AttributesPresenter.cs" />

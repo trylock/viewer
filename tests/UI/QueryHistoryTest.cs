@@ -11,12 +11,12 @@ using Viewer.UI;
 namespace ViewerTest.UI
 {
     [TestClass]
-    public class QueryEventsTest
+    public class QueryHistoryTest
     {
         [TestMethod]
         public void Current_EmptyHistory()
         {
-            var queryEvents = new QueryEvents();
+            var queryEvents = new QueryHistory();
             
             Assert.IsNull(queryEvents.Current);
             Assert.IsNull(queryEvents.Current);
@@ -26,7 +26,7 @@ namespace ViewerTest.UI
         public void Forward_EmptyHistory()
         {
             var executed = false;
-            var queryEvents = new QueryEvents();
+            var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => executed = true;
 
             Assert.IsFalse(executed);
@@ -42,7 +42,7 @@ namespace ViewerTest.UI
         public void Back_EmptyHistory()
         {
             var executed = false;
-            var queryEvents = new QueryEvents();
+            var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => executed = true;
 
             Assert.IsFalse(executed);
@@ -64,7 +64,7 @@ namespace ViewerTest.UI
             var query2 = new Mock<IQuery>();
             query2.Setup(mock => mock.Text).Returns("1");
 
-            var queryEvents = new QueryEvents();
+            var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => ++executionCount;
 
             Assert.AreEqual(0, executionCount);
@@ -86,7 +86,7 @@ namespace ViewerTest.UI
             var query = new Mock<IQuery>();
             IQuery executed = null;
 
-            var queryEvents = new QueryEvents();
+            var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => executed = args.Query;
             
             Assert.IsNull(queryEvents.Current);
@@ -116,7 +116,7 @@ namespace ViewerTest.UI
             }
 
             IQuery current = null;
-            var queryEvents = new QueryEvents();
+            var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => current = args.Query;
 
             Assert.IsNull(queryEvents.Current);
@@ -175,7 +175,7 @@ namespace ViewerTest.UI
             }
 
             IQuery current = null;
-            var queryEvents = new QueryEvents();
+            var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => current = args.Query;
 
             Assert.IsNull(queryEvents.Current);

@@ -21,7 +21,7 @@ namespace Viewer.UI.Images
     public class ImagesComponent : IComponent
     {
         private readonly IEditor _editor;
-        private readonly IQueryEvents _state;
+        private readonly IQueryHistory _state;
         private readonly ISelection _selection;
         private readonly IQueryFactory _queryFactory;
         private readonly IQueryCompiler _queryCompiler;
@@ -37,7 +37,7 @@ namespace Viewer.UI.Images
         [ImportingConstructor]
         public ImagesComponent(
             IEditor editor,
-            IQueryEvents state, 
+            IQueryHistory state, 
             ISelection selection,
             IQueryFactory queryFactory, 
             IQueryCompiler queryCompiler,

@@ -29,7 +29,7 @@ namespace Viewer.UI.Explorer
         /// </summary>
         public FileAttributes HideFlags { get; set; } = FileAttributes.Hidden;
 
-        private readonly IQueryEvents _state;
+        private readonly IQueryHistory _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IFileSystem _fileSystem;
         private readonly ISystemExplorer _systemExplorer;
@@ -42,7 +42,7 @@ namespace Viewer.UI.Explorer
         [ImportingConstructor]
         public DirectoryTreePresenter(
             ExportFactory<IDirectoryTreeView> viewFactory,
-            IQueryEvents state,
+            IQueryHistory state,
             IQueryFactory queryFactory,
             ITaskLoader taskLoader,
             IFileSystemErrorView dialogView,

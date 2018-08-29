@@ -36,7 +36,7 @@ namespace Viewer.UI.Images
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
-        private readonly IQueryEvents _state;
+        private readonly IQueryHistory _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IQueryEvaluatorFactory _queryEvaluatorFactory;
 
@@ -129,7 +129,7 @@ namespace Viewer.UI.Images
             ISelection selection, 
             IEntityManager entityManager,
             IClipboardService clipboard,
-            IQueryEvents state,
+            IQueryHistory state,
             IQueryFactory queryFactory,
             IQueryEvaluatorFactory queryEvaluatorFactory)
         {

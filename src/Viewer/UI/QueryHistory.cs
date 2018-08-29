@@ -46,7 +46,7 @@ namespace Viewer.UI
     /// A query consumer (e.g. a thumbnail grid) listens for <see cref="QueryExecuted"/> event and
     /// actually executes given query.
     /// </summary>
-    public interface IQueryEvents
+    public interface IQueryHistory
     {
         /// <summary>
         /// Event triggered by the <see cref="ExecuteQuery"/> method. 
@@ -102,8 +102,8 @@ namespace Viewer.UI
         IQuery Next { get; }
     }
 
-    [Export(typeof(IQueryEvents))]
-    public class QueryEvents : IQueryEvents
+    [Export(typeof(IQueryHistory))]
+    public class QueryHistory : IQueryHistory
     {
         private readonly List<IQuery> _history = new List<IQuery>();
         private int _historyHead = -1;

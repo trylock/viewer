@@ -18,7 +18,7 @@ namespace Viewer.UI.QueryEditor
     [Export]
     public class QueryEditorPresenter : Presenter<IQueryEditorView>
     {
-        private readonly IQueryEvents _appEvents;
+        private readonly IQueryHistory _appHistory;
         private readonly IFileSystemErrorView _dialogErrorView;
         private readonly IQueryCompiler _queryCompiler;
         private readonly IQueryErrorListener _queryErrorListener;
@@ -32,7 +32,7 @@ namespace Viewer.UI.QueryEditor
         [ImportingConstructor]
         public QueryEditorPresenter(
             ExportFactory<IQueryEditorView> viewFactory, 
-            IQueryEvents appEvents, 
+            IQueryHistory appHistory, 
             IFileSystemErrorView dialogErrorView, 
             IQueryCompiler queryCompiler, 
             IQueryViewRepository queryViews,
@@ -44,7 +44,7 @@ namespace Viewer.UI.QueryEditor
             _queryCompiler = queryCompiler;
             _queryErrorListener = queryErrorListener;
             _queryViews = queryViews;
-            _appEvents = appEvents;
+            _appHistory = appHistory;
             _editor = editor;
 
             SubscribeTo(View, "View");
@@ -150,7 +150,7 @@ namespace Viewer.UI.QueryEditor
             var query = await Task.Run(() => _queryCompiler.Compile(new StringReader(input), _queryErrorListener));
             if (query != null)
             {
-                _appEvents.ExecuteQuery(query);
+                _appHistory.ExecuteQuery(query);
             }
         }
 

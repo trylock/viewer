@@ -157,7 +157,7 @@
     <Compile Include="UI\Images\RectangleSelectionTest.cs" />
     <Compile Include="Images\ThumbnailGeneratorTest.cs" />
     <Compile Include="UI\Presentation\ImageWindowTest.cs" />
-    <Compile Include="UI\QueryEventsTest.cs" />
+    <Compile Include="UI\QueryHistoryTest.cs" />
     <Compile Include="UI\SelectionTest.cs" />
   </ItemGroup>
   <ItemGroup>

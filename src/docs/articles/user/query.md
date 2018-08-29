@@ -123,3 +123,20 @@ If there is no suitable implicit conversion, a `null` value will be used.
 
 - `select "d:/photos/**" where city` finds photos of a city
 - `select "d:/photos/**" where city = "Edinburgh"` finds photos from Edinburgh
+
+## `order by`
+
+Queries can be ordered by multiple keys. Keys are specified in the optional `order by` part of the query. You simply write a list of expressions (same as in the `where` part) separated by comma. There can be a sort direction (`desc` for descending, `asc` for asceding) after each expression. Sort direction is optional and it is `asc` by default. 
+
+### Examples of `order by` queries
+
+Sort files by their size from the largest to the smallest: 
+```SQL
+select "d:/photos" order by FileSize desc
+```
+
+Sort files by their directory name. If 2 files are in the same directory, sort the newest photos first: 
+
+```SQL
+select "d:/photos/**" order by Directory, DateTaken desc
+```

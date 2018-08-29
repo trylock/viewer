@@ -202,6 +202,15 @@ order by DateTaken desc
 <li><code>select &quot;d:/photos/**&quot; where city</code> finds photos of a city</li>
 <li><code>select &quot;d:/photos/**&quot; where city = &quot;Edinburgh&quot;</code> finds photos from Edinburgh</li>
 </ul>
+<h2 id="order-by"><code>order by</code></h2>
+<p>Queries can be ordered by multiple keys. Keys are specified in the optional <code>order by</code> part of the query. You simply write a list of expressions (same as in the <code>where</code> part) separated by comma. There can be a sort direction (<code>desc</code> for descending, <code>asc</code> for asceding) after each expression. Sort direction is optional and it is <code>asc</code> by default.</p>
+<h3 id="examples-of-order-by-queries">Examples of <code>order by</code> queries</h3>
+<p>Sort files by their size from the largest to the smallest:</p>
+<pre><code class="lang-SQL">select &quot;d:/photos&quot; order by FileSize desc
+</code></pre>
+<p>Sort files by their directory name. If 2 files are in the same directory, sort the newest photos first:</p>
+<pre><code class="lang-SQL">select &quot;d:/photos/**&quot; order by Directory, DateTaken desc
+</code></pre>
 </article>
           </div>
           

@@ -268,7 +268,8 @@ namespace Viewer.UI.Attributes
             }
             
             var cancellation = new CancellationTokenSource();
-            var progress = _taskLoader.CreateLoader(Resources.SavingChanges_Label, unsaved.Count, cancellation);
+            var progress = _taskLoader.CreateLoader(Resources.SavingChanges_Label, cancellation);
+            progress.TotalTaskCount = unsaved.Count;
             try
             {
                 await Task.Factory.StartNew(() =>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ using System.Windows.Forms;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.UI.Tasks;
+using FileNotFoundException = System.IO.FileNotFoundException;
 
 namespace Viewer.UI.Explorer
 {
@@ -45,9 +47,9 @@ namespace Viewer.UI.Explorer
     [Export(typeof(IExplorer))]
     public class Explorer : IExplorer
     {
+        private readonly ITaskLoader _taskLoader;
         private readonly IFileSystem _fileSystem;
         private readonly IFileSystemErrorView _dialogView;
-        private readonly ITaskLoader _taskLoader;
 
         [ImportingConstructor]
         public Explorer(IFileSystem fileSystem, IFileSystemErrorView dialogView, ITaskLoader taskLoader)
@@ -59,124 +61,178 @@ namespace Viewer.UI.Explorer
 
         public Task CopyFilesAsync(string destinationDirectory, IEnumerable<string> files)
         {
-            return CopyMoveFilesAsync(destinationDirectory, files, DragDropEffects.Copy);
+            return CopyMoveFilesAsync(destinationDirectory, files, false);
         }
 
         public Task MoveFilesAsync(string destinationDirectory, IEnumerable<string> files)
         {
-            return CopyMoveFilesAsync(destinationDirectory, files, DragDropEffects.Move);
+            return CopyMoveFilesAsync(destinationDirectory, files, true);
+        }
+
+        public struct FileOperation
+        {
+            public string SourcePath { get; }
+            public string DestinationPath { get; }
+            public bool IsDirectory { get; }
+
+            public FileOperation(string sourcePath, string destinationPath, bool isDirectory)
+            {
+                SourcePath = sourcePath;
+                DestinationPath = destinationPath;
+                IsDirectory = isDirectory;
+            }
         }
         
-        private class CopyHandle
+        /// <summary>
+        /// Find files to copy/move
+        /// </summary>
+        private class FileSearchListener : ISearchListener, IReadOnlyCollection<FileOperation>
         {
-            private readonly IFileSystem _fileSystem;
-            private readonly IProgress<LoadingProgress> _progress;
-            private readonly IFileSystemErrorView _dialogView;
-            private readonly CancellationToken _cancellationToken;
-            private readonly string _baseDir;
             private readonly string _destDir;
+            private readonly CancellationToken _cancellationToken;
+            private readonly Queue<FileOperation> _queue = new Queue<FileOperation>();
 
-            public CopyHandle(
-                IFileSystem fileSystem,
-                string baseDir,
-                string desDir,
-                IProgress<LoadingProgress> progress,
-                CancellationToken cancellationToken,
-                IFileSystemErrorView dialogView)
+            public int Count => _queue.Count;
+
+            public string BaseDirectory { get; set; }
+
+            public FileSearchListener(string destDir, CancellationToken cancellation)
             {
-                _fileSystem = fileSystem;
-                _baseDir = baseDir;
-                _destDir = desDir;
-                _dialogView = dialogView;
-                _progress = progress;
-                _cancellationToken = cancellationToken;
+                _destDir = destDir ?? throw new ArgumentNullException(nameof(destDir));
+                _cancellationToken = cancellation;
             }
 
-            private string GetDestinationPath(string path)
+            public SearchControl OnDirectory(string path)
             {
-                var partialPath = path.Substring(_baseDir.Length + 1);
-                return Path.Combine(_destDir, partialPath);
-            }
+                _cancellationToken.ThrowIfCancellationRequested();
 
-            public SearchControl CreateDirectory(string path)
-            {
                 if (string.Equals(
-                        PathUtils.NormalizePath(_destDir),
-                        PathUtils.NormalizePath(path),
-                        StringComparison.CurrentCultureIgnoreCase))
+                    PathUtils.NormalizePath(_destDir),
+                    PathUtils.NormalizePath(path),
+                    StringComparison.CurrentCultureIgnoreCase))
                 {
-                    _dialogView.FailedToMove(path, _destDir);
                     return SearchControl.None;
                 }
+
                 var destDir = GetDestinationPath(path);
-                _fileSystem.CreateDirectory(destDir);
+                _queue.Enqueue(new FileOperation(path, destDir, true));
                 return SearchControl.Visit;
             }
 
-            public SearchControl CopyFile(string path)
-            {
-                return Operation(path, (src, dest) => _fileSystem.CopyFile(src, dest));
-            }
-
-            public SearchControl MoveFile(string path)
-            {
-                return Operation(path, (src, dest) => _fileSystem.MoveFile(src, dest));
-            }
-
-            private SearchControl Operation(string path, Action<string, string> operation)
+            public SearchControl OnFile(string path)
             {
                 _cancellationToken.ThrowIfCancellationRequested();
 
                 var destPath = GetDestinationPath(path);
-                _progress.Report(new LoadingProgress(path));
-                try
-                {
-                    operation(path, destPath);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    _dialogView.DirectoryNotFound(path);
-                }
-                catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) ||
-                                          e.GetType() == typeof(SecurityException))
-                {
-                    _dialogView.UnauthorizedAccess(path);
-                }
+                _queue.Enqueue(new FileOperation(path, destPath, false));
+                return SearchControl.Visit;
+            }
 
-                return SearchControl.None;
+            public IEnumerator<FileOperation> GetEnumerator()
+            {
+                return _queue.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            private string GetDestinationPath(string path)
+            {
+                var partialPath = path
+                    .Substring(BaseDirectory.Length)
+                    .TrimStart(PathUtils.PathSeparators);
+                return Path.Combine(_destDir, partialPath);
             }
         }
 
-        private async Task CopyMoveFilesAsync(string destinationDirectory, IEnumerable<string> files, DragDropEffects effect)
+        private async Task CopyMoveFilesAsync(
+            string destinationDirectory, 
+            IEnumerable<string> files, 
+            bool isMove)
         {
-            // copy files
-            var fileCount = (int)_fileSystem.CountFiles(files, true);
+            // copy/move files
+            var uiContext = SynchronizationContext.Current;
+            if (uiContext == null)
+            {
+                throw new InvalidOperationException(
+                    "Missing syncrhonization context. Call this function from the UI thread.");
+            }
+
             var cancellation = new CancellationTokenSource();
-            var progress = _taskLoader.CreateLoader(Resources.CopyingFiles_Label, fileCount, cancellation);
+            var progress = _taskLoader.CreateLoader(Resources.CopyingFiles_Label, cancellation);
             try
             {
                 await Task.Run(() =>
                 {
+                    // find files to copy/move
+                    var listener = new FileSearchListener(destinationDirectory, cancellation.Token);
                     foreach (var file in files)
                     {
-                        var baseDir = PathUtils.GetDirectoryPath(file);
-                        var copy = new CopyHandle(
-                            _fileSystem,
-                            baseDir,
-                            destinationDirectory,
-                            progress,
-                            cancellation.Token,
-                            _dialogView);
-                        if ((effect & DragDropEffects.Move) != 0)
-                            _fileSystem.Search(file, copy.CreateDirectory, copy.MoveFile);
+                        listener.BaseDirectory = PathUtils.GetDirectoryPath(file);
+                        _fileSystem.Search(file, listener);
+                    }
+
+                    // update total number of tasks
+                    progress.TotalTaskCount = listener.Count;
+
+                    // copy/move found files
+                    foreach (var file in listener)
+                    {
+                        cancellation.Token.ThrowIfCancellationRequested();
+
+                        if (file.IsDirectory)
+                        {
+                            CreateDirectory(file.DestinationPath);
+                        }
                         else
-                            _fileSystem.Search(file, copy.CreateDirectory, copy.CopyFile);
+                        {
+                            progress.Report(new LoadingProgress(file.SourcePath));
+                            Process(file, isMove, uiContext);
+                        }
                     }
                 }, cancellation.Token);
             }
             finally
             {
                 progress.Close();
+            }
+        }
+
+        private void CreateDirectory(string directory)
+        {
+            _fileSystem.CreateDirectory(directory);
+        }
+
+        private void Process(FileOperation file, bool isMove, SynchronizationContext uiContext)
+        {
+            try
+            {
+                if (isMove)
+                {
+                    _fileSystem.MoveFile(file.SourcePath, file.DestinationPath);
+                }
+                else
+                {
+                    _fileSystem.CopyFile(file.SourcePath, file.DestinationPath);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                // silently ignore this error, just don't copy/move the file
+            }
+            catch (DirectoryNotFoundException)
+            {
+                // silently ignore this error, just don't copy/move the file
+            }
+            catch (UnauthorizedAccessException)
+            {
+                uiContext.Send(_ => _dialogView.UnauthorizedAccess(file.SourcePath), null);
+            }
+            catch (SecurityException)
+            {
+                uiContext.Send(_ => _dialogView.UnauthorizedAccess(file.SourcePath), null);
             }
         }
     }

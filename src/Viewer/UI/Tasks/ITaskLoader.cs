@@ -36,6 +36,11 @@ namespace Viewer.UI.Tasks
     public interface IProgressController : IProgress<ILoadingProgress>
     {
         /// <summary>
+        /// Total number of tasks.
+        /// </summary>
+        int TotalTaskCount { get; set; }
+
+        /// <summary>
         /// Close the progress window. It has to be called from the UI thread.
         /// Call this method after a task finished. This operation will dispose the cancellation
         /// token source passed to the <see cref="ITaskLoader.CreateLoader"/> method together
@@ -50,15 +55,14 @@ namespace Viewer.UI.Tasks
         /// Create a task loader which shows loading progress to the user.
         /// </summary>
         /// <param name="name">Name of the task</param>
-        /// <param name="totalTaskCount">Total number of tasks to finish (one call to the Report method finishes one task)</param>
         /// <param name="cancellation">
-        ///     Cancellation token source. The loader takes ownership of the cancellation token source.
-        ///     Dispose it by calling <see cref="IProgressController.Close"/>
+        /// Cancellation token source. The loader takes ownership of the cancellation token source.
+        /// Dispose it by calling <see cref="IProgressController.Close"/>
         /// </param>
         /// <returns>
-        ///     Progress whose Report method updates the loading progress.
-        ///     The report method of the returned progress is thread safe.
+        /// Progress whose Report method updates the loading progress. The report method of the
+        /// returned progress is thread safe.
         /// </returns>
-        IProgressController CreateLoader(string name, int totalTaskCount, CancellationTokenSource cancellation);
+        IProgressController CreateLoader(string name, CancellationTokenSource cancellation);
     }
 }

@@ -21,9 +21,9 @@ namespace Viewer.UI.Tasks
             _app = app;
         }
 
-        public IProgressController CreateLoader(string name, int totalTaskCount, CancellationTokenSource cancellation)
+        public IProgressController CreateLoader(string name, CancellationTokenSource cancellation)
         {
-            var view = new TaskLoaderView(totalTaskCount, cancellation);
+            var view = new TaskLoaderView( cancellation);
             view.Show(_app.Panel, DockState.DockBottom);
             view.OperationName = name;
             view.Text = name;

@@ -34,32 +34,36 @@
             this.CancelTaskButton = new System.Windows.Forms.Button();
             this.TaskNameLabel = new System.Windows.Forms.Label();
             this.PollTimer = new System.Windows.Forms.Timer(this.components);
+            this.CurrentItemLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // TaskProgressBar
             // 
             this.TaskProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TaskProgressBar.Location = new System.Drawing.Point(14, 29);
+            this.TaskProgressBar.Location = new System.Drawing.Point(10, 24);
+            this.TaskProgressBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.TaskProgressBar.Name = "TaskProgressBar";
-            this.TaskProgressBar.Size = new System.Drawing.Size(497, 26);
+            this.TaskProgressBar.Size = new System.Drawing.Size(373, 21);
             this.TaskProgressBar.TabIndex = 0;
             // 
             // ProgressLabel
             // 
             this.ProgressLabel.AutoSize = true;
-            this.ProgressLabel.Location = new System.Drawing.Point(12, 9);
+            this.ProgressLabel.Location = new System.Drawing.Point(9, 7);
+            this.ProgressLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.ProgressLabel.Name = "ProgressLabel";
-            this.ProgressLabel.Size = new System.Drawing.Size(89, 17);
+            this.ProgressLabel.Size = new System.Drawing.Size(67, 13);
             this.ProgressLabel.TabIndex = 1;
             this.ProgressLabel.Text = "0% complete";
             // 
             // CancelTaskButton
             // 
             this.CancelTaskButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.CancelTaskButton.Location = new System.Drawing.Point(517, 29);
+            this.CancelTaskButton.Location = new System.Drawing.Point(388, 24);
+            this.CancelTaskButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CancelTaskButton.Name = "CancelTaskButton";
-            this.CancelTaskButton.Size = new System.Drawing.Size(78, 26);
+            this.CancelTaskButton.Size = new System.Drawing.Size(58, 21);
             this.CancelTaskButton.TabIndex = 2;
             this.CancelTaskButton.Text = "Cancel";
             this.CancelTaskButton.UseVisualStyleBackColor = true;
@@ -68,9 +72,10 @@
             // TaskNameLabel
             // 
             this.TaskNameLabel.AutoSize = true;
-            this.TaskNameLabel.Location = new System.Drawing.Point(11, 58);
+            this.TaskNameLabel.Location = new System.Drawing.Point(78, 47);
+            this.TaskNameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.TaskNameLabel.Name = "TaskNameLabel";
-            this.TaskNameLabel.Size = new System.Drawing.Size(75, 17);
+            this.TaskNameLabel.Size = new System.Drawing.Size(57, 13);
             this.TaskNameLabel.TabIndex = 3;
             this.TaskNameLabel.Text = "Loading ...";
             // 
@@ -79,15 +84,26 @@
             this.PollTimer.Enabled = true;
             this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
             // 
+            // CurrentItemLabel
+            // 
+            this.CurrentItemLabel.AutoSize = true;
+            this.CurrentItemLabel.Location = new System.Drawing.Point(10, 47);
+            this.CurrentItemLabel.Name = "CurrentItemLabel";
+            this.CurrentItemLabel.Size = new System.Drawing.Size(66, 13);
+            this.CurrentItemLabel.TabIndex = 4;
+            this.CurrentItemLabel.Text = "Current item:";
+            // 
             // TaskLoaderView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(607, 93);
+            this.ClientSize = new System.Drawing.Size(455, 80);
+            this.Controls.Add(this.CurrentItemLabel);
             this.Controls.Add(this.TaskNameLabel);
             this.Controls.Add(this.CancelTaskButton);
             this.Controls.Add(this.ProgressLabel);
             this.Controls.Add(this.TaskProgressBar);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "TaskLoaderView";
             this.Text = "TaskLoaderView";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TaskLoaderView_FormClosing);
@@ -103,5 +119,6 @@
         private System.Windows.Forms.Button CancelTaskButton;
         private System.Windows.Forms.Label TaskNameLabel;
         private System.Windows.Forms.Timer PollTimer;
+        private System.Windows.Forms.Label CurrentItemLabel;
     }
 }

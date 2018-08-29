@@ -27,27 +27,27 @@ namespace Viewer.IO
         /// </summary>
         Abort,
     }
+    
+    /// <summary>
+    /// Use this as argument to <see cref="IFileSystem.Search"/> to control the search algorithm.
+    /// </summary>
+    public interface ISearchListener
+    {
+        /// <summary>
+        /// Function called whenever a directory is found.
+        /// </summary>
+        /// <param name="path">Path to the directory</param>
+        SearchControl OnDirectory(string path);
 
-    public delegate SearchControl SearchCallback(string path);
+        /// <summary>
+        /// Function called whenever a file is found.
+        /// </summary>
+        /// <param name="path">Path to the file</param>
+        SearchControl OnFile(string path);
+    }
     
     public interface IFileSystem
     {
-        /// <summary>
-        /// Count files in given list and in directories in given list.
-        /// Directories will be searched recursively if <paramref name="isRecursive"/> is true.
-        /// </summary>
-        /// <param name="path">List of file/directory paths</param>
-        /// <param name="isRecursive">Should we recursively count files in subdirectories?</param>
-        /// <returns>Number of files in the directory</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="path"/> is null</exception>
-        /// <exception cref="ArgumentException"><paramref name="path"/> contains invalid characters</exception>
-        /// <exception cref="DirectoryNotFoundException"><paramref name="path"/> is invalid</exception>
-        /// <exception cref="IOException"><paramref name="path"/> is a file name</exception>
-        /// <exception cref="PathTooLongException"><paramref name="path"/> is too long</exception>
-        /// <exception cref="SecurityException">Caller does not have required permission</exception>
-        /// <exception cref="UnauthorizedAccessException">Caller does not have required permission</exception>
-        long CountFiles(IEnumerable<string> path, bool isRecursive);
-
         /// <summary>
         /// Copy file from <paramref name="sourcePath"/> to <paramref name="destPath"/>.
         /// </summary>
@@ -179,38 +179,36 @@ namespace Viewer.IO
         Task<string> ReadToEndAsync(string path);
 
         /// <summary>
-        /// Search given path for files and subdirectories.
-        /// <paramref name="directoryCallback"/> will be called for each directory,
-        /// <paramref name="fileCallback"/> will be called for each file.
-        /// If <paramref name="directoryCallback"/> returns SearchControl.Visit, the algorithm will search all its subdirectories.
-        /// If <paramref name="directoryCallback"/> does not return SearchControl.Visit, its subdirectories and files won't be searched.
-        /// If <paramref name="path"/> is a file, <paramref name="fileCallback"/> will be called for it.
+        /// <para>
+        /// Search given path for files and subdirectories. <see cref="ISearchListener.OnDirectory"/>
+        /// will be called for each directory, <see cref="ISearchListener.OnFile"/> will be called
+        /// for each file.
+        /// </para>
+        ///
+        /// <para>
+        /// If <see cref="ISearchListener.OnDirectory"/> returns <see cref="SearchControl.Visit"/>,
+        /// the algorithm will search all its subdirectories. If <see cref="ISearchListener.OnDirectory"/>
+        /// does not return <see cref="SearchControl.Visit"/>, its subdirectories and files won't
+        /// be searched. If either <see cref="ISearchListener.OnDirectory"/> or
+        /// <see cref="ISearchListener.OnFile"/> returns <see cref="SearchControl.Abort"/>, the
+        /// search will stop immediately.
+        /// </para>
+        ///
+        /// <para>
+        /// If <paramref name="path"/> is a file, <see cref="ISearchListener.OnFile"/> will be called.
+        /// </para>
         /// </summary>
         /// <param name="path">Path to a file or directory</param>
-        /// <param name="directoryCallback">Function called for each directory</param>
-        /// <param name="fileCallback">Function called for each file</param>
-        void Search(string path, SearchCallback directoryCallback, SearchCallback fileCallback);
+        /// <param name="listener">
+        /// Whenever a new directory is discovered, <see cref="ISearchListener.OnDirectory"/> is called.
+        /// Whenever a new file is discovered, <see cref="ISearchListener.OnFile"/> is called.
+        /// </param>
+        void Search(string path, ISearchListener listener);
     }
 
     [Export(typeof(IFileSystem))]
     public class FileSystem : IFileSystem
     {
-        public long CountFiles(IEnumerable<string> files, bool isRecursive)
-        {
-            long counter = 0;
-            foreach (var file in files)
-            {
-                Search(file,
-                    dirPath => isRecursive ? SearchControl.Visit : SearchControl.None,
-                    filePath =>
-                    {
-                        ++counter;
-                        return SearchControl.None;
-                    });
-            }
-            return counter;
-        }
-
         public void CopyFile(string sourcePath, string destPath)
         {
             File.Copy(sourcePath, destPath);
@@ -312,12 +310,12 @@ namespace Viewer.IO
             }
         }
 
-        public void Search(string path, SearchCallback directoryCallback, SearchCallback fileCallback)
+        public void Search(string path, ISearchListener listener)
         {
             var attrs = File.GetAttributes(path);
             if (!attrs.HasFlag(FileAttributes.Directory))
             {
-                fileCallback(path);
+                listener.OnFile(path);
                 return;
             }
 
@@ -327,7 +325,7 @@ namespace Viewer.IO
             while (stack.Count > 0)
             {
                 var dir = stack.Pop();
-                var result = directoryCallback(dir);
+                var result = listener.OnDirectory(dir);
                 if (result == SearchControl.Abort)
                 {
                     return;
@@ -338,7 +336,7 @@ namespace Viewer.IO
                     // find files
                     foreach (var file in Directory.EnumerateFiles(dir))
                     {
-                        var fileResult = fileCallback(file);
+                        var fileResult = listener.OnFile(file);
                         if (fileResult == SearchControl.Abort)
                         {
                             return;

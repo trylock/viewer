@@ -51,6 +51,8 @@ namespace Viewer.UI.Tasks
                 Interlocked.Increment(ref FinishedCount);
             }
 
+            public int TotalTaskCount { get; set; }
+
             public void Close()
             {
                 _view._cancellation?.Dispose();
@@ -59,7 +61,7 @@ namespace Viewer.UI.Tasks
             }
         }
 
-        public TaskLoaderView(int totalTaskCount, CancellationTokenSource cancellation)
+        public TaskLoaderView(CancellationTokenSource cancellation)
         {
             InitializeComponent();
             
@@ -67,7 +69,7 @@ namespace Viewer.UI.Tasks
             _cancellation = cancellation;
 
             TaskProgressBar.Minimum = 0;
-            TaskProgressBar.Maximum = totalTaskCount;
+            TaskProgressBar.Maximum = 100;
         }
 
         private void PollTimer_Tick(object sender, EventArgs e)
@@ -75,14 +77,11 @@ namespace Viewer.UI.Tasks
             // read current state
             var name = _controller.Message;
             var finishedCount = _controller.FinishedCount;
-
+            var totalCount = _controller.TotalTaskCount;
+            
             // update the view
-            if (finishedCount > TaskProgressBar.Maximum)
-            {
-                // This is an invalid state but, as we are dealing with an asyncrhonous operation,
-                // it could happend that the total number of tasks has increased.
-                TaskProgressBar.Maximum = finishedCount;
-            }
+            TaskProgressBar.Maximum = totalCount;
+            TaskProgressBar.Value = Math.Min(finishedCount, totalCount);
             
             var progress = (int) (TaskProgressBar.Value / (double) TaskProgressBar.Maximum * 100);
             TaskProgressBar.Value = finishedCount;

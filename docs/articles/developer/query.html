@@ -117,7 +117,16 @@
 <h1 id="viewerquery">Viewer.Query</h1>
 
 <h2 id="grammar">Grammar</h2>
-<h2 id="runtime">Runtime</h2>
+<h2 id="compilation">Compilation</h2>
+<p>Expressions in the <code>where</code> part and the <code>order by</code> part of the query are compiled to a C# code using <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/">Expression Trees</a>. Since we don't know the type of an attribute, many decisions have to be made at runtime. The generated code will therefore mostly just call runtime functions. Expression trees are used mainly for convenience (no need to write an interpreter).</p>
+<p>The compiled function takes an <a class="xref" href="../../api/Viewer.Data.IEntity.html">entity</a> and returns a <a class="xref" href="../../api/Viewer.Data.BaseValue.html">value</a>. If the returned value in the <code>where</code> part of a query is null (i.e., <a class="xref" href="../../api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_IsNull">IsNull</a> is true), it is interpreted as <code>fales</code> (i.e., the entity is not included in the result).</p>
+<h2 id="execution">Execution</h2>
+<p>Queries are executed lazily by calling the <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Execute</a> method. It returns an enumerator which loads entities. Even queries which contain <code>UNION</code>, <code>EXCEPT</code> and <code>INTERSECT</code> operators are evaluated lazily. This is possible due to the <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Match</a> method which can determine statically (i.e., without looking at any other entity) whether or not an entity matches given query.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Returned entities are not sorted. This allows for a lazy execution even if the evaluated query is ordered and it drastically reduces latency since user does not have to wait for the query to search all entities.</p>
+</div>
+<p>The <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Execute</a> method supports standard cancellation and progress even though it is not an async method and it executes completely synchronously.</p>
 </article>
           </div>
           

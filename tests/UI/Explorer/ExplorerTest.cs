@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Viewer.IO;
@@ -262,7 +263,6 @@ namespace ViewerTest.UI.Explorer
             _progressController.VerifyNoOtherCalls();
         }
 
-
         [TestMethod]
         public async Task CopyFileAsync_ReplaceAnExistingFile()
         {
@@ -278,7 +278,7 @@ namespace ViewerTest.UI.Explorer
                 .Pass();
             _dialogView
                 .Setup(mock => mock.ConfirmReplace(CheckPath("dest/a.txt")))
-                .Returns(true);
+                .Returns(DialogResult.Yes);
 
             await _explorer.CopyFilesAsync("dest", new[] { "src/a.txt" });
 
@@ -293,6 +293,94 @@ namespace ViewerTest.UI.Explorer
             _dialogView.VerifyNoOtherCalls();
 
             _progressController.Verify(mock => mock.Close(), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task CopyFileAsync_SkipAnExistingFile()
+        {
+            _fileSystem
+                .Setup(mock => mock.Search("src/a.txt", It.IsAny<ISearchListener>()))
+                .Callback<string, ISearchListener>((dest, listener) =>
+                {
+                    listener.OnFile("src/a.txt");
+                });
+            _fileSystem
+                .Setup(mock => mock.Search("src/b.txt", It.IsAny<ISearchListener>()))
+                .Callback<string, ISearchListener>((dest, listener) =>
+                {
+                    listener.OnFile("src/b.txt");
+                });
+            _fileSystem
+                .Setup(mock => mock.CopyFile("src/a.txt", It.IsAny<string>()))
+                .Throws(new IOException());
+            _dialogView
+                .Setup(mock => mock.ConfirmReplace(CheckPath("dest/a.txt")))
+                .Returns(DialogResult.No);
+
+            await _explorer.CopyFilesAsync("dest", new[] { "src/a.txt", "src/b.txt" });
+
+            _fileSystem.Verify(mock => mock.DeleteFile(It.IsAny<string>()), Times.Never);
+            _fileSystem.Verify(mock => mock.Search("src/a.txt", It.IsAny<ISearchListener>()), Times.Once);
+            _fileSystem.Verify(mock => mock.Search("src/b.txt", It.IsAny<ISearchListener>()), Times.Once);
+            _fileSystem.Verify(mock => mock.CopyFile(
+                CheckPath("src/a.txt"),
+                CheckPath("dest/a.txt")), Times.Once);
+            _fileSystem.Verify(mock => mock.CopyFile(
+                CheckPath("src/b.txt"),
+                CheckPath("dest/b.txt")), Times.Once);
+            _fileSystem.VerifyNoOtherCalls();
+
+            _dialogView.Verify(mock => mock.ConfirmReplace(CheckPath("dest/a.txt")), Times.Once);
+            _dialogView.VerifyNoOtherCalls();
+
+            _progressController.Verify(mock => mock.Close(), Times.Once);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task CopyFileAsync_CancelOperation()
+        {
+            _fileSystem
+                .Setup(mock => mock.Search("src/a.txt", It.IsAny<ISearchListener>()))
+                .Callback<string, ISearchListener>((dest, listener) =>
+                {
+                    listener.OnFile("src/a.txt");
+                });
+            _fileSystem
+                .Setup(mock => mock.Search("src/b.txt", It.IsAny<ISearchListener>()))
+                .Callback<string, ISearchListener>((dest, listener) =>
+                {
+                    listener.OnFile("src/b.txt");
+                });
+            _fileSystem
+                .Setup(mock => mock.CopyFile("src/a.txt", It.IsAny<string>()))
+                .Throws(new IOException());
+            _dialogView
+                .Setup(mock => mock.ConfirmReplace(CheckPath("dest/a.txt")))
+                .Returns(DialogResult.Cancel);
+
+            try
+            {
+                await _explorer.CopyFilesAsync("dest", new[] {"src/a.txt", "src/b.txt"});
+            }
+            finally
+            {
+                _fileSystem.Verify(mock => mock.DeleteFile(It.IsAny<string>()), Times.Never);
+                _fileSystem.Verify(mock => mock.Search("src/a.txt", It.IsAny<ISearchListener>()), Times.Once);
+                _fileSystem.Verify(mock => mock.Search("src/b.txt", It.IsAny<ISearchListener>()), Times.Once);
+                _fileSystem.Verify(mock => mock.CopyFile(
+                    CheckPath("src/a.txt"),
+                    CheckPath("dest/a.txt")), Times.Once);
+                _fileSystem.Verify(mock => mock.CopyFile(
+                    CheckPath("src/b.txt"),
+                    CheckPath("dest/b.txt")), Times.Never);
+                _fileSystem.VerifyNoOtherCalls();
+
+                _dialogView.Verify(mock => mock.ConfirmReplace(CheckPath("dest/a.txt")), Times.Once);
+                _dialogView.VerifyNoOtherCalls();
+
+                _progressController.Verify(mock => mock.Close(), Times.Once);
+            }
         }
     }
 }

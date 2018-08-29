@@ -189,7 +189,7 @@ namespace Viewer.UI.Explorer
                         else
                         {
                             progress.Report(new LoadingProgress(file.SourcePath));
-                            Process(file, isMove, uiContext);
+                            Process(file, isMove, uiContext, cancellation);
                         }
                     }
                 }, cancellation.Token);
@@ -205,7 +205,11 @@ namespace Viewer.UI.Explorer
             _fileSystem.CreateDirectory(directory);
         }
 
-        private void Process(FileOperation file, bool isMove, SynchronizationContext uiContext)
+        private void Process(
+            FileOperation file, 
+            bool isMove, 
+            SynchronizationContext uiContext, 
+            CancellationTokenSource cancellation)
         {
             var retry = true;
             while (retry)
@@ -232,14 +236,20 @@ namespace Viewer.UI.Explorer
                 }
                 catch (IOException)
                 {
+                    var result = DialogResult.No;
                     uiContext.Send(_ =>
                     {
-                        retry = _dialogView.ConfirmReplace(file.DestinationPath);
+                        result = _dialogView.ConfirmReplace(file.DestinationPath);
                     }, null);
 
-                    if (retry)
+                    if (result == DialogResult.Yes)
                     {
+                        retry = true;
                         _fileSystem.DeleteFile(file.DestinationPath);
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        cancellation.Cancel();
                     }
                 }
                 catch (UnauthorizedAccessException)

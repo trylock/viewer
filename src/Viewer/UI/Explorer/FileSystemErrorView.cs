@@ -56,8 +56,12 @@ namespace Viewer.UI.Explorer
         /// <paramref name="fileName"/>
         /// </summary>
         /// <param name="fileName"></param>
-        /// <returns>true iff user confirmed to replace <paramref name="fileName"/></returns>
-        bool ConfirmReplace(string fileName);
+        /// <returns>
+        /// <see cref="DialogResult.Yes"/>, if user confirmed to replace the file.
+        /// <see cref="DialogResult.No"/>, if user wants to skip this file.
+        /// <see cref="DialogResult.Cancel"/>, if user wants to cancel the whole copy/move operation.
+        /// </returns>
+        DialogResult ConfirmReplace(string fileName);
 
         /// <summary>
         /// Show confirm dialog of deletion of a list of files
@@ -154,15 +158,15 @@ namespace Viewer.UI.Explorer
             return result == DialogResult.Yes;
         }
 
-        public bool ConfirmReplace(string fileName)
+        public DialogResult ConfirmReplace(string fileName)
         {
             var result = MessageBox.Show(
                 string.Format(Resources.ConfirmReplace_Message, fileName),
                 Resources.ConfirmReplace_Label,
-                MessageBoxButtons.YesNo,
+                MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);
-            return result == DialogResult.Yes;
+            return result;
         }
 
         public bool ConfirmDelete(IEnumerable<string> files)

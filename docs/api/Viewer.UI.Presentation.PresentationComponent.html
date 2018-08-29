@@ -435,10 +435,10 @@
                             <a href="Viewer.IO.IFileWatcherFactory.html" title="IFileWatcherFactory" class="">IFileWatcherFactory</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
+                            <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.SearchCallback.html" title="SearchCallback" class="">SearchCallback</a>
+                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.SearchControl.html" title="SearchControl" class="">SearchControl</a>
@@ -747,10 +747,7 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.UI.EntityEventArgs.html" title="EntityEventArgs" class="">EntityEventArgs</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.UI.IQueryEvents.html" title="IQueryEvents" class="">IQueryEvents</a>
+                            <a href="Viewer.UI.IQueryHistory.html" title="IQueryHistory" class="">IQueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.ISelection.html" title="ISelection" class="">ISelection</a>
@@ -762,7 +759,7 @@
                             <a href="Viewer.UI.QueryEventArgs.html" title="QueryEventArgs" class="">QueryEventArgs</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.QueryEvents.html" title="QueryEvents" class="">QueryEvents</a>
+                            <a href="Viewer.UI.QueryHistory.html" title="QueryHistory" class="">QueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Selection.html" title="Selection" class="">Selection</a>
@@ -892,6 +889,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.Explorer.html" title="Explorer" class="">Explorer</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.UI.Explorer.Explorer.FileOperation.html" title="Explorer.FileOperation" class="">Explorer.FileOperation</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.ExplorerComponent.html" title="ExplorerComponent" class="">ExplorerComponent</a>
@@ -1047,6 +1047,9 @@
                             <a href="Viewer.UI.Presentation.ImageWindow.html" title="ImageWindow" class="">ImageWindow</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.UI.Presentation.IPresentation.html" title="IPresentation" class="">IPresentation</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.UI.Presentation.IPresentationView.html" title="IPresentationView" class="">IPresentationView</a>
                           </li>
                           <li class="">
@@ -1155,6 +1158,7 @@
   <div classs="implements">
     <h5>Implements</h5>
     <div><a class="xref" href="Viewer.Core.IComponent.html">IComponent</a></div>
+    <div><a class="xref" href="Viewer.UI.Presentation.IPresentation.html">IPresentation</a></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -1184,26 +1188,27 @@
   <h6><strong>Assembly</strong>: Viewer.dll</h6>
   <h5 id="Viewer_UI_Presentation_PresentationComponent_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Export(typeof(IComponent))]
-public class PresentationComponent : IComponent</code></pre>
+    <pre><code class="lang-csharp hljs">[Export(typeof(IPresentation))]
+[Export(typeof(IComponent))]
+public class PresentationComponent : IComponent, IPresentation</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Presentation_PresentationComponent__ctor_Viewer_UI_IQueryEvents_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Presentation_PresentationPresenter__.md&amp;value=---%0Auid%3A%20Viewer.UI.Presentation.PresentationComponent.%23ctor(Viewer.UI.IQueryEvents%2CSystem.ComponentModel.Composition.ExportFactory%7BViewer.UI.Presentation.PresentationPresenter%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Presentation_PresentationComponent__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Presentation_PresentationPresenter__.md&amp;value=---%0Auid%3A%20Viewer.UI.Presentation.PresentationComponent.%23ctor(System.ComponentModel.Composition.ExportFactory%7BViewer.UI.Presentation.PresentationPresenter%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Presentation/PresentationComponent.cs/#L19">View Source</a>
   </span>
   <a id="Viewer_UI_Presentation_PresentationComponent__ctor_" data-uid="Viewer.UI.Presentation.PresentationComponent.#ctor*"></a>
-  <h4 id="Viewer_UI_Presentation_PresentationComponent__ctor_Viewer_UI_IQueryEvents_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Presentation_PresentationPresenter__" data-uid="Viewer.UI.Presentation.PresentationComponent.#ctor(Viewer.UI.IQueryEvents,System.ComponentModel.Composition.ExportFactory{Viewer.UI.Presentation.PresentationPresenter})">PresentationComponent(IQueryEvents, ExportFactory&lt;PresentationPresenter&gt;)</h4>
+  <h4 id="Viewer_UI_Presentation_PresentationComponent__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Presentation_PresentationPresenter__" data-uid="Viewer.UI.Presentation.PresentationComponent.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Presentation.PresentationPresenter})">PresentationComponent(ExportFactory&lt;PresentationPresenter&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[ImportingConstructor]
-public PresentationComponent(IQueryEvents state, ExportFactory&lt;PresentationPresenter&gt; presentationFactory)</code></pre>
+public PresentationComponent(ExportFactory&lt;PresentationPresenter&gt; presentationFactory)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1215,11 +1220,6 @@ public PresentationComponent(IQueryEvents state, ExportFactory&lt;PresentationPr
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td><a class="xref" href="Viewer.UI.IQueryEvents.html">IQueryEvents</a></td>
-        <td><span class="parametername">state</span></td>
-        <td></td>
-      </tr>
       <tr>
         <td><span class="xref">System.ComponentModel.Composition.ExportFactory</span>&lt;<a class="xref" href="Viewer.UI.Presentation.PresentationPresenter.html">PresentationPresenter</a>&gt;</td>
         <td><span class="parametername">presentationFactory</span></td>
@@ -1234,7 +1234,7 @@ public PresentationComponent(IQueryEvents state, ExportFactory&lt;PresentationPr
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Presentation_PresentationComponent_OnStartup_Viewer_Core_IViewerApplication_.md&amp;value=---%0Auid%3A%20Viewer.UI.Presentation.PresentationComponent.OnStartup(Viewer.Core.IViewerApplication)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Presentation/PresentationComponent.cs/#L27">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Presentation/PresentationComponent.cs/#L25">View Source</a>
   </span>
   <a id="Viewer_UI_Presentation_PresentationComponent_OnStartup_" data-uid="Viewer.UI.Presentation.PresentationComponent.OnStartup*"></a>
   <h4 id="Viewer_UI_Presentation_PresentationComponent_OnStartup_Viewer_Core_IViewerApplication_" data-uid="Viewer.UI.Presentation.PresentationComponent.OnStartup(Viewer.Core.IViewerApplication)">OnStartup(IViewerApplication)</h4>
@@ -1261,9 +1261,49 @@ public PresentationComponent(IQueryEvents state, ExportFactory&lt;PresentationPr
       </tr>
     </tbody>
   </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Presentation_PresentationComponent_Open_System_Collections_Generic_IEnumerable_Viewer_Data_IEntity__System_Int32_.md&amp;value=---%0Auid%3A%20Viewer.UI.Presentation.PresentationComponent.Open(System.Collections.Generic.IEnumerable%7BViewer.Data.IEntity%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Presentation/PresentationComponent.cs/#L41">View Source</a>
+  </span>
+  <a id="Viewer_UI_Presentation_PresentationComponent_Open_" data-uid="Viewer.UI.Presentation.PresentationComponent.Open*"></a>
+  <h4 id="Viewer_UI_Presentation_PresentationComponent_Open_System_Collections_Generic_IEnumerable_Viewer_Data_IEntity__System_Int32_" data-uid="Viewer.UI.Presentation.PresentationComponent.Open(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)">Open(IEnumerable&lt;IEntity&gt;, Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Open(IEnumerable&lt;IEntity&gt; entities, int activeIndex)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Viewer.Data.IEntity.html">IEntity</a>&gt;</td>
+        <td><span class="parametername">entities</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">activeIndex</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="Viewer.Core.IComponent.html">IComponent</a>
+  </div>
+  <div>
+      <a class="xref" href="Viewer.UI.Presentation.IPresentation.html">IPresentation</a>
   </div>
 </article>
           </div>

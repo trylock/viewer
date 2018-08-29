@@ -4819,22 +4819,6 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.FileSystem.CopyFile
   nameWithType: FileSystem.CopyFile
-- uid: Viewer.IO.FileSystem.CountFiles(System.Collections.Generic.IEnumerable{System.String},System.Boolean)
-  name: CountFiles(IEnumerable<String>, Boolean)
-  href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_CountFiles_System_Collections_Generic_IEnumerable_System_String__System_Boolean_
-  commentId: M:Viewer.IO.FileSystem.CountFiles(System.Collections.Generic.IEnumerable{System.String},System.Boolean)
-  name.vb: CountFiles(IEnumerable(Of String), Boolean)
-  fullName: Viewer.IO.FileSystem.CountFiles(System.Collections.Generic.IEnumerable<System.String>, System.Boolean)
-  fullName.vb: Viewer.IO.FileSystem.CountFiles(System.Collections.Generic.IEnumerable(Of System.String), System.Boolean)
-  nameWithType: FileSystem.CountFiles(IEnumerable<String>, Boolean)
-  nameWithType.vb: FileSystem.CountFiles(IEnumerable(Of String), Boolean)
-- uid: Viewer.IO.FileSystem.CountFiles*
-  name: CountFiles
-  href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_CountFiles_
-  commentId: Overload:Viewer.IO.FileSystem.CountFiles
-  isSpec: "True"
-  fullName: Viewer.IO.FileSystem.CountFiles
-  nameWithType: FileSystem.CountFiles
 - uid: Viewer.IO.FileSystem.CreateDirectory(System.String)
   name: CreateDirectory(String)
   href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_CreateDirectory_System_String_
@@ -4977,19 +4961,6 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.FileSystem.ReadAllBytes
   nameWithType: FileSystem.ReadAllBytes
-- uid: Viewer.IO.FileSystem.ReadAllBytesAsync(System.String)
-  name: ReadAllBytesAsync(String)
-  href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_ReadAllBytesAsync_System_String_
-  commentId: M:Viewer.IO.FileSystem.ReadAllBytesAsync(System.String)
-  fullName: Viewer.IO.FileSystem.ReadAllBytesAsync(System.String)
-  nameWithType: FileSystem.ReadAllBytesAsync(String)
-- uid: Viewer.IO.FileSystem.ReadAllBytesAsync*
-  name: ReadAllBytesAsync
-  href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_ReadAllBytesAsync_
-  commentId: Overload:Viewer.IO.FileSystem.ReadAllBytesAsync
-  isSpec: "True"
-  fullName: Viewer.IO.FileSystem.ReadAllBytesAsync
-  nameWithType: FileSystem.ReadAllBytesAsync
 - uid: Viewer.IO.FileSystem.ReadAllText(System.String)
   name: ReadAllText(String)
   href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_ReadAllText_System_String_
@@ -5029,12 +5000,12 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.FileSystem.ReplaceFile
   nameWithType: FileSystem.ReplaceFile
-- uid: Viewer.IO.FileSystem.Search(System.String,Viewer.IO.SearchCallback,Viewer.IO.SearchCallback)
-  name: Search(String, SearchCallback, SearchCallback)
-  href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_Search_System_String_Viewer_IO_SearchCallback_Viewer_IO_SearchCallback_
-  commentId: M:Viewer.IO.FileSystem.Search(System.String,Viewer.IO.SearchCallback,Viewer.IO.SearchCallback)
-  fullName: Viewer.IO.FileSystem.Search(System.String, Viewer.IO.SearchCallback, Viewer.IO.SearchCallback)
-  nameWithType: FileSystem.Search(String, SearchCallback, SearchCallback)
+- uid: Viewer.IO.FileSystem.Search(System.String,Viewer.IO.ISearchListener)
+  name: Search(String, ISearchListener)
+  href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_Search_System_String_Viewer_IO_ISearchListener_
+  commentId: M:Viewer.IO.FileSystem.Search(System.String,Viewer.IO.ISearchListener)
+  fullName: Viewer.IO.FileSystem.Search(System.String, Viewer.IO.ISearchListener)
+  nameWithType: FileSystem.Search(String, ISearchListener)
 - uid: Viewer.IO.FileSystem.Search*
   name: Search
   href: api/Viewer.IO.FileSystem.html#Viewer_IO_FileSystem_Search_
@@ -5136,22 +5107,6 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.IFileSystem.CopyFile
   nameWithType: IFileSystem.CopyFile
-- uid: Viewer.IO.IFileSystem.CountFiles(System.Collections.Generic.IEnumerable{System.String},System.Boolean)
-  name: CountFiles(IEnumerable<String>, Boolean)
-  href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_CountFiles_System_Collections_Generic_IEnumerable_System_String__System_Boolean_
-  commentId: M:Viewer.IO.IFileSystem.CountFiles(System.Collections.Generic.IEnumerable{System.String},System.Boolean)
-  name.vb: CountFiles(IEnumerable(Of String), Boolean)
-  fullName: Viewer.IO.IFileSystem.CountFiles(System.Collections.Generic.IEnumerable<System.String>, System.Boolean)
-  fullName.vb: Viewer.IO.IFileSystem.CountFiles(System.Collections.Generic.IEnumerable(Of System.String), System.Boolean)
-  nameWithType: IFileSystem.CountFiles(IEnumerable<String>, Boolean)
-  nameWithType.vb: IFileSystem.CountFiles(IEnumerable(Of String), Boolean)
-- uid: Viewer.IO.IFileSystem.CountFiles*
-  name: CountFiles
-  href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_CountFiles_
-  commentId: Overload:Viewer.IO.IFileSystem.CountFiles
-  isSpec: "True"
-  fullName: Viewer.IO.IFileSystem.CountFiles
-  nameWithType: IFileSystem.CountFiles
 - uid: Viewer.IO.IFileSystem.CreateDirectory(System.String)
   name: CreateDirectory(String)
   href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_CreateDirectory_System_String_
@@ -5294,19 +5249,6 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.IFileSystem.ReadAllBytes
   nameWithType: IFileSystem.ReadAllBytes
-- uid: Viewer.IO.IFileSystem.ReadAllBytesAsync(System.String)
-  name: ReadAllBytesAsync(String)
-  href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_ReadAllBytesAsync_System_String_
-  commentId: M:Viewer.IO.IFileSystem.ReadAllBytesAsync(System.String)
-  fullName: Viewer.IO.IFileSystem.ReadAllBytesAsync(System.String)
-  nameWithType: IFileSystem.ReadAllBytesAsync(String)
-- uid: Viewer.IO.IFileSystem.ReadAllBytesAsync*
-  name: ReadAllBytesAsync
-  href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_ReadAllBytesAsync_
-  commentId: Overload:Viewer.IO.IFileSystem.ReadAllBytesAsync
-  isSpec: "True"
-  fullName: Viewer.IO.IFileSystem.ReadAllBytesAsync
-  nameWithType: IFileSystem.ReadAllBytesAsync
 - uid: Viewer.IO.IFileSystem.ReadAllText(System.String)
   name: ReadAllText(String)
   href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_ReadAllText_System_String_
@@ -5346,12 +5288,12 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.IFileSystem.ReplaceFile
   nameWithType: IFileSystem.ReplaceFile
-- uid: Viewer.IO.IFileSystem.Search(System.String,Viewer.IO.SearchCallback,Viewer.IO.SearchCallback)
-  name: Search(String, SearchCallback, SearchCallback)
-  href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_Search_System_String_Viewer_IO_SearchCallback_Viewer_IO_SearchCallback_
-  commentId: M:Viewer.IO.IFileSystem.Search(System.String,Viewer.IO.SearchCallback,Viewer.IO.SearchCallback)
-  fullName: Viewer.IO.IFileSystem.Search(System.String, Viewer.IO.SearchCallback, Viewer.IO.SearchCallback)
-  nameWithType: IFileSystem.Search(String, SearchCallback, SearchCallback)
+- uid: Viewer.IO.IFileSystem.Search(System.String,Viewer.IO.ISearchListener)
+  name: Search(String, ISearchListener)
+  href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_Search_System_String_Viewer_IO_ISearchListener_
+  commentId: M:Viewer.IO.IFileSystem.Search(System.String,Viewer.IO.ISearchListener)
+  fullName: Viewer.IO.IFileSystem.Search(System.String, Viewer.IO.ISearchListener)
+  nameWithType: IFileSystem.Search(String, ISearchListener)
 - uid: Viewer.IO.IFileSystem.Search*
   name: Search
   href: api/Viewer.IO.IFileSystem.html#Viewer_IO_IFileSystem_Search_
@@ -5421,6 +5363,38 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.IFileWatcherFactory.Create
   nameWithType: IFileWatcherFactory.Create
+- uid: Viewer.IO.ISearchListener
+  name: ISearchListener
+  href: api/Viewer.IO.ISearchListener.html
+  commentId: T:Viewer.IO.ISearchListener
+  fullName: Viewer.IO.ISearchListener
+  nameWithType: ISearchListener
+- uid: Viewer.IO.ISearchListener.OnDirectory(System.String)
+  name: OnDirectory(String)
+  href: api/Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnDirectory_System_String_
+  commentId: M:Viewer.IO.ISearchListener.OnDirectory(System.String)
+  fullName: Viewer.IO.ISearchListener.OnDirectory(System.String)
+  nameWithType: ISearchListener.OnDirectory(String)
+- uid: Viewer.IO.ISearchListener.OnDirectory*
+  name: OnDirectory
+  href: api/Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnDirectory_
+  commentId: Overload:Viewer.IO.ISearchListener.OnDirectory
+  isSpec: "True"
+  fullName: Viewer.IO.ISearchListener.OnDirectory
+  nameWithType: ISearchListener.OnDirectory
+- uid: Viewer.IO.ISearchListener.OnFile(System.String)
+  name: OnFile(String)
+  href: api/Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnFile_System_String_
+  commentId: M:Viewer.IO.ISearchListener.OnFile(System.String)
+  fullName: Viewer.IO.ISearchListener.OnFile(System.String)
+  nameWithType: ISearchListener.OnFile(String)
+- uid: Viewer.IO.ISearchListener.OnFile*
+  name: OnFile
+  href: api/Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnFile_
+  commentId: Overload:Viewer.IO.ISearchListener.OnFile
+  isSpec: "True"
+  fullName: Viewer.IO.ISearchListener.OnFile
+  nameWithType: ISearchListener.OnFile
 - uid: Viewer.IO.PathUtils
   name: PathUtils
   href: api/Viewer.IO.PathUtils.html
@@ -5511,12 +5485,6 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.PathUtils.Split
   nameWithType: PathUtils.Split
-- uid: Viewer.IO.SearchCallback
-  name: SearchCallback
-  href: api/Viewer.IO.SearchCallback.html
-  commentId: T:Viewer.IO.SearchCallback
-  fullName: Viewer.IO.SearchCallback
-  nameWithType: SearchCallback
 - uid: Viewer.IO.SearchControl
   name: SearchControl
   href: api/Viewer.IO.SearchControl.html
@@ -13004,54 +12972,6 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Attributes.SortEventArgs.Column
   nameWithType: SortEventArgs.Column
-- uid: Viewer.UI.EntityEventArgs
-  name: EntityEventArgs
-  href: api/Viewer.UI.EntityEventArgs.html
-  commentId: T:Viewer.UI.EntityEventArgs
-  fullName: Viewer.UI.EntityEventArgs
-  nameWithType: EntityEventArgs
-- uid: Viewer.UI.EntityEventArgs.#ctor(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
-  name: EntityEventArgs(IEnumerable<IEntity>, Int32)
-  href: api/Viewer.UI.EntityEventArgs.html#Viewer_UI_EntityEventArgs__ctor_System_Collections_Generic_IEnumerable_Viewer_Data_IEntity__System_Int32_
-  commentId: M:Viewer.UI.EntityEventArgs.#ctor(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
-  name.vb: EntityEventArgs(IEnumerable(Of IEntity), Int32)
-  fullName: Viewer.UI.EntityEventArgs.EntityEventArgs(System.Collections.Generic.IEnumerable<Viewer.Data.IEntity>, System.Int32)
-  fullName.vb: Viewer.UI.EntityEventArgs.EntityEventArgs(System.Collections.Generic.IEnumerable(Of Viewer.Data.IEntity), System.Int32)
-  nameWithType: EntityEventArgs.EntityEventArgs(IEnumerable<IEntity>, Int32)
-  nameWithType.vb: EntityEventArgs.EntityEventArgs(IEnumerable(Of IEntity), Int32)
-- uid: Viewer.UI.EntityEventArgs.#ctor*
-  name: EntityEventArgs
-  href: api/Viewer.UI.EntityEventArgs.html#Viewer_UI_EntityEventArgs__ctor_
-  commentId: Overload:Viewer.UI.EntityEventArgs.#ctor
-  isSpec: "True"
-  fullName: Viewer.UI.EntityEventArgs.EntityEventArgs
-  nameWithType: EntityEventArgs.EntityEventArgs
-- uid: Viewer.UI.EntityEventArgs.Entities
-  name: Entities
-  href: api/Viewer.UI.EntityEventArgs.html#Viewer_UI_EntityEventArgs_Entities
-  commentId: P:Viewer.UI.EntityEventArgs.Entities
-  fullName: Viewer.UI.EntityEventArgs.Entities
-  nameWithType: EntityEventArgs.Entities
-- uid: Viewer.UI.EntityEventArgs.Entities*
-  name: Entities
-  href: api/Viewer.UI.EntityEventArgs.html#Viewer_UI_EntityEventArgs_Entities_
-  commentId: Overload:Viewer.UI.EntityEventArgs.Entities
-  isSpec: "True"
-  fullName: Viewer.UI.EntityEventArgs.Entities
-  nameWithType: EntityEventArgs.Entities
-- uid: Viewer.UI.EntityEventArgs.Index
-  name: Index
-  href: api/Viewer.UI.EntityEventArgs.html#Viewer_UI_EntityEventArgs_Index
-  commentId: P:Viewer.UI.EntityEventArgs.Index
-  fullName: Viewer.UI.EntityEventArgs.Index
-  nameWithType: EntityEventArgs.Index
-- uid: Viewer.UI.EntityEventArgs.Index*
-  name: Index
-  href: api/Viewer.UI.EntityEventArgs.html#Viewer_UI_EntityEventArgs_Index_
-  commentId: Overload:Viewer.UI.EntityEventArgs.Index
-  isSpec: "True"
-  fullName: Viewer.UI.EntityEventArgs.Index
-  nameWithType: EntityEventArgs.Index
 - uid: Viewer.UI.Errors
   name: Viewer.UI.Errors
   href: api/Viewer.UI.Errors.html
@@ -13615,15 +13535,15 @@ references:
   commentId: T:Viewer.UI.Explorer.DirectoryTreePresenter
   fullName: Viewer.UI.Explorer.DirectoryTreePresenter
   nameWithType: DirectoryTreePresenter
-- uid: Viewer.UI.Explorer.DirectoryTreePresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Explorer.IDirectoryTreeView},Viewer.UI.IQueryEvents,Viewer.Query.IQueryFactory,Viewer.UI.Tasks.ITaskLoader,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.IO.IFileSystem,Viewer.UI.ISystemExplorer,Viewer.UI.Explorer.IExplorer,Viewer.Core.UI.IClipboardService)
-  name: DirectoryTreePresenter(ExportFactory<IDirectoryTreeView>, IQueryEvents, IQueryFactory, ITaskLoader, IFileSystemErrorView, IFileSystem, ISystemExplorer, IExplorer, IClipboardService)
-  href: api/Viewer.UI.Explorer.DirectoryTreePresenter.html#Viewer_UI_Explorer_DirectoryTreePresenter__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Explorer_IDirectoryTreeView__Viewer_UI_IQueryEvents_Viewer_Query_IQueryFactory_Viewer_UI_Tasks_ITaskLoader_Viewer_UI_Explorer_IFileSystemErrorView_Viewer_IO_IFileSystem_Viewer_UI_ISystemExplorer_Viewer_UI_Explorer_IExplorer_Viewer_Core_UI_IClipboardService_
-  commentId: M:Viewer.UI.Explorer.DirectoryTreePresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Explorer.IDirectoryTreeView},Viewer.UI.IQueryEvents,Viewer.Query.IQueryFactory,Viewer.UI.Tasks.ITaskLoader,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.IO.IFileSystem,Viewer.UI.ISystemExplorer,Viewer.UI.Explorer.IExplorer,Viewer.Core.UI.IClipboardService)
-  name.vb: DirectoryTreePresenter(ExportFactory(Of IDirectoryTreeView), IQueryEvents, IQueryFactory, ITaskLoader, IFileSystemErrorView, IFileSystem, ISystemExplorer, IExplorer, IClipboardService)
-  fullName: Viewer.UI.Explorer.DirectoryTreePresenter.DirectoryTreePresenter(System.ComponentModel.Composition.ExportFactory<Viewer.UI.Explorer.IDirectoryTreeView>, Viewer.UI.IQueryEvents, Viewer.Query.IQueryFactory, Viewer.UI.Tasks.ITaskLoader, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.IO.IFileSystem, Viewer.UI.ISystemExplorer, Viewer.UI.Explorer.IExplorer, Viewer.Core.UI.IClipboardService)
-  fullName.vb: Viewer.UI.Explorer.DirectoryTreePresenter.DirectoryTreePresenter(System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.Explorer.IDirectoryTreeView), Viewer.UI.IQueryEvents, Viewer.Query.IQueryFactory, Viewer.UI.Tasks.ITaskLoader, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.IO.IFileSystem, Viewer.UI.ISystemExplorer, Viewer.UI.Explorer.IExplorer, Viewer.Core.UI.IClipboardService)
-  nameWithType: DirectoryTreePresenter.DirectoryTreePresenter(ExportFactory<IDirectoryTreeView>, IQueryEvents, IQueryFactory, ITaskLoader, IFileSystemErrorView, IFileSystem, ISystemExplorer, IExplorer, IClipboardService)
-  nameWithType.vb: DirectoryTreePresenter.DirectoryTreePresenter(ExportFactory(Of IDirectoryTreeView), IQueryEvents, IQueryFactory, ITaskLoader, IFileSystemErrorView, IFileSystem, ISystemExplorer, IExplorer, IClipboardService)
+- uid: Viewer.UI.Explorer.DirectoryTreePresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Explorer.IDirectoryTreeView},Viewer.UI.IQueryHistory,Viewer.Query.IQueryFactory,Viewer.UI.Tasks.ITaskLoader,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.IO.IFileSystem,Viewer.UI.ISystemExplorer,Viewer.UI.Explorer.IExplorer,Viewer.Core.UI.IClipboardService)
+  name: DirectoryTreePresenter(ExportFactory<IDirectoryTreeView>, IQueryHistory, IQueryFactory, ITaskLoader, IFileSystemErrorView, IFileSystem, ISystemExplorer, IExplorer, IClipboardService)
+  href: api/Viewer.UI.Explorer.DirectoryTreePresenter.html#Viewer_UI_Explorer_DirectoryTreePresenter__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Explorer_IDirectoryTreeView__Viewer_UI_IQueryHistory_Viewer_Query_IQueryFactory_Viewer_UI_Tasks_ITaskLoader_Viewer_UI_Explorer_IFileSystemErrorView_Viewer_IO_IFileSystem_Viewer_UI_ISystemExplorer_Viewer_UI_Explorer_IExplorer_Viewer_Core_UI_IClipboardService_
+  commentId: M:Viewer.UI.Explorer.DirectoryTreePresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Explorer.IDirectoryTreeView},Viewer.UI.IQueryHistory,Viewer.Query.IQueryFactory,Viewer.UI.Tasks.ITaskLoader,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.IO.IFileSystem,Viewer.UI.ISystemExplorer,Viewer.UI.Explorer.IExplorer,Viewer.Core.UI.IClipboardService)
+  name.vb: DirectoryTreePresenter(ExportFactory(Of IDirectoryTreeView), IQueryHistory, IQueryFactory, ITaskLoader, IFileSystemErrorView, IFileSystem, ISystemExplorer, IExplorer, IClipboardService)
+  fullName: Viewer.UI.Explorer.DirectoryTreePresenter.DirectoryTreePresenter(System.ComponentModel.Composition.ExportFactory<Viewer.UI.Explorer.IDirectoryTreeView>, Viewer.UI.IQueryHistory, Viewer.Query.IQueryFactory, Viewer.UI.Tasks.ITaskLoader, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.IO.IFileSystem, Viewer.UI.ISystemExplorer, Viewer.UI.Explorer.IExplorer, Viewer.Core.UI.IClipboardService)
+  fullName.vb: Viewer.UI.Explorer.DirectoryTreePresenter.DirectoryTreePresenter(System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.Explorer.IDirectoryTreeView), Viewer.UI.IQueryHistory, Viewer.Query.IQueryFactory, Viewer.UI.Tasks.ITaskLoader, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.IO.IFileSystem, Viewer.UI.ISystemExplorer, Viewer.UI.Explorer.IExplorer, Viewer.Core.UI.IClipboardService)
+  nameWithType: DirectoryTreePresenter.DirectoryTreePresenter(ExportFactory<IDirectoryTreeView>, IQueryHistory, IQueryFactory, ITaskLoader, IFileSystemErrorView, IFileSystem, ISystemExplorer, IExplorer, IClipboardService)
+  nameWithType.vb: DirectoryTreePresenter.DirectoryTreePresenter(ExportFactory(Of IDirectoryTreeView), IQueryHistory, IQueryFactory, ITaskLoader, IFileSystemErrorView, IFileSystem, ISystemExplorer, IExplorer, IClipboardService)
 - uid: Viewer.UI.Explorer.DirectoryTreePresenter.#ctor*
   name: DirectoryTreePresenter
   href: api/Viewer.UI.Explorer.DirectoryTreePresenter.html#Viewer_UI_Explorer_DirectoryTreePresenter__ctor_
@@ -13932,6 +13852,64 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Explorer.Explorer.CopyFilesAsync
   nameWithType: Explorer.CopyFilesAsync
+- uid: Viewer.UI.Explorer.Explorer.FileOperation
+  name: Explorer.FileOperation
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html
+  commentId: T:Viewer.UI.Explorer.Explorer.FileOperation
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation
+  nameWithType: Explorer.FileOperation
+- uid: Viewer.UI.Explorer.Explorer.FileOperation.#ctor(System.String,System.String,System.Boolean)
+  name: FileOperation(String, String, Boolean)
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html#Viewer_UI_Explorer_Explorer_FileOperation__ctor_System_String_System_String_System_Boolean_
+  commentId: M:Viewer.UI.Explorer.Explorer.FileOperation.#ctor(System.String,System.String,System.Boolean)
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation.FileOperation(System.String, System.String, System.Boolean)
+  nameWithType: Explorer.FileOperation.FileOperation(String, String, Boolean)
+- uid: Viewer.UI.Explorer.Explorer.FileOperation.#ctor*
+  name: FileOperation
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html#Viewer_UI_Explorer_Explorer_FileOperation__ctor_
+  commentId: Overload:Viewer.UI.Explorer.Explorer.FileOperation.#ctor
+  isSpec: "True"
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation.FileOperation
+  nameWithType: Explorer.FileOperation.FileOperation
+- uid: Viewer.UI.Explorer.Explorer.FileOperation.DestinationPath
+  name: DestinationPath
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html#Viewer_UI_Explorer_Explorer_FileOperation_DestinationPath
+  commentId: P:Viewer.UI.Explorer.Explorer.FileOperation.DestinationPath
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation.DestinationPath
+  nameWithType: Explorer.FileOperation.DestinationPath
+- uid: Viewer.UI.Explorer.Explorer.FileOperation.DestinationPath*
+  name: DestinationPath
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html#Viewer_UI_Explorer_Explorer_FileOperation_DestinationPath_
+  commentId: Overload:Viewer.UI.Explorer.Explorer.FileOperation.DestinationPath
+  isSpec: "True"
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation.DestinationPath
+  nameWithType: Explorer.FileOperation.DestinationPath
+- uid: Viewer.UI.Explorer.Explorer.FileOperation.IsDirectory
+  name: IsDirectory
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html#Viewer_UI_Explorer_Explorer_FileOperation_IsDirectory
+  commentId: P:Viewer.UI.Explorer.Explorer.FileOperation.IsDirectory
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation.IsDirectory
+  nameWithType: Explorer.FileOperation.IsDirectory
+- uid: Viewer.UI.Explorer.Explorer.FileOperation.IsDirectory*
+  name: IsDirectory
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html#Viewer_UI_Explorer_Explorer_FileOperation_IsDirectory_
+  commentId: Overload:Viewer.UI.Explorer.Explorer.FileOperation.IsDirectory
+  isSpec: "True"
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation.IsDirectory
+  nameWithType: Explorer.FileOperation.IsDirectory
+- uid: Viewer.UI.Explorer.Explorer.FileOperation.SourcePath
+  name: SourcePath
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html#Viewer_UI_Explorer_Explorer_FileOperation_SourcePath
+  commentId: P:Viewer.UI.Explorer.Explorer.FileOperation.SourcePath
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation.SourcePath
+  nameWithType: Explorer.FileOperation.SourcePath
+- uid: Viewer.UI.Explorer.Explorer.FileOperation.SourcePath*
+  name: SourcePath
+  href: api/Viewer.UI.Explorer.Explorer.FileOperation.html#Viewer_UI_Explorer_Explorer_FileOperation_SourcePath_
+  commentId: Overload:Viewer.UI.Explorer.Explorer.FileOperation.SourcePath
+  isSpec: "True"
+  fullName: Viewer.UI.Explorer.Explorer.FileOperation.SourcePath
+  nameWithType: Explorer.FileOperation.SourcePath
 - uid: Viewer.UI.Explorer.Explorer.MoveFilesAsync(System.String,System.Collections.Generic.IEnumerable{System.String})
   name: MoveFilesAsync(String, IEnumerable<String>)
   href: api/Viewer.UI.Explorer.Explorer.html#Viewer_UI_Explorer_Explorer_MoveFilesAsync_System_String_System_Collections_Generic_IEnumerable_System_String__
@@ -14024,6 +14002,19 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Explorer.FileSystemErrorView.ConfirmDelete
   nameWithType: FileSystemErrorView.ConfirmDelete
+- uid: Viewer.UI.Explorer.FileSystemErrorView.ConfirmReplace(System.String)
+  name: ConfirmReplace(String)
+  href: api/Viewer.UI.Explorer.FileSystemErrorView.html#Viewer_UI_Explorer_FileSystemErrorView_ConfirmReplace_System_String_
+  commentId: M:Viewer.UI.Explorer.FileSystemErrorView.ConfirmReplace(System.String)
+  fullName: Viewer.UI.Explorer.FileSystemErrorView.ConfirmReplace(System.String)
+  nameWithType: FileSystemErrorView.ConfirmReplace(String)
+- uid: Viewer.UI.Explorer.FileSystemErrorView.ConfirmReplace*
+  name: ConfirmReplace
+  href: api/Viewer.UI.Explorer.FileSystemErrorView.html#Viewer_UI_Explorer_FileSystemErrorView_ConfirmReplace_
+  commentId: Overload:Viewer.UI.Explorer.FileSystemErrorView.ConfirmReplace
+  isSpec: "True"
+  fullName: Viewer.UI.Explorer.FileSystemErrorView.ConfirmReplace
+  nameWithType: FileSystemErrorView.ConfirmReplace
 - uid: Viewer.UI.Explorer.FileSystemErrorView.DirectoryNotFound(System.String)
   name: DirectoryNotFound(String)
   href: api/Viewer.UI.Explorer.FileSystemErrorView.html#Viewer_UI_Explorer_FileSystemErrorView_DirectoryNotFound_System_String_
@@ -14376,6 +14367,19 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Explorer.IFileSystemErrorView.ConfirmDelete
   nameWithType: IFileSystemErrorView.ConfirmDelete
+- uid: Viewer.UI.Explorer.IFileSystemErrorView.ConfirmReplace(System.String)
+  name: ConfirmReplace(String)
+  href: api/Viewer.UI.Explorer.IFileSystemErrorView.html#Viewer_UI_Explorer_IFileSystemErrorView_ConfirmReplace_System_String_
+  commentId: M:Viewer.UI.Explorer.IFileSystemErrorView.ConfirmReplace(System.String)
+  fullName: Viewer.UI.Explorer.IFileSystemErrorView.ConfirmReplace(System.String)
+  nameWithType: IFileSystemErrorView.ConfirmReplace(String)
+- uid: Viewer.UI.Explorer.IFileSystemErrorView.ConfirmReplace*
+  name: ConfirmReplace
+  href: api/Viewer.UI.Explorer.IFileSystemErrorView.html#Viewer_UI_Explorer_IFileSystemErrorView_ConfirmReplace_
+  commentId: Overload:Viewer.UI.Explorer.IFileSystemErrorView.ConfirmReplace
+  isSpec: "True"
+  fullName: Viewer.UI.Explorer.IFileSystemErrorView.ConfirmReplace
+  nameWithType: IFileSystemErrorView.ConfirmReplace
 - uid: Viewer.UI.Explorer.IFileSystemErrorView.DirectoryNotFound(System.String)
   name: DirectoryNotFound(String)
   href: api/Viewer.UI.Explorer.IFileSystemErrorView.html#Viewer_UI_Explorer_IFileSystemErrorView_DirectoryNotFound_System_String_
@@ -16298,15 +16302,15 @@ references:
   commentId: T:Viewer.UI.Images.ImagesComponent
   fullName: Viewer.UI.Images.ImagesComponent
   nameWithType: ImagesComponent
-- uid: Viewer.UI.Images.ImagesComponent.#ctor(Viewer.UI.QueryEditor.IEditor,Viewer.UI.IQueryEvents,Viewer.UI.ISelection,Viewer.Query.IQueryFactory,Viewer.Query.IQueryCompiler,System.ComponentModel.Composition.ExportFactory{Viewer.UI.Images.ImagesPresenter})
-  name: ImagesComponent(IEditor, IQueryEvents, ISelection, IQueryFactory, IQueryCompiler, ExportFactory<ImagesPresenter>)
-  href: api/Viewer.UI.Images.ImagesComponent.html#Viewer_UI_Images_ImagesComponent__ctor_Viewer_UI_QueryEditor_IEditor_Viewer_UI_IQueryEvents_Viewer_UI_ISelection_Viewer_Query_IQueryFactory_Viewer_Query_IQueryCompiler_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Images_ImagesPresenter__
-  commentId: M:Viewer.UI.Images.ImagesComponent.#ctor(Viewer.UI.QueryEditor.IEditor,Viewer.UI.IQueryEvents,Viewer.UI.ISelection,Viewer.Query.IQueryFactory,Viewer.Query.IQueryCompiler,System.ComponentModel.Composition.ExportFactory{Viewer.UI.Images.ImagesPresenter})
-  name.vb: ImagesComponent(IEditor, IQueryEvents, ISelection, IQueryFactory, IQueryCompiler, ExportFactory(Of ImagesPresenter))
-  fullName: Viewer.UI.Images.ImagesComponent.ImagesComponent(Viewer.UI.QueryEditor.IEditor, Viewer.UI.IQueryEvents, Viewer.UI.ISelection, Viewer.Query.IQueryFactory, Viewer.Query.IQueryCompiler, System.ComponentModel.Composition.ExportFactory<Viewer.UI.Images.ImagesPresenter>)
-  fullName.vb: Viewer.UI.Images.ImagesComponent.ImagesComponent(Viewer.UI.QueryEditor.IEditor, Viewer.UI.IQueryEvents, Viewer.UI.ISelection, Viewer.Query.IQueryFactory, Viewer.Query.IQueryCompiler, System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.Images.ImagesPresenter))
-  nameWithType: ImagesComponent.ImagesComponent(IEditor, IQueryEvents, ISelection, IQueryFactory, IQueryCompiler, ExportFactory<ImagesPresenter>)
-  nameWithType.vb: ImagesComponent.ImagesComponent(IEditor, IQueryEvents, ISelection, IQueryFactory, IQueryCompiler, ExportFactory(Of ImagesPresenter))
+- uid: Viewer.UI.Images.ImagesComponent.#ctor(Viewer.UI.IQueryHistory,Viewer.UI.ISelection,Viewer.Query.IQueryFactory,Viewer.Query.IQueryCompiler,System.ComponentModel.Composition.ExportFactory{Viewer.UI.Images.ImagesPresenter})
+  name: ImagesComponent(IQueryHistory, ISelection, IQueryFactory, IQueryCompiler, ExportFactory<ImagesPresenter>)
+  href: api/Viewer.UI.Images.ImagesComponent.html#Viewer_UI_Images_ImagesComponent__ctor_Viewer_UI_IQueryHistory_Viewer_UI_ISelection_Viewer_Query_IQueryFactory_Viewer_Query_IQueryCompiler_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Images_ImagesPresenter__
+  commentId: M:Viewer.UI.Images.ImagesComponent.#ctor(Viewer.UI.IQueryHistory,Viewer.UI.ISelection,Viewer.Query.IQueryFactory,Viewer.Query.IQueryCompiler,System.ComponentModel.Composition.ExportFactory{Viewer.UI.Images.ImagesPresenter})
+  name.vb: ImagesComponent(IQueryHistory, ISelection, IQueryFactory, IQueryCompiler, ExportFactory(Of ImagesPresenter))
+  fullName: Viewer.UI.Images.ImagesComponent.ImagesComponent(Viewer.UI.IQueryHistory, Viewer.UI.ISelection, Viewer.Query.IQueryFactory, Viewer.Query.IQueryCompiler, System.ComponentModel.Composition.ExportFactory<Viewer.UI.Images.ImagesPresenter>)
+  fullName.vb: Viewer.UI.Images.ImagesComponent.ImagesComponent(Viewer.UI.IQueryHistory, Viewer.UI.ISelection, Viewer.Query.IQueryFactory, Viewer.Query.IQueryCompiler, System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.Images.ImagesPresenter))
+  nameWithType: ImagesComponent.ImagesComponent(IQueryHistory, ISelection, IQueryFactory, IQueryCompiler, ExportFactory<ImagesPresenter>)
+  nameWithType.vb: ImagesComponent.ImagesComponent(IQueryHistory, ISelection, IQueryFactory, IQueryCompiler, ExportFactory(Of ImagesPresenter))
 - uid: Viewer.UI.Images.ImagesComponent.#ctor*
   name: ImagesComponent
   href: api/Viewer.UI.Images.ImagesComponent.html#Viewer_UI_Images_ImagesComponent__ctor_
@@ -16333,15 +16337,15 @@ references:
   commentId: T:Viewer.UI.Images.ImagesPresenter
   fullName: Viewer.UI.Images.ImagesPresenter
   nameWithType: ImagesPresenter
-- uid: Viewer.UI.Images.ImagesPresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Images.IImagesView},Viewer.UI.QueryEditor.IEditor,Viewer.UI.Explorer.IExplorer,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.UI.ISelection,Viewer.Data.IEntityManager,Viewer.Core.UI.IClipboardService,Viewer.UI.IQueryEvents,Viewer.Query.IQueryFactory,Viewer.UI.Images.IQueryEvaluatorFactory)
-  name: ImagesPresenter(ExportFactory<IImagesView>, IEditor, IExplorer, IFileSystemErrorView, ISelection, IEntityManager, IClipboardService, IQueryEvents, IQueryFactory, IQueryEvaluatorFactory)
-  href: api/Viewer.UI.Images.ImagesPresenter.html#Viewer_UI_Images_ImagesPresenter__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Images_IImagesView__Viewer_UI_QueryEditor_IEditor_Viewer_UI_Explorer_IExplorer_Viewer_UI_Explorer_IFileSystemErrorView_Viewer_UI_ISelection_Viewer_Data_IEntityManager_Viewer_Core_UI_IClipboardService_Viewer_UI_IQueryEvents_Viewer_Query_IQueryFactory_Viewer_UI_Images_IQueryEvaluatorFactory_
-  commentId: M:Viewer.UI.Images.ImagesPresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Images.IImagesView},Viewer.UI.QueryEditor.IEditor,Viewer.UI.Explorer.IExplorer,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.UI.ISelection,Viewer.Data.IEntityManager,Viewer.Core.UI.IClipboardService,Viewer.UI.IQueryEvents,Viewer.Query.IQueryFactory,Viewer.UI.Images.IQueryEvaluatorFactory)
-  name.vb: ImagesPresenter(ExportFactory(Of IImagesView), IEditor, IExplorer, IFileSystemErrorView, ISelection, IEntityManager, IClipboardService, IQueryEvents, IQueryFactory, IQueryEvaluatorFactory)
-  fullName: Viewer.UI.Images.ImagesPresenter.ImagesPresenter(System.ComponentModel.Composition.ExportFactory<Viewer.UI.Images.IImagesView>, Viewer.UI.QueryEditor.IEditor, Viewer.UI.Explorer.IExplorer, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.UI.ISelection, Viewer.Data.IEntityManager, Viewer.Core.UI.IClipboardService, Viewer.UI.IQueryEvents, Viewer.Query.IQueryFactory, Viewer.UI.Images.IQueryEvaluatorFactory)
-  fullName.vb: Viewer.UI.Images.ImagesPresenter.ImagesPresenter(System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.Images.IImagesView), Viewer.UI.QueryEditor.IEditor, Viewer.UI.Explorer.IExplorer, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.UI.ISelection, Viewer.Data.IEntityManager, Viewer.Core.UI.IClipboardService, Viewer.UI.IQueryEvents, Viewer.Query.IQueryFactory, Viewer.UI.Images.IQueryEvaluatorFactory)
-  nameWithType: ImagesPresenter.ImagesPresenter(ExportFactory<IImagesView>, IEditor, IExplorer, IFileSystemErrorView, ISelection, IEntityManager, IClipboardService, IQueryEvents, IQueryFactory, IQueryEvaluatorFactory)
-  nameWithType.vb: ImagesPresenter.ImagesPresenter(ExportFactory(Of IImagesView), IEditor, IExplorer, IFileSystemErrorView, ISelection, IEntityManager, IClipboardService, IQueryEvents, IQueryFactory, IQueryEvaluatorFactory)
+- uid: Viewer.UI.Images.ImagesPresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Images.IImagesView},Viewer.UI.QueryEditor.IEditor,Viewer.UI.Explorer.IExplorer,Viewer.UI.Presentation.IPresentation,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.UI.ISelection,Viewer.Data.IEntityManager,Viewer.Core.UI.IClipboardService,Viewer.UI.IQueryHistory,Viewer.Query.IQueryFactory,Viewer.UI.Images.IQueryEvaluatorFactory)
+  name: ImagesPresenter(ExportFactory<IImagesView>, IEditor, IExplorer, IPresentation, IFileSystemErrorView, ISelection, IEntityManager, IClipboardService, IQueryHistory, IQueryFactory, IQueryEvaluatorFactory)
+  href: api/Viewer.UI.Images.ImagesPresenter.html#Viewer_UI_Images_ImagesPresenter__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Images_IImagesView__Viewer_UI_QueryEditor_IEditor_Viewer_UI_Explorer_IExplorer_Viewer_UI_Presentation_IPresentation_Viewer_UI_Explorer_IFileSystemErrorView_Viewer_UI_ISelection_Viewer_Data_IEntityManager_Viewer_Core_UI_IClipboardService_Viewer_UI_IQueryHistory_Viewer_Query_IQueryFactory_Viewer_UI_Images_IQueryEvaluatorFactory_
+  commentId: M:Viewer.UI.Images.ImagesPresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Images.IImagesView},Viewer.UI.QueryEditor.IEditor,Viewer.UI.Explorer.IExplorer,Viewer.UI.Presentation.IPresentation,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.UI.ISelection,Viewer.Data.IEntityManager,Viewer.Core.UI.IClipboardService,Viewer.UI.IQueryHistory,Viewer.Query.IQueryFactory,Viewer.UI.Images.IQueryEvaluatorFactory)
+  name.vb: ImagesPresenter(ExportFactory(Of IImagesView), IEditor, IExplorer, IPresentation, IFileSystemErrorView, ISelection, IEntityManager, IClipboardService, IQueryHistory, IQueryFactory, IQueryEvaluatorFactory)
+  fullName: Viewer.UI.Images.ImagesPresenter.ImagesPresenter(System.ComponentModel.Composition.ExportFactory<Viewer.UI.Images.IImagesView>, Viewer.UI.QueryEditor.IEditor, Viewer.UI.Explorer.IExplorer, Viewer.UI.Presentation.IPresentation, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.UI.ISelection, Viewer.Data.IEntityManager, Viewer.Core.UI.IClipboardService, Viewer.UI.IQueryHistory, Viewer.Query.IQueryFactory, Viewer.UI.Images.IQueryEvaluatorFactory)
+  fullName.vb: Viewer.UI.Images.ImagesPresenter.ImagesPresenter(System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.Images.IImagesView), Viewer.UI.QueryEditor.IEditor, Viewer.UI.Explorer.IExplorer, Viewer.UI.Presentation.IPresentation, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.UI.ISelection, Viewer.Data.IEntityManager, Viewer.Core.UI.IClipboardService, Viewer.UI.IQueryHistory, Viewer.Query.IQueryFactory, Viewer.UI.Images.IQueryEvaluatorFactory)
+  nameWithType: ImagesPresenter.ImagesPresenter(ExportFactory<IImagesView>, IEditor, IExplorer, IPresentation, IFileSystemErrorView, ISelection, IEntityManager, IClipboardService, IQueryHistory, IQueryFactory, IQueryEvaluatorFactory)
+  nameWithType.vb: ImagesPresenter.ImagesPresenter(ExportFactory(Of IImagesView), IEditor, IExplorer, IPresentation, IFileSystemErrorView, ISelection, IEntityManager, IClipboardService, IQueryHistory, IQueryFactory, IQueryEvaluatorFactory)
 - uid: Viewer.UI.Images.ImagesPresenter.#ctor*
   name: ImagesPresenter
   href: api/Viewer.UI.Images.ImagesPresenter.html#Viewer_UI_Images_ImagesPresenter__ctor_
@@ -17130,7 +17134,14 @@ references:
 - uid: Viewer.UI.Images.PhotoThumbnail.RetryDelay
   name: RetryDelay
   href: api/Viewer.UI.Images.PhotoThumbnail.html#Viewer_UI_Images_PhotoThumbnail_RetryDelay
-  commentId: F:Viewer.UI.Images.PhotoThumbnail.RetryDelay
+  commentId: P:Viewer.UI.Images.PhotoThumbnail.RetryDelay
+  fullName: Viewer.UI.Images.PhotoThumbnail.RetryDelay
+  nameWithType: PhotoThumbnail.RetryDelay
+- uid: Viewer.UI.Images.PhotoThumbnail.RetryDelay*
+  name: RetryDelay
+  href: api/Viewer.UI.Images.PhotoThumbnail.html#Viewer_UI_Images_PhotoThumbnail_RetryDelay_
+  commentId: Overload:Viewer.UI.Images.PhotoThumbnail.RetryDelay
+  isSpec: "True"
   fullName: Viewer.UI.Images.PhotoThumbnail.RetryDelay
   nameWithType: PhotoThumbnail.RetryDelay
 - uid: Viewer.UI.Images.QueryEvaluator
@@ -17728,118 +17739,96 @@ references:
   commentId: F:Viewer.UI.Images.ThumbnailLoader.SavedThumbnailQuaity
   fullName: Viewer.UI.Images.ThumbnailLoader.SavedThumbnailQuaity
   nameWithType: ThumbnailLoader.SavedThumbnailQuaity
-- uid: Viewer.UI.IQueryEvents
-  name: IQueryEvents
-  href: api/Viewer.UI.IQueryEvents.html
-  commentId: T:Viewer.UI.IQueryEvents
-  fullName: Viewer.UI.IQueryEvents
-  nameWithType: IQueryEvents
-- uid: Viewer.UI.IQueryEvents.Back
+- uid: Viewer.UI.IQueryHistory
+  name: IQueryHistory
+  href: api/Viewer.UI.IQueryHistory.html
+  commentId: T:Viewer.UI.IQueryHistory
+  fullName: Viewer.UI.IQueryHistory
+  nameWithType: IQueryHistory
+- uid: Viewer.UI.IQueryHistory.Back
   name: Back()
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Back
-  commentId: M:Viewer.UI.IQueryEvents.Back
-  fullName: Viewer.UI.IQueryEvents.Back()
-  nameWithType: IQueryEvents.Back()
-- uid: Viewer.UI.IQueryEvents.Back*
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Back
+  commentId: M:Viewer.UI.IQueryHistory.Back
+  fullName: Viewer.UI.IQueryHistory.Back()
+  nameWithType: IQueryHistory.Back()
+- uid: Viewer.UI.IQueryHistory.Back*
   name: Back
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Back_
-  commentId: Overload:Viewer.UI.IQueryEvents.Back
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Back_
+  commentId: Overload:Viewer.UI.IQueryHistory.Back
   isSpec: "True"
-  fullName: Viewer.UI.IQueryEvents.Back
-  nameWithType: IQueryEvents.Back
-- uid: Viewer.UI.IQueryEvents.Current
+  fullName: Viewer.UI.IQueryHistory.Back
+  nameWithType: IQueryHistory.Back
+- uid: Viewer.UI.IQueryHistory.Current
   name: Current
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Current
-  commentId: P:Viewer.UI.IQueryEvents.Current
-  fullName: Viewer.UI.IQueryEvents.Current
-  nameWithType: IQueryEvents.Current
-- uid: Viewer.UI.IQueryEvents.Current*
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Current
+  commentId: P:Viewer.UI.IQueryHistory.Current
+  fullName: Viewer.UI.IQueryHistory.Current
+  nameWithType: IQueryHistory.Current
+- uid: Viewer.UI.IQueryHistory.Current*
   name: Current
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Current_
-  commentId: Overload:Viewer.UI.IQueryEvents.Current
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Current_
+  commentId: Overload:Viewer.UI.IQueryHistory.Current
   isSpec: "True"
-  fullName: Viewer.UI.IQueryEvents.Current
-  nameWithType: IQueryEvents.Current
-- uid: Viewer.UI.IQueryEvents.EntityOpened
-  name: EntityOpened
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_EntityOpened
-  commentId: E:Viewer.UI.IQueryEvents.EntityOpened
-  fullName: Viewer.UI.IQueryEvents.EntityOpened
-  nameWithType: IQueryEvents.EntityOpened
-- uid: Viewer.UI.IQueryEvents.ExecuteQuery(Viewer.Query.IQuery)
+  fullName: Viewer.UI.IQueryHistory.Current
+  nameWithType: IQueryHistory.Current
+- uid: Viewer.UI.IQueryHistory.ExecuteQuery(Viewer.Query.IQuery)
   name: ExecuteQuery(IQuery)
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_ExecuteQuery_Viewer_Query_IQuery_
-  commentId: M:Viewer.UI.IQueryEvents.ExecuteQuery(Viewer.Query.IQuery)
-  fullName: Viewer.UI.IQueryEvents.ExecuteQuery(Viewer.Query.IQuery)
-  nameWithType: IQueryEvents.ExecuteQuery(IQuery)
-- uid: Viewer.UI.IQueryEvents.ExecuteQuery*
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_
+  commentId: M:Viewer.UI.IQueryHistory.ExecuteQuery(Viewer.Query.IQuery)
+  fullName: Viewer.UI.IQueryHistory.ExecuteQuery(Viewer.Query.IQuery)
+  nameWithType: IQueryHistory.ExecuteQuery(IQuery)
+- uid: Viewer.UI.IQueryHistory.ExecuteQuery*
   name: ExecuteQuery
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_ExecuteQuery_
-  commentId: Overload:Viewer.UI.IQueryEvents.ExecuteQuery
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_ExecuteQuery_
+  commentId: Overload:Viewer.UI.IQueryHistory.ExecuteQuery
   isSpec: "True"
-  fullName: Viewer.UI.IQueryEvents.ExecuteQuery
-  nameWithType: IQueryEvents.ExecuteQuery
-- uid: Viewer.UI.IQueryEvents.Forward
+  fullName: Viewer.UI.IQueryHistory.ExecuteQuery
+  nameWithType: IQueryHistory.ExecuteQuery
+- uid: Viewer.UI.IQueryHistory.Forward
   name: Forward()
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Forward
-  commentId: M:Viewer.UI.IQueryEvents.Forward
-  fullName: Viewer.UI.IQueryEvents.Forward()
-  nameWithType: IQueryEvents.Forward()
-- uid: Viewer.UI.IQueryEvents.Forward*
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Forward
+  commentId: M:Viewer.UI.IQueryHistory.Forward
+  fullName: Viewer.UI.IQueryHistory.Forward()
+  nameWithType: IQueryHistory.Forward()
+- uid: Viewer.UI.IQueryHistory.Forward*
   name: Forward
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Forward_
-  commentId: Overload:Viewer.UI.IQueryEvents.Forward
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Forward_
+  commentId: Overload:Viewer.UI.IQueryHistory.Forward
   isSpec: "True"
-  fullName: Viewer.UI.IQueryEvents.Forward
-  nameWithType: IQueryEvents.Forward
-- uid: Viewer.UI.IQueryEvents.Next
+  fullName: Viewer.UI.IQueryHistory.Forward
+  nameWithType: IQueryHistory.Forward
+- uid: Viewer.UI.IQueryHistory.Next
   name: Next
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Next
-  commentId: P:Viewer.UI.IQueryEvents.Next
-  fullName: Viewer.UI.IQueryEvents.Next
-  nameWithType: IQueryEvents.Next
-- uid: Viewer.UI.IQueryEvents.Next*
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Next
+  commentId: P:Viewer.UI.IQueryHistory.Next
+  fullName: Viewer.UI.IQueryHistory.Next
+  nameWithType: IQueryHistory.Next
+- uid: Viewer.UI.IQueryHistory.Next*
   name: Next
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Next_
-  commentId: Overload:Viewer.UI.IQueryEvents.Next
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Next_
+  commentId: Overload:Viewer.UI.IQueryHistory.Next
   isSpec: "True"
-  fullName: Viewer.UI.IQueryEvents.Next
-  nameWithType: IQueryEvents.Next
-- uid: Viewer.UI.IQueryEvents.OpenEntity(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
-  name: OpenEntity(IEnumerable<IEntity>, Int32)
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_OpenEntity_System_Collections_Generic_IEnumerable_Viewer_Data_IEntity__System_Int32_
-  commentId: M:Viewer.UI.IQueryEvents.OpenEntity(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
-  name.vb: OpenEntity(IEnumerable(Of IEntity), Int32)
-  fullName: Viewer.UI.IQueryEvents.OpenEntity(System.Collections.Generic.IEnumerable<Viewer.Data.IEntity>, System.Int32)
-  fullName.vb: Viewer.UI.IQueryEvents.OpenEntity(System.Collections.Generic.IEnumerable(Of Viewer.Data.IEntity), System.Int32)
-  nameWithType: IQueryEvents.OpenEntity(IEnumerable<IEntity>, Int32)
-  nameWithType.vb: IQueryEvents.OpenEntity(IEnumerable(Of IEntity), Int32)
-- uid: Viewer.UI.IQueryEvents.OpenEntity*
-  name: OpenEntity
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_OpenEntity_
-  commentId: Overload:Viewer.UI.IQueryEvents.OpenEntity
-  isSpec: "True"
-  fullName: Viewer.UI.IQueryEvents.OpenEntity
-  nameWithType: IQueryEvents.OpenEntity
-- uid: Viewer.UI.IQueryEvents.Previous
+  fullName: Viewer.UI.IQueryHistory.Next
+  nameWithType: IQueryHistory.Next
+- uid: Viewer.UI.IQueryHistory.Previous
   name: Previous
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Previous
-  commentId: P:Viewer.UI.IQueryEvents.Previous
-  fullName: Viewer.UI.IQueryEvents.Previous
-  nameWithType: IQueryEvents.Previous
-- uid: Viewer.UI.IQueryEvents.Previous*
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Previous
+  commentId: P:Viewer.UI.IQueryHistory.Previous
+  fullName: Viewer.UI.IQueryHistory.Previous
+  nameWithType: IQueryHistory.Previous
+- uid: Viewer.UI.IQueryHistory.Previous*
   name: Previous
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_Previous_
-  commentId: Overload:Viewer.UI.IQueryEvents.Previous
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Previous_
+  commentId: Overload:Viewer.UI.IQueryHistory.Previous
   isSpec: "True"
-  fullName: Viewer.UI.IQueryEvents.Previous
-  nameWithType: IQueryEvents.Previous
-- uid: Viewer.UI.IQueryEvents.QueryExecuted
+  fullName: Viewer.UI.IQueryHistory.Previous
+  nameWithType: IQueryHistory.Previous
+- uid: Viewer.UI.IQueryHistory.QueryExecuted
   name: QueryExecuted
-  href: api/Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_QueryExecuted
-  commentId: E:Viewer.UI.IQueryEvents.QueryExecuted
-  fullName: Viewer.UI.IQueryEvents.QueryExecuted
-  nameWithType: IQueryEvents.QueryExecuted
+  href: api/Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted
+  commentId: E:Viewer.UI.IQueryHistory.QueryExecuted
+  fullName: Viewer.UI.IQueryHistory.QueryExecuted
+  nameWithType: IQueryHistory.QueryExecuted
 - uid: Viewer.UI.ISelection
   name: ISelection
   href: api/Viewer.UI.ISelection.html
@@ -18006,6 +17995,28 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Presentation.ImageWindow.SetPosition
   nameWithType: ImageWindow.SetPosition
+- uid: Viewer.UI.Presentation.IPresentation
+  name: IPresentation
+  href: api/Viewer.UI.Presentation.IPresentation.html
+  commentId: T:Viewer.UI.Presentation.IPresentation
+  fullName: Viewer.UI.Presentation.IPresentation
+  nameWithType: IPresentation
+- uid: Viewer.UI.Presentation.IPresentation.Open(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
+  name: Open(IEnumerable<IEntity>, Int32)
+  href: api/Viewer.UI.Presentation.IPresentation.html#Viewer_UI_Presentation_IPresentation_Open_System_Collections_Generic_IEnumerable_Viewer_Data_IEntity__System_Int32_
+  commentId: M:Viewer.UI.Presentation.IPresentation.Open(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
+  name.vb: Open(IEnumerable(Of IEntity), Int32)
+  fullName: Viewer.UI.Presentation.IPresentation.Open(System.Collections.Generic.IEnumerable<Viewer.Data.IEntity>, System.Int32)
+  fullName.vb: Viewer.UI.Presentation.IPresentation.Open(System.Collections.Generic.IEnumerable(Of Viewer.Data.IEntity), System.Int32)
+  nameWithType: IPresentation.Open(IEnumerable<IEntity>, Int32)
+  nameWithType.vb: IPresentation.Open(IEnumerable(Of IEntity), Int32)
+- uid: Viewer.UI.Presentation.IPresentation.Open*
+  name: Open
+  href: api/Viewer.UI.Presentation.IPresentation.html#Viewer_UI_Presentation_IPresentation_Open_
+  commentId: Overload:Viewer.UI.Presentation.IPresentation.Open
+  isSpec: "True"
+  fullName: Viewer.UI.Presentation.IPresentation.Open
+  nameWithType: IPresentation.Open
 - uid: Viewer.UI.Presentation.IPresentationView
   name: IPresentationView
   href: api/Viewer.UI.Presentation.IPresentationView.html
@@ -18150,15 +18161,15 @@ references:
   commentId: T:Viewer.UI.Presentation.PresentationComponent
   fullName: Viewer.UI.Presentation.PresentationComponent
   nameWithType: PresentationComponent
-- uid: Viewer.UI.Presentation.PresentationComponent.#ctor(Viewer.UI.IQueryEvents,System.ComponentModel.Composition.ExportFactory{Viewer.UI.Presentation.PresentationPresenter})
-  name: PresentationComponent(IQueryEvents, ExportFactory<PresentationPresenter>)
-  href: api/Viewer.UI.Presentation.PresentationComponent.html#Viewer_UI_Presentation_PresentationComponent__ctor_Viewer_UI_IQueryEvents_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Presentation_PresentationPresenter__
-  commentId: M:Viewer.UI.Presentation.PresentationComponent.#ctor(Viewer.UI.IQueryEvents,System.ComponentModel.Composition.ExportFactory{Viewer.UI.Presentation.PresentationPresenter})
-  name.vb: PresentationComponent(IQueryEvents, ExportFactory(Of PresentationPresenter))
-  fullName: Viewer.UI.Presentation.PresentationComponent.PresentationComponent(Viewer.UI.IQueryEvents, System.ComponentModel.Composition.ExportFactory<Viewer.UI.Presentation.PresentationPresenter>)
-  fullName.vb: Viewer.UI.Presentation.PresentationComponent.PresentationComponent(Viewer.UI.IQueryEvents, System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.Presentation.PresentationPresenter))
-  nameWithType: PresentationComponent.PresentationComponent(IQueryEvents, ExportFactory<PresentationPresenter>)
-  nameWithType.vb: PresentationComponent.PresentationComponent(IQueryEvents, ExportFactory(Of PresentationPresenter))
+- uid: Viewer.UI.Presentation.PresentationComponent.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Presentation.PresentationPresenter})
+  name: PresentationComponent(ExportFactory<PresentationPresenter>)
+  href: api/Viewer.UI.Presentation.PresentationComponent.html#Viewer_UI_Presentation_PresentationComponent__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_Presentation_PresentationPresenter__
+  commentId: M:Viewer.UI.Presentation.PresentationComponent.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.Presentation.PresentationPresenter})
+  name.vb: PresentationComponent(ExportFactory(Of PresentationPresenter))
+  fullName: Viewer.UI.Presentation.PresentationComponent.PresentationComponent(System.ComponentModel.Composition.ExportFactory<Viewer.UI.Presentation.PresentationPresenter>)
+  fullName.vb: Viewer.UI.Presentation.PresentationComponent.PresentationComponent(System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.Presentation.PresentationPresenter))
+  nameWithType: PresentationComponent.PresentationComponent(ExportFactory<PresentationPresenter>)
+  nameWithType.vb: PresentationComponent.PresentationComponent(ExportFactory(Of PresentationPresenter))
 - uid: Viewer.UI.Presentation.PresentationComponent.#ctor*
   name: PresentationComponent
   href: api/Viewer.UI.Presentation.PresentationComponent.html#Viewer_UI_Presentation_PresentationComponent__ctor_
@@ -18179,6 +18190,22 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Presentation.PresentationComponent.OnStartup
   nameWithType: PresentationComponent.OnStartup
+- uid: Viewer.UI.Presentation.PresentationComponent.Open(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
+  name: Open(IEnumerable<IEntity>, Int32)
+  href: api/Viewer.UI.Presentation.PresentationComponent.html#Viewer_UI_Presentation_PresentationComponent_Open_System_Collections_Generic_IEnumerable_Viewer_Data_IEntity__System_Int32_
+  commentId: M:Viewer.UI.Presentation.PresentationComponent.Open(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
+  name.vb: Open(IEnumerable(Of IEntity), Int32)
+  fullName: Viewer.UI.Presentation.PresentationComponent.Open(System.Collections.Generic.IEnumerable<Viewer.Data.IEntity>, System.Int32)
+  fullName.vb: Viewer.UI.Presentation.PresentationComponent.Open(System.Collections.Generic.IEnumerable(Of Viewer.Data.IEntity), System.Int32)
+  nameWithType: PresentationComponent.Open(IEnumerable<IEntity>, Int32)
+  nameWithType.vb: PresentationComponent.Open(IEnumerable(Of IEntity), Int32)
+- uid: Viewer.UI.Presentation.PresentationComponent.Open*
+  name: Open
+  href: api/Viewer.UI.Presentation.PresentationComponent.html#Viewer_UI_Presentation_PresentationComponent_Open_
+  commentId: Overload:Viewer.UI.Presentation.PresentationComponent.Open
+  isSpec: "True"
+  fullName: Viewer.UI.Presentation.PresentationComponent.Open
+  nameWithType: PresentationComponent.Open
 - uid: Viewer.UI.Presentation.PresentationControl
   name: PresentationControl
   href: api/Viewer.UI.Presentation.PresentationControl.html
@@ -18671,19 +18698,6 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.QueryEditor.Editor.Editor
   nameWithType: Editor.Editor
-- uid: Viewer.UI.QueryEditor.Editor.Active
-  name: Active
-  href: api/Viewer.UI.QueryEditor.Editor.html#Viewer_UI_QueryEditor_Editor_Active
-  commentId: P:Viewer.UI.QueryEditor.Editor.Active
-  fullName: Viewer.UI.QueryEditor.Editor.Active
-  nameWithType: Editor.Active
-- uid: Viewer.UI.QueryEditor.Editor.Active*
-  name: Active
-  href: api/Viewer.UI.QueryEditor.Editor.html#Viewer_UI_QueryEditor_Editor_Active_
-  commentId: Overload:Viewer.UI.QueryEditor.Editor.Active
-  isSpec: "True"
-  fullName: Viewer.UI.QueryEditor.Editor.Active
-  nameWithType: Editor.Active
 - uid: Viewer.UI.QueryEditor.Editor.CloseAll
   name: CloseAll()
   href: api/Viewer.UI.QueryEditor.Editor.html#Viewer_UI_QueryEditor_Editor_CloseAll
@@ -18792,19 +18806,6 @@ references:
   commentId: T:Viewer.UI.QueryEditor.IEditor
   fullName: Viewer.UI.QueryEditor.IEditor
   nameWithType: IEditor
-- uid: Viewer.UI.QueryEditor.IEditor.Active
-  name: Active
-  href: api/Viewer.UI.QueryEditor.IEditor.html#Viewer_UI_QueryEditor_IEditor_Active
-  commentId: P:Viewer.UI.QueryEditor.IEditor.Active
-  fullName: Viewer.UI.QueryEditor.IEditor.Active
-  nameWithType: IEditor.Active
-- uid: Viewer.UI.QueryEditor.IEditor.Active*
-  name: Active
-  href: api/Viewer.UI.QueryEditor.IEditor.html#Viewer_UI_QueryEditor_IEditor_Active_
-  commentId: Overload:Viewer.UI.QueryEditor.IEditor.Active
-  isSpec: "True"
-  fullName: Viewer.UI.QueryEditor.IEditor.Active
-  nameWithType: IEditor.Active
 - uid: Viewer.UI.QueryEditor.IEditor.CloseAll
   name: CloseAll()
   href: api/Viewer.UI.QueryEditor.IEditor.html#Viewer_UI_QueryEditor_IEditor_CloseAll
@@ -19053,15 +19054,15 @@ references:
   commentId: T:Viewer.UI.QueryEditor.QueryEditorPresenter
   fullName: Viewer.UI.QueryEditor.QueryEditorPresenter
   nameWithType: QueryEditorPresenter
-- uid: Viewer.UI.QueryEditor.QueryEditorPresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.QueryEditor.IQueryEditorView},Viewer.UI.IQueryEvents,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.Query.IQueryCompiler,Viewer.Query.IQueryViewRepository,Viewer.Query.IQueryErrorListener,Viewer.UI.QueryEditor.IEditor)
-  name: QueryEditorPresenter(ExportFactory<IQueryEditorView>, IQueryEvents, IFileSystemErrorView, IQueryCompiler, IQueryViewRepository, IQueryErrorListener, IEditor)
-  href: api/Viewer.UI.QueryEditor.QueryEditorPresenter.html#Viewer_UI_QueryEditor_QueryEditorPresenter__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_QueryEditor_IQueryEditorView__Viewer_UI_IQueryEvents_Viewer_UI_Explorer_IFileSystemErrorView_Viewer_Query_IQueryCompiler_Viewer_Query_IQueryViewRepository_Viewer_Query_IQueryErrorListener_Viewer_UI_QueryEditor_IEditor_
-  commentId: M:Viewer.UI.QueryEditor.QueryEditorPresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.QueryEditor.IQueryEditorView},Viewer.UI.IQueryEvents,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.Query.IQueryCompiler,Viewer.Query.IQueryViewRepository,Viewer.Query.IQueryErrorListener,Viewer.UI.QueryEditor.IEditor)
-  name.vb: QueryEditorPresenter(ExportFactory(Of IQueryEditorView), IQueryEvents, IFileSystemErrorView, IQueryCompiler, IQueryViewRepository, IQueryErrorListener, IEditor)
-  fullName: Viewer.UI.QueryEditor.QueryEditorPresenter.QueryEditorPresenter(System.ComponentModel.Composition.ExportFactory<Viewer.UI.QueryEditor.IQueryEditorView>, Viewer.UI.IQueryEvents, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.Query.IQueryCompiler, Viewer.Query.IQueryViewRepository, Viewer.Query.IQueryErrorListener, Viewer.UI.QueryEditor.IEditor)
-  fullName.vb: Viewer.UI.QueryEditor.QueryEditorPresenter.QueryEditorPresenter(System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.QueryEditor.IQueryEditorView), Viewer.UI.IQueryEvents, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.Query.IQueryCompiler, Viewer.Query.IQueryViewRepository, Viewer.Query.IQueryErrorListener, Viewer.UI.QueryEditor.IEditor)
-  nameWithType: QueryEditorPresenter.QueryEditorPresenter(ExportFactory<IQueryEditorView>, IQueryEvents, IFileSystemErrorView, IQueryCompiler, IQueryViewRepository, IQueryErrorListener, IEditor)
-  nameWithType.vb: QueryEditorPresenter.QueryEditorPresenter(ExportFactory(Of IQueryEditorView), IQueryEvents, IFileSystemErrorView, IQueryCompiler, IQueryViewRepository, IQueryErrorListener, IEditor)
+- uid: Viewer.UI.QueryEditor.QueryEditorPresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.QueryEditor.IQueryEditorView},Viewer.UI.IQueryHistory,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.Query.IQueryCompiler,Viewer.Query.IQueryViewRepository,Viewer.Query.IQueryErrorListener,Viewer.UI.QueryEditor.IEditor)
+  name: QueryEditorPresenter(ExportFactory<IQueryEditorView>, IQueryHistory, IFileSystemErrorView, IQueryCompiler, IQueryViewRepository, IQueryErrorListener, IEditor)
+  href: api/Viewer.UI.QueryEditor.QueryEditorPresenter.html#Viewer_UI_QueryEditor_QueryEditorPresenter__ctor_System_ComponentModel_Composition_ExportFactory_Viewer_UI_QueryEditor_IQueryEditorView__Viewer_UI_IQueryHistory_Viewer_UI_Explorer_IFileSystemErrorView_Viewer_Query_IQueryCompiler_Viewer_Query_IQueryViewRepository_Viewer_Query_IQueryErrorListener_Viewer_UI_QueryEditor_IEditor_
+  commentId: M:Viewer.UI.QueryEditor.QueryEditorPresenter.#ctor(System.ComponentModel.Composition.ExportFactory{Viewer.UI.QueryEditor.IQueryEditorView},Viewer.UI.IQueryHistory,Viewer.UI.Explorer.IFileSystemErrorView,Viewer.Query.IQueryCompiler,Viewer.Query.IQueryViewRepository,Viewer.Query.IQueryErrorListener,Viewer.UI.QueryEditor.IEditor)
+  name.vb: QueryEditorPresenter(ExportFactory(Of IQueryEditorView), IQueryHistory, IFileSystemErrorView, IQueryCompiler, IQueryViewRepository, IQueryErrorListener, IEditor)
+  fullName: Viewer.UI.QueryEditor.QueryEditorPresenter.QueryEditorPresenter(System.ComponentModel.Composition.ExportFactory<Viewer.UI.QueryEditor.IQueryEditorView>, Viewer.UI.IQueryHistory, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.Query.IQueryCompiler, Viewer.Query.IQueryViewRepository, Viewer.Query.IQueryErrorListener, Viewer.UI.QueryEditor.IEditor)
+  fullName.vb: Viewer.UI.QueryEditor.QueryEditorPresenter.QueryEditorPresenter(System.ComponentModel.Composition.ExportFactory(Of Viewer.UI.QueryEditor.IQueryEditorView), Viewer.UI.IQueryHistory, Viewer.UI.Explorer.IFileSystemErrorView, Viewer.Query.IQueryCompiler, Viewer.Query.IQueryViewRepository, Viewer.Query.IQueryErrorListener, Viewer.UI.QueryEditor.IEditor)
+  nameWithType: QueryEditorPresenter.QueryEditorPresenter(ExportFactory<IQueryEditorView>, IQueryHistory, IFileSystemErrorView, IQueryCompiler, IQueryViewRepository, IQueryErrorListener, IEditor)
+  nameWithType.vb: QueryEditorPresenter.QueryEditorPresenter(ExportFactory(Of IQueryEditorView), IQueryHistory, IFileSystemErrorView, IQueryCompiler, IQueryViewRepository, IQueryErrorListener, IEditor)
 - uid: Viewer.UI.QueryEditor.QueryEditorPresenter.#ctor*
   name: QueryEditorPresenter
   href: api/Viewer.UI.QueryEditor.QueryEditorPresenter.html#Viewer_UI_QueryEditor_QueryEditorPresenter__ctor_
@@ -19307,118 +19308,96 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.QueryEventArgs.Query
   nameWithType: QueryEventArgs.Query
-- uid: Viewer.UI.QueryEvents
-  name: QueryEvents
-  href: api/Viewer.UI.QueryEvents.html
-  commentId: T:Viewer.UI.QueryEvents
-  fullName: Viewer.UI.QueryEvents
-  nameWithType: QueryEvents
-- uid: Viewer.UI.QueryEvents.Back
+- uid: Viewer.UI.QueryHistory
+  name: QueryHistory
+  href: api/Viewer.UI.QueryHistory.html
+  commentId: T:Viewer.UI.QueryHistory
+  fullName: Viewer.UI.QueryHistory
+  nameWithType: QueryHistory
+- uid: Viewer.UI.QueryHistory.Back
   name: Back()
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Back
-  commentId: M:Viewer.UI.QueryEvents.Back
-  fullName: Viewer.UI.QueryEvents.Back()
-  nameWithType: QueryEvents.Back()
-- uid: Viewer.UI.QueryEvents.Back*
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Back
+  commentId: M:Viewer.UI.QueryHistory.Back
+  fullName: Viewer.UI.QueryHistory.Back()
+  nameWithType: QueryHistory.Back()
+- uid: Viewer.UI.QueryHistory.Back*
   name: Back
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Back_
-  commentId: Overload:Viewer.UI.QueryEvents.Back
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Back_
+  commentId: Overload:Viewer.UI.QueryHistory.Back
   isSpec: "True"
-  fullName: Viewer.UI.QueryEvents.Back
-  nameWithType: QueryEvents.Back
-- uid: Viewer.UI.QueryEvents.Current
+  fullName: Viewer.UI.QueryHistory.Back
+  nameWithType: QueryHistory.Back
+- uid: Viewer.UI.QueryHistory.Current
   name: Current
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Current
-  commentId: P:Viewer.UI.QueryEvents.Current
-  fullName: Viewer.UI.QueryEvents.Current
-  nameWithType: QueryEvents.Current
-- uid: Viewer.UI.QueryEvents.Current*
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Current
+  commentId: P:Viewer.UI.QueryHistory.Current
+  fullName: Viewer.UI.QueryHistory.Current
+  nameWithType: QueryHistory.Current
+- uid: Viewer.UI.QueryHistory.Current*
   name: Current
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Current_
-  commentId: Overload:Viewer.UI.QueryEvents.Current
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Current_
+  commentId: Overload:Viewer.UI.QueryHistory.Current
   isSpec: "True"
-  fullName: Viewer.UI.QueryEvents.Current
-  nameWithType: QueryEvents.Current
-- uid: Viewer.UI.QueryEvents.EntityOpened
-  name: EntityOpened
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_EntityOpened
-  commentId: E:Viewer.UI.QueryEvents.EntityOpened
-  fullName: Viewer.UI.QueryEvents.EntityOpened
-  nameWithType: QueryEvents.EntityOpened
-- uid: Viewer.UI.QueryEvents.ExecuteQuery(Viewer.Query.IQuery)
+  fullName: Viewer.UI.QueryHistory.Current
+  nameWithType: QueryHistory.Current
+- uid: Viewer.UI.QueryHistory.ExecuteQuery(Viewer.Query.IQuery)
   name: ExecuteQuery(IQuery)
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_ExecuteQuery_Viewer_Query_IQuery_
-  commentId: M:Viewer.UI.QueryEvents.ExecuteQuery(Viewer.Query.IQuery)
-  fullName: Viewer.UI.QueryEvents.ExecuteQuery(Viewer.Query.IQuery)
-  nameWithType: QueryEvents.ExecuteQuery(IQuery)
-- uid: Viewer.UI.QueryEvents.ExecuteQuery*
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_ExecuteQuery_Viewer_Query_IQuery_
+  commentId: M:Viewer.UI.QueryHistory.ExecuteQuery(Viewer.Query.IQuery)
+  fullName: Viewer.UI.QueryHistory.ExecuteQuery(Viewer.Query.IQuery)
+  nameWithType: QueryHistory.ExecuteQuery(IQuery)
+- uid: Viewer.UI.QueryHistory.ExecuteQuery*
   name: ExecuteQuery
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_ExecuteQuery_
-  commentId: Overload:Viewer.UI.QueryEvents.ExecuteQuery
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_ExecuteQuery_
+  commentId: Overload:Viewer.UI.QueryHistory.ExecuteQuery
   isSpec: "True"
-  fullName: Viewer.UI.QueryEvents.ExecuteQuery
-  nameWithType: QueryEvents.ExecuteQuery
-- uid: Viewer.UI.QueryEvents.Forward
+  fullName: Viewer.UI.QueryHistory.ExecuteQuery
+  nameWithType: QueryHistory.ExecuteQuery
+- uid: Viewer.UI.QueryHistory.Forward
   name: Forward()
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Forward
-  commentId: M:Viewer.UI.QueryEvents.Forward
-  fullName: Viewer.UI.QueryEvents.Forward()
-  nameWithType: QueryEvents.Forward()
-- uid: Viewer.UI.QueryEvents.Forward*
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Forward
+  commentId: M:Viewer.UI.QueryHistory.Forward
+  fullName: Viewer.UI.QueryHistory.Forward()
+  nameWithType: QueryHistory.Forward()
+- uid: Viewer.UI.QueryHistory.Forward*
   name: Forward
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Forward_
-  commentId: Overload:Viewer.UI.QueryEvents.Forward
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Forward_
+  commentId: Overload:Viewer.UI.QueryHistory.Forward
   isSpec: "True"
-  fullName: Viewer.UI.QueryEvents.Forward
-  nameWithType: QueryEvents.Forward
-- uid: Viewer.UI.QueryEvents.Next
+  fullName: Viewer.UI.QueryHistory.Forward
+  nameWithType: QueryHistory.Forward
+- uid: Viewer.UI.QueryHistory.Next
   name: Next
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Next
-  commentId: P:Viewer.UI.QueryEvents.Next
-  fullName: Viewer.UI.QueryEvents.Next
-  nameWithType: QueryEvents.Next
-- uid: Viewer.UI.QueryEvents.Next*
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Next
+  commentId: P:Viewer.UI.QueryHistory.Next
+  fullName: Viewer.UI.QueryHistory.Next
+  nameWithType: QueryHistory.Next
+- uid: Viewer.UI.QueryHistory.Next*
   name: Next
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Next_
-  commentId: Overload:Viewer.UI.QueryEvents.Next
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Next_
+  commentId: Overload:Viewer.UI.QueryHistory.Next
   isSpec: "True"
-  fullName: Viewer.UI.QueryEvents.Next
-  nameWithType: QueryEvents.Next
-- uid: Viewer.UI.QueryEvents.OpenEntity(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
-  name: OpenEntity(IEnumerable<IEntity>, Int32)
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_OpenEntity_System_Collections_Generic_IEnumerable_Viewer_Data_IEntity__System_Int32_
-  commentId: M:Viewer.UI.QueryEvents.OpenEntity(System.Collections.Generic.IEnumerable{Viewer.Data.IEntity},System.Int32)
-  name.vb: OpenEntity(IEnumerable(Of IEntity), Int32)
-  fullName: Viewer.UI.QueryEvents.OpenEntity(System.Collections.Generic.IEnumerable<Viewer.Data.IEntity>, System.Int32)
-  fullName.vb: Viewer.UI.QueryEvents.OpenEntity(System.Collections.Generic.IEnumerable(Of Viewer.Data.IEntity), System.Int32)
-  nameWithType: QueryEvents.OpenEntity(IEnumerable<IEntity>, Int32)
-  nameWithType.vb: QueryEvents.OpenEntity(IEnumerable(Of IEntity), Int32)
-- uid: Viewer.UI.QueryEvents.OpenEntity*
-  name: OpenEntity
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_OpenEntity_
-  commentId: Overload:Viewer.UI.QueryEvents.OpenEntity
-  isSpec: "True"
-  fullName: Viewer.UI.QueryEvents.OpenEntity
-  nameWithType: QueryEvents.OpenEntity
-- uid: Viewer.UI.QueryEvents.Previous
+  fullName: Viewer.UI.QueryHistory.Next
+  nameWithType: QueryHistory.Next
+- uid: Viewer.UI.QueryHistory.Previous
   name: Previous
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Previous
-  commentId: P:Viewer.UI.QueryEvents.Previous
-  fullName: Viewer.UI.QueryEvents.Previous
-  nameWithType: QueryEvents.Previous
-- uid: Viewer.UI.QueryEvents.Previous*
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Previous
+  commentId: P:Viewer.UI.QueryHistory.Previous
+  fullName: Viewer.UI.QueryHistory.Previous
+  nameWithType: QueryHistory.Previous
+- uid: Viewer.UI.QueryHistory.Previous*
   name: Previous
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_Previous_
-  commentId: Overload:Viewer.UI.QueryEvents.Previous
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_Previous_
+  commentId: Overload:Viewer.UI.QueryHistory.Previous
   isSpec: "True"
-  fullName: Viewer.UI.QueryEvents.Previous
-  nameWithType: QueryEvents.Previous
-- uid: Viewer.UI.QueryEvents.QueryExecuted
+  fullName: Viewer.UI.QueryHistory.Previous
+  nameWithType: QueryHistory.Previous
+- uid: Viewer.UI.QueryHistory.QueryExecuted
   name: QueryExecuted
-  href: api/Viewer.UI.QueryEvents.html#Viewer_UI_QueryEvents_QueryExecuted
-  commentId: E:Viewer.UI.QueryEvents.QueryExecuted
-  fullName: Viewer.UI.QueryEvents.QueryExecuted
-  nameWithType: QueryEvents.QueryExecuted
+  href: api/Viewer.UI.QueryHistory.html#Viewer_UI_QueryHistory_QueryExecuted
+  commentId: E:Viewer.UI.QueryHistory.QueryExecuted
+  fullName: Viewer.UI.QueryHistory.QueryExecuted
+  nameWithType: QueryHistory.QueryExecuted
 - uid: Viewer.UI.Selection
   name: Selection
   href: api/Viewer.UI.Selection.html
@@ -19553,18 +19532,31 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Tasks.IProgressController.Close
   nameWithType: IProgressController.Close
+- uid: Viewer.UI.Tasks.IProgressController.TotalTaskCount
+  name: TotalTaskCount
+  href: api/Viewer.UI.Tasks.IProgressController.html#Viewer_UI_Tasks_IProgressController_TotalTaskCount
+  commentId: P:Viewer.UI.Tasks.IProgressController.TotalTaskCount
+  fullName: Viewer.UI.Tasks.IProgressController.TotalTaskCount
+  nameWithType: IProgressController.TotalTaskCount
+- uid: Viewer.UI.Tasks.IProgressController.TotalTaskCount*
+  name: TotalTaskCount
+  href: api/Viewer.UI.Tasks.IProgressController.html#Viewer_UI_Tasks_IProgressController_TotalTaskCount_
+  commentId: Overload:Viewer.UI.Tasks.IProgressController.TotalTaskCount
+  isSpec: "True"
+  fullName: Viewer.UI.Tasks.IProgressController.TotalTaskCount
+  nameWithType: IProgressController.TotalTaskCount
 - uid: Viewer.UI.Tasks.ITaskLoader
   name: ITaskLoader
   href: api/Viewer.UI.Tasks.ITaskLoader.html
   commentId: T:Viewer.UI.Tasks.ITaskLoader
   fullName: Viewer.UI.Tasks.ITaskLoader
   nameWithType: ITaskLoader
-- uid: Viewer.UI.Tasks.ITaskLoader.CreateLoader(System.String,System.Int32,System.Threading.CancellationTokenSource)
-  name: CreateLoader(String, Int32, CancellationTokenSource)
-  href: api/Viewer.UI.Tasks.ITaskLoader.html#Viewer_UI_Tasks_ITaskLoader_CreateLoader_System_String_System_Int32_System_Threading_CancellationTokenSource_
-  commentId: M:Viewer.UI.Tasks.ITaskLoader.CreateLoader(System.String,System.Int32,System.Threading.CancellationTokenSource)
-  fullName: Viewer.UI.Tasks.ITaskLoader.CreateLoader(System.String, System.Int32, System.Threading.CancellationTokenSource)
-  nameWithType: ITaskLoader.CreateLoader(String, Int32, CancellationTokenSource)
+- uid: Viewer.UI.Tasks.ITaskLoader.CreateLoader(System.String,System.Threading.CancellationTokenSource)
+  name: CreateLoader(String, CancellationTokenSource)
+  href: api/Viewer.UI.Tasks.ITaskLoader.html#Viewer_UI_Tasks_ITaskLoader_CreateLoader_System_String_System_Threading_CancellationTokenSource_
+  commentId: M:Viewer.UI.Tasks.ITaskLoader.CreateLoader(System.String,System.Threading.CancellationTokenSource)
+  fullName: Viewer.UI.Tasks.ITaskLoader.CreateLoader(System.String, System.Threading.CancellationTokenSource)
+  nameWithType: ITaskLoader.CreateLoader(String, CancellationTokenSource)
 - uid: Viewer.UI.Tasks.ITaskLoader.CreateLoader*
   name: CreateLoader
   href: api/Viewer.UI.Tasks.ITaskLoader.html#Viewer_UI_Tasks_ITaskLoader_CreateLoader_
@@ -19623,12 +19615,12 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Tasks.TaskLoader.TaskLoader
   nameWithType: TaskLoader.TaskLoader
-- uid: Viewer.UI.Tasks.TaskLoader.CreateLoader(System.String,System.Int32,System.Threading.CancellationTokenSource)
-  name: CreateLoader(String, Int32, CancellationTokenSource)
-  href: api/Viewer.UI.Tasks.TaskLoader.html#Viewer_UI_Tasks_TaskLoader_CreateLoader_System_String_System_Int32_System_Threading_CancellationTokenSource_
-  commentId: M:Viewer.UI.Tasks.TaskLoader.CreateLoader(System.String,System.Int32,System.Threading.CancellationTokenSource)
-  fullName: Viewer.UI.Tasks.TaskLoader.CreateLoader(System.String, System.Int32, System.Threading.CancellationTokenSource)
-  nameWithType: TaskLoader.CreateLoader(String, Int32, CancellationTokenSource)
+- uid: Viewer.UI.Tasks.TaskLoader.CreateLoader(System.String,System.Threading.CancellationTokenSource)
+  name: CreateLoader(String, CancellationTokenSource)
+  href: api/Viewer.UI.Tasks.TaskLoader.html#Viewer_UI_Tasks_TaskLoader_CreateLoader_System_String_System_Threading_CancellationTokenSource_
+  commentId: M:Viewer.UI.Tasks.TaskLoader.CreateLoader(System.String,System.Threading.CancellationTokenSource)
+  fullName: Viewer.UI.Tasks.TaskLoader.CreateLoader(System.String, System.Threading.CancellationTokenSource)
+  nameWithType: TaskLoader.CreateLoader(String, CancellationTokenSource)
 - uid: Viewer.UI.Tasks.TaskLoader.CreateLoader*
   name: CreateLoader
   href: api/Viewer.UI.Tasks.TaskLoader.html#Viewer_UI_Tasks_TaskLoader_CreateLoader_
@@ -19642,12 +19634,12 @@ references:
   commentId: T:Viewer.UI.Tasks.TaskLoaderView
   fullName: Viewer.UI.Tasks.TaskLoaderView
   nameWithType: TaskLoaderView
-- uid: Viewer.UI.Tasks.TaskLoaderView.#ctor(System.Int32,System.Threading.CancellationTokenSource)
-  name: TaskLoaderView(Int32, CancellationTokenSource)
-  href: api/Viewer.UI.Tasks.TaskLoaderView.html#Viewer_UI_Tasks_TaskLoaderView__ctor_System_Int32_System_Threading_CancellationTokenSource_
-  commentId: M:Viewer.UI.Tasks.TaskLoaderView.#ctor(System.Int32,System.Threading.CancellationTokenSource)
-  fullName: Viewer.UI.Tasks.TaskLoaderView.TaskLoaderView(System.Int32, System.Threading.CancellationTokenSource)
-  nameWithType: TaskLoaderView.TaskLoaderView(Int32, CancellationTokenSource)
+- uid: Viewer.UI.Tasks.TaskLoaderView.#ctor(System.Threading.CancellationTokenSource)
+  name: TaskLoaderView(CancellationTokenSource)
+  href: api/Viewer.UI.Tasks.TaskLoaderView.html#Viewer_UI_Tasks_TaskLoaderView__ctor_System_Threading_CancellationTokenSource_
+  commentId: M:Viewer.UI.Tasks.TaskLoaderView.#ctor(System.Threading.CancellationTokenSource)
+  fullName: Viewer.UI.Tasks.TaskLoaderView.TaskLoaderView(System.Threading.CancellationTokenSource)
+  nameWithType: TaskLoaderView.TaskLoaderView(CancellationTokenSource)
 - uid: Viewer.UI.Tasks.TaskLoaderView.#ctor*
   name: TaskLoaderView
   href: api/Viewer.UI.Tasks.TaskLoaderView.html#Viewer_UI_Tasks_TaskLoaderView__ctor_

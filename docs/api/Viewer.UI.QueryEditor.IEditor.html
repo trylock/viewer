@@ -435,10 +435,10 @@
                             <a href="Viewer.IO.IFileWatcherFactory.html" title="IFileWatcherFactory" class="">IFileWatcherFactory</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
+                            <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.SearchCallback.html" title="SearchCallback" class="">SearchCallback</a>
+                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.SearchControl.html" title="SearchControl" class="">SearchControl</a>
@@ -747,10 +747,7 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.UI.EntityEventArgs.html" title="EntityEventArgs" class="">EntityEventArgs</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.UI.IQueryEvents.html" title="IQueryEvents" class="">IQueryEvents</a>
+                            <a href="Viewer.UI.IQueryHistory.html" title="IQueryHistory" class="">IQueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.ISelection.html" title="ISelection" class="">ISelection</a>
@@ -762,7 +759,7 @@
                             <a href="Viewer.UI.QueryEventArgs.html" title="QueryEventArgs" class="">QueryEventArgs</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.QueryEvents.html" title="QueryEvents" class="">QueryEvents</a>
+                            <a href="Viewer.UI.QueryHistory.html" title="QueryHistory" class="">QueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Selection.html" title="Selection" class="">Selection</a>
@@ -892,6 +889,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.Explorer.html" title="Explorer" class="">Explorer</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.UI.Explorer.Explorer.FileOperation.html" title="Explorer.FileOperation" class="">Explorer.FileOperation</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.ExplorerComponent.html" title="ExplorerComponent" class="">ExplorerComponent</a>
@@ -1047,6 +1047,9 @@
                             <a href="Viewer.UI.Presentation.ImageWindow.html" title="ImageWindow" class="">ImageWindow</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.UI.Presentation.IPresentation.html" title="IPresentation" class="">IPresentation</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.UI.Presentation.IPresentationView.html" title="IPresentationView" class="">IPresentationView</a>
                           </li>
                           <li class="">
@@ -1153,27 +1156,6 @@
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface IEditor</code></pre>
   </div>
-  <h3 id="properties">Properties
-  </h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_QueryEditor_IEditor_Active.md&amp;value=---%0Auid%3A%20Viewer.UI.QueryEditor.IEditor.Active%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L26">View Source</a>
-  </span>
-  <a id="Viewer_UI_QueryEditor_IEditor_Active_" data-uid="Viewer.UI.QueryEditor.IEditor.Active*"></a>
-  <h4 id="Viewer_UI_QueryEditor_IEditor_Active" data-uid="Viewer.UI.QueryEditor.IEditor.Active">Active</h4>
-  <div class="markdown level1 summary"><p>Find active editor window. If there is no active editor window, this will return null.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">QueryEditorPresenter Active { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <p><a class="xref" href="Viewer.UI.QueryEditor.QueryEditorPresenter.html">QueryEditorPresenter</a></p>
-  <p>
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
@@ -1181,7 +1163,7 @@
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_QueryEditor_IEditor_CloseAll.md&amp;value=---%0Auid%3A%20Viewer.UI.QueryEditor.IEditor.CloseAll%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L76">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L71">View Source</a>
   </span>
   <a id="Viewer_UI_QueryEditor_IEditor_CloseAll_" data-uid="Viewer.UI.QueryEditor.IEditor.CloseAll*"></a>
   <h4 id="Viewer_UI_QueryEditor_IEditor_CloseAll" data-uid="Viewer.UI.QueryEditor.IEditor.CloseAll">CloseAll()</h4>
@@ -1197,7 +1179,7 @@
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_QueryEditor_IEditor_Open_System_String_WeifenLuo_WinFormsUI_Docking_DockState_.md&amp;value=---%0Auid%3A%20Viewer.UI.QueryEditor.IEditor.Open(System.String%2CWeifenLuo.WinFormsUI.Docking.DockState)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L44">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L39">View Source</a>
   </span>
   <a id="Viewer_UI_QueryEditor_IEditor_Open_" data-uid="Viewer.UI.QueryEditor.IEditor.Open*"></a>
   <h4 id="Viewer_UI_QueryEditor_IEditor_Open_System_String_WeifenLuo_WinFormsUI_Docking_DockState_" data-uid="Viewer.UI.QueryEditor.IEditor.Open(System.String,WeifenLuo.WinFormsUI.Docking.DockState)">Open(String, DockState)</h4>
@@ -1241,7 +1223,7 @@ If the file is opened already, the editor will just make its window visible to u
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_QueryEditor_IEditor_OpenAsync_System_String_WeifenLuo_WinFormsUI_Docking_DockState_.md&amp;value=---%0Auid%3A%20Viewer.UI.QueryEditor.IEditor.OpenAsync(System.String%2CWeifenLuo.WinFormsUI.Docking.DockState)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L35">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L30">View Source</a>
   </span>
   <a id="Viewer_UI_QueryEditor_IEditor_OpenAsync_" data-uid="Viewer.UI.QueryEditor.IEditor.OpenAsync*"></a>
   <h4 id="Viewer_UI_QueryEditor_IEditor_OpenAsync_System_String_WeifenLuo_WinFormsUI_Docking_DockState_" data-uid="Viewer.UI.QueryEditor.IEditor.OpenAsync(System.String,WeifenLuo.WinFormsUI.Docking.DockState)">OpenAsync(String, DockState)</h4>
@@ -1286,7 +1268,7 @@ If the file is opened already, the editor will just make its window visible to u
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_QueryEditor_IEditor_OpenNew_System_String_WeifenLuo_WinFormsUI_Docking_DockState_.md&amp;value=---%0Auid%3A%20Viewer.UI.QueryEditor.IEditor.OpenNew(System.String%2CWeifenLuo.WinFormsUI.Docking.DockState)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L59">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L54">View Source</a>
   </span>
   <a id="Viewer_UI_QueryEditor_IEditor_OpenNew_" data-uid="Viewer.UI.QueryEditor.IEditor.OpenNew*"></a>
   <h4 id="Viewer_UI_QueryEditor_IEditor_OpenNew_System_String_WeifenLuo_WinFormsUI_Docking_DockState_" data-uid="Viewer.UI.QueryEditor.IEditor.OpenNew(System.String,WeifenLuo.WinFormsUI.Docking.DockState)">OpenNew(String, DockState)</h4>
@@ -1330,7 +1312,7 @@ If the file is opened already, the editor will just make its window visible to u
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_QueryEditor_IEditor_OpenNew_WeifenLuo_WinFormsUI_Docking_DockState_.md&amp;value=---%0Auid%3A%20Viewer.UI.QueryEditor.IEditor.OpenNew(WeifenLuo.WinFormsUI.Docking.DockState)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L51">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L46">View Source</a>
   </span>
   <a id="Viewer_UI_QueryEditor_IEditor_OpenNew_" data-uid="Viewer.UI.QueryEditor.IEditor.OpenNew*"></a>
   <h4 id="Viewer_UI_QueryEditor_IEditor_OpenNew_WeifenLuo_WinFormsUI_Docking_DockState_" data-uid="Viewer.UI.QueryEditor.IEditor.OpenNew(WeifenLuo.WinFormsUI.Docking.DockState)">OpenNew(DockState)</h4>
@@ -1368,7 +1350,7 @@ If the file is opened already, the editor will just make its window visible to u
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_QueryEditor_IEditor_SaveAsync_System_String_System_String_.md&amp;value=---%0Auid%3A%20Viewer.UI.QueryEditor.IEditor.SaveAsync(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L71">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryEditor/Editor.cs/#L66">View Source</a>
   </span>
   <a id="Viewer_UI_QueryEditor_IEditor_SaveAsync_" data-uid="Viewer.UI.QueryEditor.IEditor.SaveAsync*"></a>
   <h4 id="Viewer_UI_QueryEditor_IEditor_SaveAsync_System_String_System_String_" data-uid="Viewer.UI.QueryEditor.IEditor.SaveAsync(System.String,System.String)">SaveAsync(String, String)</h4>

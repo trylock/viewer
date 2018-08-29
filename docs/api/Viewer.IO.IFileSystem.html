@@ -435,10 +435,10 @@
                             <a href="Viewer.IO.IFileWatcherFactory.html" title="IFileWatcherFactory" class="">IFileWatcherFactory</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
+                            <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.SearchCallback.html" title="SearchCallback" class="">SearchCallback</a>
+                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.SearchControl.html" title="SearchControl" class="">SearchControl</a>
@@ -747,10 +747,7 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.UI.EntityEventArgs.html" title="EntityEventArgs" class="">EntityEventArgs</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.UI.IQueryEvents.html" title="IQueryEvents" class="">IQueryEvents</a>
+                            <a href="Viewer.UI.IQueryHistory.html" title="IQueryHistory" class="">IQueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.ISelection.html" title="ISelection" class="">ISelection</a>
@@ -762,7 +759,7 @@
                             <a href="Viewer.UI.QueryEventArgs.html" title="QueryEventArgs" class="">QueryEventArgs</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.QueryEvents.html" title="QueryEvents" class="">QueryEvents</a>
+                            <a href="Viewer.UI.QueryHistory.html" title="QueryHistory" class="">QueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Selection.html" title="Selection" class="">Selection</a>
@@ -892,6 +889,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.Explorer.html" title="Explorer" class="">Explorer</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.UI.Explorer.Explorer.FileOperation.html" title="Explorer.FileOperation" class="">Explorer.FileOperation</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.ExplorerComponent.html" title="ExplorerComponent" class="">ExplorerComponent</a>
@@ -1047,6 +1047,9 @@
                             <a href="Viewer.UI.Presentation.ImageWindow.html" title="ImageWindow" class="">ImageWindow</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.UI.Presentation.IPresentation.html" title="IPresentation" class="">IPresentation</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.UI.Presentation.IPresentationView.html" title="IPresentationView" class="">IPresentationView</a>
                           </li>
                           <li class="">
@@ -1190,97 +1193,6 @@
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">destPath</span></td>
         <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileSystem_CountFiles_System_Collections_Generic_IEnumerable_System_String__System_Boolean_.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileSystem.CountFiles(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L49">View Source</a>
-  </span>
-  <a id="Viewer_IO_IFileSystem_CountFiles_" data-uid="Viewer.IO.IFileSystem.CountFiles*"></a>
-  <h4 id="Viewer_IO_IFileSystem_CountFiles_System_Collections_Generic_IEnumerable_System_String__System_Boolean_" data-uid="Viewer.IO.IFileSystem.CountFiles(System.Collections.Generic.IEnumerable{System.String},System.Boolean)">CountFiles(IEnumerable&lt;String&gt;, Boolean)</h4>
-  <div class="markdown level1 summary"><p>Count files in given list and in directories in given list.
-Directories will be searched recursively if <code data-dev-comment-type="paramref" class="paramref">isRecursive</code> is true.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">long CountFiles(IEnumerable&lt;string&gt; path, bool isRecursive)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
-        <td><span class="parametername">path</span></td>
-        <td><p>List of file/directory paths</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><span class="parametername">isRecursive</span></td>
-        <td><p>Should we recursively count files in subdirectories?</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <span class="xref">System.Int64</span>
-  <p>Number of files in the directory</p>
-
-  <h5 class="exceptions">Exceptions</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Condition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.ArgumentNullException</span></td>
-        <td><p><code data-dev-comment-type="paramref" class="paramref">path</code> is null</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.ArgumentException</span></td>
-        <td><p><code data-dev-comment-type="paramref" class="paramref">path</code> contains invalid characters</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.IO.DirectoryNotFoundException</span></td>
-        <td><p><code data-dev-comment-type="paramref" class="paramref">path</code> is invalid</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.IO.IOException</span></td>
-        <td><p><code data-dev-comment-type="paramref" class="paramref">path</code> is a file name</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.IO.PathTooLongException</span></td>
-        <td><p><code data-dev-comment-type="paramref" class="paramref">path</code> is too long</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Security.SecurityException</span></td>
-        <td><p>Caller does not have required permission</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.UnauthorizedAccessException</span></td>
-        <td><p>Caller does not have required permission</p>
-</td>
       </tr>
     </tbody>
   </table>
@@ -1731,42 +1643,6 @@ Directories will be searched recursively if <code data-dev-comment-type="paramre
   
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileSystem_ReadAllBytesAsync_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileSystem.ReadAllBytesAsync(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L172">View Source</a>
-  </span>
-  <a id="Viewer_IO_IFileSystem_ReadAllBytesAsync_" data-uid="Viewer.IO.IFileSystem.ReadAllBytesAsync*"></a>
-  <h4 id="Viewer_IO_IFileSystem_ReadAllBytesAsync_System_String_" data-uid="Viewer.IO.IFileSystem.ReadAllBytesAsync(System.String)">ReadAllBytesAsync(String)</h4>
-  <div class="markdown level1 summary"><p>Read the whole file into main memory</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;byte[]&gt; ReadAllBytesAsync(string path)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">path</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <span class="xref">System.Threading.Tasks.Task</span>&lt;<span class="xref">System.Byte</span>[]&gt;
-  
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileSystem_ReadAllText_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileSystem.ReadAllText(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -1807,7 +1683,7 @@ Directories will be searched recursively if <code data-dev-comment-type="paramre
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileSystem_ReadToEndAsync_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileSystem.ReadToEndAsync(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L179">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L172">View Source</a>
   </span>
   <a id="Viewer_IO_IFileSystem_ReadToEndAsync_" data-uid="Viewer.IO.IFileSystem.ReadToEndAsync*"></a>
   <h4 id="Viewer_IO_IFileSystem_ReadToEndAsync_System_String_" data-uid="Viewer.IO.IFileSystem.ReadToEndAsync(System.String)">ReadToEndAsync(String)</h4>
@@ -1883,24 +1759,34 @@ Directories will be searched recursively if <code data-dev-comment-type="paramre
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileSystem_Search_System_String_Viewer_IO_SearchCallback_Viewer_IO_SearchCallback_.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileSystem.Search(System.String%2CViewer.IO.SearchCallback%2CViewer.IO.SearchCallback)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileSystem_Search_System_String_Viewer_IO_ISearchListener_.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileSystem.Search(System.String%2CViewer.IO.ISearchListener)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L192">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L199">View Source</a>
   </span>
   <a id="Viewer_IO_IFileSystem_Search_" data-uid="Viewer.IO.IFileSystem.Search*"></a>
-  <h4 id="Viewer_IO_IFileSystem_Search_System_String_Viewer_IO_SearchCallback_Viewer_IO_SearchCallback_" data-uid="Viewer.IO.IFileSystem.Search(System.String,Viewer.IO.SearchCallback,Viewer.IO.SearchCallback)">Search(String, SearchCallback, SearchCallback)</h4>
-  <div class="markdown level1 summary"><p>Search given path for files and subdirectories.
-<code data-dev-comment-type="paramref" class="paramref">directoryCallback</code> will be called for each directory,
-<code data-dev-comment-type="paramref" class="paramref">fileCallback</code> will be called for each file.
-If <code data-dev-comment-type="paramref" class="paramref">directoryCallback</code> returns SearchControl.Visit, the algorithm will search all its subdirectories.
-If <code data-dev-comment-type="paramref" class="paramref">directoryCallback</code> does not return SearchControl.Visit, its subdirectories and files won't be searched.
-If <code data-dev-comment-type="paramref" class="paramref">path</code> is a file, <code data-dev-comment-type="paramref" class="paramref">fileCallback</code> will be called for it.</p>
+  <h4 id="Viewer_IO_IFileSystem_Search_System_String_Viewer_IO_ISearchListener_" data-uid="Viewer.IO.IFileSystem.Search(System.String,Viewer.IO.ISearchListener)">Search(String, ISearchListener)</h4>
+  <div class="markdown level1 summary"><p>
+Search given path for files and subdirectories. <a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnDirectory_System_String_">OnDirectory(String)</a>
+will be called for each directory, <a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnFile_System_String_">OnFile(String)</a> will be called
+for each file.
+</p>
+<p>
+If <a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnDirectory_System_String_">OnDirectory(String)</a> returns <a class="xref" href="Viewer.IO.SearchControl.html#Viewer_IO_SearchControl_Visit">Visit</a>,
+the algorithm will search all its subdirectories. If <a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnDirectory_System_String_">OnDirectory(String)</a>
+does not return <a class="xref" href="Viewer.IO.SearchControl.html#Viewer_IO_SearchControl_Visit">Visit</a>, its subdirectories and files won&apos;t
+be searched. If either <a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnDirectory_System_String_">OnDirectory(String)</a> or
+<a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnFile_System_String_">OnFile(String)</a> returns <a class="xref" href="Viewer.IO.SearchControl.html#Viewer_IO_SearchControl_Abort">Abort</a>, the
+search will stop immediately.
+</p>
+<p>
+If <code data-dev-comment-type="paramref" class="paramref">path</code> is a file, <a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnFile_System_String_">OnFile(String)</a> will be called.
+</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Search(string path, SearchCallback directoryCallback, SearchCallback fileCallback)</code></pre>
+    <pre><code class="lang-csharp hljs">void Search(string path, ISearchListener listener)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1919,15 +1805,10 @@ If <code data-dev-comment-type="paramref" class="paramref">path</code> is a file
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="Viewer.IO.SearchCallback.html">SearchCallback</a></td>
-        <td><span class="parametername">directoryCallback</span></td>
-        <td><p>Function called for each directory</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="Viewer.IO.SearchCallback.html">SearchCallback</a></td>
-        <td><span class="parametername">fileCallback</span></td>
-        <td><p>Function called for each file</p>
+        <td><a class="xref" href="Viewer.IO.ISearchListener.html">ISearchListener</a></td>
+        <td><span class="parametername">listener</span></td>
+        <td><p>Whenever a new directory is discovered, <a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnDirectory_System_String_">OnDirectory(String)</a> is called.
+Whenever a new file is discovered, <a class="xref" href="Viewer.IO.ISearchListener.html#Viewer_IO_ISearchListener_OnFile_System_String_">OnFile(String)</a> is called.</p>
 </td>
       </tr>
     </tbody>
@@ -1943,7 +1824,7 @@ If <code data-dev-comment-type="paramref" class="paramref">path</code> is a file
                     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileSystem.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileSystem%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L33" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L49" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

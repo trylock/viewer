@@ -435,10 +435,10 @@
                             <a href="Viewer.IO.IFileWatcherFactory.html" title="IFileWatcherFactory" class="">IFileWatcherFactory</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
+                            <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.SearchCallback.html" title="SearchCallback" class="">SearchCallback</a>
+                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.SearchControl.html" title="SearchControl" class="">SearchControl</a>
@@ -747,10 +747,7 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.UI.EntityEventArgs.html" title="EntityEventArgs" class="">EntityEventArgs</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.UI.IQueryEvents.html" title="IQueryEvents" class="">IQueryEvents</a>
+                            <a href="Viewer.UI.IQueryHistory.html" title="IQueryHistory" class="">IQueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.ISelection.html" title="ISelection" class="">ISelection</a>
@@ -762,7 +759,7 @@
                             <a href="Viewer.UI.QueryEventArgs.html" title="QueryEventArgs" class="">QueryEventArgs</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.QueryEvents.html" title="QueryEvents" class="">QueryEvents</a>
+                            <a href="Viewer.UI.QueryHistory.html" title="QueryHistory" class="">QueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Selection.html" title="Selection" class="">Selection</a>
@@ -892,6 +889,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.Explorer.html" title="Explorer" class="">Explorer</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.UI.Explorer.Explorer.FileOperation.html" title="Explorer.FileOperation" class="">Explorer.FileOperation</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.ExplorerComponent.html" title="ExplorerComponent" class="">ExplorerComponent</a>
@@ -1047,6 +1047,9 @@
                             <a href="Viewer.UI.Presentation.ImageWindow.html" title="ImageWindow" class="">ImageWindow</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.UI.Presentation.IPresentation.html" title="IPresentation" class="">IPresentation</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.UI.Presentation.IPresentationView.html" title="IPresentationView" class="">IPresentationView</a>
                           </li>
                           <li class="">
@@ -1150,11 +1153,9 @@
   <div class="markdown level0 remarks"></div>
     <h3 id="classes">Classes
   </h3>
-      <h4><a class="xref" href="Viewer.UI.EntityEventArgs.html">EntityEventArgs</a></h4>
-      <section></section>
       <h4><a class="xref" href="Viewer.UI.QueryEventArgs.html">QueryEventArgs</a></h4>
       <section></section>
-      <h4><a class="xref" href="Viewer.UI.QueryEvents.html">QueryEvents</a></h4>
+      <h4><a class="xref" href="Viewer.UI.QueryHistory.html">QueryHistory</a></h4>
       <section></section>
       <h4><a class="xref" href="Viewer.UI.Selection.html">Selection</a></h4>
       <section></section>
@@ -1162,11 +1163,11 @@
       <section></section>
     <h3 id="interfaces">Interfaces
   </h3>
-      <h4><a class="xref" href="Viewer.UI.IQueryEvents.html">IQueryEvents</a></h4>
-      <section><p>QueryEvents keeps track of executed queries in the entire application. Executed queries
-are kept in a history collection. A query producer (e.g. a query editor) executes query
-by calling <a class="xref" href="Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_ExecuteQuery_Viewer_Query_IQuery_">ExecuteQuery(IQuery)</a> which triggers the <a class="xref" href="Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_QueryExecuted">QueryExecuted</a> event.
-A query consumer (e.g. a thumbnail grid) listens for <a class="xref" href="Viewer.UI.IQueryEvents.html#Viewer_UI_IQueryEvents_QueryExecuted">QueryExecuted</a> event and
+      <h4><a class="xref" href="Viewer.UI.IQueryHistory.html">IQueryHistory</a></h4>
+      <section><p>Query history keeps track of executed queries in the entire application. Executed queries
+are kept in a history collection. A query producer (e.g. a query editor) executes a query
+by calling <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_">ExecuteQuery(IQuery)</a> which triggers the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event.
+A query consumer (e.g. a thumbnail grid) listens for <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event and
 actually executes given query.</p>
 </section>
       <h4><a class="xref" href="Viewer.UI.ISelection.html">ISelection</a></h4>

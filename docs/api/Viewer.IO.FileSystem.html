@@ -435,10 +435,10 @@
                             <a href="Viewer.IO.IFileWatcherFactory.html" title="IFileWatcherFactory" class="">IFileWatcherFactory</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
+                            <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.SearchCallback.html" title="SearchCallback" class="">SearchCallback</a>
+                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.SearchControl.html" title="SearchControl" class="">SearchControl</a>
@@ -747,10 +747,7 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.UI.EntityEventArgs.html" title="EntityEventArgs" class="">EntityEventArgs</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.UI.IQueryEvents.html" title="IQueryEvents" class="">IQueryEvents</a>
+                            <a href="Viewer.UI.IQueryHistory.html" title="IQueryHistory" class="">IQueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.ISelection.html" title="ISelection" class="">ISelection</a>
@@ -762,7 +759,7 @@
                             <a href="Viewer.UI.QueryEventArgs.html" title="QueryEventArgs" class="">QueryEventArgs</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.QueryEvents.html" title="QueryEvents" class="">QueryEvents</a>
+                            <a href="Viewer.UI.QueryHistory.html" title="QueryHistory" class="">QueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Selection.html" title="Selection" class="">Selection</a>
@@ -892,6 +889,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.Explorer.html" title="Explorer" class="">Explorer</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.UI.Explorer.Explorer.FileOperation.html" title="Explorer.FileOperation" class="">Explorer.FileOperation</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.ExplorerComponent.html" title="ExplorerComponent" class="">ExplorerComponent</a>
@@ -1047,6 +1047,9 @@
                             <a href="Viewer.UI.Presentation.ImageWindow.html" title="ImageWindow" class="">ImageWindow</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.UI.Presentation.IPresentation.html" title="IPresentation" class="">IPresentation</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.UI.Presentation.IPresentationView.html" title="IPresentationView" class="">IPresentationView</a>
                           </li>
                           <li class="">
@@ -1194,7 +1197,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_CopyFile_System_String_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.CopyFile(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L214">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L205">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_CopyFile_" data-uid="Viewer.IO.FileSystem.CopyFile*"></a>
   <h4 id="Viewer_IO_FileSystem_CopyFile_System_String_System_String_" data-uid="Viewer.IO.FileSystem.CopyFile(System.String,System.String)">CopyFile(String, String)</h4>
@@ -1228,50 +1231,10 @@ public class FileSystem : IFileSystem</code></pre>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_CountFiles_System_Collections_Generic_IEnumerable_System_String__System_Boolean_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.CountFiles(System.Collections.Generic.IEnumerable%7BSystem.String%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L198">View Source</a>
-  </span>
-  <a id="Viewer_IO_FileSystem_CountFiles_" data-uid="Viewer.IO.FileSystem.CountFiles*"></a>
-  <h4 id="Viewer_IO_FileSystem_CountFiles_System_Collections_Generic_IEnumerable_System_String__System_Boolean_" data-uid="Viewer.IO.FileSystem.CountFiles(System.Collections.Generic.IEnumerable{System.String},System.Boolean)">CountFiles(IEnumerable&lt;String&gt;, Boolean)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public long CountFiles(IEnumerable&lt;string&gt; files, bool isRecursive)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
-        <td><span class="parametername">files</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><span class="parametername">isRecursive</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <span class="xref">System.Int64</span>
-  
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_CreateDirectory_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.CreateDirectory(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L239">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L230">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_CreateDirectory_" data-uid="Viewer.IO.FileSystem.CreateDirectory*"></a>
   <h4 id="Viewer_IO_FileSystem_CreateDirectory_System_String_" data-uid="Viewer.IO.FileSystem.CreateDirectory(System.String)">CreateDirectory(String)</h4>
@@ -1303,7 +1266,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_DeleteDirectory_System_String_System_Boolean_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.DeleteDirectory(System.String%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L244">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L235">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_DeleteDirectory_" data-uid="Viewer.IO.FileSystem.DeleteDirectory*"></a>
   <h4 id="Viewer_IO_FileSystem_DeleteDirectory_System_String_System_Boolean_" data-uid="Viewer.IO.FileSystem.DeleteDirectory(System.String,System.Boolean)">DeleteDirectory(String, Boolean)</h4>
@@ -1340,7 +1303,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_DeleteFile_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.DeleteFile(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L224">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L215">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_DeleteFile_" data-uid="Viewer.IO.FileSystem.DeleteFile*"></a>
   <h4 id="Viewer_IO_FileSystem_DeleteFile_System_String_" data-uid="Viewer.IO.FileSystem.DeleteFile(System.String)">DeleteFile(String)</h4>
@@ -1372,7 +1335,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_DirectoryExists_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.DirectoryExists(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L274">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L265">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_DirectoryExists_" data-uid="Viewer.IO.FileSystem.DirectoryExists*"></a>
   <h4 id="Viewer_IO_FileSystem_DirectoryExists_System_String_" data-uid="Viewer.IO.FileSystem.DirectoryExists(System.String)">DirectoryExists(String)</h4>
@@ -1407,7 +1370,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_EnumerateDirectories_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.EnumerateDirectories(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L264">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L255">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_EnumerateDirectories_" data-uid="Viewer.IO.FileSystem.EnumerateDirectories*"></a>
   <h4 id="Viewer_IO_FileSystem_EnumerateDirectories_System_String_" data-uid="Viewer.IO.FileSystem.EnumerateDirectories(System.String)">EnumerateDirectories(String)</h4>
@@ -1442,7 +1405,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_EnumerateDirectories_System_String_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.EnumerateDirectories(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L269">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L260">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_EnumerateDirectories_" data-uid="Viewer.IO.FileSystem.EnumerateDirectories*"></a>
   <h4 id="Viewer_IO_FileSystem_EnumerateDirectories_System_String_System_String_" data-uid="Viewer.IO.FileSystem.EnumerateDirectories(System.String,System.String)">EnumerateDirectories(String, String)</h4>
@@ -1482,7 +1445,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_EnumerateFiles_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.EnumerateFiles(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L254">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L245">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_EnumerateFiles_" data-uid="Viewer.IO.FileSystem.EnumerateFiles*"></a>
   <h4 id="Viewer_IO_FileSystem_EnumerateFiles_System_String_" data-uid="Viewer.IO.FileSystem.EnumerateFiles(System.String)">EnumerateFiles(String)</h4>
@@ -1517,7 +1480,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_EnumerateFiles_System_String_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.EnumerateFiles(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L259">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L250">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_EnumerateFiles_" data-uid="Viewer.IO.FileSystem.EnumerateFiles*"></a>
   <h4 id="Viewer_IO_FileSystem_EnumerateFiles_System_String_System_String_" data-uid="Viewer.IO.FileSystem.EnumerateFiles(System.String,System.String)">EnumerateFiles(String, String)</h4>
@@ -1557,7 +1520,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_GetAttributes_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.GetAttributes(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L249">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L240">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_GetAttributes_" data-uid="Viewer.IO.FileSystem.GetAttributes*"></a>
   <h4 id="Viewer_IO_FileSystem_GetAttributes_System_String_" data-uid="Viewer.IO.FileSystem.GetAttributes(System.String)">GetAttributes(String)</h4>
@@ -1592,7 +1555,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_MoveDirectory_System_String_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.MoveDirectory(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L234">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L225">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_MoveDirectory_" data-uid="Viewer.IO.FileSystem.MoveDirectory*"></a>
   <h4 id="Viewer_IO_FileSystem_MoveDirectory_System_String_System_String_" data-uid="Viewer.IO.FileSystem.MoveDirectory(System.String,System.String)">MoveDirectory(String, String)</h4>
@@ -1629,7 +1592,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_MoveFile_System_String_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.MoveFile(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L219">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L210">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_MoveFile_" data-uid="Viewer.IO.FileSystem.MoveFile*"></a>
   <h4 id="Viewer_IO_FileSystem_MoveFile_System_String_System_String_" data-uid="Viewer.IO.FileSystem.MoveFile(System.String,System.String)">MoveFile(String, String)</h4>
@@ -1666,7 +1629,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_ReadAllBytes_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.ReadAllBytes(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L279">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L270">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_ReadAllBytes_" data-uid="Viewer.IO.FileSystem.ReadAllBytes*"></a>
   <h4 id="Viewer_IO_FileSystem_ReadAllBytes_System_String_" data-uid="Viewer.IO.FileSystem.ReadAllBytes(System.String)">ReadAllBytes(String)</h4>
@@ -1698,45 +1661,10 @@ public class FileSystem : IFileSystem</code></pre>
   
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_ReadAllBytesAsync_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.ReadAllBytesAsync(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L289">View Source</a>
-  </span>
-  <a id="Viewer_IO_FileSystem_ReadAllBytesAsync_" data-uid="Viewer.IO.FileSystem.ReadAllBytesAsync*"></a>
-  <h4 id="Viewer_IO_FileSystem_ReadAllBytesAsync_System_String_" data-uid="Viewer.IO.FileSystem.ReadAllBytesAsync(System.String)">ReadAllBytesAsync(String)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;byte[]&gt; ReadAllBytesAsync(string path)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">path</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <span class="xref">System.Threading.Tasks.Task</span>&lt;<span class="xref">System.Byte</span>[]&gt;
-  
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_ReadAllText_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.ReadAllText(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L284">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L275">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_ReadAllText_" data-uid="Viewer.IO.FileSystem.ReadAllText*"></a>
   <h4 id="Viewer_IO_FileSystem_ReadAllText_System_String_" data-uid="Viewer.IO.FileSystem.ReadAllText(System.String)">ReadAllText(String)</h4>
@@ -1771,7 +1699,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_ReadToEndAsync_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.ReadToEndAsync(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L307">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L280">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_ReadToEndAsync_" data-uid="Viewer.IO.FileSystem.ReadToEndAsync*"></a>
   <h4 id="Viewer_IO_FileSystem_ReadToEndAsync_System_String_" data-uid="Viewer.IO.FileSystem.ReadToEndAsync(System.String)">ReadToEndAsync(String)</h4>
@@ -1806,7 +1734,7 @@ public class FileSystem : IFileSystem</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_ReplaceFile_System_String_System_String_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.ReplaceFile(System.String%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L229">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L220">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_ReplaceFile_" data-uid="Viewer.IO.FileSystem.ReplaceFile*"></a>
   <h4 id="Viewer_IO_FileSystem_ReplaceFile_System_String_System_String_System_String_" data-uid="Viewer.IO.FileSystem.ReplaceFile(System.String,System.String,System.String)">ReplaceFile(String, String, String)</h4>
@@ -1845,18 +1773,18 @@ public class FileSystem : IFileSystem</code></pre>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_Search_System_String_Viewer_IO_SearchCallback_Viewer_IO_SearchCallback_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.Search(System.String%2CViewer.IO.SearchCallback%2CViewer.IO.SearchCallback)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem_Search_System_String_Viewer_IO_ISearchListener_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem.Search(System.String%2CViewer.IO.ISearchListener)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L315">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L288">View Source</a>
   </span>
   <a id="Viewer_IO_FileSystem_Search_" data-uid="Viewer.IO.FileSystem.Search*"></a>
-  <h4 id="Viewer_IO_FileSystem_Search_System_String_Viewer_IO_SearchCallback_Viewer_IO_SearchCallback_" data-uid="Viewer.IO.FileSystem.Search(System.String,Viewer.IO.SearchCallback,Viewer.IO.SearchCallback)">Search(String, SearchCallback, SearchCallback)</h4>
+  <h4 id="Viewer_IO_FileSystem_Search_System_String_Viewer_IO_ISearchListener_" data-uid="Viewer.IO.FileSystem.Search(System.String,Viewer.IO.ISearchListener)">Search(String, ISearchListener)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Search(string path, SearchCallback directoryCallback, SearchCallback fileCallback)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Search(string path, ISearchListener listener)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1874,13 +1802,8 @@ public class FileSystem : IFileSystem</code></pre>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="Viewer.IO.SearchCallback.html">SearchCallback</a></td>
-        <td><span class="parametername">directoryCallback</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="Viewer.IO.SearchCallback.html">SearchCallback</a></td>
-        <td><span class="parametername">fileCallback</span></td>
+        <td><a class="xref" href="Viewer.IO.ISearchListener.html">ISearchListener</a></td>
+        <td><span class="parametername">listener</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -1900,7 +1823,7 @@ public class FileSystem : IFileSystem</code></pre>
                     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileSystem.md&amp;value=---%0Auid%3A%20Viewer.IO.FileSystem%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L195" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileSystem.cs/#L202" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

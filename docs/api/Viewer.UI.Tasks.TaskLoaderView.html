@@ -435,10 +435,10 @@
                             <a href="Viewer.IO.IFileWatcherFactory.html" title="IFileWatcherFactory" class="">IFileWatcherFactory</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
+                            <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.SearchCallback.html" title="SearchCallback" class="">SearchCallback</a>
+                            <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.SearchControl.html" title="SearchControl" class="">SearchControl</a>
@@ -747,10 +747,7 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.UI.EntityEventArgs.html" title="EntityEventArgs" class="">EntityEventArgs</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.UI.IQueryEvents.html" title="IQueryEvents" class="">IQueryEvents</a>
+                            <a href="Viewer.UI.IQueryHistory.html" title="IQueryHistory" class="">IQueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.ISelection.html" title="ISelection" class="">ISelection</a>
@@ -762,7 +759,7 @@
                             <a href="Viewer.UI.QueryEventArgs.html" title="QueryEventArgs" class="">QueryEventArgs</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.QueryEvents.html" title="QueryEvents" class="">QueryEvents</a>
+                            <a href="Viewer.UI.QueryHistory.html" title="QueryHistory" class="">QueryHistory</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Selection.html" title="Selection" class="">Selection</a>
@@ -892,6 +889,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.Explorer.html" title="Explorer" class="">Explorer</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.UI.Explorer.Explorer.FileOperation.html" title="Explorer.FileOperation" class="">Explorer.FileOperation</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Explorer.ExplorerComponent.html" title="ExplorerComponent" class="">ExplorerComponent</a>
@@ -1045,6 +1045,9 @@
                         <ul class="nav level2">
                           <li class="">
                             <a href="Viewer.UI.Presentation.ImageWindow.html" title="ImageWindow" class="">ImageWindow</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.UI.Presentation.IPresentation.html" title="IPresentation" class="">IPresentation</a>
                           </li>
                           <li class="">
                             <a href="Viewer.UI.Presentation.IPresentationView.html" title="IPresentationView" class="">IPresentationView</a>
@@ -2854,18 +2857,18 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Tasks_TaskLoaderView__ctor_System_Int32_System_Threading_CancellationTokenSource_.md&amp;value=---%0Auid%3A%20Viewer.UI.Tasks.TaskLoaderView.%23ctor(System.Int32%2CSystem.Threading.CancellationTokenSource)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Tasks_TaskLoaderView__ctor_System_Threading_CancellationTokenSource_.md&amp;value=---%0Auid%3A%20Viewer.UI.Tasks.TaskLoaderView.%23ctor(System.Threading.CancellationTokenSource)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Tasks/TaskLoaderView.cs/#L62">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Tasks/TaskLoaderView.cs/#L64">View Source</a>
   </span>
   <a id="Viewer_UI_Tasks_TaskLoaderView__ctor_" data-uid="Viewer.UI.Tasks.TaskLoaderView.#ctor*"></a>
-  <h4 id="Viewer_UI_Tasks_TaskLoaderView__ctor_System_Int32_System_Threading_CancellationTokenSource_" data-uid="Viewer.UI.Tasks.TaskLoaderView.#ctor(System.Int32,System.Threading.CancellationTokenSource)">TaskLoaderView(Int32, CancellationTokenSource)</h4>
+  <h4 id="Viewer_UI_Tasks_TaskLoaderView__ctor_System_Threading_CancellationTokenSource_" data-uid="Viewer.UI.Tasks.TaskLoaderView.#ctor(System.Threading.CancellationTokenSource)">TaskLoaderView(CancellationTokenSource)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TaskLoaderView(int totalTaskCount, CancellationTokenSource cancellation)</code></pre>
+    <pre><code class="lang-csharp hljs">public TaskLoaderView(CancellationTokenSource cancellation)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -2877,11 +2880,6 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td><span class="parametername">totalTaskCount</span></td>
-        <td></td>
-      </tr>
       <tr>
         <td><span class="xref">System.Threading.CancellationTokenSource</span></td>
         <td><span class="parametername">cancellation</span></td>

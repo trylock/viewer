@@ -20,28 +20,9 @@ namespace Viewer.UI
         }
     }
 
-    public class EntityEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Loaded entities
-        /// </summary>
-        public IEnumerable<IEntity> Entities { get; }
-
-        /// <summary>
-        /// Index of selected entity
-        /// </summary>
-        public int Index { get; }
-
-        public EntityEventArgs(IEnumerable<IEntity> entities, int index)
-        {
-            Entities = entities;
-            Index = index;
-        }
-    }
-
     /// <summary>
-    /// QueryEvents keeps track of executed queries in the entire application. Executed queries
-    /// are kept in a history collection. A query producer (e.g. a query editor) executes query
+    /// Query history keeps track of executed queries in the entire application. Executed queries
+    /// are kept in a history collection. A query producer (e.g. a query editor) executes a query
     /// by calling <see cref="ExecuteQuery"/> which triggers the <see cref="QueryExecuted"/> event.
     /// A query consumer (e.g. a thumbnail grid) listens for <see cref="QueryExecuted"/> event and
     /// actually executes given query.
@@ -49,22 +30,10 @@ namespace Viewer.UI
     public interface IQueryHistory
     {
         /// <summary>
-        /// Event triggered by the <see cref="ExecuteQuery"/> method. 
+        /// Event occurs when the <see cref="ExecuteQuery"/> method is called. 
         /// </summary>
         event EventHandler<QueryEventArgs> QueryExecuted;
         
-        /// <summary>
-        /// Event triggered by the <see cref="OpenEntity"/> method.
-        /// </summary>
-        event EventHandler<EntityEventArgs> EntityOpened;
-
-        /// <summary>
-        /// Open entity 
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <param name="index"></param>
-        void OpenEntity(IEnumerable<IEntity> entities, int index);
-
         /// <summary>
         /// Execute a query. This triggers the <see cref="QueryExecuted"/> event.
         /// Additionally, this sets current query in history to <paramref name="query"/>.
@@ -109,21 +78,11 @@ namespace Viewer.UI
         private int _historyHead = -1;
 
         public event EventHandler<QueryEventArgs> QueryExecuted;
-        public event EventHandler<EntityEventArgs> EntityOpened;
 
         public IQuery Current => _historyHead < 0 ? null : _history[_historyHead];
         public IQuery Previous => _historyHead <= 0 ? null : _history[_historyHead - 1];
         public IQuery Next => _historyHead >= _history.Count - 1 ? null : _history[_historyHead + 1];
-
-        public void OpenEntity(IEnumerable<IEntity> entities, int index)
-        {
-            if (index < 0 || index >= entities.Count())
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
-            EntityOpened?.Invoke(this, new EntityEventArgs(entities, index));
-        }
-
+        
         public void ExecuteQuery(IQuery query)
         {
             if (query == null)
@@ -144,7 +103,7 @@ namespace Viewer.UI
                 _history.Add(query);
                 ++_historyHead;
 
-                Debug.Assert(_historyHead == _history.Count - 1);
+                Trace.Assert(_historyHead == _history.Count - 1);
             }
 
             // trigger query executed event

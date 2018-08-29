@@ -10,18 +10,16 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Presentation
 {
+    [Export(typeof(IPresentation))]
     [Export(typeof(IComponent))]
-    public class PresentationComponent : IComponent
+    public class PresentationComponent : IComponent, IPresentation
     {
-        private readonly IQueryHistory _state;
         private readonly ExportFactory<PresentationPresenter> _presentationFactory;
 
         [ImportingConstructor]
-        public PresentationComponent(IQueryHistory state, ExportFactory<PresentationPresenter> presentationFactory)
+        public PresentationComponent(ExportFactory<PresentationPresenter> presentationFactory)
         {
             _presentationFactory = presentationFactory;
-            _state = state;
-            _state.EntityOpened += (sender, e) => ShowPresentation(e.Entities, e.Index);
         }
 
         public void OnStartup(IViewerApplication app)
@@ -38,6 +36,11 @@ namespace Viewer.UI.Presentation
             };
             presentationExport.Value.ShowView("Presentation", DockState.Document);
             presentationExport.Value.ShowEntity(entities, index);
+        }
+
+        public void Open(IEnumerable<IEntity> entities, int activeIndex)
+        {
+            ShowPresentation(entities, activeIndex);
         }
     }
 }

@@ -127,6 +127,7 @@
     <Compile Include="UI\Forms\SliderControl.Designer.cs">
       <DependentUpon>SliderControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Presentation\IPresentation.cs" />
     <Compile Include="UI\Presentation\ImageWindow.cs" />
     <Compile Include="UI\Presentation\PreviewControl.cs">
       <SubType>Component</SubType>

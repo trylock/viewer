@@ -21,6 +21,7 @@ using Viewer.Data.Properties;
 using Viewer.Properties;
 using Viewer.UI.Explorer;
 using Viewer.UI.Forms;
+using Viewer.UI.Presentation;
 using Viewer.UI.QueryEditor;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -32,6 +33,7 @@ namespace Viewer.UI.Images
     {
         private readonly IEditor _editor;
         private readonly IExplorer _explorer;
+        private readonly IPresentation _presentation;
         private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
@@ -125,6 +127,7 @@ namespace Viewer.UI.Images
             ExportFactory<IImagesView> viewFactory,
             IEditor editor,
             IExplorer explorer,
+            IPresentation presentation,
             IFileSystemErrorView dialogView,
             ISelection selection, 
             IEntityManager entityManager,
@@ -136,6 +139,7 @@ namespace Viewer.UI.Images
             ViewLifetime = viewFactory.CreateExport();
             _editor = editor;
             _explorer = explorer;
+            _presentation = presentation;
             _dialogView = dialogView;
             _selection = selection;
             _entityManager = entityManager;
@@ -486,7 +490,7 @@ namespace Viewer.UI.Images
             {
                 var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
                 var index = items.IndexOf(fileEntity);
-                _state.OpenEntity(items, index < 0 ? 0 : index);
+                _presentation.Open(items, index < 0 ? 0 : index);
             }
             else
             {

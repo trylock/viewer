@@ -20,7 +20,6 @@ namespace Viewer.UI.Images
     [Export(typeof(IComponent))]
     public class ImagesComponent : IComponent
     {
-        private readonly IEditor _editor;
         private readonly IQueryHistory _state;
         private readonly ISelection _selection;
         private readonly IQueryFactory _queryFactory;
@@ -36,14 +35,12 @@ namespace Viewer.UI.Images
 
         [ImportingConstructor]
         public ImagesComponent(
-            IEditor editor,
             IQueryHistory state, 
             ISelection selection,
             IQueryFactory queryFactory, 
             IQueryCompiler queryCompiler,
             ExportFactory<ImagesPresenter> images)
         {
-            _editor = editor;
             _imagesFactory = images;
             _queryFactory = queryFactory;
             _queryCompiler = queryCompiler;

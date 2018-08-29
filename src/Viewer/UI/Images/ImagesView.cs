@@ -419,7 +419,7 @@ namespace Viewer.UI.Images
                 // begin the drag operation
                 if (_isDragging)
                 {
-                    var distanceSquared = e.Location.DistanceSquaredTo(_dragOrigin);
+                    var distanceSquared = location.DistanceSquaredTo(_dragOrigin);
                     if (distanceSquared >= BeginDragThreshold * BeginDragThreshold)
                     {
                         BeginDragItems?.Invoke(sender, e);

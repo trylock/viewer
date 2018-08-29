@@ -122,7 +122,7 @@ namespace Viewer.UI.Images
         /// retry the load operation. This is the delay between the failed load and the next retry
         /// operation.
         /// </summary>
-        public static readonly TimeSpan RetryDelay = new TimeSpan(0, 0, 0, 2);
+        public static TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(2);
 
         /// <summary>
         /// Default thumbnail image. <see cref="GetCurrent"/> will return this value if no other

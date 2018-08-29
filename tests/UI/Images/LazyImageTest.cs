@@ -165,6 +165,8 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public async Task GetCurrent_RetryLoadingNativeThumbnailIfItsFileIsBusy()
         {
+            PhotoThumbnail.RetryDelay = TimeSpan.FromMilliseconds(40);
+
             var size = new Size(200, 200);
             var embedded = new Bitmap(1, 1);
             var native = new Bitmap(1, 1);
@@ -195,6 +197,8 @@ namespace ViewerTest.UI.Images
         [TestMethod]
         public async Task GetCurrent_DontRetryLoadingNativeThumbnailIfItsFileIsNotBusy()
         {
+            PhotoThumbnail.RetryDelay = TimeSpan.FromMilliseconds(40);
+
             var embedded = new Bitmap(1, 1);
             var size = new Size(200, 200);
             _thumbnailLoader

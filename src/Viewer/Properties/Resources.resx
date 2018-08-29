@@ -376,4 +376,11 @@ Do you want to try again?</value>
   <data name="MouseButton5_Label" xml:space="preserve">
     <value>BUTTON5</value>
   </data>
+  <data name="ConfirmReplace_Label" xml:space="preserve">
+    <value>Replace file</value>
+  </data>
+  <data name="ConfirmReplace_Message" xml:space="preserve">
+    <value>File {0} already exists. Do you want to replace it?</value>
+    <comment>{0} is a file path to the file which should be replaced</comment>
+  </data>
 </root>

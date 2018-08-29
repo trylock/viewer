@@ -145,6 +145,24 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replace file.
+        /// </summary>
+        internal static string ConfirmReplace_Label {
+            get {
+                return ResourceManager.GetString("ConfirmReplace_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File {0} already exists. Do you want to replace it?.
+        /// </summary>
+        internal static string ConfirmReplace_Message {
+            get {
+                return ResourceManager.GetString("ConfirmReplace_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copying files.
         /// </summary>
         internal static string CopyingFiles_Label {

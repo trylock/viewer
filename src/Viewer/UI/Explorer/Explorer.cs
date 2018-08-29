@@ -207,32 +207,49 @@ namespace Viewer.UI.Explorer
 
         private void Process(FileOperation file, bool isMove, SynchronizationContext uiContext)
         {
-            try
+            var retry = true;
+            while (retry)
             {
-                if (isMove)
+                retry = false;
+                try
                 {
-                    _fileSystem.MoveFile(file.SourcePath, file.DestinationPath);
+                    if (isMove)
+                    {
+                        _fileSystem.MoveFile(file.SourcePath, file.DestinationPath);
+                    }
+                    else
+                    {
+                        _fileSystem.CopyFile(file.SourcePath, file.DestinationPath);
+                    }
                 }
-                else
+                catch (FileNotFoundException)
                 {
-                    _fileSystem.CopyFile(file.SourcePath, file.DestinationPath);
+                    // silently ignore this error, just don't copy/move the file
                 }
-            }
-            catch (FileNotFoundException)
-            {
-                // silently ignore this error, just don't copy/move the file
-            }
-            catch (DirectoryNotFoundException)
-            {
-                // silently ignore this error, just don't copy/move the file
-            }
-            catch (UnauthorizedAccessException)
-            {
-                uiContext.Send(_ => _dialogView.UnauthorizedAccess(file.SourcePath), null);
-            }
-            catch (SecurityException)
-            {
-                uiContext.Send(_ => _dialogView.UnauthorizedAccess(file.SourcePath), null);
+                catch (DirectoryNotFoundException)
+                {
+                    // silently ignore this error, just don't copy/move the file
+                }
+                catch (IOException)
+                {
+                    uiContext.Send(_ =>
+                    {
+                        retry = _dialogView.ConfirmReplace(file.DestinationPath);
+                    }, null);
+
+                    if (retry)
+                    {
+                        _fileSystem.DeleteFile(file.DestinationPath);
+                    }
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    uiContext.Send(_ => _dialogView.UnauthorizedAccess(file.SourcePath), null);
+                }
+                catch (SecurityException)
+                {
+                    uiContext.Send(_ => _dialogView.UnauthorizedAccess(file.SourcePath), null);
+                }
             }
         }
     }

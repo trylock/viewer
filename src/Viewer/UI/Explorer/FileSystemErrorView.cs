@@ -52,6 +52,14 @@ namespace Viewer.UI.Explorer
         bool ConfirmDelete(string fileName);
 
         /// <summary>
+        /// Show a dialog to the user in which they can confirm or deny to replace file
+        /// <paramref name="fileName"/>
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns>true iff user confirmed to replace <paramref name="fileName"/></returns>
+        bool ConfirmReplace(string fileName);
+
+        /// <summary>
         /// Show confirm dialog of deletion of a list of files
         /// </summary>
         /// <param name="fileName">List of files to delete</param>
@@ -140,6 +148,17 @@ namespace Viewer.UI.Explorer
             var result = MessageBox.Show(
                 string.Format(Resources.ConfirmDelete_Message, fullPath),
                 Resources.ConfirmDelete_Label,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2);
+            return result == DialogResult.Yes;
+        }
+
+        public bool ConfirmReplace(string fileName)
+        {
+            var result = MessageBox.Show(
+                string.Format(Resources.ConfirmReplace_Message, fileName),
+                Resources.ConfirmReplace_Label,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);

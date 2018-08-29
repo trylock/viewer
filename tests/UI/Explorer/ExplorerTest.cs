@@ -261,5 +261,38 @@ namespace ViewerTest.UI.Explorer
             _progressController.Verify(mock => mock.Close(), Times.Once);
             _progressController.VerifyNoOtherCalls();
         }
+
+
+        [TestMethod]
+        public async Task CopyFileAsync_ReplaceAnExistingFile()
+        {
+            _fileSystem
+                .Setup(mock => mock.Search("src/a.txt", It.IsAny<ISearchListener>()))
+                .Callback<string, ISearchListener>((dest, listener) =>
+                {
+                    listener.OnFile("src/a.txt");
+                });
+            _fileSystem
+                .SetupSequence(mock => mock.CopyFile("src/a.txt", It.IsAny<string>()))
+                .Throws(new IOException())
+                .Pass();
+            _dialogView
+                .Setup(mock => mock.ConfirmReplace(CheckPath("dest/a.txt")))
+                .Returns(true);
+
+            await _explorer.CopyFilesAsync("dest", new[] { "src/a.txt" });
+
+            _fileSystem.Verify(mock => mock.DeleteFile(CheckPath("dest/a.txt")), Times.Once);
+            _fileSystem.Verify(mock => mock.Search("src/a.txt", It.IsAny<ISearchListener>()), Times.Once);
+            _fileSystem.Verify(mock => mock.CopyFile(
+                CheckPath("src/a.txt"),
+                CheckPath("dest/a.txt")), Times.Exactly(2));
+            _fileSystem.VerifyNoOtherCalls();
+
+            _dialogView.Verify(mock => mock.ConfirmReplace(CheckPath("dest/a.txt")), Times.Once);
+            _dialogView.VerifyNoOtherCalls();
+
+            _progressController.Verify(mock => mock.Close(), Times.Once);
+        }
     }
 }

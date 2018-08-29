@@ -651,6 +651,7 @@ namespace Viewer.Data.Storage
                 {
                     var name = "sp" + requestCount++;
                     var savepoint = new SavepointCommand(connection, name);
+                    var failed = false;
                     try
                     {
                         if (req.Value is StoreRequest storeReq)
@@ -686,9 +687,13 @@ namespace Viewer.Data.Storage
                     {
                         exceptions.Add(e);
                         savepoint.Rollback();
+                        failed = true;
                     }
 
-                    savepoint.Release();
+                    if (!failed)
+                    {
+                        savepoint.Release();
+                    }
                 }
 
                 transaction.Commit();

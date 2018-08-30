@@ -136,5 +136,22 @@ namespace ViewerTest.Data.Formats.Jpeg
                 (byte)'T', 0x9A
             }, segments[1].Bytes);
         }
+
+        [TestMethod]
+        public void SplitSegmentData_MultipleSegmentsWithTheActialMaximalSegmentSize()
+        {
+            var data = new byte[0xFFFF - 1];
+            data[data.Length - 1] = 0xFF;
+            data[data.Length - 2] = 0xEE;
+            
+            var segments = JpegSegmentUtils.SplitSegmentData(data, JpegSegmentType.App1, "T").ToList();
+
+            Assert.AreEqual(2, segments.Count);
+            Assert.AreEqual(0xFFFF - 2, segments[0].Bytes.Length);
+            Assert.AreEqual(3, segments[1].Bytes.Length);
+            Assert.AreEqual((byte) 'T', segments[1].Bytes[0]);
+            Assert.AreEqual(0xEE, segments[1].Bytes[1]);
+            Assert.AreEqual(0xFF, segments[1].Bytes[2]);
+        }
     }
 }

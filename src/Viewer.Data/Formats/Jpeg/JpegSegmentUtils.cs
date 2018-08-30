@@ -13,7 +13,7 @@ namespace Viewer.Data.Formats.Jpeg
         /// Maximal number of bytes in a JPEG segment 
         /// (not including the 2 size bytes and header)
         /// </summary>
-        public const long MaxSegmentSize = 0x10000 - 2;
+        public const long MaxSegmentSize = 0xFFFF - 2;
 
         /// <summary>
         /// Copy segment data from multiple segments without header to a single array.

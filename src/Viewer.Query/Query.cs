@@ -483,7 +483,7 @@ namespace Viewer.Query
         }
     }
 
-    public class Query : IQuery
+    internal class Query : IQuery
     {
         private readonly IExecutableQuery _source;
 

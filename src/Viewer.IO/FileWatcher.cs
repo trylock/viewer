@@ -51,7 +51,7 @@ namespace Viewer.IO
         void Watch(string path);
     }
 
-    public class FileWatcher : IFileWatcher
+    internal class FileWatcher : IFileWatcher
     {
         private readonly ConcurrentDictionary<string, FileSystemWatcher> _watchers = new ConcurrentDictionary<string, FileSystemWatcher>();
 

@@ -46,6 +46,9 @@ namespace Viewer.IO
         SearchControl OnFile(string path);
     }
     
+    /// <summary>
+    /// Mockable wrapper for static methods in <see cref="File"/> and <see cref="Directory"/>.
+    /// </summary>
     public interface IFileSystem
     {
         /// <summary>

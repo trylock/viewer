@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -80,6 +81,9 @@ namespace Viewer.IO
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="fileSystem"/> or <paramref name="directoryPattern"/> is null
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="directoryPattern"/> contains invalid characters
         /// </exception>
         public FileFinder(IFileSystem fileSystem, string directoryPattern)
         {
@@ -232,7 +236,7 @@ namespace Viewer.IO
                             newLevel.Enqueue(new State(state.Path, state.LastMatchedPartIndex + 1));
                             
                             // assume it has not been matched yet
-                            foreach (var dir in EnumerateDirectories(state.Path))
+                            foreach (var dir in EnumerateDirectories(state.Path, null))
                             {
                                 newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex));
                             }
@@ -261,34 +265,33 @@ namespace Viewer.IO
             return _regex.IsMatch(path);
         }
 
-        private IEnumerable<string> EnumerateDirectories(string path)
-        {
-            IEnumerable<string> dirs = null;
-            try
-            {
-                dirs = _fileSystem.EnumerateDirectories(path);
-            }
-            catch (UnauthorizedAccessException)
-            {
-            }
-            catch (SecurityException)
-            {
-            }
-            
-            return SelectDirectories(dirs);
-        }
-
         private IEnumerable<string> EnumerateDirectories(string path, string pattern)
         {
             IEnumerable<string> dirs = null;
             try
             {
-                dirs = _fileSystem.EnumerateDirectories(path, pattern);
+                if (pattern == null)
+                {
+                    dirs = _fileSystem.EnumerateDirectories(path);
+                }
+                else
+                {
+                    dirs = _fileSystem.EnumerateDirectories(path, pattern);
+                }
             }
             catch (UnauthorizedAccessException)
             {
             }
             catch (SecurityException)
+            {
+            }
+            catch (DirectoryNotFoundException)
+            {
+            }
+            catch (FileNotFoundException)
+            {
+            }
+            catch (IOException) // path is a file name
             {
             }
 

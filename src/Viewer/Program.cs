@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
@@ -23,8 +24,12 @@ namespace Viewer
     internal static class Program
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        static Program()
+        
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        private static void Main()
         {
             var config = new LoggingConfiguration();
             var logFile = Environment.ExpandEnvironmentVariables(Settings.Default.LogFilePath);
@@ -36,16 +41,9 @@ namespace Viewer
 
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, file);
             LogManager.Configuration = config;
-        }
-
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        private static void Main()
-        {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-
+            Application.ThreadException += ApplicationOnThreadException;
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -64,6 +62,11 @@ namespace Viewer
                 app.InitializeLayout();
                 app.Run();
             }
+        }
+
+        private static void ApplicationOnThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            Logger.Fatal(e.Exception, "Unhandeled exception.");
         }
 
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)

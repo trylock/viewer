@@ -87,12 +87,12 @@ namespace Viewer.UI.Attributes
 
             if (type == AttributeViewType.Exif)
             {
-                _attributePredicate = attr => attr.Data.Value.Type != TypeId.Image &&
-                                              attr.Data.Source == AttributeSource.Metadata;
+                _attributePredicate = attr => attr.Value.Value.Type != TypeId.Image &&
+                                              attr.Value.Source == AttributeSource.Metadata;
             }
             else
             {
-                _attributePredicate = attr => attr.Data.Source == AttributeSource.Custom;
+                _attributePredicate = attr => attr.Value.Source == AttributeSource.Custom;
             }
 
             UpdateAttributes();
@@ -114,9 +114,9 @@ namespace Viewer.UI.Attributes
         {
             return new AttributeGroup
             {
-                Data = new Attribute("", new StringValue(""), AttributeSource.Custom),
-                IsMixed = false,
-                IsGlobal = true
+                Value = new Attribute("", new StringValue(""), AttributeSource.Custom),
+                HasMultipleValues = false,
+                IsInAllEntities = true
             };
         }
         
@@ -129,14 +129,14 @@ namespace Viewer.UI.Attributes
         {
             return _attributes.GroupAttributesInSelection()
                 .Where(_attributePredicate)
-                .OrderBy(attr => attr.Data.Name);
+                .OrderBy(attr => attr.Value.Name);
         }
 
         private bool HasAttribute(string name)
         {
             return _attributes
                 .GroupAttributesInSelection()
-                .Any(attr => attr.Data.Name == name);
+                .Any(attr => attr.Value.Name == name);
         }
         
         private void ViewAttributes()
@@ -163,8 +163,8 @@ namespace Viewer.UI.Attributes
                 return;
             }
 
-            var oldAttr = e.OldValue.Data;
-            var newAttr = e.NewValue.Data;
+            var oldAttr = e.OldValue.Value;
+            var newAttr = e.NewValue.Value;
             if (oldAttr.Name == "") // add a new attribute
             {
                 if (string.IsNullOrEmpty(newAttr.Name))
@@ -206,7 +206,7 @@ namespace Viewer.UI.Attributes
             }
 
             // show changes
-            e.NewValue.IsGlobal = true;
+            e.NewValue.IsInAllEntities = true;
             View.Attributes[e.Index] = e.NewValue;
             View.UpdateAttribute(e.Index);
         }
@@ -218,7 +218,7 @@ namespace Viewer.UI.Attributes
                 return;
             }
 
-            var namesToDelete = e.Deleted.Select(index => View.Attributes[index].Data.Name);
+            var namesToDelete = e.Deleted.Select(index => View.Attributes[index].Value.Name);
             foreach (var name in namesToDelete)
             {
                 _attributes.RemoveAttribute(name);
@@ -335,17 +335,17 @@ namespace Viewer.UI.Attributes
             IComparer<AttributeGroup> comparer;
             if (e.Column == SortColumn.Name)
             {
-                comparer = CreateComparer(attr => attr.Data.Name, (int) _currentSortDirection);
+                comparer = CreateComparer(attr => attr.Value.Name, (int) _currentSortDirection);
             }
             else if (e.Column == SortColumn.Type)
             {
-                comparer = CreateComparer(attr => attr.Data.Value.Type, (int)_currentSortDirection);
+                comparer = CreateComparer(attr => attr.Value.Value.Type, (int)_currentSortDirection);
             }
             else // if (e.Column == SortColumn.Value)
             {
                 comparer = Comparer<AttributeGroup>.Create((a, b) =>
                     (int) _currentSortDirection *
-                    ValueComparer.Default.Compare(a.Data.Value, b.Data.Value));
+                    ValueComparer.Default.Compare(a.Value.Value, b.Value.Value));
             }
             View.Attributes.Sort(comparer);
 
@@ -374,7 +374,7 @@ namespace Viewer.UI.Attributes
             else
             {
                 var filter = View.SearchQuery.ToLower();
-                View.Attributes = attrs.Where(attr => attr.Data.Name.ToLower().Contains(filter)).ToList();
+                View.Attributes = attrs.Where(attr => attr.Value.Name.ToLower().Contains(filter)).ToList();
             }
 
             if (IsEditingEnabled)

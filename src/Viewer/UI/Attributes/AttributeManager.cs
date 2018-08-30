@@ -13,21 +13,20 @@ namespace Viewer.UI.Attributes
     public class AttributeGroup
     {
         /// <summary>
-        /// Attribute value. 
-        /// This can be arbitrary if there are more attribute values in the group.
+        /// Attribute value. This can be arbitrary if there are more attribute values in the group.
         /// </summary>
-        public Attribute Data { get; set; }
+        public Attribute Value { get; set; }
 
         /// <summary>
-        /// true iff value of this attribute is mixed.
-        /// Mixed value means there are 2 entities with the same attribute name but they have different value or type.
+        /// true iff value of this attribute is mixed. Mixed value means there are 2 entities with
+        /// the same attribute name but they have different value or type.
         /// </summary>
-        public bool IsMixed { get; set; }
+        public bool HasMultipleValues { get; set; }
 
         /// <summary>
         /// true iff all entities in the group have an attribute with this name
         /// </summary>
-        public bool IsGlobal { get; set; }
+        public bool IsInAllEntities { get; set; }
 
         /// <summary>
         /// Number of entities with an attribute with the same name
@@ -107,18 +106,18 @@ namespace Viewer.UI.Attributes
                     if (attrs.TryGetValue(attr.Name, out AttributeGroup attrView))
                     {
                         ++attrView.EntityCount;
-                        if (attrView.Data.Equals(attr))
+                        if (attrView.Value.Equals(attr))
                         {
                             continue; // both entities have the same attribute
                         }
-                        attrView.IsMixed = true;
+                        attrView.HasMultipleValues = true;
                     }
                     else
                     {
                         attrs.Add(attr.Name, new AttributeGroup
                         {
-                            Data = attr,
-                            IsMixed = false,
+                            Value = attr,
+                            HasMultipleValues = false,
                             EntityCount = 1
                         });
                     }
@@ -128,7 +127,7 @@ namespace Viewer.UI.Attributes
             var selectedItemCount = GetFilesInSelection().Count();
             foreach (var pair in attrs)
             {
-                pair.Value.IsGlobal = pair.Value.EntityCount == selectedItemCount;
+                pair.Value.IsInAllEntities = pair.Value.EntityCount == selectedItemCount;
             }
 
             return attrs.Values;

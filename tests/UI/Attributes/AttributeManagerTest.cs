@@ -175,8 +175,8 @@ namespace ViewerTest.UI.Attributes
 
             var attrs = _attributes.GroupAttributesInSelection().ToList();
             Assert.AreEqual(1, attrs.Count);
-            Assert.IsFalse(attrs[0].IsMixed);
-            Assert.IsFalse(attrs[0].IsGlobal);
+            Assert.IsFalse(attrs[0].HasMultipleValues);
+            Assert.IsFalse(attrs[0].IsInAllEntities);
         }
     }
 }

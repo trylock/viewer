@@ -1,6 +1,4 @@
-﻿using Viewer.UI.Forms;
-
-namespace Viewer.UI.Attributes
+﻿namespace Viewer.UI.Attributes
 {
     partial class AttributeTableView
     {
@@ -30,6 +28,7 @@ namespace Viewer.UI.Attributes
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.GridView = new Viewer.UI.Forms.BufferedDataGridView();
             this.NameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -38,6 +37,7 @@ namespace Viewer.UI.Attributes
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SaveButton = new System.Windows.Forms.Button();
             this.SearchTextBox = new System.Windows.Forms.TextBox();
+            this.SaveTooltip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.GridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -105,6 +105,7 @@ namespace Viewer.UI.Attributes
             this.SaveButton.Size = new System.Drawing.Size(56, 19);
             this.SaveButton.TabIndex = 1;
             this.SaveButton.Text = "Save";
+            this.SaveTooltip.SetToolTip(this.SaveButton, "Ctrl + S");
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
@@ -145,6 +146,7 @@ namespace Viewer.UI.Attributes
         private System.Windows.Forms.DataGridViewComboBoxColumn TypeColumn;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.TextBox SearchTextBox;
-        private BufferedDataGridView GridView;
+        private Viewer.UI.Forms.BufferedDataGridView GridView;
+        private System.Windows.Forms.ToolTip SaveTooltip;
     }
 }

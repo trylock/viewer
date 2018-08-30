@@ -216,9 +216,9 @@ namespace Viewer.UI.Attributes
         private DataGridViewRow CreateAttributeView(AttributeGroup attr)
         {
             var row = new DataGridViewRow { Tag = attr };
-            row.Cells.Add(new DataGridViewTextBoxCell { ValueType = typeof(string), Value = attr.Data.Name });
+            row.Cells.Add(new DataGridViewTextBoxCell { ValueType = typeof(string), Value = attr.Value.Name });
 
-            if (attr.IsMixed)
+            if (attr.HasMultipleValues)
             {
                 var mixedValueCell = new DataGridViewTextBoxCell
                 {
@@ -231,16 +231,16 @@ namespace Viewer.UI.Attributes
             }
             else
             {
-                attr.Data.Value.Accept(new RowAttributeVisitor(row));
+                attr.Value.Value.Accept(new RowAttributeVisitor(row));
 
-                if (!attr.IsGlobal)
+                if (!attr.IsInAllEntities)
                 {
                     row.DefaultCellStyle.BackColor = _globalBackColor;
                 }
             }
 
             // disable editing if the attribute is readonly
-            if (attr.Data.Source == AttributeSource.Metadata)
+            if (attr.Value.Source == AttributeSource.Metadata)
             {
                 row.ReadOnly = true;
                 row.DefaultCellStyle.BackColor = _readOnlyBackColor;
@@ -286,7 +286,7 @@ namespace Viewer.UI.Attributes
             {
                 Index = e.RowIndex,
                 OldValue = Attributes[e.RowIndex],
-                NewValue = new AttributeGroup { IsMixed = false, Data = newValue }
+                NewValue = new AttributeGroup { HasMultipleValues = false, Value = newValue }
             });
         }
 

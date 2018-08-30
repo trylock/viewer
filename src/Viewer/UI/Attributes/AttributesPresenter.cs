@@ -134,7 +134,9 @@ namespace Viewer.UI.Attributes
 
         private bool HasAttribute(string name)
         {
-            return GetSelectedAttributes().Any(attr => attr.Data.Name == name);
+            return _attributes
+                .GroupAttributesInSelection()
+                .Any(attr => attr.Data.Name == name);
         }
         
         private void ViewAttributes()

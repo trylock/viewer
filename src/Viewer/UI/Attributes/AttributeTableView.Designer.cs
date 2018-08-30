@@ -56,7 +56,7 @@ namespace Viewer.UI.Attributes
             this.ValueColumn,
             this.TypeColumn});
             this.GridView.Location = new System.Drawing.Point(0, 20);
-            this.GridView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.GridView.Margin = new System.Windows.Forms.Padding(2);
             this.GridView.Name = "GridView";
             this.GridView.RowHeadersVisible = false;
             this.GridView.RowTemplate.Height = 24;
@@ -100,7 +100,7 @@ namespace Viewer.UI.Attributes
             // 
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SaveButton.Location = new System.Drawing.Point(218, 284);
-            this.SaveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(2);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(56, 19);
             this.SaveButton.TabIndex = 1;
@@ -113,7 +113,7 @@ namespace Viewer.UI.Attributes
             this.SearchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SearchTextBox.Location = new System.Drawing.Point(0, 1);
-            this.SearchTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SearchTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.SearchTextBox.Name = "SearchTextBox";
             this.SearchTextBox.Size = new System.Drawing.Size(283, 20);
             this.SearchTextBox.TabIndex = 2;
@@ -128,7 +128,7 @@ namespace Viewer.UI.Attributes
             this.Controls.Add(this.SearchTextBox);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.GridView);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "AttributeTableView";
             this.Text = "Attributes";
             ((System.ComponentModel.ISupportInitialize)(this.GridView)).EndInit();

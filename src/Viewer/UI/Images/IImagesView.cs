@@ -265,7 +265,32 @@ namespace Viewer.UI.Images
         T GetItemAt(Point location);
     }
 
-    public interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IHistoryView
+    public interface IFileDropView
+    {
+        /// <summary>
+        /// Event occurs when user drops something into the view.
+        /// </summary>
+        event EventHandler<DropEventArgs> OnDrop;
+
+        /// <summary>
+        /// Event occurs when user pastes clipboard into the view.
+        /// </summary>
+        event EventHandler OnPaste;
+
+        /// <summary>
+        /// Pick a directory from <paramref name="options"/>. If no option is selected, the
+        /// returned task will throw <see cref="OperationCanceledException"/>
+        /// </summary>
+        /// <param name="options">Available options</param>
+        /// <returns>
+        /// Task which returns the selected option from <paramref name="options"/>. If user
+        /// does not pick any directory, this task will be canceled (i.e., it will throw
+        /// <see cref="OperationCanceledException"/>)
+        /// </returns>
+        Task<string> PickDirectoryAsync(IEnumerable<string> options);
+    }
+
+    public interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IHistoryView, IFileDropView
     {
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;
@@ -314,11 +339,6 @@ namespace Viewer.UI.Images
         /// Event occurs when user tries to open an item
         /// </summary>
         event EventHandler<EntityEventArgs> OpenItem;
-
-        /// <summary>
-        /// Event occurs when user drops something into the view.
-        /// </summary>
-        event EventHandler<DropEventArgs> OnDrop;
 
         /// <summary>
         /// Event occurs when user tries to refresh current query.

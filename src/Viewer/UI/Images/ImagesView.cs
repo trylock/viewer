@@ -30,6 +30,8 @@ namespace Viewer.UI.Images
         {
             InitializeComponent();
 
+            ViewerForm.Theme.ApplyTo(PickDirectoryContextMenu);
+            
             PreviousMenuItem.ShortcutKeyDisplayString = "Alt + Right, MB4";
             NextMenuItem.ShortcutKeyDisplayString = "Alt + Left, MB5";
 
@@ -62,7 +64,7 @@ namespace Viewer.UI.Images
         }
 
         #region IHistoryView
-        
+
         public bool CanGoForwardInHistory
         {
             get => NextMenuItem.Enabled;
@@ -137,7 +139,47 @@ namespace Viewer.UI.Images
         }
 
         #endregion
+
+        #region IFileDropView
         
+        public event EventHandler<DropEventArgs> OnDrop;
+        public event EventHandler OnPaste;
+
+        public Task<string> PickDirectoryAsync(IEnumerable<string> options)
+        {
+            var promise = new TaskCompletionSource<string>();
+
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                PickDirectoryContextMenu.Items.Clear();
+                foreach (var option in options)
+                {
+                    var optionCapture = option;
+                    var item = new ToolStripMenuItem(option);
+                    item.Click += (sender, args) => { promise.TrySetResult(optionCapture); };
+                    PickDirectoryContextMenu.Items.Add(item);
+                }
+
+                PickDirectoryContextMenu.Closed += (sender, args) =>
+                {
+                    if (args.CloseReason != ToolStripDropDownCloseReason.ItemClicked)
+                    {
+                        promise.TrySetCanceled();
+                    }
+                };
+                PickDirectoryContextMenu.Show(Cursor.Position);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+
+            return promise.Task;
+        }
+
+        #endregion 
+
         #region IImagesView
 
         /// <summary>
@@ -177,7 +219,6 @@ namespace Viewer.UI.Images
 
         public event EventHandler ShowQuery;
         public event EventHandler<EntityEventArgs> OpenItem;
-        public event EventHandler<DropEventArgs> OnDrop;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
         public event EventHandler<RenameEventArgs> RenameItem;
@@ -452,21 +493,17 @@ namespace Viewer.UI.Images
 
         private void GridView_DragOver(object sender, DragEventArgs e)
         {
-            var location = _view.UnprojectLocation(PointToClient(MousePosition));
-            var item = _view.GetItemAt(location);
-            e.Effect = item?.Data is DirectoryEntity ? 
-                DragDropEffects.Move : 
-                DragDropEffects.None;
+            e.Effect = DragDropEffects.Move;
         }
 
         private void GridView_DragDrop(object sender, DragEventArgs e)
         {
             var location = _view.UnprojectLocation(PointToClient(MousePosition));
             var item = _view.GetItemAt(location);
-            if (item?.Data is DirectoryEntity)
-            {
-                OnDrop?.Invoke(sender, new DropEventArgs(item, e.AllowedEffect, e.Data));
-            }
+            OnDrop?.Invoke(sender, new DropEventArgs(
+                item?.Data is DirectoryEntity ? item : null,
+                e.AllowedEffect, 
+                e.Data));
         }
 
         private void GridView_KeyDown(object sender, KeyEventArgs e)
@@ -527,6 +564,11 @@ namespace Viewer.UI.Images
             
             NameTextBox.BringToFront();
             BeginEditItemName?.Invoke(sender, new EntityEventArgs(_activeItem));
+        }
+
+        private void PasteMenuItem_Click(object sender, EventArgs e)
+        {
+            OnPaste?.Invoke(sender, e);
         }
 
         private void PreviousMenuItem_Click(object sender, EventArgs e)

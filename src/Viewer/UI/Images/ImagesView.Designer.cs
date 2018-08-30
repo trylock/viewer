@@ -35,6 +35,7 @@
             this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowQueryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.PreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,7 +50,8 @@
             this.BackToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.StatusLabel = new System.Windows.Forms.Label();
-            this.ShowQueryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.PasteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,13 +79,14 @@
             this.PreviousMenuItem,
             this.NextMenuItem,
             this.toolStripSeparator1,
+            this.PasteMenuItem,
             this.CopyMenuItem,
             this.CutMenuItem,
             this.toolStripSeparator2,
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 248);
+            this.ItemContextMenu.Size = new System.Drawing.Size(181, 270);
             // 
             // OpenMenuItem
             // 
@@ -103,6 +106,14 @@
             this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
             this.RefreshMenuItem.Size = new System.Drawing.Size(180, 22);
             this.RefreshMenuItem.Text = "Refresh";
+            // 
+            // ShowQueryMenuItem
+            // 
+            this.ShowQueryMenuItem.Name = "ShowQueryMenuItem";
+            this.ShowQueryMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
+            this.ShowQueryMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ShowQueryMenuItem.Text = "Show Query";
+            this.ShowQueryMenuItem.Click += new System.EventHandler(this.ShowQueryMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -187,13 +198,18 @@
             this.StatusLabel.TabIndex = 1;
             this.StatusLabel.Text = "Loading ...";
             // 
-            // ShowQueryMenuItem
+            // PickDirectoryContextMenu
             // 
-            this.ShowQueryMenuItem.Name = "ShowQueryMenuItem";
-            this.ShowQueryMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
-            this.ShowQueryMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.ShowQueryMenuItem.Text = "Show Query";
-            this.ShowQueryMenuItem.Click += new System.EventHandler(this.ShowQueryMenuItem_Click);
+            this.PickDirectoryContextMenu.Name = "PickDirectoryContextMenu";
+            this.PickDirectoryContextMenu.Size = new System.Drawing.Size(61, 4);
+            // 
+            // PasteMenuItem
+            // 
+            this.PasteMenuItem.Name = "PasteMenuItem";
+            this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.PasteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.PasteMenuItem.Text = "Paste";
+            this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
             // 
             // ImagesView
             // 
@@ -235,5 +251,7 @@
         private System.Windows.Forms.ToolStripMenuItem NextMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem ShowQueryMenuItem;
+        private System.Windows.Forms.ContextMenuStrip PickDirectoryContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem PasteMenuItem;
     }
 }

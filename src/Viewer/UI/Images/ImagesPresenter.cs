@@ -523,23 +523,47 @@ namespace Viewer.UI.Images
         {
             _state.Forward();
         }
-        
-        private async void View_OnDrop(object sender, DropEventArgs e)
+
+        private IReadOnlyCollection<string> FindAllFolders()
         {
-            if (e.Entity == null)
+            return View.Items
+                .Select(view => Path.GetDirectoryName(view.FullPath))
+                .Where(item => item != null)
+                .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                .ToList();
+        }
+
+        private async void CopyMoveFilesToView(
+            string destinationDirectory, 
+            DragDropEffects allowedEffects, 
+            IEnumerable<string> files)
+        {
+            // pick the destination directory
+            if (destinationDirectory == null)
             {
-                return;
+                var folders = FindAllFolders();
+                if (folders.Count == 1)
+                {
+                    destinationDirectory = folders.First();
+                }
+                else
+                {
+                    try
+                    {
+                        destinationDirectory = await View.PickDirectoryAsync(folders);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return;
+                    }
+                }
             }
 
-            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
-            if (files == null)
-            {
-                return;
-            }
+            Trace.Assert(destinationDirectory != null);
 
             // ignore copy/move dest => dest operation
-            var movedFiles = files.Where(path => 
-                !string.Equals(path, e.Entity.FullPath, StringComparison.CurrentCultureIgnoreCase));
+            var movedFiles = files.Where(path =>
+                !string.Equals(path, destinationDirectory, StringComparison.CurrentCultureIgnoreCase));
             if (!movedFiles.Any())
             {
                 return;
@@ -547,18 +571,35 @@ namespace Viewer.UI.Images
 
             try
             {
-                if ((e.AllowedEffect & DragDropEffects.Move) != 0)
+                if ((allowedEffects & DragDropEffects.Move) != 0)
                 {
-                    await _explorer.MoveFilesAsync(e.Entity.FullPath, movedFiles);
+                    await _explorer.MoveFilesAsync(destinationDirectory, movedFiles);
                 }
-                else if ((e.AllowedEffect & DragDropEffects.Copy) != 0)
+                else if ((allowedEffects & DragDropEffects.Copy) != 0)
                 {
-                    await _explorer.CopyFilesAsync(e.Entity.FullPath, movedFiles);
+                    await _explorer.CopyFilesAsync(destinationDirectory, movedFiles);
                 }
             }
             catch (OperationCanceledException)
             {
             }
+        }
+
+        private void View_OnPaste(object sender, EventArgs e)
+        {
+            var files = _clipboard.GetFiles();
+            CopyMoveFilesToView(null, files.Effect, files);
+        }
+
+        private void View_OnDrop(object sender, DropEventArgs e)
+        {
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+            if (files == null)
+            {
+                return;
+            }
+
+            CopyMoveFilesToView(e.Entity?.FullPath, e.AllowedEffect, files);
         }
 
         private void View_RefreshQuery(object sender, EventArgs e)

@@ -113,6 +113,58 @@ namespace ViewerTest.UI.Images
         }
 
         [TestMethod]
+        public async Task LoadEmbeddedThumbnailAsync_TaskIsCanceledAfterAThumbnailIsGenerated()
+        {
+            var cancellation = new CancellationTokenSource();
+            var entity = new FileEntity("test");
+            var embeddedThumbnail = new BitmapMock();
+            var generatedThumbnail = new BitmapMock();
+
+            _imageLoader
+                .Setup(mock => mock.LoadThumbnailAsync(entity, cancellation.Token))
+                .Returns(Task.FromResult<SKBitmap>(embeddedThumbnail));
+            _thumbnailGenerator
+                .Setup(mock => mock.GetThumbnail(embeddedThumbnail, new Size(1, 1)))
+                .Callback(() => cancellation.Cancel())
+                .Returns(generatedThumbnail);
+
+            Assert.IsFalse(embeddedThumbnail.IsDisposed);
+            Assert.IsFalse(generatedThumbnail.IsDisposed);
+
+            var result = await _loader.LoadEmbeddedThumbnailAsync(entity, new Size(1, 1), cancellation.Token);
+            Assert.IsInstanceOfType(result.ThumbnailImage, typeof(Bitmap));
+            Assert.IsTrue(embeddedThumbnail.IsDisposed);
+            Assert.IsTrue(generatedThumbnail.IsDisposed);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public async Task LoadEmbeddedThumbnailAsync_TaskIsCanceledAfterAThumbnailLoaded()
+        {
+            var cancellation = new CancellationTokenSource();
+            var entity = new FileEntity("test");
+            var embeddedThumbnail = new BitmapMock();
+
+            _imageLoader
+                .Setup(mock => mock.LoadThumbnailAsync(entity, cancellation.Token))
+                .Callback(() => cancellation.Cancel())
+                .Returns(Task.FromResult<SKBitmap>(embeddedThumbnail));
+
+            Assert.IsFalse(embeddedThumbnail.IsDisposed);
+            
+            try
+            {
+                await _loader.LoadEmbeddedThumbnailAsync(entity, new Size(1, 1), cancellation.Token);
+            }
+            finally
+            {
+                Assert.IsTrue(embeddedThumbnail.IsDisposed);
+
+                _thumbnailGenerator.Verify(mock => mock.GetThumbnail(It.IsAny<SKBitmap>(), It.IsAny<Size>()), Times.Never);
+            }
+        }
+
+        [TestMethod]
         public async Task LoadNativeThumbnailAsync_DisposeIntermediateResults()
         {
             var originalImage = new BitmapMock();

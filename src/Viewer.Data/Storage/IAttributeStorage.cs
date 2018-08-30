@@ -91,7 +91,7 @@ namespace Viewer.Data.Storage
 
     /// <inheritdoc />
     /// <summary>
-    /// Deferred attribute storage deferrs all write requests (everything but
+    /// Deferred attribute storage can deferr all write requests (everything but
     /// <see cref="IAttributeStorage.Load" />) for later. Specifically, until
     /// <see cref="ApplyChanges" /> is called.
     /// </summary>

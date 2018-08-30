@@ -14,6 +14,10 @@ namespace Viewer.Data.Formats.Jpeg
         /// Write single JPEG segment at the current position
         /// </summary>
         /// <param name="segment">Segment to write</param>
+        /// <exception cref="ArgumentNullException"><paramref name="segment"/> is null</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="segment"/> data array has an invalid size
+        /// </exception>
         void WriteSegment(JpegSegment segment);
 
         /// <summary>
@@ -39,6 +43,11 @@ namespace Viewer.Data.Formats.Jpeg
 
         public void WriteSegment(JpegSegment segment)
         {
+            if (segment == null)
+                throw new ArgumentNullException(nameof(segment));
+            if (segment.Bytes.Length + 2 > 0xFFFF)
+                throw new ArgumentOutOfRangeException(nameof(segment));
+
             _writer.Write((byte)0xFF); // segment start
             _writer.Write((byte)segment.Type);
 

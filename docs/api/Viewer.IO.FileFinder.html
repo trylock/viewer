@@ -420,9 +420,6 @@
                             <a href="Viewer.IO.FileSystem.html" title="FileSystem" class="">FileSystem</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.FileWatcher.html" title="FileWatcher" class="">FileWatcher</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.IO.FileWatcherFactory.html" title="FileWatcherFactory" class="">FileWatcherFactory</a>
                           </li>
                           <li class="">
@@ -496,9 +493,6 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.NullQueryProgress.html" title="NullQueryProgress" class="">NullQueryProgress</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.Query.Query.html" title="Query" class="">Query</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryCompiler.html" title="QueryCompiler" class="">QueryCompiler</a>
@@ -978,6 +972,9 @@
                             <a href="Viewer.UI.Images.GridView.html" title="GridView" class="">GridView</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.UI.Images.IFileDropView.html" title="IFileDropView" class="">IFileDropView</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.UI.Images.IHistoryView.html" title="IHistoryView" class="">IHistoryView</a>
                           </li>
                           <li class="">
@@ -1209,7 +1206,7 @@ foreach (var filePath in finder.GetFiles()) { ... }</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder__ctor_Viewer_IO_IFileSystem_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.%23ctor(Viewer.IO.IFileSystem%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L84">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L88">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder__ctor_" data-uid="Viewer.IO.FileFinder.#ctor*"></a>
   <h4 id="Viewer_IO_FileFinder__ctor_Viewer_IO_IFileSystem_System_String_" data-uid="Viewer.IO.FileFinder.#ctor(Viewer.IO.IFileSystem,System.String)">FileFinder(IFileSystem, String)</h4>
@@ -1258,6 +1255,11 @@ foreach (var filePath in finder.GetFiles()) { ... }</code></pre>
         <td><p><code data-dev-comment-type="paramref" class="paramref">fileSystem</code> or <code data-dev-comment-type="paramref" class="paramref">directoryPattern</code> is null</p>
 </td>
       </tr>
+      <tr>
+        <td><span class="xref">System.ArgumentException</span></td>
+        <td><p><code data-dev-comment-type="paramref" class="paramref">directoryPattern</code> contains invalid characters</p>
+</td>
+      </tr>
     </tbody>
   </table>
   <h3 id="properties">Properties
@@ -1267,7 +1269,7 @@ foreach (var filePath in finder.GetFiles()) { ... }</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_HiddenAttributes.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.HiddenAttributes%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L67">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L68">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_HiddenAttributes_" data-uid="Viewer.IO.FileFinder.HiddenAttributes*"></a>
   <h4 id="Viewer_IO_FileFinder_HiddenAttributes" data-uid="Viewer.IO.FileFinder.HiddenAttributes">HiddenAttributes</h4>
@@ -1287,7 +1289,7 @@ the result.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_Pattern.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.Pattern%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L72">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L73">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_Pattern_" data-uid="Viewer.IO.FileFinder.Pattern*"></a>
   <h4 id="Viewer_IO_FileFinder_Pattern" data-uid="Viewer.IO.FileFinder.Pattern">Pattern</h4>
@@ -1308,7 +1310,7 @@ the result.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_GetDirectories.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.GetDirectories%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L182">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L186">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_GetDirectories_" data-uid="Viewer.IO.FileFinder.GetDirectories*"></a>
   <h4 id="Viewer_IO_FileFinder_GetDirectories" data-uid="Viewer.IO.FileFinder.GetDirectories">GetDirectories()</h4>
@@ -1329,7 +1331,7 @@ throw <span class="xref">System.UnauthorizedAccessException</span> or <span clas
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_GetFiles.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.GetFiles%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L319">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L322">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_GetFiles_" data-uid="Viewer.IO.FileFinder.GetFiles*"></a>
   <h4 id="Viewer_IO_FileFinder_GetFiles" data-uid="Viewer.IO.FileFinder.GetFiles">GetFiles()</h4>
@@ -1349,7 +1351,7 @@ throw <span class="xref">System.UnauthorizedAccessException</span> or <span clas
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_Match_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.Match(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L259">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L263">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_Match_" data-uid="Viewer.IO.FileFinder.Match*"></a>
   <h4 id="Viewer_IO_FileFinder_Match_System_String_" data-uid="Viewer.IO.FileFinder.Match(System.String)">Match(String)</h4>
@@ -1390,7 +1392,7 @@ throw <span class="xref">System.UnauthorizedAccessException</span> or <span clas
                     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L45" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L46" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

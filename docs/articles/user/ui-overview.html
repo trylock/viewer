@@ -124,24 +124,25 @@
 <p>Result of a query is shown in the window labeled <code>Images</code>. To open it, select a directory in the <a href="#explorer">Explorer window</a> or execute a query in a <a href="#query-editor">Query editor</a>.</p>
 <p>It shows a grid of photo thumbnails. The thumbnail grid works very simillar to Windows File Explorer:</p>
 <ul>
+<li>double click on a thumbnail to open a <a href="#presentation">Presentation</a></li>
 <li>select images using mouse pointer (use left mouse button over an empty space and drag the mouse cursor)</li>
 <li>hold the left <code>Ctrl</code> key to switch the selection to symetric difference mode. If you start a new selection in this mode, previously selected images won't be removed. Instead, if an image has already been in the selection and you select it again, it will be removed.</li>
 <li>hold the left <code>Shift</code> key to switch the selection to union mode. In this mode, if you start a new selection, the previously selected images won't be removed. All newly selected images will be added to the selection.</li>
 <li>Copy (<code>Ctrl + C</code>), cut (<code>Ctrl + X</code>), rename (<code>F2</code>) and delete (<code>Delete</code>) files using shortcuts or the context menu opened by right clicking anywhere in the window.</li>
-<li>All queries are kept in a history. You can browse the history using the context menu or shortcuts (<code>Alt + Left Arrow</code> or <code>Mouse Button 4</code> to go to the previous query and <code>Alt + Right Arrow</code> or <code>Mouse Button 5</code> to go to the next query)</li>
+<li>All queries are kept in a history collection. You can browse the history using the context menu or shortcuts (<code>Alt + Left Arrow</code> or <code>Mouse Button 4</code> to go to the previous query and <code>Alt + Right Arrow</code> or <code>Mouse Button 5</code> to go to the next query)</li>
 </ul>
-<p>Size of thumbnails can be dynamically changed using the thumbnail size slider shown in the bottom right corner of the application (in the status bar).</p>
+<p>Size of thumbnails can be changed using the thumbnail size slider shown in the bottom right corner of the application (in the status bar).</p>
 <p>Looking at the status bar, there are 3 more labels. Label on the left shows status of the current query. Since we have already found all photos, it just says &quot;Done.&quot; Labels on the right show the number of selected items and the total number of items in the grid.</p>
 <h2 id="attributes">Attributes</h2>
 <p>When you select photos in the application, all their attributes are shown in windows labeled <code>Exif</code> and <code>Attributes</code> (top right in the image). <code>Exif</code> contains read-only tags parsed from the Exif segment. <code>Attributes</code> contains editable attributes saved in a custom attributes segment. You can edit these attributes for all selected photos and save all modifications using the save button shown in the bottom right corner of the <code>Attributes</code> window.</p>
 <h2 id="explorer">Explorer</h2>
 <p><img src="../../images/explorer.png" alt="Explorer"></p>
 <p>You can easily navigate through the local files in the window labeled <code>Explorer</code>. Open it using the application menu: <code>View</code> → <code>Explorer</code></p>
-<p>The explorer component is a tree view with all local folders. Clicking on a folder in this tree view will execute query <code>SELECT &quot;path_to_the_folder&quot;</code> which effectively opens content of this directory in the <a href="#thumbnail-grid">thumbnail grid window</a>. Double clicking on a folder in this view will show all its subfolders.</p>
+<p>The explorer component is a tree view with all local folders. Clicking on a folder in this tree view will execute a query <code>SELECT &quot;path_to_the_folder&quot;</code> which opens content of this directory in the <a href="#thumbnail-grid">Thumbnail Grid window</a>. Double clicking on a folder in this view will reveal all its subfolders.</p>
 <h2 id="presentation">Presentation</h2>
 <p><img src="../../images/presentation.png" alt="Presentation"></p>
 <p>You can view all your photos in the <code>Presentation</code> window. Open the window by double clicking on an item in the <a href="#thumbnail-grid">Thumbnail Grid</a>.</p>
-<p>Presentation shows photos one by one scaled down to the window size. Pointing your cursor to the bottom of this window will open a control panel (seen at the bottom center of the window). You can start presentation (<code>space</code>), set presentation speed and zoom in (<code>Ctrl + Mouse Wheel Up</code>) and out (<code>Ctrl + Mouse Wheel Down</code>) using this control panel. Additionaly, a fullscreen presentation can be opened (<code>F5</code>).</p>
+<p>Presentation shows photos one by one scaled down to the window size. Pointing your cursor to the bottom of this window will open a control panel as seen in the picture above. You can start presentation (<code>space</code>), set presentation speed and zoom in (<code>Ctrl + Mouse Wheel Up</code>) and out (<code>Ctrl + Mouse Wheel Down</code>) using this control panel. Additionaly, a fullscreen presentation can be opened (<code>F5</code>).</p>
 <p>You can manually go through the presentation. Move your mouse cursor to the left or the right edge of the window and a button will show up. Use these buttons to move forward/backward in the presentation or use <code>Mouse Wheel Down</code> to go backward and <code>Mouse Wheel Up</code> to go forward.</p>
 <h2 id="query-editor">Query Editor</h2>
 <p><img src="../../images/query.png" alt="Query Editor"></p>

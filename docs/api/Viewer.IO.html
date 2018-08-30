@@ -420,9 +420,6 @@
                             <a href="Viewer.IO.FileSystem.html" title="FileSystem" class="">FileSystem</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.IO.FileWatcher.html" title="FileWatcher" class="">FileWatcher</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.IO.FileWatcherFactory.html" title="FileWatcherFactory" class="">FileWatcherFactory</a>
                           </li>
                           <li class="">
@@ -496,9 +493,6 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.NullQueryProgress.html" title="NullQueryProgress" class="">NullQueryProgress</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.Query.Query.html" title="Query" class="">Query</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryCompiler.html" title="QueryCompiler" class="">QueryCompiler</a>
@@ -978,6 +972,9 @@
                             <a href="Viewer.UI.Images.GridView.html" title="GridView" class="">GridView</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.UI.Images.IFileDropView.html" title="IFileDropView" class="">IFileDropView</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.UI.Images.IHistoryView.html" title="IHistoryView" class="">IHistoryView</a>
                           </li>
                           <li class="">
@@ -1169,8 +1166,6 @@ string (i.e., <code>a/**/b</code> matches <code>a/b</code>, <code>a/x/b</code>, 
 </section>
       <h4><a class="xref" href="Viewer.IO.FileSystem.html">FileSystem</a></h4>
       <section></section>
-      <h4><a class="xref" href="Viewer.IO.FileWatcher.html">FileWatcher</a></h4>
-      <section></section>
       <h4><a class="xref" href="Viewer.IO.FileWatcherFactory.html">FileWatcherFactory</a></h4>
       <section></section>
       <h4><a class="xref" href="Viewer.IO.PathUtils.html">PathUtils</a></h4>
@@ -1179,7 +1174,8 @@ string (i.e., <code>a/**/b</code> matches <code>a/b</code>, <code>a/x/b</code>, 
     <h3 id="interfaces">Interfaces
   </h3>
       <h4><a class="xref" href="Viewer.IO.IFileSystem.html">IFileSystem</a></h4>
-      <section></section>
+      <section><p>Mockable wrapper for static methods in <span class="xref">System.IO.File</span> and <span class="xref">System.IO.Directory</span>.</p>
+</section>
       <h4><a class="xref" href="Viewer.IO.IFileWatcher.html">IFileWatcher</a></h4>
       <section><p>File system watcher watches file and directory changes within specified directory.
 Use the <a class="xref" href="Viewer.IO.IFileWatcher.html#Viewer_IO_IFileWatcher_Watch_System_String_">Watch(String)</a> method to start watching a directory with this watcher.</p>

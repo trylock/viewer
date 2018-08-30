@@ -5013,62 +5013,6 @@ references:
   isSpec: "True"
   fullName: Viewer.IO.FileSystem.Search
   nameWithType: FileSystem.Search
-- uid: Viewer.IO.FileWatcher
-  name: FileWatcher
-  href: api/Viewer.IO.FileWatcher.html
-  commentId: T:Viewer.IO.FileWatcher
-  fullName: Viewer.IO.FileWatcher
-  nameWithType: FileWatcher
-- uid: Viewer.IO.FileWatcher.Changed
-  name: Changed
-  href: api/Viewer.IO.FileWatcher.html#Viewer_IO_FileWatcher_Changed
-  commentId: E:Viewer.IO.FileWatcher.Changed
-  fullName: Viewer.IO.FileWatcher.Changed
-  nameWithType: FileWatcher.Changed
-- uid: Viewer.IO.FileWatcher.Created
-  name: Created
-  href: api/Viewer.IO.FileWatcher.html#Viewer_IO_FileWatcher_Created
-  commentId: E:Viewer.IO.FileWatcher.Created
-  fullName: Viewer.IO.FileWatcher.Created
-  nameWithType: FileWatcher.Created
-- uid: Viewer.IO.FileWatcher.Deleted
-  name: Deleted
-  href: api/Viewer.IO.FileWatcher.html#Viewer_IO_FileWatcher_Deleted
-  commentId: E:Viewer.IO.FileWatcher.Deleted
-  fullName: Viewer.IO.FileWatcher.Deleted
-  nameWithType: FileWatcher.Deleted
-- uid: Viewer.IO.FileWatcher.Dispose
-  name: Dispose()
-  href: api/Viewer.IO.FileWatcher.html#Viewer_IO_FileWatcher_Dispose
-  commentId: M:Viewer.IO.FileWatcher.Dispose
-  fullName: Viewer.IO.FileWatcher.Dispose()
-  nameWithType: FileWatcher.Dispose()
-- uid: Viewer.IO.FileWatcher.Dispose*
-  name: Dispose
-  href: api/Viewer.IO.FileWatcher.html#Viewer_IO_FileWatcher_Dispose_
-  commentId: Overload:Viewer.IO.FileWatcher.Dispose
-  isSpec: "True"
-  fullName: Viewer.IO.FileWatcher.Dispose
-  nameWithType: FileWatcher.Dispose
-- uid: Viewer.IO.FileWatcher.Renamed
-  name: Renamed
-  href: api/Viewer.IO.FileWatcher.html#Viewer_IO_FileWatcher_Renamed
-  commentId: E:Viewer.IO.FileWatcher.Renamed
-  fullName: Viewer.IO.FileWatcher.Renamed
-  nameWithType: FileWatcher.Renamed
-- uid: Viewer.IO.FileWatcher.Watch(System.String)
-  name: Watch(String)
-  href: api/Viewer.IO.FileWatcher.html#Viewer_IO_FileWatcher_Watch_System_String_
-  commentId: M:Viewer.IO.FileWatcher.Watch(System.String)
-  fullName: Viewer.IO.FileWatcher.Watch(System.String)
-  nameWithType: FileWatcher.Watch(String)
-- uid: Viewer.IO.FileWatcher.Watch*
-  name: Watch
-  href: api/Viewer.IO.FileWatcher.html#Viewer_IO_FileWatcher_Watch_
-  commentId: Overload:Viewer.IO.FileWatcher.Watch
-  isSpec: "True"
-  fullName: Viewer.IO.FileWatcher.Watch
-  nameWithType: FileWatcher.Watch
 - uid: Viewer.IO.FileWatcherFactory
   name: FileWatcherFactory
   href: api/Viewer.IO.FileWatcherFactory.html
@@ -6768,180 +6712,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.NullQueryProgress.Report
   nameWithType: NullQueryProgress.Report
-- uid: Viewer.Query.Query
-  name: Query
-  href: api/Viewer.Query.Query.html
-  commentId: T:Viewer.Query.Query
-  fullName: Viewer.Query.Query
-  nameWithType: Query
-- uid: Viewer.Query.Query.#ctor(Viewer.Query.IExecutableQuery,System.Collections.Generic.IComparer{Viewer.Data.IEntity},System.String)
-  name: Query(IExecutableQuery, IComparer<IEntity>, String)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query__ctor_Viewer_Query_IExecutableQuery_System_Collections_Generic_IComparer_Viewer_Data_IEntity__System_String_
-  commentId: M:Viewer.Query.Query.#ctor(Viewer.Query.IExecutableQuery,System.Collections.Generic.IComparer{Viewer.Data.IEntity},System.String)
-  name.vb: Query(IExecutableQuery, IComparer(Of IEntity), String)
-  fullName: Viewer.Query.Query.Query(Viewer.Query.IExecutableQuery, System.Collections.Generic.IComparer<Viewer.Data.IEntity>, System.String)
-  fullName.vb: Viewer.Query.Query.Query(Viewer.Query.IExecutableQuery, System.Collections.Generic.IComparer(Of Viewer.Data.IEntity), System.String)
-  nameWithType: Query.Query(IExecutableQuery, IComparer<IEntity>, String)
-  nameWithType.vb: Query.Query(IExecutableQuery, IComparer(Of IEntity), String)
-- uid: Viewer.Query.Query.#ctor*
-  name: Query
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query__ctor_
-  commentId: Overload:Viewer.Query.Query.#ctor
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Query
-  nameWithType: Query.Query
-- uid: Viewer.Query.Query.Comparer
-  name: Comparer
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Comparer
-  commentId: P:Viewer.Query.Query.Comparer
-  fullName: Viewer.Query.Query.Comparer
-  nameWithType: Query.Comparer
-- uid: Viewer.Query.Query.Comparer*
-  name: Comparer
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Comparer_
-  commentId: Overload:Viewer.Query.Query.Comparer
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Comparer
-  nameWithType: Query.Comparer
-- uid: Viewer.Query.Query.Except(Viewer.Query.IExecutableQuery)
-  name: Except(IExecutableQuery)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Except_Viewer_Query_IExecutableQuery_
-  commentId: M:Viewer.Query.Query.Except(Viewer.Query.IExecutableQuery)
-  fullName: Viewer.Query.Query.Except(Viewer.Query.IExecutableQuery)
-  nameWithType: Query.Except(IExecutableQuery)
-- uid: Viewer.Query.Query.Except*
-  name: Except
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Except_
-  commentId: Overload:Viewer.Query.Query.Except
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Except
-  nameWithType: Query.Except
-- uid: Viewer.Query.Query.Execute(System.IProgress{Viewer.Query.QueryProgressReport},System.Threading.CancellationToken)
-  name: Execute(IProgress<QueryProgressReport>, CancellationToken)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Execute_System_IProgress_Viewer_Query_QueryProgressReport__System_Threading_CancellationToken_
-  commentId: M:Viewer.Query.Query.Execute(System.IProgress{Viewer.Query.QueryProgressReport},System.Threading.CancellationToken)
-  name.vb: Execute(IProgress(Of QueryProgressReport), CancellationToken)
-  fullName: Viewer.Query.Query.Execute(System.IProgress<Viewer.Query.QueryProgressReport>, System.Threading.CancellationToken)
-  fullName.vb: Viewer.Query.Query.Execute(System.IProgress(Of Viewer.Query.QueryProgressReport), System.Threading.CancellationToken)
-  nameWithType: Query.Execute(IProgress<QueryProgressReport>, CancellationToken)
-  nameWithType.vb: Query.Execute(IProgress(Of QueryProgressReport), CancellationToken)
-- uid: Viewer.Query.Query.Execute*
-  name: Execute
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Execute_
-  commentId: Overload:Viewer.Query.Query.Execute
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Execute
-  nameWithType: Query.Execute
-- uid: Viewer.Query.Query.Intersect(Viewer.Query.IExecutableQuery)
-  name: Intersect(IExecutableQuery)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Intersect_Viewer_Query_IExecutableQuery_
-  commentId: M:Viewer.Query.Query.Intersect(Viewer.Query.IExecutableQuery)
-  fullName: Viewer.Query.Query.Intersect(Viewer.Query.IExecutableQuery)
-  nameWithType: Query.Intersect(IExecutableQuery)
-- uid: Viewer.Query.Query.Intersect*
-  name: Intersect
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Intersect_
-  commentId: Overload:Viewer.Query.Query.Intersect
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Intersect
-  nameWithType: Query.Intersect
-- uid: Viewer.Query.Query.Match(Viewer.Data.IEntity)
-  name: Match(IEntity)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Match_Viewer_Data_IEntity_
-  commentId: M:Viewer.Query.Query.Match(Viewer.Data.IEntity)
-  fullName: Viewer.Query.Query.Match(Viewer.Data.IEntity)
-  nameWithType: Query.Match(IEntity)
-- uid: Viewer.Query.Query.Match*
-  name: Match
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Match_
-  commentId: Overload:Viewer.Query.Query.Match
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Match
-  nameWithType: Query.Match
-- uid: Viewer.Query.Query.Text
-  name: Text
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Text
-  commentId: P:Viewer.Query.Query.Text
-  fullName: Viewer.Query.Query.Text
-  nameWithType: Query.Text
-- uid: Viewer.Query.Query.Text*
-  name: Text
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Text_
-  commentId: Overload:Viewer.Query.Query.Text
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Text
-  nameWithType: Query.Text
-- uid: Viewer.Query.Query.ToString
-  name: ToString()
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_ToString
-  commentId: M:Viewer.Query.Query.ToString
-  fullName: Viewer.Query.Query.ToString()
-  nameWithType: Query.ToString()
-- uid: Viewer.Query.Query.ToString*
-  name: ToString
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_ToString_
-  commentId: Overload:Viewer.Query.Query.ToString
-  isSpec: "True"
-  fullName: Viewer.Query.Query.ToString
-  nameWithType: Query.ToString
-- uid: Viewer.Query.Query.Union(Viewer.Query.IExecutableQuery)
-  name: Union(IExecutableQuery)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Union_Viewer_Query_IExecutableQuery_
-  commentId: M:Viewer.Query.Query.Union(Viewer.Query.IExecutableQuery)
-  fullName: Viewer.Query.Query.Union(Viewer.Query.IExecutableQuery)
-  nameWithType: Query.Union(IExecutableQuery)
-- uid: Viewer.Query.Query.Union*
-  name: Union
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Union_
-  commentId: Overload:Viewer.Query.Query.Union
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Union
-  nameWithType: Query.Union
-- uid: Viewer.Query.Query.Where(System.Func{Viewer.Data.IEntity,System.Boolean})
-  name: Where(Func<IEntity, Boolean>)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Where_System_Func_Viewer_Data_IEntity_System_Boolean__
-  commentId: M:Viewer.Query.Query.Where(System.Func{Viewer.Data.IEntity,System.Boolean})
-  name.vb: Where(Func(Of IEntity, Boolean))
-  fullName: Viewer.Query.Query.Where(System.Func<Viewer.Data.IEntity, System.Boolean>)
-  fullName.vb: Viewer.Query.Query.Where(System.Func(Of Viewer.Data.IEntity, System.Boolean))
-  nameWithType: Query.Where(Func<IEntity, Boolean>)
-  nameWithType.vb: Query.Where(Func(Of IEntity, Boolean))
-- uid: Viewer.Query.Query.Where*
-  name: Where
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_Where_
-  commentId: Overload:Viewer.Query.Query.Where
-  isSpec: "True"
-  fullName: Viewer.Query.Query.Where
-  nameWithType: Query.Where
-- uid: Viewer.Query.Query.WithComparer(System.Collections.Generic.IComparer{Viewer.Data.IEntity})
-  name: WithComparer(IComparer<IEntity>)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_WithComparer_System_Collections_Generic_IComparer_Viewer_Data_IEntity__
-  commentId: M:Viewer.Query.Query.WithComparer(System.Collections.Generic.IComparer{Viewer.Data.IEntity})
-  name.vb: WithComparer(IComparer(Of IEntity))
-  fullName: Viewer.Query.Query.WithComparer(System.Collections.Generic.IComparer<Viewer.Data.IEntity>)
-  fullName.vb: Viewer.Query.Query.WithComparer(System.Collections.Generic.IComparer(Of Viewer.Data.IEntity))
-  nameWithType: Query.WithComparer(IComparer<IEntity>)
-  nameWithType.vb: Query.WithComparer(IComparer(Of IEntity))
-- uid: Viewer.Query.Query.WithComparer*
-  name: WithComparer
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_WithComparer_
-  commentId: Overload:Viewer.Query.Query.WithComparer
-  isSpec: "True"
-  fullName: Viewer.Query.Query.WithComparer
-  nameWithType: Query.WithComparer
-- uid: Viewer.Query.Query.WithText(System.String)
-  name: WithText(String)
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_WithText_System_String_
-  commentId: M:Viewer.Query.Query.WithText(System.String)
-  fullName: Viewer.Query.Query.WithText(System.String)
-  nameWithType: Query.WithText(String)
-- uid: Viewer.Query.Query.WithText*
-  name: WithText
-  href: api/Viewer.Query.Query.html#Viewer_Query_Query_WithText_
-  commentId: Overload:Viewer.Query.Query.WithText
-  isSpec: "True"
-  fullName: Viewer.Query.Query.WithText
-  nameWithType: Query.WithText
 - uid: Viewer.Query.QueryCompiler
   name: QueryCompiler
   href: api/Viewer.Query.QueryCompiler.html
@@ -12256,19 +12026,6 @@ references:
   commentId: T:Viewer.UI.Attributes.AttributeGroup
   fullName: Viewer.UI.Attributes.AttributeGroup
   nameWithType: AttributeGroup
-- uid: Viewer.UI.Attributes.AttributeGroup.Data
-  name: Data
-  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_Data
-  commentId: P:Viewer.UI.Attributes.AttributeGroup.Data
-  fullName: Viewer.UI.Attributes.AttributeGroup.Data
-  nameWithType: AttributeGroup.Data
-- uid: Viewer.UI.Attributes.AttributeGroup.Data*
-  name: Data
-  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_Data_
-  commentId: Overload:Viewer.UI.Attributes.AttributeGroup.Data
-  isSpec: "True"
-  fullName: Viewer.UI.Attributes.AttributeGroup.Data
-  nameWithType: AttributeGroup.Data
 - uid: Viewer.UI.Attributes.AttributeGroup.EntityCount
   name: EntityCount
   href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_EntityCount
@@ -12282,32 +12039,45 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Attributes.AttributeGroup.EntityCount
   nameWithType: AttributeGroup.EntityCount
-- uid: Viewer.UI.Attributes.AttributeGroup.IsGlobal
-  name: IsGlobal
-  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_IsGlobal
-  commentId: P:Viewer.UI.Attributes.AttributeGroup.IsGlobal
-  fullName: Viewer.UI.Attributes.AttributeGroup.IsGlobal
-  nameWithType: AttributeGroup.IsGlobal
-- uid: Viewer.UI.Attributes.AttributeGroup.IsGlobal*
-  name: IsGlobal
-  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_IsGlobal_
-  commentId: Overload:Viewer.UI.Attributes.AttributeGroup.IsGlobal
+- uid: Viewer.UI.Attributes.AttributeGroup.HasMultipleValues
+  name: HasMultipleValues
+  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_HasMultipleValues
+  commentId: P:Viewer.UI.Attributes.AttributeGroup.HasMultipleValues
+  fullName: Viewer.UI.Attributes.AttributeGroup.HasMultipleValues
+  nameWithType: AttributeGroup.HasMultipleValues
+- uid: Viewer.UI.Attributes.AttributeGroup.HasMultipleValues*
+  name: HasMultipleValues
+  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_HasMultipleValues_
+  commentId: Overload:Viewer.UI.Attributes.AttributeGroup.HasMultipleValues
   isSpec: "True"
-  fullName: Viewer.UI.Attributes.AttributeGroup.IsGlobal
-  nameWithType: AttributeGroup.IsGlobal
-- uid: Viewer.UI.Attributes.AttributeGroup.IsMixed
-  name: IsMixed
-  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_IsMixed
-  commentId: P:Viewer.UI.Attributes.AttributeGroup.IsMixed
-  fullName: Viewer.UI.Attributes.AttributeGroup.IsMixed
-  nameWithType: AttributeGroup.IsMixed
-- uid: Viewer.UI.Attributes.AttributeGroup.IsMixed*
-  name: IsMixed
-  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_IsMixed_
-  commentId: Overload:Viewer.UI.Attributes.AttributeGroup.IsMixed
+  fullName: Viewer.UI.Attributes.AttributeGroup.HasMultipleValues
+  nameWithType: AttributeGroup.HasMultipleValues
+- uid: Viewer.UI.Attributes.AttributeGroup.IsInAllEntities
+  name: IsInAllEntities
+  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_IsInAllEntities
+  commentId: P:Viewer.UI.Attributes.AttributeGroup.IsInAllEntities
+  fullName: Viewer.UI.Attributes.AttributeGroup.IsInAllEntities
+  nameWithType: AttributeGroup.IsInAllEntities
+- uid: Viewer.UI.Attributes.AttributeGroup.IsInAllEntities*
+  name: IsInAllEntities
+  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_IsInAllEntities_
+  commentId: Overload:Viewer.UI.Attributes.AttributeGroup.IsInAllEntities
   isSpec: "True"
-  fullName: Viewer.UI.Attributes.AttributeGroup.IsMixed
-  nameWithType: AttributeGroup.IsMixed
+  fullName: Viewer.UI.Attributes.AttributeGroup.IsInAllEntities
+  nameWithType: AttributeGroup.IsInAllEntities
+- uid: Viewer.UI.Attributes.AttributeGroup.Value
+  name: Value
+  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_Value
+  commentId: P:Viewer.UI.Attributes.AttributeGroup.Value
+  fullName: Viewer.UI.Attributes.AttributeGroup.Value
+  nameWithType: AttributeGroup.Value
+- uid: Viewer.UI.Attributes.AttributeGroup.Value*
+  name: Value
+  href: api/Viewer.UI.Attributes.AttributeGroup.html#Viewer_UI_Attributes_AttributeGroup_Value_
+  commentId: Overload:Viewer.UI.Attributes.AttributeGroup.Value
+  isSpec: "True"
+  fullName: Viewer.UI.Attributes.AttributeGroup.Value
+  nameWithType: AttributeGroup.Value
 - uid: Viewer.UI.Attributes.AttributeManager
   name: AttributeManager
   href: api/Viewer.UI.Attributes.AttributeManager.html
@@ -16020,6 +15790,40 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Images.GridView.UpdateItems
   nameWithType: GridView.UpdateItems
+- uid: Viewer.UI.Images.IFileDropView
+  name: IFileDropView
+  href: api/Viewer.UI.Images.IFileDropView.html
+  commentId: T:Viewer.UI.Images.IFileDropView
+  fullName: Viewer.UI.Images.IFileDropView
+  nameWithType: IFileDropView
+- uid: Viewer.UI.Images.IFileDropView.OnDrop
+  name: OnDrop
+  href: api/Viewer.UI.Images.IFileDropView.html#Viewer_UI_Images_IFileDropView_OnDrop
+  commentId: E:Viewer.UI.Images.IFileDropView.OnDrop
+  fullName: Viewer.UI.Images.IFileDropView.OnDrop
+  nameWithType: IFileDropView.OnDrop
+- uid: Viewer.UI.Images.IFileDropView.OnPaste
+  name: OnPaste
+  href: api/Viewer.UI.Images.IFileDropView.html#Viewer_UI_Images_IFileDropView_OnPaste
+  commentId: E:Viewer.UI.Images.IFileDropView.OnPaste
+  fullName: Viewer.UI.Images.IFileDropView.OnPaste
+  nameWithType: IFileDropView.OnPaste
+- uid: Viewer.UI.Images.IFileDropView.PickDirectoryAsync(System.Collections.Generic.IEnumerable{System.String})
+  name: PickDirectoryAsync(IEnumerable<String>)
+  href: api/Viewer.UI.Images.IFileDropView.html#Viewer_UI_Images_IFileDropView_PickDirectoryAsync_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Viewer.UI.Images.IFileDropView.PickDirectoryAsync(System.Collections.Generic.IEnumerable{System.String})
+  name.vb: PickDirectoryAsync(IEnumerable(Of String))
+  fullName: Viewer.UI.Images.IFileDropView.PickDirectoryAsync(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Viewer.UI.Images.IFileDropView.PickDirectoryAsync(System.Collections.Generic.IEnumerable(Of System.String))
+  nameWithType: IFileDropView.PickDirectoryAsync(IEnumerable<String>)
+  nameWithType.vb: IFileDropView.PickDirectoryAsync(IEnumerable(Of String))
+- uid: Viewer.UI.Images.IFileDropView.PickDirectoryAsync*
+  name: PickDirectoryAsync
+  href: api/Viewer.UI.Images.IFileDropView.html#Viewer_UI_Images_IFileDropView_PickDirectoryAsync_
+  commentId: Overload:Viewer.UI.Images.IFileDropView.PickDirectoryAsync
+  isSpec: "True"
+  fullName: Viewer.UI.Images.IFileDropView.PickDirectoryAsync
+  nameWithType: IFileDropView.PickDirectoryAsync
 - uid: Viewer.UI.Images.IHistoryView
   name: IHistoryView
   href: api/Viewer.UI.Images.IHistoryView.html
@@ -16189,12 +15993,6 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Images.IImagesView.ItemSize
   nameWithType: IImagesView.ItemSize
-- uid: Viewer.UI.Images.IImagesView.OnDrop
-  name: OnDrop
-  href: api/Viewer.UI.Images.IImagesView.html#Viewer_UI_Images_IImagesView_OnDrop
-  commentId: E:Viewer.UI.Images.IImagesView.OnDrop
-  fullName: Viewer.UI.Images.IImagesView.OnDrop
-  nameWithType: IImagesView.OnDrop
 - uid: Viewer.UI.Images.IImagesView.OpenItem
   name: OpenItem
   href: api/Viewer.UI.Images.IImagesView.html#Viewer_UI_Images_IImagesView_OpenItem
@@ -16756,12 +16554,34 @@ references:
   commentId: E:Viewer.UI.Images.ImagesView.OnDrop
   fullName: Viewer.UI.Images.ImagesView.OnDrop
   nameWithType: ImagesView.OnDrop
+- uid: Viewer.UI.Images.ImagesView.OnPaste
+  name: OnPaste
+  href: api/Viewer.UI.Images.ImagesView.html#Viewer_UI_Images_ImagesView_OnPaste
+  commentId: E:Viewer.UI.Images.ImagesView.OnPaste
+  fullName: Viewer.UI.Images.ImagesView.OnPaste
+  nameWithType: ImagesView.OnPaste
 - uid: Viewer.UI.Images.ImagesView.OpenItem
   name: OpenItem
   href: api/Viewer.UI.Images.ImagesView.html#Viewer_UI_Images_ImagesView_OpenItem
   commentId: E:Viewer.UI.Images.ImagesView.OpenItem
   fullName: Viewer.UI.Images.ImagesView.OpenItem
   nameWithType: ImagesView.OpenItem
+- uid: Viewer.UI.Images.ImagesView.PickDirectoryAsync(System.Collections.Generic.IEnumerable{System.String})
+  name: PickDirectoryAsync(IEnumerable<String>)
+  href: api/Viewer.UI.Images.ImagesView.html#Viewer_UI_Images_ImagesView_PickDirectoryAsync_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Viewer.UI.Images.ImagesView.PickDirectoryAsync(System.Collections.Generic.IEnumerable{System.String})
+  name.vb: PickDirectoryAsync(IEnumerable(Of String))
+  fullName: Viewer.UI.Images.ImagesView.PickDirectoryAsync(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Viewer.UI.Images.ImagesView.PickDirectoryAsync(System.Collections.Generic.IEnumerable(Of System.String))
+  nameWithType: ImagesView.PickDirectoryAsync(IEnumerable<String>)
+  nameWithType.vb: ImagesView.PickDirectoryAsync(IEnumerable(Of String))
+- uid: Viewer.UI.Images.ImagesView.PickDirectoryAsync*
+  name: PickDirectoryAsync
+  href: api/Viewer.UI.Images.ImagesView.html#Viewer_UI_Images_ImagesView_PickDirectoryAsync_
+  commentId: Overload:Viewer.UI.Images.ImagesView.PickDirectoryAsync
+  isSpec: "True"
+  fullName: Viewer.UI.Images.ImagesView.PickDirectoryAsync
+  nameWithType: ImagesView.PickDirectoryAsync
 - uid: Viewer.UI.Images.ImagesView.Poll
   name: Poll
   href: api/Viewer.UI.Images.ImagesView.html#Viewer_UI_Images_ImagesView_Poll

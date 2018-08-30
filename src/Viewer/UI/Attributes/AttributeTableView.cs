@@ -181,11 +181,14 @@ namespace Viewer.UI.Attributes
 
             public void Visit(StringValue attr)
             {
-                _row.Cells.Add(new DataGridViewTextBoxCell
+                var cell = new DataGridViewTextBoxCell
                 {
                     ValueType = typeof(string),
                     Value = attr.Value,
-                });
+                    MaxInputLength = int.MaxValue,
+                };
+                cell.Style.WrapMode = DataGridViewTriState.True;
+                _row.Cells.Add(cell);
                 AddTypeColumn(AttributeType.String);
             }
 

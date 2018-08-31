@@ -32,7 +32,7 @@ namespace Viewer
 
         private readonly ViewerForm _appForm;
         private readonly IComponent[] _components;
-        private readonly List<DeserializeDockContent> _layoutDeserializeCallback = new List<DeserializeDockContent>();
+        private readonly List<DeserializeCallback> _layoutDeserializeCallback = new List<DeserializeCallback>();
         
         [ImportingConstructor]
         public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
@@ -71,7 +71,7 @@ namespace Viewer
             return _appForm.CreateStatusBarSlider(text, image, alignment);
         }
 
-        public void AddLayoutDeserializeCallback(DeserializeDockContent callback)
+        public void AddLayoutDeserializeCallback(DeserializeCallback callback)
         {
             _layoutDeserializeCallback.Add(callback);
         }
@@ -116,7 +116,7 @@ namespace Viewer
             Settings.Default.Save();
         }
 
-        private IDockContent Deserialize(string persistString)
+        private IWindowView Deserialize(string persistString)
         {
             foreach (var callback in _layoutDeserializeCallback)
             {

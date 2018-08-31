@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core;
@@ -27,7 +28,8 @@ namespace Viewer.UI.Images
         private readonly ExportFactory<ImagesPresenter> _imagesFactory;
 
         private ExportLifetimeContext<ImagesPresenter> _images;
-        
+
+        private bool _dontShowImagesWindow = false;
         private IStatusBarSlider _thumbnailSize;
         private IStatusBarItem _statusLabel;
         private IStatusBarItem _itemCountLabel;
@@ -58,8 +60,13 @@ namespace Viewer.UI.Images
 
         private void StateOnQueryExecuted(object sender, QueryEventArgs e)
         {
-            // show the thumbnail grid component
-            ShowImages(e.Query);
+            var images = GetImages();
+            images.LoadQueryAsync(e.Query);
+
+            if (!_dontShowImagesWindow)
+            {
+                images.ShowView("Images", DockState.Document);
+            }
         }
 
         public void OnStartup(IViewerApplication app)
@@ -85,7 +92,7 @@ namespace Viewer.UI.Images
             Settings.Default.ThumbnailSize = _thumbnailSize.Value;
         }
 
-        private IDockContent Deserialize(string persistString)
+        private IWindowView Deserialize(string persistString)
         {
             if (persistString.StartsWith(typeof(ImagesView).FullName))
             {
@@ -106,11 +113,17 @@ namespace Viewer.UI.Images
                         query = _queryFactory.CreateQuery();
                     }
                     
-                    // create the images component
                     var images = GetImages();
+                    _dontShowImagesWindow = true;
+                    try
+                    {
+                        _state.ExecuteQuery(query);
+                    }
+                    finally
+                    {
+                        _dontShowImagesWindow = false;
+                    }
 
-                    // execute the query 
-                    _state.ExecuteQuery(query);
                     return images.View;
                 }
             }
@@ -137,14 +150,6 @@ namespace Viewer.UI.Images
             }
 
             return _images.Value;
-        }
-
-        private IDockContent ShowImages(IQuery query)
-        {
-            var images = GetImages();
-            images.LoadQueryAsync(query);
-            images.ShowView("Images", DockState.Document);
-            return images.View;
         }
     }
 }

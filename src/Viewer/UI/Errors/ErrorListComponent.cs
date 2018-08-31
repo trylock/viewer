@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Properties;
 using Viewer.Core;
+using Viewer.Core.UI;
 using WeifenLuo.WinFormsUI.Docking;
 using IComponent = Viewer.Core.IComponent;
 
@@ -42,7 +43,7 @@ namespace Viewer.UI.Errors
             app.AddLayoutDeserializeCallback(Deserialize);
         }
 
-        private IDockContent Deserialize(string persistString)
+        private IWindowView Deserialize(string persistString)
         {
             if (persistString == typeof(ErrorListView).FullName)
             {

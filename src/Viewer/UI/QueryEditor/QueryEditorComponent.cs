@@ -77,7 +77,7 @@ namespace Viewer.UI.QueryEditor
             app.AddLayoutDeserializeCallback(Deserialize);
         }
         
-        private IDockContent Deserialize(string persistString)
+        private IWindowView Deserialize(string persistString)
         {
             if (persistString.StartsWith(typeof(QueryEditorView).FullName))
             {

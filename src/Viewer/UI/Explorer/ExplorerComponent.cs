@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
+using Viewer.Core.UI;
 using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -29,7 +30,7 @@ namespace Viewer.UI.Explorer
             app.AddLayoutDeserializeCallback(Deserialize);
         }
 
-        private IDockContent Deserialize(string persistString)
+        private IWindowView Deserialize(string persistString)
         {
             if (persistString == typeof(DirectoryTreeView).FullName)
             {

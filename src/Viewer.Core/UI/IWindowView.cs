@@ -45,6 +45,11 @@ namespace Viewer.Core.UI
         void Show(DockPanel dockPanel, DockState dockState);
 
         /// <summary>
+        /// Hide this window.
+        /// </summary>
+        void Hide();
+
+        /// <summary>
         /// Close this window.
         /// </summary>
         void Close();

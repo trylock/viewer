@@ -10,6 +10,8 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.Core
 {
+    public delegate IWindowView DeserializeCallback(string persistString);
+
     public interface IViewerApplication
     {
         /// <summary>
@@ -52,11 +54,11 @@ namespace Viewer.Core
         /// Add layout deserialize callback.
         /// </summary>
         /// <param name="callback">
-        ///     The callback gets a persist string to deserialize.
-        ///     If it does not recognize the string, it has to return null.
-        ///     If it returns null, the deserializer will try to use another deserialization function.
+        /// The callback gets a persist string to deserialize.
+        /// If it does not recognize the string, it has to return null.
+        /// If it returns null, the deserializer will try to use another deserialization function.
         /// </param>
-        void AddLayoutDeserializeCallback(DeserializeDockContent callback);
+        void AddLayoutDeserializeCallback(DeserializeCallback callback);
 
         /// <summary>
         /// Run the application

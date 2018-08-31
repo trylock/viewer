@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
+using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
@@ -37,7 +38,7 @@ namespace Viewer.UI.Attributes
             app.AddLayoutDeserializeCallback(Deserialize);
         }
 
-        private IDockContent Deserialize(string persistString)
+        private IWindowView Deserialize(string persistString)
         {
             if (persistString == typeof(AttributeTableView).FullName + ";" + AttributesId)
             {

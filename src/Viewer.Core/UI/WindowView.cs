@@ -13,7 +13,15 @@ namespace Viewer.Core.UI
     {
         public event EventHandler CloseView;
         public event EventHandler ViewGotFocus;
-
+        
+        public Keys ModifierKeyState => ModifierKeys;
+        
+        private bool IsAutoHide =>
+            DockState == DockState.DockBottomAutoHide ||
+            DockState == DockState.DockLeftAutoHide ||
+            DockState == DockState.DockTopAutoHide ||
+            DockState == DockState.DockRightAutoHide;
+        
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -23,29 +31,7 @@ namespace Viewer.Core.UI
             GotFocus += OnGotFocus;
         }
 
-        public Keys ModifierKeyState => ModifierKeys;
-
         public void EnsureVisible()
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action(EnsureVisibleInternal));
-            }
-            else
-            {
-                EnsureVisibleInternal();
-            }
-        }
-
-        public virtual void BeginLoading()
-        {
-        }
-
-        public virtual void EndLoading()
-        {
-        }
-
-        private void EnsureVisibleInternal()
         {
             if (IsAutoHide)
             {
@@ -55,11 +41,13 @@ namespace Viewer.Core.UI
             Activate();
         }
 
-        private bool IsAutoHide => 
-            DockState == DockState.DockBottomAutoHide ||
-            DockState == DockState.DockLeftAutoHide ||
-            DockState == DockState.DockTopAutoHide ||
-            DockState == DockState.DockRightAutoHide;
+        public virtual void BeginLoading()
+        {
+        }
+
+        public virtual void EndLoading()
+        {
+        }
         
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {

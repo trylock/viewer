@@ -56,7 +56,6 @@ namespace Viewer.Core.UI
 
         /// <summary>
         /// Make sure the window is visible to the user.
-        /// Thread-safety: can be called from different threads
         /// </summary>
         void EnsureVisible();
 

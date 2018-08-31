@@ -99,6 +99,37 @@ namespace Viewer.IO
         }
 
         /// <summary>
+        /// Split path using directory separators and join sequence of "**" into 1 part.
+        /// For example:
+        /// "a/b" => "a", "b"
+        /// "a/**/b" => "a", "**", "b"
+        /// "a/**/**/b" => "a", "**", "b"
+        /// </summary>
+        /// <param name="pattern">Path pattern to split</param>
+        /// <returns>Path parts</returns>
+        private static IEnumerable<string> Split(string pattern)
+        {
+            string lastPart = null;
+            var parts = PathUtils.Split(pattern);
+            foreach (var part in parts)
+            {
+                if (part == "**")
+                {
+                    if (lastPart != "**")
+                    {
+                        yield return part;
+                    }
+                }
+                else
+                {
+                    yield return part;
+                }
+
+                lastPart = part;
+            }
+        }
+
+        /// <summary>
         /// Split the path using path parts which contain a pattern.
         /// For example: a/b/c?/d/e/f/**/g/* will be split into 6 parts:
         /// 'a/b', 'c?', 'd/e/f', '**', 'g' and '*'
@@ -108,7 +139,7 @@ namespace Viewer.IO
         private static List<string> ParsePattern(string directoryPattern)
         {
             var parts = new List<string>();
-            var patternParts = PathUtils.Split(directoryPattern);
+            var patternParts = Split(directoryPattern);
 
             // join parts without a pattern
             var pathBuilder = new StringBuilder();
@@ -151,28 +182,44 @@ namespace Viewer.IO
         {
             var sb = new StringBuilder();
             sb.Append("^");
-            var parts = PathUtils.Split(pattern).ToArray();
-            var index = 0;
-            foreach (var part in parts)
+            var parts = Split(pattern).ToArray();
+            for (var i = 0; i < parts.Length; ++i)
             {
+                var part = parts[i];
                 if (part == "**")
                 {
-                    sb.Append(@"(.*[/\\])?");
+                    if (parts.Length == 1) // the whole pattern is "**"
+                    {
+                        sb.Append(@".*");
+                    }
+                    else if (i == 0) 
+                    {
+                        // the pattern starts with "**" but this is not the last part
+                        sb.Append(@"(.+[/\\])?");
+                    }
+                    else if (i == parts.Length - 1) 
+                    {
+                        // the pattern ends with "**" but this is not the first part
+                        sb.Append(@"([/\\].+)?");
+                    }
+                    else 
+                    {
+                        // this part is in the middle
+                        sb.Append(@"([/\\].+)?[/\\]");
+                    }
                 }
                 else
                 {
+                    if (i > 0 && parts[i - 1] != "**")
+                    {
+                        sb.Append(@"[/\\]");
+                    }
+
                     var partPattern = part
                         .Replace("*", @"[^/\\]*")
                         .Replace("?", @"[^/\\]");
                     sb.Append(partPattern);
-
-                    if (index < parts.Length - 1)
-                    {
-                        sb.Append(@"[/\\]");
-                    }
                 }
-
-                ++index;
             }
             sb.Append(@"[/\\]*$");
             return new Regex(sb.ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled);

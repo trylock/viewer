@@ -125,6 +125,115 @@ namespace ViewerTest.IO
         }
 
         [TestMethod]
+        public void Match_GeneralPatternAtTheEnd()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "a/**");
+
+            Assert.IsTrue(finder.Match("a"));
+            Assert.IsTrue(finder.Match("a/"));
+            Assert.IsTrue(finder.Match("a/b"));
+            Assert.IsTrue(finder.Match("a/b/c"));
+            Assert.IsFalse(finder.Match("b/a"));
+            Assert.IsFalse(finder.Match("b"));
+            Assert.IsFalse(finder.Match(""));
+        }
+
+        [TestMethod]
+        public void Match_GeneralPatternAtTheStart()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "**/a");
+
+            Assert.IsTrue(finder.Match("a"));
+            Assert.IsTrue(finder.Match("a/"));
+            Assert.IsFalse(finder.Match("a/b"));
+            Assert.IsFalse(finder.Match("a/b/c"));
+            Assert.IsTrue(finder.Match("b/a"));
+            Assert.IsTrue(finder.Match("c/b/a"));
+            Assert.IsFalse(finder.Match("b"));
+            Assert.IsFalse(finder.Match(""));
+        }
+
+        [TestMethod]
+        public void Match_MultipleGeneralPatterns()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "a/**/b/**/c");
+
+            Assert.IsFalse(finder.Match(""));
+            Assert.IsFalse(finder.Match("a"));
+            Assert.IsFalse(finder.Match("b"));
+            Assert.IsFalse(finder.Match("c"));
+            Assert.IsFalse(finder.Match("a/b"));
+            Assert.IsFalse(finder.Match("a/c"));
+            Assert.IsFalse(finder.Match("b/c"));
+            Assert.IsTrue(finder.Match("a/b/c"));
+            Assert.IsTrue(finder.Match("a/x/b/c"));
+            Assert.IsTrue(finder.Match("a/b/x/c"));
+            Assert.IsTrue(finder.Match("a/x/b/y/c"));
+            Assert.IsTrue(finder.Match("a/x/z/b/y/w/c"));
+        }
+
+        [TestMethod]
+        public void Match_MultipleGeneralPatternsInSuccession()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "a/**/**/b");
+
+            Assert.IsFalse(finder.Match("a"));
+            Assert.IsFalse(finder.Match("b"));
+            Assert.IsTrue(finder.Match("a/b"));
+            Assert.IsFalse(finder.Match("a//b"));
+            Assert.IsFalse(finder.Match(@"a\\b"));
+        }
+
+        [TestMethod]
+        public void Match_JustTheGeneralPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "**");
+
+            Assert.IsTrue(finder.Match(""));
+            Assert.IsTrue(finder.Match("/"));
+            Assert.IsTrue(finder.Match("a"));
+            Assert.IsTrue(finder.Match("a/b"));
+            Assert.IsTrue(finder.Match("a/b/c"));
+            Assert.IsTrue(finder.Match("c/a/b"));
+        }
+
+        [TestMethod]
+        public void Match_JustTheStarPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "*");
+
+            Assert.IsTrue(finder.Match(""));
+            Assert.IsTrue(finder.Match("/"));
+            Assert.IsTrue(finder.Match("a"));
+            Assert.IsTrue(finder.Match("a/"));
+            Assert.IsFalse(finder.Match("a/b"));
+            Assert.IsFalse(finder.Match("a/b/c"));
+            Assert.IsFalse(finder.Match("c/a/b"));
+        }
+        [TestMethod]
+        public void Match_JustTheQuestionMarkPattern()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "?");
+
+            Assert.IsFalse(finder.Match(""));
+            Assert.IsFalse(finder.Match("/"));
+            Assert.IsTrue(finder.Match("a"));
+            Assert.IsTrue(finder.Match("b"));
+            Assert.IsTrue(finder.Match("a/"));
+            Assert.IsFalse(finder.Match("ab"));
+            Assert.IsFalse(finder.Match("a/b"));
+            Assert.IsFalse(finder.Match("a/b/c"));
+            Assert.IsFalse(finder.Match("c/a/b"));
+        }
+
+        [TestMethod]
         public void GetDirectories_EmptyPattern()
         {
             var fileSystem = new Mock<IFileSystem>();

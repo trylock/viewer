@@ -149,6 +149,15 @@ namespace Viewer.UI.Images
         {
             var promise = new TaskCompletionSource<string>();
 
+            // make sure the root form is fully visible
+            Form form = this;
+            while (form.ParentForm != null)
+            {
+                form = form.ParentForm;
+            }
+            form.Activate();
+
+            // pick an option form context menu
             Cursor.Current = Cursors.WaitCursor;
             try
             {

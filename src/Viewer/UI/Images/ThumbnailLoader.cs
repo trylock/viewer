@@ -230,7 +230,7 @@ namespace Viewer.UI.Images
 
         /// <summary>
         /// Load content of an image file synchronously and then decode it asynchronously.
-        /// This method blocks until a _loaderCount is available.
+        /// This method blocks until _loaderCount is available.
         /// </summary>
         /// <returns>Task finished when a request is fully processed</returns>
         private async Task ProcessNextRequestAsync()
@@ -255,19 +255,8 @@ namespace Viewer.UI.Images
                 // thumbnail in parallel
                 await Task.Run(() =>
                 {
-                    try
-                    {
-                        var result = Generate(Decode(buffer, req), req);
-                        req.Completion.SetResult(result);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        req.Completion.SetCanceled();
-                    }
-                    catch (Exception e)
-                    {
-                        req.Completion.SetException(e);
-                    }
+                    var result = Generate(Decode(buffer, req), req);
+                    req.Completion.SetResult(result);
                 });
             }
             catch (OperationCanceledException)

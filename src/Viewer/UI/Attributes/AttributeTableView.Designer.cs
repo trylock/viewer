@@ -55,6 +55,7 @@
             this.NameColumn,
             this.ValueColumn,
             this.TypeColumn});
+            this.GridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.GridView.Location = new System.Drawing.Point(0, 20);
             this.GridView.Margin = new System.Windows.Forms.Padding(2);
             this.GridView.Name = "GridView";

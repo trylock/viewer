@@ -73,14 +73,17 @@ namespace Viewer.Core.UI
         }
 
         /// <summary>
-        /// Automatically subscribe to all view events.
-        /// For each EventName in <paramref name="view"/> find method <paramref name="eventHandlerPrefix"/>_EventName 
-        /// in this presenter and subsribe this method to the event.
+        /// Automatically subscribe to all view events. For each EventName in <paramref name="view"/>
+        /// find method <paramref name="eventHandlerPrefix"/>_EventName in this presenter and
+        /// subsribe this method to the event.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="view"></param>
-        /// <param name="eventHandlerPrefix"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Type of the view</typeparam>
+        /// <param name="view">View</param>
+        /// <param name="eventHandlerPrefix">Prefix of event handler method names</param>
+        /// <returns>
+        /// Event subscription lifetime. It is automatically disposed when you <see cref="Dispose"/>
+        /// this presenter.
+        /// </returns>
         public SubscriptionLifetime SubscribeTo<T>(T view, string eventHandlerPrefix)
         {
             if (view == null)

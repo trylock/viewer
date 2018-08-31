@@ -152,7 +152,7 @@ namespace Viewer.UI.Attributes
 
         private class RowAttributeVisitor : IValueVisitor
         {
-            private DataGridViewRow _row;
+            private readonly DataGridViewRow _row;
 
             public RowAttributeVisitor(DataGridViewRow row)
             {
@@ -186,8 +186,11 @@ namespace Viewer.UI.Attributes
                     ValueType = typeof(string),
                     Value = attr.Value,
                     MaxInputLength = int.MaxValue,
+                    Style =
+                    {
+                        WrapMode = DataGridViewTriState.True
+                    },
                 };
-                cell.Style.WrapMode = DataGridViewTriState.True;
                 _row.Cells.Add(cell);
                 AddTypeColumn(AttributeType.String);
             }

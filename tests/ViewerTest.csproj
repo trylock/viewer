@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\EnumerableExtensionsTest.cs" />
+    <Compile Include="Core\RetryTest.cs" />
     <Compile Include="Data\EntityManagerTest.cs" />
     <Compile Include="Data\EntityTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeReaderTest.cs" />

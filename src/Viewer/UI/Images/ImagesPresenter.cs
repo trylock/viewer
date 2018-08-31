@@ -542,6 +542,10 @@ namespace Viewer.UI.Images
             if (destinationDirectory == null)
             {
                 var folders = FindAllFolders();
+                if (folders.Count < 1)
+                {
+                    return;
+                }
                 if (folders.Count == 1)
                 {
                     destinationDirectory = folders.First();
@@ -588,6 +592,11 @@ namespace Viewer.UI.Images
         private void View_OnPaste(object sender, EventArgs e)
         {
             var files = _clipboard.GetFiles();
+            if (!files.Any())
+            {
+                return;
+            }
+
             CopyMoveFilesToView(null, files.Effect, files);
         }
 

@@ -106,7 +106,13 @@ namespace Viewer.Core.UI
             {
                 return new ClipboardFileDrop();
             }
+
             var files = data.GetData(DataFormats.FileDrop, true) as string[];
+            if (files == null)
+            {
+                return new ClipboardFileDrop();
+            }
+
             var effect = DragDropEffects.Copy;
             var effectData = data.GetData("Preferred DropEffect");
             if (effectData is MemoryStream effectStream)

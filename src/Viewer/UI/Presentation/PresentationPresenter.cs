@@ -130,6 +130,7 @@ namespace Viewer.UI.Presentation
                 var confirmRetry = _dialogView.FailedToOpenFile(entity.Path, e.Message);
                 if (confirmRetry)
                 {
+                    _images.SetPosition(_images.CurrnetIndex);
                     await LoadCurrentEntityAsync();
                 }
             }

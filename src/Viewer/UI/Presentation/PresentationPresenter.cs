@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
@@ -55,6 +55,7 @@ namespace Viewer.UI.Presentation
         public override void Dispose()
         {
             View.Picture?.Dispose();
+            View.Picture = null; // make sure no code can access the disposed image
             _images?.Dispose();
             base.Dispose();
         }
@@ -95,9 +96,9 @@ namespace Viewer.UI.Presentation
                 }
 
                 // update view
-                View.Zoom = 1.0;
                 View.Picture?.Dispose();
                 View.Picture = image;
+                View.Zoom = 1.0;
                 View.UpdateImage();
             }
             catch (ArgumentException)

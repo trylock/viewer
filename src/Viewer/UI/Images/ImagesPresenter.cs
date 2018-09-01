@@ -168,7 +168,7 @@ namespace Viewer.UI.Images
         {
             _queryEvaluator?.Dispose();
             _queryEvaluator = null;
-            View.Items = null; // the items are disposed by the query evaluator
+            View.Items = null; // the items have been disposed by the query evaluator
         }
         
         public override void Dispose()

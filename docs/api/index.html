@@ -97,6 +97,9 @@
                         
                         <ul class="nav level2">
                           <li class="">
+                            <a href="Viewer.Core.DeserializeCallback.html" title="DeserializeCallback" class="">DeserializeCallback</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Core.ExternalApplication.html" title="ExternalApplication" class="">ExternalApplication</a>
                           </li>
                           <li class="">
@@ -113,6 +116,12 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Core.RectangleExtensions.html" title="RectangleExtensions" class="">RectangleExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.Retry.html" title="Retry" class="">Retry</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.Retry-1.html" title="Retry&lt;TResult&gt;" class="">Retry&lt;TResult&gt;</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1144,18 +1153,21 @@
 
 <p>The application is separated into several namespaces. Some namespaces (like <code>Viewer.Data</code>) are in a custom assembly to further separate them from the rest of the project. There are 6 main namespaces:</p>
 <ul>
-<li><code>Viewer.Core</code> contains common types and interfaces used by all other components (i.e., every other assembly depends on this)</li>
+<li><code>Viewer.Core</code> contains common types and interfaces used by all other components</li>
 <li><code>Viewer.Data</code> contains classes which read, modify and write attributes in files and in memory. It also contains comparison functions used to compare attributes and their values.</li>
 <li><code>Viewer.Query</code> contains classes which compile and execute VQL queries. There are also types used at query runtime (e.g. for adding and calling functions, operators etc.).</li>
 <li><code>Viewer.QueryRuntime</code> contains implementation of functions and operators used in VQL queries.</li>
-<li><code>Viewer.IO</code> contains helper classes and wrappers which work with the file system.</li>
-<li><code>Viewer</code> is the actual application. It produces executable which has a GUI.</li>
+<li><code>Viewer.IO</code> contains helper classes and wrappers for working with the file system.</li>
+<li><code>Viewer</code> Windows Forms application which provides a GUI for classes in other namespaces.</li>
 </ul>
 <p>Other projects: <code>ViewerTests</code>, <code>ViewereSetup</code> and <code>ViewerInstaller</code> contain tests, application setup and installer respectively.</p>
 <h2 id="components">Components</h2>
-<p>This application uses the standard <a href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">Managed Extensibility Framework (MEF)</a>. It is a composition of multiple components (i.e., classes which implement the <a class="xref" href="Viewer.Core.IComponent.html">IComponent</a> interface). Components can have UI elements (such as their own window) but it is not required.</p>
-<h2 id="queries">Queries</h2>
-<h2 id="entities">Entities</h2>
+<p>This application uses the standard <a href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">Managed Extensibility Framework (MEF)</a>.  See a more detailed description of some other namespaces:</p>
+<ul>
+<li><a href="../articles/developer/data.html">Viewer.Data</a></li>
+<li><a href="../articles/developer/query.html">Viewer.Query</a></li>
+<li><a href="../articles/developer/gui.html">Viewer</a></li>
+</ul>
 </article>
           </div>
           

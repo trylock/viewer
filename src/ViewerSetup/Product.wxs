@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Viewer" Language="1033" Version="1.0.0.0" Manufacturer="Drahomir Hanak" UpgradeCode="d030bf0e-98e6-44f7-a844-7bb102455f57">
+  <Product Id="*" Name="Viewer" Language="1033" Version="1.0.0.0" Manufacturer="Drahomir Hanak" UpgradeCode="274fce71-842e-4d9b-a02a-650d6325ecc1">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Viewer is already installed." />

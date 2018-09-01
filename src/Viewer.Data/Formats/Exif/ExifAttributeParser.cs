@@ -49,7 +49,7 @@ namespace Viewer.Data.Formats.Exif
             var directory = exif.GetDirectoryOfType<T>();
             if (directory == null || !directory.ContainsTag(Tag))
                 return null;
-
+            
             try
             {
                 switch (Type)

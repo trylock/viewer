@@ -1,7 +1,5 @@
 # Viewer.Query
 
-## Grammar
-
 ## Compilation
 
 Expressions in the `where` part and the `order by` part of the query are compiled to a C# code using [Expression Trees](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/). Since we don't know the type of an attribute, many decisions have to be made at runtime. The generated code will therefore mostly just call runtime functions. Expression trees are used mainly for convenience (no need to write an interpreter). 
@@ -16,3 +14,9 @@ Queries are executed lazily by calling the [Execute](xref:Viewer.Query.IExecutab
 > Returned entities are not sorted. This allows for a lazy execution even if the evaluated query is ordered and it drastically reduces latency since user does not have to wait for the query to search all entities.
 
 The [Execute](xref:Viewer.Query.IExecutableQuery) method supports standard cancellation and progress even though it is not an async method and it executes completely synchronously.  
+
+## Grammar
+
+The program uses ANTLR4 to generate query parser and lexer. 
+
+[!code-csharp[Grammar](../../../Viewer.Query/Query.g4)]

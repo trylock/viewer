@@ -99,6 +99,9 @@
                         
                         <ul class="nav level2">
                           <li class="">
+                            <a href="Viewer.Core.DeserializeCallback.html" title="DeserializeCallback" class="">DeserializeCallback</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Core.ExternalApplication.html" title="ExternalApplication" class="">ExternalApplication</a>
                           </li>
                           <li class="">
@@ -115,6 +118,12 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Core.RectangleExtensions.html" title="RectangleExtensions" class="">RectangleExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.Retry.html" title="Retry" class="">Retry</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.Retry-1.html" title="Retry&lt;TResult&gt;" class="">Retry&lt;TResult&gt;</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1187,10 +1196,10 @@
       <a class="xref" href="Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_ViewGotFocus">WindowView.ViewGotFocus</a>
     </div>
     <div>
-      <a class="xref" href="Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnLoad_System_EventArgs_">WindowView.OnLoad(EventArgs)</a>
+      <a class="xref" href="Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_ModifierKeyState">WindowView.ModifierKeyState</a>
     </div>
     <div>
-      <a class="xref" href="Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_ModifierKeyState">WindowView.ModifierKeyState</a>
+      <a class="xref" href="Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnLoad_System_EventArgs_">WindowView.OnLoad(EventArgs)</a>
     </div>
     <div>
       <a class="xref" href="Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_EnsureVisible">WindowView.EnsureVisible()</a>
@@ -2907,7 +2916,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_ContextOptions.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.ContextOptions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L230">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L239">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_ContextOptions_" data-uid="Viewer.UI.Images.ImagesView.ContextOptions*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_ContextOptions" data-uid="Viewer.UI.Images.ImagesView.ContextOptions">ContextOptions</h4>
@@ -2925,7 +2934,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_Items.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.Items%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L278">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L287">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_Items_" data-uid="Viewer.UI.Images.ImagesView.Items*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_Items" data-uid="Viewer.UI.Images.ImagesView.Items">Items</h4>
@@ -2943,7 +2952,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_ItemSize.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.ItemSize%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L289">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L298">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_ItemSize_" data-uid="Viewer.UI.Images.ImagesView.ItemSize*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_ItemSize" data-uid="Viewer.UI.Images.ImagesView.ItemSize">ItemSize</h4>
@@ -2961,7 +2970,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_Query.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.Query%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L227">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L236">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_Query_" data-uid="Viewer.UI.Images.ImagesView.Query*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_Query" data-uid="Viewer.UI.Images.ImagesView.Query">Query</h4>
@@ -2981,7 +2990,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_BeginDragDrop_System_Windows_Forms_IDataObject_System_Windows_Forms_DragDropEffects_.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.BeginDragDrop(System.Windows.Forms.IDataObject%2CSystem.Windows.Forms.DragDropEffects)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L301">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L310">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_BeginDragDrop_" data-uid="Viewer.UI.Images.ImagesView.BeginDragDrop*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_BeginDragDrop_System_Windows_Forms_IDataObject_System_Windows_Forms_DragDropEffects_" data-uid="Viewer.UI.Images.ImagesView.BeginDragDrop(System.Windows.Forms.IDataObject,System.Windows.Forms.DragDropEffects)">BeginDragDrop(IDataObject, DragDropEffects)</h4>
@@ -3018,7 +3027,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_BeginLoading.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.BeginLoading%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L600">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L609">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_BeginLoading_" data-uid="Viewer.UI.Images.ImagesView.BeginLoading*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_BeginLoading" data-uid="Viewer.UI.Images.ImagesView.BeginLoading">BeginLoading()</h4>
@@ -3103,7 +3112,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_EndLoading.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.EndLoading%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L606">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L615">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_EndLoading_" data-uid="Viewer.UI.Images.ImagesView.EndLoading*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_EndLoading" data-uid="Viewer.UI.Images.ImagesView.EndLoading">EndLoading()</h4>
@@ -3205,7 +3214,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_GetPersistString.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.GetPersistString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L589">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L598">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_GetPersistString_" data-uid="Viewer.UI.Images.ImagesView.GetPersistString*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_GetPersistString" data-uid="Viewer.UI.Images.ImagesView.GetPersistString">GetPersistString()</h4>
@@ -3225,7 +3234,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_HideItemEditForm.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.HideItemEditForm%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L321">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L330">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_HideItemEditForm_" data-uid="Viewer.UI.Images.ImagesView.HideItemEditForm*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_HideItemEditForm" data-uid="Viewer.UI.Images.ImagesView.HideItemEditForm">HideItemEditForm()</h4>
@@ -3290,7 +3299,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_ShowItemEditForm_Viewer_UI_Images_EntityView_.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.ShowItemEditForm(Viewer.UI.Images.EntityView)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L306">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L315">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_ShowItemEditForm_" data-uid="Viewer.UI.Images.ImagesView.ShowItemEditForm*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_ShowItemEditForm_Viewer_UI_Images_EntityView_" data-uid="Viewer.UI.Images.ImagesView.ShowItemEditForm(Viewer.UI.Images.EntityView)">ShowItemEditForm(EntityView)</h4>
@@ -3354,7 +3363,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_UpdateItems.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.UpdateItems%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L295">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L304">View Source</a>
   </span>
   <a id="Viewer_UI_Images_ImagesView_UpdateItems_" data-uid="Viewer.UI.Images.ImagesView.UpdateItems*"></a>
   <h4 id="Viewer_UI_Images_ImagesView_UpdateItems" data-uid="Viewer.UI.Images.ImagesView.UpdateItems">UpdateItems()</h4>
@@ -3371,7 +3380,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_BeginDragItems.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.BeginDragItems%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L223">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L232">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_BeginDragItems" data-uid="Viewer.UI.Images.ImagesView.BeginDragItems">BeginDragItems</h4>
   <div class="markdown level1 summary"></div>
@@ -3400,7 +3409,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_BeginEditItemName.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.BeginEditItemName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L225">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L234">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_BeginEditItemName" data-uid="Viewer.UI.Images.ImagesView.BeginEditItemName">BeginEditItemName</h4>
   <div class="markdown level1 summary"></div>
@@ -3429,7 +3438,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_CancelEditItemName.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.CancelEditItemName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L222">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L231">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_CancelEditItemName" data-uid="Viewer.UI.Images.ImagesView.CancelEditItemName">CancelEditItemName</h4>
   <div class="markdown level1 summary"></div>
@@ -3458,7 +3467,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_CopyItems.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.CopyItems%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L196">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L205">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_CopyItems" data-uid="Viewer.UI.Images.ImagesView.CopyItems">CopyItems</h4>
   <div class="markdown level1 summary"></div>
@@ -3487,7 +3496,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_CutItems.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.CutItems%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L202">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L211">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_CutItems" data-uid="Viewer.UI.Images.ImagesView.CutItems">CutItems</h4>
   <div class="markdown level1 summary"></div>
@@ -3516,7 +3525,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_DeleteItems.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.DeleteItems%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L208">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L217">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_DeleteItems" data-uid="Viewer.UI.Images.ImagesView.DeleteItems">DeleteItems</h4>
   <div class="markdown level1 summary"></div>
@@ -3603,7 +3612,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_HandleKeyDown.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.HandleKeyDown%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L190">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L199">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_HandleKeyDown" data-uid="Viewer.UI.Images.ImagesView.HandleKeyDown">HandleKeyDown</h4>
   <div class="markdown level1 summary"></div>
@@ -3632,7 +3641,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_HandleKeyUp.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.HandleKeyUp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L192">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L201">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_HandleKeyUp" data-uid="Viewer.UI.Images.ImagesView.HandleKeyUp">HandleKeyUp</h4>
   <div class="markdown level1 summary"></div>
@@ -3661,7 +3670,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_ItemHover.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.ItemHover%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L194">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L203">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_ItemHover" data-uid="Viewer.UI.Images.ImagesView.ItemHover">ItemHover</h4>
   <div class="markdown level1 summary"></div>
@@ -3748,7 +3757,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_OpenItem.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.OpenItem%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L221">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L230">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_OpenItem" data-uid="Viewer.UI.Images.ImagesView.OpenItem">OpenItem</h4>
   <div class="markdown level1 summary"></div>
@@ -3806,7 +3815,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_RefreshQuery.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.RefreshQuery%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L214">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L223">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_RefreshQuery" data-uid="Viewer.UI.Images.ImagesView.RefreshQuery">RefreshQuery</h4>
   <div class="markdown level1 summary"></div>
@@ -3835,7 +3844,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_RenameItem.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.RenameItem%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L224">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L233">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_RenameItem" data-uid="Viewer.UI.Images.ImagesView.RenameItem">RenameItem</h4>
   <div class="markdown level1 summary"></div>
@@ -3980,7 +3989,7 @@ public class ImagesView : WindowView, IDropTarget, ISynchronizeInvoke, IWin32Win
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_Images_ImagesView_ShowQuery.md&amp;value=---%0Auid%3A%20Viewer.UI.Images.ImagesView.ShowQuery%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L220">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/Images/ImagesView.cs/#L229">View Source</a>
   </span>
   <h4 id="Viewer_UI_Images_ImagesView_ShowQuery" data-uid="Viewer.UI.Images.ImagesView.ShowQuery">ShowQuery</h4>
   <div class="markdown level1 summary"></div>

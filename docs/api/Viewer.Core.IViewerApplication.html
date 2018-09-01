@@ -99,6 +99,9 @@
                         
                         <ul class="nav level2">
                           <li class="">
+                            <a href="Viewer.Core.DeserializeCallback.html" title="DeserializeCallback" class="">DeserializeCallback</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Core.ExternalApplication.html" title="ExternalApplication" class="">ExternalApplication</a>
                           </li>
                           <li class="">
@@ -115,6 +118,12 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Core.RectangleExtensions.html" title="RectangleExtensions" class="">RectangleExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.Retry.html" title="Retry" class="">Retry</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.Retry-1.html" title="Retry&lt;TResult&gt;" class="">Retry&lt;TResult&gt;</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1160,7 +1169,7 @@
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication_Panel.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication.Panel%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L18">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L20">View Source</a>
   </span>
   <a id="Viewer_Core_IViewerApplication_Panel_" data-uid="Viewer.Core.IViewerApplication.Panel*"></a>
   <h4 id="Viewer_Core_IViewerApplication_Panel" data-uid="Viewer.Core.IViewerApplication.Panel">Panel</h4>
@@ -1178,19 +1187,19 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication_AddLayoutDeserializeCallback_WeifenLuo_WinFormsUI_Docking_DeserializeDockContent_.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication.AddLayoutDeserializeCallback(WeifenLuo.WinFormsUI.Docking.DeserializeDockContent)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication_AddLayoutDeserializeCallback_Viewer_Core_DeserializeCallback_.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication.AddLayoutDeserializeCallback(Viewer.Core.DeserializeCallback)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L59">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L61">View Source</a>
   </span>
   <a id="Viewer_Core_IViewerApplication_AddLayoutDeserializeCallback_" data-uid="Viewer.Core.IViewerApplication.AddLayoutDeserializeCallback*"></a>
-  <h4 id="Viewer_Core_IViewerApplication_AddLayoutDeserializeCallback_WeifenLuo_WinFormsUI_Docking_DeserializeDockContent_" data-uid="Viewer.Core.IViewerApplication.AddLayoutDeserializeCallback(WeifenLuo.WinFormsUI.Docking.DeserializeDockContent)">AddLayoutDeserializeCallback(DeserializeDockContent)</h4>
+  <h4 id="Viewer_Core_IViewerApplication_AddLayoutDeserializeCallback_Viewer_Core_DeserializeCallback_" data-uid="Viewer.Core.IViewerApplication.AddLayoutDeserializeCallback(Viewer.Core.DeserializeCallback)">AddLayoutDeserializeCallback(DeserializeCallback)</h4>
   <div class="markdown level1 summary"><p>Add layout deserialize callback.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void AddLayoutDeserializeCallback(DeserializeDockContent callback)</code></pre>
+    <pre><code class="lang-csharp hljs">void AddLayoutDeserializeCallback(DeserializeCallback callback)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1203,7 +1212,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">WeifenLuo.WinFormsUI.Docking.DeserializeDockContent</span></td>
+        <td><a class="xref" href="Viewer.Core.DeserializeCallback.html">DeserializeCallback</a></td>
         <td><span class="parametername">callback</span></td>
         <td><p>The callback gets a persist string to deserialize.
 If it does not recognize the string, it has to return null.
@@ -1217,7 +1226,7 @@ If it returns null, the deserializer will try to use another deserialization fun
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication_AddMenuItem_System_Collections_Generic_IReadOnlyList_System_String__System_Action_System_Drawing_Image_.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication.AddMenuItem(System.Collections.Generic.IReadOnlyList%7BSystem.String%7D%2CSystem.Action%2CSystem.Drawing.Image)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L31">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L33">View Source</a>
   </span>
   <a id="Viewer_Core_IViewerApplication_AddMenuItem_" data-uid="Viewer.Core.IViewerApplication.AddMenuItem*"></a>
   <h4 id="Viewer_Core_IViewerApplication_AddMenuItem_System_Collections_Generic_IReadOnlyList_System_String__System_Action_System_Drawing_Image_" data-uid="Viewer.Core.IViewerApplication.AddMenuItem(System.Collections.Generic.IReadOnlyList{System.String},System.Action,System.Drawing.Image)">AddMenuItem(IReadOnlyList&lt;String&gt;, Action, Image)</h4>
@@ -1263,7 +1272,7 @@ If it returns null, the deserializer will try to use another deserialization fun
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication_CreateStatusBarItem_System_String_System_Drawing_Image_System_Windows_Forms_ToolStripItemAlignment_.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication.CreateStatusBarItem(System.String%2CSystem.Drawing.Image%2CSystem.Windows.Forms.ToolStripItemAlignment)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L40">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L42">View Source</a>
   </span>
   <a id="Viewer_Core_IViewerApplication_CreateStatusBarItem_" data-uid="Viewer.Core.IViewerApplication.CreateStatusBarItem*"></a>
   <h4 id="Viewer_Core_IViewerApplication_CreateStatusBarItem_System_String_System_Drawing_Image_System_Windows_Forms_ToolStripItemAlignment_" data-uid="Viewer.Core.IViewerApplication.CreateStatusBarItem(System.String,System.Drawing.Image,System.Windows.Forms.ToolStripItemAlignment)">CreateStatusBarItem(String, Image, ToolStripItemAlignment)</h4>
@@ -1313,7 +1322,7 @@ If it returns null, the deserializer will try to use another deserialization fun
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication_CreateStatusBarSlider_System_String_System_Drawing_Image_System_Windows_Forms_ToolStripItemAlignment_.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication.CreateStatusBarSlider(System.String%2CSystem.Drawing.Image%2CSystem.Windows.Forms.ToolStripItemAlignment)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L49">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L51">View Source</a>
   </span>
   <a id="Viewer_Core_IViewerApplication_CreateStatusBarSlider_" data-uid="Viewer.Core.IViewerApplication.CreateStatusBarSlider*"></a>
   <h4 id="Viewer_Core_IViewerApplication_CreateStatusBarSlider_System_String_System_Drawing_Image_System_Windows_Forms_ToolStripItemAlignment_" data-uid="Viewer.Core.IViewerApplication.CreateStatusBarSlider(System.String,System.Drawing.Image,System.Windows.Forms.ToolStripItemAlignment)">CreateStatusBarSlider(String, Image, ToolStripItemAlignment)</h4>
@@ -1363,7 +1372,7 @@ If it returns null, the deserializer will try to use another deserialization fun
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication_InitializeLayout.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication.InitializeLayout%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L23">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L25">View Source</a>
   </span>
   <a id="Viewer_Core_IViewerApplication_InitializeLayout_" data-uid="Viewer.Core.IViewerApplication.InitializeLayout*"></a>
   <h4 id="Viewer_Core_IViewerApplication_InitializeLayout" data-uid="Viewer.Core.IViewerApplication.InitializeLayout">InitializeLayout()</h4>
@@ -1379,7 +1388,7 @@ If it returns null, the deserializer will try to use another deserialization fun
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication_Run.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication.Run%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L64">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L66">View Source</a>
   </span>
   <a id="Viewer_Core_IViewerApplication_Run_" data-uid="Viewer.Core.IViewerApplication.Run*"></a>
   <h4 id="Viewer_Core_IViewerApplication_Run" data-uid="Viewer.Core.IViewerApplication.Run">Run()</h4>
@@ -1401,7 +1410,7 @@ If it returns null, the deserializer will try to use another deserialization fun
                     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Core_IViewerApplication.md&amp;value=---%0Auid%3A%20Viewer.Core.IViewerApplication%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L13" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Core/IViewerApplication.cs/#L15" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

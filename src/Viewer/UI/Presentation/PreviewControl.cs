@@ -108,20 +108,20 @@ namespace Viewer.UI.Presentation
         {
             if (Picture == null)
                 return SKPoint.Empty;
-
+            
             var originalSize = new Size(Picture.Width, Picture.Height);
             var scaledSize = ThumbnailGenerator.GetThumbnailSize(originalSize, ClientSize);
             var zoomedSize = new Size(
-                (int)(scaledSize.Width * Zoom),
-                (int)(scaledSize.Height * Zoom)
+                (int) (scaledSize.Width * Zoom),
+                (int) (scaledSize.Height * Zoom)
             );
             var dragArea = new Size(
-                (int)(Math.Max(zoomedSize.Width - ClientSize.Width, 0) / 2.0f / Zoom),
-                (int)(Math.Max(zoomedSize.Height - ClientSize.Height, 0) / 2.0f / Zoom)
+                (int) (Math.Max(zoomedSize.Width - ClientSize.Width, 0) / 2.0f / Zoom),
+                (int) (Math.Max(zoomedSize.Height - ClientSize.Height, 0) / 2.0f / Zoom)
             );
             return new SKPoint(
-                (float)MathUtils.Clamp(translation.X, -dragArea.Width, dragArea.Width),
-                (float)MathUtils.Clamp(translation.Y, -dragArea.Height, dragArea.Height)
+                (float) MathUtils.Clamp(translation.X, -dragArea.Width, dragArea.Width),
+                (float) MathUtils.Clamp(translation.Y, -dragArea.Height, dragArea.Height)
             );
         }
 

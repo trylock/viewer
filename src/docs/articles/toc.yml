@@ -13,3 +13,7 @@
       href: developer/overview.md
     - name: Viewer.Data
       href: developer/data.md
+    - name: Viewer.Query
+      href: developer/query.md
+    - name: Viewer
+      href: developer/gui.md

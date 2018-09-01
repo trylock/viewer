@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Bundle Name="Viewer" Version="1.0.0.0" Manufacturer="Drahomir Hanak" UpgradeCode="26bb415a-1ccc-4cbb-b7fd-a3aa72bde523">
-    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+  <Bundle Name="Viewer" Version="1.0.0.0" Manufacturer="Drahomir Hanak" UpgradeCode="274fce71-842e-4d9b-a02a-650d6325ecc1">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+      <bal:WixStandardBootstrapperApplication LicenseUrl="" />
+    </BootstrapperApplicationRef>
     <Chain>
       <PackageGroupRef Id="NetFx472Redist"/>
       <MsiPackage SourceFile="$(var.ViewerSetup.TargetPath)" />

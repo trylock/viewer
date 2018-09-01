@@ -105,6 +105,12 @@
                           <li class="">
                             <a href="../developer/data.html" title="Viewer.Data" class="">Viewer.Data</a>
                           </li>
+                          <li class="active">
+                            <a href="../developer/query.html" title="Viewer.Query" class="active">Viewer.Query</a>
+                          </li>
+                          <li class="">
+                            <a href="../developer/gui.html" title="Viewer" class="">Viewer</a>
+                          </li>
                         </ul>  </li>
                   </ul>        </div>
               </div>
@@ -116,7 +122,6 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="viewerquery">Viewer.Query</h1>
 
-<h2 id="grammar">Grammar</h2>
 <h2 id="compilation">Compilation</h2>
 <p>Expressions in the <code>where</code> part and the <code>order by</code> part of the query are compiled to a C# code using <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/">Expression Trees</a>. Since we don't know the type of an attribute, many decisions have to be made at runtime. The generated code will therefore mostly just call runtime functions. Expression trees are used mainly for convenience (no need to write an interpreter).</p>
 <p>The compiled function takes an <a class="xref" href="../../api/Viewer.Data.IEntity.html">entity</a> and returns a <a class="xref" href="../../api/Viewer.Data.BaseValue.html">value</a>. If the returned value in the <code>where</code> part of a query is null (i.e., <a class="xref" href="../../api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_IsNull">IsNull</a> is true), it is interpreted as <code>fales</code> (i.e., the entity is not included in the result).</p>
@@ -127,7 +132,122 @@
 <p>Returned entities are not sorted. This allows for a lazy execution even if the evaluated query is ordered and it drastically reduces latency since user does not have to wait for the query to search all entities.</p>
 </div>
 <p>The <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Execute</a> method supports standard cancellation and progress even though it is not an async method and it executes completely synchronously.</p>
-</article>
+<h2 id="grammar">Grammar</h2>
+<p>The program uses ANTLR4 to generate query parser and lexer.</p>
+<pre><code class="lang-csharp" name="Grammar">grammar Query;
+
+entry: queryExpression EOF;
+
+// set operations on queries
+queryExpression: queryExpression UNION_EXCEPT intersection | intersection;
+
+intersection: queryFactor (INTERSECT queryFactor)*;
+
+queryFactor: query | '(' queryExpression ')';
+
+// query
+query: unorderedQuery optionalOrderBy;
+
+unorderedQuery: SELECT source optionalWhere;
+
+source: ID | STRING | '(' queryExpression ')';
+
+// WHERE
+optionalWhere: WHERE predicate | ;
+
+// ORDER BY
+optionalOrderBy: ORDER BY orderByList | ;
+
+orderByList: orderByKey (',' orderByKey)*;
+
+orderByKey: comparison optionalDirection;
+
+optionalDirection: DIRECTION | ;
+
+// expressions
+predicate: predicate OR conjunction | conjunction;
+
+conjunction: conjunction AND literal | literal; 
+
+literal: comparison | NOT comparison;
+
+comparison: expression REL_OP expression | expression;
+
+expression: expression ADD_SUB multiplication | multiplication; 
+
+multiplication: multiplication MULT_DIV factor | factor;
+
+factor: '(' predicate ')' | INT | REAL | STRING | COMPLEX_ID | ID | ID '(' argumentList ')';
+
+argumentList: comparison (',' comparison)* | ;
+
+// lexer
+SELECT: S E L E C T;
+
+WHERE: W H E R E;
+
+ORDER: O R D E R;
+
+BY:  B Y;
+
+AND: A N D;
+
+OR: O R;
+
+NOT: N O T;
+
+DIRECTION: (D E S C | A S C);
+
+INTERSECT: I N T E R S E C T;
+
+UNION_EXCEPT: (U N I O N | E X C E P T);
+
+ID: [a-zA-Z_][a-zA-Z0-9_]*;
+
+INT: [0-9]+;
+
+REAL: [0-9]+'.'[0-9]+;
+
+COMPLEX_ID: '`' ~('`')+ '`';
+
+STRING: '&quot;' ~('&quot;')* '&quot;'; 
+
+ADD_SUB: ('+' | '-');
+
+MULT_DIV: ('*' | '/');
+
+REL_OP: ('=' | '!=' | '&lt;' | '&lt;=' | '&gt;' | '&gt;=');
+
+WS : [ \t\r\n]+ -&gt; skip;
+
+// fragments
+fragment A: [aA];
+fragment B: [bB];
+fragment C: [cC];
+fragment D: [dD];
+fragment E: [eE];
+fragment F: [fF];
+fragment G: [gG];
+fragment H: [hH];
+fragment I: [iI];
+fragment J: [jJ];
+fragment K: [kK];
+fragment L: [lL];
+fragment M: [mM];
+fragment N: [nN];
+fragment O: [oO];
+fragment P: [pP];
+fragment Q: [qQ];
+fragment R: [rR];
+fragment S: [sS];
+fragment T: [tT];
+fragment U: [uU];
+fragment V: [vV];
+fragment W: [wW];
+fragment X: [xX];
+fragment Y: [yY];
+fragment Z: [zZ];
+</code></pre></article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

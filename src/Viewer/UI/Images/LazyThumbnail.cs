@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Viewer.Core;
 using Viewer.Data;
 using Viewer.Images;
 using Viewer.Properties;
@@ -140,7 +141,7 @@ namespace Viewer.UI.Images
             }
 
             _loadingThumbnailAreaSize = thumbnailAreaSize;
-
+            
             // start loading an embedded thumbnail
             if (_loadingType == LoadingType.None)
             {
@@ -172,18 +173,6 @@ namespace Viewer.UI.Images
                     _loading = LoadNativeThumbnailAsync(thumbnailAreaSize);
                     _loadingType = LoadingType.NativeThumbnail;
                 }
-                else if (_loadingType == LoadingType.NativeThumbnail)
-                {
-                    // check whether it has failed due to the file being opened by another process
-                    var isFileBusy = _loading.Exception?.InnerExceptions
-                                         .Any(item => item.GetType() == typeof(IOException)) ?? false;
-                    if (isFileBusy)
-                    {
-                        // retry after a set amount of time
-                        _loading = LoadNativeThumbnailDelayedAsync(thumbnailAreaSize, RetryDelay);
-                        _loadingType = LoadingType.NativeThumbnail;
-                    }
-                }
             }
             else if (_loadingType == LoadingType.NativeThumbnail &&
                      _loading.Status != TaskStatus.Canceled) // the loading is in process
@@ -194,12 +183,6 @@ namespace Viewer.UI.Images
             return _current;
         }
 
-        private async Task<Thumbnail> LoadNativeThumbnailDelayedAsync(Size thumbnailAreaSize, TimeSpan delay)
-        {
-            await Task.Delay(delay, _cancellationToken).ConfigureAwait(false);
-            return await LoadNativeThumbnailAsync(thumbnailAreaSize);
-        }
-
         private Task<Thumbnail> LoadEmbeddedThumbnailAsync(Size thumbnailAreaSize)
         {
             return _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
@@ -207,7 +190,15 @@ namespace Viewer.UI.Images
 
         private Task<Thumbnail> LoadNativeThumbnailAsync(Size thumbnailAreaSize)
         {
-            return _thumbnailLoader.LoadNativeThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
+            return Retry
+                .Async(() => _thumbnailLoader.LoadNativeThumbnailAsync(
+                    _entity,
+                    thumbnailAreaSize,
+                    _cancellationToken))
+                .WithAttempts(5)
+                .WithDelay(RetryDelay)
+                .WhenExactly<IOException>()
+                .Task;
         }
         
         private static bool IsSufficient(Size originalImageSize, Size thumbnailAreaSize)

@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,9 +43,11 @@ namespace Viewer
 
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, file);
             LogManager.Configuration = config;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+
             Application.ThreadException += ApplicationOnThreadException;
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -55,7 +59,7 @@ namespace Viewer
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.QueryRuntime.IntValueAdditionFunction))),
                 new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.IO.IFileSystem)))
             );
-
+            
             using (var container = new CompositionContainer(catalog))
             {
                 var app = container.GetExportedValue<IViewerApplication>();
@@ -64,14 +68,22 @@ namespace Viewer
             }
         }
 
+        // This should never be called as we have set unhandeled exception mode to throw exceptions
         private static void ApplicationOnThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            Logger.Fatal(e.Exception, "Unhandeled exception.");
+            ReportUnhandeledException(e.Exception);
         }
 
+        [HandleProcessCorruptedStateExceptions]
+        [SecurityCritical]
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            if (e.ExceptionObject is CompositionException compositionException)
+            ReportUnhandeledException(e.ExceptionObject as Exception);
+        }
+
+        private static void ReportUnhandeledException(Exception e)
+        {
+            if (e is CompositionException compositionException)
             {
                 // It is useless to log composition exception directly as that would include everything 
                 // but an information about the error.
@@ -80,7 +92,7 @@ namespace Viewer
             }
             else
             {
-                Logger.Fatal(e.ExceptionObject as Exception, "Unhandled exception.");
+                Logger.Fatal(e, "Unhandled exception.");
             }
         }
 

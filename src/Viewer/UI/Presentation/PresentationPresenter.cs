@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using Viewer.Core.UI;
 using Viewer.Data;
@@ -67,9 +69,9 @@ namespace Viewer.UI.Presentation
                 index = 0;
             if (index >= _entities.Count)
                 index = _entities.Count - 1;
-
+            
             _images?.Dispose();
-            _images = new ImageWindow(_imageLoader, _entities, 5);
+            _images = new ImageWindow(_imageLoader, _entities, 3);
             _images.SetPosition(index);
             await LoadCurrentEntityAsync();
         }

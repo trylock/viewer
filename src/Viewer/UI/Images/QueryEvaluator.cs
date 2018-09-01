@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
+using Viewer.Core;
 using Viewer.Core.Collections;
 using Viewer.Data;
 using Viewer.Data.Formats;
@@ -42,6 +43,16 @@ namespace Viewer.UI.Images
         private List<EntityView> _views;
         private readonly ConcurrentSortedSet<EntityView> _added;
         private readonly ConcurrentQueue<Request> _requests = new ConcurrentQueue<Request>();
+
+        /// <summary>
+        /// Minimal time between a failed load operation and its retry
+        /// </summary>
+        private static readonly TimeSpan RetryDelay = TimeSpan.FromSeconds(1);
+
+        /// <summary>
+        /// Maximal retry operation count.
+        /// </summary>
+        private const int MaxRetryCount = 4;
 
         private enum RequestType
         {
@@ -167,39 +178,48 @@ namespace Viewer.UI.Images
             _requests.Enqueue(new Request(oldPath, newPath));
         }
 
-        private void FileWatcherOnCreated(object sender, FileSystemEventArgs e)
+        private async void FileWatcherOnCreated(object sender, FileSystemEventArgs e)
         {
             if (!IsEntityEvent(e))
                 return; // skip this event
-            
-            IEntity entity = null;
+
             try
             {
-                entity = _entities.GetEntity(e.FullPath);
-            } // silently ignore load exceptions
-            catch (InvalidDataFormatException ex)
-            {
-                Logger.Warn(ex);
-            }
-            catch (NotSupportedException ex)
-            {
-                Logger.Debug(ex);
-            }
-            catch (PathTooLongException ex)
-            {
-                Logger.Debug(ex);
-            }
-            catch (SecurityException ex)
-            {
-                Logger.Debug(ex);
+                await Retry
+                    .Async(() => CheckAndAdd(e.FullPath))
+                    .WithAttempts(MaxRetryCount)
+                    .WithDelay(RetryDelay)
+                    .WhenExactly<IOException>();
             }
             catch (IOException ex)
             {
+                Logger.Debug(ex, "All attempts have failed.");
+            }
+        }
+
+        private void CheckAndAdd(string path)
+        {
+            IEntity entity = null;
+            try
+            {
+                entity = _entities.GetEntity(path);
+            } // silently ignore load exceptions
+            catch (InvalidDataFormatException ex)
+            {
                 Logger.Debug(ex);
+            }
+            catch (NotSupportedException)
+            {
+            }
+            catch (PathTooLongException)
+            {
+            }
+            catch (SecurityException)
+            {
             }
             catch (ArgumentException ex) // invalid path
             {
-                Logger.Warn(ex);
+                Logger.Debug(ex);
             }
 
             if (entity != null && Query.Match(entity))

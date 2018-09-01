@@ -79,6 +79,10 @@ namespace ViewerTest.UI.Presentation
             var fourth = await _window.GetCurrentAsync();
             Assert.AreEqual(6, fourth.Width);
 
+            // The window disposes images asynchronnously. This should give the window enought time
+            // to finish all pending operations.
+            await Task.Delay(100);
+
             Assert.IsFalse(image1.IsDisposed);
             Assert.IsTrue(image2.IsDisposed);
             Assert.IsTrue(image3.IsDisposed);

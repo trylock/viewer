@@ -270,7 +270,7 @@ namespace ViewerTest.Data.Storage
             var result = _storage.Load(entity.Path);
             Assert.IsNull(result);
 
-            _storage.Remove(entity);
+            _storage.Delete(entity);
             _storage.ApplyChanges();
 
             result = _storage.Load(entity.Path);
@@ -289,7 +289,7 @@ namespace ViewerTest.Data.Storage
             var result = _storage.Load(entity.Path);
             Assert.IsNotNull(result);
 
-            _storage.Remove(entity);
+            _storage.Delete(entity);
             _storage.ApplyChanges();
 
             result = _storage.Load(entity.Path);
@@ -413,7 +413,7 @@ namespace ViewerTest.Data.Storage
             result = _storage.Load("test");
             Assert.IsNotNull(result);
 
-            _storage.Remove(entity);
+            _storage.Delete(entity);
 
             result = _storage.Load("test");
             Assert.IsNull(result);
@@ -433,7 +433,7 @@ namespace ViewerTest.Data.Storage
             result = _storage.Load("test");
             Assert.IsNotNull(result);
 
-            _storage.Remove(entity);
+            _storage.Delete(entity);
             result = _storage.Load("test");
             Assert.IsNull(result);
 
@@ -489,7 +489,7 @@ namespace ViewerTest.Data.Storage
             var result = _storage.Load("test");
             Assert.IsNotNull(result);
 
-            _storage.Remove(entity);
+            _storage.Delete(entity);
             
             result = _storage.Load("test");
             Assert.IsNull(result);
@@ -519,7 +519,7 @@ namespace ViewerTest.Data.Storage
             result = _storage.Load("test");
             Assert.IsNotNull(result);
 
-            _storage.Remove(entity);
+            _storage.Delete(entity);
 
             result = _storage.Load("test");
             Assert.IsNull(result);
@@ -542,7 +542,7 @@ namespace ViewerTest.Data.Storage
             var test1 = _storage.Load("test");
             Assert.IsNotNull(test1);
 
-            _storage.Remove(entity);
+            _storage.Delete(entity);
 
             test1 = _storage.Load("test");
             Assert.IsNull(test1);

@@ -189,7 +189,7 @@ namespace Viewer.Data.Storage
                 throw new ArgumentNullException(nameof(entity));
         }
 
-        public void Remove(IEntity entity)
+        public void Delete(IEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

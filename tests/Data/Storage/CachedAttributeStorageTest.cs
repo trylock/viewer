@@ -135,17 +135,17 @@ namespace ViewerTest.Data.Storage
         [ExpectedException(typeof(ArgumentNullException))]
         public void Remove_NullEntity()
         {
-            _storage.Remove(null);
+            _storage.Delete(null);
         }
 
         [TestMethod]
         public void Remove_Entity()
         {
             var entity = new FileEntity("test");
-            _storage.Remove(entity);
+            _storage.Delete(entity);
 
-            _cacheStorage.Verify(mock => mock.Remove(entity), Times.Once);
-            _persistentStorage.Verify(mock => mock.Remove(entity), Times.Once);
+            _cacheStorage.Verify(mock => mock.Delete(entity), Times.Once);
+            _persistentStorage.Verify(mock => mock.Delete(entity), Times.Once);
         }
 
         [TestMethod]
@@ -155,17 +155,17 @@ namespace ViewerTest.Data.Storage
             var entity = new FileEntity("test");
 
             _persistentStorage
-                .Setup(mock => mock.Remove(entity))
+                .Setup(mock => mock.Delete(entity))
                 .Throws(new IOException());
 
             try
             {
-                _storage.Remove(entity);
+                _storage.Delete(entity);
             }
             finally
             {
-                _cacheStorage.Verify(mock => mock.Remove(It.IsAny<IEntity>()), Times.Never);
-                _persistentStorage.Verify(mock => mock.Remove(entity));
+                _cacheStorage.Verify(mock => mock.Delete(It.IsAny<IEntity>()), Times.Never);
+                _persistentStorage.Verify(mock => mock.Delete(entity));
             }
         }
 

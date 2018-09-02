@@ -76,7 +76,7 @@ namespace Viewer.Data.Storage
         /// </summary>
         /// <param name="entity">Entity to remove</param>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
-        void Remove(IEntity entity);
+        void Delete(IEntity entity);
 
         /// <summary>
         /// Move an <paramref name="entity"/> to <paramref name="newPath"/>.

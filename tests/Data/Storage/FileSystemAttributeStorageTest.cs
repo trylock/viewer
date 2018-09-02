@@ -167,7 +167,7 @@ namespace ViewerTest.Data.Storage
         [TestMethod]
         public void Remove_DeleteFile()
         {
-            _storage.Remove(new FileEntity("test"));
+            _storage.Delete(new FileEntity("test"));
             
             _fileSystem.Verify(mock => mock.DeleteFile(PathUtils.NormalizePath("test")), Times.Once);
         }
@@ -175,7 +175,7 @@ namespace ViewerTest.Data.Storage
         [TestMethod]
         public void Remove_DeleteDirectroy()
         {
-            _storage.Remove(new DirectoryEntity("test"));
+            _storage.Delete(new DirectoryEntity("test"));
 
             _fileSystem.Verify(mock => mock.DeleteDirectory(PathUtils.NormalizePath("test"), true), Times.Once);
         }

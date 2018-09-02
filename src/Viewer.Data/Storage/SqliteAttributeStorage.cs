@@ -236,7 +236,7 @@ namespace Viewer.Data.Storage
             }
         }
 
-        public void Remove(IEntity entity)
+        public void Delete(IEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));

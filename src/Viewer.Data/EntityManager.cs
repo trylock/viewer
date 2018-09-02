@@ -190,7 +190,7 @@ namespace Viewer.Data
 
         public void RemoveEntity(IEntity entity)
         {
-            _storage.Remove(entity);
+            _storage.Delete(entity);
 
             lock (_modified)
             {

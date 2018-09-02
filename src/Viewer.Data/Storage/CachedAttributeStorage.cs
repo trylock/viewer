@@ -92,13 +92,13 @@ namespace Viewer.Data.Storage
             Notify();
         }
 
-        public void Remove(IEntity entity)
+        public void Delete(IEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            _persistentStorage.Remove(entity);
-            _cacheStorage.Remove(entity);
+            _persistentStorage.Delete(entity);
+            _cacheStorage.Delete(entity);
             Notify();
         }
 

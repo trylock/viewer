@@ -9,7 +9,7 @@ using Viewer.Data;
 
 namespace Viewer.UI.Images
 {
-    public enum SelectionStrategy
+    internal enum SelectionStrategy
     {
         /// <summary>
         /// Previous selection will be replaced with the new selection.
@@ -27,7 +27,7 @@ namespace Viewer.UI.Images
         SymetricDifference,
     }
 
-    public class RectangleSelection<T> : IEnumerable<T>
+    internal class RectangleSelection<T> : IEnumerable<T>
     {
         private readonly HashSet<T> _previousSelection;
         private readonly HashSet<T> _currentSelection;

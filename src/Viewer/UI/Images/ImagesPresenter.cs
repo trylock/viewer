@@ -27,9 +27,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {
-    [Export]
-    [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class ImagesPresenter : Presenter<IImagesView>
+    internal class ImagesPresenter : Presenter<IImagesView>
     {
         private readonly IEditor _editor;
         private readonly IExplorer _explorer;
@@ -41,8 +39,6 @@ namespace Viewer.UI.Images
         private readonly IQueryHistory _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IQueryEvaluatorFactory _queryEvaluatorFactory;
-
-        protected override ExportLifetimeContext<IImagesView> ViewLifetime { get; }
 
         private static Size MinItemSize => new Size(133, 100);
         private static Size MaxItemSize => new Size(
@@ -121,10 +117,9 @@ namespace Viewer.UI.Images
                 );
             }
         }
-
-        [ImportingConstructor]
+        
         public ImagesPresenter(
-            ExportFactory<IImagesView> viewFactory,
+            IImagesView view,
             IEditor editor,
             IExplorer explorer,
             IPresentation presentation,
@@ -136,7 +131,7 @@ namespace Viewer.UI.Images
             IQueryFactory queryFactory,
             IQueryEvaluatorFactory queryEvaluatorFactory)
         {
-            ViewLifetime = viewFactory.CreateExport();
+            View = view;
             _editor = editor;
             _explorer = explorer;
             _presentation = presentation;
@@ -248,8 +243,8 @@ namespace Viewer.UI.Images
             foreach (var item in View.Items)
             {
                 item.State = _rectangleSelection.Contains(item) ? 
-                    FileViewState.Selected : 
-                    FileViewState.None;
+                    EntityViewState.Selected : 
+                    EntityViewState.None;
             }
 
             View.UpdateItems();
@@ -623,7 +618,8 @@ namespace Viewer.UI.Images
         {
             if (_state.Current != null)
             {
-                _editor.OpenNew(_state.Current.Text, DockState.Document);
+                var window = _editor.OpenNew(_state.Current.Text);
+                window.Show(View.DockPanel, DockState.Document);
             }
         }
 

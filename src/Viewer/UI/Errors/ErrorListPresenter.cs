@@ -8,19 +8,14 @@ using Viewer.Core.UI;
 
 namespace Viewer.UI.Errors
 {
-    [Export]
-    [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class ErrorListPresenter : Presenter<IErrorListView>
+    internal class ErrorListPresenter : Presenter<IErrorListView>
     {
         private readonly IErrorList _errorList;
         
-        protected override ExportLifetimeContext<IErrorListView> ViewLifetime { get; }
-
-        [ImportingConstructor]
-        public ErrorListPresenter(ExportFactory<IErrorListView> viewFactory, IErrorList errorList)
+        public ErrorListPresenter(IErrorListView view, IErrorList errorList)
         {
             _errorList = errorList;
-            ViewLifetime = viewFactory.CreateExport();
+            View = view;
             View.Entries = _errorList;
             View.UpdateEntries();
             SubscribeTo(View, "View");

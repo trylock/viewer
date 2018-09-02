@@ -10,7 +10,7 @@ using Viewer.Query;
 
 namespace Viewer.UI.QueryEditor
 {
-    public class OpenQueryEventArgs : EventArgs
+    internal class OpenQueryEventArgs : EventArgs
     {
         /// <summary>
         /// Full path to a file to open
@@ -23,7 +23,7 @@ namespace Viewer.UI.QueryEditor
         }
     }
 
-    public class QueryViewEventArgs : EventArgs
+    internal class QueryViewEventArgs : EventArgs
     {
         /// <summary>
         /// Query view argument.
@@ -36,7 +36,7 @@ namespace Viewer.UI.QueryEditor
         }
     }
 
-    public interface IDropView
+    internal interface IDropView
     {
         /// <summary>
         /// Event called when user drops something into the view
@@ -44,7 +44,7 @@ namespace Viewer.UI.QueryEditor
         event EventHandler<DragEventArgs> OnDrop;
     }
 
-    public interface IQueryEditorView : IDropView, IWindowView
+    internal interface IQueryEditorView : IDropView, IWindowView
     {
         /// <summary>
         /// Event called when user requests to run the query

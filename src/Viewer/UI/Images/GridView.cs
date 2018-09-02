@@ -13,7 +13,7 @@ using Viewer.Images;
 
 namespace Viewer.UI.Images
 {
-    public partial class GridView : UserControl
+    internal partial class GridView : UserControl
     {
         /// <summary>
         /// Height of the area for file name
@@ -265,7 +265,7 @@ namespace Viewer.UI.Images
             graphics.FillRectangle(Brushes.White, bounds);
 
             var drawBounds = bounds;
-            if ((item.State & FileViewState.Selected) != 0)
+            if ((item.State & EntityViewState.Selected) != 0)
             {
                 // draw selection 
                 using (var brush = new SolidBrush(_selectedFillColor))
@@ -275,7 +275,7 @@ namespace Viewer.UI.Images
                     graphics.DrawRectangle(pen, drawBounds);
                 }
             }
-            else if ((item.State & FileViewState.Active) != 0)
+            else if ((item.State & EntityViewState.Active) != 0)
             {
                 // draw highlight
                 using (var brush = new SolidBrush(_highlightFillColor))

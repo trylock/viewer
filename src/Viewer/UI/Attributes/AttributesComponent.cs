@@ -7,29 +7,49 @@ using System.Threading.Tasks;
 using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Data;
+using Viewer.Data.Storage;
 using Viewer.Properties;
+using Viewer.UI.Errors;
+using Viewer.UI.Explorer;
+using Viewer.UI.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Attributes
 {
     [Export(typeof(IComponent))]
-    public class AttributesComponent : IComponent
+    public class AttributesComponent : Component
     {
+        private readonly ITaskLoader _taskLoader;
+        private readonly IAttributeManager _attributes;
+        private readonly IAttributeStorage _storage;
+        private readonly IEntityManager _entityManager;
+        private readonly IErrorList _errorList;
+        private readonly IFileSystemErrorView _dialogView;
+        
         private const string AttributesId = "attributes";
         private const string ExifId = "exif";
-
-        private readonly ExportFactory<AttributesPresenter> _attributesFactory;
-
-        private ExportLifetimeContext<AttributesPresenter> _attributes;
-        private ExportLifetimeContext<AttributesPresenter> _exif;
+        
+        private AttributesPresenter _userAttrPresenter;
+        private AttributesPresenter _exifAttrPresenter;
 
         [ImportingConstructor]
-        public AttributesComponent(ExportFactory<AttributesPresenter> factory)
+        public AttributesComponent(
+            ITaskLoader loader, 
+            IAttributeManager attributes, 
+            IAttributeStorage storage, 
+            IEntityManager entities, 
+            IErrorList errorList, 
+            IFileSystemErrorView dialogView)
         {
-            _attributesFactory = factory;
+            _taskLoader = loader;
+            _attributes = attributes;
+            _storage = storage;
+            _entityManager = entities;
+            _errorList = errorList;
+            _dialogView = dialogView;
         }
 
-        public void OnStartup(IViewerApplication app)
+        public override void OnStartup(IViewerApplication app)
         {
             // add the component to the menu
             app.AddMenuItem(new []{ "View", "Attributes" }, () => ShowAttributes(), Resources.AttributesComponentIcon.ToBitmap());
@@ -52,59 +72,73 @@ namespace Viewer.UI.Attributes
             return null;
         }
 
+        private AttributesPresenter CreateAttributesPresenter()
+        {
+            return new AttributesPresenter(
+                new AttributeTableView(), 
+                _taskLoader, 
+                _attributes, 
+                _storage, 
+                _entityManager, 
+                _errorList, 
+                _dialogView);
+        }
+
         private AttributesPresenter GetAttributes()
         {
-            if (_attributes == null)
+            if (_userAttrPresenter == null)
             {
-                _attributes = _attributesFactory.CreateExport();
-                _attributes.Value.SetType(AttributeViewType.Custom);
-                _attributes.Value.View.Text = "Attributes";
-                _attributes.Value.View.CloseView += (sender, args) =>
+                _userAttrPresenter = CreateAttributesPresenter();
+                _userAttrPresenter.SetType(AttributeViewType.Custom);
+                _userAttrPresenter.View.Text = "Attributes";
+                _userAttrPresenter.View.CloseView += (sender, args) =>
                 {
-                    _attributes.Dispose();
-                    _attributes = null;
+                    _userAttrPresenter.Dispose();
+                    _userAttrPresenter = null;
                 };
             }
             else
             {
-                _attributes.Value.View.EnsureVisible();
+                _userAttrPresenter.View.EnsureVisible();
             }
 
-            return _attributes.Value;
+            return _userAttrPresenter;
         }
 
         private IDockContent ShowAttributes()
         {
             var attributes = GetAttributes();
-            attributes.ShowView("Attributes", DockState.DockRight);
+            attributes.View.Text = "Attributes";
+            attributes.View.Show(Application.Panel, DockState.DockRight);
             return attributes.View;
         }
 
         private AttributesPresenter GetExif()
         {
-            if (_exif == null)
+            if (_exifAttrPresenter == null)
             {
-                _exif = _attributesFactory.CreateExport();
-                _exif.Value.SetType(AttributeViewType.Exif);
-                _exif.Value.View.Text = "Exif";
-                _exif.Value.View.CloseView += (sender, e) =>
+                _exifAttrPresenter = CreateAttributesPresenter();
+                _exifAttrPresenter.SetType(AttributeViewType.Exif);
+                _exifAttrPresenter.View.Text = "Exif";
+                _exifAttrPresenter.View.CloseView += (sender, e) =>
                 {
-                    _exif.Dispose();
-                    _exif = null;
+                    _exifAttrPresenter.Dispose();
+                    _exifAttrPresenter = null;
                 };
             }
             else
             {
-                _exif.Value.View.EnsureVisible();
+                _exifAttrPresenter.View.EnsureVisible();
             }
 
-            return _exif.Value;
+            return _exifAttrPresenter;
         }
 
         private IDockContent ShowExif()
         {
             var exif = GetExif();
-            exif.ShowView("Exif", DockState.DockRight);
+            exif.View.Text = "Exif";
+            exif.View.Show(Application.Panel, DockState.DockRight);
             return exif.View;
         }
     }

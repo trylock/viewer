@@ -16,27 +16,26 @@ using IComponent = Viewer.Core.IComponent;
 namespace Viewer.UI.Errors
 {
     [Export(typeof(IComponent))]
-    public class ErrorListComponent : IComponent
+    public class ErrorListComponent : Component
     {
         public const string Name = "Error List";
 
-        private readonly ExportFactory<ErrorListPresenter> _errorListFactory;
-
-        private ExportLifetimeContext<ErrorListPresenter> _errorList;
+        private readonly IErrorList _errorList;
+        
+        private ErrorListPresenter _errorListPresenter;
 
         [ImportingConstructor]
-        public ErrorListComponent(ExportFactory<ErrorListPresenter> factory, IErrorList errorList)
+        public ErrorListComponent(IErrorList errorList)
         {
-            _errorListFactory = factory;
-            
             var context = SynchronizationContext.Current;
-            errorList.EntryAdded += (sender, args) =>
+            _errorList = errorList;
+            _errorList.EntryAdded += (sender, args) =>
             {
                 context.Post(state => ShowErrorList(), null);
             };
         }
 
-        public void OnStartup(IViewerApplication app)
+        public override void OnStartup(IViewerApplication app)
         {
             app.AddMenuItem(new []{ "View", Name }, () => ShowErrorList(), Resources.ErrorListIcon.ToBitmap());
 
@@ -54,27 +53,27 @@ namespace Viewer.UI.Errors
 
         private ErrorListPresenter GetErrorList()
         {
-            if (_errorList == null)
+            if (_errorListPresenter == null)
             {
-                _errorList = _errorListFactory.CreateExport();
-                _errorList.Value.View.CloseView += (sender, e) =>
+                _errorListPresenter = new ErrorListPresenter(new ErrorListView(), _errorList);
+                _errorListPresenter.View.CloseView += (sender, e) =>
                 {
-                    _errorList.Dispose();
-                    _errorList = null;
+                    _errorListPresenter.Dispose();
+                    _errorListPresenter = null;
                 };
             }
             else
             {
-                _errorList.Value.View.EnsureVisible();
+                _errorListPresenter.View.EnsureVisible();
             }
 
-            return _errorList.Value;
+            return _errorListPresenter;
         }
 
         private IErrorListView ShowErrorList()
         {
             var errorList = GetErrorList();
-            errorList.ShowView(Name, DockState.DockBottom);
+            errorList.View.Show(Application.Panel, DockState.DockBottom);
             return errorList.View;
         }
     }

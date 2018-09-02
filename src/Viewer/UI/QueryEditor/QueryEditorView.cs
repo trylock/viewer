@@ -15,7 +15,6 @@ using Viewer.Query;
 
 namespace Viewer.UI.QueryEditor
 {
-    [Export(typeof(IQueryEditorView))]
     internal partial class QueryEditorView : WindowView, IQueryEditorView
     {
         public QueryEditorView()

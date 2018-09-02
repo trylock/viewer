@@ -11,20 +11,12 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Viewer.UI.Tasks
 {
     [Export(typeof(ITaskLoader))]
-    public class TaskLoader : ITaskLoader
+    public class TaskLoader : Component, ITaskLoader
     {
-        private readonly IViewerApplication _app;
-
-        [ImportingConstructor]
-        public TaskLoader(IViewerApplication app)
-        {
-            _app = app;
-        }
-
         public IProgressController CreateLoader(string name, CancellationTokenSource cancellation)
         {
             var view = new TaskLoaderView( cancellation);
-            view.Show(_app.Panel, DockState.DockBottom);
+            view.Show(Application.Panel, DockState.DockBottom);
             view.OperationName = name;
             view.Text = name;
             return view.Progress;

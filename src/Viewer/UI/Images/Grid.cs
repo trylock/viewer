@@ -10,7 +10,7 @@ using Viewer.Core;
 
 namespace Viewer.UI.Images
 {
-    public struct GridCell
+    internal struct GridCell
     {
         /// <summary>
         /// Row of the grid cell
@@ -73,8 +73,8 @@ namespace Viewer.UI.Images
             Column = column;
         }
     }
-    
-    public class Grid
+
+    internal class Grid
     {
         #region Editable Public Properties
 

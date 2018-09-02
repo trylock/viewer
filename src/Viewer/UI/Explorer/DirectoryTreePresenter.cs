@@ -20,9 +20,7 @@ using Viewer.UI.Tasks;
 
 namespace Viewer.UI.Explorer
 {
-    [Export]
-    [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class DirectoryTreePresenter : Presenter<IDirectoryTreeView>
+    internal class DirectoryTreePresenter : Presenter<IDirectoryTreeView>
     {
         /// <summary>
         /// Directory with at least one of these flags will be hidden.
@@ -32,33 +30,26 @@ namespace Viewer.UI.Explorer
         private readonly IQueryHistory _state;
         private readonly IQueryFactory _queryFactory;
         private readonly IFileSystem _fileSystem;
-        private readonly ISystemExplorer _systemExplorer;
         private readonly IClipboardService _clipboard;
         private readonly IFileSystemErrorView _dialogView;
         private readonly IExplorer _explorer;
-
-        protected override ExportLifetimeContext<IDirectoryTreeView> ViewLifetime { get; }
-
-        [ImportingConstructor]
+        
         public DirectoryTreePresenter(
-            ExportFactory<IDirectoryTreeView> viewFactory,
+            IDirectoryTreeView view,
             IQueryHistory state,
             IQueryFactory queryFactory,
-            ITaskLoader taskLoader,
             IFileSystemErrorView dialogView,
             IFileSystem fileSystem,
-            ISystemExplorer systemExplorer,
             IExplorer explorer,
             IClipboardService clipboard)
         {
+            View = view;
             _state = state;
             _queryFactory = queryFactory;
             _fileSystem = fileSystem;
-            _systemExplorer = systemExplorer;
             _clipboard = clipboard;
             _dialogView = dialogView;
             _explorer = explorer;
-            ViewLifetime = viewFactory.CreateExport();
 
             SubscribeTo(View, "View");
         }
@@ -257,7 +248,11 @@ namespace Viewer.UI.Explorer
 
         private void View_OpenInExplorer(object sender, DirectoryEventArgs e)
         {
-            _systemExplorer.OpenFile(e.FullPath);
+            var fullPath = Path.GetFullPath(e.FullPath);
+            Process.Start(
+                Resources.ExplorerProcessName,
+                string.Format(Resources.ExplorerOpenFolderArguments, fullPath)
+            );
         }
 
         private void View_CopyDirectory(object sender, DirectoryEventArgs e)

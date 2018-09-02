@@ -6,25 +6,43 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
 using Viewer.Core.UI;
+using Viewer.IO;
 using Viewer.Properties;
+using Viewer.Query;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Explorer
 {
     [Export(typeof(IComponent))]
-    public class ExplorerComponent : IComponent
+    public class ExplorerComponent : Component
     {
-        private readonly ExportFactory<DirectoryTreePresenter> _explorerFactory;
-
-        private ExportLifetimeContext<DirectoryTreePresenter> _explorer;
+        private readonly IQueryHistory _state;
+        private readonly IQueryFactory _queryFactory;
+        private readonly IFileSystem _fileSystem;
+        private readonly IClipboardService _clipboard;
+        private readonly IFileSystemErrorView _dialogView;
+        private readonly IExplorer _explorer;
+        
+        private DirectoryTreePresenter _presenter;
 
         [ImportingConstructor]
-        public ExplorerComponent(ExportFactory<DirectoryTreePresenter> factory)
+        public ExplorerComponent(
+            IQueryHistory state,
+            IQueryFactory queryFactory,
+            IFileSystemErrorView dialogView,
+            IFileSystem fileSystem,
+            IExplorer explorer,
+            IClipboardService clipboard)
         {
-            _explorerFactory = factory;
+            _state = state;
+            _queryFactory = queryFactory;
+            _fileSystem = fileSystem;
+            _clipboard = clipboard;
+            _dialogView = dialogView;
+            _explorer = explorer;
         }
 
-        public void OnStartup(IViewerApplication app)
+        public override void OnStartup(IViewerApplication app)
         {
             app.AddMenuItem(new []{ "View", Resources.ExplorerWindowName }, () => ShowExplorer(), Resources.ExplorerComponentIcon.ToBitmap());
             app.AddLayoutDeserializeCallback(Deserialize);
@@ -42,28 +60,35 @@ namespace Viewer.UI.Explorer
 
         private DirectoryTreePresenter GetExplorer()
         {
-            if (_explorer == null)
+            if (_presenter == null)
             {
-                _explorer = _explorerFactory.CreateExport();
-                _explorer.Value.UpdateRootDirectories();
-                _explorer.Value.View.CloseView += (sender, args) =>
+                _presenter = new DirectoryTreePresenter(
+                    new DirectoryTreeView(), 
+                    _state, 
+                    _queryFactory, 
+                    _dialogView, 
+                    _fileSystem,
+                    _explorer, 
+                    _clipboard);
+                _presenter.UpdateRootDirectories();
+                _presenter.View.CloseView += (sender, args) =>
                 {
-                    _explorer.Dispose();
-                    _explorer = null;
+                    _presenter.Dispose();
+                    _presenter = null;
                 };
             }
             else
             {
-                _explorer.Value.View.EnsureVisible();
+                _presenter.View.EnsureVisible();
             }
 
-            return _explorer.Value;
+            return _presenter;
         }
 
         private IDockContent ShowExplorer()
         {
             var explorer = GetExplorer();
-            explorer.ShowView(Resources.ExplorerWindowName, DockState.DockLeft);
+            explorer.View.Show(Application.Panel, DockState.DockLeft);
             return explorer.View;
         }
     }

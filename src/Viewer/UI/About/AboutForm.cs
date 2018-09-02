@@ -13,7 +13,7 @@ using Viewer.Properties;
 
 namespace Viewer.UI.About
 {
-    public partial class AboutForm : Form
+    internal partial class AboutForm : Form
     {
         public AboutForm()
         {

@@ -31,15 +31,20 @@ namespace Viewer
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly ViewerForm _appForm;
-        private readonly IComponent[] _components;
         private readonly List<DeserializeCallback> _layoutDeserializeCallback = new List<DeserializeCallback>();
-        
+        private readonly IComponent[] _components;
+
         [ImportingConstructor]
         public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
         {
+            _components = components;
             _appForm = appForm;
             _appForm.Shutdown += OnShutdown;
-            _components = components;
+
+            foreach (var component in _components)
+            {
+                component.Application = this;
+            }
         }
 
         public DockPanel Panel => _appForm.Panel;

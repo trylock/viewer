@@ -19,7 +19,7 @@ namespace Viewer.UI.Presentation
     /// <summary>
     /// Image window preloads images within a constant distance from the current image.
     /// </summary>
-    public class ImageWindow : IDisposable
+    internal class ImageWindow : IDisposable
     {
         private class ImageProxy : IDisposable
         {

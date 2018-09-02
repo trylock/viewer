@@ -9,7 +9,7 @@ using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
 {
-    public class AttributeChangedEventArgs : EventArgs
+    internal class AttributeChangedEventArgs : EventArgs
     {
         /// <summary>
         /// Changed attribute identifier in the view
@@ -27,7 +27,7 @@ namespace Viewer.UI.Attributes
         public AttributeGroup NewValue { get; set; }
     }
 
-    public class AttributeDeletedEventArgs : EventArgs
+    internal class AttributeDeletedEventArgs : EventArgs
     {
         /// <summary>
         /// Deleted indices
@@ -35,7 +35,7 @@ namespace Viewer.UI.Attributes
         public IEnumerable<int> Deleted { get; set; }
     }
 
-    public class SortEventArgs : EventArgs
+    internal class SortEventArgs : EventArgs
     {
         /// <summary>
         /// Column by which we should sort the values
@@ -43,7 +43,7 @@ namespace Viewer.UI.Attributes
         public SortColumn Column { get; set; }
     }
 
-    public enum SortColumn
+    internal enum SortColumn
     {
         None,
         Name,
@@ -51,13 +51,13 @@ namespace Viewer.UI.Attributes
         Type
     }
 
-    public enum SortDirection
+    internal enum SortDirection
     {
         Ascending = 1,
         Descending = -1
     }
 
-    public enum AttributeType
+    internal enum AttributeType
     {
         Int,
         Double,
@@ -65,7 +65,7 @@ namespace Viewer.UI.Attributes
         DateTime,
     }
 
-    public enum AttributeViewType
+    internal enum AttributeViewType
     {
         /// <summary>
         /// This view shows read-only exif tags
@@ -78,7 +78,7 @@ namespace Viewer.UI.Attributes
         Custom
     }
 
-    public interface ISearchView
+    internal interface ISearchView
     {
         /// <summary>
         /// Event called when user enters a new query
@@ -91,7 +91,7 @@ namespace Viewer.UI.Attributes
         string SearchQuery { get; set; }
     }
 
-    public interface IAttributeView : ISearchView, IWindowView
+    internal interface IAttributeView : ISearchView, IWindowView
     {
         /// <summary>
         /// User requested to save all attributes to selected files.

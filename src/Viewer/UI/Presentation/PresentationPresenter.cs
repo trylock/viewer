@@ -21,16 +21,12 @@ using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
 {
-    [Export]
-    [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class PresentationPresenter : Presenter<IPresentationView>
+    internal class PresentationPresenter : Presenter<IPresentationView>
     {
         private readonly ISelection _selection;
         private readonly IImageLoader _imageLoader;
         private readonly IFileSystemErrorView _dialogView;
-
-        protected override ExportLifetimeContext<IPresentationView> ViewLifetime { get; }
-
+        
         // state
         private IReadOnlyList<IEntity> _entities;
         private ImageWindow _images;
@@ -40,9 +36,8 @@ namespace Viewer.UI.Presentation
         /// </summary>
         private DateTime _lastImageChange;
         
-        [ImportingConstructor]
         public PresentationPresenter(
-            ExportFactory<IPresentationView> viewFactory, 
+            IPresentationView view, 
             ISelection selection,
             IImageLoader imageLoader,
             IFileSystemErrorView dialogView)
@@ -50,7 +45,7 @@ namespace Viewer.UI.Presentation
             _selection = selection;
             _imageLoader = imageLoader;
             _dialogView = dialogView;
-            ViewLifetime = viewFactory.CreateExport();
+            View = view;
             SubscribeTo(View, "View");
         }
 

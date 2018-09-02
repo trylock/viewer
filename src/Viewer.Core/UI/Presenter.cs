@@ -39,38 +39,15 @@ namespace Viewer.Core.UI
             }
         }
 
-#pragma warning disable 0649
-
-        [Import]
-        private IViewerApplication _app;
-
-#pragma warning restore 0649
-
         /// <summary>
         /// Event subscriptions
         /// </summary>
         private readonly List<SubscriptionLifetime> _subscriptions = new List<SubscriptionLifetime>();
 
         /// <summary>
-        /// Lifetime of the view of this presenter
-        /// </summary>
-        protected abstract ExportLifetimeContext<TView> ViewLifetime { get; }
-
-        /// <summary>
         /// Main view of the presenter
         /// </summary>
-        public TView View => ViewLifetime.Value;
-
-        /// <summary>
-        /// Show presenter's view
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="dockState">Dock state of the view</param>
-        public virtual void ShowView(string title, DockState dockState)
-        {
-            View.Text = title;
-            View.Show(_app.Panel, dockState);
-        }
+        public TView View { get; protected set; }
 
         /// <summary>
         /// Automatically subscribe to all view events. For each EventName in <paramref name="view"/>
@@ -124,7 +101,6 @@ namespace Viewer.Core.UI
                 subscription.Unsubscribe();
             }
             View.Dispose();
-            ViewLifetime.Dispose();
         }
     }
 }

@@ -14,7 +14,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Tasks
 {
-    public partial class TaskLoaderView : WindowView
+    internal partial class TaskLoaderView : WindowView
     {
         public IProgressController Progress => _controller;
 

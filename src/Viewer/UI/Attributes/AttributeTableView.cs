@@ -17,8 +17,7 @@ using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
 {
-    [Export(typeof(IAttributeView))]
-    public partial class AttributeTableView : WindowView, IAttributeView
+    internal partial class AttributeTableView : WindowView, IAttributeView
     {
         /// <summary>
         /// Background color of an attribute which is not set in all entities in selection

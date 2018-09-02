@@ -20,9 +20,7 @@ using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
 {
-    [Export]
-    [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class AttributesPresenter : Presenter<IAttributeView>
+    internal class AttributesPresenter : Presenter<IAttributeView>
     {
         private readonly ITaskLoader _taskLoader;
         private readonly IAttributeManager _attributes;
@@ -30,9 +28,7 @@ namespace Viewer.UI.Attributes
         private readonly IEntityManager _entityManager;
         private readonly IErrorList _errorList;
         private readonly IFileSystemErrorView _dialogView;
-
-        protected override ExportLifetimeContext<IAttributeView> ViewLifetime { get; }
-
+        
         /// <summary>
         /// Funtion which determines for each attribute whether it should be managed by this presenter.
         /// </summary>
@@ -45,10 +41,9 @@ namespace Viewer.UI.Attributes
 
         private SortColumn _currentSortColumn = SortColumn.Name;
         private SortDirection _currentSortDirection = SortDirection.Ascending;
-
-        [ImportingConstructor]
+        
         public AttributesPresenter(
-            ExportFactory<IAttributeView> viewFactory, 
+            IAttributeView view, 
             ITaskLoader taskLoader, 
             IAttributeManager attrManager,
             IAttributeStorage storage,
@@ -56,7 +51,7 @@ namespace Viewer.UI.Attributes
             IErrorList errorList,
             IFileSystemErrorView dialogView)
         {
-            ViewLifetime = viewFactory.CreateExport();
+            View = view;
             _taskLoader = taskLoader;
             _errorList = errorList;
             _storage = storage;

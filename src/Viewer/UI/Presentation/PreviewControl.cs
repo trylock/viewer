@@ -18,7 +18,7 @@ namespace Viewer.UI.Presentation
     /// Preview control draws <see cref="Picture" /> using <see cref="Zoom" /> to zoom it with
     /// <see cref="Origin" /> as a center point.
     /// </summary>
-    public class PreviewControl : SKControl
+    internal class PreviewControl : SKControl
     {
         private SKBitmap _picture;
         private double _zoom = 1.0;

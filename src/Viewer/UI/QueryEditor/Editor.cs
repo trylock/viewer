@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Core;
+using Viewer.Core.UI;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.Query;
@@ -25,33 +26,29 @@ namespace Viewer.UI.QueryEditor
         /// If the file is opened already, the editor will just make its window visible to user.
         /// </summary>
         /// <param name="path">Path to a file</param>
-        /// <param name="dockState">Unknown value won't show the window</param>
         /// <returns>Task completed when the editor window opens</returns>
-        Task<QueryEditorPresenter> OpenAsync(string path, DockState dockState);
+        Task<IWindowView> OpenAsync(string path);
 
         /// <summary>
         /// Open given file in the editor.
         /// If the file is opened already, the editor will just make its window visible to user.
         /// </summary>
         /// <param name="path">Path to a file</param>
-        /// <param name="dockState">Unknown value won't show the window</param>
         /// <returns></returns>
-        QueryEditorPresenter Open(string path, DockState dockState);
+        IWindowView Open(string path);
 
         /// <summary>
         /// Open new empty editor window
         /// </summary>
-        /// <param name="dockState">Unknown value won't show the window</param>
         /// <returns>Opened dock content</returns>
-        QueryEditorPresenter OpenNew(DockState dockState);
+        IWindowView OpenNew();
 
         /// <summary>
         /// Open new empty editor window
         /// </summary>
         /// <param name="content">Content of the opened window</param>
-        /// <param name="dockState">Unknown value won't show the window</param>
         /// <returns>Opened dock content</returns>
-        QueryEditorPresenter OpenNew(string content, DockState dockState);
+        IWindowView OpenNew(string content);
 
         /// <summary>
         /// Save <paramref name="query"/> to <paramref name="path"/>.
@@ -74,27 +71,33 @@ namespace Viewer.UI.QueryEditor
     [Export(typeof(IEditor))]
     public class Editor :  IEditor
     {
-        private readonly IFileSystem _fileSystem;
+        private readonly IQueryHistory _queryHistory;
+        private readonly IQueryCompiler _queryCompiler;
+        private readonly IQueryErrorListener _queryErrorListener;
         private readonly IFileSystemErrorView _dialogView;
-        private readonly ExportFactory<QueryEditorPresenter> _editorFactory;
+        private readonly IFileSystem _fileSystem;
 
         /// <summary>
         /// Opened editor windows
         /// </summary>
-        private readonly List<ExportLifetimeContext<QueryEditorPresenter>> _windows = new List<ExportLifetimeContext<QueryEditorPresenter>>();
+        private readonly List<QueryEditorPresenter> _windows = new List<QueryEditorPresenter>();
         
         [ImportingConstructor]
         public Editor(
-            ExportFactory<QueryEditorPresenter> editorFactory, 
             IFileSystem fileSystem,
-            IFileSystemErrorView dialogView)
+            IFileSystemErrorView dialogView,
+            IQueryHistory queryHistory,
+            IQueryCompiler queryCompiler,
+            IQueryErrorListener queryErrorListener)
         {
-            _dialogView = dialogView;
             _fileSystem = fileSystem;
-            _editorFactory = editorFactory;
+            _dialogView = dialogView;
+            _queryHistory = queryHistory;
+            _queryCompiler = queryCompiler;
+            _queryErrorListener = queryErrorListener;
         }
 
-        public async Task<QueryEditorPresenter> OpenAsync(string path, DockState dockState)
+        public async Task<IWindowView> OpenAsync(string path)
         {
             // don't open a new window, if a window with this file is opened already
             var window = FindWindow(path);
@@ -107,7 +110,7 @@ namespace Viewer.UI.QueryEditor
             try
             {
                 var data = await _fileSystem.ReadToEndAsync(path);
-                return OpenWindow(path, data, dockState);
+                return OpenWindow(path, data);
             }
             catch (DirectoryNotFoundException e)
             {
@@ -129,7 +132,7 @@ namespace Viewer.UI.QueryEditor
             return null;
         }
 
-        public QueryEditorPresenter Open(string path, DockState dockState)
+        public IWindowView Open(string path)
         {
             var window = FindWindow(path);
             if (window != null)
@@ -140,7 +143,7 @@ namespace Viewer.UI.QueryEditor
             try
             {
                 var data = Encoding.UTF8.GetString(_fileSystem.ReadAllBytes(path));
-                return OpenWindow(path, data, dockState);
+                return OpenWindow(path, data);
             }
             catch (DirectoryNotFoundException)
             {
@@ -162,16 +165,16 @@ namespace Viewer.UI.QueryEditor
             return null;
         }
 
-        public QueryEditorPresenter OpenNew(DockState dockState)
+        public IWindowView OpenNew()
         {
-            return OpenWindow(dockState);
+            return OpenWindow().View;
         }
 
-        public QueryEditorPresenter OpenNew(string content, DockState dockState)
+        public IWindowView OpenNew(string content)
         {
-            var window = OpenWindow(dockState);
+            var window = OpenWindow();
             window.SetContent(null, content);
-            return window;
+            return window.View;
         }
 
         public async Task SaveAsync(string path, string query)
@@ -188,45 +191,46 @@ namespace Viewer.UI.QueryEditor
         {
             foreach (var editor in _windows)
             {
-                editor.Value.View.Close();
+                editor.View.Close();
             }
         }
 
-        private QueryEditorPresenter FindWindow(string path)
+        private IWindowView FindWindow(string path)
         {
             var window = _windows.Find(editor =>
-                StringComparer.CurrentCultureIgnoreCase.Compare(editor.Value.View.FullPath, path) == 0);
+                StringComparer.CurrentCultureIgnoreCase.Compare(editor.View.FullPath, path) == 0);
             if (window != null)
             {
-                window.Value.View.EnsureVisible();
-                return window.Value;
+                window.View.EnsureVisible();
+                return window.View;
             }
 
             return null;
         }
 
-        private QueryEditorPresenter OpenWindow(string path, string content, DockState dockState)
+        private IWindowView OpenWindow(string path, string content)
         {
-            var editor = OpenWindow(dockState);
+            var editor = OpenWindow();
             editor.SetContent(path, content);
-            return editor;
+            return editor.View;
         }
         
-        private QueryEditorPresenter OpenWindow(DockState dockState)
+        private QueryEditorPresenter OpenWindow()
         {
-            var editor = _editorFactory.CreateExport();
-            if (dockState != DockState.Unknown)
-            {
-                editor.Value.ShowView("Query", dockState);
-            }
+            var editor = new QueryEditorPresenter(
+                new QueryEditorView(), 
+                _dialogView, 
+                _queryHistory, 
+                _queryCompiler, 
+                _queryErrorListener, this);
 
-            editor.Value.View.CloseView += (sender, args) =>
+            editor.View.CloseView += (sender, args) =>
             {
                 _windows.Remove(editor);
                 editor.Dispose();
             };
             _windows.Add(editor);
-            return editor.Value;
+            return editor;
         }
     }
 }

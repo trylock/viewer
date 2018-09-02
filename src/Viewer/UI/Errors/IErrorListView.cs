@@ -7,7 +7,7 @@ using Viewer.Core.UI;
 
 namespace Viewer.UI.Errors
 {
-    public class RetryEventArgs : EventArgs
+    internal class RetryEventArgs : EventArgs
     {
         /// <summary>
         /// Entry to retry
@@ -20,7 +20,7 @@ namespace Viewer.UI.Errors
         }
     }
 
-    public interface IErrorListView : IWindowView
+    internal interface IErrorListView : IWindowView
     {
         event EventHandler<RetryEventArgs> Retry;
 

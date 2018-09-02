@@ -20,8 +20,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {
-    [Export(typeof(IImagesView))]
-    public partial class ImagesView : WindowView, IImagesView
+    internal partial class ImagesView : WindowView, IImagesView
     {
         private readonly GridView _gridView;
         private GridView _view;
@@ -30,8 +29,6 @@ namespace Viewer.UI.Images
         {
             InitializeComponent();
 
-            ViewerForm.Theme.ApplyTo(PickDirectoryContextMenu);
-            
             PreviousMenuItem.ShortcutKeyDisplayString = "Alt + Right, MB4";
             NextMenuItem.ShortcutKeyDisplayString = "Alt + Left, MB5";
 
@@ -46,6 +43,8 @@ namespace Viewer.UI.Images
 
             _view = _gridView;
             Controls.Add(_view);
+
+            ViewerForm.Theme.ApplyTo(PickDirectoryContextMenu);
         }
 
         private void RegisterView(Control view)
@@ -369,7 +368,7 @@ namespace Viewer.UI.Images
                 
                 if (e.Button.HasFlag(MouseButtons.Left))
                 {
-                    if (item.State != FileViewState.Selected)
+                    if (item.State != EntityViewState.Selected)
                     {
                         SelectItem?.Invoke(sender, new EntityEventArgs(item));
                         _selectItemTriggered = true;
@@ -382,7 +381,7 @@ namespace Viewer.UI.Images
                 }
                 else if (e.Button.HasFlag(MouseButtons.Right))
                 {
-                    if (item.State != FileViewState.Selected)
+                    if (item.State != EntityViewState.Selected)
                     {
                         SelectItem?.Invoke(sender, new EntityEventArgs(item));
                     }

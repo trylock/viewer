@@ -17,7 +17,7 @@ using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
 {
-    public partial class PresentationControl : UserControl
+    internal partial class PresentationControl : UserControl
     {
         public event EventHandler NextImage;
         public event EventHandler PrevImage;

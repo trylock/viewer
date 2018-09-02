@@ -10,7 +10,7 @@ using Viewer.Data;
 
 namespace Viewer.UI.Presentation
 {
-    public interface IZoomableView
+    internal interface IZoomableView
     {
         /// <summary>
         /// Event triggered when user tries to zoom in by one step
@@ -29,7 +29,7 @@ namespace Viewer.UI.Presentation
         double Zoom { get; set; }
     }
 
-    public interface IPresentationView : IZoomableView, IWindowView
+    internal interface IPresentationView : IZoomableView, IWindowView
     {
         /// <summary>
         /// Event called when user requests to load next image

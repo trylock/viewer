@@ -20,7 +20,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Viewer.UI.QueryEditor
 {
     [Export(typeof(IComponent))]
-    public class QueryEditorComponent : IComponent
+    public class QueryEditorComponent : Component
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -39,7 +39,7 @@ namespace Viewer.UI.QueryEditor
             _queryViewManager = queryViewManager;
         }
 
-        public void OnStartup(IViewerApplication app)
+        public override void OnStartup(IViewerApplication app)
         {
             // load all query views and watch query view directory for changes
             var path = Path.GetFullPath(
@@ -73,7 +73,12 @@ namespace Viewer.UI.QueryEditor
             }
 
             // add application menus
-            app.AddMenuItem(new []{ "View", "Query" }, () => _editor.OpenNew(DockState.Document), Resources.QueryComponentIcon.ToBitmap());
+            app.AddMenuItem(new []{ "View", "Query" }, () =>
+            {
+                _editor
+                    .OpenNew()
+                    .Show(Application.Panel, DockState.Document);
+            }, Resources.QueryComponentIcon.ToBitmap());
             app.AddLayoutDeserializeCallback(Deserialize);
         }
         
@@ -87,17 +92,16 @@ namespace Viewer.UI.QueryEditor
 
                 if (content.Length ==  0 && path.Length == 0)
                 {
-                    return _editor.OpenNew(DockState.Unknown).View;
+                    return _editor.OpenNew();
                 }
                 else if (path.Length == 0)
                 {
-                    var window = _editor.OpenNew(DockState.Unknown).View;
-                    window.Query = content;
+                    var window = _editor.OpenNew(content);
                     return window;
                 }
                 else 
                 {
-                    return _editor.Open(path, DockState.Unknown)?.View;
+                    return _editor.Open(path);
                 }
             }
             return null;

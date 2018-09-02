@@ -8,7 +8,7 @@ using Viewer.Core.UI;
 
 namespace Viewer.UI.Explorer
 {
-    public class DirectoryView
+    internal class DirectoryView
     {
         /// <summary>
         /// Name shown to the user
@@ -26,7 +26,7 @@ namespace Viewer.UI.Explorer
         public bool HasChildren { get; set; }
     }
 
-    public class DirectoryEventArgs : EventArgs
+    internal class DirectoryEventArgs : EventArgs
     {
         /// <summary>
         /// Full path to a expanded directory
@@ -38,8 +38,8 @@ namespace Viewer.UI.Explorer
             FullPath = fullPath;
         }
     }
-    
-    public class RenameDirectoryEventArgs : DirectoryEventArgs
+
+    internal class RenameDirectoryEventArgs : DirectoryEventArgs
     {
         /// <summary>
         /// New name of the directory (just the name, not the full path)
@@ -52,7 +52,7 @@ namespace Viewer.UI.Explorer
         }
     }
 
-    public class PasteEventArgs : DirectoryEventArgs
+    internal class PasteEventArgs : DirectoryEventArgs
     {
         /// <summary>
         /// Data to paste to the directory
@@ -71,7 +71,7 @@ namespace Viewer.UI.Explorer
         }
     }
 
-    public interface IDirectoryTreeView : IWindowView
+    internal interface IDirectoryTreeView : IWindowView
     {
         /// <summary>
         /// Event called when user opens a directory 

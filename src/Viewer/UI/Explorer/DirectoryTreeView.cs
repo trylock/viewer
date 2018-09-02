@@ -17,8 +17,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Explorer
 {
-    [Export(typeof(IDirectoryTreeView))]
-    public partial class DirectoryTreeView : WindowView, IDirectoryTreeView
+    internal partial class DirectoryTreeView : WindowView, IDirectoryTreeView
     {
         public DirectoryTreeView()
         {

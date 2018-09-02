@@ -15,48 +15,41 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.QueryEditor
 {
-    [Export]
-    public class QueryEditorPresenter : Presenter<IQueryEditorView>
+    internal class QueryEditorPresenter : Presenter<IQueryEditorView>
     {
         private readonly IQueryHistory _appHistory;
         private readonly IFileSystemErrorView _dialogErrorView;
         private readonly IQueryCompiler _queryCompiler;
         private readonly IQueryErrorListener _queryErrorListener;
-        private readonly IQueryViewRepository _queryViews;
         private readonly IEditor _editor;
-
-        protected override ExportLifetimeContext<IQueryEditorView> ViewLifetime { get; }
-
+        
         private bool _isUnsaved = false;
         
-        [ImportingConstructor]
         public QueryEditorPresenter(
-            ExportFactory<IQueryEditorView> viewFactory, 
-            IQueryHistory appHistory, 
+            IQueryEditorView view, 
             IFileSystemErrorView dialogErrorView, 
+            IQueryHistory appHistory, 
             IQueryCompiler queryCompiler, 
-            IQueryViewRepository queryViews,
             IQueryErrorListener queryErrorListener,
             IEditor editor)
         {
-            ViewLifetime = viewFactory.CreateExport();
+            View = view;
             _dialogErrorView = dialogErrorView;
             _queryCompiler = queryCompiler;
             _queryErrorListener = queryErrorListener;
-            _queryViews = queryViews;
             _appHistory = appHistory;
             _editor = editor;
 
             SubscribeTo(View, "View");
 
-            _queryViews.Changed += QueryViewsOnChanged;
+            _queryCompiler.Views.Changed += QueryViewsOnChanged;
             UpdateViews();
         }
 
         public override void Dispose()
         {
+            _queryCompiler.Views.Changed -= QueryViewsOnChanged;
             base.Dispose();
-            _queryViews.Changed -= QueryViewsOnChanged;
         }
 
         private void QueryViewsOnChanged(object sender, EventArgs e)
@@ -73,7 +66,7 @@ namespace Viewer.UI.QueryEditor
 
         private void UpdateViews()
         {
-            View.Views = _queryViews.ToArray();
+            View.Views = _queryCompiler.Views.ToArray();
         }
 
         /// <summary>
@@ -183,9 +176,10 @@ namespace Viewer.UI.QueryEditor
             await SaveAsync();
         }
 
-        private void View_OpenQuery(object sender, OpenQueryEventArgs e)
+        private async void View_OpenQuery(object sender, OpenQueryEventArgs e)
         {
-            _editor.OpenAsync(e.FullPath, DockState.Document);
+            var window = await _editor.OpenAsync(e.FullPath);
+            window.Show(View.DockPanel, DockState.Document);
         }
 
         private async void View_RunQuery(object sender, EventArgs e)
@@ -210,14 +204,16 @@ namespace Viewer.UI.QueryEditor
             {
                 if (Path.GetExtension(file)?.ToLowerInvariant() == ".vql")
                 {
-                    await _editor.OpenAsync(file, DockState.Document);
+                    var window = await _editor.OpenAsync(file);
+                    window.Show(View.DockPanel, DockState.Document);
                 }
             }
         }
 
-        private void View_OpenQueryView(object sender, QueryViewEventArgs e)
+        private async void View_OpenQueryView(object sender, QueryViewEventArgs e)
         {
-            _editor.OpenAsync(e.View.Path, DockState.Document);
+            var window = await _editor.OpenAsync(e.View.Path);
+            window.Show(View.DockPanel, DockState.Document);
         }
     }
 }

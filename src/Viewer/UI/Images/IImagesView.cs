@@ -13,94 +13,7 @@ using Viewer.Core.UI;
 
 namespace Viewer.UI.Images
 {
-    public enum FileViewState
-    {
-        None,
-        Active,
-        Selected,
-    }
-    
-    public sealed class EntityView : IDisposable
-    {
-        public string Name
-        {
-            get
-            {
-                if (Data is FileEntity)
-                {
-                    return Path.GetFileNameWithoutExtension(Data.Path);
-                }
-
-                return Path.GetFileName(Data.Path);
-            }
-        } 
-
-        public string FullPath => Data.Path;
-        public FileViewState State { get; set; } = FileViewState.None;
-        public ILazyThumbnail Thumbnail { get; }
-        public IEntity Data { get; }
-
-        public EntityView(IEntity data, ILazyThumbnail thumbnail)
-        {
-            Data = data;
-            Thumbnail = thumbnail;
-        }
-
-        public void Dispose()
-        {
-            Thumbnail?.Dispose();
-        }
-    }
-   
-    public class EntityViewPathComparer : IEqualityComparer<EntityView>
-    {
-        public bool Equals(EntityView x, EntityView y)
-        {
-            if (x == null && y == null)
-                return true;
-            if (x == null || y == null)
-                return false;
-            return x.Data.Path == y.Data.Path;
-        }
-
-        public int GetHashCode(EntityView obj)
-        {
-            return obj.FullPath.GetHashCode();
-        }
-    }
-
-    /// <inheritdoc />
-    /// <summary>
-    /// EntityView comparer which compares entity views by their underlying entity.
-    /// </summary>
-    public class EntityViewComparer : IComparer<EntityView>
-    {
-        private readonly IComparer<IEntity> _entityComparer;
-
-        public EntityViewComparer(IComparer<IEntity> entityComparer)
-        {
-            _entityComparer = entityComparer ?? throw new ArgumentNullException(nameof(entityComparer));
-        }
-
-        public int Compare(EntityView x, EntityView y)
-        {
-            if (x == null && y == null)
-            {
-                return 0;
-            }
-            else if (x == null)
-            {
-                return -1;
-            }
-            else if (y == null)
-            {
-                return 1;
-            }
-            return _entityComparer.Compare(x.Data, y.Data);
-        }
-    }
-
-    public class RenameEventArgs : EventArgs
+    internal class RenameEventArgs : EventArgs
     {
         /// <summary>
         /// Entity which should be renamed
@@ -119,7 +32,7 @@ namespace Viewer.UI.Images
         }
     }
 
-    public class EntityEventArgs : EventArgs
+    internal class EntityEventArgs : EventArgs
     {
         public EntityView Entity { get; }
 
@@ -133,7 +46,7 @@ namespace Viewer.UI.Images
     /// <summary>
     /// Arguments used in the <see cref="E:Viewer.UI.Images.IImagesView.OnDrop" /> event.
     /// </summary>
-    public class DropEventArgs : EventArgs
+    internal class DropEventArgs : EventArgs
     {
         /// <summary>
         /// Entity on which user dropped some items. This can be null.
@@ -166,7 +79,7 @@ namespace Viewer.UI.Images
         }
     }
 
-    public interface IHistoryView
+    internal interface IHistoryView
     {
         /// <summary>
         /// ture iff user can go forward in query history
@@ -189,7 +102,7 @@ namespace Viewer.UI.Images
         event EventHandler GoForwardInHistory;
     }
 
-    public interface IPolledView
+    internal interface IPolledView
     {
         /// <summary>
         /// Event called once every k milliseconds.
@@ -214,7 +127,7 @@ namespace Viewer.UI.Images
     /// View in which user can select items of type <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">Type of the items in selection</typeparam>
-    public interface ISelectionView<out T>
+    internal interface ISelectionView<out T>
     {
         /// <summary>
         /// Event called when user starts a new range selection.
@@ -265,7 +178,7 @@ namespace Viewer.UI.Images
         T GetItemAt(Point location);
     }
 
-    public interface IFileDropView
+    internal interface IFileDropView
     {
         /// <summary>
         /// Event occurs when user drops something into the view.
@@ -290,7 +203,7 @@ namespace Viewer.UI.Images
         Task<string> PickDirectoryAsync(IEnumerable<string> options);
     }
 
-    public interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IHistoryView, IFileDropView
+    internal interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IHistoryView, IFileDropView
     {
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;

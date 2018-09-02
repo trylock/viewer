@@ -16,8 +16,7 @@ using Viewer.UI.Forms;
 
 namespace Viewer.UI.Errors
 {
-    [Export(typeof(IErrorListView))]
-    public partial class ErrorListView : WindowView, IErrorListView
+    internal partial class ErrorListView : WindowView, IErrorListView
     {
         private static readonly Image[] _logTypeIcon =
         {

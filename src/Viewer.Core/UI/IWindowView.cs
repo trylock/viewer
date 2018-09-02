@@ -23,6 +23,11 @@ namespace Viewer.Core.UI
         event EventHandler ViewGotFocus;
 
         /// <summary>
+        /// Dock panel of this window or null if the window is not docked.
+        /// </summary>
+        DockPanel DockPanel { get; }
+
+        /// <summary>
         /// Name of the window
         /// </summary>
         string Text { get; set; }

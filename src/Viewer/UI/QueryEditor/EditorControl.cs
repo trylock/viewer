@@ -8,7 +8,7 @@ using ScintillaNET;
 
 namespace Viewer.UI.QueryEditor
 {
-    public class EditorControl : Scintilla
+    internal class EditorControl : Scintilla
     {
         protected override void OnKeyPress(KeyPressEventArgs e)
         {

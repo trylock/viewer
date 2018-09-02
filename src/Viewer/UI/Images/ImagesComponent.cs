@@ -13,21 +13,29 @@ using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Properties;
 using Viewer.Query;
+using Viewer.UI.Explorer;
+using Viewer.UI.Presentation;
 using Viewer.UI.QueryEditor;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
 {
     [Export(typeof(IComponent))]
-    public class ImagesComponent : IComponent
+    public class ImagesComponent : Component
     {
-        private readonly IQueryHistory _state;
+        private readonly IEditor _editor;
+        private readonly IExplorer _explorer;
+        private readonly IPresentation _presentation;
+        private readonly IFileSystemErrorView _dialogView;
         private readonly ISelection _selection;
+        private readonly IEntityManager _entityManager;
+        private readonly IClipboardService _clipboard;
+        private readonly IQueryHistory _queryHistory;
         private readonly IQueryFactory _queryFactory;
         private readonly IQueryCompiler _queryCompiler;
-        private readonly ExportFactory<ImagesPresenter> _imagesFactory;
-
-        private ExportLifetimeContext<ImagesPresenter> _images;
+        private readonly IQueryEvaluatorFactory _queryEvaluatorFactory;
+        
+        private ImagesPresenter _presenter;
 
         private bool _dontShowImagesWindow = false;
         private IStatusBarSlider _thumbnailSize;
@@ -37,17 +45,29 @@ namespace Viewer.UI.Images
 
         [ImportingConstructor]
         public ImagesComponent(
-            IQueryHistory state, 
+            IEditor editor,
+            IExplorer explorer,
+            IPresentation presentation,
+            IFileSystemErrorView dialogView,
             ISelection selection,
-            IQueryFactory queryFactory, 
+            IEntityManager entityManager,
+            IClipboardService clipboard,
+            IQueryHistory state,
+            IQueryFactory queryFactory,
             IQueryCompiler queryCompiler,
-            ExportFactory<ImagesPresenter> images)
+            IQueryEvaluatorFactory queryEvaluatorFactory)
         {
-            _imagesFactory = images;
+            _editor = editor;
+            _explorer = explorer;
+            _presentation = presentation;
+            _dialogView = dialogView;
+            _selection = selection;
+            _entityManager = entityManager;
+            _clipboard = clipboard;
+            _queryHistory = state;
             _queryFactory = queryFactory;
             _queryCompiler = queryCompiler;
-            _state = state;
-            _selection = selection;
+            _queryEvaluatorFactory = queryEvaluatorFactory;
         }
 
         private void SelectionOnChanged(object sender, EventArgs e)
@@ -65,11 +85,11 @@ namespace Viewer.UI.Images
 
             if (!_dontShowImagesWindow)
             {
-                images.ShowView("Images", DockState.Document);
+                images.View.Show(Application.Panel, DockState.Document);
             }
         }
 
-        public void OnStartup(IViewerApplication app)
+        public override void OnStartup(IViewerApplication app)
         {
             app.AddLayoutDeserializeCallback(Deserialize);
 
@@ -83,12 +103,12 @@ namespace Viewer.UI.Images
             // register event handlers
             _thumbnailSize.ValueChanged += ThumbnailSizeOnValueChanged;
             _selection.Changed += SelectionOnChanged;
-            _state.QueryExecuted += StateOnQueryExecuted;
+            _queryHistory.QueryExecuted += StateOnQueryExecuted;
         }
         
         private void ThumbnailSizeOnValueChanged(object sender, EventArgs e)
         {
-            _images?.Value.SetThumbnailSize(_thumbnailSize.Value);
+            _presenter?.SetThumbnailSize(_thumbnailSize.Value);
             Settings.Default.ThumbnailSize = _thumbnailSize.Value;
         }
 
@@ -117,7 +137,7 @@ namespace Viewer.UI.Images
                     _dontShowImagesWindow = true;
                     try
                     {
-                        _state.ExecuteQuery(query);
+                        _queryHistory.ExecuteQuery(query);
                     }
                     finally
                     {
@@ -132,24 +152,34 @@ namespace Viewer.UI.Images
 
         private ImagesPresenter GetImages()
         {
-            if (_images == null)
+            if (_presenter == null)
             {
-                _images = _imagesFactory.CreateExport();
-                _images.Value.SetThumbnailSize(_thumbnailSize.Value);
-                _images.Value.StatusLabel = _statusLabel;
-                _images.Value.ItemCountLabel = _itemCountLabel;
-                _images.Value.View.CloseView += (sender, args) =>
+                _presenter = new ImagesPresenter(new ImagesView(), 
+                    _editor,
+                    _explorer,
+                    _presentation,
+                    _dialogView,
+                    _selection,
+                    _entityManager,
+                    _clipboard,
+                    _queryHistory,
+                    _queryFactory,
+                    _queryEvaluatorFactory);
+                _presenter.SetThumbnailSize(_thumbnailSize.Value);
+                _presenter.StatusLabel = _statusLabel;
+                _presenter.ItemCountLabel = _itemCountLabel;
+                _presenter.View.CloseView += (sender, args) =>
                 {
-                    _images.Dispose();
-                    _images = null;
+                    _presenter.Dispose();
+                    _presenter = null;
                 };
             }
             else
             {
-                _images.Value.View.EnsureVisible();
+                _presenter.View.EnsureVisible();
             }
 
-            return _images.Value;
+            return _presenter;
         }
     }
 }

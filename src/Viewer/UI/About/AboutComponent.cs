@@ -10,9 +10,9 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Viewer.UI.About
 {
     [Export(typeof(IComponent))]
-    public class AboutComponent : IComponent
+    public class AboutComponent : Component
     {
-        public void OnStartup(IViewerApplication app)
+        public override void OnStartup(IViewerApplication app)
         {
             app.AddMenuItem(new []{ "Help", "About" }, () =>
             {

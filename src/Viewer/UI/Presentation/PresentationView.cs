@@ -15,8 +15,7 @@ using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
 {
-    [Export(typeof(IPresentationView))]
-    public partial class PresentationView : WindowView, IPresentationView
+    internal partial class PresentationView : WindowView, IPresentationView
     {
         public PresentationView()
         {

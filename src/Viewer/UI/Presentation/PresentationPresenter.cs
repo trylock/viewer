@@ -32,7 +32,7 @@ namespace Viewer.UI.Presentation
         private ImageWindow _images;
 
         /// <summary>
-        /// Last time an image was changed in the presentation
+        /// Last time an image has changed in the presentation
         /// </summary>
         private DateTime _lastImageChange;
         
@@ -64,7 +64,9 @@ namespace Viewer.UI.Presentation
                 index = 0;
             if (index >= _entities.Count)
                 index = _entities.Count - 1;
-            
+
+            View.Picture?.Dispose();
+            View.Picture = null;
             _images?.Dispose();
             _images = new ImageWindow(_imageLoader, _entities, 3);
             _images.SetPosition(index);

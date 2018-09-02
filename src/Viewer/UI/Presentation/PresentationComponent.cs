@@ -39,14 +39,22 @@ namespace Viewer.UI.Presentation
 
         private void ShowPresentation(IEnumerable<IEntity> entities, int index)
         {
-            _presenter = new PresentationPresenter(new PresentationView(), _selection, _imageLoader, _dialogView);
-            _presenter.View.CloseView += (s, args) =>
+            if (_presenter == null)
             {
-                _presenter.Dispose();
-                _presenter = null;
-            };
-            _presenter.View.Show(Application.Panel, DockState.Document);
-            _presenter.ShowEntity(entities, index);
+                _presenter = new PresentationPresenter(new PresentationView(), _selection, _imageLoader, _dialogView);
+                _presenter.View.CloseView += (s, args) =>
+                {
+                    _presenter.Dispose();
+                    _presenter = null;
+                };
+                _presenter.View.Show(Application.Panel, DockState.Document);
+                _presenter.ShowEntity(entities, index);
+            }
+            else
+            {
+                _presenter.View.EnsureVisible();
+                _presenter.ShowEntity(entities, index);
+            }
         }
 
         public void Open(IEnumerable<IEntity> entities, int activeIndex)

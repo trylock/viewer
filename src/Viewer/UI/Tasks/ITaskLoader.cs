@@ -41,10 +41,9 @@ namespace Viewer.UI.Tasks
         int TotalTaskCount { get; set; }
 
         /// <summary>
-        /// Close the progress window. It has to be called from the UI thread.
-        /// Call this method after a task finished. This operation will dispose the cancellation
-        /// token source passed to the <see cref="ITaskLoader.CreateLoader"/> method together
-        /// with the progress view.
+        /// Close the progress window. It has to be called from the UI thread. Call this method
+        /// when the task is finished. You can dispose <see cref="CancellationTokenSource"/> after
+        /// this.
         /// </summary>
         void Close();
     }

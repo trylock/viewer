@@ -197,6 +197,7 @@ namespace Viewer.UI.Explorer
             finally
             {
                 progress.Close();
+                cancellation.Dispose();
             }
         }
 

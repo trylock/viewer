@@ -55,8 +55,6 @@ namespace Viewer.UI.Tasks
 
             public void Close()
             {
-                _view._cancellation?.Dispose();
-                _view._cancellation = null;
                 _view.Close();
             }
         }

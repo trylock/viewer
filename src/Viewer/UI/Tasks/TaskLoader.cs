@@ -11,6 +11,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Viewer.UI.Tasks
 {
     [Export(typeof(ITaskLoader))]
+    [Export(typeof(IComponent))]
     public class TaskLoader : Component, ITaskLoader
     {
         public IProgressController CreateLoader(string name, CancellationTokenSource cancellation)

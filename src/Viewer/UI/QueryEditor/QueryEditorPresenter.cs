@@ -94,7 +94,8 @@ namespace Viewer.UI.QueryEditor
         /// <returns>Task finished after the query is saved to a file.</returns>
         public async Task SaveAsync()
         {
-            if (!_isUnsaved)
+            // if this query is saved in a file and it hasn't changed
+            if (View.FullPath != null && !_isUnsaved) 
             {
                 return;
             }

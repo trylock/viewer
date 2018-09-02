@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -182,11 +182,11 @@ namespace Viewer.Core
                 try
                 {
                     var task = _operation();
-                    return await task;
+                    return await task.ConfigureAwait(false);
                 }
                 catch (Exception e) when (_exceptionPredicate(e))
                 {
-                    await System.Threading.Tasks.Task.Delay(_delay);
+                    await System.Threading.Tasks.Task.Delay(_delay, _token).ConfigureAwait(false);
                 }
             }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -44,17 +44,20 @@ namespace Viewer.Core
         private readonly TimeSpan _delay;
         private readonly int _maxAttemptCount;
         private readonly Predicate<Exception> _exceptionPredicate;
+        private readonly CancellationToken _token;
         private Task<TResult> _task;
 
         private Retry(
             Func<Task<TResult>> operation, 
             int maxAttemptCount, 
-            TimeSpan delay, 
+            TimeSpan delay,
+            CancellationToken token,
             Predicate<Exception> predicate)
         {
             _operation = operation ?? throw new ArgumentNullException(nameof(operation));
             _maxAttemptCount = maxAttemptCount;
             _delay = delay;
+            _token = token;
             _exceptionPredicate = predicate;
         }
 
@@ -65,7 +68,7 @@ namespace Viewer.Core
         /// <returns>New modified retry object</returns>
         public Retry<TResult> WithDelay(TimeSpan delay)
         {
-            return new Retry<TResult>(_operation, _maxAttemptCount, delay, _exceptionPredicate);
+            return new Retry<TResult>(_operation, _maxAttemptCount, delay, _token, _exceptionPredicate);
         }
 
         /// <summary>
@@ -81,7 +84,17 @@ namespace Viewer.Core
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            return new Retry<TResult>(_operation, count, _delay, _exceptionPredicate);
+            return new Retry<TResult>(_operation, count, _delay, _token, _exceptionPredicate);
+        }
+
+        /// <summary>
+        /// Set a new cancellation token of the task.
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <returns></returns>
+        public Retry<TResult> WithCancellationToken(CancellationToken token)
+        {
+            return new Retry<TResult>(_operation, _maxAttemptCount, _delay, _token, _exceptionPredicate);
         }
 
         /// <summary>
@@ -99,6 +112,7 @@ namespace Viewer.Core
                 _operation, 
                 _maxAttemptCount,
                 _delay, 
+                _token,
                 exception => exception.GetType() == typeof(TException));
         }
 
@@ -116,7 +130,8 @@ namespace Viewer.Core
             return new Retry<TResult>(
                 _operation,
                 _maxAttemptCount,
-                _delay,
+                _delay, 
+                _token,
                 exception => exception.GetType() == typeof(TException) &&
                              predicate((TException) exception));
         }
@@ -134,6 +149,7 @@ namespace Viewer.Core
                 _operation,
                 _maxAttemptCount,
                 _delay,
+                _token,
                 exception => exception is TException);
         }
 
@@ -144,7 +160,12 @@ namespace Viewer.Core
         /// <returns>New retry object</returns>
         public static Retry<TResult> Async(Func<Task<TResult>> operation)
         {
-            return new Retry<TResult>(operation, 2, TimeSpan.FromSeconds(1), _ => true);
+            return new Retry<TResult>(
+                operation, 
+                maxAttemptCount: 2, 
+                delay: TimeSpan.FromSeconds(1), 
+                token: CancellationToken.None,
+                predicate: _ => true);
         }
 
         /// <summary>
@@ -156,6 +177,8 @@ namespace Viewer.Core
         {
             for (var i = 0; i < _maxAttemptCount - 1; ++i)
             {
+                _token.ThrowIfCancellationRequested();
+
                 try
                 {
                     var task = _operation();

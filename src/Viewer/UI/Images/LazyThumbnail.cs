@@ -197,6 +197,7 @@ namespace Viewer.UI.Images
                     _cancellationToken))
                 .WithAttempts(5)
                 .WithDelay(RetryDelay)
+                .WithCancellationToken(_cancellationToken)
                 .WhenExactly<IOException>()
                 .Task;
         }

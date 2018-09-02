@@ -322,6 +322,19 @@ namespace Viewer.UI.Attributes
             }
         }
 
+        private void GridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 2) // type column
+            {
+                GridView.BeginEdit(false);
+                var comboBox = GridView.EditingControl as DataGridViewComboBoxEditingControl;
+                if (comboBox != null)
+                {
+                    comboBox.DroppedDown = true;
+                }
+            }
+        }
+
         private void GridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             SortColumn column = SortColumn.Name;

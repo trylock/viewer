@@ -55,7 +55,6 @@
             this.NameColumn,
             this.ValueColumn,
             this.TypeColumn});
-            this.GridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.GridView.Location = new System.Drawing.Point(0, 20);
             this.GridView.Margin = new System.Windows.Forms.Padding(2);
             this.GridView.Name = "GridView";
@@ -63,6 +62,7 @@
             this.GridView.RowTemplate.Height = 24;
             this.GridView.Size = new System.Drawing.Size(283, 259);
             this.GridView.TabIndex = 0;
+            this.GridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridView_CellClick);
             this.GridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridView_CellValueChanged);
             this.GridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.GridView_ColumnHeaderMouseClick);
             this.GridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.GridView_DefaultValuesNeeded);

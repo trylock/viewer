@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CacheFilePath" xml:space="preserve">
-    <value>%userprofile%/Documents/Viewer/cache.db</value>
+    <value>%localappdata%/Viewer/cache.db</value>
     <comment>Names between %% will be expanded as environment variables (e.g. %userprofile% is the absolute path to user's profile) </comment>
   </data>
   <data name="SqliteConnectionString" xml:space="preserve">

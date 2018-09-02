@@ -31,13 +31,13 @@ namespace Viewer.Core
     ///     .WhenExactly&lt;IOException&gt;()
     /// </code>
     /// Notice that the Retry object is awaitable. You can also get its task directly using the
-    /// <see cref="Task"/> property. It will not begin the operation unless you get the task or
+    /// <see cref="CurrnetTask"/> property. It will not begin the operation unless you get the task or
     /// try to await the Retry object.
     ///
     /// > [!NOTE]
     /// > The Retry object is immutable. Each method returns a new object and with it a new task.
     /// </example>
-    /// <typeparam name="TResult">Type of the value returned from <see cref="Task"/></typeparam>
+    /// <typeparam name="TResult">Type of the value returned from <see cref="CurrnetTask"/></typeparam>
     public class Retry<TResult>
     {
         private readonly Func<Task<TResult>> _operation;
@@ -171,8 +171,8 @@ namespace Viewer.Core
         /// <summary>
         /// Start the task if it hasn't been started yet. Otherwise, return the running task.
         /// </summary>
-        public Task<TResult> Task => _task ?? (_task = Run());
-
+        public Task<TResult> CurrnetTask => _task ?? (_task = Run());
+        
         private async Task<TResult> Run()
         {
             for (var i = 0; i < _maxAttemptCount - 1; ++i)
@@ -184,9 +184,13 @@ namespace Viewer.Core
                     var task = _operation();
                     return await task.ConfigureAwait(false);
                 }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
                 catch (Exception e) when (_exceptionPredicate(e))
                 {
-                    await System.Threading.Tasks.Task.Delay(_delay, _token).ConfigureAwait(false);
+                    await Task.Delay(_delay, _token).ConfigureAwait(false);
                 }
             }
 
@@ -194,7 +198,7 @@ namespace Viewer.Core
             return await _operation();
         }
         
-        public TaskAwaiter<TResult> GetAwaiter() => Task.GetAwaiter();
+        public TaskAwaiter<TResult> GetAwaiter() => CurrnetTask.GetAwaiter();
     }
 
     /// <summary>

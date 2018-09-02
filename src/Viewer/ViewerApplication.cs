@@ -109,6 +109,9 @@ namespace Viewer
         
         private void OnShutdown(object sender, EventArgs e)
         {
+            // hide the application form while we're saving user settings
+            _appForm.Hide();
+
             using (var layout = new MemoryStream())
             {
                 _appForm.Panel.SaveAsXml(layout, Encoding.UTF8);

@@ -10,7 +10,7 @@ namespace Viewer
     public abstract class Component : IComponent
     {
         public IViewerApplication Application { get; set; }
-
+        
         public virtual void OnStartup(IViewerApplication app)
         {
 

@@ -71,6 +71,9 @@ namespace Viewer.Data.Storage
         private readonly Dictionary<string, Request> _requests;
         private readonly SQLiteConnectionFactory _connectionFactory;
         private readonly IStorageConfiguration _configuration;
+        private readonly object _readConnectionLock = new object();
+        private readonly SQLiteConnection _readConnection;
+        private readonly LoadEntityCommand _loadCommand;
 
         [ImportingConstructor]
         public SqliteAttributeStorage(
@@ -80,6 +83,8 @@ namespace Viewer.Data.Storage
             _connectionFactory = connectionFactory;
             _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             _configuration = configuration;
+            _readConnection = _connectionFactory.Create();
+            _loadCommand = new LoadEntityCommand(_readConnection);
         }
         
         public IEntity Load(string path)
@@ -121,11 +126,10 @@ namespace Viewer.Data.Storage
 
             // otherwise, load the entity from the database
             // make sure this is the only thread which uses _readConnection
-            using (var connection = _connectionFactory.Create())
-            using (var loadCommand = new LoadEntityCommand(connection))
+            lock (_readConnectionLock)
             {
                 // load valid attributes
-                using (var reader = loadCommand.Execute(path, lastWriteTime))
+                using (var reader = _loadCommand.Execute(path, lastWriteTime))
                 { 
                     // add attributes to the collection
                     int attributeCount = 0;
@@ -158,7 +162,7 @@ namespace Viewer.Data.Storage
                             case AttributeType.Image:
                                 var buffer = new byte[valueSize];
                                 var length = reader.GetBytes(3, 0, buffer, 0, buffer.Length);
-                                Debug.Assert(buffer.Length == length);
+                                Trace.Assert(buffer.Length == length);
                                 entity = entity.SetAttribute(new Attribute(name,
                                     new ImageValue(buffer), (AttributeSource) source));
                                 break;
@@ -718,6 +722,8 @@ namespace Viewer.Data.Storage
 
         public void Dispose()
         {
+            _loadCommand?.Dispose();
+            _readConnection?.Dispose();
         }
     }
 }

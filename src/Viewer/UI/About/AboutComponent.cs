@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,11 @@ namespace Viewer.UI.About
     {
         public override void OnStartup(IViewerApplication app)
         {
+            app.AddMenuItem(new[] { "Help", "Documentation" }, () =>
+            {
+                Process.Start("https://trylock.github.io/viewer/articles/intro.html");
+            }, null);
+
             app.AddMenuItem(new []{ "Help", "About" }, () =>
             {
                 var form = new AboutForm();

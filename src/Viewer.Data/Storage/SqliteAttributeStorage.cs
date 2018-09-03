@@ -70,9 +70,6 @@ namespace Viewer.Data.Storage
 
         private readonly Dictionary<string, Request> _requests;
         private readonly SQLiteConnectionFactory _connectionFactory;
-        private readonly SQLiteConnection _readConnection;
-        private readonly LoadEntityCommand _loadCommand;
-        private readonly object _readConnectionLock = new object();
         private readonly IStorageConfiguration _configuration;
 
         [ImportingConstructor]
@@ -81,8 +78,6 @@ namespace Viewer.Data.Storage
             IStorageConfiguration configuration)
         {
             _connectionFactory = connectionFactory;
-            _readConnection = _connectionFactory.Create();
-            _loadCommand = new LoadEntityCommand(_readConnection);
             _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             _configuration = configuration;
         }
@@ -126,10 +121,11 @@ namespace Viewer.Data.Storage
 
             // otherwise, load the entity from the database
             // make sure this is the only thread which uses _readConnection
-            lock (_readConnectionLock) 
+            using (var connection = _connectionFactory.Create())
+            using (var loadCommand = new LoadEntityCommand(connection))
             {
                 // load valid attributes
-                using (var reader = _loadCommand.Execute(path, lastWriteTime))
+                using (var reader = loadCommand.Execute(path, lastWriteTime))
                 { 
                     // add attributes to the collection
                     int attributeCount = 0;
@@ -722,8 +718,6 @@ namespace Viewer.Data.Storage
 
         public void Dispose()
         {
-            _readConnection?.Dispose();
-            _loadCommand?.Dispose();
         }
     }
 }

@@ -42,6 +42,7 @@ namespace ViewerTest.Data.Storage
         public void Cleanup()
         {
             _storage.Dispose();
+            SQLiteConnection.ClearAllPools();
             File.Delete("test.db");
         }
 

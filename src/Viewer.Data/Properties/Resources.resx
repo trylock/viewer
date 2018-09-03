@@ -122,7 +122,7 @@
     <comment>Names between %% will be expanded as environment variables (e.g. %userprofile% is the absolute path to user's profile) </comment>
   </data>
   <data name="SqliteConnectionString" xml:space="preserve">
-    <value>Data Source={0};Version=3;foreign keys=true</value>
+    <value>Data Source={0};Version=3;Pooling=True;foreign keys=true</value>
     <comment>{0} is the location of the cache file</comment>
   </data>
   <data name="SqliteInitializationScript" xml:space="preserve">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -187,18 +188,45 @@ namespace Viewer.Query
             _hiddenFlags = hiddenFlags;
         }
 
-        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<IEntity> Execute(
+            IProgress<QueryProgressReport> progress, 
+            CancellationToken cancellationToken)
         {
             progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
 
+            foreach (var file in EnumeratePaths(cancellationToken))
+            {
+                progress.Report(new QueryProgressReport(ReportType.BeginLoading, file.Path));
+                IEntity entity;
+                if (file.IsFile)
+                {
+                    entity = _entities.GetEntity(file.Path);
+                }
+                else
+                {
+                    entity = new DirectoryEntity(file.Path);
+                }
+
+                progress.Report(new QueryProgressReport(ReportType.EndLoading, file.Path));
+
+                if (entity != null)
+                {
+                    yield return entity;
+                }
+            }
+
+            progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
+        }
+
+        private IEnumerable<(string Path, bool IsFile)> EnumeratePaths(CancellationToken token)
+        {
             foreach (var dir in EnumerateDirectories())
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
-                // add files
                 foreach (var file in EnumerateFiles(dir))
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
 
                     // load jpeg files only
                     var extension = Path.GetExtension(file)?.ToLowerInvariant();
@@ -210,33 +238,21 @@ namespace Viewer.Query
                     // skip files with hidden attributes
                     if (IsHidden(file))
                         continue;
-                    
-                    // load file
-                    progress.Report(new QueryProgressReport(ReportType.BeginLoading, file));
-                    var entity = LoadEntity(file);
-                    progress.Report(new QueryProgressReport(ReportType.EndLoading, file));
-                    if (entity == null)
-                    {
-                        continue;
-                    }
 
-                    yield return entity;
+                    yield return (file, true);
                 }
 
-                // add directories
                 foreach (var directory in EnumerateDirectories(dir))
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
 
                     // skip files with hidden attributes
                     if (IsHidden(directory))
                         continue;
 
-                    yield return new DirectoryEntity(directory);
+                    yield return (directory, false);
                 }
             }
-
-            progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
         }
 
         public bool Match(IEntity entity)

@@ -113,6 +113,40 @@ h5
     padding: 10px 20px;
 }
 
+/* download button */
+#_content>a
+{
+    margin: 20px 0;
+}
+
+a.button-download
+{
+    text-decoration: none;
+    color: white;
+    background: #178600;
+    display: block;
+    width: 350px;
+    padding: 20px 25px;
+    margin: 20px 0;
+}
+
+a.button-download:hover
+{
+    background: #1a9800;
+}
+
+a.button-download h5
+{
+    font-size: 20px;
+    margin: 0;
+}
+
+a.button-download p
+{
+    color: rgba(255, 255, 255, 0.7);
+    margin: 5px 0 0 0;
+}
+
 /* table */
 
 .table-bordered > thead > tr > th

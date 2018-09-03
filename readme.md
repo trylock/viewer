@@ -6,6 +6,7 @@ Viewer is a program that lets you store custom attributes directly into JPEG fil
 
 ## Links
 
+- [Download the latest version](https://github.com/trylock/viewer/releases)
 - [Documentation](https://trylock.github.io/viewer)
 
 ## Screenshot

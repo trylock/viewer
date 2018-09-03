@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -200,7 +200,7 @@ namespace Viewer.Query
                 IEntity entity;
                 if (file.IsFile)
                 {
-                    entity = _entities.GetEntity(file.Path);
+                    entity = LoadEntity(file.Path);
                 }
                 else
                 {

@@ -69,7 +69,7 @@ namespace Viewer.UI.Explorer
             return CopyMoveFilesAsync(destinationDirectory, files, true);
         }
 
-        public struct FileOperation
+        private struct FileOperation
         {
             public string SourcePath { get; }
             public string DestinationPath { get; }

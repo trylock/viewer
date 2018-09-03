@@ -41,7 +41,7 @@ namespace Viewer
                 Layout = "${longdate}|${level:uppercase=true}|${logger}|${threadid}|${message}|${exception:format=tostring}"
             };
 
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, file);
+            config.AddRule(LogLevel.Warn, LogLevel.Fatal, file);
             LogManager.Configuration = config;
 
             Application.ThreadException += ApplicationOnThreadException;

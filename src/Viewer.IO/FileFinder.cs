@@ -239,21 +239,61 @@ namespace Viewer.IO
         /// <returns>List of directories matching the pattern</returns>
         public IEnumerable<string> GetDirectories()
         {
+            var result = new ConcurrentQueue<string>();
+            using (var resultCount = new SemaphoreSlim(0))
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        FindAll(path =>
+                        {
+                            result.Enqueue(path);
+                            resultCount.Release();
+                        });
+                    }
+                    finally
+                    {
+                        result.Enqueue(null);
+                        resultCount.Release();
+                    }
+                });
+
+                for (;;)
+                {
+                    resultCount.Wait();
+                    if (!result.TryDequeue(out var path))
+                    {
+                        continue;
+                    }
+
+                    if (path == null)
+                    {
+                        break;
+                    }
+
+                    yield return path;
+                }
+            }
+        }
+
+        private void FindAll(Action<string> onNext)
+        {
             if (_parts.Count == 0)
             {
-                yield break;
+                return;
             }
 
             var firstPath = _parts[0];
             if (!_fileSystem.DirectoryExists(firstPath))
             {
-                yield break;
+                return;
             }
             
             if (_parts.Count == 1)
             {
-                yield return firstPath;
-                yield break;
+                onNext(firstPath);
+                return;
             }
 
             var states = new ConcurrentQueue<State>();
@@ -262,13 +302,12 @@ namespace Viewer.IO
             while (!states.IsEmpty)
             {
                 var newLevel = new ConcurrentQueue<State>();
-                var result = new ConcurrentQueue<string>();
                 
                 Parallel.ForEach(states, state =>
                 {
                     if (state.MatchedPartCount >= _parts.Count)
                     {
-                        result.Enqueue(state.Path);
+                        onNext(state.Path);
                     }
                     else
                     {
@@ -304,11 +343,6 @@ namespace Viewer.IO
                         }
                     }
                 });
-
-                foreach (var item in result)
-                {
-                    yield return item;
-                }
 
                 states = newLevel;
             }

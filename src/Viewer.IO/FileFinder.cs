@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -47,13 +47,20 @@ namespace Viewer.IO
     {
         private class State
         {
+            /// <summary>
+            /// Path to a directory
+            /// </summary>
             public string Path { get; }
-            public int LastMatchedPartIndex { get; }
 
-            public State(string path, int lastMatchedPart)
+            /// <summary>
+            /// Number of pattern pats <see cref="Path"/> has matched.
+            /// </summary>
+            public int MatchedPartCount { get; }
+
+            public State(string path, int matchedPartCount)
             {
                 Path = path;
-                LastMatchedPartIndex = lastMatchedPart;
+                MatchedPartCount = matchedPartCount;
             }
         }
         
@@ -250,7 +257,7 @@ namespace Viewer.IO
             }
 
             var states = new ConcurrentQueue<State>();
-            states.Enqueue(new State(firstPath, 0));
+            states.Enqueue(new State(firstPath, 1));
 
             while (!states.IsEmpty)
             {
@@ -259,13 +266,13 @@ namespace Viewer.IO
                 
                 Parallel.ForEach(states, state =>
                 {
-                    if (state.LastMatchedPartIndex + 1 >= _parts.Count)
+                    if (state.MatchedPartCount >= _parts.Count)
                     {
                         result.Enqueue(state.Path);
                     }
                     else
                     {
-                        var part = _parts[state.LastMatchedPartIndex + 1];
+                        var part = _parts[state.MatchedPartCount];
                         if (!IsPattern(part))
                         {
                             // path part is a relative path without any special characters
@@ -275,24 +282,24 @@ namespace Viewer.IO
                                 return;
                             }
                             
-                            newLevel.Enqueue(new State(path, state.LastMatchedPartIndex + 1));
+                            newLevel.Enqueue(new State(path, state.MatchedPartCount + 1));
                         }
                         else if (part == "**")
                         {
                             // assume the pattern has been matched
-                            newLevel.Enqueue(new State(state.Path, state.LastMatchedPartIndex + 1));
+                            newLevel.Enqueue(new State(state.Path, state.MatchedPartCount + 1));
                             
                             // assume it has not been matched yet
                             foreach (var dir in EnumerateDirectories(state.Path, null))
                             {
-                                newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex));
+                                newLevel.Enqueue(new State(dir, state.MatchedPartCount));
                             }
                         }
                         else
                         {
                             foreach (var dir in EnumerateDirectories(state.Path, part))
                             {
-                                newLevel.Enqueue(new State(dir, state.LastMatchedPartIndex + 1));
+                                newLevel.Enqueue(new State(dir, state.MatchedPartCount + 1));
                             }
                         }
                     }

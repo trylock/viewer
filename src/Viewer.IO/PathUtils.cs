@@ -238,7 +238,7 @@ namespace Viewer.IO
                 }
             }
 
-            return unifiedPath.ToString();
+            return unifiedPath.ToString().TrimEnd(PathSeparators);
         }
     }
 }

@@ -106,7 +106,7 @@ namespace Viewer.UI.QueryEditor
             this.RunButton.Name = "RunButton";
             this.RunButton.Size = new System.Drawing.Size(23, 22);
             this.RunButton.Text = "Run query";
-            this.RunButton.ToolTipText = "Run query (F5)";
+            this.RunButton.ToolTipText = "Run query (F5, Ctrl + Enter)";
             this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
             // QueryTextBox

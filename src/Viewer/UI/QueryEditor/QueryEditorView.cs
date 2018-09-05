@@ -98,7 +98,7 @@ namespace Viewer.UI.QueryEditor
 
         private void QueryTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F5)
+            if (e.KeyCode == Keys.F5 || (e.Control && e.KeyCode == Keys.Enter))
             {
                 RunQuery?.Invoke(sender, e);
             }

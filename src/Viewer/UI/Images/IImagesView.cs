@@ -214,6 +214,11 @@ namespace Viewer.UI.Images
         event EventHandler<EntityEventArgs> ItemHover;
 
         /// <summary>
+        /// Event occurs whenever user clicks on an item in the grid.
+        /// </summary>
+        event EventHandler<EntityEventArgs> ItemClick;
+
+        /// <summary>
         /// Event occurs when user requests to edit file name
         /// </summary>
         event EventHandler<EntityEventArgs> BeginEditItemName;

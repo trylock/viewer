@@ -34,6 +34,8 @@ namespace Viewer
         private readonly List<DeserializeCallback> _layoutDeserializeCallback = new List<DeserializeCallback>();
         private readonly IComponent[] _components;
 
+        public DockPanel Panel => _appForm.Panel;
+
         [ImportingConstructor]
         public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
         {
@@ -46,8 +48,6 @@ namespace Viewer
                 component.Application = this;
             }
         }
-
-        public DockPanel Panel => _appForm.Panel;
 
         public void InitializeLayout()
         {

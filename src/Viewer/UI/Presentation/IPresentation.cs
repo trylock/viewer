@@ -19,5 +19,13 @@ namespace Viewer.UI.Presentation
         /// <param name="entities">Entities in the presentation</param>
         /// <param name="activeIndex">Index of an entity to open</param>
         void Open(IEnumerable<IEntity> entities, int activeIndex);
+
+        /// <summary>
+        /// Preview will only show the image if there is a presentation window opened. Moreover,
+        /// the presentation window will not get focus even if it is open.
+        /// </summary>
+        /// <param name="entities">Entities to show in the presentation</param>
+        /// <param name="activeIndex">Index of image to show</param>
+        void Preview(IEnumerable<IEntity> entities, int activeIndex);
     }
 }

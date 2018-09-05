@@ -61,5 +61,10 @@ namespace Viewer.UI.Presentation
         {
             ShowPresentation(entities, activeIndex);
         }
+
+        public void Preview(IEnumerable<IEntity> entities, int activeIndex)
+        {
+            _presenter?.ShowEntity(entities, activeIndex);
+        }
     }
 }

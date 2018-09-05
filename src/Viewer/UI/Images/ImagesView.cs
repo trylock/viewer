@@ -51,6 +51,7 @@ namespace Viewer.UI.Images
         {
             view.DragDrop += GridView_DragDrop;
             view.DragOver += GridView_DragOver;
+            view.Click += GridView_Click;
             view.DoubleClick += GridView_DoubleClick;
             view.MouseDown += GridView_MouseDown;
             view.MouseLeave += GridView_MouseLeave;
@@ -200,6 +201,7 @@ namespace Viewer.UI.Images
         public event KeyEventHandler HandleKeyUp;
 
         public event EventHandler<EntityEventArgs> ItemHover;
+        public event EventHandler<EntityEventArgs> ItemClick;
 
         public event EventHandler CopyItems
         {
@@ -480,6 +482,18 @@ namespace Viewer.UI.Images
         private void GridView_MouseLeave(object sender, EventArgs e)
         {
             _isDragging = false;
+        }
+        
+        private void GridView_Click(object sender, EventArgs e)
+        {
+            var location = _view.UnprojectLocation(PointToClient(MousePosition));
+            var item = _view.GetItemAt(location);
+            if (item == null)
+            {
+                return;
+            }
+
+            ItemClick?.Invoke(sender, new EntityEventArgs(item));
         }
 
         private void GridView_DoubleClick(object sender, EventArgs e)

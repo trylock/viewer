@@ -111,6 +111,7 @@ namespace Viewer.UI.Presentation
         {
             foreach (Control child in control.Controls)
             {
+                child.PreviewKeyDown += ChildOnPreviewKeyDown;
                 child.KeyDown += ShortcutHandler;
                 RegisterShortcutHandler(child);
             }
@@ -288,7 +289,15 @@ namespace Viewer.UI.Presentation
                 }
             }
         }
-        
+
+        private void ChildOnPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+            {
+                e.IsInputKey = true;
+            }
+        }
+
         private void ShortcutHandler(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Left)

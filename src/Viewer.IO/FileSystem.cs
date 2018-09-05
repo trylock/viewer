@@ -175,6 +175,13 @@ namespace Viewer.IO
         Task<string> ReadToEndAsync(string path);
 
         /// <summary>
+        /// Create a new file finder from directory path pattern
+        /// </summary>
+        /// <param name="pattern">Directory path pattern</param>
+        /// <returns>New file finder</returns>
+        IFileFinder CreateFileFinder(string pattern);
+
+        /// <summary>
         /// <para>
         /// Search given path for files and subdirectories. <see cref="ISearchListener.OnDirectory"/>
         /// will be called for each directory, <see cref="ISearchListener.OnFile"/> will be called
@@ -286,6 +293,11 @@ namespace Viewer.IO
             {
                 return await reader.ReadToEndAsync();
             }
+        }
+
+        public IFileFinder CreateFileFinder(string pattern)
+        {
+            return new FileFinder(this, pattern);
         }
 
         public void Search(string path, ISearchListener listener)

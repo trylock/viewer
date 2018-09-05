@@ -43,7 +43,29 @@ namespace Viewer.IO
     /// foreach (var filePath in finder.GetFiles()) { ... }
     /// </code>
     /// </example>
-    public class FileFinder 
+    public interface IFileFinder
+    {
+        /// <summary>
+        /// Pattern of this file finder.
+        /// </summary>
+        string Pattern { get; }
+        
+        /// <summary>
+        /// Find all directories which match <see cref="Pattern"/>. This function will skip folders
+        /// which throw <see cref="UnauthorizedAccessException"/> or <see cref="SecurityException"/>.
+        /// </summary>
+        /// <returns>List of directories matching the pattern</returns>
+        IEnumerable<string> GetDirectories();
+
+        /// <summary>
+        /// Test whether <paramref name="path"/> matches <see cref="Pattern"/>.
+        /// </summary>
+        /// <param name="path">Path to test</param>
+        /// <returns>true iff <paramref name="path"/> matches <see cref="Pattern"/></returns>
+        bool Match(string path);
+    }
+    
+    public class FileFinder : IFileFinder
     {
         private class State
         {
@@ -74,9 +96,6 @@ namespace Viewer.IO
         /// </summary>
         public FileAttributes HiddenAttributes { get; } = FileAttributes.System;
 
-        /// <summary>
-        /// Pattern of this file finder.
-        /// </summary>
         public string Pattern { get; }
 
         /// <summary>
@@ -232,11 +251,6 @@ namespace Viewer.IO
             return new Regex(sb.ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled);
         }
 
-        /// <summary>
-        /// Find all directories which match given pattern. This function will skip folders which
-        /// throw <see cref="UnauthorizedAccessException"/> or <see cref="SecurityException"/>.
-        /// </summary>
-        /// <returns>List of directories matching the pattern</returns>
         public IEnumerable<string> GetDirectories()
         {
             var result = new ConcurrentQueue<string>();

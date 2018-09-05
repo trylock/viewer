@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Viewer.IO
@@ -81,7 +82,7 @@ namespace Viewer.IO
 
             public State(string path, int matchedPartCount)
             {
-                Path = path;
+                Path = PathUtils.NormalizePath(path);
                 MatchedPartCount = matchedPartCount;
             }
         }
@@ -303,25 +304,29 @@ namespace Viewer.IO
             {
                 return;
             }
-            
+
             if (_parts.Count == 1)
             {
                 onNext(firstPath);
                 return;
             }
 
+            var visited = new ConcurrentDictionary<string, bool>();
             var states = new ConcurrentQueue<State>();
             states.Enqueue(new State(firstPath, 1));
 
             while (!states.IsEmpty)
             {
                 var newLevel = new ConcurrentQueue<State>();
-                
+
                 Parallel.ForEach(states, state =>
                 {
                     if (state.MatchedPartCount >= _parts.Count)
                     {
-                        onNext(state.Path);
+                        if (visited.TryAdd(state.Path, true))
+                        {
+                            onNext(state.Path);
+                        }
                     }
                     else
                     {
@@ -334,14 +339,14 @@ namespace Viewer.IO
                             {
                                 return;
                             }
-                            
+
                             newLevel.Enqueue(new State(path, state.MatchedPartCount + 1));
                         }
                         else if (part == "**")
                         {
                             // assume the pattern has been matched
                             newLevel.Enqueue(new State(state.Path, state.MatchedPartCount + 1));
-                            
+
                             // assume it has not been matched yet
                             foreach (var dir in EnumerateDirectories(state.Path, null))
                             {

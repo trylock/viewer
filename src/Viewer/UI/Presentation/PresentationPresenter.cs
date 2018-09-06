@@ -64,9 +64,7 @@ namespace Viewer.UI.Presentation
                 index = 0;
             if (index >= _entities.Count)
                 index = _entities.Count - 1;
-
-            View.Picture?.Dispose();
-            View.Picture = null;
+            
             _images?.Dispose();
             _images = new ImageWindow(_imageLoader, _entities, 3);
             _images.SetPosition(index);

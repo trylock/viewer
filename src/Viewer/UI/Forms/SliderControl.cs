@@ -182,22 +182,24 @@ namespace Viewer.UI.Forms
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            var scale = new PointF(e.Graphics.DpiX / 96f, e.Graphics.DpiY / 96f);
+
             // maximal bar with (excluding padding)
             var maxBarWidth = ClientSize.Width - 2 * SidePadding;
+            var barHeight = (int) (_thickness * scale.Y);
 
             // slider location normalized to the [0, 1] interval
             var normalizedPosition = (Value - MinimalValue) / (double) (MaximalValue - MinimalValue);
             var activeWidth = (int) MathUtils.Lerp(0, maxBarWidth, normalizedPosition);
             var inactiveWidth = (int) MathUtils.Lerp(0, maxBarWidth, 1 - normalizedPosition);
-
-
+            
             var activeLocation = new Point(
                 SidePadding,
-                ClientSize.Height / 2 - _thickness / 2
+                ClientSize.Height / 2 - barHeight / 2
             );
             var activeSize = new Size(
                 activeWidth,
-                _thickness
+                barHeight
             );
 
             var inactiveLocation = new Point(
@@ -206,14 +208,16 @@ namespace Viewer.UI.Forms
             );
             var inactiveSize = new Size(
                 inactiveWidth,
-                _thickness
+                barHeight
             );
 
+            var handleSize = new Size(
+                (int)(_handleRadius * 2 * scale.X),
+                (int)(_handleRadius * 2 * scale.Y));
             var handleLocation = new Point(
-                SidePadding + activeWidth - _handleRadius,
-                ClientSize.Height / 2 - _thickness / 2 - _handleRadius
+                SidePadding + activeWidth - handleSize.Width / 2,
+                ClientSize.Height / 2 - barHeight / 2 - handleSize.Height / 2
             );
-            var handleSize = new Size(_handleRadius * 2, _handleRadius * 2);
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.FillRectangle(_activeBrush, new Rectangle(activeLocation, activeSize));

@@ -15,6 +15,7 @@ using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.UI.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using WeifenLuo.WinFormsUI.ThemeVS2013;
 
 namespace Viewer
 {
@@ -24,7 +25,7 @@ namespace Viewer
         /// <summary>
         /// Application theme
         /// </summary>
-        public static readonly ThemeBase Theme = new VS2015LightTheme();
+        public static readonly ThemeBase Theme;
 
         public DockPanel Panel { get; }
 
@@ -32,8 +33,44 @@ namespace Viewer
 
         private MenuStrip _viewerMenu;
         private StatusStrip _statusBar;
-        
-        [ImportingConstructor]
+
+        #region High DPI DockPanelSuite splitter fix 
+
+        private class SplitterControl : VS2013WindowSplitterControl
+        {
+            public SplitterControl(ISplitterHost host) : base(host)
+            {
+            }
+
+            protected override void OnResize(EventArgs e)
+            {
+                base.OnResize(e);
+
+                // The splitter is coverring other windows on high DPI settings (anything above
+                // 100 %). 
+                if (Dock == DockStyle.Right || Dock == DockStyle.Left)
+                    Width = SplitterSize;
+                else if (Dock == DockStyle.Bottom || Dock == DockStyle.Top)
+                    Height = SplitterSize;
+            }
+        }
+
+        private class DecoratedSplitterControlFactory : DockPanelExtender.IWindowSplitterControlFactory
+        {
+            public SplitterBase CreateSplitterControl(ISplitterHost host)
+            {
+                return new SplitterControl(host);
+            }
+        }
+
+        static ViewerForm()
+        {
+            Theme = new VS2015LightTheme();
+            Theme.Extender.WindowSplitterControlFactory = new DecoratedSplitterControlFactory();
+        }
+
+        #endregion
+
         public ViewerForm()
         {
             Panel = new DockPanel{ Theme = Theme };
@@ -45,13 +82,9 @@ namespace Viewer
             InitializeMenu();
             InitializeStatusbar();
 
-            Panel.Location = new Point(0, _viewerMenu.Height);
-            Panel.Size = new Size(
-                ClientSize.Width, 
-                ClientSize.Height - _viewerMenu.Height - _statusBar.Height);
-            Panel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+            Panel.Dock = DockStyle.Fill;
         }
-
+        
         public void AddMenuItem(IReadOnlyList<string> path, Action action, Image icon)
         {
             var items = _viewerMenu.Items;
@@ -96,6 +129,9 @@ namespace Viewer
         private void InitializeStatusbar()
         {
             _statusBar = new StatusStrip();
+            var defaultFont = _statusBar.Font;
+            _statusBar.Font = new Font(defaultFont.FontFamily, 9f, defaultFont.Style, defaultFont.Unit, defaultFont.GdiCharSet, defaultFont.GdiVerticalFont);
+            Panel.Theme.ApplyTo(_statusBar);
 
             // all items afther this will be pushed to the right
             _statusBar.Items.Add(new ToolStripStatusLabel()
@@ -104,7 +140,6 @@ namespace Viewer
                 Tag = "separator"
             });
 
-            Panel.Theme.ApplyTo(_statusBar);
             Controls.Add(_statusBar);
         }
         

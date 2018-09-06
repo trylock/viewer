@@ -25,10 +25,11 @@ namespace Viewer.UI.Explorer
             
             var list = new ImageList();
             list.Images.Add(Resources.Directory);
-
+            
             TreeView.ImageList = list;
             TreeView.ImageIndex = 0;
             TreeView.Sorted = true;
+            TreeView.ItemHeight = TreeView.Font.Height + 12;
         }
         
         #region View interface

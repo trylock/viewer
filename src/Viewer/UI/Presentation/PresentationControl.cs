@@ -88,6 +88,7 @@ namespace Viewer.UI.Presentation
         public PresentationControl()
         {
             InitializeComponent();
+            SetControlsLocation();
 
             Preview.MouseWheel += Preview_MouseWheel;
             RegisterShortcutHandler(this);
@@ -235,7 +236,29 @@ namespace Viewer.UI.Presentation
             }
         }
 
-        #endregion 
+        #endregion
+
+        /// <summary>
+        /// Set location of presentation controls. This is done programmatically because anchor
+        /// does not work well with high DPI settings.
+        /// </summary>
+        private void SetControlsLocation()
+        {
+            NextButton.Location = new Point(
+                ClientSize.Width - NextButton.Width - 10,
+                ClientSize.Height / 2 - NextButton.Height / 2
+            );
+
+            PrevButton.Location = new Point(
+                10,
+                ClientSize.Height / 2 - PrevButton.Height / 2
+            );
+
+            ControlPanel.Location = new Point(
+                ClientSize.Width / 2 - ControlPanel.Width / 2,
+                ClientSize.Height - ControlPanel.Height - 5
+            );
+        }
 
         #region Events
 
@@ -380,7 +403,12 @@ namespace Viewer.UI.Presentation
         {
             EndDrag();
         }
-        
+
+        private void Preview_Resize(object sender, EventArgs e)
+        {
+            SetControlsLocation();
+        }
+
         private void Preview_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (e.Button.HasFlag(MouseButtons.Left))

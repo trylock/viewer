@@ -137,7 +137,7 @@ namespace Viewer.UI.Presentation
         
         private async void View_NextImage(object sender, EventArgs e)
         {
-            if (_isLoading)
+            if (_images == null || _isLoading)
                 return;
 
             _isLoading = true;
@@ -154,7 +154,7 @@ namespace Viewer.UI.Presentation
 
         private async void View_PrevImage(object sender, EventArgs e)
         {
-            if (_isLoading)
+            if (_images == null || _isLoading)
                 return;
 
             _isLoading = true;

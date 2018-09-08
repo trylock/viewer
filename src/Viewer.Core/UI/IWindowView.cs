@@ -43,6 +43,12 @@ namespace Viewer.Core.UI
         Keys ModifierKeyState { get; }
 
         /// <summary>
+        /// Show the window in <paramref name="dockPanel"/>
+        /// </summary>
+        /// <param name="dockPanel">A new dock panel for this window</param>
+        void Show(DockPanel dockPanel);
+
+        /// <summary>
         /// Show the window in <paramref name="dockPanel"/> with <paramref name="dockState"/>
         /// </summary>
         /// <param name="dockPanel">A new dock panel for this window</param>

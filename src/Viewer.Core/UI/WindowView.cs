@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,21 @@ namespace Viewer.Core.UI
             // register event handlers
             FormClosed += OnFormClosed;
             GotFocus += OnGotFocus;
+        }
+        
+        protected override void Dispose(bool disposing)
+        {
+            // capture current active mdi child
+            Form appForm = DockPanel?.FindForm();
+            Form activeMdiChild = appForm?.ActiveMdiChild;
+
+            base.Dispose(disposing);
+
+            // restore active mdi child
+            if (activeMdiChild != this)
+            {
+                activeMdiChild?.Activate();
+            }
         }
 
         public void EnsureVisible()

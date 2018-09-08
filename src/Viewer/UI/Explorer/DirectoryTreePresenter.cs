@@ -60,9 +60,12 @@ namespace Viewer.UI.Explorer
             SubscribeTo(View, "View");
             _state.QueryExecuted += StateOnQueryExecuted;
         }
-        
+
+        private bool _isDisposed = false;
+
         public override void Dispose()
         {
+            _isDisposed = true;
             _state.QueryExecuted -= StateOnQueryExecuted;
             base.Dispose();
         }
@@ -89,6 +92,12 @@ namespace Viewer.UI.Explorer
                     continue;
 
                 await OpenAsync(basePath);
+
+                if (_isDisposed)
+                {
+                    return;
+                }
+
                 View.HighlightDirectory(PathUtils.Split(basePath));
             }
         }
@@ -162,7 +171,12 @@ namespace Viewer.UI.Explorer
 
                 return folders;
             });
-            
+
+            if (_isDisposed)
+            {
+                return;
+            }
+
             // update the view
             foreach (var folder in subdirectories)
             {
@@ -259,17 +273,14 @@ namespace Viewer.UI.Explorer
 
         private async void View_ExpandDirectory(object sender, DirectoryEventArgs e)
         {
-            View.BeginLoading();
-            try
+            var directories = await Task.Run(() => GetValidSubdirectories(e.FullPath));
+            if (_isDisposed)
             {
-                var directories = await Task.Run(() => GetValidSubdirectories(e.FullPath));
-                var pathParts = PathUtils.Split(e.FullPath);
-                View.LoadDirectories(pathParts, directories, false);
+                return;
             }
-            finally
-            {
-                View.EndLoading();
-            }
+
+            var pathParts = PathUtils.Split(e.FullPath);
+            View.LoadDirectories(pathParts, directories, false);
         }
 
         private void View_OpenDirectory(object sender, DirectoryEventArgs e)
@@ -424,6 +435,11 @@ namespace Viewer.UI.Explorer
             }
             catch (OperationCanceledException)
             {
+            }
+
+            if (_isDisposed)
+            {
+                return;
             }
 
             // update subdirectories in given path

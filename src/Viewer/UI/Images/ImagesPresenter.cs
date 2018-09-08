@@ -156,6 +156,8 @@ namespace Viewer.UI.Images
             View.ContextOptions = Settings.Default.ExternalApplications;
         }
 
+        private bool _isDisposed = false;
+
         /// <summary>
         /// Dispose all resources used by current query
         /// </summary>
@@ -168,6 +170,7 @@ namespace Viewer.UI.Images
         
         public override void Dispose()
         {
+            _isDisposed = true;
             DisposeQuery();
             base.Dispose();
         }
@@ -197,14 +200,20 @@ namespace Viewer.UI.Images
             try
             {
                 await _queryEvaluator.RunAsync();
-                View.UpdateItems();
+                if (!_isDisposed)
+                {
+                    View.UpdateItems();
+                }
             }   
             catch (OperationCanceledException)
             {
             }
             finally
             {
-                View.EndLoading();
+                if (!_isDisposed)
+                {
+                    View.EndLoading();
+                }
             }
         }
 

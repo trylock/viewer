@@ -46,8 +46,11 @@ namespace Viewer.UI.QueryEditor
             UpdateViews();
         }
 
+        private bool _isDisposed;
+
         public override void Dispose()
         {
+            _isDisposed = true;
             _queryCompiler.Views.Changed -= QueryViewsOnChanged;
             base.Dispose();
         }
@@ -115,6 +118,10 @@ namespace Viewer.UI.QueryEditor
             try
             {
                 await _editor.SaveAsync(View.FullPath, View.Query);
+                if (_isDisposed)
+                {
+                    return;
+                }
 
                 MarkSaved();
 
@@ -177,10 +184,18 @@ namespace Viewer.UI.QueryEditor
             await SaveAsync();
         }
 
+        private async Task OpenFileAsync(string path)
+        {
+            var window = await _editor.OpenAsync(path);
+            if (window != null && !_isDisposed)
+            {
+                window.Show(View.DockPanel, DockState.Document);
+            }
+        }
+
         private async void View_OpenQuery(object sender, OpenQueryEventArgs e)
         {
-            var window = await _editor.OpenAsync(e.FullPath);
-            window.Show(View.DockPanel, DockState.Document);
+            await OpenFileAsync(e.FullPath);
         }
 
         private async void View_RunQuery(object sender, EventArgs e)
@@ -205,16 +220,19 @@ namespace Viewer.UI.QueryEditor
             {
                 if (Path.GetExtension(file)?.ToLowerInvariant() == ".vql")
                 {
-                    var window = await _editor.OpenAsync(file);
-                    window.Show(View.DockPanel, DockState.Document);
+                    await OpenFileAsync(file);
+                }
+
+                if (_isDisposed)
+                {
+                    break;
                 }
             }
         }
-
+        
         private async void View_OpenQueryView(object sender, QueryViewEventArgs e)
         {
-            var window = await _editor.OpenAsync(e.View.Path);
-            window.Show(View.DockPanel, DockState.Document);
+            await OpenFileAsync(e.View.Path);
         }
     }
 }

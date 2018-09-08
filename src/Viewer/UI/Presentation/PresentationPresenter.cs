@@ -49,8 +49,11 @@ namespace Viewer.UI.Presentation
             SubscribeTo(View, "View");
         }
 
+        private bool _isDisposed;
+        
         public override void Dispose()
         {
+            _isDisposed = true;
             View.Picture?.Dispose();
             View.Picture = null; // make sure no code can access the disposed image
             _images?.Dispose();
@@ -87,7 +90,7 @@ namespace Viewer.UI.Presentation
             try
             {
                 var image = await _images.GetCurrentAsync();
-                if (image == null)
+                if (image == null || _isDisposed)
                 {
                     return;
                 }

@@ -321,7 +321,7 @@ namespace Viewer.UI.Images
 
         private void UpdateScrollableSize()
         {
-            Grid.Resize(ClientSize.Width);
+            Grid.Resize(Math.Max(ClientSize.Width, 0));
             Grid.CellCount = _items?.Count ?? 0;
             AutoScrollMinSize = new Size(
                 0, // we don't want to have a horizontal scroll bar

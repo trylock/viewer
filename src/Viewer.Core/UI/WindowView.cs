@@ -31,21 +31,6 @@ namespace Viewer.Core.UI
             FormClosed += OnFormClosed;
             GotFocus += OnGotFocus;
         }
-        
-        protected override void Dispose(bool disposing)
-        {
-            // capture current active mdi child
-            Form appForm = DockPanel?.FindForm();
-            Form activeMdiChild = appForm?.ActiveMdiChild;
-
-            base.Dispose(disposing);
-
-            // restore active mdi child
-            if (activeMdiChild != this)
-            {
-                activeMdiChild?.Activate();
-            }
-        }
 
         public void EnsureVisible()
         {

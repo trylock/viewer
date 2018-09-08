@@ -76,13 +76,13 @@ namespace Viewer
             Panel = new DockPanel{ Theme = Theme };
             Panel.UpdateDockWindowZOrder(DockStyle.Right, true);
             Panel.UpdateDockWindowZOrder(DockStyle.Left, true);
+            Panel.DocumentStyle = DocumentStyle.DockingWindow;
+            Panel.Dock = DockStyle.Fill;
             Controls.Add(Panel);
-            
+
             InitializeComponent();
             InitializeMenu();
             InitializeStatusbar();
-
-            Panel.Dock = DockStyle.Fill;
         }
         
         public void AddMenuItem(IReadOnlyList<string> path, Action action, Image icon)

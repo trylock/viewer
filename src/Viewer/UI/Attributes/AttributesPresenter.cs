@@ -66,8 +66,8 @@ namespace Viewer.UI.Attributes
 
         public override void Dispose()
         {
-            base.Dispose();
             _attributes.SelectionChanged -= Selection_Changed;
+            base.Dispose();
         }
         
         private void UpdateAttributes()

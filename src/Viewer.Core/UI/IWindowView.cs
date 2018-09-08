@@ -18,7 +18,7 @@ namespace Viewer.Core.UI
         event EventHandler CloseView;
 
         /// <summary>
-        /// Event called when this view gets focus.
+        /// Event occurs when this view gets focus.
         /// </summary>
         event EventHandler ViewGotFocus;
 
@@ -41,6 +41,11 @@ namespace Viewer.Core.UI
         /// Get currently pressed modified keys (i.e., state of Control, Shift and Alt keys)
         /// </summary>
         Keys ModifierKeyState { get; }
+
+        /// <summary>
+        /// Check whether this window is activated (i.e., it has focus)
+        /// </summary>
+        bool IsActivated { get; }
 
         /// <summary>
         /// Show the window in <paramref name="dockPanel"/>

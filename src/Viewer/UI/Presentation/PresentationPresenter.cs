@@ -84,7 +84,10 @@ namespace Viewer.UI.Presentation
             // replace selection
             var position = _images.CurrnetIndex;
             var entity = _entities[position];
-            _selection.Replace(new[] { entity });
+            if (View.IsActivated)
+            {
+                _selection.Replace(new[] {entity});
+            }
 
             // load new image
             try

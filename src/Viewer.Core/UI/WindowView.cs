@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,49 @@ namespace Viewer.Core.UI
             // register event handlers
             FormClosed += OnFormClosed;
             GotFocus += OnGotFocus;
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            HandleChangeTabShortcuts(keyData);
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void HandleChangeTabShortcuts(Keys keyData)
+        {
+            if (!keyData.HasFlag(Keys.Control) || !keyData.HasFlag(Keys.Tab))
+            {
+                return;
+            }
+
+            var contents = Pane.Contents;
+            var index = contents.IndexOf(this);
+            if (index >= 0)
+            {
+                Trace.Assert(contents.Count > 0);
+
+                // select the next content index within this pane
+                if (keyData.HasFlag(Keys.Shift)) // go to the previous tab
+                {
+                    --index;
+                    if (index < 0)
+                    {
+                        index += contents.Count;
+                    }
+                }
+                else // go to the next tab
+                {
+                    ++index;
+                    if (index >= contents.Count)
+                    {
+                        index = 0;
+                    }
+                }
+
+                // activate this content
+                var content = contents[index] as DockContent;
+                content?.Activate();
+            }
         }
 
         public void EnsureVisible()

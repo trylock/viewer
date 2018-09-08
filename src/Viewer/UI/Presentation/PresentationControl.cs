@@ -98,6 +98,7 @@ namespace Viewer.UI.Presentation
             MaxDelayLabel.Text = SpeedTrackBar.Maximum + "s";
             PlayPauseButton.IconColor = Color.FromArgb(0, 120, 215);
             
+            // fullscreen form to which is this control added whenever user enters a fullscreen mode
             _fullscreenForm = new Form
             {
                 Text = Text,
@@ -106,6 +107,9 @@ namespace Viewer.UI.Presentation
                 Visible = false
             };
             _fullscreenForm.FormClosing += FullscreenForm_FormClosing;
+
+            // hide controls on startup
+            HideControlsHandler(this, EventArgs.Empty);
         }
 
         private void RegisterShortcutHandler(Control control)

@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -23,18 +24,28 @@ namespace Viewer.Query
     public interface IExecutableQuery
     {
         /// <summary>
-        /// Evaluate this query.
-        /// Entities are loaded lazily as much as possible.
+        /// Path patterns to directories searched by this query
         /// </summary>
-        /// <param name="progress">This class is used to report query execution progress. You can use <see cref="NullQueryProgress"/>.</param>
-        /// <param name="cancellationToken">Cancellation token used to cancel the execution.</param>
+        IEnumerable<string> Patterns { get; }
+
+        /// <summary>
+        /// Evaluate this query. Entities are loaded lazily as much as possible and they are not
+        /// sorted.
+        /// </summary>
+        /// <param name="progress">
+        /// This class is used to report query execution progress. You can use
+        /// <see cref="NullQueryProgress"/>.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// Cancellation token used to cancel the execution.
+        /// </param>
         /// <returns>Matched entities.</returns>
         IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken);
 
         /// <summary>
         /// Check whether <paramref name="entity"/> matches the query (i.e., it sould be in the query result)
         /// </summary>
-        /// <param name="entity">Checkwed entity</param>
+        /// <param name="entity">Checked entity</param>
         /// <returns>true iff <paramref name="entity"/> matches the query</returns>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
         bool Match(IEntity entity);
@@ -123,6 +134,8 @@ namespace Viewer.Query
     {
         public static EmptyQuery Default { get; } = new EmptyQuery();
 
+        public IEnumerable<string> Patterns => Enumerable.Empty<string>();
+
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             return Enumerable.Empty<IEntity>();
@@ -142,6 +155,8 @@ namespace Viewer.Query
     public sealed class MemoryQuery : IExecutableQuery
     {
         private readonly IEnumerable<IEntity> _entities;
+
+        public IEnumerable<string> Patterns => Enumerable.Empty<string>();
 
         /// <summary>
         /// Convert a collection in memory into a query
@@ -175,6 +190,14 @@ namespace Viewer.Query
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public IEnumerable<string> Patterns
+        {
+            get
+            {
+                yield return _fileFinder.Pattern;
+            }
+        }
+
         private readonly IFileSystem _fileSystem;
         private readonly IEntityManager _entities;
         private readonly FileFinder _fileFinder;
@@ -193,7 +216,7 @@ namespace Viewer.Query
             CancellationToken cancellationToken)
         {
             progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
-
+            
             foreach (var file in EnumeratePaths(cancellationToken))
             {
                 progress.Report(new QueryProgressReport(ReportType.BeginLoading, file.Path));
@@ -214,7 +237,7 @@ namespace Viewer.Query
                     yield return entity;
                 }
             }
-
+            
             progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
         }
 
@@ -395,6 +418,8 @@ namespace Viewer.Query
         private readonly IExecutableQuery _source;
         private readonly Func<IEntity, bool> _predicate;
 
+        public IEnumerable<string> Patterns => _source.Patterns;
+
         public FilteredQuery(IExecutableQuery source, Func<IEntity, bool> predicate)
         {
             _source = source;
@@ -412,90 +437,95 @@ namespace Viewer.Query
         }
     }
 
-    internal class ExceptQuery : IExecutableQuery
+    internal abstract class BinaryOperatorQuery : IExecutableQuery
     {
-        private readonly IExecutableQuery _first;
-        private readonly IExecutableQuery _second;
+        protected readonly IExecutableQuery First;
+        protected readonly IExecutableQuery Second;
 
-        public ExceptQuery(IExecutableQuery first, IExecutableQuery second)
+        protected BinaryOperatorQuery(IExecutableQuery first, IExecutableQuery second)
         {
-            _first = first;
-            _second = second;
+            First = first;
+            Second = second;
         }
 
-        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public IEnumerable<string> Patterns => First.Patterns.Concat(Second.Patterns);
+
+        public abstract IEnumerable<IEntity> Execute(
+            IProgress<QueryProgressReport> progress,
+            CancellationToken cancellationToken);
+
+        public abstract bool Match(IEntity entity);
+    }
+
+    internal class ExceptQuery : BinaryOperatorQuery
+    {
+        public ExceptQuery(IExecutableQuery first, IExecutableQuery second) : base(first, second)
         {
-            var firstEvaluation = _first.Execute(progress, cancellationToken);
+        }
+
+        public override IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        {
+            var firstEvaluation = First.Execute(progress, cancellationToken);
             foreach (var item in firstEvaluation)
             {
-                if (!_second.Match(item))
+                if (!Second.Match(item))
                     yield return item;
             }
         }
 
-        public bool Match(IEntity entity)
+        public override bool Match(IEntity entity)
         {
-            return _first.Match(entity) && !_second.Match(entity);
+            return First.Match(entity) && !Second.Match(entity);
         }
     }
 
-    internal class IntersectQuery : IExecutableQuery
+    internal class IntersectQuery : BinaryOperatorQuery
     {
-        private readonly IExecutableQuery _first;
-        private readonly IExecutableQuery _second;
-
-        public IntersectQuery(IExecutableQuery first, IExecutableQuery second)
+        public IntersectQuery(IExecutableQuery first, IExecutableQuery second) : base(first, second)
         {
-            _first = first;
-            _second = second;
         }
 
-        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public override IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             var visited = new HashSet<IEntity>(EntityPathEqualityComparer.Default);
-            var firstEvaluation = _first.Execute(progress, cancellationToken);
+            var firstEvaluation = First.Execute(progress, cancellationToken);
             foreach (var item in firstEvaluation)
             {
                 visited.Add(item);
-                if (_second.Match(item))
+                if (Second.Match(item))
                     yield return item;
             }
 
-            var secondEvaluation = _second.Execute(progress, cancellationToken);
+            var secondEvaluation = Second.Execute(progress, cancellationToken);
             foreach (var item in secondEvaluation)
             {
-                if (!visited.Contains(item) && _first.Match(item))
+                if (!visited.Contains(item) && First.Match(item))
                     yield return item;
             }
         }
 
-        public bool Match(IEntity entity)
+        public override bool Match(IEntity entity)
         {
-            return _first.Match(entity) && _second.Match(entity);
+            return First.Match(entity) && Second.Match(entity);
         }
     }
 
-    internal class UnionQuery : IExecutableQuery
+    internal class UnionQuery : BinaryOperatorQuery
     {
-        private readonly IExecutableQuery _first;
-        private readonly IExecutableQuery _second;
-
-        public UnionQuery(IExecutableQuery first, IExecutableQuery second)
+        public UnionQuery(IExecutableQuery first, IExecutableQuery second) : base(first, second)
         {
-            _first = first;
-            _second = second;
         }
 
-        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public override IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            var firstEvaluation = _first.Execute(progress, cancellationToken);
-            var secondEvaluation = _second.Execute(progress, cancellationToken);
+            var firstEvaluation = First.Execute(progress, cancellationToken);
+            var secondEvaluation = Second.Execute(progress, cancellationToken);
             return firstEvaluation.Union(secondEvaluation, EntityPathEqualityComparer.Default);
         }
-
-        public bool Match(IEntity entity)
+        
+        public override bool Match(IEntity entity)
         {
-            return _first.Match(entity) || _second.Match(entity);
+            return First.Match(entity) || Second.Match(entity);
         }
     }
 
@@ -505,6 +535,8 @@ namespace Viewer.Query
 
         public string Text { get;}
         public IComparer<IEntity> Comparer { get; }
+        
+        public IEnumerable<string> Patterns => _source.Patterns;
 
         public Query(IExecutableQuery source, IComparer<IEntity> comparer, string text)
         {
@@ -517,7 +549,7 @@ namespace Viewer.Query
         {
             return Text;
         }
-        
+
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             return _source.Execute(progress, cancellationToken);

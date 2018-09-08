@@ -410,5 +410,41 @@ namespace ViewerTest.IO
             Assert.AreEqual(1, directories.Length);
             Assert.IsTrue(ArePathsEqual("a/b/b/c", directories[0]));
         }
+        
+        [TestMethod]
+        public void GetBasePatternPath_NullPath()
+        {
+            Assert.IsNull(FileFinder.GetBasePatternPath(null));
+        }
+
+        [TestMethod]
+        public void GetBasePatternPath_EmptyPath()
+        {
+            Assert.IsNull(FileFinder.GetBasePatternPath(""));
+        }
+
+        [TestMethod]
+        public void GetBasePatternPath_OneDirectory()
+        {
+            Assert.IsTrue(ArePathsEqual("dir", FileFinder.GetBasePatternPath("dir")));
+        }
+
+        [TestMethod]
+        public void GetBasePatternPath_OnePattern()
+        {
+            Assert.IsNull(FileFinder.GetBasePatternPath("d?r"));
+        }
+
+        [TestMethod]
+        public void GetBasePatternPath_MultipleDirectoriesWithoutPattern()
+        {
+            Assert.IsTrue(ArePathsEqual("a/b/c", FileFinder.GetBasePatternPath("a/b/c")));
+        }
+        
+        [TestMethod]
+        public void GetBasePatternPath_MultipleDirectoriesWithPattern()
+        {
+            Assert.IsTrue(ArePathsEqual("a/b", FileFinder.GetBasePatternPath("a/b/c*")));
+        }
     }
 }

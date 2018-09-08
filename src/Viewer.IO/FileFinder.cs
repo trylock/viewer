@@ -126,6 +126,37 @@ namespace Viewer.IO
         }
 
         /// <summary>
+        /// Get the longest prefix of path names from <paramref name="pattern"/> such that
+        /// they don't contain any special pattern characters.
+        /// </summary>
+        /// <param name="pattern">Patter whose base path you want to get</param>
+        /// <returns>
+        /// Base path of the pattern or null if <paramref name="pattern"/> is empty, null or its
+        /// first part contains special pattern characters.
+        /// </returns>
+        public static string GetBasePatternPath(string pattern)
+        {
+            if (string.IsNullOrWhiteSpace(pattern))
+                return null;
+
+            var parts = PathUtils.Split(pattern);
+            var prefixPath = "";
+            foreach (var part in parts)
+            {
+                if (IsPattern(part))
+                    break;
+                prefixPath = Path.Combine(prefixPath, part) + Path.DirectorySeparatorChar;
+            }
+
+            if (prefixPath.Length <= 0)
+            {
+                return null;
+            }
+
+            return PathUtils.NormalizePath(prefixPath);
+        }
+
+        /// <summary>
         /// Split path using directory separators and join sequence of "**" into 1 part.
         /// For example:
         /// "a/b" => "a", "b"

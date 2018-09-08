@@ -22,7 +22,7 @@ namespace Viewer.Data.Storage
     /// <summary>
     /// Attribute storage which stores attributes directly in JPEG files.
     /// </summary>
-    [Export(typeof(FileSystemAttributeStorage))]
+    [Export]
     public class FileSystemAttributeStorage : IAttributeStorage
     {
         private readonly IFileSystem _fileSystem;

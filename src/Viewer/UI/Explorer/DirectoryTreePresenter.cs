@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.Composition;
@@ -51,14 +52,127 @@ namespace Viewer.UI.Explorer
             _dialogView = dialogView;
             _explorer = explorer;
 
+            // update the view
+            UpdateRootDirectories();
+            SetCurrentQuery(_state.Current);
+
+            // subscribe to events
             SubscribeTo(View, "View");
+            _state.QueryExecuted += StateOnQueryExecuted;
         }
+        
+        public override void Dispose()
+        {
+            _state.QueryExecuted -= StateOnQueryExecuted;
+            base.Dispose();
+        }
+        
+        private void StateOnQueryExecuted(object sender, QueryEventArgs e)
+        {
+            SetCurrentQuery(e.Query);
+        }
+
+        private async void SetCurrentQuery(IQuery query)
+        {
+            Reset();
+
+            if (query == null)
+            {
+                return;
+            }
+
+            // highlight base directories of each pattern
+            foreach (var pattern in query.Patterns)
+            {
+                var basePath = FileFinder.GetBasePatternPath(pattern);
+                if (basePath == null)
+                    continue;
+
+                await OpenAsync(basePath);
+                View.HighlightDirectory(PathUtils.Split(basePath));
+            }
+        }
+
+        #region Public Interface
 
         public void UpdateRootDirectories()
         {
-            View.LoadDirectories(new string[] { }, GetRoots());
+            View.LoadDirectories(new string[] { }, GetRoots(), false);
         }
         
+        public void Reset()
+        {
+            View.ResetHighlight();
+        }
+
+        private class Folder
+        {
+            /// <summary>
+            /// Full path to the folder
+            /// </summary>
+            public string Path { get; }
+
+            /// <summary>
+            /// Subfolders
+            /// </summary>
+            public List<DirectoryView> Children { get; }
+
+            public Folder(string path, List<DirectoryView> children)
+            {
+                Path = path;
+                Children = children;
+            }
+        }
+
+        public async Task OpenAsync(string path)
+        {
+            path = Path.GetFullPath(path);
+            var parts = PathUtils.Split(path).ToArray();
+            
+            // find all subdirectories on the path
+            var subdirectories = await Task.Run(() =>
+            {
+                var folders = new List<Folder>();
+                var prefixPath = "";
+                foreach (var part in parts)
+                {
+                    // Make sure there will be a directory separator after the drive letter colon.
+                    // Otherwise, Path.Combine will produce a relative path "DriveLetter:File" which
+                    // will most probably be incorrect.
+                    prefixPath = Path.Combine(prefixPath, part) + Path.DirectorySeparatorChar;
+                    try
+                    {
+                        var children = EnumerateValidSubdirectories(prefixPath).ToList();
+                        var folder = new Folder(prefixPath, children);
+                        folders.Add(folder);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        break;
+                    }
+                    catch (SecurityException)
+                    {
+                        break;
+                    }
+                    catch (DirectoryNotFoundException)
+                    {
+                        break;
+                    }
+                }
+
+                return folders;
+            });
+            
+            // update the view
+            foreach (var folder in subdirectories)
+            {
+                var pathParts = PathUtils.Split(folder.Path);
+                View.LoadDirectories(pathParts, folder.Children, true);
+            }
+        }
+        
+        #endregion
+
         private IEnumerable<DirectoryView> GetRoots()
         {
             foreach (var drive in DriveInfo.GetDrives())
@@ -89,39 +203,43 @@ namespace Viewer.UI.Explorer
             }
         }
 
+        private IEnumerable<DirectoryView> EnumerateValidSubdirectories(string fullPath)
+        {
+            var di = new DirectoryInfo(fullPath);
+            foreach (var item in di.EnumerateDirectories())
+            {
+                if ((item.Attributes & HideFlags) != 0)
+                    continue;
+
+                // Find out if the subdirectory has any children.
+                // If user is not authorized to read this directory, don't add 
+                // the option to expand it in the view.
+                var hasChildren = false;
+                try
+                {
+                    hasChildren = item.EnumerateDirectories().Any();
+                }
+                catch (SecurityException)
+                {
+                }
+                catch (UnauthorizedAccessException)
+                {
+                }
+
+                yield return new DirectoryView
+                {
+                    UserName = item.Name,
+                    FileName = item.Name,
+                    HasChildren = hasChildren
+                };
+            }
+        }
+
         private IEnumerable<DirectoryView> GetValidSubdirectories(string fullPath)
         {
-            var result = new List<DirectoryView>();
             try
             {
-                var di = new DirectoryInfo(fullPath);
-                foreach (var item in di.EnumerateDirectories())
-                {
-                    if ((item.Attributes & HideFlags) != 0)
-                        continue;
-
-                    // Find out if the subdirectory has any children.
-                    // If user is not authorized to read this directory, don't add 
-                    // the option to expand it in the view.
-                    var hasChildren = false;
-                    try
-                    {
-                        hasChildren = item.EnumerateDirectories().Any();
-                    }
-                    catch (SecurityException)
-                    {
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                    }
-
-                    result.Add(new DirectoryView
-                    {
-                        UserName = item.Name,
-                        FileName = item.Name,
-                        HasChildren = hasChildren
-                    });
-                }
+                return EnumerateValidSubdirectories(fullPath);
             }
             catch (UnauthorizedAccessException)
             {
@@ -136,7 +254,7 @@ namespace Viewer.UI.Explorer
                 _dialogView.DirectoryNotFound(fullPath);
             }
 
-            return result;
+            return Enumerable.Empty<DirectoryView>();
         }
 
         private async void View_ExpandDirectory(object sender, DirectoryEventArgs e)
@@ -146,7 +264,7 @@ namespace Viewer.UI.Explorer
             {
                 var directories = await Task.Run(() => GetValidSubdirectories(e.FullPath));
                 var pathParts = PathUtils.Split(e.FullPath);
-                View.LoadDirectories(pathParts, directories);
+                View.LoadDirectories(pathParts, directories, false);
             }
             finally
             {
@@ -309,9 +427,7 @@ namespace Viewer.UI.Explorer
             }
 
             // update subdirectories in given path
-            View.LoadDirectories(
-                PathUtils.Split(destDir),
-                GetValidSubdirectories(destDir));
+            View_ExpandDirectory(this, new DirectoryEventArgs(destDir));
         }
     }
 }

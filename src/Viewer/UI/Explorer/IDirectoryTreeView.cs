@@ -123,8 +123,9 @@ namespace Viewer.UI.Explorer
         /// </summary>
         /// <param name="pathParts">List of directory names which composes path to a directory</param>
         /// <param name="subdirectories">Subdirectories in given directory</param>
-        void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories);
-
+        /// <param name="expand">true iff the view should expand the directory</param>
+        void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories, bool expand);
+        
         /// <summary>
         /// Remove directory from the tree.
         /// </summary>
@@ -150,6 +151,20 @@ namespace Viewer.UI.Explorer
         /// </summary>
         /// <param name="path">Path to a directory</param>
         void SelectDirectory(IEnumerable<string> path);
+
+        /// <summary>
+        /// Reset all highlighted nodes so that they are not highlighted anymore.
+        /// </summary>
+        void ResetHighlight();
+
+        /// <summary>
+        /// Highlight directory at <paramref name="path"/> in the view. Highlighting a directory
+        /// will also select its node. There can be more than 1 highlighted node at a time. See
+        /// <see cref="ResetHighlight"/> to reset highlight. Node highlighting is draw even
+        /// if the window does not have focus.
+        /// </summary>
+        /// <param name="path">Path to a directory</param>
+        void HighlightDirectory(IEnumerable<string> path);
 
         /// <summary>
         /// Make sure given directory is visible and begin editing its name.

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
 using Viewer.Core.UI;
+using Viewer.Data;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.Query;
@@ -70,7 +71,6 @@ namespace Viewer.UI.Explorer
                     _fileSystem,
                     _explorer, 
                     _clipboard);
-                _presenter.UpdateRootDirectories();
                 _presenter.View.CloseView += (sender, args) =>
                 {
                     _presenter.Dispose();

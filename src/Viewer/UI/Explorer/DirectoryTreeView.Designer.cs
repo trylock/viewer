@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DirectoryTreeView));
-            this.TreeView = new Viewer.UI.Forms.BufferedTreeView();
             this.FileContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenInFileExplorerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,34 +41,9 @@
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.NewFolderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TreeView = new Viewer.UI.Forms.BufferedTreeView();
             this.FileContextMenu.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // TreeView
-            // 
-            this.TreeView.AllowDrop = true;
-            this.TreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TreeView.ContextMenuStrip = this.FileContextMenu;
-            this.TreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TreeView.FullRowSelect = true;
-            this.TreeView.HotTracking = true;
-            this.TreeView.Indent = 10;
-            this.TreeView.ItemHeight = 24;
-            this.TreeView.LabelEdit = true;
-            this.TreeView.Location = new System.Drawing.Point(0, 0);
-            this.TreeView.Margin = new System.Windows.Forms.Padding(2);
-            this.TreeView.Name = "TreeView";
-            this.TreeView.ShowLines = false;
-            this.TreeView.Size = new System.Drawing.Size(280, 295);
-            this.TreeView.TabIndex = 0;
-            this.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
-            this.TreeView.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterExpand);
-            this.TreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
-            this.TreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
-            this.TreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
-            this.TreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
-            this.TreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
-            this.TreeView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseMove);
             // 
             // FileContextMenu
             // 
@@ -156,6 +130,34 @@
             this.NewFolderMenuItem.Size = new System.Drawing.Size(182, 22);
             this.NewFolderMenuItem.Text = "New Folder";
             this.NewFolderMenuItem.Click += new System.EventHandler(this.NewFolderMenuItem_Click);
+            // 
+            // TreeView
+            // 
+            this.TreeView.AllowDrop = true;
+            this.TreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TreeView.ContextMenuStrip = this.FileContextMenu;
+            this.TreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TreeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawAll;
+            this.TreeView.FullRowSelect = true;
+            this.TreeView.HotTracking = true;
+            this.TreeView.Indent = 10;
+            this.TreeView.ItemHeight = 24;
+            this.TreeView.LabelEdit = true;
+            this.TreeView.Location = new System.Drawing.Point(0, 0);
+            this.TreeView.Margin = new System.Windows.Forms.Padding(2);
+            this.TreeView.Name = "TreeView";
+            this.TreeView.ShowLines = false;
+            this.TreeView.Size = new System.Drawing.Size(280, 295);
+            this.TreeView.TabIndex = 0;
+            this.TreeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeView_AfterLabelEdit);
+            this.TreeView.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterExpand);
+            this.TreeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.TreeView_DrawNode);
+            this.TreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.TreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
+            this.TreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.TreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.TreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
+            this.TreeView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseMove);
             // 
             // DirectoryTreeView
             // 

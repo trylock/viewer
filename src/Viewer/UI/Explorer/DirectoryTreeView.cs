@@ -19,6 +19,16 @@ namespace Viewer.UI.Explorer
 {
     internal partial class DirectoryTreeView : WindowView, IDirectoryTreeView
     {
+        /// <summary>
+        /// Background color of a highlighted item
+        /// </summary>
+        public Color HighlightBackColor { get; set; } = Color.FromArgb(240, 240, 240);
+        
+        /// <summary>
+        /// Text color of a highlighted item
+        /// </summary>
+        public Color HighlightForeColor { get; set; } = Color.Black;
+
         public DirectoryTreeView()
         {
             InitializeComponent();
@@ -32,6 +42,31 @@ namespace Viewer.UI.Explorer
             TreeView.ItemHeight = TreeView.Font.Height + 12;
         }
         
+        private class NodeState
+        {
+            /// <summary>
+            /// true iff this node should be drawn highlighted
+            /// </summary>
+            public bool IsHighlighted { get; set; }
+
+            /// <summary>
+            /// If true, the next expand event won't trigger the
+            /// <see cref="ExpandDirectory"/> event. 
+            /// </summary>
+            public bool SuppressNextExpandEvent { get; set; }
+        }
+
+        private NodeState GetNodeState(TreeNode node)
+        {
+            if (!(node.Tag is NodeState state))
+            {
+                state = new NodeState();
+                node.Tag = state;
+            }
+
+            return state;
+        }
+
         #region View interface
 
         public event EventHandler<DirectoryEventArgs> OpenDirectory;
@@ -44,26 +79,66 @@ namespace Viewer.UI.Explorer
         public event EventHandler<PasteEventArgs> PasteToDirectory;
         public event EventHandler<DirectoryEventArgs> PasteClipboardToDirectory;
         
-        public void LoadDirectories(IEnumerable<string> pathParts, IEnumerable<DirectoryView> subdirectories)
+        public void LoadDirectories(
+            IEnumerable<string> pathParts, 
+            IEnumerable<DirectoryView> subdirectories, 
+            bool expand)
         {
             var result = FindNode(pathParts);
             if (!result.IsFound)
             {
                 return;
             }
-
-            TreeView.BeginUpdate();
-            result.Children.Clear();
-            foreach (var dir in subdirectories)
+            
+            // We don't want to update the directory nodes if they are already up to date. This
+            // reduces flickering as we don't have to redraw the whole tree just to update a leaf
+            // node.
+            var addedDirectoryNames = subdirectories.Select(view => view.FileName);
+            var currentDirectoryNames = result.Children.OfType<TreeNode>().Select(node => node.Name);
+            var addedDirectoryNamesSet = new HashSet<string>(
+                addedDirectoryNames, 
+                StringComparer.CurrentCultureIgnoreCase);
+            if (!addedDirectoryNamesSet.SetEquals(currentDirectoryNames))
             {
-                var node = result.Children.Add(dir.FileName, dir.UserName);
-                if (dir.HasChildren)
+                // update node children such that node state is preserved
+                var selectedNode = TreeView.SelectedNode;
+                var nodes = new Dictionary<string, TreeNode>(StringComparer.CurrentCultureIgnoreCase);
+                foreach (TreeNode node in result.Children)
                 {
-                    // add dummy child node so that the user is able to expand this node
-                    node.Nodes.Add("", "");
+                    nodes[node.Name] = node;
                 }
+
+                TreeView.BeginUpdate();
+                result.Children.Clear();
+                foreach (var dir in subdirectories)
+                {
+                    if (nodes.TryGetValue(dir.FileName, out var node))
+                    {
+                        // re-insert the node
+                        result.Children.Add(node);
+                    }
+                    else
+                    {
+                        // add a new node
+                        node = result.Children.Add(dir.FileName, dir.UserName);
+                        if (dir.HasChildren)
+                        {
+                            // add dummy child node so that the user is able to expand this node
+                            node.Nodes.Add("", "");
+                        }
+                    }
+                }
+
+                TreeView.SelectedNode = selectedNode;
+                TreeView.EndUpdate();
             }
-            TreeView.EndUpdate();
+
+            // expand the node 
+            if (expand && result.Node != null)
+            {
+                GetNodeState(result.Node).SuppressNextExpandEvent = true;
+                result.Node.Expand();
+            }
         }
 
         public void RemoveDirectory(IEnumerable<string> pathParts)
@@ -93,6 +168,12 @@ namespace Viewer.UI.Explorer
             var result = FindNode(path);
             if (result.Node == null)
             {
+                // add the directory
+                if (!result.IsFound)
+                {
+                    return;
+                }
+                result.Children.Add(newDir.FileName, newDir.UserName);
                 return;
             }
 
@@ -108,6 +189,36 @@ namespace Viewer.UI.Explorer
                 return;
             }
 
+            result.Node.EnsureVisible();
+            TreeView.SelectedNode = result.Node;
+        }
+
+        public void ResetHighlight()
+        {
+            var state = new Stack<TreeNodeCollection>();
+            state.Push(TreeView.Nodes);
+            while (state.Count > 0)
+            {
+                var nodes = state.Pop();
+                foreach (TreeNode node in nodes)
+                {
+                    GetNodeState(node).IsHighlighted = false;
+                    state.Push(node.Nodes);
+                }
+            }
+
+            TreeView.Invalidate();
+        }
+
+        public void HighlightDirectory(IEnumerable<string> path)
+        {
+            var result = FindNode(path);
+            if (result.Node == null)
+            {
+                return;
+            }
+
+            GetNodeState(result.Node).IsHighlighted = true;
             result.Node.EnsureVisible();
             TreeView.SelectedNode = result.Node;
         }
@@ -172,7 +283,7 @@ namespace Viewer.UI.Explorer
                 var found = false;
                 foreach (TreeNode child in collection)
                 {
-                    if (child.Name == part)
+                    if (string.Equals(child.Name, part, StringComparison.CurrentCultureIgnoreCase))
                     {
                         collection = child.Nodes;
                         node = child;
@@ -234,7 +345,15 @@ namespace Viewer.UI.Explorer
 
         private void TreeView_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            ExpandDirectory?.Invoke(sender, new DirectoryEventArgs(GetPath(e.Node)));
+            var nodeState = GetNodeState(e.Node);
+            if (!nodeState.SuppressNextExpandEvent)
+            {
+                ExpandDirectory?.Invoke(sender, new DirectoryEventArgs(GetPath(e.Node)));
+            }
+            else
+            {
+                nodeState.SuppressNextExpandEvent = false;
+            }
         }
 
         private void TreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
@@ -313,8 +432,28 @@ namespace Viewer.UI.Explorer
             DoDragDrop(new DataObject(DataFormats.FileDrop, new[]{ path }), DragDropEffects.Copy);
         }
 
+        private void TreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
+        {
+            e.DrawDefault = true;
+
+            if (e.State != TreeNodeStates.Selected)
+            {
+                var state = GetNodeState(e.Node);
+                if (state.IsHighlighted)
+                {
+                    e.Node.BackColor = HighlightBackColor;
+                    e.Node.ForeColor = HighlightForeColor;
+                }
+                else
+                {
+                    e.Node.BackColor = TreeView.BackColor;
+                    e.Node.ForeColor = TreeView.ForeColor;
+                }
+            }
+        }
+
         #endregion
-        
+
         #region Context Menu Events
 
         private void RenameMenuItem_Click(object sender, EventArgs e)

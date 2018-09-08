@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -36,7 +36,29 @@ namespace Viewer.Core.UI
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             HandleChangeTabShortcuts(keyData);
+            HandleCloseTabShortcuts(keyData);
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void HandleCloseTabShortcuts(Keys keyData)
+        {
+            if (!keyData.HasFlag(Keys.Control) || !keyData.HasFlag(Keys.W))
+            {
+                return;
+            }
+
+            if (keyData.HasFlag(Keys.Shift)) // close all tabs in current pane
+            {
+                var windowsToClose = Pane.Contents.OfType<DockContent>().ToList();
+                foreach (var content in windowsToClose)
+                {
+                    content.Close();
+                }
+            }
+            else // close just this tab
+            {
+                Close();
+            }
         }
 
         private void HandleChangeTabShortcuts(Keys keyData)

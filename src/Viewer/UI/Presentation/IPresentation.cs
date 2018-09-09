@@ -12,13 +12,17 @@ namespace Viewer.UI.Presentation
     /// </summary>
     public interface IPresentation
     {
+        [Obsolete("Use OpenAsync. It has almost the same implementation but returns a task.")]
+        void Open(IEnumerable<IEntity> entities, int activeIndex);
+
         /// <summary>
         /// Open presentation of <paramref name="entities"/> where <paramref name="activeIndex"/>
         /// is the index of an active entity in <paramref name="entities"/>..
         /// </summary>
         /// <param name="entities">Entities in the presentation</param>
         /// <param name="activeIndex">Index of an entity to open</param>
-        void Open(IEnumerable<IEntity> entities, int activeIndex);
+        /// <remarks>Task finished when the image is loaded</remarks>
+        Task OpenAsync(IEnumerable<IEntity> entities, int activeIndex);
 
         /// <summary>
         /// Preview will only show the image if there is a presentation window opened. Moreover,
@@ -26,6 +30,7 @@ namespace Viewer.UI.Presentation
         /// </summary>
         /// <param name="entities">Entities to show in the presentation</param>
         /// <param name="activeIndex">Index of image to show</param>
-        void Preview(IEnumerable<IEntity> entities, int activeIndex);
+        /// <returns>Task finished when the image is loaded</returns>
+        Task PreviewAsync(IEnumerable<IEntity> entities, int activeIndex);
     }
 }

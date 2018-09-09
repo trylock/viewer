@@ -57,10 +57,11 @@ namespace Viewer.UI.Presentation
             View.Picture?.Dispose();
             View.Picture = null; // make sure no code can access the disposed image
             _images?.Dispose();
+            _images = null;
             base.Dispose();
         }
-
-        public async void ShowEntity(IEnumerable<IEntity> entities, int index)
+        
+        public async Task ShowEntityAsync(IEnumerable<IEntity> entities, int index)
         {
             _entities = entities.ToArray();
             if (index < 0)
@@ -71,6 +72,7 @@ namespace Viewer.UI.Presentation
             _images?.Dispose();
             _images = new ImageWindow(_imageLoader, _entities, 3);
             _images.SetPosition(index);
+
             await LoadCurrentEntityAsync();
         }
         

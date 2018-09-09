@@ -483,7 +483,7 @@ namespace Viewer.UI.Images
             }
         }
 
-        private void View_ItemClick(object sender, EntityEventArgs e)
+        private async void View_ItemClick(object sender, EntityEventArgs e)
         {
             if (!(e.Entity.Data is FileEntity fileEntity))
             {
@@ -492,10 +492,10 @@ namespace Viewer.UI.Images
 
             var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
             var index = items.IndexOf(fileEntity);
-            _presentation.Preview(items, index);
+            await _presentation.PreviewAsync(items, index);
         }
 
-        private void View_OpenItem(object sender, EntityEventArgs e)
+        private async void View_OpenItem(object sender, EntityEventArgs e)
         {
             if (!_rectangleSelection.Any())
             {
@@ -506,7 +506,7 @@ namespace Viewer.UI.Images
             {
                 var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
                 var index = items.IndexOf(fileEntity);
-                _presentation.Open(items, index < 0 ? 0 : index);
+                await _presentation.OpenAsync(items, index < 0 ? 0 : index);
             }
             else
             {

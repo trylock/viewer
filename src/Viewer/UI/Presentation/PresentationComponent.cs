@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
@@ -64,8 +65,8 @@ namespace Viewer.UI.Presentation
             };
             return _presenter;
         }
-
-        private void ShowPresentation(IEnumerable<IEntity> entities, int index)
+        
+        private async Task ShowPresentationAsync(IEnumerable<IEntity> entities, int index)
         {
             if (_presenter == null)
             {
@@ -76,17 +77,25 @@ namespace Viewer.UI.Presentation
             {
                 _presenter.View.EnsureVisible();
             }
-            _presenter.ShowEntity(entities, index);
+            await _presenter.ShowEntityAsync(entities, index);
+        }
+        
+        public async void Open(IEnumerable<IEntity> entities, int activeIndex)
+        {
+            await OpenAsync(entities, activeIndex);
         }
 
-        public void Open(IEnumerable<IEntity> entities, int activeIndex)
+        public async Task OpenAsync(IEnumerable<IEntity> entities, int activeIndex)
         {
-            ShowPresentation(entities, activeIndex);
+            await ShowPresentationAsync(entities, activeIndex);
         }
 
-        public void Preview(IEnumerable<IEntity> entities, int activeIndex)
+        public async Task PreviewAsync(IEnumerable<IEntity> entities, int activeIndex)
         {
-            _presenter?.ShowEntity(entities, activeIndex);
+            if (_presenter != null)
+            {
+                await _presenter.ShowEntityAsync(entities, activeIndex);
+            }
         }
     }
 }

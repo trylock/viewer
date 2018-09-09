@@ -71,6 +71,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExecutionContext.cs" />
+    <Compile Include="QueryExpression\BinaryQueryOperator.cs" />
+    <Compile Include="QueryExpression\ExceptQuery.cs" />
+    <Compile Include="QueryExpression\IntersectQuery.cs" />
+    <Compile Include="QueryExpression\OrderedQuery.cs" />
+    <Compile Include="QueryExpression\QueryViewQuery.cs" />
+    <Compile Include="QueryExpression\SelectQuery.cs" />
+    <Compile Include="QueryExpression\UnionQuery.cs" />
+    <Compile Include="QueryExpression\WhereQuery.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="IQueryErrorListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

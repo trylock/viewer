@@ -145,6 +145,9 @@
     <Compile Include="QueryRuntime\DateTimeFunctionTest.cs" />
     <Compile Include="QueryRuntime\IntValueDivisionFunctionTest.cs" />
     <Compile Include="Query\QueryCompilerTest.cs" />
+    <Compile Include="Query\QueryExpression\OrderedQueryTest.cs" />
+    <Compile Include="Query\QueryExpression\SelectQueryTest.cs" />
+    <Compile Include="Query\QueryExpression\WhereQueryTest.cs" />
     <Compile Include="Query\QueryTest.cs" />
     <Compile Include="Query\RuntimeTest.cs" />
     <Compile Include="Query\ValueConverterTest.cs" />

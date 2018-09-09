@@ -51,6 +51,12 @@ namespace Viewer.Query
         public IQuery Query { get; set; }
 
         /// <summary>
+        /// Textual representation of this part of the query. It can be null. Only some rules
+        /// provide a textual representation.
+        /// </summary>
+        public string Text { get; set; }
+
+        /// <summary>
         /// Value getter for construction of a comparer
         /// </summary>
         public SortParameter Order { get; set; }
@@ -186,8 +192,11 @@ namespace Viewer.Query
             var orderBy = context.optionalOrderBy();
             if (orderBy != null)
             {
-                var comparer = context.optionalOrderBy().Accept(this).Comparer;
-                query = query.WithComparer(comparer);
+                var result = context.optionalOrderBy().Accept(this);
+                if (result != null)
+                {
+                    query = query.WithComparer(result.Comparer, result.Text);
+                }
             }
 
             return new CompilationResult{ Query = query };
@@ -199,17 +208,23 @@ namespace Viewer.Query
             var optionalWhere = context.optionalWhere();
 
             // visit children
-            var query = source.Accept(this).Query;
-            var optionalWhereResult = optionalWhere.Accept(this).Value;
+            var sourceResult = source.Accept(this);
+            var optionalWhereResult = optionalWhere.Accept(this);
+            if (optionalWhereResult == null)
+            {
+                return sourceResult; // the query does not have a WHERE part
+            }
 
             // compile the where condition
             var filter = Expression.Lambda<Func<IEntity, bool>>(
-                optionalWhereResult,
+                optionalWhereResult.Value,
                 _entityParameter
             );
             var entityPredicate = filter.Compile();
-
-            return new CompilationResult{ Query = query.Where(entityPredicate) };
+            return new CompilationResult
+            {
+                Query = sourceResult.Query.Where(entityPredicate, optionalWhereResult.Text)
+            };
         }
 
         public CompilationResult VisitSource(QueryParser.SourceContext context)
@@ -233,7 +248,11 @@ namespace Viewer.Query
                     // compilation of the subquery failed
                     throw new ParseCanceledException();
                 }
-                return new CompilationResult{ Query = query };
+
+                return new CompilationResult
+                {
+                    Query = query.View(view.Name)
+                };
             }
             
             // set path pattern
@@ -259,13 +278,17 @@ namespace Viewer.Query
             var condition = context.predicate();
             if (condition == null)
             {
-                return new CompilationResult{ Value = Expression.Constant(true) };
+                return null;
             }
 
             var predicate = condition.Accept(this).Value;
             return new CompilationResult
             {
-                Value = Expression.Not(Expression.Property(predicate, "IsNull"))
+                Value = Expression.Not(Expression.Property(predicate, "IsNull")),
+                Text = condition.Start.InputStream.GetText(new Interval(
+                    condition.Start.StartIndex,
+                    condition.Stop.StopIndex
+                ))
             };
         }
 
@@ -276,11 +299,8 @@ namespace Viewer.Query
             {
                 return orderByList.Accept(this);
             }
-            
-            return new CompilationResult
-            {
-                Comparer = new EntityComparer()
-            };
+
+            return null;
         }
 
         public CompilationResult VisitOrderByList(QueryParser.OrderByListContext context)
@@ -294,7 +314,11 @@ namespace Viewer.Query
 
             return new CompilationResult
             {
-                Comparer = new EntityComparer(orderByList)
+                Comparer = new EntityComparer(orderByList),
+                Text = context.Start.InputStream.GetText(new Interval(
+                    context.Start.StartIndex,
+                    context.Stop.StopIndex
+                ))
             };
         }
 
@@ -649,7 +673,6 @@ namespace Viewer.Query
                 var query = parser.entry();
                 var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, queryErrorListener);
                 result = compiler.Compile(query);
-                result = result.WithText(input.ToString());
             }
             catch (ParseCanceledException)
             {

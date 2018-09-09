@@ -17,12 +17,23 @@ using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.Data.Storage;
 using Viewer.IO;
-using Path = System.IO.Path;
+using Viewer.Query.QueryExpression;
 
 namespace Viewer.Query
 {
     public interface IExecutableQuery
     {
+        /// <summary>
+        /// Textual representation of the query. It can be null if this query does not have
+        /// a textual representation.
+        /// </summary>
+        string Text { get; }
+
+        /// <summary>
+        /// Comparer which defines order of the result of this query
+        /// </summary>
+        IComparer<IEntity> Comparer { get; }
+
         /// <summary>
         /// Path patterns to directories searched by this query
         /// </summary>
@@ -40,7 +51,9 @@ namespace Viewer.Query
         /// Cancellation token used to cancel the execution.
         /// </param>
         /// <returns>Matched entities.</returns>
-        IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken);
+        IEnumerable<IEntity> Execute(
+            IProgress<QueryProgressReport> progress, 
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Check whether <paramref name="entity"/> matches the query (i.e., it sould be in the query result)
@@ -59,35 +72,20 @@ namespace Viewer.Query
     public interface IQuery : IExecutableQuery
     {
         /// <summary>
-        /// Textual representation of the query
-        /// </summary>
-        string Text { get; }
-
-        /// <summary>
-        /// Current comparer to sort the query result
-        /// </summary>
-        IComparer<IEntity> Comparer { get; }
-
-        /// <summary>
         /// Set comparer to order the query result
         /// </summary>
         /// <param name="comparer"></param>
+        /// <param name="comparerText">Textual representation of the comparer</param>
         /// <returns></returns>
-        IQuery WithComparer(IComparer<IEntity> comparer);
-
-        /// <summary>
-        /// Create the same query with different textual representation
-        /// </summary>
-        /// <param name="text">Textual representation of this query</param>
-        /// <returns>New query with new textual representation</returns>
-        IQuery WithText(string text);
-
+        IQuery WithComparer(IComparer<IEntity> comparer, string comparerText);
+        
         /// <summary>
         /// Only include entities in the result if <paramref name="predicate"/> returns true
         /// </summary>
         /// <param name="predicate"></param>
+        /// <param name="predicateText">Textual representation of <paramref name="predicate"/></param>
         /// <returns></returns>
-        IQuery Where(Func<IEntity, bool> predicate);
+        IQuery Where(Func<IEntity, bool> predicate, string predicateText);
 
         /// <summary>
         /// Compue set minus on this query and <paramref name="entities"/>
@@ -109,6 +107,13 @@ namespace Viewer.Query
         /// <param name="entities"></param>
         /// <returns>New query</returns>
         IQuery Intersect(IExecutableQuery entities);
+
+        /// <summary>
+        /// Make this query a view query (i.e., query in the form: SELECT queryViewName)
+        /// </summary>
+        /// <param name="queryViewName">Query view name of this query</param>
+        /// <returns></returns>
+        IQuery View(string queryViewName);
     }
     
     public interface IQueryFactory
@@ -134,6 +139,8 @@ namespace Viewer.Query
     {
         public static EmptyQuery Default { get; } = new EmptyQuery();
 
+        public string Text => null;
+        public IComparer<IEntity> Comparer => EntityComparer.Default;
         public IEnumerable<string> Patterns => Enumerable.Empty<string>();
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
@@ -156,6 +163,8 @@ namespace Viewer.Query
     {
         private readonly IEnumerable<IEntity> _entities;
 
+        public string Text => null;
+        public IComparer<IEntity> Comparer => EntityComparer.Default;
         public IEnumerable<string> Patterns => Enumerable.Empty<string>();
 
         /// <summary>
@@ -186,363 +195,19 @@ namespace Viewer.Query
         }
     }
 
-    internal class SelectQuery : IExecutableQuery
-    {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public IEnumerable<string> Patterns
-        {
-            get
-            {
-                yield return _fileFinder.Pattern;
-            }
-        }
-
-        private readonly IFileSystem _fileSystem;
-        private readonly IEntityManager _entities;
-        private readonly FileFinder _fileFinder;
-        private readonly FileAttributes _hiddenFlags;
-
-        public SelectQuery(IFileSystem fileSystem, IEntityManager entities, string pattern, FileAttributes hiddenFlags)
-        {
-            _fileFinder = new FileFinder(fileSystem, pattern ?? "");
-            _fileSystem = fileSystem;
-            _entities = entities;
-            _hiddenFlags = hiddenFlags;
-        }
-
-        public IEnumerable<IEntity> Execute(
-            IProgress<QueryProgressReport> progress, 
-            CancellationToken cancellationToken)
-        {
-            progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
-            
-            foreach (var file in EnumeratePaths(cancellationToken))
-            {
-                progress.Report(new QueryProgressReport(ReportType.BeginLoading, file.Path));
-                IEntity entity;
-                if (file.IsFile)
-                {
-                    entity = LoadEntity(file.Path);
-                }
-                else
-                {
-                    entity = new DirectoryEntity(file.Path);
-                }
-
-                progress.Report(new QueryProgressReport(ReportType.EndLoading, file.Path));
-
-                if (entity != null)
-                {
-                    yield return entity;
-                }
-            }
-            
-            progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
-        }
-
-        private IEnumerable<(string Path, bool IsFile)> EnumeratePaths(CancellationToken token)
-        {
-            foreach (var dir in EnumerateDirectories())
-            {
-                token.ThrowIfCancellationRequested();
-
-                foreach (var file in EnumerateFiles(dir))
-                {
-                    token.ThrowIfCancellationRequested();
-
-                    // load jpeg files only
-                    var extension = Path.GetExtension(file)?.ToLowerInvariant();
-                    if (extension != ".jpg" && extension != ".jpeg")
-                    {
-                        continue;
-                    }
-
-                    // skip files with hidden attributes
-                    if (IsHidden(file))
-                        continue;
-
-                    yield return (file, true);
-                }
-
-                foreach (var directory in EnumerateDirectories(dir))
-                {
-                    token.ThrowIfCancellationRequested();
-
-                    // skip files with hidden attributes
-                    if (IsHidden(directory))
-                        continue;
-
-                    yield return (directory, false);
-                }
-            }
-        }
-
-        public bool Match(IEntity entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            if (IsHidden(entity.Path))
-                return false;
-
-            // the entity is in this query iff its parent diretory matches the path pattern
-            var parentPath = PathUtils.GetDirectoryPath(entity.Path);
-            return _fileFinder.Match(parentPath);
-        }
-
-        private bool IsHidden(string path)
-        {
-            try
-            {
-                return (_fileSystem.GetAttributes(path) & _hiddenFlags) != 0;
-            }
-            catch (FileNotFoundException e)
-            {
-                // this is fine, just don't load the file
-                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern); 
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                // this is fine, just don't load the file
-                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern); 
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (SecurityException e)
-            {
-                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (IOException e)
-            {
-                // If the file is being used by another process, skip it.
-                Logger.Warn(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-
-            return true;
-        }
-
-        private IEnumerable<string> EnumerateFiles(string path)
-        {
-            try
-            {
-                return _fileSystem.EnumerateFiles(path);
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (ArgumentException e)
-            {
-                // this should not happen as we have checked the path pattern during query compilation
-                Logger.Error(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (SecurityException e)
-            {
-                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            return Enumerable.Empty<string>();
-        }
-
-        private IEnumerable<string> EnumerateDirectories(string path)
-        {
-            try
-            {
-                return _fileSystem.EnumerateDirectories(path);
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                Logger.Trace(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (ArgumentException e)
-            {
-                // this should not happen as we have checked the path pattern during query compilation
-                Logger.Error(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (SecurityException e)
-            {
-                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            return Enumerable.Empty<string>();
-        }
-
-        private IEntity LoadEntity(string path)
-        {
-            try
-            {
-                return _entities.GetEntity(path);
-            }
-            catch (InvalidDataFormatException e)
-            {
-                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (PathTooLongException e)
-            {
-                Logger.Debug(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (ArgumentException e)
-            {
-                Logger.Error(e, "SELECT \"{0}\"", _fileFinder.Pattern);
-            }
-            catch (IOException e)
-            {
-                Logger.Debug(e);
-            }
-            catch (Exception e) when (e.GetType() == typeof(UnauthorizedAccessException) || 
-                                      e.GetType() == typeof(SecurityException))
-            {
-                // skip these 
-            }
-
-            return null;
-        }
-        
-        private IEnumerable<string> EnumerateDirectories()
-        {
-            return _fileFinder.GetDirectories();
-        }
-    }
-
-    internal class FilteredQuery : IExecutableQuery
-    {
-        private readonly IExecutableQuery _source;
-        private readonly Func<IEntity, bool> _predicate;
-
-        public IEnumerable<string> Patterns => _source.Patterns;
-
-        public FilteredQuery(IExecutableQuery source, Func<IEntity, bool> predicate)
-        {
-            _source = source;
-            _predicate = predicate;
-        }
-
-        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
-        {
-            return _source.Execute(progress, cancellationToken).Where(_predicate);
-        }
-
-        public bool Match(IEntity entity)
-        {
-            return _source.Match(entity) && _predicate(entity);
-        }
-    }
-
-    internal abstract class BinaryOperatorQuery : IExecutableQuery
-    {
-        protected readonly IExecutableQuery First;
-        protected readonly IExecutableQuery Second;
-
-        protected BinaryOperatorQuery(IExecutableQuery first, IExecutableQuery second)
-        {
-            First = first;
-            Second = second;
-        }
-
-        public IEnumerable<string> Patterns => First.Patterns.Concat(Second.Patterns);
-
-        public abstract IEnumerable<IEntity> Execute(
-            IProgress<QueryProgressReport> progress,
-            CancellationToken cancellationToken);
-
-        public abstract bool Match(IEntity entity);
-    }
-
-    internal class ExceptQuery : BinaryOperatorQuery
-    {
-        public ExceptQuery(IExecutableQuery first, IExecutableQuery second) : base(first, second)
-        {
-        }
-
-        public override IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
-        {
-            var firstEvaluation = First.Execute(progress, cancellationToken);
-            foreach (var item in firstEvaluation)
-            {
-                if (!Second.Match(item))
-                    yield return item;
-            }
-        }
-
-        public override bool Match(IEntity entity)
-        {
-            return First.Match(entity) && !Second.Match(entity);
-        }
-    }
-
-    internal class IntersectQuery : BinaryOperatorQuery
-    {
-        public IntersectQuery(IExecutableQuery first, IExecutableQuery second) : base(first, second)
-        {
-        }
-
-        public override IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
-        {
-            var visited = new HashSet<IEntity>(EntityPathEqualityComparer.Default);
-            var firstEvaluation = First.Execute(progress, cancellationToken);
-            foreach (var item in firstEvaluation)
-            {
-                visited.Add(item);
-                if (Second.Match(item))
-                    yield return item;
-            }
-
-            var secondEvaluation = Second.Execute(progress, cancellationToken);
-            foreach (var item in secondEvaluation)
-            {
-                if (!visited.Contains(item) && First.Match(item))
-                    yield return item;
-            }
-        }
-
-        public override bool Match(IEntity entity)
-        {
-            return First.Match(entity) && Second.Match(entity);
-        }
-    }
-
-    internal class UnionQuery : BinaryOperatorQuery
-    {
-        public UnionQuery(IExecutableQuery first, IExecutableQuery second) : base(first, second)
-        {
-        }
-
-        public override IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
-        {
-            var firstEvaluation = First.Execute(progress, cancellationToken);
-            var secondEvaluation = Second.Execute(progress, cancellationToken);
-            return firstEvaluation.Union(secondEvaluation, EntityPathEqualityComparer.Default);
-        }
-        
-        public override bool Match(IEntity entity)
-        {
-            return First.Match(entity) || Second.Match(entity);
-        }
-    }
-
     internal class Query : IQuery
     {
         private readonly IExecutableQuery _source;
 
-        public string Text { get;}
-        public IComparer<IEntity> Comparer { get; }
+        public string Text => _source.Text;
+
+        public IComparer<IEntity> Comparer => _source.Comparer;
         
         public IEnumerable<string> Patterns => _source.Patterns;
 
-        public Query(IExecutableQuery source, IComparer<IEntity> comparer, string text)
+        public Query(IExecutableQuery source)
         {
             _source = source;
-            Text = text;
-            Comparer = comparer;
         }
         
         public override string ToString()
@@ -560,34 +225,34 @@ namespace Viewer.Query
             return _source.Match(entity);
         }
 
-        public IQuery WithComparer(IComparer<IEntity> comparer)
+        public IQuery WithComparer(IComparer<IEntity> comparer, string comparerText)
         {
-            return new Query(_source, comparer, Text);
+            return new Query(new OrderedQuery(_source, comparer, comparerText));
         }
 
-        public IQuery WithText(string text)
+        public IQuery Where(Func<IEntity, bool> predicate, string predicateText)
         {
-            return new Query(_source, Comparer, text);
-        }
-
-        public IQuery Where(Func<IEntity, bool> predicate)
-        {
-            return new Query(new FilteredQuery(_source, predicate), Comparer, Text);
+            return new Query(new WhereQuery(_source, predicate, predicateText));
         }
 
         public IQuery Except(IExecutableQuery entities)
         {
-            return new Query(new ExceptQuery(_source, entities), Comparer, Text);
+            return new Query(new ExceptQuery(_source, entities));
         }
 
         public IQuery Union(IExecutableQuery entities)
         {
-            return new Query(new UnionQuery(_source, entities), Comparer, Text);
+            return new Query(new UnionQuery(_source, entities));
         }
 
         public IQuery Intersect(IExecutableQuery entities)
         {
-            return new Query(new IntersectQuery(_source, entities), Comparer, Text);
+            return new Query(new IntersectQuery(_source, entities));
+        }
+
+        public IQuery View(string queryViewName)
+        {
+            return new Query(new QueryViewQuery(_source, queryViewName));
         }
     }
     
@@ -608,15 +273,17 @@ namespace Viewer.Query
 
         public IQuery CreateQuery()
         {
-            return new Query(EmptyQuery.Default, EntityComparer.Default, "");
+            return new Query(EmptyQuery.Default);
         }
 
         public IQuery CreateQuery(string pattern)
         {
-            return new Query(
-                new SelectQuery(_fileSystem, _entities, pattern, FileAttributes.System | FileAttributes.Temporary), 
-                EntityComparer.Default, 
-                "select \"" + pattern + "\"");
+            return new Query(new SelectQuery(
+                _fileSystem, 
+                _entities, 
+                pattern, 
+                FileAttributes.System | FileAttributes.Temporary
+            ));
         }
     }
 }

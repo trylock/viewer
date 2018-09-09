@@ -40,6 +40,7 @@
             this.PreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.PasteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -51,7 +52,6 @@
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.StatusLabel = new System.Windows.Forms.Label();
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.PasteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,7 +86,7 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 270);
+            this.ItemContextMenu.Size = new System.Drawing.Size(181, 248);
             // 
             // OpenMenuItem
             // 
@@ -141,6 +141,14 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
+            // PasteMenuItem
+            // 
+            this.PasteMenuItem.Name = "PasteMenuItem";
+            this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.PasteMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.PasteMenuItem.Text = "Paste";
+            this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
+            // 
             // CopyMenuItem
             // 
             this.CopyMenuItem.Name = "CopyMenuItem";
@@ -194,22 +202,14 @@
             this.StatusLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.StatusLabel.Location = new System.Drawing.Point(247, 170);
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(113, 25);
+            this.StatusLabel.Size = new System.Drawing.Size(72, 25);
             this.StatusLabel.TabIndex = 1;
-            this.StatusLabel.Text = "Loading ...";
+            this.StatusLabel.Text = "Empty";
             // 
             // PickDirectoryContextMenu
             // 
             this.PickDirectoryContextMenu.Name = "PickDirectoryContextMenu";
             this.PickDirectoryContextMenu.Size = new System.Drawing.Size(61, 4);
-            // 
-            // PasteMenuItem
-            // 
-            this.PasteMenuItem.Name = "PasteMenuItem";
-            this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.PasteMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.PasteMenuItem.Text = "Paste";
-            this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
             // 
             // ImagesView
             // 

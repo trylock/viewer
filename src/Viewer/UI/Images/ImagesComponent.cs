@@ -78,15 +78,14 @@ namespace Viewer.UI.Images
                 : "";
         }
 
-        private void StateOnQueryExecuted(object sender, QueryEventArgs e)
+        private async void StateOnQueryExecuted(object sender, QueryEventArgs e)
         {
             var images = GetImages();
-            images.LoadQueryAsync(e.Query);
-
             if (!_dontShowImagesWindow)
             {
                 images.View.Show(Application.Panel, DockState.Document);
             }
+            await images.LoadQueryAsync(e.Query);
         }
 
         public override void OnStartup(IViewerApplication app)
@@ -120,7 +119,6 @@ namespace Viewer.UI.Images
                 if (parts.Length == 1)
                 {
                     var images = GetImages();
-                    images.LoadQueryAsync(_queryFactory.CreateQuery());
                     return images.View;
                 }
                 else if (parts.Length == 2)

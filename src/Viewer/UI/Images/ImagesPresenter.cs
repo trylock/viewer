@@ -179,7 +179,7 @@ namespace Viewer.UI.Images
         /// Execute given query and show all entities in the result.
         /// </summary>
         /// <param name="query">Query to show</param>
-        public async void LoadQueryAsync(IQuery query)
+        public async Task LoadQueryAsync(IQuery query)
         {
             // release all resources used by the previous query
             DisposeQuery();

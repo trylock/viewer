@@ -52,6 +52,7 @@
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.StatusLabel = new System.Windows.Forms.Label();
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.UpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,6 +77,7 @@
             this.RefreshMenuItem,
             this.ShowQueryMenuItem,
             this.toolStripSeparator4,
+            this.UpMenuItem,
             this.PreviousMenuItem,
             this.NextMenuItem,
             this.toolStripSeparator1,
@@ -86,7 +88,7 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 248);
+            this.ItemContextMenu.Size = new System.Drawing.Size(181, 292);
             // 
             // OpenMenuItem
             // 
@@ -211,6 +213,14 @@
             this.PickDirectoryContextMenu.Name = "PickDirectoryContextMenu";
             this.PickDirectoryContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
+            // UpMenuItem
+            // 
+            this.UpMenuItem.Name = "UpMenuItem";
+            this.UpMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Up)));
+            this.UpMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.UpMenuItem.Text = "Up";
+            this.UpMenuItem.Click += new System.EventHandler(this.UpMenuItem_Click);
+            // 
             // ImagesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -253,5 +263,6 @@
         private System.Windows.Forms.ToolStripMenuItem ShowQueryMenuItem;
         private System.Windows.Forms.ContextMenuStrip PickDirectoryContextMenu;
         private System.Windows.Forms.ToolStripMenuItem PasteMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem UpMenuItem;
     }
 }

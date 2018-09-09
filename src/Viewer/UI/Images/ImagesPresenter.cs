@@ -540,6 +540,39 @@ namespace Viewer.UI.Images
             _state.Forward();
         }
 
+        private void View_GoUp(object sender, EventArgs e)
+        {
+            var query = _state.Current;
+            if (query == null)
+            {
+                return;
+            }
+
+            // build the parent folder query
+            IQuery nextQuery = null;
+            foreach (var pattern in query.Patterns)
+            {
+                var parentPattern = Path.Combine(pattern, "..");
+                var parentQuery = _queryFactory.CreateQuery(parentPattern);
+                if (nextQuery == null)
+                {
+                    nextQuery = parentQuery;
+                }
+                else
+                {
+                    nextQuery = nextQuery.Union(parentQuery);
+                }
+            }
+
+            if (nextQuery == null)
+            {
+                return;
+            }
+
+            // execute it
+            _state.ExecuteQuery(nextQuery);
+        }
+
         private IReadOnlyCollection<string> FindAllFolders()
         {
             return View.Items

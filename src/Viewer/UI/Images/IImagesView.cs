@@ -269,6 +269,11 @@ namespace Viewer.UI.Images
         event EventHandler ShowQuery;
 
         /// <summary>
+        /// Event occurs when user tries to go to the parent folder
+        /// </summary>
+        event EventHandler GoUp;
+
+        /// <summary>
         /// Textual representation of the query of this component
         /// </summary>
         string Query { get; set; }

@@ -114,6 +114,13 @@ namespace Viewer.Query
         /// <param name="queryViewName">Query view name of this query</param>
         /// <returns></returns>
         IQuery View(string queryViewName);
+
+        /// <summary>
+        /// Copy this query but set a new textual representation.
+        /// </summary>
+        /// <param name="text">New textual representation of this query</param>
+        /// <returns>Copy of this query with a new textual representation</returns>
+        IQuery WithText(string text);
     }
     
     public interface IQueryFactory
@@ -198,16 +205,22 @@ namespace Viewer.Query
     internal class Query : IQuery
     {
         private readonly IExecutableQuery _source;
+        private readonly string _text;
 
-        public string Text => _source.Text;
+        public string Text => _text ?? _source.Text;
 
         public IComparer<IEntity> Comparer => _source.Comparer;
         
         public IEnumerable<string> Patterns => _source.Patterns;
 
-        public Query(IExecutableQuery source)
+        public Query(IExecutableQuery source) : this(source, null)
+        {
+        }
+
+        public Query(IExecutableQuery source, string text)
         {
             _source = source;
+            _text = text;
         }
         
         public override string ToString()
@@ -227,32 +240,37 @@ namespace Viewer.Query
 
         public IQuery WithComparer(IComparer<IEntity> comparer, string comparerText)
         {
-            return new Query(new OrderedQuery(_source, comparer, comparerText));
+            return new Query(new OrderedQuery(_source, comparer, comparerText), _text);
         }
 
         public IQuery Where(Func<IEntity, bool> predicate, string predicateText)
         {
-            return new Query(new WhereQuery(_source, predicate, predicateText));
+            return new Query(new WhereQuery(_source, predicate, predicateText), _text);
         }
 
         public IQuery Except(IExecutableQuery entities)
         {
-            return new Query(new ExceptQuery(_source, entities));
+            return new Query(new ExceptQuery(_source, entities), _text);
         }
 
         public IQuery Union(IExecutableQuery entities)
         {
-            return new Query(new UnionQuery(_source, entities));
+            return new Query(new UnionQuery(_source, entities), _text);
         }
 
         public IQuery Intersect(IExecutableQuery entities)
         {
-            return new Query(new IntersectQuery(_source, entities));
+            return new Query(new IntersectQuery(_source, entities), _text);
         }
 
         public IQuery View(string queryViewName)
         {
-            return new Query(new QueryViewQuery(_source, queryViewName));
+            return new Query(new QueryViewQuery(_source, queryViewName), _text);
+        }
+
+        public IQuery WithText(string text)
+        {
+            return new Query(_source, text);
         }
     }
     
@@ -273,7 +291,7 @@ namespace Viewer.Query
 
         public IQuery CreateQuery()
         {
-            return new Query(EmptyQuery.Default);
+            return new Query(EmptyQuery.Default, null);
         }
 
         public IQuery CreateQuery(string pattern)
@@ -283,7 +301,7 @@ namespace Viewer.Query
                 _entities, 
                 pattern, 
                 FileAttributes.System | FileAttributes.Temporary
-            ));
+            ), null);
         }
     }
 }

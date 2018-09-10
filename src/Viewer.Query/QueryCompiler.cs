@@ -188,7 +188,7 @@ namespace Viewer.Query
             // parse unordered query
             var query = context.unorderedQuery().Accept(this).Query;
 
-            // parser ORDER BY
+            // parse ORDER BY
             var orderBy = context.optionalOrderBy();
             if (orderBy != null)
             {
@@ -673,6 +673,7 @@ namespace Viewer.Query
                 var query = parser.entry();
                 var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, queryErrorListener);
                 result = compiler.Compile(query);
+                result = result.WithText(input.ToString());
             }
             catch (ParseCanceledException)
             {

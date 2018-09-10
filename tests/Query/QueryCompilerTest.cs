@@ -26,6 +26,7 @@ namespace ViewerTest.Query
         {
             _queryViewRepository = new Mock<IQueryViewRepository>();
 
+            // setup the query mock so that all factory methods return the same query mock
             _query = new Mock<IQuery>();
             _query
                 .Setup(mock => mock.Where(It.IsAny<Func<IEntity, bool>>(), It.IsAny<string>()))
@@ -44,6 +45,9 @@ namespace ViewerTest.Query
                 .Returns(_query.Object);
             _query
                 .Setup(mock => mock.View(It.IsAny<string>()))
+                .Returns(_query.Object);
+            _query
+                .Setup(mock => mock.WithText(It.IsAny<string>()))
                 .Returns(_query.Object);
 
             _factory = new Mock<IQueryFactory>();
@@ -80,7 +84,8 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(1))))
                 .Returns(new IntValue(1));
 
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 1"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" WHERE 1 = 1";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(
@@ -89,6 +94,7 @@ namespace ViewerTest.Query
                 ), 
                 "1 = 1"
             ), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
@@ -99,7 +105,8 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(2))))
                 .Returns(new IntValue(null));
 
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 = 2"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" WHERE 1 = 2";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(
@@ -108,7 +115,7 @@ namespace ViewerTest.Query
                 ), 
                 "1 = 2"
             ), Times.Once);
-
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
         
@@ -122,7 +129,8 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(4))))
                 .Returns(new IntValue(null));
 
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test = 4"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" WHERE test = 4";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
             _query.Verify(mock => mock.Where(
@@ -133,7 +141,7 @@ namespace ViewerTest.Query
                 ), 
                 "test = 4"
             ), Times.Once);
-
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
@@ -153,9 +161,11 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", Context(new IntValue(4), new IntValue(4))))
                 .Returns(new IntValue(1));
 
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test1 = test2"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" WHERE test1 = test2";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
+
             _query.Verify(mock => mock.Where(
                 It.Is<Func<IEntity, bool>>(
                     predicate =>
@@ -170,13 +180,15 @@ namespace ViewerTest.Query
                 ), 
                 "test1 = test2"
             ), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_OrderBySimpleKey()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" ORDER BY test";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _query.Verify(mock => mock.WithComparer(
                 It.Is<IComparer<IEntity>>(comparer => 
@@ -191,13 +203,15 @@ namespace ViewerTest.Query
                 ), 
                 "test"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_OrderByComplexExpression()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test / 3 DESC"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" ORDER BY test / 3 DESC";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("/", Context(new IntValue(1), new IntValue(3))))
@@ -222,13 +236,15 @@ namespace ViewerTest.Query
                 ), 
                 "test / 3 DESC"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_OrderByMultipleExpressions()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" ORDER BY test1 / 3 DESC, test2"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" ORDER BY test1 / 3 DESC, test2";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("/", Context(new IntValue(1), new IntValue(3))))
@@ -253,13 +269,15 @@ namespace ViewerTest.Query
                 ), 
                 "test1 / 3 DESC, test2"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_CustomFunctionInvocation()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE test(1, \"value\")"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" WHERE test(1, \"value\")";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("test", Context(new IntValue(1), new StringValue("value"))))
@@ -271,6 +289,7 @@ namespace ViewerTest.Query
                 ), 
                 "test(1, \"value\")"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
 
             _query.VerifyNoOtherCalls();
         }
@@ -278,8 +297,8 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_Subquery()
         {
-            _compiler.Compile(
-                new StringReader("SELECT (SELECT \"pattern\" WHERE test = 1 ORDER BY test DESC) WHERE test2 = 2"), new NullQueryErrorListener());
+            const string queryText = "SELECT (SELECT \"pattern\" WHERE test = 1 ORDER BY test DESC) WHERE test2 = 2";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(1))))
@@ -321,13 +340,15 @@ namespace ViewerTest.Query
                 ),
                 "test DESC"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_AdditionHasLowerPrecedenceThanMultiplication()
         {
-            _compiler.Compile(new StringReader("SELECT \"pattern\" WHERE 1 + 2 * 3 = 7"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"pattern\" WHERE 1 + 2 * 3 = 7";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("+", Context(new IntValue(1), new IntValue(6))))
@@ -343,6 +364,7 @@ namespace ViewerTest.Query
                 It.Is<Func<IEntity, bool>>(predicate => predicate(new FileEntity("test"))), 
                 "1 + 2 * 3 = 7")
             );
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
@@ -365,11 +387,13 @@ namespace ViewerTest.Query
                 .Callback(() => Assert.AreEqual(2, order++))
                 .Returns(_query.Object);
 
-            _compiler.Compile(new StringReader("SELECT \"a\" UNION SELECT \"b\" INTERSECT SELECT \"c\" EXCEPT SELECT \"d\""), new NullQueryErrorListener());
+            const string queryText = "SELECT \"a\" UNION SELECT \"b\" INTERSECT SELECT \"c\" EXCEPT SELECT \"d\"";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _query.Verify(mock => mock.Union(It.IsAny<IExecutableQuery>()), Times.Once);
             _query.Verify(mock => mock.Intersect(It.IsAny<IExecutableQuery>()), Times.Once);
             _query.Verify(mock => mock.Except(It.IsAny<IExecutableQuery>()), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
@@ -397,7 +421,8 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_AttributeIdentifierWithSpecialCharacters()
         {
-            _compiler.Compile(new StringReader("SELECT \"a\" WHERE `identifier with spaces and special characters ěščřžýáíéůú`"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"a\" WHERE `identifier with spaces and special characters ěščřžýáíéůú`";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _query.Verify(mock => mock.Where(
                 It.Is<Func<IEntity, bool>>(predicate => 
@@ -407,13 +432,15 @@ namespace ViewerTest.Query
                 ),
                 "`identifier with spaces and special characters ěščřžýáíéůú`"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_KeywordsAreCaseInsensitive()
         {
-            _compiler.Compile(new StringReader("SelEcT \"a\" wHEre b ORDer bY c"), new NullQueryErrorListener());
+            const string queryText = "SelEcT \"a\" wHEre b ORDer bY c";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _factory.Verify(mock => mock.CreateQuery("a"));
 
@@ -435,13 +462,15 @@ namespace ViewerTest.Query
                 ),
                 "c"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_ExpressionWithAndOr()
         {
-            _compiler.Compile(new StringReader("SELECT \"a\" WHERE a OR b AND c"), new NullQueryErrorListener());
+            const string queryText = "SELECT \"a\" WHERE a OR b AND c";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("and", Context(new IntValue(2), new IntValue(3))))
@@ -493,13 +522,15 @@ namespace ViewerTest.Query
                 ),
                 "a OR b AND c"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_ParenthesesInLogicalExpression()
         {
-            _compiler.Compile(new StringReader("select \"a\" where (a or b) and c"), new NullQueryErrorListener());
+            const string queryText = "select \"a\" where (a or b) and c";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("and", Context(new IntValue(1), new IntValue(3))))
@@ -551,13 +582,15 @@ namespace ViewerTest.Query
                 ),
                 "(a or b) and c"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_Not()
         {
-            _compiler.Compile(new StringReader("select \"a\" where not a"), new NullQueryErrorListener());
+            const string queryText = "select \"a\" where not a";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _runtime
                 .Setup(mock => mock.FindAndCall("not", Context(new IntValue(null))))
@@ -576,13 +609,15 @@ namespace ViewerTest.Query
                 ),
                 "not a"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_LowerCaseDescOrdering()
         {
-            _compiler.Compile(new StringReader("select \"a\" order by a desc"), new NullQueryErrorListener());
+            const string queryText = "select \"a\" order by a desc";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _query.Verify(mock => mock.WithComparer(
                 It.Is<IComparer<IEntity>>(comparer =>
@@ -595,15 +630,19 @@ namespace ViewerTest.Query
                 ),
                 "a desc"
             ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]
         public void Compile_View()
         {
+            const string queryViewText = "select \"path\" where test1 = 1";
+            const string queryText = "select view where test2 = 2";
+
             _queryViewRepository
                 .Setup(mock => mock.Find("view"))
-                .Returns(new QueryView("view", "select \"path\" where test1 = 1", null));
+                .Returns(new QueryView("view", queryViewText, null));
 
             _runtime
                 .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(1))))
@@ -618,10 +657,9 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.FindAndCall("=", Context(new IntValue(1), new IntValue(1))))
                 .Returns(new IntValue(1));
 
-            _compiler.Compile(new StringReader("select view where test2 = 2"), new NullQueryErrorListener());
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
             
             _query.Verify(mock => mock.View("view"), Times.Once);
-
             _query.Verify(mock => mock.Where(
                 It.Is<Func<IEntity, bool>>(predicate =>
                     !predicate(new FileEntity("test")) &&
@@ -632,7 +670,6 @@ namespace ViewerTest.Query
                 ),
                 "test1 = 1"
             ));
-
             _query.Verify(mock => mock.Where(
                 It.Is<Func<IEntity, bool>>(predicate =>
                     !predicate(new FileEntity("test")) &&
@@ -641,6 +678,8 @@ namespace ViewerTest.Query
                 ),
                 "test2 = 2"
             ));
+            _query.Verify(mock => mock.WithText(queryViewText), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
 
@@ -651,9 +690,11 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.Union(It.IsAny<IQuery>()))
                 .Returns(_query.Object);
 
-            _compiler.Compile(new StringReader("select (select \"a\" union select \"b\")"), new NullQueryErrorListener());
+            const string queryText = "select (select \"a\" union select \"b\")";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
 
             _query.Verify(mock => mock.Union(It.IsAny<IExecutableQuery>()), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
             _factory.Verify(mock => mock.CreateQuery("a"), Times.Once);
             _factory.Verify(mock => mock.CreateQuery("b"), Times.Once);

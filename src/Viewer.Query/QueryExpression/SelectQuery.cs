@@ -48,7 +48,7 @@ namespace Viewer.Query.QueryExpression
         {
             progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
 
-            foreach (var file in EnumeratePaths(cancellationToken))
+            foreach (var file in EnumeratePaths(progress, cancellationToken))
             {
                 progress.Report(new QueryProgressReport(ReportType.BeginLoading, file.Path));
                 IEntity entity;
@@ -72,11 +72,16 @@ namespace Viewer.Query.QueryExpression
             progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
         }
 
-        private IEnumerable<(string Path, bool IsFile)> EnumeratePaths(CancellationToken token)
+        private IEnumerable<(string Path, bool IsFile)> EnumeratePaths(
+            IProgress<QueryProgressReport> progress,
+            CancellationToken token)
         {
             foreach (var dir in EnumerateDirectories())
             {
                 token.ThrowIfCancellationRequested();
+
+                // report that we have found a new folder
+                progress.Report(new QueryProgressReport(ReportType.Folder, dir));
 
                 foreach (var file in EnumerateFiles(dir))
                 {

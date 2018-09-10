@@ -28,9 +28,14 @@ namespace Viewer.Query
         EndLoading,
 
         /// <summary>
-        /// Reports taht a query execution has finished.
+        /// Reports that a query execution has finished.
         /// </summary>
-        EndExecution
+        EndExecution,
+
+        /// <summary>
+        /// Reports that a new folder has been discovered
+        /// </summary>
+        Folder,
     }
 
     /// <summary>

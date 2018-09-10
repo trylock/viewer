@@ -29,8 +29,8 @@ namespace Viewer.UI.Images
         {
             InitializeComponent();
 
-            PreviousMenuItem.ShortcutKeyDisplayString = "Alt + Right, MB4";
-            NextMenuItem.ShortcutKeyDisplayString = "Alt + Left, MB5";
+            PreviousMenuItem.ShortcutKeyDisplayString = "Alt + Left, MB4";
+            NextMenuItem.ShortcutKeyDisplayString = "Alt + Right, MB5";
 
             _gridView = new GridView
             {

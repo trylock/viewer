@@ -21,6 +21,29 @@ namespace Viewer.UI.Images
 {
     /// <inheritdoc />
     /// <summary>
+    /// This query progress starts watching changes in all query folders.
+    /// </summary>
+    internal class FolderQueryProgress : IProgress<QueryProgressReport>
+    {
+        private readonly IFileWatcher _watcher;
+
+        public FolderQueryProgress(IFileWatcher watcher)
+        {
+            _watcher = watcher ?? throw new ArgumentNullException(nameof(watcher));
+        }
+
+        public void Report(QueryProgressReport value)
+        {
+            if (value.Type == ReportType.Folder)
+            {
+                var path = PathUtils.NormalizePath(value.FilePath);
+                _watcher.Watch(path);
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    /// <summary>
     /// Query evaluator evaluates query and tries to keep it updated. It will watch entity changes
     /// in the file system and update the result accordingly.
     /// </summary>
@@ -231,6 +254,16 @@ namespace Viewer.UI.Images
         #endregion
 
         /// <summary>
+        /// Get all searched folders so far. This can be called even if the query evaluation is
+        /// in progress but in that case, only a subset of searched folders will be returned.
+        /// </summary>
+        /// <returns>All searched folders so far</returns>
+        public IEnumerable<string> GetSearchedDirectories()
+        {
+            return _fileWatcher.GetWatchedDirectories();
+        }
+
+        /// <summary>
         /// Evaluate the query on a differet thread. Found entities will be added to a waiting queue.
         /// Use <see cref="Update"/> to get all entities loaded so far.
         /// </summary>
@@ -246,35 +279,17 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Load the query synchronously. See <see cref="RunAsync"/>
+        /// Load the query synchronously. <see cref="Cancellation"/> is used for cancellation token,
+        /// <see cref="Progress"/> is used for progress. See <see cref="RunAsync"/>.
         /// </summary>
         public void Run()
         {
-            var directories = new HashSet<string>();
-            
-            foreach (var entity in Query.Execute(Progress, Cancellation.Token))
+            var progress = AggregateProgress.Create(Progress, new FolderQueryProgress(_fileWatcher));
+
+            foreach (var entity in Query.Execute(progress, Cancellation.Token))
             {
                 Cancellation.Token.ThrowIfCancellationRequested();
-
-                // if the entity is in an undiscovered directory,
-                // start watching changes in this directory
-                var parentDirectory = PathUtils.GetDirectoryPath(entity.Path);
-                if (!directories.Contains(parentDirectory))
-                {
-                    try
-                    {
-                        _fileWatcher.Watch(parentDirectory);
-                    }
-                    catch (ArgumentException)
-                    {
-                        // The path is invalid or the directory does not exist anymore.
-                        // Ignore this error, just don't watch the directory.
-                    }
-
-                    directories.Add(parentDirectory);
-                }
-
-                // add a new entity
+                
                 _added.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
             }
         }

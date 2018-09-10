@@ -575,14 +575,15 @@ namespace Viewer.UI.Images
 
         private IReadOnlyCollection<string> FindAllFolders()
         {
-            return View.Items
-                .Select(view => Path.GetDirectoryName(view.FullPath))
-                .Where(item => item != null)
-                .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                .ToList();
+            if (_queryEvaluator == null)
+            {
+                return new List<string>();
+            }
+
+            return _queryEvaluator.GetSearchedDirectories().ToList();
         }
 
-        private async void CopyMoveFilesToView(
+        private async Task CopyMoveFilesToViewAsync(
             string destinationDirectory, 
             DragDropEffects allowedEffects, 
             IEnumerable<string> files)
@@ -638,7 +639,7 @@ namespace Viewer.UI.Images
             }
         }
 
-        private void View_OnPaste(object sender, EventArgs e)
+        private async void View_OnPaste(object sender, EventArgs e)
         {
             var files = _clipboard.GetFiles();
             if (!files.Any())
@@ -646,10 +647,10 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            CopyMoveFilesToView(null, files.Effect, files);
+            await CopyMoveFilesToViewAsync(null, files.Effect, files);
         }
 
-        private void View_OnDrop(object sender, DropEventArgs e)
+        private async void View_OnDrop(object sender, DropEventArgs e)
         {
             var files = e.Data.GetData(DataFormats.FileDrop) as string[];
             if (files == null)
@@ -657,7 +658,7 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            CopyMoveFilesToView(e.Entity?.FullPath, e.AllowedEffect, files);
+            await CopyMoveFilesToViewAsync(e.Entity?.FullPath, e.AllowedEffect, files);
         }
 
         private void View_RefreshQuery(object sender, EventArgs e)

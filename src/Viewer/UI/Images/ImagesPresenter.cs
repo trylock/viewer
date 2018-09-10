@@ -79,22 +79,22 @@ namespace Viewer.UI.Images
 
         /// <summary>
         /// Get current selection strategy based on the state of modifier keys.
-        /// If a shift key is pressed, use <see cref="SelectionStrategy.Union"/>.
-        /// If a control key is pressed, use <see cref="SelectionStrategy.SymetricDifference"/>.
-        /// Otherwise, use <see cref="SelectionStrategy.Replace"/>.
+        /// If a shift key is pressed, use <see cref="UnionSelectionStrategy{T}"/>.
+        /// If a control key is pressed, use <see cref="SymetricDifferenceSelectionStrategy{T}"/>.
+        /// Otherwise, use <see cref="ReplaceSelectionStrategy{T}"/>.
         /// </summary>
-        public SelectionStrategy CurrentSelectionStrategy
+        public ISelectionStrategy<EntityView> CurrentSelectionStrategy
         {
             get
             {
-                var strategy = SelectionStrategy.Replace;
+                ISelectionStrategy<EntityView> strategy = ReplaceSelectionStrategy<EntityView>.Default;
                 if (View.ModifierKeyState.HasFlag(Keys.Shift))
                 {
-                    strategy = SelectionStrategy.Union;
+                    strategy = UnionSelectionStrategy<EntityView>.Default;
                 }
                 else if (View.ModifierKeyState.HasFlag(Keys.Control))
                 {
-                    strategy = SelectionStrategy.SymetricDifference;
+                    strategy = SymetricDifferenceSelectionStrategy<EntityView>.Default;
                 }
 
                 return strategy;
@@ -234,7 +234,7 @@ namespace Viewer.UI.Images
 
         private void ChangeSelection(IEnumerable<EntityView> newSelection)
         {
-            var changed = _rectangleSelection.Set(newSelection);
+            var changed = _rectangleSelection.Set(newSelection, View.Items);
             if (!changed)
             {
                 return;
@@ -318,7 +318,13 @@ namespace Viewer.UI.Images
 
         private void View_SelectItem(object sender, EntityEventArgs e)
         {
-            _rectangleSelection.Begin(Point.Empty, CurrentSelectionStrategy);
+            var strategy = CurrentSelectionStrategy;
+            if (View.ModifierKeyState == Keys.Shift)
+            {
+                strategy = RangeSelectionStrategy<EntityView>.Default;
+            }
+
+            _rectangleSelection.Begin(Point.Empty, strategy);
             ChangeSelection(new[] { e.Entity });
             _rectangleSelection.End();
         }

@@ -26,7 +26,7 @@ namespace ViewerTest.UI.Images
             var selection = new RectangleSelection<int>(EqualityComparer<int>.Default);
             Assert.IsFalse(selection.IsActive);
 
-            selection.Begin(new Point(1, 2), SelectionStrategy.Replace);
+            selection.Begin(new Point(1, 2), ReplaceSelectionStrategy<int>.Default);
             Assert.IsTrue(selection.IsActive);
             Assert.AreEqual(selection.StartPoint, new Point(1, 2));
             Assert.AreEqual(new Rectangle(1, 2, 2, 3), selection.GetBounds(new Point(3, 5)));
@@ -41,10 +41,10 @@ namespace ViewerTest.UI.Images
         {
             var selection = new RectangleSelection<int>(EqualityComparer<int>.Default);
 
-            selection.Begin(new Point(0, 0), SelectionStrategy.Replace);
-            var changed = selection.Set(new[] {1, 2});
+            selection.Begin(new Point(0, 0), ReplaceSelectionStrategy<int>.Default);
+            var changed = selection.Set(new[] {1, 2}, Enumerable.Range(0, 10).ToList());
             Assert.IsTrue(changed);
-            changed = selection.Set(new[] {1, 2});
+            changed = selection.Set(new[] {1, 2}, Enumerable.Range(0, 10).ToList());
             Assert.IsFalse(changed);
             CollectionAssert.AreEqual(new[]{ 1, 2 }, selection.OrderBy(item => item).ToArray());
             selection.End();

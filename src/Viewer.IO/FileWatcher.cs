@@ -14,7 +14,8 @@ namespace Viewer.IO
     /// <inheritdoc />
     /// <summary>
     /// File system watcher watches file and directory changes within specified directory.
-    /// Use the <see cref="M:Viewer.IO.IFileWatcher.Watch(System.String)" /> method to start watching a directory with this watcher.
+    /// Use the <see cref="M:Viewer.IO.IFileWatcher.Watch(System.String)" /> method to start watching
+    /// a directory with this watcher. Implementation of this interface has to be thread-safe.
     /// </summary>
     /// <see cref="FileSystemWatcher"/>
     public interface IFileWatcher : IDisposable
@@ -45,15 +46,23 @@ namespace Viewer.IO
         /// It must not be used concurrently with the Dispose method.
         /// </summary>
         /// <param name="path">Path to a directory</param>
-        /// <exception cref="ArgumentException"><paramref name="path"/> could not be found or it is invalid.</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="path"/> could not be found or it is invalid.
+        /// </exception>
         /// <exception cref="ArgumentNullException"><paramref name="path"/> is null.</exception>
         /// <exception cref="PathTooLongException"><paramref name="path"/> is too long.</exception>
         void Watch(string path);
+
+        /// <summary>
+        /// Get a list of directories that are being watched by this watcher.
+        /// </summary>
+        /// <returns>List of watched directories</returns>
+        IEnumerable<string> GetWatchedDirectories();
     }
 
     internal class FileWatcher : IFileWatcher
     {
-        private readonly ConcurrentDictionary<string, FileSystemWatcher> _watchers = new ConcurrentDictionary<string, FileSystemWatcher>();
+        private readonly ConcurrentDictionary<string, FileSystemWatcher> _watchers = new ConcurrentDictionary<string, FileSystemWatcher>(StringComparer.CurrentCultureIgnoreCase);
 
         public event FileSystemEventHandler Changed;
         public event RenamedEventHandler Renamed;
@@ -87,6 +96,11 @@ namespace Viewer.IO
             }
         }
 
+        public IEnumerable<string> GetWatchedDirectories()
+        {
+            return _watchers.Keys;
+        }
+
         private void WatcherOnRenamed(object sender, RenamedEventArgs e)
         {
             Renamed?.Invoke(sender, e);
@@ -111,11 +125,11 @@ namespace Viewer.IO
         {
             foreach (var watcher in _watchers)
             {
+                watcher.Value.EnableRaisingEvents = false;
                 watcher.Value.Changed -= WatcherOnChanged;
                 watcher.Value.Created -= WatcherOnCreated;
                 watcher.Value.Deleted -= WatcherOnDeleted;
                 watcher.Value.Renamed -= WatcherOnRenamed;
-                watcher.Value.EnableRaisingEvents = false;
                 watcher.Value.Dispose();
             }
             _watchers.Clear();

@@ -347,7 +347,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Distance in pixels after which we can begin the drag operation
         /// </summary>
-        private const int BeginDragThreshold = 10;
+        private const int BeginDragThreshold = 20;
         
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {

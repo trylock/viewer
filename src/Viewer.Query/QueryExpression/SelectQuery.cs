@@ -21,7 +21,7 @@ namespace Viewer.Query.QueryExpression
 
         public IComparer<IEntity> Comparer => EntityComparer.Default;
 
-        public IEnumerable<string> Patterns
+        public IEnumerable<PathPattern> Patterns
         {
             get
             {

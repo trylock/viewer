@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -558,8 +558,8 @@ namespace Viewer.UI.Images
             IQuery nextQuery = null;
             foreach (var pattern in query.Patterns)
             {
-                var parentPattern = Path.Combine(pattern, "..");
-                var parentQuery = _queryFactory.CreateQuery(parentPattern);
+                var parentPattern = pattern.GetParent();
+                var parentQuery = _queryFactory.CreateQuery(parentPattern.Text);
                 if (nextQuery == null)
                 {
                     nextQuery = parentQuery;

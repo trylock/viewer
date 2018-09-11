@@ -37,7 +37,7 @@ namespace Viewer.Query
         /// <summary>
         /// Path patterns to directories searched by this query
         /// </summary>
-        IEnumerable<string> Patterns { get; }
+        IEnumerable<PathPattern> Patterns { get; }
 
         /// <summary>
         /// Evaluate this query. Entities are loaded lazily as much as possible and they are not
@@ -148,7 +148,7 @@ namespace Viewer.Query
 
         public string Text => null;
         public IComparer<IEntity> Comparer => EntityComparer.Default;
-        public IEnumerable<string> Patterns => Enumerable.Empty<string>();
+        public IEnumerable<PathPattern> Patterns => Enumerable.Empty<PathPattern>();
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
@@ -172,7 +172,7 @@ namespace Viewer.Query
 
         public string Text => null;
         public IComparer<IEntity> Comparer => EntityComparer.Default;
-        public IEnumerable<string> Patterns => Enumerable.Empty<string>();
+        public IEnumerable<PathPattern> Patterns => Enumerable.Empty<PathPattern>();
 
         /// <summary>
         /// Convert a collection in memory into a query
@@ -211,7 +211,7 @@ namespace Viewer.Query
 
         public IComparer<IEntity> Comparer => _source.Comparer;
         
-        public IEnumerable<string> Patterns => _source.Patterns;
+        public IEnumerable<PathPattern> Patterns => _source.Patterns;
 
         public Query(IExecutableQuery source) : this(source, null)
         {

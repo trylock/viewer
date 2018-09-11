@@ -87,7 +87,7 @@ namespace Viewer.UI.Explorer
             // highlight base directories of each pattern
             foreach (var pattern in query.Patterns)
             {
-                var basePath = FileFinder.GetBasePatternPath(pattern);
+                var basePath = pattern.GetBasePath();
                 if (basePath == null)
                     continue;
 

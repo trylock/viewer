@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.IO;
 
 namespace Viewer.Query.QueryExpression
 {
@@ -39,7 +40,7 @@ namespace Viewer.Query.QueryExpression
 
         public IComparer<IEntity> Comparer { get; }
 
-        public IEnumerable<string> Patterns => _source.Patterns;
+        public IEnumerable<PathPattern> Patterns => _source.Patterns;
 
         public OrderedQuery(IExecutableQuery source, IComparer<IEntity> comparer, string comparerText)
         {

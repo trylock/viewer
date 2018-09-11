@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.IO;
 
 namespace Viewer.Query.QueryExpression
 {
@@ -27,7 +28,7 @@ namespace Viewer.Query.QueryExpression
             Second = second;
         }
 
-        public IEnumerable<string> Patterns => First.Patterns.Concat(Second.Patterns);
+        public IEnumerable<PathPattern> Patterns => First.Patterns.Concat(Second.Patterns);
 
         public abstract IEnumerable<IEntity> Execute(
             IProgress<QueryProgressReport> progress,

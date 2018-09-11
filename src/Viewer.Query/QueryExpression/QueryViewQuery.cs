@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.IO;
 
 namespace Viewer.Query.QueryExpression
 {
@@ -17,7 +18,7 @@ namespace Viewer.Query.QueryExpression
 
         public IComparer<IEntity> Comparer => _queryView.Comparer;
 
-        public IEnumerable<string> Patterns => _queryView.Patterns;
+        public IEnumerable<PathPattern> Patterns => _queryView.Patterns;
 
         public QueryViewQuery(IExecutableQuery queryView, string queryViewName)
         {

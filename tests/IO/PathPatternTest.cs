@@ -27,6 +27,13 @@ namespace ViewerTest.IO
         }
 
         [TestMethod]
+        public void PathPattern_NormalizeDirectorySeparators()
+        {
+            var pattern = new PathPattern("a/b\\c\\d/e\\f/g");
+            Assert.AreEqual("a/b/c/d/e/f/g", pattern.Text);
+        }
+
+        [TestMethod]
         public void Match_EmptyPattern()
         {
             var pattern = new PathPattern("");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,8 +34,8 @@ namespace Viewer.IO
             var invalidCharacters = Path.GetInvalidPathChars();
             if (pattern.IndexOfAny(invalidCharacters) >= 0)
                 throw new ArgumentException(nameof(pattern) + " contains invalid characters.");
-
-            Text = pattern;
+            
+            Text = pattern.Replace('\\', '/');
             _regex = new Lazy<Regex>(() => CompileRegex(Text));
         }
 

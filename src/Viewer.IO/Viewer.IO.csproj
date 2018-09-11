@@ -62,6 +62,7 @@
     <Compile Include="FileFinder.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="FileWatcher.cs" />
+    <Compile Include="PathPattern.cs" />
     <Compile Include="PathUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

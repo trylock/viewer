@@ -140,6 +140,7 @@
     <Compile Include="Data\Storage\SqliteAttributeStorageTest.cs" />
     <Compile Include="Data\ValueComparerTest.cs" />
     <Compile Include="IO\FileFinderTest.cs" />
+    <Compile Include="IO\PathPatternTest.cs" />
     <Compile Include="IO\PathUtilsTest.cs" />
     <Compile Include="MathUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

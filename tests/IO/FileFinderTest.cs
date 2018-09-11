@@ -499,5 +499,13 @@ namespace ViewerTest.IO
             Assert.IsTrue(ArePatternsEqual("a/**/..", FileFinder.GetParentDirectoryPattern("a/**")));
             Assert.IsTrue(ArePatternsEqual("a/**/..", FileFinder.GetParentDirectoryPattern("a\\**")));
         }
+
+        [TestMethod]
+        public void GetParentDirectoryPattern_ParrentDirectoryAtTheEnd()
+        {
+            Assert.IsTrue(ArePatternsEqual("**/../..", FileFinder.GetParentDirectoryPattern("**/..")));
+            Assert.IsTrue(ArePatternsEqual("**/../..", FileFinder.GetParentDirectoryPattern("**/../")));
+            Assert.IsTrue(ArePatternsEqual("**/../..", FileFinder.GetParentDirectoryPattern("**\\..\\")));
+        }
     }
 }

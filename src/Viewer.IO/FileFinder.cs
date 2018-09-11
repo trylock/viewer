@@ -176,12 +176,12 @@ namespace Viewer.IO
                 return null;
             }
 
-            if (parts.Count == 1 && parts[0] != "**")
+            if (parts.Count == 1 && parts[0] != "**" && parts[0] != "..")
             {
                 return parts[0];
             }
 
-            if (parts[parts.Count - 1] == "**")
+            if (parts[parts.Count - 1] == "**" || parts[parts.Count - 1] == "..")
             {
                 parts.Add("..");
             }

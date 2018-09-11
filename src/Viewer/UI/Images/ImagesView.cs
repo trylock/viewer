@@ -22,7 +22,6 @@ namespace Viewer.UI.Images
 {
     internal partial class ImagesView : WindowView, IImagesView
     {
-        private readonly GridView _gridView;
         private GridView _view;
 
         public ImagesView()
@@ -31,18 +30,9 @@ namespace Viewer.UI.Images
 
             PreviousMenuItem.ShortcutKeyDisplayString = "Alt + Left, MB4";
             NextMenuItem.ShortcutKeyDisplayString = "Alt + Right, MB5";
-
-            _gridView = new GridView
-            {
-                ContextMenuStrip = ItemContextMenu,
-                Dock = DockStyle.Fill,
-                Name = "GridView",
-                TabIndex = 1
-            };
-            RegisterView(_gridView);
-
-            _view = _gridView;
-            Controls.Add(_view);
+            
+            RegisterView(GridView);
+            _view = GridView;
 
             ViewerForm.Theme.ApplyTo(PickDirectoryContextMenu);
         }

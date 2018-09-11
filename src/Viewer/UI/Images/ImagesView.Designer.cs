@@ -37,6 +37,7 @@
             this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ShowQueryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.UpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -52,7 +53,7 @@
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.StatusLabel = new System.Windows.Forms.Label();
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.UpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.GridView = new Viewer.UI.Images.GridView();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -88,7 +89,7 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 292);
+            this.ItemContextMenu.Size = new System.Drawing.Size(181, 270);
             // 
             // OpenMenuItem
             // 
@@ -121,6 +122,14 @@
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            // 
+            // UpMenuItem
+            // 
+            this.UpMenuItem.Name = "UpMenuItem";
+            this.UpMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Up)));
+            this.UpMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.UpMenuItem.Text = "Up";
+            this.UpMenuItem.Click += new System.EventHandler(this.UpMenuItem_Click);
             // 
             // PreviousMenuItem
             // 
@@ -213,13 +222,23 @@
             this.PickDirectoryContextMenu.Name = "PickDirectoryContextMenu";
             this.PickDirectoryContextMenu.Size = new System.Drawing.Size(61, 4);
             // 
-            // UpMenuItem
+            // GridView
             // 
-            this.UpMenuItem.Name = "UpMenuItem";
-            this.UpMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Up)));
-            this.UpMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.UpMenuItem.Text = "Up";
-            this.UpMenuItem.Click += new System.EventHandler(this.UpMenuItem_Click);
+            this.GridView.AllowDrop = true;
+            this.GridView.AutoScroll = true;
+            this.GridView.ContextMenuStrip = this.ItemContextMenu;
+            this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GridView.ItemPadding = new System.Drawing.Size(5, 5);
+            this.GridView.Items = null;
+            this.GridView.ItemSize = new System.Drawing.Size(0, 0);
+            this.GridView.Location = new System.Drawing.Point(0, 0);
+            this.GridView.Margin = new System.Windows.Forms.Padding(2);
+            this.GridView.Name = "GridView";
+            this.GridView.NameHeight = 30;
+            this.GridView.NameSpace = 5;
+            this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.GridView.Size = new System.Drawing.Size(626, 353);
+            this.GridView.TabIndex = 2;
             // 
             // ImagesView
             // 
@@ -227,6 +246,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 353);
             this.ContextMenuStrip = this.ItemContextMenu;
+            this.Controls.Add(this.GridView);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.NameTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -264,5 +284,6 @@
         private System.Windows.Forms.ContextMenuStrip PickDirectoryContextMenu;
         private System.Windows.Forms.ToolStripMenuItem PasteMenuItem;
         private System.Windows.Forms.ToolStripMenuItem UpMenuItem;
+        private GridView GridView;
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
@@ -154,6 +155,42 @@ namespace Viewer.IO
             }
 
             return PathUtils.NormalizePath(prefixPath);
+        }
+
+        /// <summary>
+        /// Get parent directory of <paramref name="pattern"/>. This function takes into account
+        /// special pattern characters. Specifically, it can deal with patterns of type "a/b/**".
+        /// </summary>
+        /// <param name="pattern">Pattern whose parrent directory you want to get</param>
+        /// <returns>
+        /// Pattern which matches all parent directories of folders in <paramref name="pattern"/>.
+        /// </returns>
+        public static string GetParentDirectoryPattern(string pattern)
+        {
+            if (string.IsNullOrWhiteSpace(pattern))
+                return null;
+
+            var parts = Split(pattern).ToList();
+            if (parts.Count <= 0)
+            {
+                return null;
+            }
+
+            if (parts.Count == 1 && parts[0] != "**")
+            {
+                return parts[0];
+            }
+
+            if (parts[parts.Count - 1] == "**")
+            {
+                parts.Add("..");
+            }
+            else
+            {
+                parts.RemoveAt(parts.Count - 1);
+            }
+
+            return string.Join(Path.DirectorySeparatorChar.ToString(), parts);
         }
 
         /// <summary>

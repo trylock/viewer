@@ -20,6 +20,13 @@ namespace ViewerTest.IO
             return string.Equals(first, second, StringComparison.CurrentCultureIgnoreCase);
         }
 
+        private bool ArePatternsEqual(string first, string second)
+        {
+            first = first.Replace('\\', '/').Trim().TrimEnd('/');
+            second = second.Replace('\\', '/').Trim().TrimEnd('/');
+            return string.Equals(first, second, StringComparison.CurrentCultureIgnoreCase);
+        }
+
         private string ItIsPath(string expectedValue)
         {
             return It.Is<string>(actualValue => ArePathsEqual(actualValue, expectedValue));
@@ -445,6 +452,52 @@ namespace ViewerTest.IO
         public void GetBasePatternPath_MultipleDirectoriesWithPattern()
         {
             Assert.IsTrue(ArePathsEqual("a/b", FileFinder.GetBasePatternPath("a/b/c*")));
+        }
+
+        [TestMethod]
+        public void GetParentDirectoryPattern_NullPattern()
+        {
+            Assert.IsNull(FileFinder.GetParentDirectoryPattern(null));
+        }
+
+        [TestMethod]
+        public void GetParentDirectoryPattern_RootFolderPattern()
+        {
+            Assert.IsTrue(ArePatternsEqual("C:/", FileFinder.GetParentDirectoryPattern("C:")));
+            Assert.IsTrue(ArePatternsEqual("C:/", FileFinder.GetParentDirectoryPattern("C:/")));
+            Assert.IsTrue(ArePatternsEqual("C:/", FileFinder.GetParentDirectoryPattern("C:\\")));
+        }
+
+        [TestMethod]
+        public void GetParentDirectoryPattern_SimplePath()
+        {
+            Assert.IsTrue(ArePatternsEqual("a/b", FileFinder.GetParentDirectoryPattern("a/b/c")));
+            Assert.IsTrue(ArePatternsEqual("a/b", FileFinder.GetParentDirectoryPattern("a/b/c/")));
+            Assert.IsTrue(ArePatternsEqual("a/b", FileFinder.GetParentDirectoryPattern("a/b\\c\\")));
+        }
+
+        [TestMethod]
+        public void GetParentDirectoryPattern_PatternInTheMiddle()
+        {
+            Assert.IsTrue(ArePatternsEqual("a/**", FileFinder.GetParentDirectoryPattern("a/**/b")));
+            Assert.IsTrue(ArePatternsEqual("a/x*", FileFinder.GetParentDirectoryPattern("a/x*/b")));
+            Assert.IsTrue(ArePatternsEqual("a/x?y", FileFinder.GetParentDirectoryPattern("a/x?y/b")));
+        }
+
+        [TestMethod]
+        public void GetParentDirectoryPattern_NonRecursivePatternAtTheEnd()
+        {
+            Assert.IsTrue(ArePatternsEqual("a/**", FileFinder.GetParentDirectoryPattern("a/**/x*")));
+            Assert.IsTrue(ArePatternsEqual("a/x*", FileFinder.GetParentDirectoryPattern("a/x*/y*")));
+            Assert.IsTrue(ArePatternsEqual("a/x?y", FileFinder.GetParentDirectoryPattern("a/x?y/z?")));
+        }
+
+        [TestMethod]
+        public void GetParentDirectoryPattern_RecursivePatternAtTheEnd()
+        {
+            Assert.IsTrue(ArePatternsEqual("**/..", FileFinder.GetParentDirectoryPattern("**")));
+            Assert.IsTrue(ArePatternsEqual("a/**/..", FileFinder.GetParentDirectoryPattern("a/**")));
+            Assert.IsTrue(ArePatternsEqual("a/**/..", FileFinder.GetParentDirectoryPattern("a\\**")));
         }
     }
 }

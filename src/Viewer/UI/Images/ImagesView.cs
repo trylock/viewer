@@ -200,7 +200,6 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler ShowQuery;
-        public event EventHandler GoUp;
         public event EventHandler<EntityEventArgs> OpenItem;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
@@ -594,7 +593,7 @@ namespace Viewer.UI.Images
 
         private void UpMenuItem_Click(object sender, EventArgs e)
         {
-            GoUp?.Invoke(sender, e);
+            HistoryView.GoToParent();
         }
 
         private void ShowQueryMenuItem_Click(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -340,6 +340,12 @@
     <None Include="Resources\ExplorerComponentIcon.ico" />
     <None Include="Resources\ImagesComponentIcon.ico" />
     <None Include="Resources\ErrorListIcon.ico" />
+    <None Include="Resources\Images\Previous.png" />
+    <None Include="Resources\Images\Up.png" />
+    <None Include="Resources\Images\Next.png" />
+    <None Include="Resources\Images\LeftArrow.png" />
+    <None Include="Resources\Images\RightArrow.png" />
+    <None Include="Resources\Images\UpArrow.png" />
     <Content Include="Resources\Open.png" />
     <None Include="Resources\QueryComponentIcon.ico" />
     <None Include="Resources\Presentation\Fullscreen.png" />

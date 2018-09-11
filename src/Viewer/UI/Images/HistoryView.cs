@@ -19,11 +19,21 @@ namespace Viewer.UI.Images
 
         #region IHistoryView
 
-        public bool CanGoForwardInHistory { get; set; }
-        public bool CanGoBackInHistory { get; set; }
+        public bool CanGoForwardInHistory
+        {
+            get => GoForwardButton.Enabled;
+            set => GoForwardButton.Enabled = value;
+        }
+
+        public bool CanGoBackInHistory
+        {
+            get => GoBackButton.Enabled;
+            set => GoBackButton.Enabled = value;
+        }
 
         public event EventHandler GoBackInHistory;
         public event EventHandler GoForwardInHistory;
+        public event EventHandler GoUp;
         public event EventHandler UserSelectedItem;
         public event EventHandler<HistoryItemEventArgs> ItemAdded;
 
@@ -69,6 +79,11 @@ namespace Viewer.UI.Images
             GoForwardInHistory?.Invoke(this, EventArgs.Empty);
         }
 
+        public void GoToParent()
+        {
+            GoUp?.Invoke(this, EventArgs.Empty);
+        }
+
         private void HistoryComboBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -88,6 +103,21 @@ namespace Viewer.UI.Images
             }
 
             UserSelectedItem?.Invoke(sender, e);
+        }
+
+        private void GoBackButton_Click(object sender, EventArgs e)
+        {
+            GoBack();
+        }
+
+        private void GoForwardButton_Click(object sender, EventArgs e)
+        {
+            GoForward();
+        }
+
+        private void GoUpButton_Click(object sender, EventArgs e)
+        {
+            GoToParent();
         }
     }
 }

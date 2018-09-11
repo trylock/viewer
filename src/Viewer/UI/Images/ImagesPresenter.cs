@@ -571,7 +571,7 @@ namespace Viewer.UI.Images
             _state.ExecuteQuery(query);
         }
 
-        private void View_GoUp(object sender, EventArgs e)
+        private void HistoryView_GoUp(object sender, EventArgs e)
         {
             var query = _state.Current;
             if (query == null)

@@ -52,26 +52,6 @@ namespace Viewer.UI.Images
             view.KeyUp += GridView_KeyUp;
             view.Resize += GridView_Resize;
         }
-
-        #region IHistoryView
-
-        public bool CanGoForwardInHistory
-        {
-            get => NextMenuItem.Enabled;
-            set => NextMenuItem.Enabled = value;
-        }
-
-        public bool CanGoBackInHistory
-        {
-            get => PreviousMenuItem.Enabled;
-            set => PreviousMenuItem.Enabled = value;
-        }
-
-        public event EventHandler GoBackInHistory;
-
-        public event EventHandler GoForwardInHistory;
-
-        #endregion
         
         #region ISelectionView
 
@@ -185,6 +165,8 @@ namespace Viewer.UI.Images
         /// Index of the last item user clicked on with left mouse button.
         /// </summary>
         private EntityView _activeItem = null;
+
+        public IHistoryView History => HistoryView;
 
         public event KeyEventHandler HandleKeyDown;
 
@@ -314,7 +296,7 @@ namespace Viewer.UI.Images
 
             NameTextBox.Visible = true;
             NameTextBox.Text = entityView.Name;
-            NameTextBox.Location = _view.ProjectLocation(bounds.Location);
+            NameTextBox.Location = GridViewToControl(_view.ProjectLocation(bounds.Location));
             NameTextBox.Size = bounds.Size;
             NameTextBox.Focus();
         }
@@ -338,17 +320,33 @@ namespace Viewer.UI.Images
         /// Distance in pixels after which we can begin the drag operation
         /// </summary>
         private const int BeginDragThreshold = 20;
+
+        private Point ControlToGridView(Point location)
+        {
+            return new Point(
+                location.X - _view.Location.X,
+                location.Y - _view.Location.Y
+            );
+        }
+
+        private Point GridViewToControl(Point location)
+        {
+            return new Point(
+                location.X + _view.Location.X,
+                location.Y + _view.Location.Y
+            );
+        }
         
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
             // process history events
             if (e.Button.HasFlag(MouseButtons.XButton1))
             {
-                GoBackInHistory?.Invoke(sender, e);
+                HistoryView.GoBack();
             }
             else if (e.Button.HasFlag(MouseButtons.XButton2))
             {
-                GoForwardInHistory?.Invoke(sender, e);
+                HistoryView.GoForward();
             }
             
             // process events on grid view item
@@ -477,7 +475,7 @@ namespace Viewer.UI.Images
         
         private void GridView_Click(object sender, EventArgs e)
         {
-            var location = _view.UnprojectLocation(PointToClient(MousePosition));
+            var location = _view.UnprojectLocation(ControlToGridView(PointToClient(MousePosition)));
             var item = _view.GetItemAt(location);
             if (item == null)
             {
@@ -489,7 +487,7 @@ namespace Viewer.UI.Images
 
         private void GridView_DoubleClick(object sender, EventArgs e)
         { 
-            var location = _view.UnprojectLocation(PointToClient(MousePosition));
+            var location = _view.UnprojectLocation(ControlToGridView(PointToClient(MousePosition)));
             var item = _view.GetItemAt(location);
             if (item == null)
             {
@@ -511,7 +509,7 @@ namespace Viewer.UI.Images
 
         private void GridView_DragDrop(object sender, DragEventArgs e)
         {
-            var location = _view.UnprojectLocation(PointToClient(MousePosition));
+            var location = _view.UnprojectLocation(ControlToGridView(PointToClient(MousePosition)));
             var item = _view.GetItemAt(location);
             OnDrop?.Invoke(sender, new DropEventArgs(
                 item?.Data is DirectoryEntity ? item : null,
@@ -586,12 +584,12 @@ namespace Viewer.UI.Images
 
         private void PreviousMenuItem_Click(object sender, EventArgs e)
         {
-            GoBackInHistory?.Invoke(sender, e);
+            HistoryView.GoBack();
         }
 
         private void NextMenuItem_Click(object sender, EventArgs e)
         {
-            GoForwardInHistory?.Invoke(sender, e);
+            HistoryView.GoForward();
         }
 
         private void UpMenuItem_Click(object sender, EventArgs e)

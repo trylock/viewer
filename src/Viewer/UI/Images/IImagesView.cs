@@ -10,6 +10,7 @@ using Viewer.Core;
 using Viewer.Data;
 using Viewer.Properties;
 using Viewer.Core.UI;
+using Viewer.Query;
 
 namespace Viewer.UI.Images
 {
@@ -77,29 +78,6 @@ namespace Viewer.UI.Images
             AllowedEffect = allowedEffect;
             Data = data ?? throw new ArgumentNullException(nameof(data));
         }
-    }
-
-    internal interface IHistoryView
-    {
-        /// <summary>
-        /// ture iff user can go forward in query history
-        /// </summary>
-        bool CanGoForwardInHistory { get; set; }
-
-        /// <summary>
-        /// true iff user can go back in query history
-        /// </summary>
-        bool CanGoBackInHistory { get; set; }
-
-        /// <summary>
-        /// Event occurs when user wants to go back in query history.
-        /// </summary>
-        event EventHandler GoBackInHistory;
-
-        /// <summary>
-        /// Event occurs when user wantc to go forward in query history.
-        /// </summary>
-        event EventHandler GoForwardInHistory;
     }
 
     internal interface IPolledView
@@ -203,8 +181,13 @@ namespace Viewer.UI.Images
         Task<string> PickDirectoryAsync(IEnumerable<string> options);
     }
 
-    internal interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IHistoryView, IFileDropView
+    internal interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IFileDropView
     {
+        /// <summary>
+        /// Query history view
+        /// </summary>
+        IHistoryView History { get; }
+
         event KeyEventHandler HandleKeyDown;
         event KeyEventHandler HandleKeyUp;
 

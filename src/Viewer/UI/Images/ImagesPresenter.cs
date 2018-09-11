@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -143,12 +143,25 @@ namespace Viewer.UI.Images
             _queryFactory = queryFactory;
             _queryEvaluatorFactory = queryEvaluatorFactory;
 
+            _state.QueryExecuted += StateOnQueryExecuted;
+
             // initialize context menu options
             UpdateContextOptions();
 
             // initialize view
             View.ItemSize = CurrentItemSize;
             SubscribeTo(View, "View");
+            SubscribeTo(View.History, "HistoryView");
+        }
+
+        private void StateOnQueryExecuted(object sender, QueryEventArgs e)
+        {
+            View.History.Items = _state
+                .Distinct(QueryTextComparer.Default)
+                .OfType<IQuery>()
+                .Select(item => new QueryHistoryItem(item))
+                .ToList();
+            View.History.SelectedItem = View.History.Items.FirstOrDefault(item => item.Query == e.Query);
         }
 
         private void UpdateContextOptions()
@@ -172,6 +185,7 @@ namespace Viewer.UI.Images
         {
             _isDisposed = true;
             DisposeQuery();
+            _state.QueryExecuted -= StateOnQueryExecuted;
             base.Dispose();
         }
         
@@ -192,8 +206,8 @@ namespace Viewer.UI.Images
             _queryEvaluator = _queryEvaluatorFactory.Create(query);
             View.Query = _queryEvaluator.Query.Text;
             View.Items = _queryEvaluator.Update();
-            View.CanGoBackInHistory = _state.Previous != null;
-            View.CanGoForwardInHistory = _state.Next != null;
+            View.History.CanGoBackInHistory = _state.Previous != null;
+            View.History.CanGoForwardInHistory = _state.Next != null;
             View.BeginLoading();
             View.BeginPolling(PollingRate);
             
@@ -536,14 +550,25 @@ namespace Viewer.UI.Images
             _selection.Clear();
         }
         
-        private void View_GoBackInHistory(object sender, EventArgs e)
+        private void HistoryView_GoBackInHistory(object sender, EventArgs e)
         {
             _state.Back();
         }
 
-        private void View_GoForwardInHistory(object sender, EventArgs e)
+        private void HistoryView_GoForwardInHistory(object sender, EventArgs e)
         {
             _state.Forward();
+        }
+
+        private void HistoryView_UserSelectedItem(object sender, EventArgs e)
+        {
+            var query = View.History.SelectedItem?.Query;
+            if (query == null || _state.Current == query)
+            {
+                return;
+            }
+
+            _state.ExecuteQuery(query);
         }
 
         private void View_GoUp(object sender, EventArgs e)

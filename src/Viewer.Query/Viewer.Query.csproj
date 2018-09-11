@@ -87,6 +87,7 @@
     <Compile Include="QueryLexer.cs" />
     <Compile Include="QueryParser.cs" />
     <Compile Include="QueryProgress.cs" />
+    <Compile Include="QueryTextComparer.cs" />
     <Compile Include="QueryViewRepository.cs" />
     <Compile Include="QueryVisitor.cs" />
     <Compile Include="Runtime.cs" />

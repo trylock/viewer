@@ -236,7 +236,7 @@ namespace Viewer.UI.Images
             // update invalid items
             var clipBounds = UnprojectBounds(e.ClipRectangle);
             var cells = Grid.GetCellsInBounds(clipBounds);
-            
+                
             foreach (var cell in cells)
             {
                 PaintItem(e.Graphics, cell);

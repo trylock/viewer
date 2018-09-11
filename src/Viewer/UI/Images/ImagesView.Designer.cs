@@ -54,6 +54,7 @@
             this.StatusLabel = new System.Windows.Forms.Label();
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.GridView = new Viewer.UI.Images.GridView();
+            this.HistoryView = new Viewer.UI.Images.HistoryView();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -231,14 +232,24 @@
             this.GridView.ItemPadding = new System.Drawing.Size(5, 5);
             this.GridView.Items = null;
             this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(0, 0);
+            this.GridView.Location = new System.Drawing.Point(0, 27);
             this.GridView.Margin = new System.Windows.Forms.Padding(2);
             this.GridView.Name = "GridView";
             this.GridView.NameHeight = 30;
             this.GridView.NameSpace = 5;
             this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(626, 353);
+            this.GridView.Size = new System.Drawing.Size(626, 326);
             this.GridView.TabIndex = 2;
+            // 
+            // HistoryView
+            // 
+            this.HistoryView.CanGoBackInHistory = false;
+            this.HistoryView.CanGoForwardInHistory = false;
+            this.HistoryView.Dock = System.Windows.Forms.DockStyle.Top;
+            this.HistoryView.Location = new System.Drawing.Point(0, 0);
+            this.HistoryView.Name = "HistoryView";
+            this.HistoryView.Size = new System.Drawing.Size(626, 27);
+            this.HistoryView.TabIndex = 3;
             // 
             // ImagesView
             // 
@@ -246,8 +257,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(626, 353);
             this.ContextMenuStrip = this.ItemContextMenu;
-            this.Controls.Add(this.GridView);
             this.Controls.Add(this.StatusLabel);
+            this.Controls.Add(this.GridView);
+            this.Controls.Add(this.HistoryView);
             this.Controls.Add(this.NameTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -285,5 +297,6 @@
         private System.Windows.Forms.ToolStripMenuItem PasteMenuItem;
         private System.Windows.Forms.ToolStripMenuItem UpMenuItem;
         private GridView GridView;
+        private HistoryView HistoryView;
     }
 }

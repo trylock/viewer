@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -20,14 +21,21 @@ namespace Viewer.UI
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
-    /// Query history keeps track of executed queries in the entire application. Executed queries
-    /// are kept in a history collection. A query producer (e.g. a query editor) executes a query
-    /// by calling <see cref="ExecuteQuery"/> which triggers the <see cref="QueryExecuted"/> event.
-    /// A query consumer (e.g. a thumbnail grid) listens for <see cref="QueryExecuted"/> event and
-    /// actually executes given query.
+    /// Query history keeps track of executed queries in the entire application. A query producer
+    /// (e.g. a query editor) executes a query by calling <see cref="ExecuteQuery"/> which triggers
+    /// the <see cref="QueryExecuted"/> event. A query consumer (e.g. a thumbnail grid) listens for
+    /// <see cref="QueryExecuted"/> event and actually executes given query.
     /// </summary>
-    public interface IQueryHistory
+    /// <remarks>
+    /// Queries in the history list are ordered from the newest to the oldest (i.e., the newest
+    /// query is at the index 0). The only way to modify this collection is to call the
+    /// <see cref="ExecuteQuery"/> method. The only way to modify <see cref="Current"/> is to
+    /// either call <see cref="ExecuteQuery"/> or <see cref="Previous"/> and <see cref="Next"/>.
+    /// All of these methods will raise the <see cref="QueryExecuted"/> event.
+    /// </remarks>
+    public interface IQueryHistory : IReadOnlyList<IQuery>
     {
         /// <summary>
         /// Event occurs when the <see cref="ExecuteQuery"/> method is called. 
@@ -49,14 +57,14 @@ namespace Viewer.UI
         IQuery Current { get; }
 
         /// <summary>
-        /// Go back in query history.
-        /// This will trigger the <see cref="QueryExecuted"/> event iff current query is not the first query in history.
+        /// Go back in query history. This will trigger the <see cref="QueryExecuted"/> event
+        /// iff current query is not the first query in history.
         /// </summary>
         void Back();
 
         /// <summary>
-        /// Go forward in query history.
-        /// This will trigger the <see cref="QueryExecuted"/> event iff current query is not the last query in history.
+        /// Go forward in query history. This will trigger the <see cref="QueryExecuted"/> event
+        /// iff current query is not the last query in history.
         /// </summary>
         void Forward();
 
@@ -133,5 +141,22 @@ namespace Viewer.UI
 
             QueryExecuted?.Invoke(this, new QueryEventArgs(Current));
         }
+
+        public IEnumerator<IQuery> GetEnumerator()
+        {
+            for (var i = _history.Count - 1; i >= 0; --i)
+            {
+                yield return _history[i];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public int Count => _history.Count;
+
+        public IQuery this[int index] => _history[_history.Count - index - 1];
     }
 }

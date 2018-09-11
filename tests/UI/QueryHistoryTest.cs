@@ -214,5 +214,54 @@ namespace ViewerTest.UI
             Assert.AreEqual(query[3].Object, queryEvents.Current);
             Assert.AreEqual(query[3].Object, current);
         }
+
+        [TestMethod]
+        public void GetEnumerator_EnumerateHistoryItemsInCorrectOrder()
+        {
+            var queries = new[]
+            {
+                new Mock<IQuery>(),
+                new Mock<IQuery>(),
+                new Mock<IQuery>(),
+            };
+
+            queries[0].Setup(mock => mock.Text).Returns("query0");
+            queries[1].Setup(mock => mock.Text).Returns("query1");
+            queries[2].Setup(mock => mock.Text).Returns("query2");
+
+            var history = new QueryHistory();
+            history.ExecuteQuery(queries[0].Object);
+            history.ExecuteQuery(queries[1].Object);
+            history.ExecuteQuery(queries[2].Object);
+
+            var actualItems = history.ToArray();
+            var expectedItems = queries.Select(mock => mock.Object).Reverse().ToArray();
+            CollectionAssert.AreEqual(expectedItems, actualItems);
+        }
+
+        [TestMethod]
+        public void Indexer_GetQueriesInCorrectOrder()
+        {
+            var queries = new[]
+            {
+                new Mock<IQuery>(),
+                new Mock<IQuery>(),
+                new Mock<IQuery>(),
+            };
+
+            queries[0].Setup(mock => mock.Text).Returns("query0");
+            queries[1].Setup(mock => mock.Text).Returns("query1");
+            queries[2].Setup(mock => mock.Text).Returns("query2");
+
+            var history = new QueryHistory();
+            history.ExecuteQuery(queries[0].Object);
+            history.ExecuteQuery(queries[1].Object);
+            history.ExecuteQuery(queries[2].Object);
+            
+            Assert.AreEqual(3, history.Count);
+            Assert.AreEqual(queries[2].Object, history[0]);
+            Assert.AreEqual(queries[1].Object, history[1]);
+            Assert.AreEqual(queries[0].Object, history[2]);
+        }
     }
 }

@@ -232,13 +232,13 @@
             this.GridView.ItemPadding = new System.Drawing.Size(5, 5);
             this.GridView.Items = null;
             this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(0, 27);
+            this.GridView.Location = new System.Drawing.Point(0, 30);
             this.GridView.Margin = new System.Windows.Forms.Padding(2);
             this.GridView.Name = "GridView";
             this.GridView.NameHeight = 30;
             this.GridView.NameSpace = 5;
             this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(626, 326);
+            this.GridView.Size = new System.Drawing.Size(626, 323);
             this.GridView.TabIndex = 2;
             // 
             // HistoryView
@@ -246,9 +246,11 @@
             this.HistoryView.CanGoBackInHistory = false;
             this.HistoryView.CanGoForwardInHistory = false;
             this.HistoryView.Dock = System.Windows.Forms.DockStyle.Top;
+            this.HistoryView.Items = ((System.Collections.Generic.IReadOnlyList<Viewer.UI.Images.QueryHistoryItem>)(resources.GetObject("HistoryView.Items")));
             this.HistoryView.Location = new System.Drawing.Point(0, 0);
             this.HistoryView.Name = "HistoryView";
-            this.HistoryView.Size = new System.Drawing.Size(626, 27);
+            this.HistoryView.SelectedItem = null;
+            this.HistoryView.Size = new System.Drawing.Size(626, 30);
             this.HistoryView.TabIndex = 3;
             // 
             // ImagesView

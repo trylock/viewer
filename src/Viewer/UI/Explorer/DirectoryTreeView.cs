@@ -39,7 +39,7 @@ namespace Viewer.UI.Explorer
             TreeView.ImageList = list;
             TreeView.ImageIndex = 0;
             TreeView.Sorted = true;
-            TreeView.ItemHeight = TreeView.Font.Height + 12;
+            TreeView.ItemHeight = (int) (TreeView.Font.Height * 1.9f);
         }
         
         private class NodeState

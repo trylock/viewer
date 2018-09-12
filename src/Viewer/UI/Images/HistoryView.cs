@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -37,12 +38,18 @@ namespace Viewer.UI.Images
         public event EventHandler UserSelectedItem;
         public event EventHandler<HistoryItemEventArgs> ItemAdded;
 
+        [IgnoreDataMember]
         public IReadOnlyList<QueryHistoryItem> Items
         {
             get => HistoryComboBox.Items.OfType<QueryHistoryItem>().ToList();
             set
             {
                 HistoryComboBox.Items.Clear();
+                if (value == null)
+                {
+                    return;
+                }
+
                 foreach (var item in value)
                 {
                     HistoryComboBox.Items.Add(item);

@@ -59,7 +59,6 @@
             this.GridView.Margin = new System.Windows.Forms.Padding(2);
             this.GridView.Name = "GridView";
             this.GridView.RowHeadersVisible = false;
-            this.GridView.RowTemplate.Height = 24;
             this.GridView.Size = new System.Drawing.Size(283, 259);
             this.GridView.TabIndex = 0;
             this.GridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridView_CellClick);

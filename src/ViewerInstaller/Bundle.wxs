@@ -7,7 +7,9 @@
     </BootstrapperApplicationRef>
     <Chain>
       <PackageGroupRef Id="NetFx472Redist"/>
-      <MsiPackage SourceFile="$(var.ViewerSetup.TargetPath)" />
+      <MsiPackage SourceFile="$(var.ViewerSetup.TargetPath)">
+        <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
+      </MsiPackage>
     </Chain>
   </Bundle>
 </Wix>

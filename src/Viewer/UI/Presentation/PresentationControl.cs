@@ -178,6 +178,7 @@ namespace Viewer.UI.Presentation
             Invalidate();
             Focus();
             _fullscreenForm.Visible = false;
+            ShowCursor();
         }
 
         #endregion

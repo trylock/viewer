@@ -36,7 +36,7 @@ namespace Viewer.UI.Images
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
-        private readonly IQueryHistory _state;
+        private readonly IQueryHistory _queryHistory;
         private readonly IQueryFactory _queryFactory;
         private readonly IQueryEvaluatorFactory _queryEvaluatorFactory;
 
@@ -127,7 +127,7 @@ namespace Viewer.UI.Images
             ISelection selection, 
             IEntityManager entityManager,
             IClipboardService clipboard,
-            IQueryHistory state,
+            IQueryHistory queryHistory,
             IQueryFactory queryFactory,
             IQueryEvaluatorFactory queryEvaluatorFactory)
         {
@@ -139,11 +139,10 @@ namespace Viewer.UI.Images
             _selection = selection;
             _entityManager = entityManager;
             _clipboard = clipboard;
-            _state = state;
             _queryFactory = queryFactory;
             _queryEvaluatorFactory = queryEvaluatorFactory;
-
-            _state.QueryExecuted += StateOnQueryExecuted;
+            _queryHistory = queryHistory;
+            _queryHistory.QueryExecuted += QueryHistoryOnQueryExecuted;
 
             // initialize context menu options
             UpdateContextOptions();
@@ -152,11 +151,17 @@ namespace Viewer.UI.Images
             View.ItemSize = CurrentItemSize;
             SubscribeTo(View, "View");
             SubscribeTo(View.History, "HistoryView");
+            QueryHistoryOnQueryExecuted(this, new QueryEventArgs(_queryHistory.Current));
         }
 
-        private void StateOnQueryExecuted(object sender, QueryEventArgs e)
+        private void QueryHistoryOnQueryExecuted(object sender, QueryEventArgs e)
         {
-            View.History.Items = _state
+            if (e.Query == null)
+            {
+                return;
+            }
+
+            View.History.Items = _queryHistory
                 .Distinct(QueryTextComparer.Default)
                 .OfType<IQuery>()
                 .Select(item => new QueryHistoryItem(item))
@@ -186,7 +191,7 @@ namespace Viewer.UI.Images
         {
             _isDisposed = true;
             DisposeQuery();
-            _state.QueryExecuted -= StateOnQueryExecuted;
+            _queryHistory.QueryExecuted -= QueryHistoryOnQueryExecuted;
             base.Dispose();
         }
         
@@ -207,8 +212,8 @@ namespace Viewer.UI.Images
             _queryEvaluator = _queryEvaluatorFactory.Create(query);
             View.Query = _queryEvaluator.Query.Text;
             View.Items = _queryEvaluator.Update();
-            View.History.CanGoBackInHistory = _state.Previous != null;
-            View.History.CanGoForwardInHistory = _state.Next != null;
+            View.History.CanGoBackInHistory = _queryHistory.Previous != null;
+            View.History.CanGoForwardInHistory = _queryHistory.Next != null;
             View.BeginLoading();
             View.BeginPolling(PollingRate);
             
@@ -532,7 +537,7 @@ namespace Viewer.UI.Images
             else
             {
                 var query = _queryFactory.CreateQuery(e.Entity.FullPath);
-                _state.ExecuteQuery(query);
+                _queryHistory.ExecuteQuery(query);
             }
         }
         
@@ -553,28 +558,28 @@ namespace Viewer.UI.Images
         
         private void HistoryView_GoBackInHistory(object sender, EventArgs e)
         {
-            _state.Back();
+            _queryHistory.Back();
         }
 
         private void HistoryView_GoForwardInHistory(object sender, EventArgs e)
         {
-            _state.Forward();
+            _queryHistory.Forward();
         }
 
         private void HistoryView_UserSelectedItem(object sender, EventArgs e)
         {
             var query = View.History.SelectedItem?.Query;
-            if (query == null || _state.Current == query)
+            if (query == null || _queryHistory.Current == query)
             {
                 return;
             }
 
-            _state.ExecuteQuery(query);
+            _queryHistory.ExecuteQuery(query);
         }
 
         private void HistoryView_GoUp(object sender, EventArgs e)
         {
-            var query = _state.Current;
+            var query = _queryHistory.Current;
             if (query == null)
             {
                 return;
@@ -602,7 +607,7 @@ namespace Viewer.UI.Images
             }
 
             // execute it
-            _state.ExecuteQuery(nextQuery);
+            _queryHistory.ExecuteQuery(nextQuery);
         }
 
         private IReadOnlyCollection<string> FindAllFolders()
@@ -695,17 +700,17 @@ namespace Viewer.UI.Images
 
         private void View_RefreshQuery(object sender, EventArgs e)
         {
-            if (_state.Current != null)
+            if (_queryHistory.Current != null)
             {
-                _state.ExecuteQuery(_state.Current);
+                _queryHistory.ExecuteQuery(_queryHistory.Current);
             }
         }
 
         private void View_ShowQuery(object sender, EventArgs e)
         {
-            if (_state.Current != null)
+            if (_queryHistory.Current != null)
             {
-                var window = _editor.OpenNew(_state.Current.Text);
+                var window = _editor.OpenNew(_queryHistory.Current.Text);
                 window.Show(View.DockPanel, DockState.Document);
             }
         }

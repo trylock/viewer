@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Viewer.IO;
@@ -211,6 +213,79 @@ namespace ViewerTest.IO
 
             Assert.AreEqual(1, directories.Length);
             Assert.IsTrue(ArePathsEqual("a/b/b/c", directories[0]));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public void GetDirectories_CanceledBeforeStart()
+        {
+            var cancellation = new CancellationTokenSource();
+            cancellation.Cancel();
+
+            var fileSystem = new Mock<IFileSystem>();
+            var finder = new FileFinder(fileSystem.Object, "a/b/c");
+
+            try
+            {
+                var result = finder.GetDirectories(cancellation.Token).ToList();
+            }
+            finally
+            {
+                fileSystem.VerifyNoOtherCalls();
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OperationCanceledException))]
+        public void GetDirectories_CancelOperationAfterSpawningTheTask()
+        {
+            var cancellation = new CancellationTokenSource();
+
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem
+                .Setup(mock => mock.DirectoryExists(It.IsAny<string>()))
+                .Callback(() => cancellation.Cancel())
+                .Returns(true);
+
+            var finder = new FileFinder(fileSystem.Object, "a/b/c/*");
+
+            try
+            {
+                var result = finder.GetDirectories(cancellation.Token).ToList();
+            }
+            finally
+            {
+                fileSystem.Verify(mock => mock.DirectoryExists(ItIsPath("a/b/c")), Times.Once);
+                fileSystem.VerifyNoOtherCalls();
+            }
+        }
+
+        [TestMethod]
+        public void GetDirectories_PropagateExceptions()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem
+                .Setup(mock => mock.DirectoryExists(It.IsAny<string>()))
+                .Throws(new ArgumentNullException());
+
+            var finder = new FileFinder(fileSystem.Object, "a/b/c/*");
+
+            var thrown = false;
+            try
+            {
+                var result = finder.GetDirectories().ToList();
+            }
+            catch (AggregateException e)
+            {
+                thrown = true;
+                Assert.IsInstanceOfType(e.InnerException, typeof(ArgumentNullException));
+            }
+            finally
+            {
+                Assert.IsTrue(thrown);
+                fileSystem.Verify(mock => mock.DirectoryExists(ItIsPath("a/b/c")), Times.Once);
+                fileSystem.VerifyNoOtherCalls();
+            }
         }
     }
 }

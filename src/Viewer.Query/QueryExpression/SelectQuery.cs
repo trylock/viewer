@@ -76,7 +76,7 @@ namespace Viewer.Query.QueryExpression
             IProgress<QueryProgressReport> progress,
             CancellationToken token)
         {
-            foreach (var dir in EnumerateDirectories())
+            foreach (var dir in EnumerateDirectories(token))
             {
                 token.ThrowIfCancellationRequested();
 
@@ -243,9 +243,9 @@ namespace Viewer.Query.QueryExpression
             return null;
         }
 
-        private IEnumerable<string> EnumerateDirectories()
+        private IEnumerable<string> EnumerateDirectories(CancellationToken token)
         {
-            return _fileFinder.GetDirectories();
+            return _fileFinder.GetDirectories(token);
         }
     }
 }

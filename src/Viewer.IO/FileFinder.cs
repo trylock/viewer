@@ -53,11 +53,20 @@ namespace Viewer.IO
         PathPattern Pattern { get; }
         
         /// <summary>
-        /// Find all directories which match <see cref="Pattern"/>. This function will skip folders
-        /// which throw <see cref="UnauthorizedAccessException"/> or <see cref="SecurityException"/>.
+        /// Same as <see cref="GetDirectories()"/> but it uses <see cref="CancellationToken.None"/>.
         /// </summary>
         /// <returns>List of directories matching the pattern</returns>
         IEnumerable<string> GetDirectories();
+
+        /// <summary>
+        /// Find all directories which match <see cref="Pattern"/>. This function will skip folders
+        /// which throw <see cref="UnauthorizedAccessException"/> or <see cref="SecurityException"/>.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// Cancellation token which can be used to cancel this operation
+        /// </param>
+        /// <returns></returns>
+        IEnumerable<string> GetDirectories(CancellationToken cancellationToken);
 
         /// <summary>
         /// Test whether <paramref name="path"/> matches <see cref="Pattern"/>.
@@ -116,13 +125,18 @@ namespace Viewer.IO
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             Pattern = new PathPattern(directoryPattern);
         }
-        
+
         public IEnumerable<string> GetDirectories()
+        {
+            return GetDirectories(CancellationToken.None);
+        }
+        
+        public IEnumerable<string> GetDirectories(CancellationToken cancellationToken)
         {
             var result = new ConcurrentQueue<string>();
             using (var resultCount = new SemaphoreSlim(0))
             {
-                Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     try
                     {
@@ -130,18 +144,19 @@ namespace Viewer.IO
                         {
                             result.Enqueue(path);
                             resultCount.Release();
-                        });
+                        }, cancellationToken);
                     }
                     finally
                     {
                         result.Enqueue(null);
                         resultCount.Release();
                     }
-                });
+                }, cancellationToken);
 
                 for (;;)
                 {
-                    resultCount.Wait();
+                    resultCount.Wait(cancellationToken);
+
                     if (!result.TryDequeue(out var path))
                     {
                         continue;
@@ -154,10 +169,13 @@ namespace Viewer.IO
 
                     yield return path;
                 }
+
+                // propagate all exceptions to the caller
+                task.Wait(cancellationToken);
             }
         }
 
-        private void FindAll(Action<string> onNext)
+        private void FindAll(Action<string> onNext, CancellationToken cancellationToken)
         {
             var parts = Pattern.GetParts().ToList();
             if (parts.Count == 0)
@@ -177,6 +195,10 @@ namespace Viewer.IO
                 return;
             }
 
+            var parallelOptions = new ParallelOptions
+            {
+                CancellationToken = cancellationToken
+            };
             var visited = new ConcurrentDictionary<string, bool>();
             var states = new ConcurrentQueue<State>();
             states.Enqueue(new State(firstPath, 1));
@@ -185,7 +207,7 @@ namespace Viewer.IO
             {
                 var newLevel = new ConcurrentQueue<State>();
 
-                Parallel.ForEach(states, state =>
+                Parallel.ForEach(states, parallelOptions, state =>
                 {
                     if (state.MatchedPartCount >= parts.Count)
                     {

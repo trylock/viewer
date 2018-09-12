@@ -161,7 +161,8 @@ namespace Viewer.UI.Images
                 .OfType<IQuery>()
                 .Select(item => new QueryHistoryItem(item))
                 .ToList();
-            View.History.SelectedItem = View.History.Items.FirstOrDefault(item => item.Query == e.Query);
+            View.History.SelectedItem = View.History.Items
+                .FirstOrDefault(item => QueryTextComparer.Default.Equals(item.Query, e.Query));
         }
 
         private void UpdateContextOptions()

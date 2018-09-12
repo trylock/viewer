@@ -119,5 +119,10 @@ namespace Viewer.UI.Images
         {
             GoToParent();
         }
+
+        private void HistoryView_Layout(object sender, LayoutEventArgs e)
+        {
+            HistoryComboBox.Width = Width - HistoryComboBox.Location.X - 5;
+        }
     }
 }

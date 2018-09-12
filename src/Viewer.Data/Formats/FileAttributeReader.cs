@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -9,14 +10,14 @@ using MetadataExtractor.Formats.Jpeg;
 
 namespace Viewer.Data.Formats
 {
-    public class FileAttributeReader : IAttributeReader
+    public class FileAttributeReader : IAttributeReader, IEnumerable<Attribute>
     {
         private readonly Attribute[] _attributes;
         private int _index;
 
         public FileAttributeReader(FileInfo fileInfo)
         {
-            _attributes = new Attribute[]
+            _attributes = new[]
             {
                 new Attribute("FileName", new StringValue(fileInfo.Name), AttributeSource.Metadata),
                 new Attribute("FileSize", new IntValue((int)fileInfo.Length), AttributeSource.Metadata),
@@ -35,8 +36,19 @@ namespace Viewer.Data.Formats
         {
             return _index >= _attributes.Length ? null : _attributes[_index++];
         }
+
+        public IEnumerator<Attribute> GetEnumerator()
+        {
+            return ((IEnumerable<Attribute>) _attributes).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 
+    [Export]
     [Export(typeof(IAttributeReaderFactory))]
     public class FileAttributeReaderFactory : IAttributeReaderFactory
     {

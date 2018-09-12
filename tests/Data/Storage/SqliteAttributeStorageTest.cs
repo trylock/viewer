@@ -6,8 +6,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using MetadataExtractor.Formats.Jpeg;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Viewer.Data;
+using Viewer.Data.Formats;
 using Viewer.Data.SQLite;
 using Viewer.Data.Storage;
 using Viewer.IO;
@@ -34,8 +37,17 @@ namespace ViewerTest.Data.Storage
         public void Setup()
         {
             var factory = new SQLiteConnectionFactory(new FileSystem(), "test.db");
+
+            var attributeReader = new Mock<IAttributeReader>();
+            attributeReader.Setup(mock => mock.Read()).Returns<Attribute>(null);
+
+            var attributeReaderFactory = new Mock<IAttributeReaderFactory>();
+            attributeReaderFactory
+                .Setup(mock => mock.CreateFromSegments(It.IsAny<FileInfo>(), It.IsAny<IEnumerable<JpegSegment>>()))
+                .Returns(attributeReader.Object);
+
             _configuration = new ConfigurationMock();
-            _storage = new SqliteAttributeStorage(factory, _configuration);
+            _storage = new SqliteAttributeStorage(factory, _configuration, attributeReaderFactory.Object);
         }
 
         [TestCleanup]

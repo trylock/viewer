@@ -14,7 +14,9 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MetadataExtractor.Formats.Jpeg;
 using NLog;
+using Viewer.Data.Formats;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Data.Formats.Exif;
 using Viewer.Data.SQLite;
@@ -71,6 +73,8 @@ namespace Viewer.Data.Storage
         private readonly Dictionary<string, Request> _requests;
         private readonly SQLiteConnectionFactory _connectionFactory;
         private readonly IStorageConfiguration _configuration;
+        private readonly IAttributeReaderFactory _fileAttributeReaderFactory;
+
         private readonly object _readConnectionLock = new object();
         private readonly SQLiteConnection _readConnection;
         private readonly LoadEntityCommand _loadCommand;
@@ -78,8 +82,10 @@ namespace Viewer.Data.Storage
         [ImportingConstructor]
         public SqliteAttributeStorage(
             SQLiteConnectionFactory connectionFactory, 
-            IStorageConfiguration configuration)
+            IStorageConfiguration configuration,
+            [Import(typeof(FileAttributeReaderFactory))] IAttributeReaderFactory fileAttributesReaderFactory)
         {
+            _fileAttributeReaderFactory = fileAttributesReaderFactory;
             _connectionFactory = connectionFactory;
             _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             _configuration = configuration;
@@ -123,6 +129,27 @@ namespace Viewer.Data.Storage
             var fi = new FileInfo(path);
             var lastWriteTime = fi.LastWriteTime;
             IEntity entity = new FileEntity(path);
+            
+            // Get file metadata attributes. These are the only attributes which can change
+            // even if the LastWriteTime has not changed.
+            var fileAttributes = new List<Attribute>();
+            try
+            {
+                var attributes = _fileAttributeReaderFactory.CreateFromSegments(fi, Enumerable.Empty<JpegSegment>());
+                for (;;)
+                {
+                    var attr = attributes.Read();
+                    if (attr == null)
+                    {
+                        break;
+                    }
+                    fileAttributes.Add(attr);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
 
             // otherwise, load the entity from the database
             // make sure this is the only thread which uses _readConnection
@@ -172,6 +199,14 @@ namespace Viewer.Data.Storage
                     }
 
                     var result = attributeCount > 0 ? entity : null;
+                    if (result != null)
+                    {
+                        foreach (var attr in fileAttributes)
+                        {
+                            result.SetAttribute(attr);
+                        }
+                    }
+
                     return result;
                 }
             }

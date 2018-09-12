@@ -41,7 +41,6 @@ namespace Viewer.UI.Images
         {
             view.DragDrop += GridView_DragDrop;
             view.DragOver += GridView_DragOver;
-            view.Click += GridView_Click;
             view.DoubleClick += GridView_DoubleClick;
             view.MouseDown += GridView_MouseDown;
             view.MouseLeave += GridView_MouseLeave;
@@ -358,6 +357,9 @@ namespace Viewer.UI.Images
                 
                 if (e.Button.HasFlag(MouseButtons.Left))
                 {
+                    // preview the photo
+                    ItemClick?.Invoke(sender, new EntityEventArgs(item));
+
                     if (item.State != EntityViewState.Selected)
                     {
                         SelectItem?.Invoke(sender, new EntityEventArgs(item));
@@ -470,18 +472,6 @@ namespace Viewer.UI.Images
         private void GridView_MouseLeave(object sender, EventArgs e)
         {
             _isDragging = false;
-        }
-        
-        private void GridView_Click(object sender, EventArgs e)
-        {
-            var location = _view.UnprojectLocation(ControlToGridView(PointToClient(MousePosition)));
-            var item = _view.GetItemAt(location);
-            if (item == null)
-            {
-                return;
-            }
-
-            ItemClick?.Invoke(sender, new EntityEventArgs(item));
         }
 
         private void GridView_DoubleClick(object sender, EventArgs e)

@@ -40,8 +40,6 @@
             // 
             // HistoryComboBox
             // 
-            this.HistoryComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.HistoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.HistoryComboBox.FormattingEnabled = true;
             this.HistoryComboBox.Location = new System.Drawing.Point(82, 4);
@@ -115,6 +113,7 @@
             this.Controls.Add(this.HistoryComboBox);
             this.Name = "HistoryView";
             this.Size = new System.Drawing.Size(688, 29);
+            this.Layout += new System.Windows.Forms.LayoutEventHandler(this.HistoryView_Layout);
             this.ResumeLayout(false);
 
         }

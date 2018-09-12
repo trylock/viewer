@@ -150,7 +150,11 @@ namespace Viewer.UI.Forms
                 return;
             }
             
+            var scale = new PointF(e.Graphics.DpiX / 96f, e.Graphics.DpiY / 96f);
             var size = IconSize.IsEmpty ? Icon.Size : IconSize;
+            size = new Size(
+                (int) (size.Width * scale.X), (int) 
+                (size.Height * scale.Y));
             var location = new Point(
                 ClientSize.Width / 2 - size.Width / 2,
                 ClientSize.Height / 2 - size.Height / 2

@@ -178,6 +178,7 @@ namespace Viewer.UI.Images
         {
             _previousSelection = new HashSet<T>(comparer);
             _currentSelection = new HashSet<T>(comparer);
+            Strategy = ReplaceSelectionStrategy<T>.Default;
         }
 
         /// <summary>
@@ -204,7 +205,7 @@ namespace Viewer.UI.Images
         public void End()
         {
             IsActive = false;
-            Strategy = null;
+            Strategy = ReplaceSelectionStrategy<T>.Default;
         }
 
         /// <summary>
@@ -215,17 +216,8 @@ namespace Viewer.UI.Images
         /// <param name="newlySelectedItems"></param>
         /// <param name="allItems"></param>
         /// <returns>true iff the selection has changed</returns>
-        /// <exception cref="InvalidOperationException">
-        /// The selection is not active (i.e., <see cref="IsActive"/> is false, call
-        /// <see cref="Begin"/> before calling <see cref="Set"/>)
-        /// </exception>
         public bool Set(IEnumerable<T> newlySelectedItems, IReadOnlyList<T> allItems)
         {
-            if (!IsActive)
-            {
-                throw new InvalidOperationException("Start the selection by calling the Being() method");
-            }
-
             var oldSelection = _currentSelection.ToArray();
 
             _currentSelection.Clear();

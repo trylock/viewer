@@ -58,6 +58,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.4.5.8\lib\net45\NLog.dll</HintPath>
@@ -131,6 +132,7 @@
     <Compile Include="UI\Forms\SliderControl.Designer.cs">
       <DependentUpon>SliderControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Forms\VectorButton.cs" />
     <Compile Include="UI\Images\EntityView.cs" />
     <Compile Include="UI\Images\HistoryView.cs">
       <SubType>UserControl</SubType>
@@ -245,6 +247,7 @@
     </Compile>
     <Compile Include="UI\Images\ImagesPresenter.cs" />
     <Compile Include="UI\Images\IImagesView.cs" />
+    <Compile Include="UI\VectorIcons.cs" />
     <Compile Include="ViewerApplication.cs" />
     <Compile Include="ViewerForm.cs">
       <SubType>Form</SubType>

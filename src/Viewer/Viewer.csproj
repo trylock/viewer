@@ -304,6 +304,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ViewerTheme\ViewerTheme.csproj">
+      <Project>{b3e6903b-4cfd-4ebf-bb8b-7f312e8c2e36}</Project>
+      <Name>ViewerTheme</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Viewer.Core\Viewer.Core.csproj">
       <Project>{1dcd51e0-3059-4ddd-9f7f-3af6daf9d648}</Project>
       <Name>Viewer.Core</Name>

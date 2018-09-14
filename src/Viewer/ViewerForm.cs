@@ -14,6 +14,7 @@ using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.UI.Forms;
+using ViewerTheme;
 using WeifenLuo.WinFormsUI.Docking;
 using WeifenLuo.WinFormsUI.ThemeVS2013;
 
@@ -25,7 +26,7 @@ namespace Viewer
         /// <summary>
         /// Application theme
         /// </summary>
-        public static readonly ThemeBase Theme;
+        public static readonly ThemeBase Theme = new ViewerLightTheme();
 
         public DockPanel Panel { get; }
 
@@ -33,44 +34,7 @@ namespace Viewer
 
         private MenuStrip _viewerMenu;
         private StatusStrip _statusBar;
-
-        #region High DPI DockPanelSuite splitter fix 
-
-        private class SplitterControl : VS2013WindowSplitterControl
-        {
-            public SplitterControl(ISplitterHost host) : base(host)
-            {
-            }
-
-            protected override void OnResize(EventArgs e)
-            {
-                base.OnResize(e);
-
-                // The splitter is coverring other windows on high DPI settings (anything above
-                // 100 %). 
-                if (Dock == DockStyle.Right || Dock == DockStyle.Left)
-                    Width = SplitterSize;
-                else if (Dock == DockStyle.Bottom || Dock == DockStyle.Top)
-                    Height = SplitterSize;
-            }
-        }
-
-        private class DecoratedSplitterControlFactory : DockPanelExtender.IWindowSplitterControlFactory
-        {
-            public SplitterBase CreateSplitterControl(ISplitterHost host)
-            {
-                return new SplitterControl(host);
-            }
-        }
-
-        static ViewerForm()
-        {
-            Theme = new VS2015LightTheme();
-            Theme.Extender.WindowSplitterControlFactory = new DecoratedSplitterControlFactory();
-        }
-
-        #endregion
-
+ 
         public ViewerForm()
         {
             Panel = new DockPanel{ Theme = Theme };

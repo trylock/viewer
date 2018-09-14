@@ -68,7 +68,7 @@ namespace Viewer.UI.Forms
         /// <summary>
         /// Styles used in a normal state
         /// </summary>
-        public VectorStyles Normal { get; set; }
+        public VectorStyles Normal { get; set; } = new VectorStyles();
 
         /// <summary>
         /// Styles used when there is a mouse cursor above this object. If you don't set this
@@ -161,7 +161,6 @@ namespace Viewer.UI.Forms
         protected override void OnEnabledChanged(EventArgs e)
         {
             base.OnEnabledChanged(e);
-
             Invalidate();
         }
 
@@ -191,6 +190,7 @@ namespace Viewer.UI.Forms
                 buttonStyles = ButtonStyles.Hover;
             }
 
+            e.Graphics.Clear(BackColor);
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
             // draw the button
@@ -198,7 +198,7 @@ namespace Viewer.UI.Forms
             {
                 using (var brush = buttonStyles.CreateBrush())
                 {
-                    e.Graphics.FillRectangle(brush, Bounds);
+                    e.Graphics.FillRectangle(brush, ClientRectangle);
                 }
             }
 
@@ -206,7 +206,9 @@ namespace Viewer.UI.Forms
             {
                 using (var pen = buttonStyles.CreatePen())
                 {
-                    e.Graphics.DrawRectangle(pen, Bounds);
+                    var rect = ClientRectangle;
+                    rect.Inflate((int) -pen.Width, (int) -pen.Width);
+                    e.Graphics.DrawRectangle(pen, rect);
                 }
             }
 

@@ -2,166 +2,172 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="INSTALLFOLDER">
-            <Component Id="cmpD6493198A480101FF6F82F7174D09A71" Guid="{19C2304E-08AB-45B8-9CE9-1D84E04CEA0B}">
+            <Component Id="cmpD6493198A480101FF6F82F7174D09A71" Guid="{FBF97262-9C06-4F88-8D01-D828B9F5DFA9}">
                 <File Id="filEB8D53A8C23631C31D5D803F4B315074" KeyPath="yes" Source="$(var.BINFOLDER)\Antlr4.Runtime.Standard.dll" />
             </Component>
-            <Component Id="cmp2EFB3045BC8C5AF14878AA6F189FFA6B" Guid="{B2CF0673-07AB-4CE7-BA88-FA7F207D3984}">
+            <Component Id="cmp2EFB3045BC8C5AF14878AA6F189FFA6B" Guid="{DA6AB8F4-AB41-49E6-A401-7601E589FD40}">
                 <File Id="fil881C7292EABE899CFAA2A25EB1052B83" KeyPath="yes" Source="$(var.BINFOLDER)\Antlr4.Runtime.Standard.xml" />
             </Component>
-            <Component Id="cmpE1894166020E41B8A258AA28467DF771" Guid="{F38D938F-839A-47CA-9D8A-7852052E460B}">
+            <Component Id="cmpE1894166020E41B8A258AA28467DF771" Guid="{3E5B908C-5563-4F57-A7E0-BBAF483378EF}">
                 <File Id="fil278489AB51E4F297B7F5090488282A24" KeyPath="yes" Source="$(var.BINFOLDER)\atk-sharp.dll" />
             </Component>
-            <Component Id="cmpFBDEADA3E6D5433A3AF8FBE6F20F9D04" Guid="{8FAA32DA-2C05-49B1-AA34-C2CFE7DDD0C5}">
+            <Component Id="cmpFBDEADA3E6D5433A3AF8FBE6F20F9D04" Guid="{F951C924-7751-41B5-9DC2-2E87E08D2C43}">
                 <File Id="fil705825C9CE4459CCB09E085F60091D74" KeyPath="yes" Source="$(var.BINFOLDER)\atk-sharp.pdb" />
             </Component>
-            <Component Id="cmpB1C04CF66E83944AA1F8D3DFCDEBF11C" Guid="{EB9739BC-49A4-4113-8287-E6179D272DE2}">
+            <Component Id="cmpB1C04CF66E83944AA1F8D3DFCDEBF11C" Guid="{D3511684-06C2-4F4C-935A-51B41BC97C22}">
                 <File Id="filCE8DE41CFB8923C4878F95997F089EEC" KeyPath="yes" Source="$(var.BINFOLDER)\gdk-sharp.dll" />
             </Component>
-            <Component Id="cmp8B9B5CC522881D103A6C750FB699779A" Guid="{0F9A2C0B-AA3A-444F-9F19-CF9CCF1A93A1}">
+            <Component Id="cmp8B9B5CC522881D103A6C750FB699779A" Guid="{0A7D78A3-2533-4A33-8786-8008CD14A0AE}">
                 <File Id="fil33AF9C034B288C25CC3A5B210A16206D" KeyPath="yes" Source="$(var.BINFOLDER)\gdk-sharp.pdb" />
             </Component>
-            <Component Id="cmp62F30D2E0A7A2D71AEDE8871AD61EBDF" Guid="{CB7BF11F-7BD2-4C3F-BB73-481E7D2B3C26}">
+            <Component Id="cmp62F30D2E0A7A2D71AEDE8871AD61EBDF" Guid="{126C65CC-22CD-489B-8CAC-045783BF32B8}">
                 <File Id="fil7544CBA41DC1BCB7988FCD9DE7B0B16E" KeyPath="yes" Source="$(var.BINFOLDER)\glib-sharp.dll" />
             </Component>
-            <Component Id="cmp3C57E794515FB33A680F431942C9E316" Guid="{4DB0B495-FB84-4D47-B02F-398E5053390C}">
+            <Component Id="cmp3C57E794515FB33A680F431942C9E316" Guid="{03C87C79-A34A-4C90-888B-EBE435860584}">
                 <File Id="filE72F7D703A186141C77D050480C18785" KeyPath="yes" Source="$(var.BINFOLDER)\glib-sharp.pdb" />
             </Component>
-            <Component Id="cmpB170907AEC4205D58448080E1F8633CE" Guid="{79B4D8E4-308D-43D3-A94A-C3885135328E}">
+            <Component Id="cmpB170907AEC4205D58448080E1F8633CE" Guid="{EB61843D-14F3-456E-8F17-28CB083CA72E}">
                 <File Id="fil59661727AE85F419AA051E809D480AB6" KeyPath="yes" Source="$(var.BINFOLDER)\gtk-sharp.dll" />
             </Component>
-            <Component Id="cmp7A6DB975FC72819EA6FE5836E0FAB4EF" Guid="{3B92E2CC-EEF8-4314-BD3A-95F3BE386A13}">
+            <Component Id="cmp7A6DB975FC72819EA6FE5836E0FAB4EF" Guid="{BEC4DC86-1C14-4093-B79E-1869EDD83FEE}">
                 <File Id="filD7B08297A759A21ACA2ED5F664EC727D" KeyPath="yes" Source="$(var.BINFOLDER)\libSkiaSharp.dll" />
             </Component>
-            <Component Id="cmp599C92351CD0C78C93182B0BDFF9219C" Guid="{9E14D0D6-BF77-4615-A44D-A7C667738E5C}">
+            <Component Id="cmp599C92351CD0C78C93182B0BDFF9219C" Guid="{D63B37E5-5365-4AA8-A091-AFA1CFC1D277}">
                 <File Id="fil7EED7CF2E1876B630CDA68790C4216A8" KeyPath="yes" Source="$(var.BINFOLDER)\libSkiaSharp.dylib" />
             </Component>
-            <Component Id="cmpFDD409D63AAED0F59378D2207BDBD3E4" Guid="{4F027473-C676-483D-AE8A-6C4F6765AEDF}">
+            <Component Id="cmpFDD409D63AAED0F59378D2207BDBD3E4" Guid="{A5C72FE4-B5E0-46A3-A851-C08FEC044BD9}">
                 <File Id="filE7A9B748F9757568126AA1422131699B" KeyPath="yes" Source="$(var.BINFOLDER)\MetadataExtractor.dll" />
             </Component>
-            <Component Id="cmp97DF18115D02018409BACB7C6480E2FC" Guid="{1CD3213D-BC13-4595-9088-E74E74A1C3AB}">
+            <Component Id="cmp97DF18115D02018409BACB7C6480E2FC" Guid="{F986046F-A2BF-4659-B551-2911732143CF}">
                 <File Id="fil2B808BEF583B9D9681D0A9EAA0D3F1E7" KeyPath="yes" Source="$(var.BINFOLDER)\MetadataExtractor.xml" />
             </Component>
-            <Component Id="cmpB7F1EBE42DCB1051B92D42C1EF84E2F9" Guid="{AFB4B958-55F6-4C6D-9695-F678CCC4417F}">
+            <Component Id="cmpB7F1EBE42DCB1051B92D42C1EF84E2F9" Guid="{C8076519-241E-49C7-8DB6-CCB58545F838}">
                 <File Id="filA09ADF42C6343B9B7C7780D266455CC4" KeyPath="yes" Source="$(var.BINFOLDER)\NLog.dll" />
             </Component>
-            <Component Id="cmpAF162B14FA6391E4D0D34D9485A3CBEB" Guid="{4B0C8D86-21FC-4BEB-9F7F-F7B8156DD746}">
+            <Component Id="cmpAF162B14FA6391E4D0D34D9485A3CBEB" Guid="{70526835-1CAF-4624-A83C-E5F7B67813C0}">
                 <File Id="fil938BF1D1B479C73F0CECCBD51683AA0E" KeyPath="yes" Source="$(var.BINFOLDER)\NLog.xml" />
             </Component>
-            <Component Id="cmp36E09C8CF4CF3BB59033A0B44BB42EA3" Guid="{62EC4B57-43B9-4983-BC8E-A33CB7D92480}">
+            <Component Id="cmp36E09C8CF4CF3BB59033A0B44BB42EA3" Guid="{20EDD697-6F50-49F1-B84C-0455E79943AF}">
                 <File Id="filA53B9DB094062FF3B44238B15BA30A2F" KeyPath="yes" Source="$(var.BINFOLDER)\pango-sharp.dll" />
             </Component>
-            <Component Id="cmpD12D156178EFFB0E6344620569607A57" Guid="{D37056EB-DB6C-4CF3-859E-19AEA2D3AEDE}">
+            <Component Id="cmpD12D156178EFFB0E6344620569607A57" Guid="{C3A9DCEA-39D5-4B49-AE08-CCFC1FB7A1F0}">
                 <File Id="fil559DC052545FF6FDEE7FE63E2A8C2EF2" KeyPath="yes" Source="$(var.BINFOLDER)\pango-sharp.pdb" />
             </Component>
-            <Component Id="cmp658C98C0E84723AB62B81DEC00E9BAFA" Guid="{2DA1CA32-4746-4161-AB3D-CA3AF4B4A78E}">
+            <Component Id="cmp658C98C0E84723AB62B81DEC00E9BAFA" Guid="{A0077233-8EDE-4287-9C26-5E5003F19CB4}">
                 <File Id="filF94A6D023B07951F7D55DC1E2864FCC4" KeyPath="yes" Source="$(var.BINFOLDER)\ScintillaNET.dll" />
             </Component>
-            <Component Id="cmp41D88919D97ABF34D594A4BBF063255F" Guid="{BDC8EA9A-807D-42EE-AB24-80C0508B652F}">
+            <Component Id="cmp41D88919D97ABF34D594A4BBF063255F" Guid="{66F6C3F0-5705-4A88-8C53-4ED258DB6C2A}">
                 <File Id="fil31ED5844E8ECA47381F5095C2F2A423C" KeyPath="yes" Source="$(var.BINFOLDER)\ScintillaNET.xml" />
             </Component>
-            <Component Id="cmp9143FBEDB0909CDF06ED8DF33E7A8A5E" Guid="{6B0CF269-CBC2-4990-BD55-3F178A56B8B2}">
+            <Component Id="cmp9143FBEDB0909CDF06ED8DF33E7A8A5E" Guid="{7A4EC2D5-3394-4802-8635-E57241F7CB87}">
                 <File Id="fil25B3F878ECBF570C2E9C747E6B044290" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.dll" />
             </Component>
-            <Component Id="cmp06A113DC034CFE861FBCFD6DB9AA56D1" Guid="{8A4CAF55-1EF8-48F3-BCAB-CA4A8E24DD76}">
+            <Component Id="cmp06A113DC034CFE861FBCFD6DB9AA56D1" Guid="{71DAC3AD-1404-400F-B3EF-23A8AD5D9F60}">
                 <File Id="fil8BDBE6F5D8BA0B0492C38C870D649C7A" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.Desktop.dll" />
             </Component>
-            <Component Id="cmp9A6695FDBF5FD46E06C1A5D310D9D1DC" Guid="{CACD662B-4158-4D2A-95FF-27F230CECC27}">
+            <Component Id="cmp9A6695FDBF5FD46E06C1A5D310D9D1DC" Guid="{E5873E20-4FE5-4B56-BE4D-138B09FB1E8C}">
                 <File Id="fil0FD1B6110F0BDAC2455FF81044068B95" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.Desktop.xml" />
             </Component>
-            <Component Id="cmp5B30729EEF3045F9D5E1D8268F6A3F87" Guid="{C43EBAE3-E947-4DE2-95CF-F70AAFFF820C}">
+            <Component Id="cmp5B30729EEF3045F9D5E1D8268F6A3F87" Guid="{40295985-D0C9-4E4E-A4E1-8A480BD52340}">
                 <File Id="fil650ED93AD2EAE3F1FF991193EE669047" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.Gtk.dll" />
             </Component>
-            <Component Id="cmpD2C92C955102921B5F8A5B90E62BFC54" Guid="{9EE40498-6BE0-4202-9ECE-4390333F82CB}">
+            <Component Id="cmpD2C92C955102921B5F8A5B90E62BFC54" Guid="{7BC03A16-D380-4CBE-A9FD-7096D952ED6E}">
                 <File Id="filD672DF438E13614EA2C2787D6522FE0B" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.Gtk.xml" />
             </Component>
-            <Component Id="cmpD69E947103E51F942BF09FC879FAC0D5" Guid="{9669F218-F4E5-49A8-B7A1-669363D1D76A}">
+            <Component Id="cmpD69E947103E51F942BF09FC879FAC0D5" Guid="{9A466C58-6FFD-44BE-8413-26FF5A6DE405}">
                 <File Id="fil05108EE5EA18D295F1AF8988120D5A5C" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.WPF.dll" />
             </Component>
-            <Component Id="cmp263B3D007790C38FAFB5EA92A36235E1" Guid="{516BB03F-8223-4BF4-8002-69934DE9D562}">
+            <Component Id="cmp263B3D007790C38FAFB5EA92A36235E1" Guid="{AC70B061-00A3-400F-98F9-EC7B16BD02E9}">
                 <File Id="filC2A48D5E497D01A1FDA8A5385B32B937" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.WPF.xml" />
             </Component>
-            <Component Id="cmp8B79348984ABCE75C0D3F3F06CCD9D6E" Guid="{85C9C165-D4FB-4B4E-A683-A9C96638F3B8}">
+            <Component Id="cmp8B79348984ABCE75C0D3F3F06CCD9D6E" Guid="{EE3FFE84-D44F-469B-BAB1-E0F2420B1D03}">
                 <File Id="fil33CDD20002B901A4769A4B10EF9471ED" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.xml" />
             </Component>
-            <Component Id="cmp969F6EDF2594F3809D7A716387BF8894" Guid="{FD527F41-D173-4ED1-8B83-39ACF8BB6859}">
+            <Component Id="cmp969F6EDF2594F3809D7A716387BF8894" Guid="{F5AF8B18-A57E-40C1-9193-F880119B76F8}">
                 <File Id="fil60E3CB228DB7CBE488269EDFC1321CC6" KeyPath="yes" Source="$(var.BINFOLDER)\System.Collections.Immutable.dll" />
             </Component>
-            <Component Id="cmp22B85696DEA0802F0E1B04E5F06007B8" Guid="{53087E43-CEB7-45BC-B9E0-08BF33FEEC2A}">
+            <Component Id="cmp22B85696DEA0802F0E1B04E5F06007B8" Guid="{EA3A0996-436D-4D24-BFCE-310ECEDC021E}">
                 <File Id="fil77CF1FA276A596B830A84030D8963B57" KeyPath="yes" Source="$(var.BINFOLDER)\System.Collections.Immutable.xml" />
             </Component>
-            <Component Id="cmp6B7CE49F5F3A518047B74FB6AC2251C5" Guid="{5A66C731-4C01-4067-AF70-27CC1598611E}">
+            <Component Id="cmp6B7CE49F5F3A518047B74FB6AC2251C5" Guid="{CC5A758C-7CD8-42AF-8B0E-E0AB63B29706}">
                 <File Id="fil86030949C08D40073D1F77D572C14B0D" KeyPath="yes" Source="$(var.BINFOLDER)\System.Data.SQLite.dll" />
             </Component>
-            <Component Id="cmpE25D4339F043AE9AF876A4620A6432C9" Guid="{68666275-4116-4E6E-810C-55A4866B0511}">
+            <Component Id="cmpE25D4339F043AE9AF876A4620A6432C9" Guid="{9B6708E3-0729-4E24-9639-7273D4D22EDC}">
                 <File Id="fil231CA1DE8C286CE1F5188773A945762D" KeyPath="yes" Source="$(var.BINFOLDER)\System.Data.SQLite.dll.config" />
             </Component>
-            <Component Id="cmpB0D00055965EDE11CC624747CE56C686" Guid="{C523AED7-72C2-498A-B41A-826CC910EAD1}">
+            <Component Id="cmpB0D00055965EDE11CC624747CE56C686" Guid="{23C7F903-A915-4A03-8C4E-B71AE1E5F566}">
                 <File Id="fil1AD5F5CE645B996B33CF1EF5C058BA4F" KeyPath="yes" Source="$(var.BINFOLDER)\System.Data.SQLite.xml" />
             </Component>
-            <Component Id="cmpE132287DD60A93D95362C6F645A25B76" Guid="{580563A4-37C7-4025-AC7E-217930940C40}">
+            <Component Id="cmpE132287DD60A93D95362C6F645A25B76" Guid="{F6CA351E-BDEA-48E7-BDF4-F6FB59FD7BA5}">
                 <File Id="fil4FB2C704E78CB290ABC440D1EB77F5E7" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Core.dll" />
             </Component>
-            <Component Id="cmp25080C6D4F8BF296ED27814F41808BA3" Guid="{0984526E-B6E8-4D39-B612-42BC8E017AAD}">
+            <Component Id="cmp25080C6D4F8BF296ED27814F41808BA3" Guid="{3313621E-96F0-40A6-8086-1E0BFFC20E7D}">
                 <File Id="fil3E20DDB77B080CC587E0984D5624C8C3" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Core.pdb" />
             </Component>
-            <Component Id="cmp858EE8BBEDD621DE2E3A7EA956266A7F" Guid="{0596D800-ECA1-4485-8C42-97022CE45421}">
+            <Component Id="cmp858EE8BBEDD621DE2E3A7EA956266A7F" Guid="{EE0AD414-2180-403C-8701-54BFAD6604DC}">
                 <File Id="fil7CABC2B58E2F41DF1477CBE101A11516" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Data.dll" />
             </Component>
-            <Component Id="cmpED63B6F5B740967AF618AEBC007E7F22" Guid="{AE39F8B0-5A71-4727-984F-B748D8C87CC1}">
+            <Component Id="cmpED63B6F5B740967AF618AEBC007E7F22" Guid="{7CC56269-C5F8-418B-BE4B-3F792278D515}">
                 <File Id="filC5C85E36C380A5B269C84361F74F0F1E" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Data.pdb" />
             </Component>
-            <Component Id="cmp7D5834C583B9F5DA0621DE7ECCC9CE7F" Guid="{42C4FD1C-302A-413E-BC95-746CDBAC905B}">
+            <Component Id="cmp7D5834C583B9F5DA0621DE7ECCC9CE7F" Guid="{786DE347-F395-4C75-81E7-33A962F94DF2}">
                 <File Id="fil9F07C0231A0F6AC09C41EF40191D0D6D" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.exe" />
             </Component>
-            <Component Id="cmpF6508FBC3A59C1BBE374BCB6D63AFB13" Guid="{7089DB4D-E361-4A79-AB5B-78B19D79DA73}">
+            <Component Id="cmpF6508FBC3A59C1BBE374BCB6D63AFB13" Guid="{89FCC95B-A40D-4F3F-8F92-AEDA4DCC21AF}">
                 <File Id="filE77499D1A8EAAA1AAE0176979A924757" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.exe.config" />
             </Component>
-            <Component Id="cmp7184790D29EB289B2DBA12E8F1714A96" Guid="{9A4969FA-331A-4BC8-AA24-22FE844DE257}">
+            <Component Id="cmp7184790D29EB289B2DBA12E8F1714A96" Guid="{722C1142-642C-433F-80C2-FC4A56800E50}">
                 <File Id="fil40C6ABD8D00DDBA5BCC205590223E274" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.IO.dll" />
             </Component>
-            <Component Id="cmp88E7E8D7FF6D7CA72A566A31A5C64F5E" Guid="{B9C6E6C0-F1CC-448B-BEA2-FB7053C442B8}">
+            <Component Id="cmp88E7E8D7FF6D7CA72A566A31A5C64F5E" Guid="{15B39BF8-A21F-48C1-AC5C-0EFBDA2C21B6}">
                 <File Id="filB86FA111EFC39B7AB75EA6C350855BA7" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.IO.pdb" />
             </Component>
-            <Component Id="cmp2D48773C8BC10C26A92B230834602E20" Guid="{73C759ED-DC07-46FF-8BB5-FDD58224092E}">
+            <Component Id="cmp2D48773C8BC10C26A92B230834602E20" Guid="{637B6224-7112-4129-8538-FDA2A50E1763}">
                 <File Id="filF670BC4649D408A3120CBD0956797550" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.pdb" />
             </Component>
-            <Component Id="cmp3DD9D7A92EA9A807E81D1B516A53C0E2" Guid="{02672F3C-0116-4945-9573-F4A13F93A2CE}">
+            <Component Id="cmp3DD9D7A92EA9A807E81D1B516A53C0E2" Guid="{46B90CEF-89C1-4636-B1A4-AA708974D576}">
                 <File Id="filBB2A89919C7106B0AFEF4388BA2E7AA4" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Query.dll" />
             </Component>
-            <Component Id="cmpBCE0C8295604E855376466BD8A0EAA05" Guid="{B9A4B60B-AF1F-4E3A-9286-CA4C94A68EBD}">
+            <Component Id="cmpBCE0C8295604E855376466BD8A0EAA05" Guid="{23EE5337-847B-4FF9-8283-5347551EF1DB}">
                 <File Id="filA24E5B2DE9D0DC16EBAE2ECB74146471" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Query.pdb" />
             </Component>
-            <Component Id="cmpCD95BE695A88F4BF026AABC415931EE9" Guid="{E7BA1351-B344-43B2-80DC-C63F713337C5}">
+            <Component Id="cmpCD95BE695A88F4BF026AABC415931EE9" Guid="{FAD672A3-4552-4469-A285-93DB0CBB321A}">
                 <File Id="fil0BEB104792302E4C67A6F6B512D97567" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.QueryRuntime.dll" />
             </Component>
-            <Component Id="cmp154CEDDEA03E3D2A69519E50E775B21A" Guid="{D2A733C0-D33A-410B-8965-0767721EA229}">
+            <Component Id="cmp154CEDDEA03E3D2A69519E50E775B21A" Guid="{0B5BDDB3-7179-4730-A5A4-64C219F6AA8E}">
                 <File Id="filE56DE0BF9E909C098CE63057D9D3E6D5" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.QueryRuntime.pdb" />
             </Component>
-            <Component Id="cmp2C9ADE433A5BF4F58225CCF53E6E4CF8" Guid="{DFDC8435-AD6F-4520-A663-71360D4DD117}">
+            <Component Id="cmpB830A132F9B65B4871085DAC9DE1ADE2" Guid="{280FDB8F-5332-4401-A9DC-281AA627C034}">
+                <File Id="fil21551399940EED76C34A4E0C7D653E98" KeyPath="yes" Source="$(var.BINFOLDER)\ViewerTheme.dll" />
+            </Component>
+            <Component Id="cmp445999E448019D092BB9CA070BE7A097" Guid="{5560542C-53C8-4834-950F-27C353D14209}">
+                <File Id="filB5A925C79EE04FB358E6A93719A8823F" KeyPath="yes" Source="$(var.BINFOLDER)\ViewerTheme.pdb" />
+            </Component>
+            <Component Id="cmp2C9ADE433A5BF4F58225CCF53E6E4CF8" Guid="{C5F8FD90-04AD-444C-B4E4-376F3375E24F}">
                 <File Id="filC0D8F251E1F2B460F224CE244ACA81F1" KeyPath="yes" Source="$(var.BINFOLDER)\WeifenLuo.WinFormsUI.Docking.dll" />
             </Component>
-            <Component Id="cmpAB067D8F5470E21393A8E5750355C312" Guid="{D17DD9F7-7EE7-4364-9AB4-2B9D0FDA12F4}">
+            <Component Id="cmpAB067D8F5470E21393A8E5750355C312" Guid="{B2421AAD-AC07-42F9-96C1-638E3E865902}">
                 <File Id="filC9218B16CCA3B5408C404B3A7004CD7A" KeyPath="yes" Source="$(var.BINFOLDER)\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" />
             </Component>
-            <Component Id="cmp7AAD167AF28B00F512B8879F3F0BD93D" Guid="{75FDF8E8-ACA5-4A3A-900C-60B8AB4090AF}">
+            <Component Id="cmp7AAD167AF28B00F512B8879F3F0BD93D" Guid="{2F23E5EF-F1CC-4433-BE4F-8EF8C2494BCA}">
                 <File Id="fil828A7A54ACD0C302B49084D6AD7070D1" KeyPath="yes" Source="$(var.BINFOLDER)\XmpCore.dll" />
             </Component>
-            <Component Id="cmpB3302151149074E9D3D36DDBC64433DD" Guid="{3180B7EB-97BE-4E15-8E67-1B6B392BACEC}">
+            <Component Id="cmpB3302151149074E9D3D36DDBC64433DD" Guid="{D091759F-DFAD-4573-BD05-06BE2CB8B406}">
                 <File Id="fil35A8596B82B9221AF5472AC45F3A76EB" KeyPath="yes" Source="$(var.BINFOLDER)\XmpCore.xml" />
             </Component>
             <Directory Id="dir43FCCFA109FBF584D9155DCE31E452EB" Name="x64">
-                <Component Id="cmp6420F3C500BCEC22F485A87C1A85B7F4" Guid="{A9D87399-F55D-4FB6-B0A7-D24B2BAD01A3}">
+                <Component Id="cmp6420F3C500BCEC22F485A87C1A85B7F4" Guid="{02EA77C8-7F31-4DCD-A475-A4106131B6C5}">
                     <File Id="fil833DA0C23169EFBB3B6C3F1E23A7BB7E" KeyPath="yes" Source="$(var.BINFOLDER)\x64\libSkiaSharp.dll" />
                 </Component>
-                <Component Id="cmp19F6DF8A2ABC78D782D76F1EEC9A5800" Guid="{8DF2F3C4-A4A4-4FEF-87D5-8A8AB1B9074D}">
+                <Component Id="cmp19F6DF8A2ABC78D782D76F1EEC9A5800" Guid="{7E8DB9E0-D2C4-476E-A130-8BED8875734B}">
                     <File Id="filC7EA62E1AC64247AFBE682E8631402B8" KeyPath="yes" Source="$(var.BINFOLDER)\x64\SQLite.Interop.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir97F42FF68945B97AAE670945C4FDAE93" Name="x86">
-                <Component Id="cmpB7AE8D67A9DB4F798023D569BD88EC71" Guid="{C77532E9-AD1A-449B-89D9-F94C9A49E84C}">
+                <Component Id="cmpB7AE8D67A9DB4F798023D569BD88EC71" Guid="{818DC9FA-6442-4576-8B66-E7DDAD4D359C}">
                     <File Id="fil847275AE75F2F6B8498511A1253B3C44" KeyPath="yes" Source="$(var.BINFOLDER)\x86\libSkiaSharp.dll" />
                 </Component>
-                <Component Id="cmp77484AF39EF2F8BD64E876C33A1C3E49" Guid="{943E52E4-CF30-4BB5-997E-A9552BF8ABBB}">
+                <Component Id="cmp77484AF39EF2F8BD64E876C33A1C3E49" Guid="{67ED7A43-F666-4881-9DBF-E0F5CC0301E0}">
                     <File Id="filD2ACACD0EBAF09B1953E9C3793C13C69" KeyPath="yes" Source="$(var.BINFOLDER)\x86\SQLite.Interop.dll" />
                 </Component>
             </Directory>
@@ -214,6 +220,8 @@
             <ComponentRef Id="cmpBCE0C8295604E855376466BD8A0EAA05" />
             <ComponentRef Id="cmpCD95BE695A88F4BF026AABC415931EE9" />
             <ComponentRef Id="cmp154CEDDEA03E3D2A69519E50E775B21A" />
+            <ComponentRef Id="cmpB830A132F9B65B4871085DAC9DE1ADE2" />
+            <ComponentRef Id="cmp445999E448019D092BB9CA070BE7A097" />
             <ComponentRef Id="cmp2C9ADE433A5BF4F58225CCF53E6E4CF8" />
             <ComponentRef Id="cmpAB067D8F5470E21393A8E5750355C312" />
             <ComponentRef Id="cmp7AAD167AF28B00F512B8879F3F0BD93D" />

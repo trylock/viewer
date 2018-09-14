@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.UI.Forms;
 
 namespace Viewer.UI.Images
 {
@@ -16,6 +18,37 @@ namespace Viewer.UI.Images
         public HistoryView()
         {
             InitializeComponent();
+
+            var imageStyles = new VectorStylesGroup
+            {
+                Normal = new VectorStyles
+                {
+                    StrokeWidth = 2,
+                    StrokeColor = Color.FromArgb(65, 65, 65)
+                },
+                Disabled = new VectorStyles
+                {
+                    StrokeWidth = 2,
+                    StrokeColor = Color.FromArgb(190, 190, 190)
+                }
+            };
+
+            GoBackButton.Image = VectorIcons.GoBackIcon;
+            GoBackButton.ImageStyles = imageStyles;
+
+            GoForwardButton.Image = VectorIcons.GoForwardIcon;
+            GoForwardButton.ImageStyles = imageStyles;
+
+            GoUpButton.Image = VectorIcons.ArrowUpIcon;
+            GoUpButton.ImageStyles = new VectorStylesGroup
+            {
+                Normal = new VectorStyles
+                {
+                    StrokeColor = Color.FromArgb(65, 65, 65),
+                    StrokeWidth = 2,
+                    LineJoin = LineJoin.Bevel
+                }
+            };
         }
 
         #region IHistoryView

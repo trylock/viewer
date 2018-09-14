@@ -31,13 +31,28 @@ namespace Viewer.UI.Presentation
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            Viewer.UI.Forms.VectorStylesGroup vectorStylesGroup3 = new Viewer.UI.Forms.VectorStylesGroup();
+            Viewer.UI.Forms.VectorStyles vectorStyles3 = new Viewer.UI.Forms.VectorStyles();
+            Viewer.UI.Forms.VectorStylesGroup vectorStylesGroup4 = new Viewer.UI.Forms.VectorStylesGroup();
+            Viewer.UI.Forms.VectorStyles vectorStyles4 = new Viewer.UI.Forms.VectorStyles();
+            Viewer.UI.Forms.VectorStylesGroup vectorStylesGroup5 = new Viewer.UI.Forms.VectorStylesGroup();
+            Viewer.UI.Forms.VectorStyles vectorStyles5 = new Viewer.UI.Forms.VectorStyles();
+            Viewer.UI.Forms.VectorStylesGroup vectorStylesGroup6 = new Viewer.UI.Forms.VectorStylesGroup();
+            Viewer.UI.Forms.VectorStyles vectorStyles6 = new Viewer.UI.Forms.VectorStyles();
+            Viewer.UI.Forms.VectorStylesGroup vectorStylesGroup7 = new Viewer.UI.Forms.VectorStylesGroup();
+            Viewer.UI.Forms.VectorStyles vectorStyles7 = new Viewer.UI.Forms.VectorStyles();
+            Viewer.UI.Forms.VectorStylesGroup vectorStylesGroup8 = new Viewer.UI.Forms.VectorStylesGroup();
+            Viewer.UI.Forms.VectorStyles vectorStyles8 = new Viewer.UI.Forms.VectorStyles();
+            Viewer.UI.Forms.VectorStylesGroup vectorStylesGroup1 = new Viewer.UI.Forms.VectorStylesGroup();
+            Viewer.UI.Forms.VectorStyles vectorStyles1 = new Viewer.UI.Forms.VectorStyles();
+            Viewer.UI.Forms.VectorStylesGroup vectorStylesGroup2 = new Viewer.UI.Forms.VectorStylesGroup();
+            Viewer.UI.Forms.VectorStyles vectorStyles2 = new Viewer.UI.Forms.VectorStyles();
             this.NextButton = new System.Windows.Forms.Button();
             this.PrevButton = new System.Windows.Forms.Button();
             this.ControlPanel = new System.Windows.Forms.Panel();
-            this.ToggleFullscreenButton = new Viewer.UI.Forms.IconButton();
-            this.ZoomInButton = new Viewer.UI.Forms.IconButton();
-            this.ZoomOutButton = new Viewer.UI.Forms.IconButton();
-            this.PlayPauseButton = new Viewer.UI.Forms.IconButton();
+            this.ZoomInButton = new Viewer.UI.Forms.VectorButton();
+            this.ZoomOutButton = new Viewer.UI.Forms.VectorButton();
+            this.PlayPauseButton = new Viewer.UI.Forms.VectorButton();
             this.MaxDelayLabel = new System.Windows.Forms.Label();
             this.MinDelayLabel = new System.Windows.Forms.Label();
             this.SpeedTrackBar = new System.Windows.Forms.TrackBar();
@@ -49,6 +64,7 @@ namespace Viewer.UI.Presentation
             this.NextImageToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.PrevImageToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.Preview = new Viewer.UI.Presentation.PreviewControl();
+            this.ToggleFullscreenButton = new Viewer.UI.Forms.VectorButton();
             this.ControlPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SpeedTrackBar)).BeginInit();
             this.SuspendLayout();
@@ -111,58 +127,93 @@ namespace Viewer.UI.Presentation
             this.ControlPanel.Size = new System.Drawing.Size(229, 41);
             this.ControlPanel.TabIndex = 4;
             // 
-            // ToggleFullscreenButton
-            // 
-            this.ToggleFullscreenButton.Icon = global::Viewer.Properties.Resources.Fullscreen;
-            this.ToggleFullscreenButton.IconColor = System.Drawing.Color.Black;
-            this.ToggleFullscreenButton.IconDisabledColor = System.Drawing.Color.White;
-            this.ToggleFullscreenButton.IconSize = new System.Drawing.Size(16, 16);
-            this.ToggleFullscreenButton.Location = new System.Drawing.Point(200, 0);
-            this.ToggleFullscreenButton.Name = "ToggleFullscreenButton";
-            this.ToggleFullscreenButton.Size = new System.Drawing.Size(24, 43);
-            this.ToggleFullscreenButton.TabIndex = 7;
-            this.ToggleFullscreenButton.Text = "iconButton1";
-            this.ToggleFullscreenToolTip.SetToolTip(this.ToggleFullscreenButton, "F5, Double Click");
-            this.ToggleFullscreenButton.Click += new System.EventHandler(this.ToggleFullscreenButton_Click);
-            // 
             // ZoomInButton
             // 
-            this.ZoomInButton.Icon = global::Viewer.Properties.Resources.ZoomIn;
-            this.ZoomInButton.IconColor = System.Drawing.Color.Black;
-            this.ZoomInButton.IconDisabledColor = System.Drawing.Color.White;
-            this.ZoomInButton.IconSize = new System.Drawing.Size(16, 16);
-            this.ZoomInButton.Location = new System.Drawing.Point(176, 0);
+            vectorStyles3.FillColor = System.Drawing.Color.Empty;
+            vectorStyles3.IsFillEnabled = false;
+            vectorStyles3.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            vectorStyles3.StrokeColor = System.Drawing.Color.Empty;
+            vectorStyles3.StrokeWidth = 0;
+            vectorStylesGroup3.Disabled = vectorStyles3;
+            vectorStylesGroup3.Hover = vectorStyles3;
+            vectorStylesGroup3.Normal = vectorStyles3;
+            this.ZoomInButton.ButtonStyles = vectorStylesGroup3;
+            this.ZoomInButton.Image = null;
+            vectorStyles4.FillColor = System.Drawing.Color.Empty;
+            vectorStyles4.IsFillEnabled = false;
+            vectorStyles4.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            vectorStyles4.StrokeColor = System.Drawing.Color.Black;
+            vectorStyles4.StrokeWidth = 1;
+            vectorStylesGroup4.Disabled = vectorStyles4;
+            vectorStylesGroup4.Hover = vectorStyles4;
+            vectorStylesGroup4.Normal = vectorStyles4;
+            this.ZoomInButton.ImageStyles = vectorStylesGroup4;
+            this.ZoomInButton.Location = new System.Drawing.Point(178, 0);
             this.ZoomInButton.Name = "ZoomInButton";
-            this.ZoomInButton.Size = new System.Drawing.Size(24, 43);
-            this.ZoomInButton.TabIndex = 6;
-            this.ZoomInButton.Text = "iconButton1";
+            this.ZoomInButton.Padding = new System.Windows.Forms.Padding(6);
+            this.ZoomInButton.Size = new System.Drawing.Size(24, 41);
+            this.ZoomInButton.TabIndex = 10;
+            this.ZoomInButton.Text = "vectorButton1";
             this.ZoomInToolTip.SetToolTip(this.ZoomInButton, "Ctrl + Mouse Wheel Up");
             this.ZoomInButton.Click += new System.EventHandler(this.ZoomInButton_Click);
             // 
             // ZoomOutButton
             // 
-            this.ZoomOutButton.Icon = global::Viewer.Properties.Resources.ZoomOut;
-            this.ZoomOutButton.IconColor = System.Drawing.Color.Black;
-            this.ZoomOutButton.IconDisabledColor = System.Drawing.Color.White;
-            this.ZoomOutButton.IconSize = new System.Drawing.Size(16, 16);
+            vectorStyles5.FillColor = System.Drawing.Color.Empty;
+            vectorStyles5.IsFillEnabled = false;
+            vectorStyles5.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            vectorStyles5.StrokeColor = System.Drawing.Color.Empty;
+            vectorStyles5.StrokeWidth = 0;
+            vectorStylesGroup5.Disabled = vectorStyles5;
+            vectorStylesGroup5.Hover = vectorStyles5;
+            vectorStylesGroup5.Normal = vectorStyles5;
+            this.ZoomOutButton.ButtonStyles = vectorStylesGroup5;
+            this.ZoomOutButton.Image = null;
+            vectorStyles6.FillColor = System.Drawing.Color.Empty;
+            vectorStyles6.IsFillEnabled = false;
+            vectorStyles6.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            vectorStyles6.StrokeColor = System.Drawing.Color.Black;
+            vectorStyles6.StrokeWidth = 1;
+            vectorStylesGroup6.Disabled = vectorStyles6;
+            vectorStylesGroup6.Hover = vectorStyles6;
+            vectorStylesGroup6.Normal = vectorStyles6;
+            this.ZoomOutButton.ImageStyles = vectorStylesGroup6;
             this.ZoomOutButton.Location = new System.Drawing.Point(152, 0);
             this.ZoomOutButton.Name = "ZoomOutButton";
-            this.ZoomOutButton.Size = new System.Drawing.Size(24, 43);
-            this.ZoomOutButton.TabIndex = 5;
-            this.ZoomOutButton.Text = "iconButton1";
+            this.ZoomOutButton.Padding = new System.Windows.Forms.Padding(6);
+            this.ZoomOutButton.Size = new System.Drawing.Size(24, 41);
+            this.ZoomOutButton.TabIndex = 9;
+            this.ZoomOutButton.Text = "vectorButton1";
             this.ZoomOutToolTip.SetToolTip(this.ZoomOutButton, "Ctrl + Mouse Wheel Down");
             this.ZoomOutButton.Click += new System.EventHandler(this.ZoomOutButton_Click);
             // 
             // PlayPauseButton
             // 
-            this.PlayPauseButton.Icon = global::Viewer.Properties.Resources.Play;
-            this.PlayPauseButton.IconColor = System.Drawing.Color.Black;
-            this.PlayPauseButton.IconDisabledColor = System.Drawing.Color.White;
-            this.PlayPauseButton.IconSize = new System.Drawing.Size(16, 16);
-            this.PlayPauseButton.Location = new System.Drawing.Point(129, 0);
+            vectorStyles7.FillColor = System.Drawing.Color.Empty;
+            vectorStyles7.IsFillEnabled = false;
+            vectorStyles7.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            vectorStyles7.StrokeColor = System.Drawing.Color.Empty;
+            vectorStyles7.StrokeWidth = 0;
+            vectorStylesGroup7.Disabled = vectorStyles7;
+            vectorStylesGroup7.Hover = vectorStyles7;
+            vectorStylesGroup7.Normal = vectorStyles7;
+            this.PlayPauseButton.ButtonStyles = vectorStylesGroup7;
+            this.PlayPauseButton.Image = null;
+            vectorStyles8.FillColor = System.Drawing.Color.Empty;
+            vectorStyles8.IsFillEnabled = false;
+            vectorStyles8.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            vectorStyles8.StrokeColor = System.Drawing.Color.Black;
+            vectorStyles8.StrokeWidth = 1;
+            vectorStylesGroup8.Disabled = vectorStyles8;
+            vectorStylesGroup8.Hover = vectorStyles8;
+            vectorStylesGroup8.Normal = vectorStyles8;
+            this.PlayPauseButton.ImageStyles = vectorStylesGroup8;
+            this.PlayPauseButton.Location = new System.Drawing.Point(126, 0);
             this.PlayPauseButton.Name = "PlayPauseButton";
-            this.PlayPauseButton.Size = new System.Drawing.Size(24, 43);
-            this.PlayPauseButton.TabIndex = 4;
+            this.PlayPauseButton.Padding = new System.Windows.Forms.Padding(6);
+            this.PlayPauseButton.Size = new System.Drawing.Size(24, 41);
+            this.PlayPauseButton.TabIndex = 8;
+            this.PlayPauseButton.Text = "vectorButton1";
             this.TogglePlayToolTip.SetToolTip(this.PlayPauseButton, "Space");
             this.PlayPauseButton.Click += new System.EventHandler(this.PlayPauseButton_Click);
             // 
@@ -251,6 +302,36 @@ namespace Viewer.UI.Presentation
             this.Preview.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Preview_MouseUp);
             this.Preview.Resize += new System.EventHandler(this.Preview_Resize);
             // 
+            // ToggleFullscreenButton
+            // 
+            vectorStyles1.FillColor = System.Drawing.Color.Empty;
+            vectorStyles1.IsFillEnabled = false;
+            vectorStyles1.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            vectorStyles1.StrokeColor = System.Drawing.Color.Empty;
+            vectorStyles1.StrokeWidth = 0;
+            vectorStylesGroup1.Disabled = vectorStyles1;
+            vectorStylesGroup1.Hover = vectorStyles1;
+            vectorStylesGroup1.Normal = vectorStyles1;
+            this.ToggleFullscreenButton.ButtonStyles = vectorStylesGroup1;
+            this.ToggleFullscreenButton.Image = null;
+            vectorStyles2.FillColor = System.Drawing.Color.Empty;
+            vectorStyles2.IsFillEnabled = false;
+            vectorStyles2.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            vectorStyles2.StrokeColor = System.Drawing.Color.Black;
+            vectorStyles2.StrokeWidth = 1;
+            vectorStylesGroup2.Disabled = vectorStyles2;
+            vectorStylesGroup2.Hover = vectorStyles2;
+            vectorStylesGroup2.Normal = vectorStyles2;
+            this.ToggleFullscreenButton.ImageStyles = vectorStylesGroup2;
+            this.ToggleFullscreenButton.Location = new System.Drawing.Point(202, -1);
+            this.ToggleFullscreenButton.Name = "ToggleFullscreenButton";
+            this.ToggleFullscreenButton.Padding = new System.Windows.Forms.Padding(6);
+            this.ToggleFullscreenButton.Size = new System.Drawing.Size(24, 41);
+            this.ToggleFullscreenButton.TabIndex = 11;
+            this.ToggleFullscreenButton.Text = "vectorButton1";
+            this.ToggleFullscreenToolTip.SetToolTip(this.ToggleFullscreenButton, "F5, F, double click");
+            this.ToggleFullscreenButton.Click += new System.EventHandler(this.ToggleFullscreenButton_Click);
+            // 
             // PresentationControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -280,10 +361,6 @@ namespace Viewer.UI.Presentation
         private System.Windows.Forms.Label MinDelayLabel;
         private System.Windows.Forms.Label MaxDelayLabel;
         private System.Windows.Forms.Timer UpdateTimer;
-        private Forms.IconButton PlayPauseButton;
-        private Forms.IconButton ZoomOutButton;
-        private Forms.IconButton ZoomInButton;
-        private Forms.IconButton ToggleFullscreenButton;
         private System.Windows.Forms.ToolTip ToggleFullscreenToolTip;
         private System.Windows.Forms.ToolTip ZoomInToolTip;
         private System.Windows.Forms.ToolTip ZoomOutToolTip;
@@ -291,5 +368,9 @@ namespace Viewer.UI.Presentation
         private PreviewControl Preview;
         private System.Windows.Forms.ToolTip NextImageToolTip;
         private System.Windows.Forms.ToolTip PrevImageToolTip;
+        private VectorButton PlayPauseButton;
+        private VectorButton ZoomOutButton;
+        private VectorButton ZoomInButton;
+        private VectorButton ToggleFullscreenButton;
     }
 }

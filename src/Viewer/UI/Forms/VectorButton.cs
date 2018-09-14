@@ -191,7 +191,7 @@ namespace Viewer.UI.Forms
             }
 
             e.Graphics.Clear(BackColor);
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             // draw the button
             if (buttonStyles.IsFillEnabled)
@@ -223,7 +223,7 @@ namespace Viewer.UI.Forms
                 (int) Math.Max(Width - (Padding.Left + Padding.Right), 0),
                 (int) Math.Max(Height - (Padding.Top + Padding.Bottom), 0));
             var iconSize = ThumbnailGenerator.GetThumbnailSize(
-                new Size((int) bounds.Width, (int)bounds.Height), 
+                new Size((int) bounds.Width, (int) bounds.Height), 
                 iconAreaSize);
 
             // translate icon center to the origin

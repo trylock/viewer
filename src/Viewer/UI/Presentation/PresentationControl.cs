@@ -13,6 +13,7 @@ using SkiaSharp;
 using Viewer.Core;
 using Viewer.Images;
 using Viewer.Properties;
+using Viewer.UI.Forms;
 using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
@@ -47,7 +48,7 @@ namespace Viewer.UI.Presentation
             set
             {
                 _isPlaying = value;
-                PlayPauseButton.Icon = _isPlaying ? Resources.Pause : Resources.Play;
+                PlayPauseButton.Image = _isPlaying ? VectorIcons.PauseIcon : VectorIcons.PlayIcon;
                 PlayPauseButton.Invalidate();
             }
         }
@@ -66,7 +67,7 @@ namespace Viewer.UI.Presentation
                 if (IsFullscreen == value)
                     return;
 
-                ToggleFullscreenButton.Icon = value ? Resources.Windowed : Resources.Fullscreen;
+                ToggleFullscreenButton.Image = value ? VectorIcons.WindowedIcon : VectorIcons.FullscreenIcon;
 
                 if (value)
                     ToFullscreen();
@@ -96,8 +97,34 @@ namespace Viewer.UI.Presentation
 
             MinDelayLabel.Text = SpeedTrackBar.Minimum + "s";
             MaxDelayLabel.Text = SpeedTrackBar.Maximum + "s";
-            PlayPauseButton.IconColor = Color.FromArgb(0, 120, 215);
-            
+
+            PlayPauseButton.ImageStyles = new VectorStylesGroup
+            {
+                Normal = new VectorStyles
+                {
+                    FillColor = Color.FromArgb(0, 120, 215),
+                    IsFillEnabled = true
+                }
+            };
+
+            var controlImageStyles = new VectorStylesGroup
+            {
+                Normal = new VectorStyles
+                {
+                    StrokeColor = Color.FromArgb(60, 60, 60),
+                    StrokeWidth = 1
+                }
+            };
+
+            ZoomOutButton.Image = VectorIcons.ZoomOutIcon;
+            ZoomOutButton.ImageStyles = controlImageStyles;
+
+            ZoomInButton.Image = VectorIcons.ZoomInIcon;
+            ZoomInButton.ImageStyles = controlImageStyles;
+
+            ToggleFullscreenButton.Image = VectorIcons.FullscreenIcon;
+            ToggleFullscreenButton.ImageStyles = controlImageStyles;
+
             // fullscreen form to which is this control added whenever user enters a fullscreen mode
             _fullscreenForm = new Form
             {

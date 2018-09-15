@@ -192,6 +192,10 @@
       <Project>{a09ee86c-981c-4f59-9554-c89fc8064c25}</Project>
       <Name>Viewer.Query</Name>
     </ProjectReference>
+    <ProjectReference Include="..\src\ViewerTheme\ViewerTheme.csproj">
+      <Project>{b3e6903b-4cfd-4ebf-bb8b-7f312e8c2e36}</Project>
+      <Name>ViewerTheme</Name>
+    </ProjectReference>
     <ProjectReference Include="..\src\Viewer\Viewer.csproj">
       <Project>{ee97e5f1-ce89-4d1e-9a3b-797505982594}</Project>
       <Name>Viewer</Name>

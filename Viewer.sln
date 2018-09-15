@@ -21,7 +21,7 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "ViewerInstaller", "src\View
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "ViewerSetup", "src\ViewerSetup\ViewerSetup.wixproj", "{F46A6D53-5726-4079-AD9C-DE96A69E08A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewerTheme", "ViewerTheme\ViewerTheme.csproj", "{B3E6903B-4CFD-4EBF-BB8B-7F312E8C2E36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewerTheme", "src\ViewerTheme\ViewerTheme.csproj", "{B3E6903B-4CFD-4EBF-BB8B-7F312E8C2E36}"
 EndProject
 Global
 	GlobalSection(Performance) = preSolution

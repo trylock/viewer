@@ -13,6 +13,7 @@ namespace ViewerTheme
         public ViewerLightTheme()
         {
             Extender.WindowSplitterControlFactory = new WindowSplitterControlFactory();
+            //Extender.DockPaneStripFactory = new ViewerDockPaneStripFactory();
         }
     }
 }

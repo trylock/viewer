@@ -19,14 +19,14 @@ namespace Viewer.UI.Images
         {
             InitializeComponent();
 
-            var imageStyles = new VectorStylesGroup
+            var imageStyles = new StateStyles
             {
-                Normal = new VectorStyles
+                Normal = new Styles
                 {
                     StrokeWidth = 2,
                     StrokeColor = Color.FromArgb(65, 65, 65)
                 },
-                Disabled = new VectorStyles
+                Disabled = new Styles
                 {
                     StrokeWidth = 2,
                     StrokeColor = Color.FromArgb(190, 190, 190)
@@ -40,9 +40,9 @@ namespace Viewer.UI.Images
             GoForwardButton.ImageStyles = imageStyles;
 
             GoUpButton.Image = VectorIcons.ArrowUpIcon;
-            GoUpButton.ImageStyles = new VectorStylesGroup
+            GoUpButton.ImageStyles = new StateStyles
             {
-                Normal = new VectorStyles
+                Normal = new Styles
                 {
                     StrokeColor = Color.FromArgb(65, 65, 65),
                     StrokeWidth = 2,

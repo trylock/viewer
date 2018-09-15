@@ -12,7 +12,7 @@ using Viewer.Images;
 
 namespace Viewer.UI.Forms
 {
-    internal class VectorStyles 
+    internal class Styles 
     {
         /// <summary>
         /// Color which is used to draw the outline of a vector image.
@@ -60,21 +60,21 @@ namespace Viewer.UI.Forms
         }
     }
     
-    internal class VectorStylesGroup
+    internal class StateStyles
     {
-        private VectorStyles _hover;
-        private VectorStyles _disabled;
+        private Styles _hover;
+        private Styles _disabled;
 
         /// <summary>
         /// Styles used in a normal state
         /// </summary>
-        public VectorStyles Normal { get; set; } = new VectorStyles();
+        public Styles Normal { get; set; } = new Styles();
 
         /// <summary>
         /// Styles used when there is a mouse cursor above this object. If you don't set this
         /// property or its value is null, <see cref="Normal"/> will be returned.
         /// </summary>
-        public VectorStyles Hover
+        public Styles Hover
         {
             get => _hover ?? Normal;
             set => _hover = value;
@@ -84,7 +84,7 @@ namespace Viewer.UI.Forms
         /// Styles used when the object is disabled. If you don't set this property or its value
         /// is null, <see cref="Normal"/> will be returned.
         /// </summary>
-        public VectorStyles Disabled
+        public Styles Disabled
         {
             get => _disabled ?? Normal;
             set => _disabled = value;
@@ -98,8 +98,8 @@ namespace Viewer.UI.Forms
     /// </summary>
     internal class VectorButton : Control
     {
-        private VectorStylesGroup _imageStyles;
-        private VectorStylesGroup _buttonStyles;
+        private StateStyles _imageStyles;
+        private StateStyles _buttonStyles;
 
         /// <summary>
         /// Vector image outline. The button does not take ownership of the path. It is up to the
@@ -110,7 +110,7 @@ namespace Viewer.UI.Forms
         /// <summary>
         /// Styles which are used to draw the image in the button 
         /// </summary>
-        public VectorStylesGroup ImageStyles
+        public StateStyles ImageStyles
         {
             get => _imageStyles;
             set
@@ -123,7 +123,7 @@ namespace Viewer.UI.Forms
         /// <summary>
         /// Styles which are used to draw the button background and border
         /// </summary>
-        public VectorStylesGroup ButtonStyles
+        public StateStyles ButtonStyles
         {
             get => _buttonStyles;
             set
@@ -144,17 +144,17 @@ namespace Viewer.UI.Forms
             // setup the control with default values
             Width = 16;
             Height = 16;
-            ImageStyles = new VectorStylesGroup
+            ImageStyles = new StateStyles
             {
-                Normal = new VectorStyles
+                Normal = new Styles
                 {
                     StrokeColor = Color.Black,
                     StrokeWidth = 1
                 }
             };
-            ButtonStyles = new VectorStylesGroup
+            ButtonStyles = new StateStyles
             {
-                Normal = new VectorStyles()
+                Normal = new Styles()
             };
         }
 
@@ -175,8 +175,8 @@ namespace Viewer.UI.Forms
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            VectorStyles imageStyles = ImageStyles.Normal;
-            VectorStyles buttonStyles = ButtonStyles.Normal;
+            Styles imageStyles = ImageStyles.Normal;
+            Styles buttonStyles = ButtonStyles.Normal;
 
             if (!Enabled)
             {

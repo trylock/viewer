@@ -98,18 +98,18 @@ namespace Viewer.UI.Presentation
             MinDelayLabel.Text = SpeedTrackBar.Minimum + "s";
             MaxDelayLabel.Text = SpeedTrackBar.Maximum + "s";
 
-            PlayPauseButton.ImageStyles = new VectorStylesGroup
+            PlayPauseButton.ImageStyles = new StateStyles
             {
-                Normal = new VectorStyles
+                Normal = new Styles
                 {
                     FillColor = Color.FromArgb(0, 120, 215),
                     IsFillEnabled = true
                 }
             };
 
-            var controlImageStyles = new VectorStylesGroup
+            var controlImageStyles = new StateStyles
             {
-                Normal = new VectorStyles
+                Normal = new Styles
                 {
                     StrokeColor = Color.FromArgb(60, 60, 60),
                     StrokeWidth = 1

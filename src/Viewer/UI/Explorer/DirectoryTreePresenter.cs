@@ -178,10 +178,12 @@ namespace Viewer.UI.Explorer
             }
 
             // update the view
-            foreach (var folder in subdirectories)
+            for (var i = 0; i < subdirectories.Count; ++i)
             {
+                var folder = subdirectories[i];
                 var pathParts = PathUtils.Split(folder.Path);
-                View.LoadDirectories(pathParts, folder.Children, true);
+                var isNotLast = i + 1 < subdirectories.Count;
+                View.LoadDirectories(pathParts, folder.Children, isNotLast);
             }
         }
         

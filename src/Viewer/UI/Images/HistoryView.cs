@@ -24,12 +24,12 @@ namespace Viewer.UI.Images
                 Normal = new Styles
                 {
                     StrokeWidth = 2,
-                    StrokeColor = Color.FromArgb(65, 65, 65)
+                    StrokeColor = Color.FromArgb(unchecked((int)0xff69696C))
                 },
                 Disabled = new Styles
                 {
                     StrokeWidth = 2,
-                    StrokeColor = Color.FromArgb(190, 190, 190)
+                    StrokeColor = Color.FromArgb(unchecked((int)0xffBCBCC0))
                 }
             };
 
@@ -44,7 +44,7 @@ namespace Viewer.UI.Images
             {
                 Normal = new Styles
                 {
-                    StrokeColor = Color.FromArgb(65, 65, 65),
+                    StrokeColor = imageStyles.Normal.StrokeColor,
                     StrokeWidth = 2,
                     LineJoin = LineJoin.Bevel
                 }

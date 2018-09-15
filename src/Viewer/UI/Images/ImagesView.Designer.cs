@@ -250,7 +250,7 @@
             this.HistoryView.Location = new System.Drawing.Point(0, 0);
             this.HistoryView.Name = "HistoryView";
             this.HistoryView.SelectedItem = null;
-            this.HistoryView.Size = new System.Drawing.Size(626, 30);
+            this.HistoryView.Size = new System.Drawing.Size(626, 29);
             this.HistoryView.TabIndex = 3;
             // 
             // ImagesView

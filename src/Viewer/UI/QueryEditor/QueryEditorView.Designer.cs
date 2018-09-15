@@ -56,6 +56,7 @@ namespace Viewer.UI.QueryEditor
             // 
             this.EditorToolStrip.AllowItemReorder = true;
             this.EditorToolStrip.BackColor = System.Drawing.SystemColors.Control;
+            this.EditorToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.EditorToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenButton,
             this.QueryViewsDropDown,
@@ -63,7 +64,8 @@ namespace Viewer.UI.QueryEditor
             this.RunButton});
             this.EditorToolStrip.Location = new System.Drawing.Point(0, 0);
             this.EditorToolStrip.Name = "EditorToolStrip";
-            this.EditorToolStrip.Size = new System.Drawing.Size(779, 25);
+            this.EditorToolStrip.Padding = new System.Windows.Forms.Padding(3);
+            this.EditorToolStrip.Size = new System.Drawing.Size(779, 29);
             this.EditorToolStrip.TabIndex = 1;
             this.EditorToolStrip.Text = "toolStrip1";
             // 
@@ -73,7 +75,7 @@ namespace Viewer.UI.QueryEditor
             this.OpenButton.Image = global::Viewer.Properties.Resources.Open;
             this.OpenButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.OpenButton.Name = "OpenButton";
-            this.OpenButton.Size = new System.Drawing.Size(23, 22);
+            this.OpenButton.Size = new System.Drawing.Size(23, 20);
             this.OpenButton.Text = "Open query";
             this.OpenButton.ToolTipText = "Open query (Ctrl + O)";
             this.OpenButton.Click += new System.EventHandler(this.OpenButton_Click);
@@ -84,7 +86,7 @@ namespace Viewer.UI.QueryEditor
             this.QueryViewsDropDown.Image = global::Viewer.Properties.Resources.View;
             this.QueryViewsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.QueryViewsDropDown.Name = "QueryViewsDropDown";
-            this.QueryViewsDropDown.Size = new System.Drawing.Size(29, 22);
+            this.QueryViewsDropDown.Size = new System.Drawing.Size(29, 20);
             this.QueryViewsDropDown.Text = "Open query view";
             // 
             // SaveButton
@@ -93,7 +95,7 @@ namespace Viewer.UI.QueryEditor
             this.SaveButton.Image = global::Viewer.Properties.Resources.Save;
             this.SaveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(23, 22);
+            this.SaveButton.Size = new System.Drawing.Size(23, 20);
             this.SaveButton.Text = "Save query";
             this.SaveButton.ToolTipText = "Save query (Ctrl + S)";
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
@@ -104,7 +106,7 @@ namespace Viewer.UI.QueryEditor
             this.RunButton.Image = global::Viewer.Properties.Resources.Start;
             this.RunButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.RunButton.Name = "RunButton";
-            this.RunButton.Size = new System.Drawing.Size(23, 22);
+            this.RunButton.Size = new System.Drawing.Size(23, 20);
             this.RunButton.Text = "Run query";
             this.RunButton.ToolTipText = "Run query (F5, Ctrl + Enter)";
             this.RunButton.Click += new System.EventHandler(this.RunButton_Click);

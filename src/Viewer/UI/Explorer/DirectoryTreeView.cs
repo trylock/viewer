@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -22,7 +23,7 @@ namespace Viewer.UI.Explorer
         /// <summary>
         /// Background color of a highlighted item
         /// </summary>
-        public Color HighlightBackColor { get; set; } = Color.FromArgb(240, 240, 240);
+        public Color HighlightBackColor { get; set; } = Color.FromArgb(unchecked((int)0xFFEEEEF2));
         
         /// <summary>
         /// Text color of a highlighted item
@@ -32,7 +33,7 @@ namespace Viewer.UI.Explorer
         public DirectoryTreeView()
         {
             InitializeComponent();
-            
+
             var list = new ImageList();
             list.Images.Add(Resources.Directory);
             
@@ -41,7 +42,7 @@ namespace Viewer.UI.Explorer
             TreeView.Sorted = true;
             TreeView.ItemHeight = (int) (TreeView.Font.Height * 1.9f);
         }
-        
+
         private class NodeState
         {
             /// <summary>

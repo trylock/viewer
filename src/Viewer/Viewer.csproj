@@ -176,12 +176,6 @@
     </Compile>
     <Compile Include="UI\Forms\ButtonCell.cs" />
     <Compile Include="UI\Forms\DateTimeCell.cs" />
-    <Compile Include="UI\Forms\IconButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\IconButton.Designer.cs">
-      <DependentUpon>IconButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Images\GridView.cs">
       <SubType>UserControl</SubType>
     </Compile>

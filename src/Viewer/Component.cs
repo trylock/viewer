@@ -15,5 +15,9 @@ namespace Viewer
         {
 
         }
+
+        public virtual void OnInitialized()
+        {
+        }
     }
 }

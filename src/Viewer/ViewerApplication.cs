@@ -59,6 +59,11 @@ namespace Viewer
             
             // deserialize layout
             LoadLayout();
+
+            foreach (var component in _components)
+            {
+                component.OnInitialized();
+            }
         }
 
         public void AddMenuItem(IReadOnlyList<string> menuPath, Action action, Image icon)

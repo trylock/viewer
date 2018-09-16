@@ -13,6 +13,7 @@ using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Properties;
 using Viewer.UI.Forms;
+using Viewer.UI.Suggestions;
 using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
@@ -30,7 +31,7 @@ namespace Viewer.UI.Attributes
         private readonly Color _readOnlyBackColor = Color.LightGray;
         
         private const int TypeColumnIndex = 2;
-        
+
         public AttributeTableView()
         {
             InitializeComponent();
@@ -41,15 +42,52 @@ namespace Viewer.UI.Attributes
             typeColumn.ValueType = typeof(AttributeType);
         }
 
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
         #region View interface
 
         public event EventHandler SaveAttributes;
         public event EventHandler<AttributeChangedEventArgs> AttributeChanged;
         public event EventHandler<AttributeDeletedEventArgs> AttributeDeleted;
         public event EventHandler<SortEventArgs> SortAttributes;
-        
+        public event EventHandler<NameEventArgs> NameChanged;
+        public event EventHandler<NameEventArgs> BeginValueEdit;
+
         public List<AttributeGroup> Attributes { get; set; } = new List<AttributeGroup>();
 
+        private SuggestionTextBox SuggestionEditControl => GridView.EditingControl as SuggestionTextBox;
+
+        /// <inheritdoc />
+        /// <summary>
+        /// If the current editing control supports suggestions (e.g., it is a SuggestionTextBox),
+        /// this will forward all calls to its Suggestion control. Otherwise, this is just a no-op.
+        /// </summary>
+        public IEnumerable<SuggestionItem> Suggestions
+        {
+            get => SuggestionEditControl?.Suggestions.Items ?? Enumerable.Empty<SuggestionItem>();
+            set
+            {
+                var suggestions = SuggestionEditControl?.Suggestions;
+                if (suggestions == null)
+                {
+                    return;
+                }
+                suggestions.Items = value;
+                suggestions.ShowAtCurrentControl();
+            }
+        }
+        
         private AttributeViewType _viewType;
         public AttributeViewType ViewType
         {
@@ -160,7 +198,7 @@ namespace Viewer.UI.Attributes
 
             public void Visit(IntValue attr)
             {
-                _row.Cells.Add(new DataGridViewTextBoxCell
+                _row.Cells.Add(new SuggestionTextBoxCell
                 {
                     ValueType = typeof(int),
                     Value = attr.Value
@@ -170,7 +208,7 @@ namespace Viewer.UI.Attributes
 
             public void Visit(RealValue attr)
             {
-                _row.Cells.Add(new DataGridViewTextBoxCell
+                _row.Cells.Add(new SuggestionTextBoxCell
                 {
                     ValueType = typeof(double),
                     Value = attr.Value
@@ -180,7 +218,7 @@ namespace Viewer.UI.Attributes
 
             public void Visit(StringValue attr)
             {
-                var cell = new DataGridViewTextBoxCell
+                var cell = new SuggestionTextBoxCell
                 {
                     ValueType = typeof(string),
                     Value = attr.Value,
@@ -218,7 +256,11 @@ namespace Viewer.UI.Attributes
         private DataGridViewRow CreateAttributeView(AttributeGroup attr)
         {
             var row = new DataGridViewRow { Tag = attr };
-            row.Cells.Add(new DataGridViewTextBoxCell { ValueType = typeof(string), Value = attr.Value.Name });
+            row.Cells.Add(new SuggestionTextBoxCell
+            {
+                ValueType = typeof(string),
+                Value = attr.Value.Name
+            });
 
             if (attr.HasMultipleValues)
             {
@@ -358,6 +400,152 @@ namespace Viewer.UI.Attributes
                 Column = column
             });
         }
+
+        #region Show name/value suggestions
+
+        private void GridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            var suggestionControl = SuggestionEditControl;
+            if (suggestionControl == null)
+            {
+                return;
+            }
+
+            // grid view re-uses controls, make sure we won't subscribe an event handler twice
+            suggestionControl.Suggestions.Accepted -= SuggestionsOnAccepted;
+            suggestionControl.Suggestions.Accepted += SuggestionsOnAccepted;
+
+            const int nameColumn = 0;
+            const int valueColumn = 1;
+
+            if (GridView.CurrentCell.ColumnIndex == nameColumn)
+            {
+                // don't select a value by default
+                suggestionControl.Suggestions.DefaultSelectedIndex = -1;
+
+                suggestionControl.TextChanged -= NameTextBox_TextChanged;
+                suggestionControl.TextChanged += NameTextBox_TextChanged;
+                suggestionControl.Disposed -= NameTextBox_Disposed;
+                suggestionControl.Disposed += NameTextBox_Disposed;
+            }
+            else if (GridView.CurrentCell.ColumnIndex == valueColumn) 
+            {
+                // don't select a value by default
+                suggestionControl.Suggestions.DefaultSelectedIndex = -1;
+
+                // trigger the BeginValueEdit event so that listeners can load suggestions
+                var name = GridView.CurrentRow?.Cells[0].Value as string;
+                BeginValueEdit?.Invoke(sender, new NameEventArgs
+                {
+                    Value = name
+                });
+            }
+        }
+
+        private void NameTextBox_Disposed(object sender, EventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null)
+            {
+                return;
+            }
+
+            textBox.TextChanged -= NameTextBox_TextChanged;
+            textBox.Disposed -= NameTextBox_Disposed;
+        }
+
+        private bool _suppressNameChanged;
+
+        private void NameTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (GridView.CurrentCell.ColumnIndex != 0)
+            {
+                return;
+            }
+
+            var textBox = sender as TextBox;
+            if (textBox == null || _suppressNameChanged)
+            {
+                return;
+            }
+
+            NameChanged?.Invoke(sender, new NameEventArgs
+            {
+                Value = textBox.Text
+            });
+        }
+
+        private void SuggestionsOnAccepted(object sender, SuggestionEventArgs e)
+        {
+            if (GridView.CurrentCell?.ColumnIndex == 0)
+            {
+                NameSuggestionsOnAccepted(sender, e);
+            }
+            else if (GridView.CurrentCell?.ColumnIndex == 1)
+            {
+                ValueSuggestionsOnAccepted(sender, e);
+            }
+        }
+        
+        private void NameSuggestionsOnAccepted(object sender, SuggestionEventArgs e)
+        {
+            var cell = GridView.CurrentCell;
+            if (cell == null || cell.ColumnIndex != 0)
+            {
+                return;
+            }
+
+            if (!cell.IsInEditMode)
+            {
+                return;
+            }
+
+            var textBox = GridView.EditingControl as TextBox;
+            if (textBox == null)
+            {
+                return;
+            }
+
+            _suppressNameChanged = true;
+            try
+            {
+                textBox.Text = e.Value.Text;
+            }
+            finally
+            {
+                _suppressNameChanged = false;
+            }
+        }
+
+        private void ValueSuggestionsOnAccepted(object sender, SuggestionEventArgs e)
+        {
+            var row = GridView.CurrentRow;
+            if (row == null)
+            {
+                return;
+            }
+
+            var value = e.Value.UserData as BaseValue;
+            if (value == null)
+            {
+                return;
+            }
+
+            var oldGroup = row.Tag as AttributeGroup;
+            var newGroup = new AttributeGroup
+            {
+                EntityCount = oldGroup.EntityCount,
+                HasMultipleValues = false,
+                IsInAllEntities = true,
+                Value = new Attribute(oldGroup.Value.Name, value, oldGroup.Value.Source)
+            };
+
+            var rowIndex = row.Index;
+            GridView.Rows.RemoveAt(rowIndex);
+            GridView.Rows.Insert(rowIndex, CreateAttributeView(newGroup));
+        }
+
+        #endregion
 
         private void SaveButton_Click(object sender, EventArgs e)
         {

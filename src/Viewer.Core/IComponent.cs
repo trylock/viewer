@@ -19,5 +19,10 @@ namespace Viewer.Core
         /// </summary>
         /// <param name="app">Application</param>
         void OnStartup(IViewerApplication app);
+
+        /// <summary>
+        /// Function called once all components have been initialized.
+        /// </summary>
+        void OnInitialized();
     }
 }

@@ -15,6 +15,8 @@ using Viewer.Data.Storage;
 using Viewer.Properties;
 using Viewer.UI.Errors;
 using Viewer.UI.Explorer;
+using Viewer.UI.Forms;
+using Viewer.UI.Suggestions;
 using Viewer.UI.Tasks;
 using Attribute = Viewer.Data.Attribute;
 
@@ -28,6 +30,7 @@ namespace Viewer.UI.Attributes
         private readonly IEntityManager _entityManager;
         private readonly IErrorList _errorList;
         private readonly IFileSystemErrorView _dialogView;
+        private readonly IAttributeCache _attributeCache;
         
         /// <summary>
         /// Funtion which determines for each attribute whether it should be managed by this presenter.
@@ -49,7 +52,8 @@ namespace Viewer.UI.Attributes
             IAttributeStorage storage,
             IEntityManager entityManager,
             IErrorList errorList,
-            IFileSystemErrorView dialogView)
+            IFileSystemErrorView dialogView,
+            IAttributeCache attributeCache)
         {
             View = view;
             _taskLoader = taskLoader;
@@ -57,6 +61,7 @@ namespace Viewer.UI.Attributes
             _storage = storage;
             _entityManager = entityManager;
             _dialogView = dialogView;
+            _attributeCache = attributeCache;
             _attributes = attrManager;
             _attributes.SelectionChanged += Selection_Changed;
 
@@ -64,8 +69,11 @@ namespace Viewer.UI.Attributes
             UpdateAttributes();
         }
 
+        private bool _isDisposed;
+
         public override void Dispose()
         {
+            _isDisposed = true;
             _attributes.SelectionChanged -= Selection_Changed;
             base.Dispose();
         }
@@ -379,6 +387,66 @@ namespace Viewer.UI.Attributes
             }
 
             View.UpdateAttributes();
+        }
+        
+        private async void View_NameChanged(object sender, NameEventArgs e)
+        {
+            var value = e.Value?.Trim();
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                View.Suggestions = new List<SuggestionItem>();
+                return;
+            }
+
+            var suggestions = await Task.Run(() =>
+            {
+                var items = new List<SuggestionItem>();
+
+                // load suggestions
+                foreach (var name in _attributeCache.GetNames(value))
+                {
+                    items.Add(new SuggestionItem
+                    {
+                        Text = name,
+                        Category = "User attribute"
+                    });
+                }
+
+                return items;
+            });
+
+            if (_isDisposed)
+            {
+                return;
+            }
+            
+            View.Suggestions = suggestions;
+        }
+
+        private async void View_BeginValueEdit(object sender, NameEventArgs e)
+        {
+            var suggestions = await Task.Run(() =>
+            {
+                var items = new List<SuggestionItem>();
+                foreach (var value in _attributeCache.GetValues(e.Value))
+                {
+                    items.Add(new SuggestionItem
+                    {
+                        Text = value.ToString(),
+                        Category = value.Type.ToString(),
+                        UserData = value
+                    });
+                }
+
+                return items;
+            });
+
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            View.Suggestions = suggestions;
         }
 
         #endregion

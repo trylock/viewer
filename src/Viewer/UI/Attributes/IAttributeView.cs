@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core.UI;
+using Viewer.UI.Forms;
+using Viewer.UI.Suggestions;
 using Attribute = Viewer.Data.Attribute;
 
 namespace Viewer.UI.Attributes
@@ -41,6 +43,14 @@ namespace Viewer.UI.Attributes
         /// Column by which we should sort the values
         /// </summary>
         public SortColumn Column { get; set; }
+    }
+
+    internal class NameEventArgs : EventArgs
+    {
+        /// <summary>
+        /// New name
+        /// </summary>
+        public string Value { get; set; }
     }
 
     internal enum SortColumn
@@ -114,9 +124,25 @@ namespace Viewer.UI.Attributes
         event EventHandler<SortEventArgs> SortAttributes;
 
         /// <summary>
+        /// Event occurs whenever user changes an attribute name
+        /// </summary>
+        event EventHandler<NameEventArgs> NameChanged;
+
+        /// <summary>
+        /// Event occurs whenever user starts editing a value of an attribute
+        /// </summary>
+        event EventHandler<NameEventArgs> BeginValueEdit;
+
+        /// <summary>
         /// Attributes shown in the view
         /// </summary>
         List<AttributeGroup> Attributes { get; set; }
+
+        /// <summary>
+        /// Attribute name or value suggestions shown to the user. Where the suggestions will be
+        /// shown depends on which property the user is editing.
+        /// </summary>
+        IEnumerable<SuggestionItem> Suggestions { get; set; }
 
         /// <summary>
         /// Identification string of this view.

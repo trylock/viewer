@@ -25,6 +25,7 @@ namespace Viewer.UI.Attributes
         private readonly IEntityManager _entityManager;
         private readonly IErrorList _errorList;
         private readonly IFileSystemErrorView _dialogView;
+        private readonly IAttributeCache _attributeCache;
         
         private const string AttributesId = "attributes";
         private const string ExifId = "exif";
@@ -39,7 +40,8 @@ namespace Viewer.UI.Attributes
             IAttributeStorage storage, 
             IEntityManager entities, 
             IErrorList errorList, 
-            IFileSystemErrorView dialogView)
+            IFileSystemErrorView dialogView,
+            IAttributeCache attributeCache)
         {
             _taskLoader = loader;
             _attributes = attributes;
@@ -47,6 +49,7 @@ namespace Viewer.UI.Attributes
             _entityManager = entities;
             _errorList = errorList;
             _dialogView = dialogView;
+            _attributeCache = attributeCache;
         }
 
         public override void OnStartup(IViewerApplication app)
@@ -81,7 +84,8 @@ namespace Viewer.UI.Attributes
                 _storage, 
                 _entityManager, 
                 _errorList, 
-                _dialogView);
+                _dialogView,
+                _attributeCache);
         }
 
         private AttributesPresenter GetAttributes()

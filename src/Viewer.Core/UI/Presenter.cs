@@ -101,6 +101,7 @@ namespace Viewer.Core.UI
                 subscription.Unsubscribe();
             }
             View.Dispose();
+            View = null;
         }
     }
 }

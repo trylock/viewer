@@ -207,7 +207,7 @@ namespace Viewer.UI.Presentation
             }
         }
 
-        private void View_ViewGotFocus(object sender, EventArgs e)
+        private void View_Activated(object sender, EventArgs e)
         {
             if (_entities == null || _entities.Count == 0)
             {

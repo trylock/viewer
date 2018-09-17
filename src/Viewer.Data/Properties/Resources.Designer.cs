@@ -82,20 +82,20 @@ namespace Viewer.Data.Properties {
         ///   Looks up a localized string similar to BEGIN TRANSACTION;
         ///CREATE TABLE IF NOT EXISTS `files` (
         ///	`id`	INTEGER NOT NULL,
-        ///	`path`	TEXT NOT NULL UNIQUE COLLATE CURRENT_CULTURE_IGNORE_CASE,
+        ///	`path`	TEXT NOT NULL UNIQUE COLLATE INVARIANT_CULTURE_IGNORE_CASE,
         ///	`lastWriteTime`	TEXT NOT NULL,
         ///	`lastAccessTime`	TEXT NOT NULL,
         ///	PRIMARY KEY(`id`)
         ///);
         ///CREATE TABLE IF NOT EXISTS `attributes` (
         ///	`id`	INTEGER NOT NULL,
-        ///	`name`	TEXT NOT NULL,
+        ///	`name`	TEXT NOT NULL COLLATE INVARIANT_CULTURE,
         ///	`source`	INTEGER NOT NULL DEFAULT 0,
         ///	`type`	INTEGER NOT NULL DEFAULT 0,
         ///	`value`	BLOB NOT NULL,
         ///	`owner`	INTEGER NOT NULL,
         ///	PRIMARY KEY(`id`),
-        ///	FOREIGN KEY(`owner`) REFEREN [rest of string was truncated]&quot;;.
+        ///	 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SqliteInitializationScript {
             get {

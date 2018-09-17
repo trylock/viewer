@@ -129,14 +129,14 @@
     <value>BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS `files` (
 	`id`	INTEGER NOT NULL,
-	`path`	TEXT NOT NULL UNIQUE COLLATE CURRENT_CULTURE_IGNORE_CASE,
+	`path`	TEXT NOT NULL UNIQUE COLLATE INVARIANT_CULTURE_IGNORE_CASE,
 	`lastWriteTime`	TEXT NOT NULL,
 	`lastAccessTime`	TEXT NOT NULL,
 	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `attributes` (
 	`id`	INTEGER NOT NULL,
-	`name`	TEXT NOT NULL,
+	`name`	TEXT NOT NULL COLLATE INVARIANT_CULTURE,
 	`source`	INTEGER NOT NULL DEFAULT 0,
 	`type`	INTEGER NOT NULL DEFAULT 0,
 	`value`	BLOB NOT NULL,
@@ -151,6 +151,11 @@ CREATE UNIQUE INDEX IF NOT EXISTS `attributes_owner_name_index` ON `attributes` 
 	`owner`	ASC,
 	`name`	ASC
 );
+CREATE INDEX IF NOT EXISTS `attributes_source_name_index` ON `attributes` (
+	`source`	ASC,
+	`name`	ASC
+);
+PRAGMA user_version = 1;
 COMMIT;</value>
   </data>
 </root>

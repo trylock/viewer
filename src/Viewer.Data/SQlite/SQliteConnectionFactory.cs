@@ -65,6 +65,10 @@ namespace Viewer.Data.SQLite
                         command.CommandText = part;
                         command.ExecuteNonQuery();
                     }
+
+                    // set current schema version
+                    command.CommandText = "PRAGMA user_version = " + CurrentVersion;
+                    command.ExecuteNonQuery();
                 }
 
                 SQLiteFunction.RegisterFunction(typeof(InvariantCulture));

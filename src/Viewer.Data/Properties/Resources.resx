@@ -155,7 +155,6 @@ CREATE INDEX IF NOT EXISTS `attributes_source_name_index` ON `attributes` (
 	`source`	ASC,
 	`name`	ASC
 );
-PRAGMA user_version = 1;
 COMMIT;</value>
   </data>
 </root>

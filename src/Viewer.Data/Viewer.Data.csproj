@@ -84,7 +84,8 @@
   <ItemGroup>
     <Compile Include="Attribute.cs" />
     <Compile Include="AttributeCache.cs" />
-    <Compile Include="SQLite\CurrentCultureIgnoreCase.cs" />
+    <Compile Include="SQLite\InvariantCulture.cs" />
+    <Compile Include="SQLite\InvariantCultureIgnoreCase.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityComparer.cs" />
     <Compile Include="EntityManager.cs" />

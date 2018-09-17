@@ -11,8 +11,8 @@ namespace Viewer.Data.SQLite
     /// <summary>
     /// Custom unicode aware string comparison collation.
     /// </summary>
-    [SQLiteFunction("CURRENT_CULTURE_IGNORE_CASE", 2, FunctionType.Collation)]
-    public class CurrentCultureIgnoreCase : SQLiteFunction
+    [SQLiteFunction("INVARIANT_CULTURE_IGNORE_CASE", 2, FunctionType.Collation)]
+    public class InvariantCultureIgnoreCase : SQLiteFunction
     {
         public override int Compare(string param1, string param2)
         {

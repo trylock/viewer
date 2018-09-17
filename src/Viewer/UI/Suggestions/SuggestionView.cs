@@ -302,6 +302,7 @@ namespace Viewer.UI.Suggestions
 
             var location = _currentControl.PointToScreen(new Point(0, 0));
             Location = new Point(location.X, location.Y + _currentControl.Height);
+            FixLocation();
         }
 
         /// <summary>
@@ -315,6 +316,23 @@ namespace Viewer.UI.Suggestions
             int itemHeight = _suggestionControl.MeasureItemHeight();
             var visibleItemCount = Math.Min(_items.Count, MaxVisibleItemCount);
             Size = new Size(Width, visibleItemCount * itemHeight + border);
+            FixLocation();
+        }
+
+        /// <summary>
+        /// Fix form location so that it is fully visible on its screen
+        /// </summary>
+        private void FixLocation()
+        {
+            if (_currentControl == null)
+            {
+                return;
+            }
+
+            var screen = Screen.FromControl(_currentControl);
+            var bounds = new Rectangle(PointToScreen(Point.Empty), Size);
+            var correctedBounds = bounds.EnsureInside(screen.Bounds);
+            Location = correctedBounds.Location;
         }
 
         /// <summary>
@@ -613,14 +631,21 @@ namespace Viewer.UI.Suggestions
                     }
 
                     // draw text
+                    SizeF metadataTextSize = e.Graphics.MeasureString(item.Category, Font);
+
+                    var mainTextBounds = new Rectangle(
+                        itemBounds.X + Font.Height / 2,
+                        itemBounds.Y + itemBounds.Height / 2 - Font.Height / 2,
+                        ClientSize.Width - (int) metadataTextSize.Width - Font.Height / 2,
+                        Font.Height
+                    );
+
                     e.Graphics.DrawString(
                         item.Text,
                         Font,
                         primaryTextBrush,
-                        itemBounds.X + Font.Height / 2,
-                        itemBounds.Y + itemBounds.Height / 2 - Font.Height / 2);
+                        mainTextBounds);
 
-                    var metadataTextSize = e.Graphics.MeasureString(item.Category, Font);
                     e.Graphics.DrawString(
                         item.Category,
                         Font,

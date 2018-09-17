@@ -391,10 +391,12 @@ namespace Viewer.UI.Attributes
         
         private async void View_NameChanged(object sender, NameEventArgs e)
         {
+            // reset suggestions
+            View.Suggestions = new List<SuggestionItem>();
+
             var value = e.Value?.Trim();
-            if (string.IsNullOrWhiteSpace(value))
+            if (value == null)
             {
-                View.Suggestions = new List<SuggestionItem>();
                 return;
             }
 
@@ -425,6 +427,9 @@ namespace Viewer.UI.Attributes
 
         private async void View_BeginValueEdit(object sender, NameEventArgs e)
         {
+            // reset suggestions
+            View.Suggestions = new List<SuggestionItem>();
+
             var suggestions = await Task.Run(() =>
             {
                 var items = new List<SuggestionItem>();

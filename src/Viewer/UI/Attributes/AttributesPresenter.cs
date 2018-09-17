@@ -388,7 +388,12 @@ namespace Viewer.UI.Attributes
 
             View.UpdateAttributes();
         }
-        
+
+        /// <summary>
+        /// Prefix of an attribute name whose suggestions are being loaded
+        /// </summary>
+        private string _loadingNamePrefix;
+
         private async void View_NameChanged(object sender, NameEventArgs e)
         {
             // reset suggestions
@@ -399,6 +404,8 @@ namespace Viewer.UI.Attributes
             {
                 return;
             }
+            
+            _loadingNamePrefix = value;
 
             var suggestions = await Task.Run(() =>
             {
@@ -417,7 +424,7 @@ namespace Viewer.UI.Attributes
                 return items;
             });
 
-            if (_isDisposed)
+            if (_isDisposed || _loadingNamePrefix != value)
             {
                 return;
             }

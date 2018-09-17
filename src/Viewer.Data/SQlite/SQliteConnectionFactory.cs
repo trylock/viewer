@@ -14,6 +14,10 @@ namespace Viewer.Data.SQLite
     [Export]
     public class SQLiteConnectionFactory
     {
+        /// <summary>
+        /// Current user version of the schema initialized by the <see cref="Initialize"/> method.
+        /// </summary>
+        private const int CurrentVersion = 1;
         private readonly IFileSystem _fileSystem;
         private readonly string _dataSource;
 
@@ -41,6 +45,18 @@ namespace Viewer.Data.SQLite
 
             using (var connection = Create(dataSource))
             {
+                var version = GetVersion(connection);
+                if (version < CurrentVersion)
+                {
+                    connection.Close();
+                    connection.Dispose();
+                    SQLiteConnection.ClearAllPools();
+                    _fileSystem.DeleteFile(dataSource);
+                }
+            }
+
+            using (var connection = Create(dataSource))
+            {
                 var initialization = Resources.SqliteInitializationScript.Split(';');
                 using (var command = connection.CreateCommand())
                 {
@@ -51,7 +67,8 @@ namespace Viewer.Data.SQLite
                     }
                 }
 
-                SQLiteFunction.RegisterFunction(typeof(CurrentCultureIgnoreCase));
+                SQLiteFunction.RegisterFunction(typeof(InvariantCulture));
+                SQLiteFunction.RegisterFunction(typeof(InvariantCultureIgnoreCase));
             }
         }
 
@@ -62,6 +79,15 @@ namespace Viewer.Data.SQLite
         public SQLiteConnection Create()
         {
             return Create(_dataSource);
+        }
+
+        private long GetVersion(SQLiteConnection connection)
+        {
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "PRAGMA user_version";
+                return (long) command.ExecuteScalar();
+            }
         }
 
         /// <summary>

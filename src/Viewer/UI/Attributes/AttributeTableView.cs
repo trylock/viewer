@@ -427,6 +427,12 @@ namespace Viewer.UI.Attributes
                 suggestionControl.TextChanged += NameTextBox_TextChanged;
                 suggestionControl.Disposed -= NameTextBox_Disposed;
                 suggestionControl.Disposed += NameTextBox_Disposed;
+
+                // show suggestions
+                NameChanged?.Invoke(sender, new NameEventArgs
+                {
+                    Value = GridView.CurrentCell.Value as string
+                });
             }
             else if (GridView.CurrentCell.ColumnIndex == valueColumn) 
             {

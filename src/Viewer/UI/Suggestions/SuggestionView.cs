@@ -254,7 +254,7 @@ namespace Viewer.UI.Suggestions
             {
                 return;
             }
-
+            
             SelectedIndex = DefaultSelectedIndex;
             SetLocation();
             Show();

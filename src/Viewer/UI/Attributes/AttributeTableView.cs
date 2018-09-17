@@ -545,10 +545,13 @@ namespace Viewer.UI.Attributes
                 IsInAllEntities = true,
                 Value = new Attribute(oldGroup.Value.Name, value, oldGroup.Value.Source)
             };
-
-            var rowIndex = row.Index;
-            GridView.Rows.RemoveAt(rowIndex);
-            GridView.Rows.Insert(rowIndex, CreateAttributeView(newGroup));
+            
+            AttributeChanged?.Invoke(sender, new AttributeChangedEventArgs
+            {
+                Index = row.Index,
+                OldValue = oldGroup,
+                NewValue = newGroup
+            });
         }
 
         #endregion

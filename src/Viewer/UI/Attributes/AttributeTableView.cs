@@ -264,7 +264,7 @@ namespace Viewer.UI.Attributes
 
             if (attr.HasMultipleValues)
             {
-                var mixedValueCell = new DataGridViewTextBoxCell
+                var mixedValueCell = new SuggestionTextBoxCell
                 {
                     Value = "mixed value",
                     ValueType = typeof(string),

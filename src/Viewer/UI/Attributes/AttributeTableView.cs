@@ -434,10 +434,18 @@ namespace Viewer.UI.Attributes
                     Value = GridView.CurrentCell.Value as string
                 });
             }
-            else if (GridView.CurrentCell.ColumnIndex == valueColumn) 
+            else if (GridView.CurrentCell.ColumnIndex == valueColumn)
             {
-                // don't select a value by default
-                suggestionControl.Suggestions.DefaultSelectedIndex = -1;
+                if (GridView.CurrentRow?.Tag is AttributeGroup group && group.HasMultipleValues)
+                {
+                    // select the first value by default
+                    suggestionControl.Suggestions.DefaultSelectedIndex = 0;
+                }
+                else
+                {
+                    // don't select a value by default
+                    suggestionControl.Suggestions.DefaultSelectedIndex = -1;
+                }
 
                 // trigger the BeginValueEdit event so that listeners can load suggestions
                 var name = GridView.CurrentRow?.Cells[0].Value as string;

@@ -20,6 +20,7 @@ namespace Viewer.Data.SQLite
         private const int CurrentVersion = 1;
         private readonly IFileSystem _fileSystem;
         private readonly string _dataSource;
+        private bool _isInitialized;
 
         [ImportingConstructor]
         public SQLiteConnectionFactory(IFileSystem fileSystem) 
@@ -31,12 +32,11 @@ namespace Viewer.Data.SQLite
         {
             _fileSystem = fileSystem;
             _dataSource = Path.GetFullPath(dataSource);
-            Initialize(_dataSource);
         }
         
         /// <summary>
         /// If the default data source is a file, create its directory. This function will create
-        /// expected database structure in the default datasource and registre all custom functions.
+        /// expected database structure in the default datasource and register all custom functions.
         /// </summary>
         private void Initialize(string dataSource)
         {
@@ -57,6 +57,9 @@ namespace Viewer.Data.SQLite
 
             using (var connection = Create(dataSource))
             {
+                SQLiteFunction.RegisterFunction(typeof(InvariantCulture));
+                SQLiteFunction.RegisterFunction(typeof(InvariantCultureIgnoreCase));
+
                 var initialization = Resources.SqliteInitializationScript.Split(';');
                 using (var command = connection.CreateCommand())
                 {
@@ -70,9 +73,6 @@ namespace Viewer.Data.SQLite
                     command.CommandText = "PRAGMA user_version = " + CurrentVersion;
                     command.ExecuteNonQuery();
                 }
-
-                SQLiteFunction.RegisterFunction(typeof(InvariantCulture));
-                SQLiteFunction.RegisterFunction(typeof(InvariantCultureIgnoreCase));
             }
         }
 
@@ -82,6 +82,11 @@ namespace Viewer.Data.SQLite
         /// <returns>New connection.</returns>
         public SQLiteConnection Create()
         {
+            if (!_isInitialized)
+            {
+                _isInitialized = true;
+                Initialize(_dataSource);
+            }
             return Create(_dataSource);
         }
 

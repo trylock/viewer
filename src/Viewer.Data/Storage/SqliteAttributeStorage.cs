@@ -76,8 +76,8 @@ namespace Viewer.Data.Storage
         private readonly IAttributeReaderFactory _fileAttributeReaderFactory;
 
         private readonly object _readConnectionLock = new object();
-        private readonly SQLiteConnection _readConnection;
-        private readonly LoadEntityCommand _loadCommand;
+        private SQLiteConnection _readConnection;
+        private LoadEntityCommand _loadCommand;
 
         [ImportingConstructor]
         public SqliteAttributeStorage(
@@ -89,8 +89,6 @@ namespace Viewer.Data.Storage
             _connectionFactory = connectionFactory;
             _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             _configuration = configuration;
-            _readConnection = _connectionFactory.Create();
-            _loadCommand = new LoadEntityCommand(_readConnection);
         }
         
         public IEntity Load(string path)
@@ -155,6 +153,12 @@ namespace Viewer.Data.Storage
             // make sure this is the only thread which uses _readConnection
             lock (_readConnectionLock)
             {
+                if (_readConnection == null)
+                {
+                    _readConnection = _connectionFactory.Create();
+                    _loadCommand = new LoadEntityCommand(_readConnection);
+                }
+
                 // load valid attributes
                 using (var reader = _loadCommand.Execute(path, lastWriteTime))
                 { 

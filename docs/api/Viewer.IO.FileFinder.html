@@ -102,6 +102,12 @@
                         
                         <ul class="nav level2">
                           <li class="">
+                            <a href="Viewer.Core.AggregateProgress.html" title="AggregateProgress" class="">AggregateProgress</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.AggregateProgress-1.html" title="AggregateProgress&lt;T&gt;" class="">AggregateProgress&lt;T&gt;</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Core.DeserializeCallback.html" title="DeserializeCallback" class="">DeserializeCallback</a>
                           </li>
                           <li class="">
@@ -186,6 +192,9 @@
                             <a href="Viewer.Data.Attribute.html" title="Attribute" class="">Attribute</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.AttributeCache.html" title="AttributeCache" class="">AttributeCache</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.AttributeSource.html" title="AttributeSource" class="">AttributeSource</a>
                           </li>
                           <li class="">
@@ -214,6 +223,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Data.FileEntity.html" title="FileEntity" class="">FileEntity</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.IAttributeCache.html" title="IAttributeCache" class="">IAttributeCache</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.IEntity.html" title="IEntity" class="">IEntity</a>
@@ -369,7 +381,10 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.Data.SQLite.CurrentCultureIgnoreCase.html" title="CurrentCultureIgnoreCase" class="">CurrentCultureIgnoreCase</a>
+                            <a href="Viewer.Data.SQLite.InvariantCulture.html" title="InvariantCulture" class="">InvariantCulture</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
@@ -435,6 +450,9 @@
                             <a href="Viewer.IO.FileWatcherFactory.html" title="FileWatcherFactory" class="">FileWatcherFactory</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.IO.IFileFinder.html" title="IFileFinder" class="">IFileFinder</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.IO.IFileSystem.html" title="IFileSystem" class="">IFileSystem</a>
                           </li>
                           <li class="">
@@ -445,6 +463,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.IO.PathPattern.html" title="PathPattern" class="">PathPattern</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
@@ -583,6 +604,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryProgressReport.html" title="QueryProgressReport" class="">QueryProgressReport</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.QueryTextComparer.html" title="QueryTextComparer" class="">QueryTextComparer</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryView.html" title="QueryView" class="">QueryView</a>
@@ -864,9 +888,6 @@
                             <a href="Viewer.UI.Forms.DateTimeEditingControl.html" title="DateTimeEditingControl" class="">DateTimeEditingControl</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.Forms.IconButton.html" title="IconButton" class="">IconButton</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.UI.Forms.SliderControl.html" title="SliderControl" class="">SliderControl</a>
                           </li>
                         </ul>  </li>
@@ -981,6 +1002,15 @@
                             <a href="Viewer.UI.Tasks.TaskLoader.html" title="TaskLoader" class="">TaskLoader</a>
                           </li>
                         </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="ViewerTheme.html" title="ViewerTheme" class="">ViewerTheme</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="ViewerTheme.ViewerLightTheme.html" title="ViewerLightTheme" class="">ViewerLightTheme</a>
+                          </li>
+                        </ul>  </li>
                   </ul>        </div>
               </div>
             </div>
@@ -992,24 +1022,16 @@
   
   <h1 id="Viewer_IO_FileFinder" data-uid="Viewer.IO.FileFinder" class="text-break">Class FileFinder
   </h1>
-  <div class="markdown level0 summary"><p>Find files and directories based on a directory path pattern.
-The pattern can contain special characters <code>*</code>, <code>?</code> and <code>**</code>:</p>
-<ul><li>
-<code>*</code> matches any sequence of characters except a directory separator
-</li><li>
-<code>?</code> matches any character except a directory separator
-</li><li>
-<code>**</code> matches any sequence of characters (even a directory separator). It has
-to be delimited by directory separator from both sides (i.e., <code>a/b**/c</code> is
-invalid, but it can be replaced with <code>a/b*/**/c</code>). It matches even an empty
-string (i.e., <code>a/**/b</code> matches <code>a/b</code>, <code>a/x/b</code>, <code>a/x/y/b</code> etc.)
-</li></ul>
-</div>
+  <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">FileFinder</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Viewer.IO.IFileFinder.html">IFileFinder</a></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -1039,13 +1061,8 @@ string (i.e., <code>a/**/b</code> matches <code>a/b</code>, <code>a/x/b</code>, 
   <h6><strong>Assembly</strong>: Viewer.IO.dll</h6>
   <h5 id="Viewer_IO_FileFinder_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class FileFinder</code></pre>
+    <pre><code class="lang-csharp hljs">public class FileFinder : IFileFinder</code></pre>
   </div>
-  <h5 id="Viewer_IO_FileFinder_examples"><strong>Examples</strong></h5>
-  <pre><code>var finder = new FileFinder(fileSystem, &quot;C:/photos/**/vacation/*2017&quot;);
-foreach (var directoryPath in finder.GetDirectories()) { ... }
-foreach (var filePath in finder.GetFiles()) { ... }</code></pre>
-
   <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
@@ -1053,7 +1070,7 @@ foreach (var filePath in finder.GetFiles()) { ... }</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder__ctor_Viewer_IO_IFileSystem_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.%23ctor(Viewer.IO.IFileSystem%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L88">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L123">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder__ctor_" data-uid="Viewer.IO.FileFinder.#ctor*"></a>
   <h4 id="Viewer_IO_FileFinder__ctor_Viewer_IO_IFileSystem_System_String_" data-uid="Viewer.IO.FileFinder.#ctor(Viewer.IO.IFileSystem,System.String)">FileFinder(IFileSystem, String)</h4>
@@ -1116,7 +1133,7 @@ foreach (var filePath in finder.GetFiles()) { ... }</code></pre>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_HiddenAttributes.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.HiddenAttributes%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L68">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L106">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_HiddenAttributes_" data-uid="Viewer.IO.FileFinder.HiddenAttributes*"></a>
   <h4 id="Viewer_IO_FileFinder_HiddenAttributes" data-uid="Viewer.IO.FileFinder.HiddenAttributes">HiddenAttributes</h4>
@@ -1136,19 +1153,18 @@ the result.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_Pattern.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.Pattern%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L73">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L108">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_Pattern_" data-uid="Viewer.IO.FileFinder.Pattern*"></a>
   <h4 id="Viewer_IO_FileFinder_Pattern" data-uid="Viewer.IO.FileFinder.Pattern">Pattern</h4>
-  <div class="markdown level1 summary"><p>Pattern of this file finder.</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string Pattern { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public PathPattern Pattern { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
-  <p><span class="xref">System.String</span></p>
+  <p><a class="xref" href="Viewer.IO.PathPattern.html">PathPattern</a></p>
   <p>
   <h3 id="methods">Methods
   </h3>
@@ -1157,13 +1173,11 @@ the result.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_GetDirectories.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.GetDirectories%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L233">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L129">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_GetDirectories_" data-uid="Viewer.IO.FileFinder.GetDirectories*"></a>
   <h4 id="Viewer_IO_FileFinder_GetDirectories" data-uid="Viewer.IO.FileFinder.GetDirectories">GetDirectories()</h4>
-  <div class="markdown level1 summary"><p>Find all directories which match given pattern. This function will skip folders which
-throw <span class="xref">System.UnauthorizedAccessException</span> or <span class="xref">System.Security.SecurityException</span>.</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -1171,14 +1185,48 @@ throw <span class="xref">System.UnauthorizedAccessException</span> or <span clas
   </div>
   <h5 class="returns">Returns</h5>
   <span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;
-  <p>List of directories matching the pattern</p>
-
+  
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_GetDirectories_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.GetDirectories(System.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L134">View Source</a>
+  </span>
+  <a id="Viewer_IO_FileFinder_GetDirectories_" data-uid="Viewer.IO.FileFinder.GetDirectories*"></a>
+  <h4 id="Viewer_IO_FileFinder_GetDirectories_System_Threading_CancellationToken_" data-uid="Viewer.IO.FileFinder.GetDirectories(System.Threading.CancellationToken)">GetDirectories(CancellationToken)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;string&gt; GetDirectories(CancellationToken cancellationToken)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.CancellationToken</span></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;
+  
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_GetFiles.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.GetFiles%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L369">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L317">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_GetFiles_" data-uid="Viewer.IO.FileFinder.GetFiles*"></a>
   <h4 id="Viewer_IO_FileFinder_GetFiles" data-uid="Viewer.IO.FileFinder.GetFiles">GetFiles()</h4>
@@ -1198,7 +1246,7 @@ throw <span class="xref">System.UnauthorizedAccessException</span> or <span clas
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder_Match_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder.Match(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L310">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L258">View Source</a>
   </span>
   <a id="Viewer_IO_FileFinder_Match_" data-uid="Viewer.IO.FileFinder.Match*"></a>
   <h4 id="Viewer_IO_FileFinder_Match_System_String_" data-uid="Viewer.IO.FileFinder.Match(System.String)">Match(String)</h4>
@@ -1228,6 +1276,10 @@ throw <span class="xref">System.UnauthorizedAccessException</span> or <span clas
   <h5 class="returns">Returns</h5>
   <span class="xref">System.Boolean</span>
   
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="Viewer.IO.IFileFinder.html">IFileFinder</a>
+  </div>
 </article>
           </div>
           
@@ -1239,7 +1291,7 @@ throw <span class="xref">System.UnauthorizedAccessException</span> or <span clas
                     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_FileFinder.md&amp;value=---%0Auid%3A%20Viewer.IO.FileFinder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L46" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileFinder.cs/#L79" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

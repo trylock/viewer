@@ -102,6 +102,12 @@
                         
                         <ul class="nav level2">
                           <li class="">
+                            <a href="Viewer.Core.AggregateProgress.html" title="AggregateProgress" class="">AggregateProgress</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.AggregateProgress-1.html" title="AggregateProgress&lt;T&gt;" class="">AggregateProgress&lt;T&gt;</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Core.DeserializeCallback.html" title="DeserializeCallback" class="">DeserializeCallback</a>
                           </li>
                           <li class="">
@@ -186,6 +192,9 @@
                             <a href="Viewer.Data.Attribute.html" title="Attribute" class="">Attribute</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.AttributeCache.html" title="AttributeCache" class="">AttributeCache</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.AttributeSource.html" title="AttributeSource" class="">AttributeSource</a>
                           </li>
                           <li class="">
@@ -214,6 +223,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Data.FileEntity.html" title="FileEntity" class="">FileEntity</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.IAttributeCache.html" title="IAttributeCache" class="">IAttributeCache</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.IEntity.html" title="IEntity" class="">IEntity</a>
@@ -369,7 +381,10 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.Data.SQLite.CurrentCultureIgnoreCase.html" title="CurrentCultureIgnoreCase" class="">CurrentCultureIgnoreCase</a>
+                            <a href="Viewer.Data.SQLite.InvariantCulture.html" title="InvariantCulture" class="">InvariantCulture</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
@@ -435,6 +450,9 @@
                             <a href="Viewer.IO.FileWatcherFactory.html" title="FileWatcherFactory" class="">FileWatcherFactory</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.IO.IFileFinder.html" title="IFileFinder" class="">IFileFinder</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.IO.IFileSystem.html" title="IFileSystem" class="">IFileSystem</a>
                           </li>
                           <li class="active">
@@ -445,6 +463,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.IO.PathPattern.html" title="PathPattern" class="">PathPattern</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
@@ -583,6 +604,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryProgressReport.html" title="QueryProgressReport" class="">QueryProgressReport</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.QueryTextComparer.html" title="QueryTextComparer" class="">QueryTextComparer</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryView.html" title="QueryView" class="">QueryView</a>
@@ -864,9 +888,6 @@
                             <a href="Viewer.UI.Forms.DateTimeEditingControl.html" title="DateTimeEditingControl" class="">DateTimeEditingControl</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.Forms.IconButton.html" title="IconButton" class="">IconButton</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.UI.Forms.SliderControl.html" title="SliderControl" class="">SliderControl</a>
                           </li>
                         </ul>  </li>
@@ -981,6 +1002,15 @@
                             <a href="Viewer.UI.Tasks.TaskLoader.html" title="TaskLoader" class="">TaskLoader</a>
                           </li>
                         </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="ViewerTheme.html" title="ViewerTheme" class="">ViewerTheme</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="ViewerTheme.ViewerLightTheme.html" title="ViewerLightTheme" class="">ViewerLightTheme</a>
+                          </li>
+                        </ul>  </li>
                   </ul>        </div>
               </div>
             </div>
@@ -993,7 +1023,8 @@
   <h1 id="Viewer_IO_IFileWatcher" data-uid="Viewer.IO.IFileWatcher" class="text-break">Interface IFileWatcher
   </h1>
   <div class="markdown level0 summary"><p>File system watcher watches file and directory changes within specified directory.
-Use the <a class="xref" href="Viewer.IO.IFileWatcher.html#Viewer_IO_IFileWatcher_Watch_System_String_">Watch(String)</a> method to start watching a directory with this watcher.</p>
+Use the <a class="xref" href="Viewer.IO.IFileWatcher.html#Viewer_IO_IFileWatcher_Watch_System_String_">Watch(String)</a> method to start watching
+a directory with this watcher. Implementation of this interface has to be thread-safe.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritedMembers">
@@ -1012,10 +1043,30 @@ Use the <a class="xref" href="Viewer.IO.IFileWatcher.html#Viewer_IO_IFileWatcher
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileWatcher_GetWatchedDirectories.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileWatcher.GetWatchedDirectories%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L60">View Source</a>
+  </span>
+  <a id="Viewer_IO_IFileWatcher_GetWatchedDirectories_" data-uid="Viewer.IO.IFileWatcher.GetWatchedDirectories*"></a>
+  <h4 id="Viewer_IO_IFileWatcher_GetWatchedDirectories" data-uid="Viewer.IO.IFileWatcher.GetWatchedDirectories">GetWatchedDirectories()</h4>
+  <div class="markdown level1 summary"><p>Get a list of directories that are being watched by this watcher.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;string&gt; GetWatchedDirectories()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;
+  <p>List of watched directories</p>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileWatcher_Watch_System_String_.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileWatcher.Watch(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L51">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L54">View Source</a>
   </span>
   <a id="Viewer_IO_IFileWatcher_Watch_" data-uid="Viewer.IO.IFileWatcher.Watch*"></a>
   <h4 id="Viewer_IO_IFileWatcher_Watch_System_String_" data-uid="Viewer.IO.IFileWatcher.Watch(System.String)">Watch(String)</h4>
@@ -1079,7 +1130,7 @@ It must not be used concurrently with the Dispose method.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileWatcher_Changed.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileWatcher.Changed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L25">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L26">View Source</a>
   </span>
   <h4 id="Viewer_IO_IFileWatcher_Changed" data-uid="Viewer.IO.IFileWatcher.Changed">Changed</h4>
   <div class="markdown level1 summary"><p>Event occurs when a file or directory in a <a class="xref" href="Viewer.IO.IFileWatcher.html#Viewer_IO_IFileWatcher_Watch_System_String_">Watch(String)</a>ed path is changed.</p>
@@ -1109,7 +1160,7 @@ It must not be used concurrently with the Dispose method.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileWatcher_Created.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileWatcher.Created%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L40">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L41">View Source</a>
   </span>
   <h4 id="Viewer_IO_IFileWatcher_Created" data-uid="Viewer.IO.IFileWatcher.Created">Created</h4>
   <div class="markdown level1 summary"><p>Event occurs when a file or directory in a <a class="xref" href="Viewer.IO.IFileWatcher.html#Viewer_IO_IFileWatcher_Watch_System_String_">Watch(String)</a>ed path is created.</p>
@@ -1139,7 +1190,7 @@ It must not be used concurrently with the Dispose method.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileWatcher_Deleted.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileWatcher.Deleted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L35">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L36">View Source</a>
   </span>
   <h4 id="Viewer_IO_IFileWatcher_Deleted" data-uid="Viewer.IO.IFileWatcher.Deleted">Deleted</h4>
   <div class="markdown level1 summary"><p>Event occurs when a file or directory in a <a class="xref" href="Viewer.IO.IFileWatcher.html#Viewer_IO_IFileWatcher_Watch_System_String_">Watch(String)</a>ed path is deleted.</p>
@@ -1169,7 +1220,7 @@ It must not be used concurrently with the Dispose method.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileWatcher_Renamed.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileWatcher.Renamed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L30">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L31">View Source</a>
   </span>
   <h4 id="Viewer_IO_IFileWatcher_Renamed" data-uid="Viewer.IO.IFileWatcher.Renamed">Renamed</h4>
   <div class="markdown level1 summary"><p>Event occurs when a file or directory in a <a class="xref" href="Viewer.IO.IFileWatcher.html#Viewer_IO_IFileWatcher_Watch_System_String_">Watch(String)</a>ed path is renamed.</p>
@@ -1205,7 +1256,7 @@ It must not be used concurrently with the Dispose method.</p>
                     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_IO_IFileWatcher.md&amp;value=---%0Auid%3A%20Viewer.IO.IFileWatcher%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L20" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.IO/FileWatcher.cs/#L21" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

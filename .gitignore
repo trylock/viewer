@@ -19,11 +19,6 @@ src/Viewer.Query/QueryParser.cs
 src/Viewer.Query/QueryVisitor.cs
 src/Viewer.Query/QueryBaseVisitor.cs
 
-# Files generated from .tt templates
-src/Viewer.QueryRuntime/ArithmeticOperators.cs
-src/Viewer.QueryRuntime/ComparisonOperators.cs
-src/Viewer.QueryRuntime/LogicOperators.cs
-
 # Documentation
 spec
 src/**/.antlr

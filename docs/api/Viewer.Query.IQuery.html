@@ -102,6 +102,12 @@
                         
                         <ul class="nav level2">
                           <li class="">
+                            <a href="Viewer.Core.AggregateProgress.html" title="AggregateProgress" class="">AggregateProgress</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.AggregateProgress-1.html" title="AggregateProgress&lt;T&gt;" class="">AggregateProgress&lt;T&gt;</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Core.DeserializeCallback.html" title="DeserializeCallback" class="">DeserializeCallback</a>
                           </li>
                           <li class="">
@@ -186,6 +192,9 @@
                             <a href="Viewer.Data.Attribute.html" title="Attribute" class="">Attribute</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.AttributeCache.html" title="AttributeCache" class="">AttributeCache</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.AttributeSource.html" title="AttributeSource" class="">AttributeSource</a>
                           </li>
                           <li class="">
@@ -214,6 +223,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Data.FileEntity.html" title="FileEntity" class="">FileEntity</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.IAttributeCache.html" title="IAttributeCache" class="">IAttributeCache</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.IEntity.html" title="IEntity" class="">IEntity</a>
@@ -369,7 +381,10 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.Data.SQLite.CurrentCultureIgnoreCase.html" title="CurrentCultureIgnoreCase" class="">CurrentCultureIgnoreCase</a>
+                            <a href="Viewer.Data.SQLite.InvariantCulture.html" title="InvariantCulture" class="">InvariantCulture</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
@@ -435,6 +450,9 @@
                             <a href="Viewer.IO.FileWatcherFactory.html" title="FileWatcherFactory" class="">FileWatcherFactory</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.IO.IFileFinder.html" title="IFileFinder" class="">IFileFinder</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.IO.IFileSystem.html" title="IFileSystem" class="">IFileSystem</a>
                           </li>
                           <li class="">
@@ -445,6 +463,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.IO.PathPattern.html" title="PathPattern" class="">PathPattern</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
@@ -583,6 +604,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryProgressReport.html" title="QueryProgressReport" class="">QueryProgressReport</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.QueryTextComparer.html" title="QueryTextComparer" class="">QueryTextComparer</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryView.html" title="QueryView" class="">QueryView</a>
@@ -864,9 +888,6 @@
                             <a href="Viewer.UI.Forms.DateTimeEditingControl.html" title="DateTimeEditingControl" class="">DateTimeEditingControl</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.Forms.IconButton.html" title="IconButton" class="">IconButton</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.UI.Forms.SliderControl.html" title="SliderControl" class="">SliderControl</a>
                           </li>
                         </ul>  </li>
@@ -981,6 +1002,15 @@
                             <a href="Viewer.UI.Tasks.TaskLoader.html" title="TaskLoader" class="">TaskLoader</a>
                           </li>
                         </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="ViewerTheme.html" title="ViewerTheme" class="">ViewerTheme</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="ViewerTheme.ViewerLightTheme.html" title="ViewerLightTheme" class="">ViewerLightTheme</a>
+                          </li>
+                        </ul>  </li>
                   </ul>        </div>
               </div>
             </div>
@@ -1000,6 +1030,15 @@ It up to the user to use provided comparer to sort the returned values.</p>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
+      <a class="xref" href="Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Text">IExecutableQuery.Text</a>
+    </div>
+    <div>
+      <a class="xref" href="Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Comparer">IExecutableQuery.Comparer</a>
+    </div>
+    <div>
+      <a class="xref" href="Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Patterns">IExecutableQuery.Patterns</a>
+    </div>
+    <div>
       <a class="xref" href="Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Execute_System_IProgress_Viewer_Query_QueryProgressReport__System_Threading_CancellationToken_">IExecutableQuery.Execute(IProgress&lt;QueryProgressReport&gt;, CancellationToken)</a>
     </div>
     <div>
@@ -1012,46 +1051,6 @@ It up to the user to use provided comparer to sort the returned values.</p>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface IQuery : IExecutableQuery</code></pre>
   </div>
-  <h3 id="properties">Properties
-  </h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_Comparer.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.Comparer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L58">View Source</a>
-  </span>
-  <a id="Viewer_Query_IQuery_Comparer_" data-uid="Viewer.Query.IQuery.Comparer*"></a>
-  <h4 id="Viewer_Query_IQuery_Comparer" data-uid="Viewer.Query.IQuery.Comparer">Comparer</h4>
-  <div class="markdown level1 summary"><p>Current comparer to sort the query result</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IComparer&lt;IEntity&gt; Comparer { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <p><span class="xref">System.Collections.Generic.IComparer</span>&lt;<a class="xref" href="Viewer.Data.IEntity.html">IEntity</a>&gt;</p>
-  <p>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_Text.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.Text%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L53">View Source</a>
-  </span>
-  <a id="Viewer_Query_IQuery_Text_" data-uid="Viewer.Query.IQuery.Text*"></a>
-  <h4 id="Viewer_Query_IQuery_Text" data-uid="Viewer.Query.IQuery.Text">Text</h4>
-  <div class="markdown level1 summary"><p>Textual representation of the query</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">string Text { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <p><span class="xref">System.String</span></p>
-  <p>
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
@@ -1059,7 +1058,7 @@ It up to the user to use provided comparer to sort the returned values.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_Except_Viewer_Query_IExecutableQuery_.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.Except(Viewer.Query.IExecutableQuery)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L86">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L95">View Source</a>
   </span>
   <a id="Viewer_Query_IQuery_Except_" data-uid="Viewer.Query.IQuery.Except*"></a>
   <h4 id="Viewer_Query_IQuery_Except_Viewer_Query_IExecutableQuery_" data-uid="Viewer.Query.IQuery.Except(Viewer.Query.IExecutableQuery)">Except(IExecutableQuery)</h4>
@@ -1097,7 +1096,7 @@ It up to the user to use provided comparer to sort the returned values.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_Intersect_Viewer_Query_IExecutableQuery_.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.Intersect(Viewer.Query.IExecutableQuery)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L100">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L109">View Source</a>
   </span>
   <a id="Viewer_Query_IQuery_Intersect_" data-uid="Viewer.Query.IQuery.Intersect*"></a>
   <h4 id="Viewer_Query_IQuery_Intersect_Viewer_Query_IExecutableQuery_" data-uid="Viewer.Query.IQuery.Intersect(Viewer.Query.IExecutableQuery)">Intersect(IExecutableQuery)</h4>
@@ -1134,7 +1133,7 @@ It up to the user to use provided comparer to sort the returned values.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_Union_Viewer_Query_IExecutableQuery_.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.Union(Viewer.Query.IExecutableQuery)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L93">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L102">View Source</a>
   </span>
   <a id="Viewer_Query_IQuery_Union_" data-uid="Viewer.Query.IQuery.Union*"></a>
   <h4 id="Viewer_Query_IQuery_Union_Viewer_Query_IExecutableQuery_" data-uid="Viewer.Query.IQuery.Union(Viewer.Query.IExecutableQuery)">Union(IExecutableQuery)</h4>
@@ -1169,19 +1168,56 @@ It up to the user to use provided comparer to sort the returned values.</p>
 
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_Where_System_Func_Viewer_Data_IEntity_System_Boolean__.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.Where(System.Func%7BViewer.Data.IEntity%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_View_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.View(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L79">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L116">View Source</a>
+  </span>
+  <a id="Viewer_Query_IQuery_View_" data-uid="Viewer.Query.IQuery.View*"></a>
+  <h4 id="Viewer_Query_IQuery_View_System_String_" data-uid="Viewer.Query.IQuery.View(System.String)">View(String)</h4>
+  <div class="markdown level1 summary"><p>Make this query a view query (i.e., query in the form: SELECT queryViewName)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IQuery View(string queryViewName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">queryViewName</span></td>
+        <td><p>Query view name of this query</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <a class="xref" href="Viewer.Query.IQuery.html">IQuery</a>
+  
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_Where_System_Func_Viewer_Data_IEntity_System_Boolean__System_String_.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.Where(System.Func%7BViewer.Data.IEntity%2CSystem.Boolean%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L88">View Source</a>
   </span>
   <a id="Viewer_Query_IQuery_Where_" data-uid="Viewer.Query.IQuery.Where*"></a>
-  <h4 id="Viewer_Query_IQuery_Where_System_Func_Viewer_Data_IEntity_System_Boolean__" data-uid="Viewer.Query.IQuery.Where(System.Func{Viewer.Data.IEntity,System.Boolean})">Where(Func&lt;IEntity, Boolean&gt;)</h4>
+  <h4 id="Viewer_Query_IQuery_Where_System_Func_Viewer_Data_IEntity_System_Boolean__System_String_" data-uid="Viewer.Query.IQuery.Where(System.Func{Viewer.Data.IEntity,System.Boolean},System.String)">Where(Func&lt;IEntity, Boolean&gt;, String)</h4>
   <div class="markdown level1 summary"><p>Only include entities in the result if <code data-dev-comment-type="paramref" class="paramref">predicate</code> returns true</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IQuery Where(Func&lt;IEntity, bool&gt; predicate)</code></pre>
+    <pre><code class="lang-csharp hljs">IQuery Where(Func&lt;IEntity, bool&gt; predicate, string predicateText)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1198,6 +1234,12 @@ It up to the user to use provided comparer to sort the returned values.</p>
         <td><span class="parametername">predicate</span></td>
         <td></td>
       </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">predicateText</span></td>
+        <td><p>Textual representation of <code data-dev-comment-type="paramref" class="paramref">predicate</code></p>
+</td>
+      </tr>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
@@ -1205,19 +1247,19 @@ It up to the user to use provided comparer to sort the returned values.</p>
   
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_WithComparer_System_Collections_Generic_IComparer_Viewer_Data_IEntity__.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.WithComparer(System.Collections.Generic.IComparer%7BViewer.Data.IEntity%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_WithComparer_System_Collections_Generic_IComparer_Viewer_Data_IEntity__System_String_.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.WithComparer(System.Collections.Generic.IComparer%7BViewer.Data.IEntity%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L65">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L80">View Source</a>
   </span>
   <a id="Viewer_Query_IQuery_WithComparer_" data-uid="Viewer.Query.IQuery.WithComparer*"></a>
-  <h4 id="Viewer_Query_IQuery_WithComparer_System_Collections_Generic_IComparer_Viewer_Data_IEntity__" data-uid="Viewer.Query.IQuery.WithComparer(System.Collections.Generic.IComparer{Viewer.Data.IEntity})">WithComparer(IComparer&lt;IEntity&gt;)</h4>
+  <h4 id="Viewer_Query_IQuery_WithComparer_System_Collections_Generic_IComparer_Viewer_Data_IEntity__System_String_" data-uid="Viewer.Query.IQuery.WithComparer(System.Collections.Generic.IComparer{Viewer.Data.IEntity},System.String)">WithComparer(IComparer&lt;IEntity&gt;, String)</h4>
   <div class="markdown level1 summary"><p>Set comparer to order the query result</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IQuery WithComparer(IComparer&lt;IEntity&gt; comparer)</code></pre>
+    <pre><code class="lang-csharp hljs">IQuery WithComparer(IComparer&lt;IEntity&gt; comparer, string comparerText)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1234,6 +1276,12 @@ It up to the user to use provided comparer to sort the returned values.</p>
         <td><span class="parametername">comparer</span></td>
         <td></td>
       </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">comparerText</span></td>
+        <td><p>Textual representation of the comparer</p>
+</td>
+      </tr>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
@@ -1244,11 +1292,11 @@ It up to the user to use provided comparer to sort the returned values.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery_WithText_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery.WithText(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L72">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L123">View Source</a>
   </span>
   <a id="Viewer_Query_IQuery_WithText_" data-uid="Viewer.Query.IQuery.WithText*"></a>
   <h4 id="Viewer_Query_IQuery_WithText_System_String_" data-uid="Viewer.Query.IQuery.WithText(System.String)">WithText(String)</h4>
-  <div class="markdown level1 summary"><p>Create the same query with different textual representation</p>
+  <div class="markdown level1 summary"><p>Copy this query but set a new textual representation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1268,14 +1316,14 @@ It up to the user to use provided comparer to sort the returned values.</p>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">text</span></td>
-        <td><p>Textual representation of this query</p>
+        <td><p>New textual representation of this query</p>
 </td>
       </tr>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
   <a class="xref" href="Viewer.Query.IQuery.html">IQuery</a>
-  <p>New query with new textual representation</p>
+  <p>Copy of this query with a new textual representation</p>
 
 </article>
           </div>
@@ -1288,7 +1336,7 @@ It up to the user to use provided comparer to sort the returned values.</p>
                     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_IQuery.md&amp;value=---%0Auid%3A%20Viewer.Query.IQuery%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L48" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Query.cs/#L72" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

@@ -102,6 +102,12 @@
                         
                         <ul class="nav level2">
                           <li class="">
+                            <a href="Viewer.Core.AggregateProgress.html" title="AggregateProgress" class="">AggregateProgress</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Core.AggregateProgress-1.html" title="AggregateProgress&lt;T&gt;" class="">AggregateProgress&lt;T&gt;</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Core.DeserializeCallback.html" title="DeserializeCallback" class="">DeserializeCallback</a>
                           </li>
                           <li class="">
@@ -186,6 +192,9 @@
                             <a href="Viewer.Data.Attribute.html" title="Attribute" class="">Attribute</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.AttributeCache.html" title="AttributeCache" class="">AttributeCache</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.AttributeSource.html" title="AttributeSource" class="">AttributeSource</a>
                           </li>
                           <li class="">
@@ -214,6 +223,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Data.FileEntity.html" title="FileEntity" class="">FileEntity</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.IAttributeCache.html" title="IAttributeCache" class="">IAttributeCache</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.IEntity.html" title="IEntity" class="">IEntity</a>
@@ -369,7 +381,10 @@
                         
                         <ul class="nav level2">
                           <li class="">
-                            <a href="Viewer.Data.SQLite.CurrentCultureIgnoreCase.html" title="CurrentCultureIgnoreCase" class="">CurrentCultureIgnoreCase</a>
+                            <a href="Viewer.Data.SQLite.InvariantCulture.html" title="InvariantCulture" class="">InvariantCulture</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
@@ -435,6 +450,9 @@
                             <a href="Viewer.IO.FileWatcherFactory.html" title="FileWatcherFactory" class="">FileWatcherFactory</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.IO.IFileFinder.html" title="IFileFinder" class="">IFileFinder</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.IO.IFileSystem.html" title="IFileSystem" class="">IFileSystem</a>
                           </li>
                           <li class="">
@@ -445,6 +463,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.IO.ISearchListener.html" title="ISearchListener" class="">ISearchListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.IO.PathPattern.html" title="PathPattern" class="">PathPattern</a>
                           </li>
                           <li class="">
                             <a href="Viewer.IO.PathUtils.html" title="PathUtils" class="">PathUtils</a>
@@ -583,6 +604,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryProgressReport.html" title="QueryProgressReport" class="">QueryProgressReport</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.QueryTextComparer.html" title="QueryTextComparer" class="">QueryTextComparer</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryView.html" title="QueryView" class="">QueryView</a>
@@ -864,9 +888,6 @@
                             <a href="Viewer.UI.Forms.DateTimeEditingControl.html" title="DateTimeEditingControl" class="">DateTimeEditingControl</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.UI.Forms.IconButton.html" title="IconButton" class="">IconButton</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.UI.Forms.SliderControl.html" title="SliderControl" class="">SliderControl</a>
                           </li>
                         </ul>  </li>
@@ -981,6 +1002,15 @@
                             <a href="Viewer.UI.Tasks.TaskLoader.html" title="TaskLoader" class="">TaskLoader</a>
                           </li>
                         </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="ViewerTheme.html" title="ViewerTheme" class="">ViewerTheme</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="ViewerTheme.ViewerLightTheme.html" title="ViewerLightTheme" class="">ViewerLightTheme</a>
+                          </li>
+                        </ul>  </li>
                   </ul>        </div>
               </div>
             </div>
@@ -992,19 +1022,37 @@
   
   <h1 id="Viewer_UI_IQueryHistory" data-uid="Viewer.UI.IQueryHistory" class="text-break">Interface IQueryHistory
   </h1>
-  <div class="markdown level0 summary"><p>Query history keeps track of executed queries in the entire application. Executed queries
-are kept in a history collection. A query producer (e.g. a query editor) executes a query
-by calling <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_">ExecuteQuery(IQuery)</a> which triggers the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event.
-A query consumer (e.g. a thumbnail grid) listens for <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event and
-actually executes given query.</p>
+  <div class="markdown level0 summary"><p>Query history keeps track of executed queries in the entire application. A query producer
+(e.g. a query editor) executes a query by calling <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_">ExecuteQuery(IQuery)</a> which triggers
+the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event. A query consumer (e.g. a thumbnail grid) listens for
+<a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event and actually executes given query.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Collections.Generic.IReadOnlyList&lt;Viewer.Query.IQuery&gt;.Item[System.Int32]</span>
+    </div>
+    <div>
+      <span class="xref">System.Collections.Generic.IReadOnlyCollection&lt;Viewer.Query.IQuery&gt;.Count</span>
+    </div>
+    <div>
+      <span class="xref">System.Collections.Generic.IEnumerable&lt;Viewer.Query.IQuery&gt;.GetEnumerator()</span>
+    </div>
+  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Viewer.UI.html">Viewer.UI</a></h6>
   <h6><strong>Assembly</strong>: Viewer.dll</h6>
   <h5 id="Viewer_UI_IQueryHistory_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IQueryHistory</code></pre>
+    <pre><code class="lang-csharp hljs">public interface IQueryHistory : IReadOnlyList&lt;IQuery&gt;, IReadOnlyCollection&lt;IQuery&gt;, IEnumerable&lt;IQuery&gt;, IEnumerable</code></pre>
   </div>
+  <h5 id="Viewer_UI_IQueryHistory_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Queries in the history list are ordered from the newest to the oldest (i.e., the newest
+query is at the index 0). The only way to modify this collection is to call the
+<a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_">ExecuteQuery(IQuery)</a> method. The only way to modify <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Current">Current</a> is to
+either call <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_">ExecuteQuery(IQuery)</a> or <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Previous">Previous</a> and <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_Next">Next</a>.
+All of these methods will raise the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event.</p>
+</div>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
@@ -1012,7 +1060,7 @@ actually executes given query.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_IQueryHistory_Current.md&amp;value=---%0Auid%3A%20Viewer.UI.IQueryHistory.Current%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L49">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L57">View Source</a>
   </span>
   <a id="Viewer_UI_IQueryHistory_Current_" data-uid="Viewer.UI.IQueryHistory.Current*"></a>
   <h4 id="Viewer_UI_IQueryHistory_Current" data-uid="Viewer.UI.IQueryHistory.Current">Current</h4>
@@ -1032,7 +1080,7 @@ This can be null if no query has been executed yet.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_IQueryHistory_Next.md&amp;value=---%0Auid%3A%20Viewer.UI.IQueryHistory.Next%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L71">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L79">View Source</a>
   </span>
   <a id="Viewer_UI_IQueryHistory_Next_" data-uid="Viewer.UI.IQueryHistory.Next*"></a>
   <h4 id="Viewer_UI_IQueryHistory_Next" data-uid="Viewer.UI.IQueryHistory.Next">Next</h4>
@@ -1051,7 +1099,7 @@ This can be null if no query has been executed yet.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_IQueryHistory_Previous.md&amp;value=---%0Auid%3A%20Viewer.UI.IQueryHistory.Previous%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L66">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L74">View Source</a>
   </span>
   <a id="Viewer_UI_IQueryHistory_Previous_" data-uid="Viewer.UI.IQueryHistory.Previous*"></a>
   <h4 id="Viewer_UI_IQueryHistory_Previous" data-uid="Viewer.UI.IQueryHistory.Previous">Previous</h4>
@@ -1072,12 +1120,12 @@ This can be null if no query has been executed yet.</p>
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_IQueryHistory_Back.md&amp;value=---%0Auid%3A%20Viewer.UI.IQueryHistory.Back%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L55">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L63">View Source</a>
   </span>
   <a id="Viewer_UI_IQueryHistory_Back_" data-uid="Viewer.UI.IQueryHistory.Back*"></a>
   <h4 id="Viewer_UI_IQueryHistory_Back" data-uid="Viewer.UI.IQueryHistory.Back">Back()</h4>
-  <div class="markdown level1 summary"><p>Go back in query history.
-This will trigger the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event iff current query is not the first query in history.</p>
+  <div class="markdown level1 summary"><p>Go back in query history. This will trigger the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event
+iff current query is not the first query in history.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1089,7 +1137,7 @@ This will trigger the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_.md&amp;value=---%0Auid%3A%20Viewer.UI.IQueryHistory.ExecuteQuery(Viewer.Query.IQuery)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L43">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L51">View Source</a>
   </span>
   <a id="Viewer_UI_IQueryHistory_ExecuteQuery_" data-uid="Viewer.UI.IQueryHistory.ExecuteQuery*"></a>
   <h4 id="Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_" data-uid="Viewer.UI.IQueryHistory.ExecuteQuery(Viewer.Query.IQuery)">ExecuteQuery(IQuery)</h4>
@@ -1140,12 +1188,12 @@ Additionally, this sets current query in history to <code data-dev-comment-type=
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_IQueryHistory_Forward.md&amp;value=---%0Auid%3A%20Viewer.UI.IQueryHistory.Forward%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L61">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L69">View Source</a>
   </span>
   <a id="Viewer_UI_IQueryHistory_Forward_" data-uid="Viewer.UI.IQueryHistory.Forward*"></a>
   <h4 id="Viewer_UI_IQueryHistory_Forward" data-uid="Viewer.UI.IQueryHistory.Forward">Forward()</h4>
-  <div class="markdown level1 summary"><p>Go forward in query history.
-This will trigger the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event iff current query is not the last query in history.</p>
+  <div class="markdown level1 summary"><p>Go forward in query history. This will trigger the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_QueryExecuted">QueryExecuted</a> event
+iff current query is not the last query in history.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1159,7 +1207,7 @@ This will trigger the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_
     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_IQueryHistory_QueryExecuted.md&amp;value=---%0Auid%3A%20Viewer.UI.IQueryHistory.QueryExecuted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L35">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L43">View Source</a>
   </span>
   <h4 id="Viewer_UI_IQueryHistory_QueryExecuted" data-uid="Viewer.UI.IQueryHistory.QueryExecuted">QueryExecuted</h4>
   <div class="markdown level1 summary"><p>Event occurs when the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_UI_IQueryHistory_ExecuteQuery_Viewer_Query_IQuery_">ExecuteQuery(IQuery)</a> method is called.</p>
@@ -1195,7 +1243,7 @@ This will trigger the <a class="xref" href="Viewer.UI.IQueryHistory.html#Viewer_
                     <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_UI_IQueryHistory.md&amp;value=---%0Auid%3A%20Viewer.UI.IQueryHistory%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L30" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer/UI/QueryHistory.cs/#L38" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

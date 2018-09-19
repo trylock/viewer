@@ -5,7 +5,7 @@
       href: user/ui-overview.md
     - name: Query language
       href: user/query.md
-- name: Developer's manual
+- name: Developer manual
   items:
     - name: Getting started
       href: developer/getting-started.md

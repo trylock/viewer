@@ -187,6 +187,7 @@ namespace Viewer.UI.Suggestions
         public event EventHandler ItemsChanged;
 
         private Control _currentControl;
+        private Form _applicationForm;
 
         public SuggestionView() : this(null)
         {
@@ -354,6 +355,7 @@ namespace Viewer.UI.Suggestions
 
         private void RegisterControlEventHandlers(Control control)
         {
+            control.ParentChanged += CurrentControl_ParentChanged;
             control.KeyDown += CurrentControl_KeyDown;
             control.Disposed += CurrentControl_Dispsed;
             control.VisibleChanged += CurrentControl_VisibleChanged;
@@ -361,9 +363,40 @@ namespace Viewer.UI.Suggestions
 
         private void UnregisterControlEventHandlers(Control control)
         {
+            control.ParentChanged -= CurrentControl_ParentChanged;
             control.KeyDown -= CurrentControl_KeyDown;
             control.Disposed -= CurrentControl_Dispsed;
             control.VisibleChanged -= CurrentControl_VisibleChanged;
+
+            if (_applicationForm != null)
+            {
+                _applicationForm.Deactivate -= ApplicationForm_Deactivate;
+            }
+        }
+
+        private void CurrentControl_ParentChanged(object sender, EventArgs e)
+        {
+            if (_applicationForm == null)
+            {
+                // find application form (this should be the root component)
+                var root = _currentControl?.Parent;
+                while (root?.Parent != null)
+                {
+                    root = root.Parent;
+                }
+
+                // hide suggestions when the form is deactivated
+                _applicationForm = root as Form;
+                if (_applicationForm != null)
+                {
+                    _applicationForm.Deactivate += ApplicationForm_Deactivate;
+                }
+            }
+        }
+
+        private void ApplicationForm_Deactivate(object sender, EventArgs e)
+        {
+            Hide();
         }
 
         private void CurrentControl_VisibleChanged(object sender, EventArgs e)

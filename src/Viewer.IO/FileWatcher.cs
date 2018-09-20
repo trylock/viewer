@@ -80,19 +80,28 @@ namespace Viewer.IO
                                NotifyFilters.DirectoryName
             };
 
-            if (!_watchers.TryAdd(fullPath, watcher))
+            try
             {
-                // this directory is being watched already
-                watcher.Dispose();
-            }
-            else
-            {
-                // this call has added the watcher => initialize it
-                watcher.Changed += WatcherOnChanged;
-                watcher.Created += WatcherOnCreated;
-                watcher.Deleted += WatcherOnDeleted;
-                watcher.Renamed += WatcherOnRenamed;
                 watcher.EnableRaisingEvents = true;
+
+                if (!_watchers.TryAdd(fullPath, watcher))
+                {
+                    // this directory is being watched already
+                    watcher.Dispose();
+                }
+                else
+                {
+                    // this call has added the watcher => initialize it
+                    watcher.Changed += WatcherOnChanged;
+                    watcher.Created += WatcherOnCreated;
+                    watcher.Deleted += WatcherOnDeleted;
+                    watcher.Renamed += WatcherOnRenamed;
+                }
+            }
+            catch (Exception)
+            {
+                watcher.Dispose();
+                throw;
             }
         }
 

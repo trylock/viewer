@@ -37,7 +37,14 @@ namespace Viewer.UI.Images
             if (value.Type == ReportType.Folder)
             {
                 var path = PathUtils.NormalizePath(value.FilePath);
-                _watcher.Watch(path);
+                try
+                {
+                    _watcher.Watch(path);
+                }
+                catch (FileNotFoundException)
+                {
+                    // ignore this folder
+                }
             }
         }
     }

@@ -92,7 +92,7 @@ namespace Viewer.IO
 
             public State(string path, int matchedPartCount)
             {
-                Path = PathUtils.NormalizePath(path);
+                Path = PathUtils.NormalizePath(path) + '/';
                 MatchedPartCount = matchedPartCount;
             }
         }

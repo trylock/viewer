@@ -287,5 +287,24 @@ namespace ViewerTest.IO
                 fileSystem.VerifyNoOtherCalls();
             }
         }
+
+        [TestMethod]
+        public void GetDirectories_SuffixDirectoriesWithPathSeparator()
+        {
+            var fileSystem = new Mock<IFileSystem>();
+            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:/"))).Returns(true);
+            fileSystem
+                .Setup(mock => mock.EnumerateDirectories(ItIsPath("C:/"), "*"))
+                .Returns(new[] { "C:/a" });
+
+            var finder = new FileFinder(fileSystem.Object, "C:/*");
+            var directories = finder.GetDirectories().ToArray();
+
+            Assert.AreEqual(1, directories.Length);
+            Assert.IsTrue(ArePathsEqual("C:/a", directories[0]));
+
+            // Verify that there is a directory separator after "C:" Otherwise, C: would be a relative path
+            fileSystem.Verify(mock => mock.EnumerateDirectories("C:/", "*"));
+        }
     }
 }

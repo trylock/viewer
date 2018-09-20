@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Viewer.Data
 {
-    /// <inheritdoc />
     /// <summary>
     /// Compare <see cref="T:Viewer.Data.BaseValue" /> types.
     /// </summary>

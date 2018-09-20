@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Viewer" Language="1033" Version="1.0.1.0" Manufacturer="trylock" UpgradeCode="f38d1b47-4e19-48b3-a0df-81261277a26b">
+  <Product Id="*" Name="Viewer" Language="1033" Version="1.0.2.0" Manufacturer="trylock" UpgradeCode="f38d1b47-4e19-48b3-a0df-81261277a26b">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Viewer is already installed." />

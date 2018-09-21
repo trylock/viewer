@@ -71,6 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExecutionContext.cs" />
+    <Compile Include="Expressions\ArithmeticOperators.cs" />
+    <Compile Include="Expressions\AttributeAccessExpression.cs" />
+    <Compile Include="Expressions\FunctionCallExpression.cs" />
     <Compile Include="QueryExpression\BinaryQueryOperator.cs" />
     <Compile Include="QueryExpression\ExceptQuery.cs" />
     <Compile Include="QueryExpression\IntersectQuery.cs" />
@@ -78,6 +81,13 @@
     <Compile Include="QueryExpression\QueryViewQuery.cs" />
     <Compile Include="QueryExpression\SelectQuery.cs" />
     <Compile Include="QueryExpression\UnionQuery.cs" />
+    <Compile Include="Expressions\BinaryOperatorExpression.cs" />
+    <Compile Include="Expressions\ComparisonOperators.cs" />
+    <Compile Include="Expressions\ConstantExpression.cs" />
+    <Compile Include="Expressions\FunctionUtils.cs" />
+    <Compile Include="Expressions\LogicOperators.cs" />
+    <Compile Include="Expressions\UnaryOperatorExpression.cs" />
+    <Compile Include="Expressions\ValueExpression.cs" />
     <Compile Include="QueryExpression\WhereQuery.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="IQueryErrorListener.cs" />

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
@@ -11,7 +11,9 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Viewer.Data;
 using Viewer.Data.Formats.Attributes;
+using Viewer.Query.Expressions;
 using Attribute = Viewer.Data.Attribute;
+using ConstantExpression = Viewer.Query.Expressions.ConstantExpression;
 
 namespace Viewer.Query
 {
@@ -43,7 +45,12 @@ namespace Viewer.Query
         /// <summary>
         /// Expression which computes a value
         /// </summary>
-        public Expression Value { get; set; }
+        public ValueExpression Value { get; set; }
+
+        /// <summary>
+        /// List of values (returned by the argument list rule)
+        /// </summary>
+        public List<ValueExpression> Values { get; set; }
 
         /// <summary>
         /// Subquery
@@ -73,11 +80,12 @@ namespace Viewer.Query
         private readonly IQueryErrorListener _queryErrorListener;
         private readonly IQueryFactory _queryFactory;
         private readonly IRuntime _runtime;
-
-        private readonly ParameterExpression _entityParameter = Expression.Parameter(typeof(IEntity), "entity");
-        private readonly Attribute _nullAttribute = new Attribute("", new IntValue(null), AttributeSource.Custom);
         
-        public QueryCompilerVisitor(IQueryFactory queryFactory, IRuntime runtime, IQueryCompiler compiler, IQueryErrorListener queryErrorListener)
+        public QueryCompilerVisitor(
+            IQueryFactory queryFactory, 
+            IRuntime runtime, 
+            IQueryCompiler compiler, 
+            IQueryErrorListener queryErrorListener)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;
@@ -108,26 +116,31 @@ namespace Viewer.Query
 
         public CompilationResult VisitTerminal(ITerminalNode node)
         {
-            Expression expr = null;
+            var line = node.Symbol.Line;
+            var column = node.Symbol.Column;
+            ValueExpression expr = null;
             switch (node.Symbol.Type)
             {
                 case QueryLexer.INT:
                     var intValue = int.Parse(node.Symbol.Text);
-                    expr = Expression.Constant(new IntValue(intValue));
+                    expr = new ConstantExpression(line, column, new IntValue(intValue));
                     break;
                 case QueryLexer.REAL:
                     var doubleValue = double.Parse(node.Symbol.Text);
-                    expr = Expression.Constant(new RealValue(doubleValue));
+                    expr = new ConstantExpression(line, column, new RealValue(doubleValue));
                     break;
                 case QueryLexer.STRING:
                     var stringValue = node.Symbol.Text.Substring(1, node.Symbol.Text.Length - 2);
-                    expr = Expression.Constant(new StringValue(stringValue));
+                    expr = new ConstantExpression(line, column, new StringValue(stringValue));
                     break;
                 case QueryLexer.COMPLEX_ID:
-                    expr = CompileAttributeAccess(node.Symbol.Text.Substring(1, node.Symbol.Text.Length - 2));
+                    expr = new AttributeAccessExpression(
+                        line, 
+                        column, 
+                        node.Symbol.Text.Substring(1, node.Symbol.Text.Length - 2));
                     break;
                 case QueryLexer.ID:
-                    expr = CompileAttributeAccess(node.Symbol.Text);
+                    expr = new AttributeAccessExpression(line, column, node.Symbol.Text);
                     break;
             }
 
@@ -216,11 +229,7 @@ namespace Viewer.Query
             }
 
             // compile the where condition
-            var filter = Expression.Lambda<Func<IEntity, bool>>(
-                optionalWhereResult.Value,
-                _entityParameter
-            );
-            var entityPredicate = filter.Compile();
+            var entityPredicate = optionalWhereResult.Value.CompilePredicate(_runtime, _queryErrorListener);
             return new CompilationResult
             {
                 Query = sourceResult.Query.Where(entityPredicate, optionalWhereResult.Text)
@@ -284,7 +293,7 @@ namespace Viewer.Query
             var predicate = condition.Accept(this).Value;
             return new CompilationResult
             {
-                Value = Expression.Not(Expression.Property(predicate, "IsNull")),
+                Value = predicate,
                 Text = condition.Start.InputStream.GetText(new Interval(
                     condition.Start.StartIndex,
                     condition.Stop.StopIndex
@@ -325,11 +334,7 @@ namespace Viewer.Query
         public CompilationResult VisitOrderByKey(QueryParser.OrderByKeyContext context)
         {
             var valueExpr = context.comparison().Accept(this).Value;
-            var valueGetterExpr = Expression.Lambda<Func<IEntity, BaseValue>>(
-                valueExpr,
-                _entityParameter
-            );
-            var valueGetter = valueGetterExpr.Compile();
+            var valueGetter = valueExpr.CompileFunction(_runtime, _queryErrorListener);
             var direction = context.optionalDirection().GetText().ToLowerInvariant() == "desc" ? -1 : 1;
 
             return new CompilationResult
@@ -364,7 +369,7 @@ namespace Viewer.Query
             var lhs = left.Accept(this).Value;
             return new CompilationResult
             {
-                Value = RuntimeCall("or", symbol.Line, symbol.Column, lhs, rhs)
+                Value = new OrExpression(symbol.Line, symbol.Column, lhs, rhs)
             };
         }
 
@@ -386,7 +391,7 @@ namespace Viewer.Query
             var lhs = left.Accept(this).Value;
             return new CompilationResult
             {
-                Value = RuntimeCall("and", symbol.Line, symbol.Column, lhs, rhs)
+                Value = new AndExpression(symbol.Line, symbol.Column, lhs, rhs)
             };
         }
 
@@ -398,7 +403,7 @@ namespace Viewer.Query
                 var symbol = context.NOT().Symbol;
                 return new CompilationResult
                 {
-                    Value = RuntimeCall("not", symbol.Line, symbol.Column, new[]{ value })
+                    Value = new NotExpression(symbol.Line, symbol.Column, value)
                 };
             }
 
@@ -417,9 +422,34 @@ namespace Viewer.Query
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
             var op = context.REL_OP().Symbol;
+            BinaryOperatorExpression value = null;
+            switch (op.Text)
+            {
+                case "<":
+                    value = new LessThanOperator(op.Line, op.Column, left.Value, right.Value);
+                    break;
+                case "<=":
+                    value = new LessThanOrEqualOperator(op.Line, op.Column, left.Value, right.Value);
+                    break;
+                case "!=":
+                    value = new NotEqualOperator(op.Line, op.Column, left.Value, right.Value);
+                    break;
+                case "=":
+                    value = new EqualOperatorOperator(op.Line, op.Column, left.Value, right.Value);
+                    break;
+                case ">":
+                    value = new GreaterThanOperator(op.Line, op.Column, left.Value, right.Value);
+                    break;
+                case ">=":
+                    value = new GreaterThanOrEqualOperator(op.Line, op.Column, left.Value, right.Value);
+                    break;
+            }
+
+            Trace.Assert(value != null, "Invalid comparison operator " + op.Text);
+
             return new CompilationResult
             {
-                Value = CompileBinaryOperator(op.Text, op.Line, op.Column, left.Value, right.Value)
+                Value = value
             };
         }
 
@@ -435,9 +465,23 @@ namespace Viewer.Query
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
             var op = context.ADD_SUB().Symbol;
+
+            BinaryOperatorExpression value = null;
+            switch (op.Text)
+            {
+                case "+":
+                    value = new AdditionExpression(op.Line, op.Column, left.Value, right.Value);
+                    break;
+                case "-":
+                    value = new SubtractionExpression(op.Line, op.Column, left.Value, right.Value);
+                    break;
+            }
+
+            Trace.Assert(value != null, "Invalid addition operator " + op.Text);
+
             return new CompilationResult
             {
-                Value = CompileBinaryOperator(op.Text, op.Line, op.Column, left.Value, right.Value)
+                Value = value
             };
         }
 
@@ -453,9 +497,23 @@ namespace Viewer.Query
             var left = lhs.Accept(this);
             var right = rhs.Accept(this);
             var op = context.MULT_DIV().Symbol;
+
+            BinaryOperatorExpression value = null;
+            switch (op.Text)
+            {
+                case "*":
+                    value = new MultiplicationExpression(op.Line, op.Column, left.Value, right.Value);
+                    break;
+                case "/":
+                    value = new DivisionExpression(op.Line, op.Column, left.Value, right.Value);
+                    break;
+            }
+
+            Trace.Assert(value != null, "Invalid multiplication operator " + op.Text);
+
             return new CompilationResult
             {
-                Value = CompileBinaryOperator(op.Text, op.Line, op.Column, left.Value, right.Value)
+                Value = value
             };
         }
 
@@ -496,10 +554,10 @@ namespace Viewer.Query
             if (argumentList != null)
             {
                 // function call
-                var arguments = argumentList.Accept(this).Value;
+                var arguments = argumentList.Accept(this).Values;
                 return new CompilationResult
                 {
-                    Value = RuntimeCall(id.GetText(), id.Symbol.Line, id.Symbol.Column, arguments)
+                    Value = new FunctionCallExpression(id.Symbol.Line, id.Symbol.Column, id.GetText(), arguments)
                 };
             }
 
@@ -510,80 +568,17 @@ namespace Viewer.Query
         public CompilationResult VisitArgumentList(QueryParser.ArgumentListContext context)
         {
             var argumentCount = context.comparison().Length;
-            var arguments = new Expression[argumentCount];
+            var arguments = new List<ValueExpression>();
             for (var i = 0; i < argumentCount; ++i)
             {
-                arguments[i] = context.comparison(i).Accept(this).Value;
+                var argument = context.comparison(i).Accept(this).Value;
+                arguments.Add(argument);
             }
 
             return new CompilationResult
             {
-                Value = Expression.NewArrayInit(typeof(BaseValue), arguments)
+                Values = arguments
             };
-        }
-
-        private Expression CompileBinaryOperator(string op, int line, int column, Expression lhs, Expression rhs)
-        {
-            var expr = RuntimeCall(op, line, column, lhs, rhs);
-            return expr;
-        }
-
-        /// <summary>
-        /// Compile attribute value getter.
-        /// Generated code will also handle missing attributes.
-        /// </summary>
-        /// <param name="attributeName"></param>
-        /// <returns></returns>
-        private Expression CompileAttributeAccess(string attributeName)
-        {
-            var name = Expression.Constant(attributeName);
-            var attributeGetter = typeof(IEntity).GetMethod("GetAttribute");
-
-            return Expression.Property(
-                Expression.Coalesce(
-                    Expression.Call(_entityParameter, attributeGetter, name),
-                    Expression.Constant(_nullAttribute)
-                ),
-                "Value");
-        }
-
-        /// <summary>
-        /// Create a runtime function call expression
-        /// </summary>
-        /// <param name="functionName"></param>
-        /// <param name="line"></param>
-        /// <param name="column"></param>
-        /// <param name="arguments"></param>
-        /// <returns></returns>
-        private Expression RuntimeCall(string functionName, int line, int column, params Expression[] arguments)
-        {
-            var argumentsArray = Expression.NewArrayInit(typeof(BaseValue), arguments);
-            return RuntimeCall(functionName, line, column, argumentsArray);
-        }
-
-        private Expression RuntimeCall(string functionName, int line, int column, Expression argumentsArray)
-        {
-            if (argumentsArray.Type != typeof(BaseValue[]))
-                throw new ArgumentOutOfRangeException(nameof(argumentsArray));
-
-            var constructor = typeof(ExecutionContext).GetConstructors()[0];
-            var context = Expression.New(
-                constructor,
-                new Expression[] {
-                    argumentsArray,
-                    Expression.Constant(_queryErrorListener),
-                    _entityParameter,
-                    Expression.Constant(line),
-                    Expression.Constant(column),
-                });
-
-            var runtimeCall = _runtime.GetType().GetMethod("FindAndCall");
-
-            return Expression.Call(
-                Expression.Constant(_runtime),
-                runtimeCall,
-                Expression.Constant(functionName),
-                context);
         }
     }
     

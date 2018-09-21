@@ -12,6 +12,11 @@ namespace Viewer.Query.Expressions
             : base(line, column, "not", parameter)
         {
         }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 
     internal class OrExpression : BinaryOperatorExpression
@@ -20,6 +25,11 @@ namespace Viewer.Query.Expressions
             : base(line, column, "or", left, right)
         {
         }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 
     internal class AndExpression : BinaryOperatorExpression
@@ -27,6 +37,11 @@ namespace Viewer.Query.Expressions
         public AndExpression(int line, int column, ValueExpression left, ValueExpression right)
             : base(line, column, "and", left, right)
         {
+        }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
     }
 }

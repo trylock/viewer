@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -31,6 +31,11 @@ namespace Viewer.Query.Expressions
         public override string ToString()
         {
             return Name;
+        }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
 
         public override Expression ToExpressionTree(

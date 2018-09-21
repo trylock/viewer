@@ -12,6 +12,11 @@ namespace Viewer.Query.Expressions
             : base(line, column, "+", left, right)
         {
         }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 
     internal class SubtractionExpression : BinaryOperatorExpression
@@ -19,6 +24,11 @@ namespace Viewer.Query.Expressions
         public SubtractionExpression(int line, int column, ValueExpression left, ValueExpression right)
             : base(line, column, "-", left, right)
         {
+        }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
     }
 
@@ -28,6 +38,11 @@ namespace Viewer.Query.Expressions
             : base(line, column, "*", left, right)
         {
         }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 
     internal class DivisionExpression : BinaryOperatorExpression
@@ -35,6 +50,11 @@ namespace Viewer.Query.Expressions
         public DivisionExpression(int line, int column, ValueExpression left, ValueExpression right)
             : base(line, column, "/", left, right)
         {
+        }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
     }
 }

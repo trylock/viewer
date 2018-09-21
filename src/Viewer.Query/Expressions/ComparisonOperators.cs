@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +12,11 @@ namespace Viewer.Query.Expressions
             : base(line, column, "<", left, right)
         {
         }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 
     internal class LessThanOrEqualOperator : BinaryOperatorExpression
@@ -19,6 +24,11 @@ namespace Viewer.Query.Expressions
         public LessThanOrEqualOperator(int line, int column, ValueExpression left, ValueExpression right)
             : base(line, column, "<=", left, right)
         {
+        }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
     }
 
@@ -28,6 +38,11 @@ namespace Viewer.Query.Expressions
             : base(line, column, "=", left, right)
         {
         }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 
     internal class NotEqualOperator : BinaryOperatorExpression
@@ -35,6 +50,11 @@ namespace Viewer.Query.Expressions
         public NotEqualOperator(int line, int column, ValueExpression left, ValueExpression right)
             : base(line, column, "!=", left, right)
         {
+        }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
     }
 
@@ -44,6 +64,11 @@ namespace Viewer.Query.Expressions
             : base(line, column, ">", left, right)
         {
         }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
 
     internal class GreaterThanOrEqualOperator : BinaryOperatorExpression
@@ -51,6 +76,11 @@ namespace Viewer.Query.Expressions
         public GreaterThanOrEqualOperator(int line, int column, ValueExpression left, ValueExpression right)
             : base(line, column, ">=", left, right)
         {
+        }
+
+        public override T Accept<T>(IExpressionVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
         }
     }
 }

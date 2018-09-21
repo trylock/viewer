@@ -42,6 +42,14 @@ namespace Viewer.Query
         /// <param name="context"></param>
         /// <returns></returns>
         BaseValue FindAndCall(string name, IExecutionContext context);
+
+        /// <summary>
+        /// Report a runtime error
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="column"></param>
+        /// <param name="message"></param>
+        void ReportError(int line, int column, string message);
     }
 
     [Export(typeof(IRuntime))]
@@ -126,7 +134,7 @@ namespace Viewer.Query
             // call the function
             return function.Call(new ExecutionContext(
                 actualArguments, 
-                _queryErrorListener,
+                this,
                 context.Entity, 
                 context.Line, 
                 context.Column));
@@ -159,6 +167,11 @@ namespace Viewer.Query
                 context.Column, 
                 $"Unknown function {name}({sb})");
             return new IntValue(null);
+        }
+
+        public void ReportError(int line, int column, string message)
+        {
+            _queryErrorListener.OnRuntimeError(line, column, message);
         }
 
         private static string NormalizeFunctionName(string name) => name.ToLowerInvariant();

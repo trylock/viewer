@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -31,8 +31,7 @@ namespace Viewer.Query.Expressions
 
         public override Expression ToExpressionTree(
             ParameterExpression entityParameter,
-            IRuntime runtime,
-            IQueryErrorListener errorListener)
+            IRuntime runtime)
         {
             return Expression.Constant(Value);
         }

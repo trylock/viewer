@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -50,15 +50,15 @@ namespace Viewer.Query.Expressions
             return sb.ToString();
         }
 
-        public override Expression ToExpressionTree(ParameterExpression entityParameter, IRuntime runtime, IQueryErrorListener errorListener)
+        public override Expression ToExpressionTree(ParameterExpression entityParameter, IRuntime runtime)
         {
             var arguments = new Expression[Parameters.Count];
             for (var i = 0; i < arguments.Length; ++i)
             {
-                arguments[i] = Parameters[i].ToExpressionTree(entityParameter, runtime, errorListener);
+                arguments[i] = Parameters[i].ToExpressionTree(entityParameter, runtime);
             }
 
-            return FunctionUtils.RuntimeCall(Name, Line, Column, runtime, errorListener, entityParameter, arguments);
+            return FunctionUtils.RuntimeCall(Name, Line, Column, runtime, entityParameter, arguments);
         }
     }
 }

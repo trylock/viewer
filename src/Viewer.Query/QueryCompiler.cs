@@ -229,7 +229,7 @@ namespace Viewer.Query
             }
 
             // compile the where condition
-            var entityPredicate = optionalWhereResult.Value.CompilePredicate(_runtime, _queryErrorListener);
+            var entityPredicate = optionalWhereResult.Value.CompilePredicate(_runtime);
             return new CompilationResult
             {
                 Query = sourceResult.Query.Where(entityPredicate, optionalWhereResult.Text)
@@ -334,7 +334,7 @@ namespace Viewer.Query
         public CompilationResult VisitOrderByKey(QueryParser.OrderByKeyContext context)
         {
             var valueExpr = context.comparison().Accept(this).Value;
-            var valueGetter = valueExpr.CompileFunction(_runtime, _queryErrorListener);
+            var valueGetter = valueExpr.CompileFunction(_runtime);
             var direction = context.optionalDirection().GetText().ToLowerInvariant() == "desc" ? -1 : 1;
 
             return new CompilationResult
@@ -435,7 +435,7 @@ namespace Viewer.Query
                     value = new NotEqualOperator(op.Line, op.Column, left.Value, right.Value);
                     break;
                 case "=":
-                    value = new EqualOperatorOperator(op.Line, op.Column, left.Value, right.Value);
+                    value = new EqualOperator(op.Line, op.Column, left.Value, right.Value);
                     break;
                 case ">":
                     value = new GreaterThanOperator(op.Line, op.Column, left.Value, right.Value);

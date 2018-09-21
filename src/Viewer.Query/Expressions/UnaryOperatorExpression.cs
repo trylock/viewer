@@ -42,11 +42,10 @@ namespace Viewer.Query.Expressions
 
         public override Expression ToExpressionTree(
             ParameterExpression entityParameter, 
-            IRuntime runtime, 
-            IQueryErrorListener errorListener)
+            IRuntime runtime)
         {
-            var value = Parameter.ToExpressionTree(entityParameter, runtime, errorListener);
-            return FunctionUtils.RuntimeCall(Name, Line, Column, runtime, errorListener, entityParameter, new[]
+            var value = Parameter.ToExpressionTree(entityParameter, runtime);
+            return FunctionUtils.RuntimeCall(Name, Line, Column, runtime, entityParameter, new[]
             {
                 value
             });

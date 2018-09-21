@@ -53,12 +53,11 @@ namespace Viewer.Query.Expressions
 
         public override Expression ToExpressionTree(
             ParameterExpression entityParameter,
-            IRuntime runtime,
-            IQueryErrorListener errorListener)
+            IRuntime runtime)
         {
-            var left = Left.ToExpressionTree(entityParameter, runtime, errorListener);
-            var right = Right.ToExpressionTree(entityParameter, runtime, errorListener);
-            return FunctionUtils.RuntimeCall(Name, Line, Column, runtime, errorListener, entityParameter, left, right);
+            var left = Left.ToExpressionTree(entityParameter, runtime);
+            var right = Right.ToExpressionTree(entityParameter, runtime);
+            return FunctionUtils.RuntimeCall(Name, Line, Column, runtime, entityParameter, left, right);
         }
     }
 }

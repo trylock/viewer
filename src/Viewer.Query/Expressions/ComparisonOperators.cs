@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,9 +22,9 @@ namespace Viewer.Query.Expressions
         }
     }
 
-    internal class EqualOperatorOperator : BinaryOperatorExpression
+    internal class EqualOperator : BinaryOperatorExpression
     {
-        public EqualOperatorOperator(int line, int column, ValueExpression left, ValueExpression right)
+        public EqualOperator(int line, int column, ValueExpression left, ValueExpression right)
             : base(line, column, "=", left, right)
         {
         }

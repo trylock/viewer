@@ -32,7 +32,8 @@ namespace ViewerTest.Query
 
         private IExecutionContext Create(params BaseValue[] arguments)
         {
-            return new ExecutionContext(arguments, new NullQueryErrorListener(), null, 0, 0);
+            var runtime = new Mock<IRuntime>();
+            return new ExecutionContext(arguments, runtime.Object, null, 0, 0);
         }
 
         [TestMethod]

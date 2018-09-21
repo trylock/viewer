@@ -44,14 +44,11 @@ namespace Viewer.Query.Expressions
         /// value.
         /// </summary>
         /// <param name="runtime"></param>
-        /// <param name="errorListener"></param>
         /// <returns></returns>
-        public virtual Func<IEntity, BaseValue> CompileFunction(
-            IRuntime runtime, 
-            IQueryErrorListener errorListener)
+        public virtual Func<IEntity, BaseValue> CompileFunction(IRuntime runtime)
         {
             var entityParameter = Expression.Parameter(typeof(IEntity), "entity");
-            var expression = ToExpressionTree(entityParameter, runtime, errorListener);
+            var expression = ToExpressionTree(entityParameter, runtime);
             var functionExpression = Expression.Lambda<Func<IEntity, BaseValue>>(expression, entityParameter);
             var function = functionExpression.Compile();
             return function;
@@ -62,19 +59,19 @@ namespace Viewer.Query.Expressions
         /// iff the expression evaluates to a value which is not null.
         /// </summary>
         /// <param name="runtime"></param>
-        /// <param name="errorListener"></param>
         /// <returns></returns>
-        public virtual Func<IEntity, bool> CompilePredicate(IRuntime runtime, IQueryErrorListener errorListener)
+        public virtual Func<IEntity, bool> CompilePredicate(IRuntime runtime)
         {
-            var function = CompileFunction(runtime, errorListener);
+            var function = CompileFunction(runtime);
             return entity => !function(entity).IsNull;
         }
 
         public abstract override string ToString();
 
+        public abstract T Accept<T>(IExpressionVisitor<T> visitor);
+
         public abstract Expression ToExpressionTree(
             ParameterExpression entityParameter, 
-            IRuntime runtime,
-            IQueryErrorListener errorListener);
+            IRuntime runtime);
     }
 }

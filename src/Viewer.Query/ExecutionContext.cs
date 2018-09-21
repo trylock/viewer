@@ -51,7 +51,7 @@ namespace Viewer.Query
     public class ExecutionContext : IExecutionContext
     {
         private readonly IReadOnlyList<BaseValue> _values;
-        private readonly IQueryErrorListener _listener;
+        private readonly IRuntime _runtime;
 
         public int Count => _values.Count;
         public IEntity Entity { get; }
@@ -60,13 +60,13 @@ namespace Viewer.Query
 
         public ExecutionContext(
             IReadOnlyList<BaseValue> values, 
-            IQueryErrorListener listener, 
+            IRuntime runtime, 
             IEntity entity, 
             int line, 
             int column)
         {
             _values = values ?? throw new ArgumentNullException(nameof(values));
-            _listener = listener ?? throw new ArgumentNullException(nameof(listener));
+            _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
             Entity = entity;
             Line = line;
             Column = column;
@@ -91,7 +91,7 @@ namespace Viewer.Query
 
         public BaseValue Error(string message)
         {
-            _listener.OnRuntimeError(Line, Column, message);
+            _runtime.ReportError(Line, Column, message);
             return new IntValue(null);
         }
     }

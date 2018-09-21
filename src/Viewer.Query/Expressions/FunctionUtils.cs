@@ -15,7 +15,6 @@ namespace Viewer.Query.Expressions
             int line, 
             int column, 
             IRuntime runtime,
-            IQueryErrorListener errorListener,
             ParameterExpression entityParameter,
             Expression argumentsArray)
         {
@@ -27,7 +26,7 @@ namespace Viewer.Query.Expressions
                 constructor,
                 new Expression[] {
                     argumentsArray,
-                    Expression.Constant(errorListener),
+                    Expression.Constant(runtime),
                     entityParameter,
                     Expression.Constant(line),
                     Expression.Constant(column),
@@ -47,12 +46,11 @@ namespace Viewer.Query.Expressions
             int line, 
             int column, 
             IRuntime runtime,
-            IQueryErrorListener errorListener,
             ParameterExpression entityParameter,
             params Expression[] arguments)
         {
             var argumentsArray = Expression.NewArrayInit(typeof(BaseValue), arguments);
-            return RuntimeCall(functionName, line, column, runtime, errorListener, entityParameter, argumentsArray);
+            return RuntimeCall(functionName, line, column, runtime, entityParameter, argumentsArray);
         }
     }
 }

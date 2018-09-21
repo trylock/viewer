@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Viewer.Data;
 using Viewer.Query;
 using Viewer.QueryRuntime;
@@ -16,7 +17,8 @@ namespace ViewerTest.QueryRuntime
     {
         private IExecutionContext Create(params BaseValue[] arguments)
         {
-            return new ExecutionContext(arguments, new NullQueryErrorListener(), null, 0, 0);
+            var runtime = new Mock<IRuntime>();
+            return new ExecutionContext(arguments, runtime.Object, null, 0, 0);
         }
 
         [TestMethod]

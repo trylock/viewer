@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -75,10 +75,12 @@
     <Compile Include="Expressions\AttributeAccessExpression.cs" />
     <Compile Include="Expressions\ExpressionVisitor.cs" />
     <Compile Include="Expressions\FunctionCallExpression.cs" />
+    <Compile Include="SearchPriorityComparer.cs" />
     <Compile Include="QueryExpression\BinaryQueryOperator.cs" />
     <Compile Include="QueryExpression\ExceptQuery.cs" />
     <Compile Include="QueryExpression\IntersectQuery.cs" />
     <Compile Include="QueryExpression\OrderedQuery.cs" />
+    <Compile Include="QueryExpression\QueryFragment.cs" />
     <Compile Include="QueryExpression\QueryViewQuery.cs" />
     <Compile Include="QueryExpression\SelectQuery.cs" />
     <Compile Include="QueryExpression\UnionQuery.cs" />

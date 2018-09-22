@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,18 +11,18 @@ using Viewer.Query.Expressions;
 
 namespace Viewer.Query.QueryExpression
 {
-    internal class WhereQuery : IExecutableQuery
+    internal class WhereQuery : QueryFragment
     {
         private readonly IAttributeCache _attributes;
         private readonly IExecutableQuery _source;
         private readonly Func<IEntity, bool> _predicate;
         private readonly ValueExpression _expression;
 
-        public IComparer<IEntity> Comparer => _source.Comparer;
+        public override IComparer<IEntity> Comparer => _source.Comparer;
 
-        public IEnumerable<PathPattern> Patterns => _source.Patterns;
+        public override IEnumerable<PathPattern> Patterns => _source.Patterns;
 
-        public string Text
+        public override string Text
         {
             get
             {
@@ -42,7 +43,7 @@ namespace Viewer.Query.QueryExpression
                 return sourceText + Environment.NewLine + "where " + _expression;
             }
         }
-
+        
         public WhereQuery(
             IRuntime runtime, 
             IAttributeCache attributes,
@@ -55,12 +56,23 @@ namespace Viewer.Query.QueryExpression
             _predicate = _expression.CompilePredicate(runtime);
         }
 
-        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public override IEnumerable<IEntity> Execute(
+            IProgress<QueryProgressReport> progress, 
+            CancellationToken cancellationToken,
+            IComparer<string> searchOrder)
         {
+            if (_source is QueryFragment fragment) // the subquery supports search order
+            {
+                var priorityFunction = new SearchPriorityComparer(_expression);
+                priorityFunction.Index(_attributes);
+
+                return fragment.Execute(progress, cancellationToken, priorityFunction).Where(_predicate);
+            }
+
             return _source.Execute(progress, cancellationToken).Where(_predicate);
         }
 
-        public bool Match(IEntity entity)
+        public override bool Match(IEntity entity)
         {
             return _source.Match(entity) && _predicate(entity);
         }

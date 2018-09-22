@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,19 @@ using Viewer.Data.SQLite;
 
 namespace Viewer.Data
 {
+    public class AttributeLocation
+    {
+        /// <summary>
+        /// Name of an attribute
+        /// </summary>
+        public string AttributeName { get; set; }
+
+        /// <summary>
+        /// File path where <see cref="AttributeName"/> has been seen.
+        /// </summary>
+        public string FilePath { get; set; }
+    }
+
     /// <summary>
     /// AttributeCache keeps track of recently seen attributes and their values.
     /// </summary>
@@ -31,6 +45,19 @@ namespace Viewer.Data
         /// <param name="name">Name of an attribute</param>
         /// <returns>Available values of attribute named <paramref name="name"/></returns>
         IEnumerable<BaseValue> GetValues(string name);
+
+        /// <summary>
+        /// This function will find a list of files which probably contain given attribute name.
+        /// </summary>
+        /// <param name="attributeNames">Names of attributes</param>
+        /// <returns>List of file paths which cotain given attribute name</returns>
+        List<AttributeLocation> GetAttributes(IEnumerable<string> attributeNames);
+
+        /// <summary>
+        /// List all indexed files
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> GetFiles();
     }
 
     [Export(typeof(IAttributeCache))]
@@ -71,6 +98,78 @@ namespace Viewer.Data
                     {
                         var name = reader.GetString(0);
                         yield return name;
+                    }
+                }
+            }
+        }
+
+        public List<AttributeLocation> GetAttributes(IEnumerable<string> attributeNames)
+        {
+            var names = attributeNames.ToList();
+
+            // create SQL expression "(a.name = :param0 OR a.name = :param1 OR ...)"
+            var attributeNameSnippet = new StringBuilder();
+            attributeNameSnippet.Append('(');
+            for (var i = 0; i < names.Count; ++i)
+            {
+                attributeNameSnippet.Append("a.name = :param");
+                attributeNameSnippet.Append(i);
+
+                if (i + 1 < names.Count)
+                {
+                    attributeNameSnippet.Append(" OR ");
+                }
+            }
+            attributeNameSnippet.Append(')');
+
+            var data = new List<AttributeLocation>();
+
+            // find files for each attribute 
+            using (var connection = _connectionFactory.Create())
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"
+                SELECT a.name, f.path
+                FROM attributes AS a 
+                INNER JOIN files AS f ON (f.id = a.owner)
+                WHERE a.source = 0 AND " + attributeNameSnippet;
+
+                for (var i = 0; i < names.Count; ++i)
+                {
+                    command.Parameters.Add(new SQLiteParameter(":param" + i, names[i]));
+                }
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var name = reader.GetString(0);
+                        var path = reader.GetString(1);
+
+                        data.Add(new AttributeLocation
+                        {
+                            AttributeName = name,
+                            FilePath = path
+                        });
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        public IEnumerable<string> GetFiles()
+        {
+            using (var connection = _connectionFactory.Create())
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT path FROM files";
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var path = reader.GetString(0);
+                        yield return path;
                     }
                 }
             }

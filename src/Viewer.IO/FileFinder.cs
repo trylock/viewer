@@ -67,6 +67,21 @@ namespace Viewer.IO
         /// </param>
         /// <returns></returns>
         IEnumerable<string> GetDirectories(CancellationToken cancellationToken);
+        
+        /// <summary>
+        /// Find all directories which match <see cref="Pattern"/>. Directories searched in
+        /// order by given comparer.
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// Cancellation token which can be used to cancel the search.
+        /// </param>
+        /// <param name="directoryComparer">
+        /// Directory comparer which is used to sort the searched directories.
+        /// </param>
+        /// <returns>Found directories</returns>
+        IEnumerable<string> GetDirectories(
+            CancellationToken cancellationToken, 
+            IComparer<string> directoryComparer);
 
         /// <summary>
         /// Test whether <paramref name="path"/> matches <see cref="Pattern"/>.
@@ -133,87 +148,82 @@ namespace Viewer.IO
         
         public IEnumerable<string> GetDirectories(CancellationToken cancellationToken)
         {
-            var result = new ConcurrentQueue<string>();
-            using (var resultCount = new SemaphoreSlim(0))
+            return GetDirectories(cancellationToken, Comparer<string>.Default);
+        }
+
+        public IEnumerable<string> GetDirectories(
+            CancellationToken cancellationToken, 
+            IComparer<string> directoryComparer)
+        {
+            return FindAll(cancellationToken, directoryComparer);
+        }
+
+        private class StateComparer : IComparer<State>
+        {
+            private readonly IComparer<string> _pathComparer;
+
+            public StateComparer(IComparer<string> pathComparer)
             {
-                var task = Task.Run(() =>
+                _pathComparer = pathComparer ?? throw new ArgumentNullException(nameof(pathComparer));
+            }
+
+            public int Compare(State x, State y)
+            {
+                if (ReferenceEquals(x, y))
                 {
-                    try
-                    {
-                        FindAll(path =>
-                        {
-                            result.Enqueue(path);
-                            resultCount.Release();
-                        }, cancellationToken);
-                    }
-                    finally
-                    {
-                        result.Enqueue(null);
-                        resultCount.Release();
-                    }
-                }, cancellationToken);
-
-                for (;;)
-                {
-                    resultCount.Wait(cancellationToken);
-
-                    if (!result.TryDequeue(out var path))
-                    {
-                        continue;
-                    }
-
-                    if (path == null)
-                    {
-                        break;
-                    }
-
-                    yield return path;
+                    return 0;
                 }
-
-                // propagate all exceptions to the caller
-                task.Wait(cancellationToken);
+                else if (x == null)
+                {
+                    return -1;
+                }
+                else if (y == null)
+                {
+                    return 1;
+                }
+                return _pathComparer.Compare(x.Path, y.Path);
             }
         }
 
-        private void FindAll(Action<string> onNext, CancellationToken cancellationToken)
+        private IEnumerable<string> FindAll(
+            CancellationToken cancellationToken, 
+            IComparer<string> pathComparer)
         {
+            var comparer = new StateComparer(pathComparer);
             var parts = Pattern.GetParts().ToList();
             if (parts.Count == 0)
             {
-                return;
+                yield break;
             }
 
             var firstPath = parts[0];
             if (!_fileSystem.DirectoryExists(firstPath))
             {
-                return;
+                yield break;
             }
 
             if (parts.Count == 1)
             {
-                onNext(firstPath);
-                return;
+                yield return firstPath;
+                yield break;
             }
-
-            var parallelOptions = new ParallelOptions
-            {
-                CancellationToken = cancellationToken
-            };
-            var visited = new ConcurrentDictionary<string, bool>();
-            var states = new ConcurrentQueue<State>();
+            
+            var visited = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
+            var states = new Queue<State>();
             states.Enqueue(new State(firstPath, 1));
 
-            while (!states.IsEmpty)
+            while (states.Count > 0)
             {
-                var newLevel = new ConcurrentQueue<State>();
+                var newLevel = new List<State>();
 
-                Parallel.ForEach(states, parallelOptions, state =>
+                foreach (var state in states)
                 {
                     if (state.MatchedPartCount >= parts.Count)
                     {
-                        if (visited.TryAdd(state.Path, true))
+                        if (!visited.Contains(state.Path))
                         {
-                            onNext(state.Path);
+                            yield return state.Path;
+                            visited.Add(state.Path);
                         }
                     }
                     else
@@ -225,33 +235,35 @@ namespace Viewer.IO
                             var path = Path.Combine(state.Path, part);
                             if (!_fileSystem.DirectoryExists(path))
                             {
-                                return;
+                                continue;
                             }
 
-                            newLevel.Enqueue(new State(path, state.MatchedPartCount + 1));
+                            newLevel.Add(new State(path, state.MatchedPartCount + 1));
                         }
                         else if (part == "**")
                         {
                             // assume the pattern has been matched
-                            newLevel.Enqueue(new State(state.Path, state.MatchedPartCount + 1));
+                            newLevel.Add(new State(state.Path, state.MatchedPartCount + 1));
 
                             // assume it has not been matched yet
                             foreach (var dir in EnumerateDirectories(state.Path, null))
                             {
-                                newLevel.Enqueue(new State(dir, state.MatchedPartCount));
+                                newLevel.Add(new State(dir, state.MatchedPartCount));
                             }
                         }
                         else
                         {
                             foreach (var dir in EnumerateDirectories(state.Path, part))
                             {
-                                newLevel.Enqueue(new State(dir, state.MatchedPartCount + 1));
+                                newLevel.Add(new State(dir, state.MatchedPartCount + 1));
                             }
                         }
                     }
-                });
+                }
 
-                states = newLevel;
+                newLevel.Sort(comparer);
+
+                states = new Queue<State>(newLevel);
             }
         }
 

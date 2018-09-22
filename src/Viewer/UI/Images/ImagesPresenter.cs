@@ -163,7 +163,6 @@ namespace Viewer.UI.Images
 
             View.History.Items = _queryHistory
                 .Distinct(QueryTextComparer.Default)
-                .OfType<IQuery>()
                 .Select(item => new QueryHistoryItem(item))
                 .ToList();
             View.History.SelectedItem = View.History.Items
@@ -199,7 +198,7 @@ namespace Viewer.UI.Images
         /// Execute given query and show all entities in the result.
         /// </summary>
         /// <param name="query">Query to show</param>
-        public async Task LoadQueryAsync(IQuery query)
+        public async Task LoadQueryAsync(IExecutableQuery query)
         {
             // release all resources used by the previous query
             DisposeQuery();
@@ -586,7 +585,7 @@ namespace Viewer.UI.Images
             }
 
             // build the parent folder query
-            IQuery nextQuery = null;
+            IExecutableQuery nextQuery = null;
             foreach (var pattern in query.Patterns)
             {
                 var parentPattern = pattern.GetParent();
@@ -597,7 +596,7 @@ namespace Viewer.UI.Images
                 }
                 else
                 {
-                    nextQuery = nextQuery.Union(parentQuery);
+                    nextQuery = _queryFactory.Union(parentQuery, nextQuery);
                 }
             }
 

@@ -75,7 +75,7 @@ namespace Viewer.UI.Explorer
             SetCurrentQuery(e.Query);
         }
 
-        private async void SetCurrentQuery(IQuery query)
+        private async void SetCurrentQuery(IExecutableQuery query)
         {
             Reset();
 

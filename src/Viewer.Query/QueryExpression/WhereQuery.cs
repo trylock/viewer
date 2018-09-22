@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,14 +6,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
 using Viewer.IO;
+using Viewer.Query.Expressions;
 
 namespace Viewer.Query.QueryExpression
 {
     internal class WhereQuery : IExecutableQuery
     {
+        private readonly IAttributeCache _attributes;
         private readonly IExecutableQuery _source;
         private readonly Func<IEntity, bool> _predicate;
-        private readonly string _predicateText;
+        private readonly ValueExpression _expression;
 
         public IComparer<IEntity> Comparer => _source.Comparer;
 
@@ -37,16 +39,20 @@ namespace Viewer.Query.QueryExpression
                                  ")";
                 }
 
-                return sourceText + Environment.NewLine + "where " + _predicateText;
+                return sourceText + Environment.NewLine + "where " + _expression;
             }
         }
 
-
-        public WhereQuery(IExecutableQuery source, Func<IEntity, bool> predicate, string predicateText)
+        public WhereQuery(
+            IRuntime runtime, 
+            IAttributeCache attributes,
+            IExecutableQuery source, 
+            ValueExpression expression)
         {
+            _attributes = attributes;
             _source = source;
-            _predicate = predicate;
-            _predicateText = predicateText;
+            _expression = expression;
+            _predicate = _expression.CompilePredicate(runtime);
         }
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)

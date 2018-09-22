@@ -13,9 +13,9 @@ namespace Viewer.UI
 {
     public class QueryEventArgs : EventArgs
     {
-        public IQuery Query { get; }
+        public IExecutableQuery Query { get; }
 
-        public QueryEventArgs(IQuery query)
+        public QueryEventArgs(IExecutableQuery query)
         {
             Query = query;
         }
@@ -35,7 +35,7 @@ namespace Viewer.UI
     /// either call <see cref="ExecuteQuery"/> or <see cref="Previous"/> and <see cref="Next"/>.
     /// All of these methods will raise the <see cref="QueryExecuted"/> event.
     /// </remarks>
-    public interface IQueryHistory : IReadOnlyList<IQuery>
+    public interface IQueryHistory : IReadOnlyList<IExecutableQuery>
     {
         /// <summary>
         /// Event occurs when the <see cref="ExecuteQuery"/> method is called. 
@@ -48,13 +48,13 @@ namespace Viewer.UI
         /// </summary>
         /// <param name="query">Query to execute</param>
         /// <exception cref="ArgumentNullException"><paramref name="query"/> is null</exception>
-        void ExecuteQuery(IQuery query);
+        void ExecuteQuery(IExecutableQuery query);
 
         /// <summary>
         /// Current query in query history.
         /// This can be null if no query has been executed yet.
         /// </summary>
-        IQuery Current { get; }
+        IExecutableQuery Current { get; }
 
         /// <summary>
         /// Go back in query history. This will trigger the <see cref="QueryExecuted"/> event
@@ -71,27 +71,27 @@ namespace Viewer.UI
         /// <summary>
         /// Get previous query or null if current query is the first query in history.
         /// </summary>
-        IQuery Previous { get; }
+        IExecutableQuery Previous { get; }
 
         /// <summary>
         /// Get next query or null if current query is the last query in history.
         /// </summary>
-        IQuery Next { get; }
+        IExecutableQuery Next { get; }
     }
 
     [Export(typeof(IQueryHistory))]
     public class QueryHistory : IQueryHistory
     {
-        private readonly List<IQuery> _history = new List<IQuery>();
+        private readonly List<IExecutableQuery> _history = new List<IExecutableQuery>();
         private int _historyHead = -1;
 
         public event EventHandler<QueryEventArgs> QueryExecuted;
 
-        public IQuery Current => _historyHead < 0 ? null : _history[_historyHead];
-        public IQuery Previous => _historyHead <= 0 ? null : _history[_historyHead - 1];
-        public IQuery Next => _historyHead >= _history.Count - 1 ? null : _history[_historyHead + 1];
+        public IExecutableQuery Current => _historyHead < 0 ? null : _history[_historyHead];
+        public IExecutableQuery Previous => _historyHead <= 0 ? null : _history[_historyHead - 1];
+        public IExecutableQuery Next => _historyHead >= _history.Count - 1 ? null : _history[_historyHead + 1];
         
-        public void ExecuteQuery(IQuery query)
+        public void ExecuteQuery(IExecutableQuery query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -142,7 +142,7 @@ namespace Viewer.UI
             QueryExecuted?.Invoke(this, new QueryEventArgs(Current));
         }
 
-        public IEnumerator<IQuery> GetEnumerator()
+        public IEnumerator<IExecutableQuery> GetEnumerator()
         {
             for (var i = _history.Count - 1; i >= 0; --i)
             {
@@ -157,6 +157,6 @@ namespace Viewer.UI
 
         public int Count => _history.Count;
 
-        public IQuery this[int index] => _history[_history.Count - index - 1];
+        public IExecutableQuery this[int index] => _history[_history.Count - index - 1];
     }
 }

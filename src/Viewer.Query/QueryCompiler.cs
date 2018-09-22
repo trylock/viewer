@@ -12,6 +12,7 @@ using Antlr4.Runtime.Tree;
 using Viewer.Data;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Query.Expressions;
+using Viewer.Query.QueryExpression;
 using Attribute = Viewer.Data.Attribute;
 using ConstantExpression = Viewer.Query.Expressions.ConstantExpression;
 
@@ -30,14 +31,14 @@ namespace Viewer.Query
         /// <param name="input">Stream with the query</param>
         /// <param name="queryErrorListener">Error reporter</param>
         /// <returns>Compiled query</returns>
-        IQuery Compile(TextReader input, IQueryErrorListener queryErrorListener);
+        IExecutableQuery Compile(TextReader input, IQueryErrorListener queryErrorListener);
 
         /// <summary>
         /// Same as Compile(new StringReader(query), defaultQueryErrorListener)
         /// </summary>
         /// <param name="query">Query to compile</param>
         /// <returns>Compiled query or null if there were errors during compilation</returns>
-        IQuery Compile(string query);
+        IExecutableQuery Compile(string query);
     }
 
     internal class CompilationResult
@@ -229,10 +230,9 @@ namespace Viewer.Query
             }
 
             // compile the where condition
-            var entityPredicate = optionalWhereResult.Value.CompilePredicate(_runtime);
             return new CompilationResult
             {
-                Query = sourceResult.Query.Where(entityPredicate, optionalWhereResult.Text)
+                Query = sourceResult.Query.Where(optionalWhereResult.Value)
             };
         }
 
@@ -251,7 +251,7 @@ namespace Viewer.Query
             if (viewId != null)
             {
                 var view = _queryCompiler.Views.Find(viewId.GetText());
-                query = _queryCompiler.Compile(new StringReader(view.Text), _queryErrorListener);
+                query = _queryCompiler.Compile(new StringReader(view.Text), _queryErrorListener) as IQuery;
                 if (query == null)
                 {
                     // compilation of the subquery failed
@@ -269,7 +269,7 @@ namespace Viewer.Query
             var pathPattern = pattern.GetText().Substring(1, pattern.GetText().Length - 2);
             try
             {
-                query = _queryFactory.CreateQuery(pathPattern);
+                query = _queryFactory.CreateQuery(pathPattern) as IQuery;
                 return new CompilationResult {Query = query};
             }
             catch (ArgumentException e) // pathPattern contains invalid characters
@@ -649,7 +649,7 @@ namespace Viewer.Query
             Views = queryViewRepository;
         }
 
-        public IQuery Compile(TextReader inputQuery, IQueryErrorListener queryErrorListener)
+        public IExecutableQuery Compile(TextReader inputQuery, IQueryErrorListener queryErrorListener)
         {
             // create all necessary components to parse a query
             var input = new AntlrInputStream(inputQuery);
@@ -683,7 +683,7 @@ namespace Viewer.Query
             return result;
         }
 
-        public IQuery Compile(string query)
+        public IExecutableQuery Compile(string query)
         {
             return Compile(new StringReader(query), _queryQueryErrorListener);
         }

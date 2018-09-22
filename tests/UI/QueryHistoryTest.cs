@@ -84,7 +84,7 @@ namespace ViewerTest.UI
         public void ExecuteQuery_EmptyHistory()
         {
             var query = new Mock<IQuery>();
-            IQuery executed = null;
+            IExecutableQuery executed = null;
 
             var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => executed = args.Query;
@@ -115,7 +115,7 @@ namespace ViewerTest.UI
                 query[i].Setup(mock => mock.Text).Returns(i.ToString());
             }
 
-            IQuery current = null;
+            IExecutableQuery current = null;
             var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => current = args.Query;
 
@@ -174,7 +174,7 @@ namespace ViewerTest.UI
                 query[i].Setup(mock => mock.Text).Returns(i.ToString());
             }
 
-            IQuery current = null;
+            IExecutableQuery current = null;
             var queryEvents = new QueryHistory();
             queryEvents.QueryExecuted += (sender, args) => current = args.Query;
 

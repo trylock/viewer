@@ -130,7 +130,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Current query
         /// </summary>
-        public IQuery Query { get; }
+        public IExecutableQuery Query { get; }
 
         /// <summary>
         /// Current load task
@@ -140,8 +140,8 @@ namespace Viewer.UI.Images
         public QueryEvaluator(
             IFileWatcherFactory fileWatcherFactory, 
             ILazyThumbnailFactory thumbnailFactory, 
-            IEntityManager entities, 
-            IQuery query)
+            IEntityManager entities,
+            IExecutableQuery query)
         {
             _entities = entities;
             _fileWatcher = fileWatcherFactory.Create();
@@ -396,7 +396,7 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        QueryEvaluator Create(IQuery query);
+        QueryEvaluator Create(IExecutableQuery query);
     }
 
     [Export(typeof(IQueryEvaluatorFactory))]
@@ -414,7 +414,7 @@ namespace Viewer.UI.Images
             _entities = entities;
         }
 
-        public QueryEvaluator Create(IQuery query)
+        public QueryEvaluator Create(IExecutableQuery query)
         {
             return new QueryEvaluator(_fileWatcherFactory, _thumbnailFactory, _entities, query);
         }

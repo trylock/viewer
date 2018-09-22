@@ -9,6 +9,7 @@ using Moq;
 using Viewer.Data;
 using Viewer.IO;
 using Viewer.Query;
+using Viewer.Query.Expressions;
 using Viewer.Query.QueryExpression;
 
 namespace ViewerTest.Query.QueryExpression
@@ -19,7 +20,7 @@ namespace ViewerTest.Query.QueryExpression
         [TestMethod]
         public void Text_SourceDoesNotHaveATextualRepresentation()
         {
-            var source = new Mock<IExecutableQuery>();
+            var source = new Mock<QueryFragment>();
             source
                 .Setup(mock => mock.Text)
                 .Returns<string>(null);
@@ -66,11 +67,16 @@ namespace ViewerTest.Query.QueryExpression
                 new Mock<IEntityManager>().Object,
                 "a",
                 FileAttributes.System);
-            var where = new WhereQuery(select, _ => true, "int(attr)");
+              
+            var where = new WhereQuery(
+                new Mock<IRuntime>().Object, 
+                new Mock<IAttributeCache>().Object,  
+                select,
+                new AttributeAccessExpression(0, 0, "attr"));
             var orderBy = new OrderedQuery(where, EntityComparer.Default, "attr desc");
             Assert.IsTrue(string.Equals(
                 "select \"a\"" + Environment.NewLine +
-                "where int(attr)" + Environment.NewLine +
+                "where attr" + Environment.NewLine +
                 "order by attr desc",
                 orderBy.Text, StringComparison.CurrentCultureIgnoreCase));
         }

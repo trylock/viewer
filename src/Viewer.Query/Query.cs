@@ -17,6 +17,7 @@ using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.Data.Storage;
 using Viewer.IO;
+using Viewer.Query.Expressions;
 using Viewer.Query.QueryExpression;
 
 namespace Viewer.Query
@@ -62,81 +63,6 @@ namespace Viewer.Query
         /// <returns>true iff <paramref name="entity"/> matches the query</returns>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
         bool Match(IEntity entity);
-    }
-
-    /// <summary>
-    /// Immutable structure which describes a query.
-    /// Evaluated entities are returned in random order even if this query has a comparer.
-    /// It up to the user to use provided comparer to sort the returned values.
-    /// </summary>
-    public interface IQuery : IExecutableQuery
-    {
-        /// <summary>
-        /// Set comparer to order the query result
-        /// </summary>
-        /// <param name="comparer"></param>
-        /// <param name="comparerText">Textual representation of the comparer</param>
-        /// <returns></returns>
-        IQuery WithComparer(IComparer<IEntity> comparer, string comparerText);
-        
-        /// <summary>
-        /// Only include entities in the result if <paramref name="predicate"/> returns true
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <param name="predicateText">Textual representation of <paramref name="predicate"/></param>
-        /// <returns></returns>
-        IQuery Where(Func<IEntity, bool> predicate, string predicateText);
-
-        /// <summary>
-        /// Compue set minus on this query and <paramref name="entities"/>
-        /// </summary>
-        /// <param name="entities">Entities to subtract from this query</param>
-        /// <returns>New query</returns>
-        IQuery Except(IExecutableQuery entities);
-
-        /// <summary>
-        /// Compue set union on this query and <paramref name="entities"/>
-        /// </summary>
-        /// <param name="entities">Entities to add to this query</param>
-        /// <returns>New query</returns>
-        IQuery Union(IExecutableQuery entities);
-
-        /// <summary>
-        /// Compue set intersection on this query and <paramref name="entities"/>
-        /// </summary>
-        /// <param name="entities"></param>
-        /// <returns>New query</returns>
-        IQuery Intersect(IExecutableQuery entities);
-
-        /// <summary>
-        /// Make this query a view query (i.e., query in the form: SELECT queryViewName)
-        /// </summary>
-        /// <param name="queryViewName">Query view name of this query</param>
-        /// <returns></returns>
-        IQuery View(string queryViewName);
-
-        /// <summary>
-        /// Copy this query but set a new textual representation.
-        /// </summary>
-        /// <param name="text">New textual representation of this query</param>
-        /// <returns>Copy of this query with a new textual representation</returns>
-        IQuery WithText(string text);
-    }
-    
-    public interface IQueryFactory
-    {
-        /// <summary>
-        /// Create an empty query
-        /// </summary>
-        /// <returns>Empty query</returns>
-        IQuery CreateQuery();
-
-        /// <summary>
-        /// Create a query with given path pattern
-        /// </summary>
-        /// <param name="pattern"></param>
-        /// <returns></returns>
-        IQuery CreateQuery(string pattern);
     }
 
     /// <summary>
@@ -202,8 +128,67 @@ namespace Viewer.Query
         }
     }
 
+    /// <summary>
+    /// Immutable structure which builds a query. This is used by the <see cref="QueryCompiler"/>
+    /// so that it is easier to isolate and test the compilation result.
+    /// </summary>
+    internal interface IQuery : IExecutableQuery
+    {
+        /// <summary>
+        /// Build a where query
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        IQuery Where(ValueExpression expression);
+
+        /// <summary>
+        /// Set a new comparer
+        /// </summary>
+        /// <param name="comparer"></param>
+        /// <param name="comparerText"></param>
+        /// <returns></returns>
+        IQuery WithComparer(IComparer<IEntity> comparer, string comparerText);
+
+        /// <summary>
+        /// Copy this query but set a new textual representation.
+        /// </summary>
+        /// <param name="text">New textual representation of this query</param>
+        /// <returns>Copy of this query with a new textual representation</returns>
+        IQuery WithText(string text);
+
+        /// <summary>
+        /// Compue set minus on this query and <paramref name="entities"/>
+        /// </summary>
+        /// <param name="entities">Entities to subtract from this query</param>
+        /// <returns>New query</returns>
+        IQuery Except(IExecutableQuery entities);
+
+        /// <summary>
+        /// Compue set union on this query and <paramref name="entities"/>
+        /// </summary>
+        /// <param name="entities">Entities to add to this query</param>
+        /// <returns>New query</returns>
+        IQuery Union(IExecutableQuery entities);
+
+        /// <summary>
+        /// Compue set intersection on this query and <paramref name="entities"/>
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns>New query</returns>
+        IQuery Intersect(IExecutableQuery entities);
+
+        /// <summary>
+        /// Make this query a view query (i.e., query in the form: SELECT queryViewName)
+        /// </summary>
+        /// <param name="queryViewName">Query view name of this query</param>
+        /// <returns></returns>
+        IQuery View(string queryViewName);
+    }
+
     internal class Query : IQuery
     {
+        private readonly IRuntime _runtime;
+        private readonly IAttributeCache _attributes;
         private readonly IExecutableQuery _source;
         private readonly string _text;
 
@@ -213,12 +198,15 @@ namespace Viewer.Query
         
         public IEnumerable<PathPattern> Patterns => _source.Patterns;
 
-        public Query(IExecutableQuery source) : this(source, null)
+        public Query(IRuntime runtime, IAttributeCache attributes, IExecutableQuery source) 
+            : this(runtime, attributes, source, null)
         {
         }
 
-        public Query(IExecutableQuery source, string text)
+        public Query(IRuntime runtime, IAttributeCache attributes, IExecutableQuery source, string text)
         {
+            _runtime = runtime;
+            _attributes = attributes;
             _source = source;
             _text = text;
         }
@@ -240,68 +228,103 @@ namespace Viewer.Query
 
         public IQuery WithComparer(IComparer<IEntity> comparer, string comparerText)
         {
-            return new Query(new OrderedQuery(_source, comparer, comparerText), _text);
+            return new Query(_runtime, _attributes, new OrderedQuery(_source, comparer, comparerText), _text);
         }
 
-        public IQuery Where(Func<IEntity, bool> predicate, string predicateText)
+        public IQuery Where(ValueExpression expression)
         {
-            return new Query(new WhereQuery(_source, predicate, predicateText), _text);
+            return new Query(_runtime, _attributes, new WhereQuery(_runtime, _attributes, _source, expression), _text);
         }
 
         public IQuery Except(IExecutableQuery entities)
         {
-            return new Query(new ExceptQuery(_source, entities), _text);
+            return new Query(_runtime, _attributes, new ExceptQuery(_source, entities), _text);
         }
 
         public IQuery Union(IExecutableQuery entities)
         {
-            return new Query(new UnionQuery(_source, entities), _text);
+            return new Query(_runtime, _attributes, new UnionQuery(_source, entities), _text);
         }
 
         public IQuery Intersect(IExecutableQuery entities)
         {
-            return new Query(new IntersectQuery(_source, entities), _text);
+            return new Query(_runtime, _attributes, new IntersectQuery(_source, entities), _text);
         }
 
         public IQuery View(string queryViewName)
         {
-            return new Query(new QueryViewQuery(_source, queryViewName), _text);
+            return new Query(_runtime, _attributes, new QueryViewQuery(_source, queryViewName), _text);
         }
 
         public IQuery WithText(string text)
         {
-            return new Query(_source, text);
+            return new Query(_runtime, _attributes, _source, text);
         }
     }
     
+    public interface IQueryFactory
+    {
+        /// <summary>
+        /// Create an empty query
+        /// </summary>
+        /// <returns>Empty query</returns>
+        IExecutableQuery CreateQuery();
+
+        /// <summary>
+        /// Create a query with given path pattern
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        IExecutableQuery CreateQuery(string pattern);
+
+        /// <summary>
+        /// Create a union of 2 queries.
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        IExecutableQuery Union(IExecutableQuery first, IExecutableQuery second);
+    }
+
     [Export(typeof(IQueryFactory))]
     public class QueryFactory : IQueryFactory
     {
+        private readonly IRuntime _runtime;
+        private readonly IAttributeCache _attributes;
         private readonly IEntityManager _entities;
         private readonly IFileSystem _fileSystem;
 
         [ImportingConstructor]
         public QueryFactory(
+            IRuntime runtime,
+            IAttributeCache attributes,
             IEntityManager entities, 
             IFileSystem fileSystem)
         {
+            _runtime = runtime;
+            _attributes = attributes;
             _entities = entities;
             _fileSystem = fileSystem;
         }
 
-        public IQuery CreateQuery()
+        public IExecutableQuery CreateQuery()
         {
-            return new Query(EmptyQuery.Default, null);
+            return new Query(_runtime, _attributes, EmptyQuery.Default, null);
         }
 
-        public IQuery CreateQuery(string pattern)
+        public IExecutableQuery CreateQuery(string pattern)
         {
-            return new Query(new SelectQuery(
+            return new Query(_runtime, _attributes, new SelectQuery(
                 _fileSystem, 
                 _entities, 
                 pattern, 
                 FileAttributes.System | FileAttributes.Temporary
             ), null);
+        }
+
+        public IExecutableQuery Union(IExecutableQuery first, IExecutableQuery second)
+        {
+            return new UnionQuery(first, second);
         }
     }
 }

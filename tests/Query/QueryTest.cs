@@ -18,6 +18,13 @@ namespace ViewerTest.Query
     [TestClass]
     public class QueryTest
     {
+        private Viewer.Query.Query CreateQuery(IExecutableQuery query)
+        {
+            var runtime = new Mock<IRuntime>();
+            var attributes = new Mock<IAttributeCache>();
+            return new Viewer.Query.Query(runtime.Object, attributes.Object, query);
+        }
+
         [TestMethod]
         public void Union_DontReturnTheSameEntityTwice()
         {
@@ -31,7 +38,7 @@ namespace ViewerTest.Query
                 new FileEntity("test2"),
                 new FileEntity("test1"), 
             };
-            var query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            var query = CreateQuery(new MemoryQuery(entitiesA));
             var result = query.Union(new MemoryQuery(entitiesB)).Execute(new NullQueryProgress(), CancellationToken.None).ToArray();
 
             CollectionAssert.AreEqual(new[]
@@ -50,7 +57,7 @@ namespace ViewerTest.Query
                 new FileEntity("test1"),
                 new FileEntity("test2"),
             };
-            var query = new Viewer.Query.Query(new MemoryQuery(entities));
+            var query = CreateQuery(new MemoryQuery(entities));
             Assert.IsTrue(query.Match(entities[0]));
             Assert.IsTrue(query.Match(entities[1]));
             Assert.IsFalse(query.Match(new FileEntity("test1")));
@@ -69,7 +76,7 @@ namespace ViewerTest.Query
                 new FileEntity("test3"),
                 new FileEntity("test4"),
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Union(new MemoryQuery(entitiesB));
             Assert.IsTrue(query.Match(entitiesA[0]));
             Assert.IsTrue(query.Match(entitiesA[1]));
@@ -92,7 +99,7 @@ namespace ViewerTest.Query
                 entitiesA[1],
                 new FileEntity("test2"),
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Except(new MemoryQuery(entitiesB));
             Assert.IsTrue(query.Match(entitiesA[0]));
             Assert.IsFalse(query.Match(entitiesA[1]));
@@ -115,7 +122,7 @@ namespace ViewerTest.Query
                 entitiesA[1],
                 new FileEntity("test2"),
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Intersect(new MemoryQuery(entitiesB));
             Assert.IsFalse(query.Match(entitiesA[0]));
             Assert.IsTrue(query.Match(entitiesA[1]));
@@ -138,7 +145,7 @@ namespace ViewerTest.Query
                 entitiesA[1],
                 entitiesA[0], 
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Except(new MemoryQuery(entitiesB));
 
             var result = query.Execute(new NullQueryProgress(), CancellationToken.None).ToArray();
@@ -157,7 +164,7 @@ namespace ViewerTest.Query
             {
                 entitiesA[1],
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Except(new MemoryQuery(entitiesB));
 
             var result = query.Execute(new NullQueryProgress(), CancellationToken.None).ToArray();
@@ -177,7 +184,7 @@ namespace ViewerTest.Query
                 new FileEntity("test3"),
                 new FileEntity("test4"),
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Except(new MemoryQuery(entitiesB));
 
             var result = query.Execute(new NullQueryProgress(), CancellationToken.None).ToArray();
@@ -197,7 +204,7 @@ namespace ViewerTest.Query
                 new FileEntity("TEST3"),
                 new FileEntity("TesT2"),
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Union(new MemoryQuery(entitiesB));
 
             var result = query.Execute(new NullQueryProgress(), CancellationToken.None).ToArray();
@@ -220,7 +227,7 @@ namespace ViewerTest.Query
                 new FileEntity("test3"),
                 entitiesA[1],
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Intersect(new MemoryQuery(entitiesB));
 
             var result = query.Execute(new NullQueryProgress(), CancellationToken.None).ToArray();
@@ -241,7 +248,7 @@ namespace ViewerTest.Query
                 new FileEntity("test3"),
                 new FileEntity("test4"),
             };
-            IQuery query = new Viewer.Query.Query(new MemoryQuery(entitiesA));
+            IQuery query = CreateQuery(new MemoryQuery(entitiesA));
             query = query.Intersect(new MemoryQuery(entitiesB));
 
             var result = query.Execute(new NullQueryProgress(), CancellationToken.None).ToArray();

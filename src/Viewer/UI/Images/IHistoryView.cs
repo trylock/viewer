@@ -13,14 +13,14 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Query of this view
         /// </summary>
-        public IQuery Query { get; }
+        public IExecutableQuery Query { get; }
 
         /// <summary>
         /// Textual representation of <see cref="Query"/> shown to the user.
         /// </summary>
         public string Text { get; }
 
-        public QueryHistoryItem(IQuery query)
+        public QueryHistoryItem(IExecutableQuery query)
         {
             Query = query ?? throw new ArgumentNullException(nameof(query));
             Text = Regex.Replace(Query.Text, @"\r\n?|\n", " ");

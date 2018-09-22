@@ -9,6 +9,7 @@ using Moq;
 using Viewer.Data;
 using Viewer.IO;
 using Viewer.Query;
+using Viewer.Query.Expressions;
 using Viewer.Query.QueryExpression;
 using Attribute = Viewer.Data.Attribute;
 
@@ -17,15 +18,11 @@ namespace ViewerTest.Query.QueryExpression
     [TestClass]
     public class WhereQueryTest
     {
-        [TestMethod]
-        public void Text_SourceDoesNotHaveATextualRepresentation()
+        private WhereQuery CreateQuery(IExecutableQuery source, ValueExpression expression)
         {
-            var source = new Mock<IExecutableQuery>();
-            source
-                .Setup(mock => mock.Text)
-                .Returns<string>(null);
-            var where = new WhereQuery(source.Object, _ => true, "true");
-            Assert.IsNull(where.Text);
+            var runtime = new Mock<IRuntime>();
+            var attributes = new Mock<IAttributeCache>();
+            return new WhereQuery(runtime.Object, attributes.Object, source, expression);
         }
 
         [TestMethod]
@@ -36,10 +33,10 @@ namespace ViewerTest.Query.QueryExpression
                 new Mock<IEntityManager>().Object,
                 "pattern",
                 FileAttributes.System);
-            var where = new WhereQuery(select, entity => entity.GetValue<IntValue>("attr") != null, "int(attr)");
+            var where = CreateQuery(select, new AttributeAccessExpression(0, 0, "attr"));
             Assert.IsTrue(string.Equals(
                 "select \"pattern\"" + Environment.NewLine +
-                "where int(attr)",
+                "where attr",
                 where.Text, StringComparison.CurrentCultureIgnoreCase));
         }
 
@@ -52,10 +49,10 @@ namespace ViewerTest.Query.QueryExpression
                 "pattern",
                 FileAttributes.System);
             var queryView = new QueryViewQuery(select, "viewName");
-            var where = new WhereQuery(queryView, entity => entity.GetValue<IntValue>("attr") != null, "int(attr)");
+            var where = CreateQuery(queryView, new AttributeAccessExpression(0, 0, "attr"));
             Assert.IsTrue(string.Equals(
                 "select viewName" + Environment.NewLine +
-                "where int(attr)",
+                "where attr",
                 where.Text, StringComparison.CurrentCultureIgnoreCase));
         }
 
@@ -73,14 +70,14 @@ namespace ViewerTest.Query.QueryExpression
                 "b",
                 FileAttributes.System);
             var union = new UnionQuery(selectA, selectB);
-            var where = new WhereQuery(union, entity => entity.GetValue<IntValue>("attr") != null, "int(attr)");
+            var where = CreateQuery(union, new AttributeAccessExpression(0, 0, "attr"));
             Assert.IsTrue(string.Equals(
                 "select (" + Environment.NewLine +
                 "select \"a\"" + Environment.NewLine +
                 "union" + Environment.NewLine +
                 "select \"b\"" + Environment.NewLine +
                 ")" + Environment.NewLine +
-                "where int(attr)",
+                "where attr",
                 where.Text, StringComparison.CurrentCultureIgnoreCase));
         }
         
@@ -90,12 +87,16 @@ namespace ViewerTest.Query.QueryExpression
             var entities = new[]
             {
                 new FileEntity("test1"),
-                new FileEntity("test2").SetAttribute(new Attribute("attr", new IntValue(4), AttributeSource.Custom)),
+                new FileEntity("test2")
+                    .SetAttribute(new Attribute("attr", new IntValue(4), AttributeSource.Custom)),
             };
-            var query = new WhereQuery(new MemoryQuery(entities), entity => entity.GetValue<IntValue>("attr") != null, "attr");
+            var query = CreateQuery(new MemoryQuery(entities), new AttributeAccessExpression(0, 0, "attr"));
             Assert.IsFalse(query.Match(entities[0]));
             Assert.IsTrue(query.Match(entities[1]));
-            Assert.IsFalse(query.Match(new FileEntity("test1").SetAttribute(new Attribute("attr", new IntValue(4), AttributeSource.Custom))));
+            Assert.IsFalse(query.Match(
+                new FileEntity("test1")
+                    .SetAttribute(new Attribute("attr", new IntValue(4), AttributeSource.Custom))
+            ));
         }
     }
 }

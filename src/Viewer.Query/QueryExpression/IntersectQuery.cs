@@ -16,10 +16,13 @@ namespace Viewer.Query.QueryExpression
         {
         }
 
-        public override IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public override IEnumerable<IEntity> Execute(
+            IProgress<QueryProgressReport> progress, 
+            CancellationToken cancellationToken,
+            IComparer<string> searchOrder)
         {
             var visited = new HashSet<IEntity>(EntityPathEqualityComparer.Default);
-            var firstEvaluation = First.Execute(progress, cancellationToken);
+            var firstEvaluation = ExecuteSubquery(First, progress, cancellationToken, searchOrder);
             foreach (var item in firstEvaluation)
             {
                 visited.Add(item);
@@ -27,7 +30,7 @@ namespace Viewer.Query.QueryExpression
                     yield return item;
             }
 
-            var secondEvaluation = Second.Execute(progress, cancellationToken);
+            var secondEvaluation = ExecuteSubquery(Second, progress, cancellationToken, searchOrder);
             foreach (var item in secondEvaluation)
             {
                 if (!visited.Contains(item) && First.Match(item))

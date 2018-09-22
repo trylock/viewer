@@ -13,28 +13,32 @@ using Viewer.IO;
 
 namespace Viewer.Query.QueryExpression
 {
-    internal class SelectQuery : IExecutableQuery
+    internal class SelectQuery : QueryFragment
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public string Text => $"select \"{_fileFinder.Pattern}\"";
+        public override string Text => $"select \"{_fileFinder.Pattern}\"";
 
-        public IComparer<IEntity> Comparer => EntityComparer.Default;
+        public override IComparer<IEntity> Comparer => EntityComparer.Default;
 
-        public IEnumerable<PathPattern> Patterns
+        public override IEnumerable<PathPattern> Patterns
         {
             get
             {
                 yield return _fileFinder.Pattern;
             }
         }
-
+        
         private readonly IFileSystem _fileSystem;
         private readonly IEntityManager _entities;
         private readonly FileFinder _fileFinder;
         private readonly FileAttributes _hiddenFlags;
 
-        public SelectQuery(IFileSystem fileSystem, IEntityManager entities, string pattern, FileAttributes hiddenFlags)
+        public SelectQuery(
+            IFileSystem fileSystem, 
+            IEntityManager entities, 
+            string pattern, 
+            FileAttributes hiddenFlags)
         {
             _fileFinder = new FileFinder(fileSystem, pattern ?? "");
             _fileSystem = fileSystem;
@@ -42,13 +46,14 @@ namespace Viewer.Query.QueryExpression
             _hiddenFlags = hiddenFlags;
         }
 
-        public IEnumerable<IEntity> Execute(
+        public override IEnumerable<IEntity> Execute(
             IProgress<QueryProgressReport> progress,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            IComparer<string> searchOrder)
         {
             progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
 
-            foreach (var file in EnumeratePaths(progress, cancellationToken))
+            foreach (var file in EnumeratePaths(progress, cancellationToken, searchOrder))
             {
                 progress.Report(new QueryProgressReport(ReportType.BeginLoading, file.Path));
                 IEntity entity;
@@ -74,9 +79,10 @@ namespace Viewer.Query.QueryExpression
 
         private IEnumerable<(string Path, bool IsFile)> EnumeratePaths(
             IProgress<QueryProgressReport> progress,
-            CancellationToken token)
+            CancellationToken token,
+            IComparer<string> searchOrder)
         {
-            foreach (var dir in EnumerateDirectories(token))
+            foreach (var dir in EnumerateDirectories(token, searchOrder))
             {
                 token.ThrowIfCancellationRequested();
 
@@ -114,7 +120,7 @@ namespace Viewer.Query.QueryExpression
             }
         }
 
-        public bool Match(IEntity entity)
+        public override bool Match(IEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -243,9 +249,11 @@ namespace Viewer.Query.QueryExpression
             return null;
         }
 
-        private IEnumerable<string> EnumerateDirectories(CancellationToken token)
+        private IEnumerable<string> EnumerateDirectories(
+            CancellationToken token, 
+            IComparer<string> searchOrder)
         {
-            return _fileFinder.GetDirectories(token);
+            return _fileFinder.GetDirectories(token, searchOrder);
         }
     }
 }

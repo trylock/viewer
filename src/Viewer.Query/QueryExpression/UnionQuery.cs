@@ -16,10 +16,13 @@ namespace Viewer.Query.QueryExpression
         {
         }
 
-        public override IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public override IEnumerable<IEntity> Execute(
+            IProgress<QueryProgressReport> progress, 
+            CancellationToken cancellationToken,
+            IComparer<string> searchOrder)
         {
-            var firstEvaluation = First.Execute(progress, cancellationToken);
-            var secondEvaluation = Second.Execute(progress, cancellationToken);
+            var firstEvaluation = ExecuteSubquery(First, progress, cancellationToken, searchOrder);
+            var secondEvaluation = ExecuteSubquery(Second, progress, cancellationToken, searchOrder);
             return firstEvaluation.Union(secondEvaluation, EntityPathEqualityComparer.Default);
         }
 

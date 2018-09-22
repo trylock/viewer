@@ -9,12 +9,12 @@ using Viewer.IO;
 
 namespace Viewer.Query.QueryExpression
 {
-    internal class OrderedQuery : IExecutableQuery
+    internal class OrderedQuery : QueryFragment
     {
         private readonly IExecutableQuery _source;
         private readonly string _comparerText;
 
-        public string Text
+        public override string Text
         {
             get
             {
@@ -38,9 +38,9 @@ namespace Viewer.Query.QueryExpression
             }
         }
 
-        public IComparer<IEntity> Comparer { get; }
+        public override IComparer<IEntity> Comparer { get; }
 
-        public IEnumerable<PathPattern> Patterns => _source.Patterns;
+        public override IEnumerable<PathPattern> Patterns => _source.Patterns;
 
         public OrderedQuery(IExecutableQuery source, IComparer<IEntity> comparer, string comparerText)
         {
@@ -49,14 +49,15 @@ namespace Viewer.Query.QueryExpression
             _comparerText = comparerText;
         }
 
-        public IEnumerable<IEntity> Execute(
+        public override IEnumerable<IEntity> Execute(
             IProgress<QueryProgressReport> progress,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            IComparer<string> searchOrder)
         {
-            return _source.Execute(progress, cancellationToken);
+            return ExecuteSubquery(_source, progress, cancellationToken, searchOrder);
         }
 
-        public bool Match(IEntity entity)
+        public override bool Match(IEntity entity)
         {
             return _source.Match(entity);
         }

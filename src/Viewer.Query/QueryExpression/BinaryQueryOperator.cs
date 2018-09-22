@@ -9,16 +9,18 @@ using Viewer.IO;
 
 namespace Viewer.Query.QueryExpression
 {
-    internal abstract class BinaryQueryOperator : IExecutableQuery
+    internal abstract class BinaryQueryOperator : QueryFragment
     {
         protected readonly IExecutableQuery First;
         protected readonly IExecutableQuery Second;
 
-        public string Text => First.Text + Environment.NewLine +
+        public override string Text => First.Text + Environment.NewLine +
                               Operator + Environment.NewLine +
                               Second.Text;
 
-        public IComparer<IEntity> Comparer => First.Comparer;
+        public override IComparer<IEntity> Comparer => First.Comparer;
+
+        public override IEnumerable<PathPattern> Patterns => First.Patterns.Concat(Second.Patterns);
 
         protected abstract string Operator { get; }
 
@@ -27,13 +29,5 @@ namespace Viewer.Query.QueryExpression
             First = first;
             Second = second;
         }
-
-        public IEnumerable<PathPattern> Patterns => First.Patterns.Concat(Second.Patterns);
-
-        public abstract IEnumerable<IEntity> Execute(
-            IProgress<QueryProgressReport> progress,
-            CancellationToken cancellationToken);
-
-        public abstract bool Match(IEntity entity);
     }
 }

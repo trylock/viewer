@@ -15,12 +15,13 @@ namespace Viewer.Query.QueryExpression
         public ExceptQuery(IExecutableQuery first, IExecutableQuery second) : base(first, second)
         {
         }
-
+        
         public override IEnumerable<IEntity> Execute(
             IProgress<QueryProgressReport> progress, 
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken, 
+            IComparer<string> searchOrder)
         {
-            var firstEvaluation = First.Execute(progress, cancellationToken);
+            var firstEvaluation = ExecuteSubquery(First, progress, cancellationToken, searchOrder);
             foreach (var item in firstEvaluation)
             {
                 if (!Second.Match(item))

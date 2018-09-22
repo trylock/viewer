@@ -9,16 +9,16 @@ using Viewer.IO;
 
 namespace Viewer.Query.QueryExpression
 {
-    internal class QueryViewQuery : IExecutableQuery
+    internal class QueryViewQuery : QueryFragment
     {
         private readonly IExecutableQuery _queryView;
         private readonly string _queryViewName;
 
-        public string Text => $"select {_queryViewName}";
+        public override string Text => $"select {_queryViewName}";
 
-        public IComparer<IEntity> Comparer => _queryView.Comparer;
+        public override IComparer<IEntity> Comparer => _queryView.Comparer;
 
-        public IEnumerable<PathPattern> Patterns => _queryView.Patterns;
+        public override IEnumerable<PathPattern> Patterns => _queryView.Patterns;
 
         public QueryViewQuery(IExecutableQuery queryView, string queryViewName)
         {
@@ -26,15 +26,17 @@ namespace Viewer.Query.QueryExpression
             _queryViewName = queryViewName;
         }
 
-        public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
+        public override IEnumerable<IEntity> Execute(
+            IProgress<QueryProgressReport> progress, 
+            CancellationToken cancellationToken,
+            IComparer<string> searchOrder)
         {
-            return _queryView.Execute(progress, cancellationToken);
+            return ExecuteSubquery(_queryView, progress, cancellationToken, searchOrder);
         }
 
-        public bool Match(IEntity entity)
+        public override bool Match(IEntity entity)
         {
             return _queryView.Match(entity);
         }
     }
-
 }

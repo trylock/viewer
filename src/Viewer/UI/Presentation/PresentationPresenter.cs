@@ -97,6 +97,7 @@ namespace Viewer.UI.Presentation
                 var image = await _images.GetCurrentAsync();
                 if (image == null || _isDisposed)
                 {
+                    image?.Dispose();
                     return;
                 }
 

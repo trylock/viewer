@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 namespace Viewer.Query
 {
     /// <summary>
-    /// Implementation has to be thread safe.
+    /// Implementation has to be thread safe. 
     /// </summary>
+    /// <remarks>
+    /// This assembly (`Viewer.Query`) does not export an implementation of this interface. Some
+    /// components rely on the fact that another assembly implements it and exports this type.
+    /// </remarks>
     public interface IQueryErrorListener
     {
         /// <summary>

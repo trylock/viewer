@@ -15,8 +15,21 @@ namespace Viewer.Query.QueryExpression
     {
         private readonly IAttributeCache _attributes;
         private readonly IExecutableQuery _source;
-        private readonly Func<IEntity, bool> _predicate;
         private readonly ValueExpression _expression;
+
+        #region Precomputed values
+
+        /// <summary>
+        /// _expression compiled to a predicate
+        /// </summary>
+        private readonly Func<IEntity, bool> _predicate;
+
+        /// <summary>
+        /// Names of attributes accessed in _expression
+        /// </summary>
+        private readonly IReadOnlyList<string> _accessedAttributeNames;
+
+        #endregion
 
         public override IComparer<IEntity> Comparer => _source.Comparer;
 
@@ -54,6 +67,7 @@ namespace Viewer.Query.QueryExpression
             _source = source;
             _expression = expression;
             _predicate = _expression.CompilePredicate(runtime);
+            _accessedAttributeNames = new AccessedAttributesVisitor(_expression);
         }
 
         public override IEnumerable<IEntity> Execute(
@@ -63,10 +77,10 @@ namespace Viewer.Query.QueryExpression
         {
             if (_source is QueryFragment fragment) // the subquery supports search order
             {
-                var priorityFunction = new SearchPriorityComparer(_expression);
-                priorityFunction.Index(_attributes);
+                var statistics = Statistics.Fetch(_attributes, _accessedAttributeNames);
+                var comparer = new SearchPriorityComparer(_expression, statistics);
 
-                return fragment.Execute(progress, cancellationToken, priorityFunction).Where(_predicate);
+                return fragment.Execute(progress, cancellationToken, comparer).Where(_predicate);
             }
 
             return _source.Execute(progress, cancellationToken).Where(_predicate);

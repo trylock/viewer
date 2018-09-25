@@ -121,6 +121,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\BinaryHeapTest.cs" />
     <Compile Include="Collections\EnumerableExtensionsTest.cs" />
     <Compile Include="Core\AggregateProgressTest.cs" />
     <Compile Include="Core\RectangleExtensionsTest.cs" />

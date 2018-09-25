@@ -251,6 +251,15 @@ namespace Viewer.Query
             if (viewId != null)
             {
                 var view = _queryCompiler.Views.Find(viewId.GetText());
+                if (view == null)
+                {
+                    _queryErrorListener.OnCompilerError(
+                        viewId.Symbol.Line, 
+                        viewId.Symbol.Column, 
+                        "Unknown view '" + viewId.GetText() + "'");
+                    throw new ParseCanceledException();
+                }
+
                 query = _queryCompiler.Compile(new StringReader(view.Text), _queryErrorListener) as IQuery;
                 if (query == null)
                 {

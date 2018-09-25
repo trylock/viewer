@@ -82,7 +82,7 @@ namespace Viewer.Query.QueryExpression
             CancellationToken token,
             IComparer<string> searchOrder)
         {
-            foreach (var dir in EnumerateDirectories(token, searchOrder))
+            foreach (var dir in EnumerateDirectories(searchOrder))
             {
                 token.ThrowIfCancellationRequested();
 
@@ -249,11 +249,9 @@ namespace Viewer.Query.QueryExpression
             return null;
         }
 
-        private IEnumerable<string> EnumerateDirectories(
-            CancellationToken token, 
-            IComparer<string> searchOrder)
+        private IEnumerable<string> EnumerateDirectories(IComparer<string> searchOrder)
         {
-            return _fileFinder.GetDirectories(token, searchOrder);
+            return _fileFinder.GetDirectories(searchOrder);
         }
     }
 }

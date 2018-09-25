@@ -260,14 +260,15 @@ namespace ViewerTest.IO
                 .Returns(new[] { "r/b/a", "r/b/b", "r/b/c" });
 
             var finder = new FileFinder(fileSystem.Object, "r/**");
-            var directories = finder.GetDirectories(CancellationToken.None, new DescComparer()).ToArray();
+            var directories = finder.GetDirectories(new DescComparer()).ToArray();
 
             var expectedDirectories = new[]
             {
-                "r",
-                "r/b", "r/a",
                 "r/b/c", "r/b/b", "r/b/a",
+                "r/b",
                 "r/a/c", "r/a/b", "r/a/a",
+                "r/a",
+                "r",
             };
             Assert.AreEqual(expectedDirectories.Length, directories.Length);
 

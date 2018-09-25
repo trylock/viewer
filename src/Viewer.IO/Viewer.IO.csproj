@@ -66,5 +66,11 @@
     <Compile Include="PathUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Viewer.Core\Viewer.Core.csproj">
+      <Project>{1DCD51E0-3059-4DDD-9F7F-3AF6DAF9D648}</Project>
+      <Name>Viewer.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

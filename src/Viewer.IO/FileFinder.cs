@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Viewer.Core.Collections;
 
 namespace Viewer.IO
 {
@@ -53,35 +54,20 @@ namespace Viewer.IO
         PathPattern Pattern { get; }
         
         /// <summary>
-        /// Same as <see cref="GetDirectories()"/> but it uses <see cref="CancellationToken.None"/>.
+        /// Same as <see cref="GetDirectories()"/> but it searches the directories in alphabetical order.
         /// </summary>
         /// <returns>List of directories matching the pattern</returns>
         IEnumerable<string> GetDirectories();
 
         /// <summary>
-        /// Find all directories which match <see cref="Pattern"/>. This function will skip folders
-        /// which throw <see cref="UnauthorizedAccessException"/> or <see cref="SecurityException"/>.
+        /// Find all directories which match <see cref="Pattern"/>. Directories are searched in
+        /// order given by <paramref name="directoryComparer"/>.
         /// </summary>
-        /// <param name="cancellationToken">
-        /// Cancellation token which can be used to cancel this operation
-        /// </param>
-        /// <returns></returns>
-        IEnumerable<string> GetDirectories(CancellationToken cancellationToken);
-        
-        /// <summary>
-        /// Find all directories which match <see cref="Pattern"/>. Directories searched in
-        /// order by given comparer.
-        /// </summary>
-        /// <param name="cancellationToken">
-        /// Cancellation token which can be used to cancel the search.
-        /// </param>
         /// <param name="directoryComparer">
         /// Directory comparer which is used to sort the searched directories.
         /// </param>
         /// <returns>Found directories</returns>
-        IEnumerable<string> GetDirectories(
-            CancellationToken cancellationToken, 
-            IComparer<string> directoryComparer);
+        IEnumerable<string> GetDirectories(IComparer<string> directoryComparer);
 
         /// <summary>
         /// Test whether <paramref name="path"/> matches <see cref="Pattern"/>.
@@ -143,19 +129,12 @@ namespace Viewer.IO
 
         public IEnumerable<string> GetDirectories()
         {
-            return GetDirectories(CancellationToken.None);
+            return GetDirectories(StringComparer.CurrentCultureIgnoreCase);
         }
         
-        public IEnumerable<string> GetDirectories(CancellationToken cancellationToken)
+        public IEnumerable<string> GetDirectories(IComparer<string> directoryComparer)
         {
-            return GetDirectories(cancellationToken, Comparer<string>.Default);
-        }
-
-        public IEnumerable<string> GetDirectories(
-            CancellationToken cancellationToken, 
-            IComparer<string> directoryComparer)
-        {
-            return FindAll(cancellationToken, directoryComparer);
+            return FindAll(directoryComparer);
         }
 
         private class StateComparer : IComparer<State>
@@ -185,9 +164,7 @@ namespace Viewer.IO
             }
         }
 
-        private IEnumerable<string> FindAll(
-            CancellationToken cancellationToken, 
-            IComparer<string> pathComparer)
+        private IEnumerable<string> FindAll(IComparer<string> pathComparer)
         {
             var comparer = new StateComparer(pathComparer);
             var parts = Pattern.GetParts().ToList();
@@ -209,61 +186,53 @@ namespace Viewer.IO
             }
             
             var visited = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
-            var states = new Queue<State>();
+            var states = new BinaryHeap<State>(comparer);
             states.Enqueue(new State(firstPath, 1));
 
             while (states.Count > 0)
             {
-                var newLevel = new List<State>();
-
-                foreach (var state in states)
+                var state = states.Dequeue();
+                if (state.MatchedPartCount >= parts.Count)
                 {
-                    if (state.MatchedPartCount >= parts.Count)
+                    if (!visited.Contains(state.Path))
                     {
-                        if (!visited.Contains(state.Path))
+                        yield return state.Path;
+                        visited.Add(state.Path);
+                    }
+                }
+                else
+                {
+                    var part = parts[state.MatchedPartCount];
+                    if (!PathPattern.ContainsSpecialCharacters(part))
+                    {
+                        // path part is a relative path without any special characters
+                        var path = Path.Combine(state.Path, part);
+                        if (!_fileSystem.DirectoryExists(path))
                         {
-                            yield return state.Path;
-                            visited.Add(state.Path);
+                            continue;
+                        }
+
+                        states.Add(new State(path, state.MatchedPartCount + 1));
+                    }
+                    else if (part == "**")
+                    {
+                        // assume the pattern has been matched
+                        states.Add(new State(state.Path, state.MatchedPartCount + 1));
+
+                        // assume it has not been matched yet
+                        foreach (var dir in EnumerateDirectories(state.Path, null))
+                        {
+                            states.Add(new State(dir, state.MatchedPartCount));
                         }
                     }
                     else
                     {
-                        var part = parts[state.MatchedPartCount];
-                        if (!PathPattern.ContainsSpecialCharacters(part))
+                        foreach (var dir in EnumerateDirectories(state.Path, part))
                         {
-                            // path part is a relative path without any special characters
-                            var path = Path.Combine(state.Path, part);
-                            if (!_fileSystem.DirectoryExists(path))
-                            {
-                                continue;
-                            }
-
-                            newLevel.Add(new State(path, state.MatchedPartCount + 1));
-                        }
-                        else if (part == "**")
-                        {
-                            // assume the pattern has been matched
-                            newLevel.Add(new State(state.Path, state.MatchedPartCount + 1));
-
-                            // assume it has not been matched yet
-                            foreach (var dir in EnumerateDirectories(state.Path, null))
-                            {
-                                newLevel.Add(new State(dir, state.MatchedPartCount));
-                            }
-                        }
-                        else
-                        {
-                            foreach (var dir in EnumerateDirectories(state.Path, part))
-                            {
-                                newLevel.Add(new State(dir, state.MatchedPartCount + 1));
-                            }
+                            states.Add(new State(dir, state.MatchedPartCount + 1));
                         }
                     }
                 }
-
-                newLevel.Sort(comparer);
-
-                states = new Queue<State>(newLevel);
             }
         }
 

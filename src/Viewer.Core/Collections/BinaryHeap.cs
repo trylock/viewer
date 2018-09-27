@@ -64,7 +64,7 @@ namespace Viewer.Core.Collections
 
             var root = _heap[0];
 
-            // move to last item to the root and remove the last item
+            // move the last node to the root and remove the last item
             _heap[0] = _heap[_heap.Count - 1];
             _heap.RemoveAt(_heap.Count - 1);
 

@@ -34,12 +34,11 @@ namespace Viewer.Data
         T Visit(DateTimeValue value);
         T Visit(ImageValue value);
     }
-
-    /// <inheritdoc />
+    
     /// <summary>
     /// Base class of all value types used in a query
     /// </summary>
-    public abstract class BaseValue : IEquatable<BaseValue>
+    public abstract class BaseValue : IEquatable<BaseValue>, IComparable<BaseValue>
     {
         /// <summary>
         /// Type ID of this value
@@ -67,6 +66,11 @@ namespace Viewer.Data
         public abstract override int GetHashCode();
 
         public abstract override string ToString();
+
+        public virtual int CompareTo(BaseValue other)
+        {
+            return ValueComparer.Default.Compare(this, other);
+        }
 
         /// <summary>
         /// Accept a visitor
@@ -111,7 +115,7 @@ namespace Viewer.Data
             return Value.GetHashCode();
         }
 
-        public override string ToString() => Value?.ToString() ?? "null"; 
+        public override string ToString() => Value?.ToString() ?? "null";
 
         public override void Accept(IValueVisitor visitor)
         {

@@ -20,7 +20,7 @@ namespace Viewer.Data
         Metadata = 1,
     }
 
-    public class Attribute : IEquatable<Attribute>
+    public class Attribute : IEquatable<Attribute>, IComparable<Attribute>
     {
         /// <summary>
         /// Name of the attribute
@@ -85,6 +85,18 @@ namespace Viewer.Data
         public override string ToString()
         {
             return "Attribute(\"" + Name + "\", " + Value + ")";
+        }
+
+        public int CompareTo(Attribute other)
+        {
+            if (ReferenceEquals(this, other))
+                return 0;
+            if (ReferenceEquals(null, other))
+                return 1;
+            var nameComparison = string.Compare(Name, other.Name, StringComparison.CurrentCulture);
+            if (nameComparison != 0)
+                return nameComparison;
+            return Comparer<BaseValue>.Default.Compare(Value, other.Value);
         }
     }
 }

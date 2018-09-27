@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AggregateProgress.cs" />
+    <Compile Include="Collections\Bitmap.cs" />
     <Compile Include="Collections\ConcurrentSortedSet.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\BinaryHeap.cs" />

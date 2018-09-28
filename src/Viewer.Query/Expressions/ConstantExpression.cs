@@ -12,7 +12,7 @@ namespace Viewer.Query.Expressions
     /// <summary>
     /// Constant expression in a query (for example: 3.14159, 42, "string")
     /// </summary>
-    internal class ConstantExpression : ValueExpression
+    internal sealed class ConstantExpression : ValueExpression
     {
         /// <summary>
         /// Value of the constant

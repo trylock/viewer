@@ -148,6 +148,7 @@ namespace Viewer.IO
 
             public int Compare(State x, State y)
             {
+                // handle null values
                 if (ReferenceEquals(x, y))
                 {
                     return 0;
@@ -160,6 +161,7 @@ namespace Viewer.IO
                 {
                     return 1;
                 }
+                
                 return _pathComparer.Compare(x.Path, y.Path);
             }
         }

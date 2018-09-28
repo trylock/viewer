@@ -75,7 +75,6 @@
     <Compile Include="Expressions\AttributeAccessExpression.cs" />
     <Compile Include="Expressions\ExpressionVisitor.cs" />
     <Compile Include="Expressions\FunctionCallExpression.cs" />
-    <Compile Include="SearchPriorityComparer.cs" />
     <Compile Include="QueryExpression\BinaryQueryOperator.cs" />
     <Compile Include="QueryExpression\ExceptQuery.cs" />
     <Compile Include="QueryExpression\IntersectQuery.cs" />
@@ -104,6 +103,11 @@
     <Compile Include="QueryViewRepository.cs" />
     <Compile Include="QueryVisitor.cs" />
     <Compile Include="Runtime.cs" />
+    <Compile Include="Search\AccessedAttributesVisitor.cs" />
+    <Compile Include="Search\IPriorityFunction.cs" />
+    <Compile Include="Search\PriorityFunction.cs" />
+    <Compile Include="Search\SearchPriorityComparer.cs" />
+    <Compile Include="Search\SubsetCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Viewer.Core\Viewer.Core.csproj">

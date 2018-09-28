@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 using Viewer.Data;
 using Viewer.IO;
 using Viewer.Query.Expressions;
+using Viewer.Query.Search;
 
 namespace Viewer.Query.QueryExpression
 {
     internal class WhereQuery : QueryFragment
     {
+        private readonly IRuntime _runtime;
         private readonly IAttributeCache _attributes;
         private readonly IExecutableQuery _source;
         private readonly ValueExpression _expression;
@@ -23,11 +25,6 @@ namespace Viewer.Query.QueryExpression
         /// _expression compiled to a predicate
         /// </summary>
         private readonly Func<IEntity, bool> _predicate;
-
-        /// <summary>
-        /// Names of attributes accessed in _expression
-        /// </summary>
-        private readonly IReadOnlyList<string> _accessedAttributeNames;
 
         #endregion
 
@@ -63,11 +60,11 @@ namespace Viewer.Query.QueryExpression
             IExecutableQuery source, 
             ValueExpression expression)
         {
+            _runtime = runtime;
             _attributes = attributes;
             _source = source;
             _expression = expression;
             _predicate = _expression.CompilePredicate(runtime);
-            _accessedAttributeNames = new AccessedAttributesVisitor(_expression);
         }
 
         public override IEnumerable<IEntity> Execute(
@@ -77,8 +74,9 @@ namespace Viewer.Query.QueryExpression
         {
             if (_source is QueryFragment fragment) // the subquery supports search order
             {
-                var statistics = Statistics.Fetch(_attributes, _accessedAttributeNames);
-                var comparer = new SearchPriorityComparer(_expression, statistics);
+                var statistics = Statistics.Fetch(_attributes, new AccessedAttributesVisitor(_expression));
+
+                var comparer = new SearchPriorityComparer(_expression, new PriorityFunction(statistics));
 
                 return fragment.Execute(progress, cancellationToken, comparer).Where(_predicate);
             }

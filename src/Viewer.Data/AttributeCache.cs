@@ -8,20 +8,33 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Data.SQLite;
+using Viewer.IO;
 
 namespace Viewer.Data
 {
-    public class AttributeLocation
+    public class AttributeGroup
     {
         /// <summary>
-        /// Name of an attribute
-        /// </summary>
-        public string AttributeName { get; set; }
-
-        /// <summary>
-        /// File path where <see cref="AttributeName"/> has been seen.
+        /// File path where <see cref="Attributes"/> have been seen.
         /// </summary>
         public string FilePath { get; set; }
+
+        /// <summary>
+        /// List of attributes in this file
+        /// </summary>
+        public List<string> Attributes { get; set; } = new List<string>();
+    }
+    
+    public interface IFileAggregate : IDisposable
+    {
+        /// <summary>
+        /// Count files in directories which start with <paramref name="path"/>
+        /// </summary>
+        /// <param name="path">Prefix of a file name</param>
+        /// <returns>
+        /// Number of files in directories which start with <paramref name="path"/>
+        /// </returns>
+        long Count(string path);
     }
 
     /// <summary>
@@ -47,17 +60,20 @@ namespace Viewer.Data
         IEnumerable<BaseValue> GetValues(string name);
 
         /// <summary>
-        /// This function will find a list of files which probably contain given attribute name.
+        /// This function will find files when an attribute from the
+        /// <paramref name="attributeNames"/> list has been seen.
         /// </summary>
         /// <param name="attributeNames">Names of attributes</param>
-        /// <returns>List of file paths which cotain given attribute name</returns>
-        List<AttributeLocation> GetAttributes(IEnumerable<string> attributeNames);
+        /// <returns>
+        /// Attribute group with attributes named <paramref name="attributeNames"/>
+        /// </returns>
+        IEnumerable<AttributeGroup> GetAttributes(IReadOnlyList<string> attributeNames);
 
         /// <summary>
-        /// List all indexed files
+        /// Create an object which can be queried for file count in some directories.
         /// </summary>
-        /// <returns></returns>
-        IEnumerable<string> GetFiles();
+        /// <returns>File Aggregate object</returns>
+        IFileAggregate CreateFileAggregate();
     }
 
     [Export(typeof(IAttributeCache))]
@@ -103,11 +119,9 @@ namespace Viewer.Data
             }
         }
 
-        public List<AttributeLocation> GetAttributes(IEnumerable<string> attributeNames)
+        public IEnumerable<AttributeGroup> GetAttributes(IReadOnlyList<string> names)
         {
-            var names = attributeNames.ToList();
-
-            // create SQL expression "(a.name = :param0 OR a.name = :param1 OR ...)"
+            // create a SQL expression "(a.name = :param0 OR a.name = :param1 OR ...)"
             var attributeNameSnippet = new StringBuilder();
             attributeNameSnippet.Append('(');
             for (var i = 0; i < names.Count; ++i)
@@ -121,60 +135,86 @@ namespace Viewer.Data
                 }
             }
             attributeNameSnippet.Append(')');
-
-            var data = new List<AttributeLocation>();
-
+            
             // find files for each attribute 
             using (var connection = _connectionFactory.Create())
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = @"
                 SELECT a.name, f.path
-                FROM attributes AS a 
-                INNER JOIN files AS f ON (f.id = a.owner)
-                WHERE a.source = 0 AND " + attributeNameSnippet;
+                FROM attributes AS a
+                    INNER JOIN files AS f 
+                        ON (f.id = a.owner)
+                WHERE a.source = 0 AND " + attributeNameSnippet + @"
+                ORDER BY f.path";
 
                 for (var i = 0; i < names.Count; ++i)
                 {
                     command.Parameters.Add(new SQLiteParameter(":param" + i, names[i]));
                 }
-
+                
                 using (var reader = command.ExecuteReader())
                 {
+                    var group = new AttributeGroup();
                     while (reader.Read())
                     {
-                        var name = reader.GetString(0);
                         var path = reader.GetString(1);
-
-                        data.Add(new AttributeLocation
+                        if (group.FilePath != null && group.FilePath != path) 
                         {
-                            AttributeName = name,
-                            FilePath = path
-                        });
+                            // this row belongs to a new group
+                            // return the previous group and begin a new one
+                            yield return group;
+                            group = new AttributeGroup();
+                        }
+
+                        // add this attribute name to current group
+                        var name = reader.GetString(0);
+                        group.FilePath = path;
+                        group.Attributes.Add(name);
                     }
-                }
-            }
 
-            return data;
-        }
-
-        public IEnumerable<string> GetFiles()
-        {
-            using (var connection = _connectionFactory.Create())
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "SELECT path FROM files";
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
+                    // return the last group 
+                    if (group.FilePath != null)
                     {
-                        var path = reader.GetString(0);
-                        yield return path;
+                        yield return group;
                     }
                 }
             }
         }
 
+        private class FileAggregate : IFileAggregate
+        {
+            private readonly SQLiteConnection _connection;
+            private readonly SQLiteCommand _command;
+            private readonly SQLiteParameter _prefix;
+
+            public FileAggregate(SQLiteConnection connection)
+            {
+                _connection = connection;
+                _prefix = new SQLiteParameter(":prefix");
+                _command = _connection.CreateCommand();
+                _command.CommandText = "SELECT COUNT(*) FROM files WHERE path LIKE :prefix";
+                _command.Parameters.Add(_prefix);
+            }
+
+            public long Count(string path)
+            {
+                _prefix.Value = path + '%';
+                return (long) _command.ExecuteScalar();
+            }
+
+            public void Dispose()
+            {
+                _connection?.Dispose();
+                _command?.Dispose();
+            }
+        }
+
+        public IFileAggregate CreateFileAggregate()
+        {
+            return new FileAggregate(_connectionFactory.Create());
+        }
+        
         public IEnumerable<BaseValue> GetValues(string name)
         {
             if (name == null)

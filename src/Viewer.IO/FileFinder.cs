@@ -213,7 +213,7 @@ namespace Viewer.IO
                         {
                             continue;
                         }
-
+                        
                         states.Add(new State(path, state.MatchedPartCount + 1));
                     }
                     else if (part == "**")

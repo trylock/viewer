@@ -123,7 +123,7 @@ namespace Viewer.Images
         /// <returns>Orientation of the entity or 0</returns>
         private static int GetOrientation(IEntity entity)
         {
-            var orientationAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.OrientationAttrName);
+            var orientationAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.Orientation);
             return orientationAttr?.Value ?? 0;
         }
 
@@ -145,8 +145,8 @@ namespace Viewer.Images
 
         public Size GetImageSize(IEntity entity)
         {
-            var widthAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.WidthAttrName);
-            var heightAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.HeightAttrName);
+            var widthAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.Width);
+            var heightAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.Height);
             
             var width = widthAttr?.Value ?? 1;
             var height = heightAttr?.Value ?? 1;
@@ -177,7 +177,7 @@ namespace Viewer.Images
         {
             // isolate these values for the thread which will generate the thumbnail
             var orientation = GetTransformation(entity);
-            var thumbnail = entity.GetValue<ImageValue>(ExifAttributeReaderFactory.ThumbnailAttrName);
+            var thumbnail = entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail);
             if (thumbnail == null)
             {
                 return Task.FromResult<SKBitmap>(null);

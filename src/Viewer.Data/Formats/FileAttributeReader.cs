@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -12,6 +12,14 @@ namespace Viewer.Data.Formats
 {
     public class FileAttributeReader : IAttributeReader, IEnumerable<Attribute>
     {
+        // Names of exported attributes
+        public const string FileName = "FileName";
+        public const string FileSize = "FileSize";
+        public const string Directory = "Directory";
+        public const string LastAccessTime = "LastAccessTime";
+        public const string LastWriteTime = "LastWriteTime";
+        public const string CreationTime = "CreationTime";
+
         private readonly Attribute[] _attributes;
         private int _index;
 
@@ -19,12 +27,12 @@ namespace Viewer.Data.Formats
         {
             _attributes = new[]
             {
-                new Attribute("FileName", new StringValue(fileInfo.Name), AttributeSource.Metadata),
-                new Attribute("FileSize", new IntValue((int)fileInfo.Length), AttributeSource.Metadata),
-                new Attribute("Directory", new StringValue(fileInfo.Directory.Name), AttributeSource.Metadata),
-                new Attribute("LastAccessTime", new DateTimeValue(fileInfo.LastAccessTime), AttributeSource.Metadata),
-                new Attribute("LastWriteTime", new DateTimeValue(fileInfo.LastWriteTime), AttributeSource.Metadata), 
-                new Attribute("CreationTime", new DateTimeValue(fileInfo.CreationTime), AttributeSource.Metadata), 
+                new Attribute(FileName, new StringValue(fileInfo.Name), AttributeSource.Metadata),
+                new Attribute(FileSize, new IntValue((int)fileInfo.Length), AttributeSource.Metadata),
+                new Attribute(Directory, new StringValue(fileInfo.Directory.Name), AttributeSource.Metadata),
+                new Attribute(LastAccessTime, new DateTimeValue(fileInfo.LastAccessTime), AttributeSource.Metadata),
+                new Attribute(LastWriteTime, new DateTimeValue(fileInfo.LastWriteTime), AttributeSource.Metadata), 
+                new Attribute(CreationTime, new DateTimeValue(fileInfo.CreationTime), AttributeSource.Metadata), 
             };
         }
 

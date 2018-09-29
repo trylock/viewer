@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -92,30 +92,39 @@ namespace Viewer.Data.Formats.Exif
 
         private const string ExifHeader = "Exif\0\0";
 
-        public const string WidthAttrName = "ImageWidth";
-        public const string HeightAttrName = "ImageHeight";
-        public const string OrientationAttrName = "orientation";
-        public const string ThumbnailAttrName = "thumbnail";
+        // exported attribute names
+        public const string Width = "ImageWidth";
+        public const string Height = "ImageHeight";
+        public const string Orientation = "orientation";
+        public const string Thumbnail = "thumbnail";
+        public const string DateTaken = "DateTaken";
+        public const string CameraModel = "CameraModel";
+        public const string CameraMaker = "CameraMaker";
+        public const string ExposureTime = "ExposureTime";
+        public const string FStop = "FStop";
+        public const string ExposureBias = "ExposureBias";
+        public const string FocalLength = "FocalLength";
+        public const string MaxAperture = "MaxAperture";
 
         public ExifAttributeReaderFactory()
         {
             _tags = new List<IExifAttributeParser>
             {
                 // image metadata
-                new ExifAttributeParser<ExifIfd0Directory>(WidthAttrName, ExifIfd0Directory.TagImageWidth, AttributeType.Int),
-                new ExifAttributeParser<ExifIfd0Directory>(HeightAttrName, ExifIfd0Directory.TagImageHeight, AttributeType.Int),
-                new ExifAttributeParser<ExifSubIfdDirectory>("DateTaken", ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
-                new ExifAttributeParser<ExifIfd0Directory>(OrientationAttrName, ExifIfd0Directory.TagOrientation, AttributeType.Int),
-                new ThumbnaiExifAttributeParser<ExifThumbnailDirectory>(ThumbnailAttrName),
+                new ExifAttributeParser<ExifIfd0Directory>(Width, ExifIfd0Directory.TagImageWidth, AttributeType.Int),
+                new ExifAttributeParser<ExifIfd0Directory>(Height, ExifIfd0Directory.TagImageHeight, AttributeType.Int),
+                new ExifAttributeParser<ExifSubIfdDirectory>(DateTaken, ExifIfd0Directory.TagDateTimeOriginal, AttributeType.DateTime),
+                new ExifAttributeParser<ExifIfd0Directory>(Orientation, ExifIfd0Directory.TagOrientation, AttributeType.Int),
+                new ThumbnaiExifAttributeParser<ExifThumbnailDirectory>(Thumbnail),
 
                 // camera metadata
-                new ExifAttributeParser<ExifIfd0Directory>("CameraModel", ExifIfd0Directory.TagModel, AttributeType.String),
-                new ExifAttributeParser<ExifIfd0Directory>("CameraMaker", ExifIfd0Directory.TagMake, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("ExposureTime", ExifIfd0Directory.TagExposureTime, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("FStop", ExifIfd0Directory.TagFNumber, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("ExposureBias", ExifIfd0Directory.TagExposureBias, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("FocalLength", ExifIfd0Directory.TagFocalLength, AttributeType.String),
-                new ExifAttributeParser<ExifSubIfdDirectory>("MaxAperture", ExifIfd0Directory.TagMaxAperture, AttributeType.String),
+                new ExifAttributeParser<ExifIfd0Directory>(CameraModel, ExifIfd0Directory.TagModel, AttributeType.String),
+                new ExifAttributeParser<ExifIfd0Directory>(CameraMaker, ExifIfd0Directory.TagMake, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>(ExposureTime, ExifIfd0Directory.TagExposureTime, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>(FStop, ExifIfd0Directory.TagFNumber, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>(ExposureBias, ExifIfd0Directory.TagExposureBias, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>(FocalLength, ExifIfd0Directory.TagFocalLength, AttributeType.String),
+                new ExifAttributeParser<ExifSubIfdDirectory>(MaxAperture, ExifIfd0Directory.TagMaxAperture, AttributeType.String),
             };
         }
 

@@ -321,7 +321,7 @@ namespace Viewer.UI.Images
 
                 var value = new ImageValue(dataStrem.ToArray());
                 var newEntity = entity.SetAttribute(new Attribute(
-                    ExifAttributeReaderFactory.ThumbnailAttrName,
+                    ExifAttributeReaderFactory.Thumbnail,
                     value, AttributeSource.Metadata));
                 _storage.StoreThumbnail(newEntity);
             }

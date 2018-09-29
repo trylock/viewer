@@ -248,7 +248,7 @@ namespace Viewer.Data.Storage
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var thumbnail = entity.GetAttribute(ExifAttributeReaderFactory.ThumbnailAttrName);
+            var thumbnail = entity.GetAttribute(ExifAttributeReaderFactory.Thumbnail);
             var thumbnailValue = thumbnail?.Value as ImageValue;
             if (thumbnailValue == null || thumbnailValue.IsNull)
             {

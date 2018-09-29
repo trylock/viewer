@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -126,6 +126,25 @@ namespace Viewer.Data.Formats.Exif
                 new ExifAttributeParser<ExifSubIfdDirectory>(FocalLength, ExifIfd0Directory.TagFocalLength, AttributeType.String),
                 new ExifAttributeParser<ExifSubIfdDirectory>(MaxAperture, ExifIfd0Directory.TagMaxAperture, AttributeType.String),
             };
+        }
+
+        public IEnumerable<string> MetadataAttributeNames
+        {
+            get
+            {
+                yield return Width;
+                yield return Height;
+                yield return DateTaken;
+                yield return Orientation;
+                yield return Thumbnail;
+                yield return CameraModel;
+                yield return CameraMaker;
+                yield return ExposureTime;
+                yield return FStop;
+                yield return ExposureBias;
+                yield return FocalLength;
+                yield return MaxAperture;
+            }
         }
 
         public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)

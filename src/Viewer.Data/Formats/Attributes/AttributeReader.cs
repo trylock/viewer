@@ -134,6 +134,8 @@ namespace Viewer.Data.Formats.Attributes
     [Export(typeof(IAttributeReaderFactory))]
     public class AttributeReaderFactory : IAttributeReaderFactory
     {
+        public IEnumerable<string> MetadataAttributeNames => Enumerable.Empty<string>();
+
         public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)
         {
             var data = JpegSegmentUtils.JoinSegmentData(segments, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);

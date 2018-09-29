@@ -11,6 +11,12 @@ namespace Viewer.Data.Formats
     public interface IAttributeReaderFactory
     {
         /// <summary>
+        /// List of names of metadata attributes a reader returned by this factory can return. All
+        /// other attribute names must be user attributes.
+        /// </summary>
+        IEnumerable<string> MetadataAttributeNames { get; }
+
+        /// <summary>
         /// Create attribute reader from JPEG segments loaded in memory
         /// </summary>
         /// <param name="file">File metadata</param>

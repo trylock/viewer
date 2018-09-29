@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -60,6 +60,19 @@ namespace Viewer.Data.Formats
     [Export(typeof(IAttributeReaderFactory))]
     public class FileAttributeReaderFactory : IAttributeReaderFactory
     {
+        public IEnumerable<string> MetadataAttributeNames
+        {
+            get
+            {
+                yield return FileAttributeReader.FileName;
+                yield return FileAttributeReader.FileSize;
+                yield return FileAttributeReader.Directory;
+                yield return FileAttributeReader.LastAccessTime;
+                yield return FileAttributeReader.LastWriteTime;
+                yield return FileAttributeReader.CreationTime;
+            }
+        }
+
         public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)
         {
             return new FileAttributeReader(file);

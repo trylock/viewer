@@ -19,6 +19,7 @@ using Viewer.Data.Storage;
 using Viewer.IO;
 using Viewer.Query.Expressions;
 using Viewer.Query.QueryExpression;
+using Viewer.Query.Search;
 
 namespace Viewer.Query
 {
@@ -188,7 +189,7 @@ namespace Viewer.Query
     internal class Query : IQuery
     {
         private readonly IRuntime _runtime;
-        private readonly IAttributeCache _attributes;
+        private readonly IPriorityComparerFactory _priorityComparerFactory;
         private readonly IExecutableQuery _source;
         private readonly string _text;
 
@@ -198,15 +199,22 @@ namespace Viewer.Query
         
         public IEnumerable<PathPattern> Patterns => _source.Patterns;
 
-        public Query(IRuntime runtime, IAttributeCache attributes, IExecutableQuery source) 
-            : this(runtime, attributes, source, null)
+        public Query(
+            IRuntime runtime, 
+            IPriorityComparerFactory priorityComparerFactory, 
+            IExecutableQuery source) 
+            : this(runtime, priorityComparerFactory, source, null)
         {
         }
 
-        public Query(IRuntime runtime, IAttributeCache attributes, IExecutableQuery source, string text)
+        public Query(
+            IRuntime runtime, 
+            IPriorityComparerFactory priorityComparerFactory, 
+            IExecutableQuery source, 
+            string text)
         {
             _runtime = runtime;
-            _attributes = attributes;
+            _priorityComparerFactory = priorityComparerFactory;
             _source = source;
             _text = text;
         }
@@ -228,37 +236,37 @@ namespace Viewer.Query
 
         public IQuery WithComparer(IComparer<IEntity> comparer, string comparerText)
         {
-            return new Query(_runtime, _attributes, new OrderedQuery(_source, comparer, comparerText), _text);
+            return new Query(_runtime, _priorityComparerFactory, new OrderedQuery(_source, comparer, comparerText), _text);
         }
 
         public IQuery Where(ValueExpression expression)
         {
-            return new Query(_runtime, _attributes, new WhereQuery(_runtime, _attributes, _source, expression), _text);
+            return new Query(_runtime, _priorityComparerFactory, new WhereQuery(_runtime, _priorityComparerFactory, _source, expression), _text);
         }
 
         public IQuery Except(IExecutableQuery entities)
         {
-            return new Query(_runtime, _attributes, new ExceptQuery(_source, entities), _text);
+            return new Query(_runtime, _priorityComparerFactory, new ExceptQuery(_source, entities), _text);
         }
 
         public IQuery Union(IExecutableQuery entities)
         {
-            return new Query(_runtime, _attributes, new UnionQuery(_source, entities), _text);
+            return new Query(_runtime, _priorityComparerFactory, new UnionQuery(_source, entities), _text);
         }
 
         public IQuery Intersect(IExecutableQuery entities)
         {
-            return new Query(_runtime, _attributes, new IntersectQuery(_source, entities), _text);
+            return new Query(_runtime, _priorityComparerFactory, new IntersectQuery(_source, entities), _text);
         }
 
         public IQuery View(string queryViewName)
         {
-            return new Query(_runtime, _attributes, new QueryViewQuery(_source, queryViewName), _text);
+            return new Query(_runtime, _priorityComparerFactory, new QueryViewQuery(_source, queryViewName), _text);
         }
 
         public IQuery WithText(string text)
         {
-            return new Query(_runtime, _attributes, _source, text);
+            return new Query(_runtime, _priorityComparerFactory, _source, text);
         }
     }
     
@@ -287,34 +295,34 @@ namespace Viewer.Query
     }
 
     [Export(typeof(IQueryFactory))]
-    public class QueryFactory : IQueryFactory
+    internal class QueryFactory : IQueryFactory
     {
         private readonly IRuntime _runtime;
-        private readonly IAttributeCache _attributes;
+        private readonly IPriorityComparerFactory _priorityComparerFactory;
         private readonly IEntityManager _entities;
         private readonly IFileSystem _fileSystem;
 
         [ImportingConstructor]
         public QueryFactory(
             IRuntime runtime,
-            IAttributeCache attributes,
+            IPriorityComparerFactory priorityComparerFactory,
             IEntityManager entities, 
             IFileSystem fileSystem)
         {
             _runtime = runtime;
-            _attributes = attributes;
+            _priorityComparerFactory = priorityComparerFactory;
             _entities = entities;
             _fileSystem = fileSystem;
         }
 
         public IExecutableQuery CreateQuery()
         {
-            return new Query(_runtime, _attributes, EmptyQuery.Default, null);
+            return new Query(_runtime, _priorityComparerFactory, EmptyQuery.Default, null);
         }
 
         public IExecutableQuery CreateQuery(string pattern)
         {
-            return new Query(_runtime, _attributes, new SelectQuery(
+            return new Query(_runtime, _priorityComparerFactory, new SelectQuery(
                 _fileSystem, 
                 _entities, 
                 pattern, 

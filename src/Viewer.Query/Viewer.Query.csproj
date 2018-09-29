@@ -108,6 +108,7 @@
     <Compile Include="Search\IPriorityFunction.cs" />
     <Compile Include="Search\PriorityFunction.cs" />
     <Compile Include="Search\SearchPriorityComparer.cs" />
+    <Compile Include="Search\PriorityComparerFactory.cs" />
     <Compile Include="Search\SubsetCollection.cs" />
   </ItemGroup>
   <ItemGroup>

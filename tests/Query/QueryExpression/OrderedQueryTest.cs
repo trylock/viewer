@@ -11,6 +11,7 @@ using Viewer.IO;
 using Viewer.Query;
 using Viewer.Query.Expressions;
 using Viewer.Query.QueryExpression;
+using Viewer.Query.Search;
 
 namespace ViewerTest.Query.QueryExpression
 {
@@ -70,7 +71,7 @@ namespace ViewerTest.Query.QueryExpression
               
             var where = new WhereQuery(
                 new Mock<IRuntime>().Object, 
-                new Mock<IAttributeCache>().Object,  
+                new Mock<IPriorityComparerFactory>().Object,  
                 select,
                 new AttributeAccessExpression(0, 0, "attr"));
             var orderBy = new OrderedQuery(where, EntityComparer.Default, "attr desc");

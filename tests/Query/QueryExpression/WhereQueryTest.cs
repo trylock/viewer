@@ -11,6 +11,7 @@ using Viewer.IO;
 using Viewer.Query;
 using Viewer.Query.Expressions;
 using Viewer.Query.QueryExpression;
+using Viewer.Query.Search;
 using Attribute = Viewer.Data.Attribute;
 
 namespace ViewerTest.Query.QueryExpression
@@ -21,8 +22,8 @@ namespace ViewerTest.Query.QueryExpression
         private WhereQuery CreateQuery(IExecutableQuery source, ValueExpression expression)
         {
             var runtime = new Mock<IRuntime>();
-            var attributes = new Mock<IAttributeCache>();
-            return new WhereQuery(runtime.Object, attributes.Object, source, expression);
+            var priorityComparerFactory = new Mock<IPriorityComparerFactory>();
+            return new WhereQuery(runtime.Object, priorityComparerFactory.Object, source, expression);
         }
 
         [TestMethod]

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Core.Collections;
 using Viewer.Data;
+using Viewer.Data.Formats;
 using Viewer.IO;
 using Viewer.Query.Expressions;
 using Attribute = Viewer.Data.Attribute;
@@ -279,10 +280,12 @@ namespace Viewer.Query.Search
         private class PriorityVisitor : IExpressionVisitor<Bitmap>
         {
             private readonly SubsetCollection<string> _subsets;
+            private readonly HashSet<string> _metadataAttributes;
 
-            public PriorityVisitor(SubsetCollection<string> subsets)
+            public PriorityVisitor(SubsetCollection<string> subsets, HashSet<string> metadataAttributes)
             {
                 _subsets = subsets ?? throw new ArgumentNullException(nameof(subsets));
+                _metadataAttributes = metadataAttributes ?? throw new ArgumentNullException(nameof(metadataAttributes));
             }
 
             public Bitmap Visit(AndExpression expr)
@@ -385,8 +388,14 @@ namespace Viewer.Query.Search
 
             public Bitmap Visit(AttributeAccessExpression expr)
             {
-                var bitmap = new Bitmap(_subsets.Count);
+                // if this is a metadata attribute, assume it is in all files
+                if (_metadataAttributes.Contains(expr.Name))
+                {
+                    return new Bitmap(_subsets.Count, true);
+                }
+
                 // find all subsets which contain this attribute
+                var bitmap = new Bitmap(_subsets.Count);
                 foreach (var index in _subsets.FindIndices(item => item == expr.Name))
                 {
                     bitmap.Set(index);
@@ -397,10 +406,12 @@ namespace Viewer.Query.Search
         }
 
         private readonly Statistics _statistics;
+        private readonly HashSet<string> _metadataAttributes;
 
-        public PriorityFunction(Statistics statistics)
+        public PriorityFunction(Statistics statistics, HashSet<string> metadataAttributes)
         {
             _statistics = statistics;
+            _metadataAttributes = metadataAttributes;
         }
         
         public double Compute(ValueExpression expression, string path)
@@ -414,7 +425,7 @@ namespace Viewer.Query.Search
             // find which subsets of attributes match this expression
             long sum = 0;
             long totalSum = 0;
-            var visitor = new PriorityVisitor(_statistics.Attributes);
+            var visitor = new PriorityVisitor(_statistics.Attributes, _metadataAttributes);
             var result = expression.Accept(visitor);
 
             // sum the file counts

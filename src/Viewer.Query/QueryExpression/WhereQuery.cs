@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.Data.Formats;
 using Viewer.IO;
 using Viewer.Query.Expressions;
 using Viewer.Query.Search;
@@ -14,8 +15,7 @@ namespace Viewer.Query.QueryExpression
 {
     internal class WhereQuery : QueryFragment
     {
-        private readonly IRuntime _runtime;
-        private readonly IAttributeCache _attributes;
+        private readonly IPriorityComparerFactory _priorityComparerFactory;
         private readonly IExecutableQuery _source;
         private readonly ValueExpression _expression;
 
@@ -56,12 +56,12 @@ namespace Viewer.Query.QueryExpression
         
         public WhereQuery(
             IRuntime runtime, 
-            IAttributeCache attributes,
+            IPriorityComparerFactory priorityComparerFactory,
             IExecutableQuery source, 
             ValueExpression expression)
         {
-            _runtime = runtime;
-            _attributes = attributes;
+            _priorityComparerFactory = priorityComparerFactory;
+
             _source = source;
             _expression = expression;
             _predicate = _expression.CompilePredicate(runtime);
@@ -72,16 +72,25 @@ namespace Viewer.Query.QueryExpression
             CancellationToken cancellationToken,
             IComparer<string> searchOrder)
         {
+            IEnumerable<IEntity> source = null;
             if (_source is QueryFragment fragment) // the subquery supports search order
             {
-                var statistics = Statistics.Fetch(_attributes, new AccessedAttributesVisitor(_expression));
+                var comparer = _priorityComparerFactory.Create(_expression);
 
-                var comparer = new SearchPriorityComparer(_expression, new PriorityFunction(statistics));
-
-                return fragment.Execute(progress, cancellationToken, comparer).Where(_predicate);
+                source = fragment.Execute(progress, cancellationToken, comparer);
+            }
+            else
+            {
+                source = _source.Execute(progress, cancellationToken);
             }
 
-            return _source.Execute(progress, cancellationToken).Where(_predicate);
+            foreach (var entity in source)
+            {
+                if (_predicate(entity))
+                {
+                    yield return entity;
+                }
+            }
         }
 
         public override bool Match(IEntity entity)

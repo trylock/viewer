@@ -18,7 +18,7 @@ using FileNotFoundException = System.IO.FileNotFoundException;
 namespace Viewer.UI.Explorer
 {
     /// <summary>
-    /// Explorer is component which handles long running I/O operations and provides a simple to
+    /// Explorer is a component which handles long running I/O operations and provides a simple to
     /// use interface. It creates and manages all the necessary UI to show progress and errors.
     /// </summary>
     public interface IExplorer

@@ -70,6 +70,13 @@ namespace Viewer.Data
         /// </summary>
         /// <returns>Cloned entity</returns>
         IEntity Clone();
+
+        /// <summary>
+        /// Remove all attributes of this entity and copy attributes from <paramref name="entity"/>
+        /// </summary>
+        /// <param name="entity">Entity which will be copied</param>
+        /// <returns>This entity</returns>
+        IEntity Set(IEntity entity);
     }
 
     public sealed class DirectoryEntity : IEntity
@@ -109,6 +116,11 @@ namespace Viewer.Data
         public IEntity Clone()
         {
             return new DirectoryEntity(Path);
+        }
+
+        public IEntity Set(IEntity entity)
+        {
+            return this;
         }
 
         public IEnumerator<Attribute> GetEnumerator()
@@ -201,6 +213,20 @@ namespace Viewer.Data
             }
 
             return copy;
+        }
+
+        public IEntity Set(IEntity entity)
+        {
+            lock (_attrs)
+            {
+                _attrs.Clear();
+                foreach (var attr in entity)
+                {
+                    _attrs.Add(attr.Name, attr);
+                }
+            }
+
+            return this;
         }
     }
 }

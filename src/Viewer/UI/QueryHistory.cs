@@ -11,6 +11,33 @@ using Viewer.Query;
 
 namespace Viewer.UI
 {
+    public class BeforeQueryExecutedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// New query which will be executed
+        /// </summary>
+        public IExecutableQuery Query { get; }
+
+        /// <summary>
+        /// If true, execution of <see cref="Query"/> will be canceled. Set this flag by calling
+        /// the <see cref="Cancel"/> method.
+        /// </summary>
+        public bool IsCanceled { get; private set; }
+
+        public BeforeQueryExecutedEventArgs(IExecutableQuery query)
+        {
+            Query = query;
+        }
+
+        /// <summary>
+        /// Cancel this execution of <see cref="Query"/>
+        /// </summary>
+        public void Cancel()
+        {
+            IsCanceled = true;
+        }
+    }
+
     public class QueryEventArgs : EventArgs
     {
         public IExecutableQuery Query { get; }
@@ -38,6 +65,14 @@ namespace Viewer.UI
     public interface IQueryHistory : IReadOnlyList<IExecutableQuery>
     {
         /// <summary>
+        /// Event occurs at the sart of the <see cref="ExecuteQuery"/> method. Execution can be
+        /// canceled by calling the <see cref="BeforeQueryExecutedEventArgs.Cancel"/> method. In
+        /// that case, <see cref="QueryExecuted"/> won't be called and the query won't be added
+        /// to the history.
+        /// </summary>
+        event EventHandler<BeforeQueryExecutedEventArgs> BeforeQueryExecuted;
+
+        /// <summary>
         /// Event occurs when the <see cref="ExecuteQuery"/> method is called. 
         /// </summary>
         event EventHandler<QueryEventArgs> QueryExecuted;
@@ -47,8 +82,11 @@ namespace Viewer.UI
         /// Additionally, this sets current query in history to <paramref name="query"/>.
         /// </summary>
         /// <param name="query">Query to execute</param>
+        /// <returns>
+        /// true iff <paramref name="query"/> has been executed (i.e., it has not been canceled)
+        /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="query"/> is null</exception>
-        void ExecuteQuery(IExecutableQuery query);
+        bool ExecuteQuery(IExecutableQuery query);
 
         /// <summary>
         /// Current query in query history.
@@ -85,16 +123,25 @@ namespace Viewer.UI
         private readonly List<IExecutableQuery> _history = new List<IExecutableQuery>();
         private int _historyHead = -1;
 
+        public event EventHandler<BeforeQueryExecutedEventArgs> BeforeQueryExecuted;
         public event EventHandler<QueryEventArgs> QueryExecuted;
 
         public IExecutableQuery Current => _historyHead < 0 ? null : _history[_historyHead];
         public IExecutableQuery Previous => _historyHead <= 0 ? null : _history[_historyHead - 1];
         public IExecutableQuery Next => _historyHead >= _history.Count - 1 ? null : _history[_historyHead + 1];
         
-        public void ExecuteQuery(IExecutableQuery query)
+        public bool ExecuteQuery(IExecutableQuery query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
+            
+            // trigger the BeforeQueryExecuted event and potentially cancel the operation
+            var args = new BeforeQueryExecutedEventArgs(query);
+            BeforeQueryExecuted?.Invoke(this, args);
+            if (args.IsCanceled)
+            {
+                return false;
+            }
 
             // only modify the history if the queries differ 
             if (Current == null ||
@@ -116,6 +163,7 @@ namespace Viewer.UI
 
             // trigger query executed event
             QueryExecuted?.Invoke(this, new QueryEventArgs(query));
+            return true;
         }
 
         public void Back()

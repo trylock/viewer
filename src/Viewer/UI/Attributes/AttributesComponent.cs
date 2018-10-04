@@ -21,11 +21,11 @@ namespace Viewer.UI.Attributes
     {
         private readonly ITaskLoader _taskLoader;
         private readonly IAttributeManager _attributes;
-        private readonly IAttributeStorage _storage;
         private readonly IEntityManager _entityManager;
         private readonly IErrorList _errorList;
         private readonly IFileSystemErrorView _dialogView;
         private readonly IAttributeCache _attributeCache;
+        private readonly IQueryHistory _queryHistory;
         
         private const string AttributesId = "attributes";
         private const string ExifId = "exif";
@@ -37,19 +37,19 @@ namespace Viewer.UI.Attributes
         public AttributesComponent(
             ITaskLoader loader, 
             IAttributeManager attributes, 
-            IAttributeStorage storage, 
             IEntityManager entities, 
             IErrorList errorList, 
             IFileSystemErrorView dialogView,
-            IAttributeCache attributeCache)
+            IAttributeCache attributeCache,
+            IQueryHistory queryHistory)
         {
             _taskLoader = loader;
             _attributes = attributes;
-            _storage = storage;
             _entityManager = entities;
             _errorList = errorList;
             _dialogView = dialogView;
             _attributeCache = attributeCache;
+            _queryHistory = queryHistory;
         }
 
         public override void OnStartup(IViewerApplication app)
@@ -81,11 +81,11 @@ namespace Viewer.UI.Attributes
                 new AttributeTableView(), 
                 _taskLoader, 
                 _attributes, 
-                _storage, 
                 _entityManager, 
                 _errorList, 
                 _dialogView,
-                _attributeCache);
+                _attributeCache,
+                _queryHistory);
         }
 
         private AttributesPresenter GetAttributes()

@@ -26,11 +26,11 @@ namespace Viewer.UI.Attributes
     {
         private readonly ITaskLoader _taskLoader;
         private readonly IAttributeManager _attributes;
-        private readonly IAttributeStorage _storage;
         private readonly IEntityManager _entityManager;
         private readonly IErrorList _errorList;
         private readonly IFileSystemErrorView _dialogView;
         private readonly IAttributeCache _attributeCache;
+        private readonly IQueryHistory _queryHistory;
         
         /// <summary>
         /// Funtion which determines for each attribute whether it should be managed by this presenter.
@@ -49,24 +49,36 @@ namespace Viewer.UI.Attributes
             IAttributeView view, 
             ITaskLoader taskLoader, 
             IAttributeManager attrManager,
-            IAttributeStorage storage,
             IEntityManager entityManager,
             IErrorList errorList,
             IFileSystemErrorView dialogView,
-            IAttributeCache attributeCache)
+            IAttributeCache attributeCache,
+            IQueryHistory queryHistory)
         {
             View = view;
             _taskLoader = taskLoader;
             _errorList = errorList;
-            _storage = storage;
             _entityManager = entityManager;
             _dialogView = dialogView;
             _attributeCache = attributeCache;
+            _queryHistory = queryHistory;
             _attributes = attrManager;
+
+            // register event handlers
+            _queryHistory.BeforeQueryExecuted += QueryHistory_BeforeQueryExecuted;
             _attributes.SelectionChanged += Selection_Changed;
 
             SubscribeTo(View, "View");
             UpdateAttributes();
+        }
+
+        private void QueryHistory_BeforeQueryExecuted(object sender, BeforeQueryExecutedEventArgs e)
+        {
+            var decision = HandleUnsavedAttributes();
+            if (decision == UnsavedDecision.Cancel)
+            {
+                e.Cancel();
+            }
         }
 
         private bool _isDisposed;
@@ -74,7 +86,9 @@ namespace Viewer.UI.Attributes
         public override void Dispose()
         {
             _isDisposed = true;
+            _queryHistory.BeforeQueryExecuted -= QueryHistory_BeforeQueryExecuted;
             _attributes.SelectionChanged -= Selection_Changed;
+
             base.Dispose();
         }
         
@@ -122,9 +136,76 @@ namespace Viewer.UI.Attributes
                 IsInAllEntities = true
             };
         }
+
+        private List<IEntity> _unsavedSelection = new List<IEntity>();
+        private bool _suppressUnsavedCheck = false;
+
+        /// <summary>
+        /// Ask user what to do with unsaved attributes and then carry out the selected action
+        /// </summary>
+        /// <returns>Selected action</returns>
+        private UnsavedDecision HandleUnsavedAttributes()
+        {
+            var decision = UnsavedDecision.None;
+            if (_suppressUnsavedCheck || !IsEditingEnabled)
+            {
+                return decision;
+            }
+
+            var unsaved = _entityManager.GetModified();
+            if (unsaved.Count <= 0)
+            {
+                return decision;
+            }
+
+            decision = View.ReportUnsavedAttributes();
+
+            if (decision == UnsavedDecision.Save)
+            {
+#pragma warning disable 4014 // async is not awaited, we don't want to block the UI 
+                SaveAttributesAsync(unsaved);
+#pragma warning restore 4014
+            }
+            else if (decision == UnsavedDecision.Revert)
+            {
+                foreach (var entity in unsaved)
+                {
+                    entity.Revert();
+                }
+            }
+            else if (decision == UnsavedDecision.Cancel)
+            {
+                // put all the changes back
+                foreach (var entity in unsaved)
+                {
+                    entity.Return();
+                }
+                
+                View.EnsureVisible();
+
+                // reset current selection to the previous selection
+                _suppressUnsavedCheck = true;
+                try
+                {
+                    _attributes.Selection.Replace(_unsavedSelection);
+                }
+                finally
+                {
+                    _suppressUnsavedCheck = false;
+                }
+            }
+
+            return decision;
+        }
         
         private void Selection_Changed(object sender, EventArgs eventArgs)
         {
+            if (IsEditingEnabled)
+            {
+                HandleUnsavedAttributes();
+                _unsavedSelection = _attributes.Selection.ToList();
+            }
+
             UpdateAttributes();
         }
 
@@ -230,7 +311,7 @@ namespace Viewer.UI.Attributes
             ViewAttributes();
         }
 
-        private void StoreEntity(IEntity entity)
+        private void StoreEntity(IModifiedEntity entity)
         {
             var retry = false;
             do
@@ -238,7 +319,7 @@ namespace Viewer.UI.Attributes
                 retry = false;
                 try
                 {
-                    _storage.Store(entity);
+                    entity.Save();
                 }
                 catch (FileNotFoundException)
                 {
@@ -271,7 +352,12 @@ namespace Viewer.UI.Attributes
             {
                 return;
             }
-            
+
+            await SaveAttributesAsync(unsaved);
+        }
+
+        private async Task SaveAttributesAsync(IReadOnlyList<IModifiedEntity> unsaved)
+        {
             var cancellation = new CancellationTokenSource();
             var progress = _taskLoader.CreateLoader(Resources.SavingChanges_Label, cancellation);
             progress.TotalTaskCount = unsaved.Count;
@@ -283,8 +369,7 @@ namespace Viewer.UI.Attributes
                     {
                         if (cancellation.IsCancellationRequested)
                         {
-                            // put the changes back to the entity manager
-                            _entityManager.SetEntity(entity, false);
+                            entity.Return();
                         }
                         else
                         {

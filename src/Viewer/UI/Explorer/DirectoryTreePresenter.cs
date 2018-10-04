@@ -288,8 +288,6 @@ namespace Viewer.UI.Explorer
         private void View_OpenDirectory(object sender, DirectoryEventArgs e)
         {
             _state.ExecuteQuery(_queryFactory.CreateQuery(e.FullPath));
-            View.SelectDirectory(PathUtils.Split(e.FullPath));
-            View.EnsureVisible();
         }
         
         private void View_RenameDirectory(object sender, RenameDirectoryEventArgs e)

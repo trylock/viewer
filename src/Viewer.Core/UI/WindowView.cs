@@ -15,6 +15,7 @@ namespace Viewer.Core.UI
     {
         public event EventHandler CloseView;
         public event EventHandler ViewGotFocus;
+        public event EventHandler ViewLostFocus;
         
         public Keys ModifierKeyState => ModifierKeys;
         
@@ -31,6 +32,13 @@ namespace Viewer.Core.UI
             // register event handlers
             FormClosed += OnFormClosed;
             GotFocus += OnGotFocus;
+            DockPanel.ActiveContentChanged += DockPanelOnActiveContentChanged;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            DockPanel.ActiveContentChanged -= DockPanelOnActiveContentChanged;
+            base.OnClosed(e);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -115,7 +123,22 @@ namespace Viewer.Core.UI
         public virtual void EndLoading()
         {
         }
-        
+
+        private IDockContent _previousActiveContent;
+
+        private void DockPanelOnActiveContentChanged(object sender, EventArgs e)
+        {
+            if (DockPanel == null)
+                return;
+
+            if (_previousActiveContent == this && DockPanel.ActiveContent != this)
+            {
+                ViewLostFocus?.Invoke(sender, e);
+            }
+
+            _previousActiveContent = DockPanel.ActiveContent;
+        }
+
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
             CloseView?.Invoke(sender, e);

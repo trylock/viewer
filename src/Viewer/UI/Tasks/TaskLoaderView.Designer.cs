@@ -42,7 +42,7 @@
             this.TaskProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TaskProgressBar.Location = new System.Drawing.Point(10, 24);
-            this.TaskProgressBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TaskProgressBar.Margin = new System.Windows.Forms.Padding(2);
             this.TaskProgressBar.Name = "TaskProgressBar";
             this.TaskProgressBar.Size = new System.Drawing.Size(373, 21);
             this.TaskProgressBar.TabIndex = 0;
@@ -61,10 +61,11 @@
             // 
             this.CancelTaskButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelTaskButton.Location = new System.Drawing.Point(388, 24);
-            this.CancelTaskButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.CancelTaskButton.Margin = new System.Windows.Forms.Padding(2);
             this.CancelTaskButton.Name = "CancelTaskButton";
             this.CancelTaskButton.Size = new System.Drawing.Size(58, 21);
             this.CancelTaskButton.TabIndex = 2;
+            this.CancelTaskButton.TabStop = false;
             this.CancelTaskButton.Text = "Cancel";
             this.CancelTaskButton.UseVisualStyleBackColor = true;
             this.CancelTaskButton.Click += new System.EventHandler(this.CancelTaskButton_Click);
@@ -103,7 +104,7 @@
             this.Controls.Add(this.CancelTaskButton);
             this.Controls.Add(this.ProgressLabel);
             this.Controls.Add(this.TaskProgressBar);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "TaskLoaderView";
             this.Text = "TaskLoaderView";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TaskLoaderView_FormClosing);

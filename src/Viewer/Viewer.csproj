@@ -122,6 +122,12 @@
     <Compile Include="UI\About\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Attributes\UnsavedAttributesMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Attributes\UnsavedAttributesMessageBox.Designer.cs">
+      <DependentUpon>UnsavedAttributesMessageBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Explorer\Explorer.cs" />
     <Compile Include="UI\Forms\BufferedTreeView.cs">
       <SubType>Component</SubType>
@@ -270,6 +276,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Attributes\AttributeTableView.resx">
       <DependentUpon>AttributeTableView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Attributes\UnsavedAttributesMessageBox.resx">
+      <DependentUpon>UnsavedAttributesMessageBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Explorer\DirectoryTreeView.resx">
       <DependentUpon>DirectoryTreeView.cs</DependentUpon>

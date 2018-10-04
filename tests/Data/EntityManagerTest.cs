@@ -118,6 +118,44 @@ namespace ViewerTest.Data
         }
 
         [TestMethod]
+        public void SetEntity_NonMarkedEntityWithReplaceFalse()
+        {
+            var entity = new FileEntity("test");
+            _entityManager.SetEntity(entity, false);
+
+            entity.SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom));
+            Assert.IsNotNull(entity.GetAttribute("test"));
+            
+            var modified = _entityManager.GetModified();
+            Assert.AreEqual(1, modified.Count);
+            Assert.AreEqual(entity.Path, modified[0].Path);
+            Assert.IsNull(modified[0].GetAttribute("test"));
+        }
+
+        [TestMethod]
+        public void SetEntity_MarkedEntityWithReplaceFalse()
+        {
+            var entity1 = new FileEntity("test1")
+                .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom));
+            var entity2 = new FileEntity("test1")
+                .SetAttribute(new Attribute("a", new IntValue(2), AttributeSource.Custom));
+            _entityManager.SetEntity(entity1, true);
+            _entityManager.SetEntity(entity2, false);
+
+            entity1.SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom));
+            Assert.IsNotNull(entity1.GetAttribute("test"));
+
+            entity2.SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom));
+            Assert.IsNotNull(entity2.GetAttribute("test"));
+
+            var modified = _entityManager.GetModified();
+            Assert.AreEqual(1, modified.Count);
+            Assert.AreEqual(entity1.Path, modified[0].Path);
+            Assert.IsNull(modified[0].GetAttribute("test"));
+            Assert.AreEqual(1, modified[0].GetValue<IntValue>("a").Value);
+        }
+
+        [TestMethod]
         public void MoveEntity_ChangesModifiedEntityPath()
         {
             var entity = new FileEntity("test");
@@ -128,6 +166,167 @@ namespace ViewerTest.Data
             var modified = _entityManager.GetModified();
             Assert.AreEqual(1, modified.Count);
             Assert.AreEqual(PathUtils.NormalizePath("test1"), modified[0].Path);
+        }
+
+        [TestMethod]
+        public void GetEntity_LoadEntityFromTheModifiedList()
+        {
+            var entity = new FileEntity("test")
+                .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom));
+
+            _entityManager.SetEntity(entity, true);
+
+            var loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
+        }
+
+        [TestMethod]
+        public void GetEntity_LoadEntityFromTheSavingList()
+        {
+            var entity = new FileEntity("test")
+                .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom));
+
+            _entityManager.SetEntity(entity, true);
+
+            var snapshot = _entityManager.GetModified();
+            Assert.AreEqual(1, snapshot.Count);
+            Assert.AreEqual(PathUtils.NormalizePath("test"), snapshot[0].Path);
+
+            var loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(loaded, entity);
+        }
+
+        [TestMethod]
+        public void GetEntity_LoadTheMostRecentEntityFromTheSavingList()
+        {
+            var entity = new FileEntity("test")
+                .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom));
+            
+            // add entity to the modified list
+            _entityManager.SetEntity(entity, true);
+
+            var loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
+
+            // move entity to the saving list
+            var snapshot = _entityManager.GetModified();
+            Assert.AreEqual(1, snapshot.Count);
+            Assert.AreEqual(entity.Path, snapshot[0].Path);
+            Assert.AreEqual(1, snapshot[0].GetValue<IntValue>("a").Value);
+
+            loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
+
+            // modify entity
+            entity = entity.SetAttribute(new Attribute("a", new IntValue(2), AttributeSource.Custom));
+
+            // add modified entity to the modified list
+            _entityManager.SetEntity(entity, false);
+
+            loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
+
+            // move modified entity to the saving list
+            snapshot = _entityManager.GetModified();
+            Assert.AreEqual(1, snapshot.Count);
+            Assert.AreEqual(entity.Path, snapshot[0].Path);
+            Assert.AreEqual(2, snapshot[0].GetValue<IntValue>("a").Value);
+            
+            loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
+        }
+
+        [TestMethod]
+        public void GetModified_SaveRemovesEntityFromTheSavingList()
+        {
+            var entity = new FileEntity("test");
+
+            _entityManager.SetEntity(entity, true);
+            var snapshot = _entityManager.GetModified();
+            Assert.AreEqual(1, snapshot.Count);
+            Assert.AreEqual(entity.Path, snapshot[0].Path);
+            Assert.IsFalse(snapshot[0].Any());
+
+            var loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
+
+            snapshot[0].Save();
+
+            _storage.Verify(mock => mock.Store(It.Is<IEntity>(storedEntity =>
+                storedEntity.Path == entity.Path &&
+                !storedEntity.Any())), Times.Once);
+
+            loaded = _entityManager.GetEntity("test");
+            Assert.IsNull(loaded);
+        }
+
+        [TestMethod]
+        public void GetModified_ReventRemovesEntityFromTheSavingList()
+        {
+            var entity = new FileEntity("test")
+                .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom));
+
+            // add entity to the modified list
+            _entityManager.SetEntity(entity, true);
+
+            // move it to the saving list
+            var snapshot = _entityManager.GetModified();
+            Assert.AreEqual(1, snapshot.Count);
+            Assert.AreEqual(entity.Path, snapshot[0].Path);
+
+            var loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
+
+            // remove attribute "a"
+            entity.RemoveAttribute("a");
+            Assert.IsFalse(entity.Any());
+
+            // revert the entity to its initial state
+            snapshot[0].Revert();
+            Assert.IsTrue(entity.Any());
+            Assert.AreEqual(1, entity.GetValue<IntValue>("a").Value);
+            
+            loaded = _entityManager.GetEntity("test");
+            Assert.IsNull(loaded);
+        }
+
+        [TestMethod]
+        public void GetModified_ReturnRemovesEntityFromTheSavingList()
+        {
+            var entity = new FileEntity("test")
+                .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom));
+
+            // add entity to the modified list
+            _entityManager.SetEntity(entity, true);
+
+            // move it to the saving list
+            var snapshot = _entityManager.GetModified();
+            Assert.AreEqual(1, snapshot.Count);
+            Assert.AreEqual(entity.Path, snapshot[0].Path);
+
+            var loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
+
+            // remove attribute "a"
+            entity.RemoveAttribute("a");
+            Assert.IsFalse(entity.Any());
+
+            // return the entity to the modified list
+            snapshot[0].Return();
+            Assert.IsFalse(entity.Any());
+
+            // It returns the modified entity. This is ok, Return should not change the entity state
+            loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded); 
+
+            // move it to the saving list again 
+            snapshot = _entityManager.GetModified();
+            Assert.AreEqual(1, snapshot.Count);
+            Assert.AreEqual(entity.Path, snapshot[0].Path);
+            Assert.AreEqual(1, snapshot[0].GetValue<IntValue>("a").Value);
+
+            loaded = _entityManager.GetEntity("test");
+            Assert.AreEqual(entity, loaded);
         }
     }
 }

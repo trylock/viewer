@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MetadataExtractor;
+using Viewer.Core.Collections;
 using Viewer.Data.Storage;
+using Viewer.IO;
 
 namespace Viewer.Data
 {
@@ -54,10 +58,80 @@ namespace Viewer.Data
     }
 
     /// <summary>
+    /// Proxy of an entity in the saving list. It can revert changes, return the entity to the
+    /// modified list or save the entity to its file.
+    /// </summary>
+    public interface IModifiedEntity : IEntity
+    {
+        /// <summary>
+        /// Revert this entity to its initial state. 
+        /// </summary>
+        void Revert();
+
+        /// <summary>
+        /// Return this entity to the modified list of <see cref="IEntityManager"/>
+        /// </summary>
+        void Return();
+
+        /// <summary>
+        /// Save the entity to its file.
+        /// </summary>
+        /// <seealso cref="IAttributeStorage.Store"/>
+        void Save();
+    }
+
+    /// <summary>
     /// Class which implements this interface is responsible for maintaining a consistent state 
     /// of entities throughout the application.
     /// This type is thread safe.
     /// </summary>
+    /// <remarks>
+    /// Entities are loaded by calling the <see cref="GetEntity"/> method. The implementation
+    /// keeps 2 lists: the modified list and the saving list. Lifetime of an entity is as follows:
+    /// <list type="number">
+    /// <item>
+    /// <description>
+    /// Before modifying an entity, its initial state is captured in the modified list by calling
+    /// the <see cref="SetEntity"/> method.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// After each modification, the entity state in the modified list is updated by calling the
+    /// <see cref="SetEntity"/> method.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// All entities are added to the saving list by calling the <see cref="GetModified"/> method.
+    /// Entities from the saving list can be removed in one of the following ways:
+    ///     <list type="bullet">
+    ///         <item>
+    ///         <description>
+    ///         Call the <see cref="IModifiedEntity.Return"/> method to return the item to the
+    ///         modified list iff an item with the same path has not been added to the list yet
+    ///         </description>
+    ///         </item>
+    ///         <item>
+    ///         <description>
+    ///         Call the <see cref="IModifiedEntity.Revert"/> method to revert the entity to its
+    ///         initial state in the whole application (initial state is the state of the entity
+    ///         captured by the first call to the <see cref="SetEntity"/> method)
+    ///         </description>
+    ///         </item>
+    ///         <item>
+    ///         <description>
+    ///         Call the <see cref="IModifiedEntity.Save"/> method to save the entity to its file.
+    ///         </description>
+    ///         </item>
+    ///     </list>
+    /// </description>
+    /// </item>
+    /// </list>
+    /// The <see cref="GetEntity"/> method uses these 2 lists to load an entity. This assures that
+    /// the most recent version of an entity will always be loaded even if it is not saved in a
+    /// file yet.
+    /// </remarks>
     public interface IEntityManager
     {
         /// <summary>
@@ -85,10 +159,15 @@ namespace Viewer.Data
         IEntity GetEntity(string path);
 
         /// <summary>
-        /// Add the entity to the modified list. 
-        /// If an entity with the same path is in the list already, it will be replaced iff
-        /// <paramref name="replace"/> is true.
+        /// Add the entity to the modified list. If an entity with the same path is in the list
+        /// already, it will be replaced iff <paramref name="replace"/> is true.
         /// </summary>
+        /// <remarks>
+        /// This method triggeres the <see cref="Changed"/> event if <paramref name="replace"/>
+        /// is true or <paramref name="replace"/> is false and there is no entity with the same
+        /// path as <paramref name="entity"/> in the modified list (i.e., if this method adds
+        /// <paramref name="entity"/> to the modified list)
+        /// </remarks>
         /// <param name="entity">Entity to set</param>
         /// <param name="replace">Replace entity in the modified list if true.</param>
         void SetEntity(IEntity entity, bool replace);
@@ -113,13 +192,189 @@ namespace Viewer.Data
         /// All entities in the snapshot are copies.
         /// </summary>
         /// <returns>Snapshot of modified entities</returns>
-        IReadOnlyList<IEntity> GetModified();
+        IReadOnlyList<IModifiedEntity> GetModified();
     }
     
     [Export(typeof(IEntityManager))]
     public class EntityManager : IEntityManager
     {
-        private readonly Dictionary<string, IEntity> _modified = new Dictionary<string, IEntity>();
+        private enum EntityState
+        {
+            /// <summary>
+            /// The entity has not been marked as modified
+            /// </summary>
+            None,
+
+            /// <summary>
+            /// The entity has been marked as modified but it has not been saved in its file yet
+            /// </summary>
+            Modified,
+
+            /// <summary>
+            /// The entity is waiting to be saved 
+            /// </summary>
+            Saving
+        }
+
+        private class EntityProxy : IModifiedEntity
+        {
+            private readonly EntityManager _entityManager;
+            private readonly IEntity _initialState;
+            private IEntity _currentState;
+
+            /// <summary>
+            /// State of this proxy determines in which list it lies (the modified list or the saving list)
+            /// Access to this property should be protected with a lock on the _entityManager._modified
+            /// collection.
+            /// </summary>
+            public EntityState State { get; set; } = EntityState.Modified;
+
+            /// <summary>
+            /// Reference to the entity
+            /// </summary>
+            public IEntity Entity { get; }
+            
+            public EntityProxy(EntityManager entityManager, IEntity entity)
+            {
+                _entityManager = entityManager;
+                Entity = entity;
+                _initialState = Entity.Clone();
+                _currentState = _initialState;
+            }
+            
+            /// <summary>
+            /// Revert <see cref="Entity"/> to its first state (state at the time of creation of this object)
+            /// </summary>
+            public void Revert()
+            {
+                // revert entity to its initial state
+                Entity.Set(_initialState);
+                _currentState = _initialState;
+
+                // remove this proxy from the modified list if it is there
+                var modified = _entityManager._modified;
+                lock (modified)
+                {
+                    State = EntityState.None;
+                    if (modified.TryGetValue(Path, out var proxy) && proxy == this)
+                    {
+                        modified.Remove(Path);
+                    }
+                }
+                
+                _entityManager.Changed?.Invoke(_entityManager, new EntityEventArgs(Entity));
+            }
+
+            /// <summary>
+            /// Return this entity to the modified list iff an entity with the same path has not
+            /// been added to that list yet.
+            /// </summary>
+            public void Return()
+            {
+                var modified = _entityManager._modified;
+                lock (modified)
+                {
+                    // there is either a more recent version of this proxy in the _modified collection
+                    // or this proxy is in the collection thus chaning its state is sufficient
+                    State = EntityState.Modified;
+                }
+            }
+
+            /// <summary>
+            /// Save the entity to its file and remove it from the saving list.
+            /// </summary>
+            public void Save()
+            {
+                _entityManager._storage.Store(this);
+                var modified = _entityManager._modified;
+                lock (modified)
+                {
+                    if (modified.TryGetValue(Path, out var proxy) && proxy == this)
+                    {
+                        modified.Remove(Path);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Capture current state of <paramref name="entity"/> as the current state.
+            /// </summary>
+            /// <param name="entity"></param>
+            public void Capture(IEntity entity)
+            {
+                _currentState = entity.Clone();
+            }
+
+            #region Entity proxy
+
+            public string Path => _currentState.Path;
+
+            public Attribute GetAttribute(string name)
+            {
+                return _currentState.GetAttribute(name);
+            }
+
+            public T GetValue<T>(string name) where T : BaseValue
+            {
+                return _currentState.GetValue<T>(name);
+            }
+
+            public IEntity SetAttribute(Attribute attr)
+            {
+                return _currentState.SetAttribute(attr);
+            }
+
+            public IEntity RemoveAttribute(string name)
+            {
+                return _currentState.RemoveAttribute(name);
+            }
+
+            public IEntity ChangePath(string newPath)
+            {
+                Entity.ChangePath(newPath);
+                _initialState.ChangePath(newPath);
+                _currentState.ChangePath(newPath);
+
+                return this;
+            }
+
+            public IEntity Clone()
+            {
+                return _currentState.Clone();
+            }
+
+            public IEntity Set(IEntity entity)
+            {
+                return _currentState.Set(entity);
+            }
+
+            public IEnumerator<Attribute> GetEnumerator()
+            {
+                return _currentState.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// This collection represents the modified list and the saving list. Items are
+        /// distinguished using the <see cref="EntityProxy.State"/> property. There are basically
+        /// 4 options:
+        /// 1) An entity is only in the modified list => it will be in this collection
+        /// 2) An entity is only in the saving list => the most recent one will be in this collection
+        /// 3) An entity is in modified list and in the saving list => the one in the modified list
+        ///    will be in this collection (since that entity is newer than any item in the saving list)
+        /// 4) An entity is neither in the modified list, nor in the saving list => no item for
+        ///    this entity is in this collection
+        /// </summary>
+        private readonly Dictionary<string, EntityProxy> _modified =
+            new Dictionary<string, EntityProxy>(StringComparer.CurrentCultureIgnoreCase);
+
         private readonly IAttributeStorage _storage;
 
         [ImportingConstructor]
@@ -134,6 +389,15 @@ namespace Viewer.Data
 
         public IEntity GetEntity(string path)
         {
+            var normalizedPath = PathUtils.NormalizePath(path);
+            lock (_modified)
+            {
+                if (_modified.TryGetValue(normalizedPath, out var proxy))
+                {
+                    return proxy.Entity;
+                }
+            }
+
             return _storage.Load(path);
         }
 
@@ -141,24 +405,18 @@ namespace Viewer.Data
         {
             var isAdded = false;
             var path = entity.Path;
-            var clone = entity.Clone();
-            if (replace)
+            lock (_modified)
             {
-                isAdded = true;
-                lock (_modified)
+                if (!_modified.TryGetValue(path, out var proxy) ||
+                    proxy.State != EntityState.Modified)
                 {
-                    _modified[path] = clone;
+                    _modified[path] = new EntityProxy(this, entity);
+                    isAdded = true;
                 }
-            }
-            else
-            {
-                lock (_modified)
+                else if (replace) // if it is allowed to replace the entity in the modified list
                 {
-                    if (!_modified.ContainsKey(path))
-                    {
-                        _modified.Add(path, clone);
-                        isAdded = true;
-                    }
+                    proxy.Capture(entity);
+                    isAdded = true;
                 }
             }
 
@@ -179,7 +437,7 @@ namespace Viewer.Data
                 if (_modified.TryGetValue(oldPath, out var modifiedEntity))
                 {
                     _modified.Remove(oldPath);
-                    _modified[newPath] = modifiedEntity.ChangePath(newPath);
+                    _modified[newPath] = (EntityProxy) modifiedEntity.ChangePath(newPath);
                 }
             }
 
@@ -200,13 +458,20 @@ namespace Viewer.Data
             Deleted?.Invoke(this, new EntityEventArgs(entity));
         }
 
-        public IReadOnlyList<IEntity> GetModified()
+        public IReadOnlyList<IModifiedEntity> GetModified()
         {
-            IReadOnlyList<IEntity> snapshot;
+            var snapshot = new List<EntityProxy>();
             lock (_modified)
             {
-                snapshot = _modified.Values.ToArray();
-                _modified.Clear();
+                foreach (var item in _modified)
+                {
+                    var proxy = item.Value;
+                    if (proxy.State == EntityState.Modified)
+                    {
+                        proxy.State = EntityState.Saving;
+                        snapshot.Add(proxy);
+                    }
+                }
             }
 
             return snapshot;

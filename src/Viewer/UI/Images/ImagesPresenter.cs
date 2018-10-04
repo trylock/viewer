@@ -426,6 +426,12 @@ namespace Viewer.UI.Images
             _selection.Replace(GetEntitiesInSelection());
         }
 
+        private void View_ViewLostFocus(object sender, EventArgs e)
+        {
+            _rectangleSelection.End();
+            View.HideSelection();
+        }
+
         private IEnumerable<string> GetPathsInSelection()
         {
             return _rectangleSelection.Select(item => item.FullPath);

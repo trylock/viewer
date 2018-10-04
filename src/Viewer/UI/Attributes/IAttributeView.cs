@@ -88,6 +88,29 @@ namespace Viewer.UI.Attributes
         Custom
     }
 
+    internal enum UnsavedDecision
+    {
+        /// <summary>
+        /// Don't do anything
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// All unsaved attributes will be saved
+        /// </summary>
+        Save,
+
+        /// <summary>
+        /// All unsaved changes will be reverted 
+        /// </summary>
+        Revert,
+
+        /// <summary>
+        /// Make sure the attribute view has focus and the selection is changed back
+        /// </summary>
+        Cancel
+    }
+
     internal interface ISearchView
     {
         /// <summary>
@@ -172,5 +195,12 @@ namespace Viewer.UI.Attributes
         /// Show the attribute name must not be empty error message.
         /// </summary>
         void AttributeNameIsEmpty();
+
+        /// <summary>
+        /// Show to the user a message that there are unsaved attributes and give him/her some
+        /// options what to do with them.
+        /// </summary>
+        /// <returns>Picked option</returns>
+        UnsavedDecision ReportUnsavedAttributes();
     }
 }

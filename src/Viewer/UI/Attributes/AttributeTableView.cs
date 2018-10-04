@@ -173,6 +173,15 @@ namespace Viewer.UI.Attributes
                 MessageBoxIcon.Warning);
         }
 
+        public UnsavedDecision ReportUnsavedAttributes()
+        {
+            using (var dialog = new UnsavedAttributesMessageBox())
+            {
+                dialog.ShowDialog();
+                return dialog.Result;
+            }
+        }
+
         #endregion
 
         #region Search View

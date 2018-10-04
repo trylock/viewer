@@ -48,6 +48,11 @@ namespace Viewer.UI.Attributes
         /// Check whether the selection is empty
         /// </summary>
         bool IsSelectionEmpty { get; }
+        
+        /// <summary>
+        /// Get current selection
+        /// </summary>
+        ISelection Selection { get; }
 
         /// <summary>
         /// Set attribute to all entities in selection
@@ -82,6 +87,8 @@ namespace Viewer.UI.Attributes
         }
 
         public bool IsSelectionEmpty => !GetFilesInSelection().Any();
+
+        public ISelection Selection => _selection;
 
         [ImportingConstructor]
         public AttributeManager(ISelection selection, IEntityManager entityManager)
@@ -132,11 +139,15 @@ namespace Viewer.UI.Attributes
 
             return attrs.Values;
         }
-        
+
         public void SetAttribute(string oldName, Attribute attr)
         {
             foreach (var entity in GetFilesInSelection())
             {
+                // save initial state of the entity if necessary
+                _entityManager.SetEntity(entity, false);
+
+                // modify the entity
                 var newEntity = entity.RemoveAttribute(oldName).SetAttribute(attr);
                 _entityManager.SetEntity(newEntity, true);
             }
@@ -145,7 +156,11 @@ namespace Viewer.UI.Attributes
         public void RemoveAttribute(string name)
         {
             foreach (var entity in GetFilesInSelection())
-            { 
+            {
+                // save initial state of the entity if necessary
+                _entityManager.SetEntity(entity, false);
+
+                // modify the entity
                 var newEntity = entity.RemoveAttribute(name);
                 _entityManager.SetEntity(newEntity, true);
             }

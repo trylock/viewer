@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MetadataExtractor.Formats.Jpeg;
+using Viewer.Core;
 
 namespace Viewer.Data.Formats.Jpeg
 {
@@ -25,9 +27,9 @@ namespace Viewer.Data.Formats.Jpeg
         /// Copy unchanged image data starting at current position in dataStream 
         /// including the End of Image segment.
         /// segment after them.
-        /// <param name="dataStream">Stream with image data</param>
+        /// <param name="input">Stream with image data</param>
         /// </summary>
-        void Finish(Stream dataStream);
+        void Finish(Stream input);
     }
 
     public class JpegSegmentWriter : IJpegSegmentWriter
@@ -63,7 +65,7 @@ namespace Viewer.Data.Formats.Jpeg
             }
         }
 
-        public void Finish(Stream dataStream)
+        public void Finish(Stream input)
         {
             // write Start of Scan segment
             _writer.Write((byte)0xFF);
@@ -74,18 +76,24 @@ namespace Viewer.Data.Formats.Jpeg
             var buffer = new byte[_blockSize];
             for (;;)
             {
-                var length = dataStream.Read(buffer, 0, buffer.Length);
+                var length = input.Read(buffer, 0, buffer.Length);
                 if (length <= 0)
                     break;
+                
                 _writer.Write(buffer, 0, length);
             }
-
+            
+            // truncate the temporary file to the image size if necessary
+            if (_writer.BaseStream.Position < _writer.BaseStream.Length)
+            {
+                _writer.BaseStream.SetLength(_writer.BaseStream.Position);
+            }
             _writer.Flush();
         }
-
+        
         public void Dispose()
         {
-            _writer.Dispose();
+            _writer?.Dispose();
         }
 
         private bool HasData(JpegSegmentType type)

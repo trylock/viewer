@@ -89,7 +89,7 @@ namespace Viewer.Data.Storage
         {
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
-
+            
             try
             {
                 if (_fileSystem.DirectoryExists(path))
@@ -114,7 +114,7 @@ namespace Viewer.Data.Storage
                         entity = entity.SetAttribute(attr);
                     }
                 }
-                
+
                 return entity;
             }
             catch (FileNotFoundException)
@@ -142,45 +142,43 @@ namespace Viewer.Data.Storage
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
+            string tmpFileName;
             using (var segmentReader = _segmentReaderFactory.CreateFromPath(entity.Path))
+            using (var segmentWriter = _segmentWriterFactory.CreateFromPath(entity.Path, out tmpFileName))
             {
-                string tmpFileName;
-                using (var segmentWriter = _segmentWriterFactory.CreateFromPath(entity.Path, out tmpFileName))
+                // copy all but attribute segments
+                for (;;)
                 {
-                    // copy all but attribute segments
-                    for (;;)
+                    var segment = segmentReader.ReadSegment();
+                    if (segment == null)
+                        break;
+
+                    if (IsAttributeSegment(segment) ||
+                        segment.Type == JpegSegmentType.Sos)
                     {
-                        var segment = segmentReader.ReadSegment();
-                        if (segment == null)
-                            break;
-
-                        if (IsAttributeSegment(segment) ||
-                            segment.Type == JpegSegmentType.Sos)
-                        {
-                            continue;
-                        }
-
-                        segmentWriter.WriteSegment(segment);
+                        continue;
                     }
 
-                    // serialize attributes to JpegSegments
-                    var serialized = Serialize(entity);
-                    var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1,
-                        AttributeReader.JpegSegmentHeader);
-
-                    // write attribute segments
-                    foreach (var segment in segments)
-                    {
-                        segmentWriter.WriteSegment(segment);
-                    }
-
-                    // write SOS segment and image data (including the EOI segment at the end)
-                    segmentWriter.Finish(segmentReader.BaseStream);
+                    segmentWriter.WriteSegment(segment);
                 }
 
-                // replace the original file with the modified file
-                _fileSystem.ReplaceFile(tmpFileName, entity.Path, null);
+                // serialize attributes to JpegSegments
+                var serialized = Serialize(entity);
+                var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1,
+                    AttributeReader.JpegSegmentHeader);
+
+                // write attribute segments
+                foreach (var segment in segments)
+                {
+                    segmentWriter.WriteSegment(segment);
+                }
+
+                // write SOS segment and image data (including the EOI segment at the end)
+                segmentWriter.Finish(segmentReader.BaseStream);
             }
+
+            // replace the original file with the modified file
+            _fileSystem.ReplaceFile(tmpFileName, entity.Path, null);
         }
 
         public void StoreThumbnail(IEntity entity)

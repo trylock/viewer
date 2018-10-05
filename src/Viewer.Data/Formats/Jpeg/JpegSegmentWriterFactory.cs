@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Core;
 
 namespace Viewer.Data.Formats.Jpeg
 {
@@ -42,9 +43,10 @@ namespace Viewer.Data.Formats.Jpeg
                     {
                         number = _random.Next();
                     }
-
+                    
                     tmpFileName = filePath + ".tmp." + number;
-                    input = new FileStream(tmpFileName, FileMode.CreateNew, FileAccess.Write);
+                    input = new FileStream(tmpFileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+                    input.SetLength(new FileInfo(filePath).Length);
                     break;
                 }
                 catch (IOException)

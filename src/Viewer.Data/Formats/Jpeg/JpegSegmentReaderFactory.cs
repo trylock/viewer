@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Viewer.Core;
 
 namespace Viewer.Data.Formats.Jpeg
 {
@@ -25,7 +26,7 @@ namespace Viewer.Data.Formats.Jpeg
         {
             return new JpegSegmentReader(
                 new BinaryReader(
-                    new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete)));
+                    new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 0x1000, FileOptions.SequentialScan)));
         }
     }
 }

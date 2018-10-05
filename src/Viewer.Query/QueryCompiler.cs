@@ -75,7 +75,7 @@ namespace Viewer.Query
         public IComparer<IEntity> Comparer { get; set; }
     }
     
-    internal class QueryCompilerVisitor : IQueryVisitor<CompilationResult>
+    internal class QueryCompilerVisitor : IQueryParserVisitor<CompilationResult>
     {
         private readonly IQueryCompiler _queryCompiler;
         private readonly IQueryErrorListener _queryErrorListener;

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -98,10 +98,11 @@
     <Compile Include="QueryCompiler.cs" />
     <Compile Include="QueryLexer.cs" />
     <Compile Include="QueryParser.cs" />
+    <Compile Include="QueryParserBaseVisitor.cs" />
+    <Compile Include="QueryParserVisitor.cs" />
     <Compile Include="QueryProgress.cs" />
     <Compile Include="QueryTextComparer.cs" />
     <Compile Include="QueryViewRepository.cs" />
-    <Compile Include="QueryVisitor.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="Search\AccessedAttributesVisitor.cs" />
     <Compile Include="Expressions\ConstantReductionVisitor.cs" />
@@ -130,6 +131,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)tools/antlr4 -no-listener -visitor -package Viewer.Query -o $(ProjectDir) $(ProjectDir)Query.g4</PreBuildEvent>
+    <PreBuildEvent>call $(SolutionDir)tools/antlr4 -package Viewer.Query -o $(ProjectDir) $(ProjectDir)QueryLexer.g4
+call $(SolutionDir)tools/antlr4 -no-listener -visitor -package Viewer.Query -o $(ProjectDir) $(ProjectDir)QueryParser.g4</PreBuildEvent>
   </PropertyGroup>
 </Project>

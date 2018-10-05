@@ -571,7 +571,7 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}% complete.
+        ///   Looks up a localized string similar to {0}% complete ({1} / {2}).
         /// </summary>
         internal static string Progress_Label {
             get {

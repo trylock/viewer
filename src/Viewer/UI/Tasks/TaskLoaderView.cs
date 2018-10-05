@@ -84,7 +84,7 @@ namespace Viewer.UI.Tasks
             var progress = (int) (TaskProgressBar.Value / (double) TaskProgressBar.Maximum * 100);
             TaskProgressBar.Value = finishedCount;
             TaskNameLabel.Text = name;
-            ProgressLabel.Text = string.Format(Resources.Progress_Label, progress);
+            ProgressLabel.Text = string.Format(Resources.Progress_Label, progress, finishedCount, totalCount);
 
             // update the title
             Text = string.Format(Resources.Progess_Title, OperationName, progress);

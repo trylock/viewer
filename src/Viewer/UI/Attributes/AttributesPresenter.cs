@@ -24,11 +24,8 @@ namespace Viewer.UI.Attributes
 {
     internal class AttributesPresenter : Presenter<IAttributeView>
     {
-        private readonly ITaskLoader _taskLoader;
         private readonly IAttributeManager _attributes;
         private readonly IEntityManager _entityManager;
-        private readonly IErrorList _errorList;
-        private readonly IFileSystemErrorView _dialogView;
         private readonly IAttributeCache _attributeCache;
         private readonly IQueryHistory _queryHistory;
         
@@ -47,26 +44,20 @@ namespace Viewer.UI.Attributes
         
         public AttributesPresenter(
             IAttributeView view, 
-            ITaskLoader taskLoader, 
             IAttributeManager attrManager,
             IEntityManager entityManager,
-            IErrorList errorList,
-            IFileSystemErrorView dialogView,
             IAttributeCache attributeCache,
             IQueryHistory queryHistory)
         {
             View = view;
-            _taskLoader = taskLoader;
-            _errorList = errorList;
             _entityManager = entityManager;
-            _dialogView = dialogView;
             _attributeCache = attributeCache;
             _queryHistory = queryHistory;
             _attributes = attrManager;
 
             // register event handlers
             _queryHistory.BeforeQueryExecuted += QueryHistory_BeforeQueryExecuted;
-            _attributes.SelectionChanged += Selection_Changed;
+            _attributes.Selection.Changed += Selection_Changed;
 
             SubscribeTo(View, "View");
             UpdateAttributes();
@@ -87,7 +78,7 @@ namespace Viewer.UI.Attributes
         {
             _isDisposed = true;
             _queryHistory.BeforeQueryExecuted -= QueryHistory_BeforeQueryExecuted;
-            _attributes.SelectionChanged -= Selection_Changed;
+            _attributes.Selection.Changed -= Selection_Changed;
 
             base.Dispose();
         }
@@ -113,18 +104,6 @@ namespace Viewer.UI.Attributes
             }
 
             UpdateAttributes();
-        }
-
-        private void Report(string message, LogType type, Retry retry)
-        {
-            var entry = new ErrorListEntry
-            {
-                Group = "Attributes",
-                Message = message,
-                Type = type,
-                RetryOperation = retry
-            };
-            _errorList.Add(entry);
         }
 
         private static AttributeGroup CreateAddAttributeView()
@@ -310,80 +289,16 @@ namespace Viewer.UI.Attributes
 
             ViewAttributes();
         }
-
-        private void StoreEntity(IModifiedEntity entity)
-        {
-            var retry = false;
-            do
-            {
-                retry = false;
-                try
-                {
-                    entity.Save();
-                }
-                catch (FileNotFoundException)
-                {
-                    Report($"Attribute file {entity.Path} was not found.", LogType.Error, null);
-                }
-                catch (IOException e)
-                {
-                    View.Invoke(new Action(() =>
-                    {
-                        retry = _dialogView.FailedToOpenFile(entity.Path, e.Message);
-                    }));
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    Report($"Unauthorized access to attribute file {entity.Path}.", LogType.Error,
-                        null);
-                }
-                catch (SecurityException)
-                {
-                    Report($"Unauthorized access to attribute file {entity.Path}.", LogType.Error,
-                        null);
-                }
-            } while (retry);
-        }
         
         private async void View_SaveAttributes(object sender, EventArgs args)
         {
             var unsaved = _entityManager.GetModified();
-            if (unsaved.Count <= 0)
-            {
-                return;
-            }
-
             await SaveAttributesAsync(unsaved);
         }
 
-        private async Task SaveAttributesAsync(IReadOnlyList<IModifiedEntity> unsaved)
+        private Task SaveAttributesAsync(IReadOnlyList<IModifiedEntity> unsaved)
         {
-            var cancellation = new CancellationTokenSource();
-            var progress = _taskLoader.CreateLoader(Resources.SavingChanges_Label, cancellation);
-            progress.TotalTaskCount = unsaved.Count;
-            try
-            {
-                await Task.Factory.StartNew(() =>
-                {
-                    foreach (var entity in unsaved)
-                    {
-                        if (cancellation.IsCancellationRequested)
-                        {
-                            entity.Return();
-                        }
-                        else
-                        {
-                            progress.Report(new LoadingProgress(entity.Path));
-                            StoreEntity(entity);
-                        }
-                    }
-                }, cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-            }
-            finally
-            {
-                progress.Close();
-                cancellation.Dispose();
-            }
+            return _attributes.SaveAsync(unsaved);
         }
 
         private static IComparer<AttributeGroup> CreateComparer<TKey>(Func<AttributeGroup, TKey> keySelector, int direction)

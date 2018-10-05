@@ -40,11 +40,6 @@ namespace Viewer.UI.Attributes
     public interface IAttributeManager
     {
         /// <summary>
-        /// Event called when selection changes
-        /// </summary>
-        event EventHandler SelectionChanged;
-
-        /// <summary>
         /// Check whether the selection is empty
         /// </summary>
         bool IsSelectionEmpty { get; }
@@ -68,6 +63,13 @@ namespace Viewer.UI.Attributes
         void RemoveAttribute(string name);
 
         /// <summary>
+        /// Save <paramref name="entities"/>
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        Task SaveAsync(IReadOnlyList<IModifiedEntity> entities);
+
+        /// <summary>
         /// Find selected attributes.
         /// </summary>
         /// <returns></returns>
@@ -79,27 +81,28 @@ namespace Viewer.UI.Attributes
     {
         private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
-
-        public event EventHandler SelectionChanged
-        {
-            add => _selection.Changed += value;
-            remove => _selection.Changed -= value;
-        }
-
+        private readonly ISaveQueue _saveQueue;
+        
         public bool IsSelectionEmpty => !GetFilesInSelection().Any();
 
         public ISelection Selection => _selection;
 
         [ImportingConstructor]
-        public AttributeManager(ISelection selection, IEntityManager entityManager)
+        public AttributeManager(ISelection selection, IEntityManager entityManager, ISaveQueue saveQueue)
         {
             _selection = selection;
             _entityManager = entityManager;
+            _saveQueue = saveQueue;
         }
 
         private IEnumerable<FileEntity> GetFilesInSelection()
         {
             return _selection.OfType<FileEntity>();
+        }
+
+        public Task SaveAsync(IReadOnlyList<IModifiedEntity> entities)
+        {
+            return _saveQueue.SaveAsync(entities);
         }
 
         public IEnumerable<AttributeGroup> GroupAttributesInSelection()

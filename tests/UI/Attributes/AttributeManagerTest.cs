@@ -20,14 +20,16 @@ namespace ViewerTest.UI.Attributes
     {
         private Mock<ISelection> _selection;
         private Mock<IEntityManager> _entityManager;
+        private Mock<ISaveQueue> _saveQueue;
         private AttributeManager _attributes;
 
         [TestInitialize]
         public void Setup()
         {
+            _saveQueue = new Mock<ISaveQueue>();
             _selection = new Mock<ISelection>();
             _entityManager = new Mock<IEntityManager>();
-            _attributes = new AttributeManager(_selection.Object, _entityManager.Object);
+            _attributes = new AttributeManager(_selection.Object, _entityManager.Object, _saveQueue.Object);
         }
 
         [TestMethod]

@@ -10,8 +10,6 @@ using Viewer.Data;
 using Viewer.Data.Storage;
 using Viewer.Properties;
 using Viewer.UI.Errors;
-using Viewer.UI.Explorer;
-using Viewer.UI.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Attributes
@@ -19,11 +17,8 @@ namespace Viewer.UI.Attributes
     [Export(typeof(IComponent))]
     public class AttributesComponent : Component
     {
-        private readonly ITaskLoader _taskLoader;
         private readonly IAttributeManager _attributes;
         private readonly IEntityManager _entityManager;
-        private readonly IErrorList _errorList;
-        private readonly IFileSystemErrorView _dialogView;
         private readonly IAttributeCache _attributeCache;
         private readonly IQueryHistory _queryHistory;
         
@@ -35,19 +30,13 @@ namespace Viewer.UI.Attributes
 
         [ImportingConstructor]
         public AttributesComponent(
-            ITaskLoader loader, 
             IAttributeManager attributes, 
             IEntityManager entities, 
-            IErrorList errorList, 
-            IFileSystemErrorView dialogView,
             IAttributeCache attributeCache,
             IQueryHistory queryHistory)
         {
-            _taskLoader = loader;
             _attributes = attributes;
             _entityManager = entities;
-            _errorList = errorList;
-            _dialogView = dialogView;
             _attributeCache = attributeCache;
             _queryHistory = queryHistory;
         }
@@ -79,11 +68,8 @@ namespace Viewer.UI.Attributes
         {
             return new AttributesPresenter(
                 new AttributeTableView(), 
-                _taskLoader, 
                 _attributes, 
                 _entityManager, 
-                _errorList, 
-                _dialogView,
                 _attributeCache,
                 _queryHistory);
         }

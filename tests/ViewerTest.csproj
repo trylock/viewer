@@ -159,6 +159,7 @@
     <Compile Include="Query\StatisticsTest.cs" />
     <Compile Include="Query\ValueConverterTest.cs" />
     <Compile Include="UI\Attributes\AttributeManagerTest.cs" />
+    <Compile Include="UI\Attributes\SaveQueueTest.cs" />
     <Compile Include="UI\BitmapMock.cs" />
     <Compile Include="UI\Explorer\ExplorerTest.cs" />
     <Compile Include="UI\Images\GridTest.cs" />

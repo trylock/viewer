@@ -6,7 +6,7 @@ WHERE: W H E R E;
 
 ORDER: O R D E R;
 
-BY:  B Y;
+BY: B Y;
 
 AND: A N D;
 
@@ -34,7 +34,7 @@ PARAM_DELIMITER: ',';
 
 COMPLEX_ID: '`' ~('`')+ '`';
 
-STRING: '"' ~('"')* '"'; 
+QUOTE: '"' -> more, mode(STRING_CONTENT);
 
 ADD_SUB: ('+' | '-');
 
@@ -43,6 +43,13 @@ MULT_DIV: ('*' | '/');
 REL_OP: ('=' | '!=' | '<' | '<=' | '>' | '>=');
 
 WS : [ \t\r\n]+ -> skip;
+
+// match string content
+mode STRING_CONTENT;
+
+STRING: ('"' | '\n' | '\r' | EOF) -> mode(DEFAULT_MODE);
+
+CONTENT: . -> more;
 
 // fragments
 fragment A: [aA];

@@ -74,7 +74,7 @@ namespace Viewer.Query
         /// </summary>
         public IComparer<IEntity> Comparer { get; set; }
     }
-    
+
     internal class QueryCompilerVisitor : IQueryParserVisitor<CompilationResult>
     {
         private readonly IQueryCompiler _queryCompiler;
@@ -94,9 +94,15 @@ namespace Viewer.Query
             _queryErrorListener = queryErrorListener;
         }
 
+        private CompilationResult ReportError(int line, int column, string message)
+        {
+            _queryErrorListener.OnCompilerError(line, column, message);
+            return null;
+        }
+
         public IQuery Compile(IParseTree tree)
         {
-            var query = Visit(tree).Query;
+            var query = Visit(tree)?.Query;
             return query;
         }
 
@@ -115,6 +121,35 @@ namespace Viewer.Query
             throw new NotImplementedException();
         }
 
+        private string ParseString(int line, int column, string value)
+        {
+            if (value.Length <= 0 || value[0] != '"')
+                throw new ArgumentOutOfRangeException(nameof(value));
+
+            // number of characters to remove from the start and from the end
+            int trimStart = 1;
+            var trimEnd = 0;
+
+            // remove the end character if the value is terminated (it won't be terminated iff
+            // we have reached the EOF)
+            var lastCharacter = value[value.Length - 1];
+            if (value.Length > 1 && (
+                    lastCharacter == '"' || 
+                    lastCharacter == '\n' || 
+                    lastCharacter == '\r'))
+            {
+                trimEnd = 1;
+            }
+
+            // check if the string is terminated correctly
+            if (value.Length <= 1 || value[value.Length - 1] != '"') 
+            {
+                _queryErrorListener.OnCompilerError(line, column, "Unterminated string literal");
+            }
+
+            return value.Substring(trimStart, value.Length - trimStart - trimEnd);
+        }
+
         public CompilationResult VisitTerminal(ITerminalNode node)
         {
             var line = node.Symbol.Line;
@@ -131,7 +166,7 @@ namespace Viewer.Query
                     expr = new ConstantExpression(line, column, new RealValue(doubleValue));
                     break;
                 case QueryLexer.STRING:
-                    var stringValue = node.Symbol.Text.Substring(1, node.Symbol.Text.Length - 2);
+                    var stringValue = ParseString(node.Symbol.Line, node.Symbol.Column, node.Symbol.Text);
                     expr = new ConstantExpression(line, column, new StringValue(stringValue));
                     break;
                 case QueryLexer.COMPLEX_ID:
@@ -164,6 +199,10 @@ namespace Viewer.Query
             var left = context.queryExpression().Accept(this);
             var right = context.intersection().Accept(this);
             var op = context.UNION_EXCEPT().Symbol.Text;
+            if (left == null || right == null)
+            {
+                return null;
+            }
 
             var result = StringComparer.InvariantCultureIgnoreCase.Compare(op, "union") == 0 ? 
                 left.Query.Union(right.Query) : 
@@ -177,7 +216,11 @@ namespace Viewer.Query
             IQuery query = null;
             foreach (var result in context.queryFactor())
             {
-                var subquery = result.Accept(this).Query;
+                var subquery = result.Accept(this)?.Query;
+                if (subquery == null)
+                {
+                    return null;
+                }
 
                 query = query == null ? 
                     subquery : 
@@ -200,7 +243,11 @@ namespace Viewer.Query
         public CompilationResult VisitQuery(QueryParser.QueryContext context)
         {
             // parse unordered query
-            var query = context.unorderedQuery().Accept(this).Query;
+            var query = context.unorderedQuery().Accept(this)?.Query;
+            if (query == null)
+            {
+                return null;
+            }
 
             // parse ORDER BY
             var orderBy = context.optionalOrderBy();
@@ -223,6 +270,11 @@ namespace Viewer.Query
 
             // visit children
             var sourceResult = source.Accept(this);
+            if (sourceResult == null)
+            {
+                return null; // the source compilation has failed
+            }
+
             var optionalWhereResult = optionalWhere.Accept(this);
             if (optionalWhereResult == null)
             {
@@ -253,18 +305,17 @@ namespace Viewer.Query
                 var view = _queryCompiler.Views.Find(viewId.GetText());
                 if (view == null)
                 {
-                    _queryErrorListener.OnCompilerError(
+                    return ReportError(
                         viewId.Symbol.Line, 
                         viewId.Symbol.Column, 
                         "Unknown view '" + viewId.GetText() + "'");
-                    throw new ParseCanceledException();
                 }
 
                 query = _queryCompiler.Compile(new StringReader(view.Text), _queryErrorListener) as IQuery;
                 if (query == null)
                 {
                     // compilation of the subquery failed
-                    throw new ParseCanceledException();
+                    return null;
                 }
 
                 return new CompilationResult
@@ -275,19 +326,18 @@ namespace Viewer.Query
             
             // set path pattern
             var pattern = context.STRING();
-            var pathPattern = pattern.GetText().Substring(1, pattern.GetText().Length - 2);
+            var pathPattern = ParseString(pattern.Symbol.Line, pattern.Symbol.Column, pattern.GetText());
             try
             {
                 query = _queryFactory.CreateQuery(pathPattern) as IQuery;
                 return new CompilationResult {Query = query};
             }
-            catch (ArgumentException e) // pathPattern contains invalid characters
+            catch (ArgumentException) // pathPattern contains invalid characters
             {
-                _queryErrorListener.OnCompilerError(
+                return ReportError(
                     pattern.Symbol.Line, 
                     pattern.Symbol.Column, 
                     "Invalid characters in path pattern.");
-                throw new ParseCanceledException(e);
             }
         }
 
@@ -677,6 +727,13 @@ namespace Viewer.Query
                 var query = parser.entry();
                 var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, queryErrorListener);
                 result = compiler.Compile(query);
+
+                // if the compilation failed
+                if (result == null)
+                {
+                    return null;
+                }
+
                 result = result.WithText(input.ToString());
             }
             catch (ParseCanceledException)

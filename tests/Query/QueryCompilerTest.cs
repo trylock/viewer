@@ -710,5 +710,99 @@ namespace ViewerTest.Query
 
             listener.Verify(mock => mock.OnCompilerError(1, 11, It.IsAny<string>()), Times.AtLeastOnce);
         }
+
+        [TestMethod]
+        public void Compile_UnknownView()
+        {
+            var listener = new Mock<IQueryErrorListener>();
+            _compiler.Compile(new StringReader("select testView"), listener.Object);
+
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unknown view 'testView'"), Times.AtLeastOnce);
+        }
+
+        [TestMethod]
+        public void Compile_InvalidPathCharactersInPattern()
+        {
+            var listener = new Mock<IQueryErrorListener>();
+
+            _factory
+                .Setup(mock => mock.CreateQuery("file1 < file2"))
+                .Throws(new ArgumentException("Pattern contains invalid characters"));
+
+            var result = _compiler.Compile(new StringReader("select \"file1 < file2\""), listener.Object);
+
+            // this error is unrecoverable
+            Assert.IsNull(result);
+
+            listener.Verify(mock => mock.OnCompilerError(1, 7, It.IsAny<string>()), Times.AtLeastOnce);
+        }
+
+        [TestMethod]
+        public void Compile_RecoverFromUnclosedStringAtTheEndOfInput()
+        {
+            var listener = new Mock<IQueryErrorListener>();
+            var result = _compiler.Compile(new StringReader("select \"pattern"), listener.Object);
+
+            // this error is recoverable
+            Assert.AreEqual(_query.Object, result);
+
+            _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
+
+            // the error is still reported
+            listener.Verify(mock => mock.BeforeCompilation());
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated string literal"), Times.Once);
+            listener.Verify(mock => mock.AfterCompilation());
+            listener.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_RecoverFromUnclosedStringAtLineBreak()
+        {
+            var listener = new Mock<IQueryErrorListener>();
+            var result = _compiler.Compile(new StringReader("select \"pattern\n\rwhere a"), listener.Object);
+
+            // this error is recoverable
+            Assert.AreEqual(_query.Object, result);
+
+            _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(
+                predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))) 
+            )));
+
+            // the error is still reported
+            listener.Verify(mock => mock.BeforeCompilation());
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated string literal"), Times.Once);
+            listener.Verify(mock => mock.AfterCompilation());
+            listener.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_RecoverFromUnclosedStringAtCarriageReturn()
+        {
+            var listener = new Mock<IQueryErrorListener>();
+            var result = _compiler.Compile(new StringReader("select \"pattern\rwhere a"), listener.Object);
+
+            // this error is recoverable
+            Assert.AreEqual(_query.Object, result);
+
+            _factory.Verify(mock => mock.CreateQuery("pattern"), Times.Once);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(
+                predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom)))
+            )));
+
+            // the error is still reported
+            listener.Verify(mock => mock.BeforeCompilation());
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated string literal"), Times.Once);
+            listener.Verify(mock => mock.AfterCompilation());
+            listener.VerifyNoOtherCalls();
+        }
     }
 }

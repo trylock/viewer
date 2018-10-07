@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.Query.Suggestions.Providers;
 
 namespace Viewer.Query.Suggestions
 {

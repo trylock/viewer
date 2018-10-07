@@ -4,17 +4,23 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
 using Viewer.Data;
 
-namespace Viewer.Query.Suggestions
+namespace Viewer.Query.Suggestions.Providers
 {
     [Export(typeof(ISuggestionProvider))]
-    public class AttributeValueSuggestionProvider : ISuggestionProvider
+    internal class AttributeNameSuggestionProvider : ISuggestionProvider
     {
         private readonly IAttributeCache _attributeCache;
-        
+
+        /// <summary>
+        /// Name of the categroy of suggestions returned by this provider
+        /// </summary>
+        public const string CategoryName = "User attribute";
+
         [ImportingConstructor]
-        public AttributeValueSuggestionProvider(IAttributeCache attributeCache)
+        public AttributeNameSuggestionProvider(IAttributeCache attributeCache)
         {
             _attributeCache = attributeCache;
         }
@@ -36,32 +42,27 @@ namespace Viewer.Query.Suggestions
 
         public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
         {
-            // only suggest attribute values in an expression factor
+            // only suggest attribute names in an expression factor
             if (!ExpressionRuleIndices.Contains(state.Context.RuleIndex))
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
             
-            // a value has to be expected at the caret
-            if (!state.ExpectedTokens.Contains(QueryLexer.STRING) &&
-                !state.ExpectedTokens.Contains(QueryLexer.INT) &&
-                !state.ExpectedTokens.Contains(QueryLexer.REAL))
+            if (!state.ExpectedTokens.Contains(QueryLexer.ID))
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
 
-            var text = state.Caret.ParentToken?.Text ?? "";
-            return state.AttributeNames
-                .SelectMany(name => _attributeCache.GetValues(name))
-                .Where(item => 
-                    item.ToString()
-                        .IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                .Select(item => 
-                    new ReplaceSuggestion(
-                        state.Caret, 
-                        item.ToString(), 
-                        item.ToString(), 
-                        item.Type.ToString()));
+            // if the caret is at a token which is not an identifier, don't suggest attribute names
+            if (state.Caret.ParentToken != null && state.Caret.ParentToken.Type != QueryLexer.ID)
+            {
+                return Enumerable.Empty<IQuerySuggestion>();
+            }
+
+            var prefix = state.Caret.ParentPrefix ?? "";
+            return _attributeCache
+                .GetNames(prefix)
+                .Select(name => new ReplaceSuggestion(state.Caret, name, name, CategoryName));
         }
     }
 }

@@ -11,6 +11,7 @@ using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using NLog;
+using Viewer.Query.Suggestions.Providers;
 
 namespace Viewer.Query.Suggestions
 {

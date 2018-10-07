@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 
-namespace Viewer.Query.Suggestions
+namespace Viewer.Query.Suggestions.Providers
 {
     public interface ISuggestionProvider
     {

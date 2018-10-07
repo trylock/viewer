@@ -122,6 +122,7 @@
     <Compile Include="Suggestions\Providers\AttributeValueSuggestionProvider.cs" />
     <Compile Include="Suggestions\CaretToken.cs" />
     <Compile Include="Suggestions\CaretTokenSource.cs" />
+    <Compile Include="Suggestions\Providers\DirectorySuggestionProvider.cs" />
     <Compile Include="Suggestions\QuerySuggestion.cs" />
     <Compile Include="Suggestions\QuerySuggestionComparer.cs" />
     <Compile Include="Suggestions\QuerySuggestions.cs" />

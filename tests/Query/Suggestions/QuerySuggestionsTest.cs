@@ -8,6 +8,7 @@ using Moq;
 using Viewer.Data;
 using Viewer.Query;
 using Viewer.Query.Suggestions;
+using Viewer.Query.Suggestions.Providers;
 
 namespace ViewerTest.Query.Suggestions
 {

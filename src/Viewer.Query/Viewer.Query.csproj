@@ -98,7 +98,9 @@
     <Compile Include="QueryCompiler.cs" />
     <Compile Include="QueryLexer.cs" />
     <Compile Include="QueryParser.cs" />
+    <Compile Include="QueryParserBaseListener.cs" />
     <Compile Include="QueryParserBaseVisitor.cs" />
+    <Compile Include="QueryParserListener.cs" />
     <Compile Include="QueryParserVisitor.cs" />
     <Compile Include="QueryProgress.cs" />
     <Compile Include="QueryTextComparer.cs" />
@@ -131,9 +133,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>call $(SolutionDir)tools/antlr4 -package Viewer.Query -o $(ProjectDir) $(ProjectDir)QueryLexer.g4
-call $(SolutionDir)tools/antlr4 -no-listener -visitor -package Viewer.Query -o $(ProjectDir) $(ProjectDir)QueryParser.g4</PreBuildEvent>
+call $(SolutionDir)tools/antlr4 -visitor -package Viewer.Query -o $(ProjectDir) $(ProjectDir)QueryParser.g4</PreBuildEvent>
   </PropertyGroup>
 </Project>

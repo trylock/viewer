@@ -111,6 +111,8 @@
     <Compile Include="Search\SearchPriorityComparer.cs" />
     <Compile Include="Search\PriorityComparerFactory.cs" />
     <Compile Include="Search\SubsetCollection.cs" />
+    <Compile Include="Suggestions\CaretToken.cs" />
+    <Compile Include="Suggestions\CaretTokenSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Viewer.Core\Viewer.Core.csproj">

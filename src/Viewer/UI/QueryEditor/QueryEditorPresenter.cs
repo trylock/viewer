@@ -209,17 +209,16 @@ namespace Viewer.UI.QueryEditor
             await RunAsync();
         }
 
-        private async void View_QueryChanged(object sender, EventArgs e)
+        private void View_QueryChanged(object sender, EventArgs e)
         {
             MarkUnsaved();
+        }
 
+        private async void View_SuggestionsRequested(object sender, EventArgs e)
+        {
             // load suggestions 
             var query = View.Query;
-            var position = Math.Min(View.CaretPosition + 1, query.Length);
-            while (position < query.Length && query[position] == '\n')
-            {
-                ++position;
-            }
+            var position = Math.Min(View.CaretPosition, query.Length);
 
             var suggestions = await Task.Run(() => _querySuggestions.Compute(query, position));
             var result = suggestions.ToList();

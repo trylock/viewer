@@ -83,10 +83,30 @@ namespace Viewer.UI.QueryEditor
             remove => _suggestionView.Accepted -= value;
         }
 
+        public event EventHandler SuggestionsRequested;
+
+        /// <summary>
+        /// If true, <see cref="SuggestionsRequested"/> event won't be triggered. This is used to
+        /// distinguish user caret changed event from system caret changed event (when a suggestion
+        /// is accepted)
+        /// </summary>
+        private bool _suppressSuggestionsRequested;
+
         public int CaretPosition
         {
-            get => QueryTextBox.AnchorPosition;
-            set => QueryTextBox.GotoPosition(value);
+            get => QueryTextBox.CurrentPosition;
+            set
+            {
+                _suppressSuggestionsRequested = true;
+                try
+                {
+                    QueryTextBox.GotoPosition(value);
+                }
+                finally
+                {
+                    _suppressSuggestionsRequested = false;
+                }
+            } 
         }
 
         public IEnumerable<SuggestionItem> Suggestions
@@ -178,6 +198,19 @@ namespace Viewer.UI.QueryEditor
         private void QueryTextBox_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Copy;
+        }
+
+        private void QueryTextBox_UpdateUI(object sender, UpdateUIEventArgs e)
+        {
+            if (_suppressSuggestionsRequested)
+            {
+                return;
+            }
+
+            if ((e.Change & (UpdateChange.Selection | UpdateChange.Content)) != 0)
+            {
+                SuggestionsRequested?.Invoke(sender, e);
+            }
         }
 
         private void OpenButton_Click(object sender, EventArgs e)

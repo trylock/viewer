@@ -109,6 +109,7 @@ namespace Viewer.UI.QueryEditor
             this.QueryTextBox.ScrollWidth = 1;
             this.QueryTextBox.Size = new System.Drawing.Size(779, 365);
             this.QueryTextBox.TabIndex = 0;
+            this.QueryTextBox.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.QueryTextBox_UpdateUI);
             this.QueryTextBox.TextChanged += new System.EventHandler(this.QueryTextBox_TextChanged);
             this.QueryTextBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.QueryTextBox_DragDrop);
             this.QueryTextBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.QueryTextBox_DragEnter);

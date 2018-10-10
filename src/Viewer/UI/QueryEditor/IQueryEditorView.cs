@@ -53,6 +53,12 @@ namespace Viewer.UI.QueryEditor
         event EventHandler<SuggestionEventArgs> SuggestionAccepted;
 
         /// <summary>
+        /// User has requested to generate suggestions for current caret position (e.g. user
+        /// has changed the caret position)
+        /// </summary>
+        event EventHandler SuggestionsRequested;
+
+        /// <summary>
         /// Caret position in the editor
         /// </summary>
         int CaretPosition { get; set; }

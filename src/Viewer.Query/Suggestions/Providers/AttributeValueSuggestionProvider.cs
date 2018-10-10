@@ -1,22 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Viewer.Data;
 
 namespace Viewer.Query.Suggestions.Providers
 {
-    [Export(typeof(ISuggestionProvider))]
-    public class AttributeValueSuggestionProvider : ISuggestionProvider
+    internal class AttributeNameListener : QueryParserBaseListener
+    {
+        private readonly List<string> _names = new List<string>();
+
+        /// <summary>
+        /// List of rules which clear the _names list 
+        /// </summary>
+        private static readonly int[] ClearNamesRules =
+        {
+            QueryParser.RULE_comparison,
+            QueryParser.RULE_literal,
+            QueryParser.RULE_conjunction,
+            QueryParser.RULE_predicate
+        };
+
+        public IEnumerable<string> AttributeNames => _names;
+        
+        public override void EnterEveryRule(ParserRuleContext context)
+        {
+            base.EnterEveryRule(context);
+
+            if (ClearNamesRules.Contains(context.RuleIndex))
+            {
+                _names.Clear();
+            }
+        }
+
+        public override void ExitFactor(QueryParser.FactorContext context)
+        {
+            base.ExitFactor(context);
+
+            // find an attribute identifier and add it to current range
+            if (context.ID() != null && context.LPAREN() == null)
+            {
+                _names.Add(context.ID().GetText());
+            }
+        }
+    }
+    
+    internal class AttributeValueSuggestionProvider : ISuggestionProvider
     {
         private readonly IAttributeCache _attributeCache;
+        private readonly AttributeNameListener _listener;
         
-        [ImportingConstructor]
-        public AttributeValueSuggestionProvider(IAttributeCache attributeCache)
+        public AttributeValueSuggestionProvider(
+            IAttributeCache attributeCache, 
+            AttributeNameListener listener)
         {
             _attributeCache = attributeCache;
+            _listener = listener;
         }
 
         /// <summary>
@@ -51,7 +95,7 @@ namespace Viewer.Query.Suggestions.Providers
             }
 
             var text = state.Caret.ParentToken?.Text ?? "";
-            return state.AttributeNames
+            return _listener.AttributeNames
                 .SelectMany(name => _attributeCache.GetValues(name))
                 .Where(item => 
                     item.ToString()
@@ -62,6 +106,26 @@ namespace Viewer.Query.Suggestions.Providers
                         item.ToString(), 
                         item.ToString(), 
                         item.Type.ToString()));
+        }
+    }
+
+    [Export(typeof(ISuggestionProviderFactory))]
+    public class AttributeValueSuggestionProviderFactory : ISuggestionProviderFactory
+    {
+        private readonly IAttributeCache _attributeCache;
+
+        [ImportingConstructor]
+        public AttributeValueSuggestionProviderFactory(IAttributeCache attributeCache)
+        {
+            _attributeCache = attributeCache;
+        }
+
+        public ISuggestionProvider Create(Parser parser)
+        {
+            var listener = new AttributeNameListener();
+            parser.AddParseListener(listener);
+
+            return new AttributeValueSuggestionProvider(_attributeCache, listener);
         }
     }
 }

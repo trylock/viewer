@@ -9,7 +9,6 @@ using Viewer.Data;
 
 namespace Viewer.Query.Suggestions.Providers
 {
-    [Export(typeof(ISuggestionProvider))]
     internal class AttributeNameSuggestionProvider : ISuggestionProvider
     {
         private readonly IAttributeCache _attributeCache;
@@ -39,7 +38,7 @@ namespace Viewer.Query.Suggestions.Providers
             QueryParser.RULE_predicate,
             QueryParser.RULE_argumentList,
         };
-
+        
         public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
         {
             // only suggest attribute names in an expression factor
@@ -63,6 +62,23 @@ namespace Viewer.Query.Suggestions.Providers
             return _attributeCache
                 .GetNames(prefix)
                 .Select(name => new ReplaceSuggestion(state.Caret, name, name, CategoryName));
+        }
+    }
+
+    [Export(typeof(ISuggestionProviderFactory))]
+    public class AttributeNameSuggestionProviderFactory : ISuggestionProviderFactory
+    {
+        private readonly IAttributeCache _attributeCache;
+
+        [ImportingConstructor]
+        public AttributeNameSuggestionProviderFactory(IAttributeCache attributeCache)
+        {
+            _attributeCache = attributeCache;
+        }
+
+        public ISuggestionProvider Create(Parser parser)
+        {
+            return new AttributeNameSuggestionProvider(_attributeCache);
         }
     }
 }

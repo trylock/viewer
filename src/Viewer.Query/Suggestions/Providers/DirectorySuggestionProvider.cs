@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Viewer.IO;
 
@@ -75,13 +76,11 @@ namespace Viewer.Query.Suggestions.Providers
             return new QueryEditorState(transformedQuery, range.StartIndex + Name.Length);
         }
     }
-
-    [Export(typeof(ISuggestionProvider))]
-    public class DirectorySuggestionProvider : ISuggestionProvider
+    
+    internal class DirectorySuggestionProvider : ISuggestionProvider
     {
         private readonly IFileSystem _fileSystem;
-
-        [ImportingConstructor]
+        
         public DirectorySuggestionProvider(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
@@ -135,6 +134,23 @@ namespace Viewer.Query.Suggestions.Providers
                 // suggestions should not throw for invalid input
                 return Enumerable.Empty<IQuerySuggestion>();
             }
+        }
+    }
+
+    [Export(typeof(ISuggestionProviderFactory))]
+    public class DirectorySuggestionProviderFactory : ISuggestionProviderFactory
+    {
+        private readonly IFileSystem _fileSystem;
+
+        [ImportingConstructor]
+        public DirectorySuggestionProviderFactory(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
+
+        public ISuggestionProvider Create(Parser parser)
+        {
+            return new DirectorySuggestionProvider(_fileSystem);
         }
     }
 }

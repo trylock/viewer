@@ -17,52 +17,24 @@ namespace Viewer.Query.Suggestions.Providers
         IEnumerable<IQuerySuggestion> Compute(SuggestionState state);
     }
 
-    /// <summary>
-    /// Provide suggestions for a single token type from a fixed list of values.
-    /// </summary>
-    internal class StaticTokenSuggestionProvider : ISuggestionProvider
+    public interface ISuggestionProviderFactory
     {
-        private readonly string _category;
-        private readonly List<string> _values;
-        private readonly int _tokenType;
+        /// <summary>
+        /// Create a suggestion provider.
+        /// </summary>
+        /// <param name="parser">
+        /// Parser which will be used to parse the query. The factory can register its own
+        /// listeners to gather additional semantic information for example.
+        /// </param>
+        /// <returns></returns>
+        ISuggestionProvider Create(Parser parser);
+    }
 
-        public StaticTokenSuggestionProvider(
-            int tokenType, 
-            string category, 
-            IEnumerable<string> values)
+    public class SuggestionProviderFactory<T> : ISuggestionProviderFactory where T : ISuggestionProvider, new()
+    {
+        public ISuggestionProvider Create(Parser parser)
         {
-            _tokenType = tokenType;
-            _category = category;
-            _values = values.ToList();
-        }
-
-        public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
-        {
-            if (!state.ExpectedTokens.Contains(_tokenType))
-            {
-                yield break;
-            }
-
-            // the caret is not in any other token
-            if (state.Caret.ParentToken == null)
-            {
-                foreach (var value in _values)
-                {
-                    yield return new ReplaceSuggestion(state.Caret, value, value, _category);
-                }
-            }
-            else // the caret is in some token
-            {
-                var partialInput = state.Caret.ParentToken.Text;
-                foreach (var value in _values)
-                {
-                    if (value != partialInput &&
-                        value.IndexOf(partialInput, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                    {
-                        yield return new ReplaceSuggestion(state.Caret, value, value, _category);
-                    }
-                }
-            }
+            return new T();
         }
     }
 }

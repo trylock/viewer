@@ -38,10 +38,10 @@ namespace ViewerTest.Query.Suggestions
                 .Setup(mock => mock.GetEnumerator())
                 .Returns(_viewList.GetEnumerator());
 
-            _suggestions = new QuerySuggestions(new ISuggestionProvider[]
+            _suggestions = new QuerySuggestions(new ISuggestionProviderFactory[]
             {
-                new ViewSuggestionProvider(_views.Object), 
-                new AttributeNameSuggestionProvider(_attributeCache.Object), 
+                new ViewSuggestionProviderFactory(_views.Object), 
+                new AttributeNameSuggestionProviderFactory(_attributeCache.Object), 
             });
         }
 
@@ -201,6 +201,20 @@ namespace ViewerTest.Query.Suggestions
             Assert.AreEqual(2, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a + test1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a + test2"));
+        }
+
+        [TestMethod]
+        public void Compute_AttributeNamesInOrderBy()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetNames("pr"))
+                .Returns(new[] { "prefix", "prefix2" });
+
+            var suggestions = ComputeSuggestions("select test order by pr");
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by prefix"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by prefix2"));
         }
 
         [TestMethod]

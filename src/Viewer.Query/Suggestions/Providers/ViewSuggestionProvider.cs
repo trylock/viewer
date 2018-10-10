@@ -8,7 +8,6 @@ using Antlr4.Runtime;
 
 namespace Viewer.Query.Suggestions.Providers
 {
-    [Export(typeof(ISuggestionProvider))]
     internal class ViewSuggestionProvider : ISuggestionProvider
     {
         private readonly IQueryViewRepository _views;
@@ -17,8 +16,7 @@ namespace Viewer.Query.Suggestions.Providers
         /// Name of the category of suggestions returned by this provider
         /// </summary>
         public const string CategoryName = "Query View";
-
-        [ImportingConstructor]
+        
         public ViewSuggestionProvider(IQueryViewRepository views)
         {
             _views = views;
@@ -46,6 +44,23 @@ namespace Viewer.Query.Suggestions.Providers
                 from view in _views
                 where view.Name.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase)
                 select new ReplaceSuggestion(state.Caret, view.Name, view.Name, CategoryName);
+        }
+    }
+
+    [Export(typeof(ISuggestionProviderFactory))]
+    public class ViewSuggestionProviderFactory : ISuggestionProviderFactory
+    {
+        private readonly IQueryViewRepository _views;
+        
+        [ImportingConstructor]
+        public ViewSuggestionProviderFactory(IQueryViewRepository views)
+        {
+            _views = views;
+        }
+
+        public ISuggestionProvider Create(Parser parser)
+        {
+            return new ViewSuggestionProvider(_views);
         }
     }
 }

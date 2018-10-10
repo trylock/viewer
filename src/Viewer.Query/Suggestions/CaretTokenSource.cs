@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 
 namespace Viewer.Query.Suggestions
 {
@@ -15,7 +16,7 @@ namespace Viewer.Query.Suggestions
     internal class CaretTokenSource : ITokenSource
     {
         private readonly Lexer _lexer;
-        private readonly int _caretPosition;
+        private readonly int _caretPosition; 
 
         public CaretTokenSource(Lexer lexer, int caretPosition)
         {

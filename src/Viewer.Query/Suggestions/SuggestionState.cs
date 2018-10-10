@@ -29,11 +29,6 @@ namespace Viewer.Query.Suggestions
         public IntervalSet ExpectedTokens { get; private set; }
 
         /// <summary>
-        /// Accessed attribute names in a subexpression before caret
-        /// </summary>
-        public List<string> AttributeNames { get; } = new List<string>();
-
-        /// <summary>
         /// Capture state at the caret position
         /// </summary>
         /// <param name="context">Parser context at the caret</param>
@@ -41,21 +36,6 @@ namespace Viewer.Query.Suggestions
         /// <param name="expectedTokens">Tokens expected at the caret location</param>
         public void Capture(ParserRuleContext context, CaretToken caret, IntervalSet expectedTokens)
         {
-            // don't capture another state unless context is a child of the captured context
-            if (Context != null)
-            {
-                RuleContext item = context;
-                while (item.Parent != null && item.RuleIndex != Context.RuleIndex)
-                {
-                    item = item.Parent;
-                }
-
-                if (item.RuleIndex != Context.RuleIndex)
-                {
-                    return;
-                }
-            }
-
             Context = context;
             Caret = caret;
             ExpectedTokens = expectedTokens;

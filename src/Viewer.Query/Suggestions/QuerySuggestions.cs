@@ -32,9 +32,10 @@ namespace Viewer.Query.Suggestions
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IEnumerable<ISuggestionProvider> _providers;
-        
+        private readonly IEnumerable<ISuggestionProviderFactory> _providerFactories;
+
         [ImportingConstructor]
-        public QuerySuggestions([ImportMany] ISuggestionProvider[] providers)
+        public QuerySuggestions([ImportMany] ISuggestionProviderFactory[] providerFactories)
         {
             const string keyword = "Keyword";
 
@@ -51,7 +52,8 @@ namespace Viewer.Query.Suggestions
                 new StaticTokenSuggestionProvider(QueryLexer.OR, keyword, new []{ "or" }),
                 new StaticTokenSuggestionProvider(QueryLexer.NOT, keyword, new []{ "not" }),
                 new StaticTokenSuggestionProvider(QueryLexer.DIRECTION, keyword, new []{ "desc", "asc" }),
-            }.Concat(providers).ToList();
+            };
+            _providerFactories = providerFactories;
         }
 
         public IEnumerable<IQuerySuggestion> Compute(string query, int index)
@@ -71,9 +73,15 @@ namespace Viewer.Query.Suggestions
             {
                 BuildParseTree = false
             };
+            
+            // create suggestion providers
+            var providers = _providerFactories
+                .Select(factory => factory.Create(parser))
+                .Concat(_providers)
+                .ToList(); // create all providers before we parse the input
+            
             parser.AddParseListener(new ParseListener(parser, state));
             parser.AddErrorListener(new ErrorListener(state));
-
             try
             {
                 parser.entry();
@@ -82,6 +90,9 @@ namespace Viewer.Query.Suggestions
             {
                 Logger.Debug(e, "Syntax error during suggestion computation.");
             }
+            catch (ParseCanceledException)
+            {
+            }
 
             // If there is an error before caret, we can't do anything at this point. Suggestion 
             // computation should not fail though. We are expecting an invalid input.
@@ -89,9 +100,9 @@ namespace Viewer.Query.Suggestions
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
-            
+
             // compute suggestions based on current state
-            var suggestions = _providers.SelectMany(provider => provider.Compute(state));
+            var suggestions = providers.SelectMany(provider => provider.Compute(state));
             return suggestions;
         }
 
@@ -105,40 +116,35 @@ namespace Viewer.Query.Suggestions
                 _parser = parser;
                 _state = state;
             }
-
-            public override void EnterLiteral(QueryParser.LiteralContext context)
-            {
-                base.EnterLiteral(context);
-                _state.AttributeNames.Clear();
-            }
-
-            public override void EnterComparison(QueryParser.ComparisonContext context)
-            {
-                base.EnterComparison(context);
-                _state.AttributeNames.Clear();
-            }
-            
-            public override void ExitFactor(QueryParser.FactorContext context)
-            {
-                base.ExitFactor(context);
-
-                if (context.ID() != null && context.LPAREN() == null) // attribute identifier
-                {
-                    _state.AttributeNames.Add(context.ID().Symbol.Text);
-                }
-            }
             
             public override void EnterEveryRule(ParserRuleContext context)
             {
                 base.EnterEveryRule(context);
                 
-                // This handles the case where the caret token is found in a production of type:
-                // `P -> A1 | ... | An | epsilon` (epsilon is an empty string)
+                // This method prevents the parser from parsing nullable rules (i.e., A =>* epsilon)
+                // as an empty string if the next token is the caret. 
                 var lookahead = _parser.TokenStream.LT(1);
                 if (lookahead.Type == CaretToken.TokenType)
                 {
                     var caret = (CaretToken) lookahead;
                     var expectedTokens = _parser.GetExpectedTokens();
+                    
+                    // here we want to replace the captured state iff this state is a child of the
+                    // captured state
+                    if (_state.Context != null)
+                    {
+                        RuleContext rule = context;
+                        while (rule.Parent != null && rule.RuleIndex != _state.Context.RuleIndex)
+                        {
+                            rule = rule.Parent;
+                        }
+
+                        if (rule.RuleIndex != _state.Context.RuleIndex)
+                        {
+                            return;
+                        }
+                    }
+
                     _state.Capture(context, caret, expectedTokens);
                 }
             }
@@ -170,7 +176,10 @@ namespace Viewer.Query.Suggestions
 
                 var parser = (Parser) recognizer;
                 var caret = (CaretToken) offendingSymbol;
-                _state.Capture(parser.Context, caret, parser.GetExpectedTokens());
+                if (_state.Context == null)
+                {
+                    _state.Capture(parser.Context, caret, parser.GetExpectedTokens());
+                }
             }
         }
     }

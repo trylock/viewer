@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Viewer.Data;
+using Viewer.IO;
 using Viewer.Query;
 using Viewer.Query.Suggestions;
 using Viewer.Query.Suggestions.Providers;
@@ -17,6 +19,8 @@ namespace ViewerTest.Query.Suggestions
     {
         private List<QueryView> _viewList;
 
+        private Mock<IFileFinder> _fileFinder;
+        private Mock<IFileSystem> _fileSystem;
         private Mock<IAttributeCache> _attributeCache;
         private Mock<IQueryViewRepository> _views;
         private QuerySuggestions _suggestions;
@@ -31,6 +35,8 @@ namespace ViewerTest.Query.Suggestions
                 new QueryView("another", "a", "another.vql"),
             };
 
+            _fileFinder = new Mock<IFileFinder>();
+            _fileSystem = new Mock<IFileSystem>();
             _views = new Mock<IQueryViewRepository>();
             _attributeCache = new Mock<IAttributeCache>();
 
@@ -42,12 +48,20 @@ namespace ViewerTest.Query.Suggestions
             {
                 new ViewSuggestionProviderFactory(_views.Object), 
                 new AttributeNameSuggestionProviderFactory(_attributeCache.Object), 
+                new DirectorySuggestionProviderFactory(_fileSystem.Object), 
             });
         }
 
         private List<IQuerySuggestion> ComputeSuggestions(string queryPrefix)
         {
             return _suggestions.Compute(queryPrefix, queryPrefix.Length).ToList();
+        }
+
+        private List<IQuerySuggestion> ComputeSuggestions(string queryPrefix, int position)
+        {
+            Assert.IsTrue(position >= 0);
+            Assert.IsTrue(position <= queryPrefix.Length);
+            return _suggestions.Compute(queryPrefix, position).ToList();
         }
 
         private bool ContainsSuggestion(
@@ -228,6 +242,68 @@ namespace ViewerTest.Query.Suggestions
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr union"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr intersect"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr except"));
+        }
+
+        [TestMethod]
+        public void Compute_DirectorySuggestionsReturnEmptySetForPatterns()
+        {
+            var suggestions = ComputeSuggestions("select \"a/b?rt");
+            Assert.AreEqual(0, suggestions.Count);
+
+            suggestions = ComputeSuggestions("select \"a/b*d");
+            Assert.AreEqual(0, suggestions.Count);
+
+            suggestions = ComputeSuggestions("select \"a/**");
+            Assert.AreEqual(0, suggestions.Count);
+        }
+
+        [TestMethod]
+        public void Compute_DirectorySuggestionsAtTheEnd()
+        {
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a/*")).Returns(_fileFinder.Object);
+
+            _fileFinder
+                .Setup(mock => mock.GetDirectories())
+                .Returns(new[] {"a/b", "a/c", "a/d" });
+
+            var suggestions = ComputeSuggestions("select \"a/");
+
+            Assert.AreEqual(3, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/b"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/c"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/d"));
+        }
+
+        [TestMethod]
+        public void Compute_DirectorySuggestionsRemoveDuplicities()
+        {
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a/**/*")).Returns(_fileFinder.Object);
+
+            _fileFinder
+                .Setup(mock => mock.GetDirectories())
+                .Returns(new[] { "a/b", "a/c", "a/x/b" });
+
+            var suggestions = ComputeSuggestions("select \"a/**/");
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/**/b"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/**/c"));
+        }
+
+        [TestMethod]
+        public void Compute_DirectorySuggestionsInTheMiddle()
+        {
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a/x*")).Returns(_fileFinder.Object);
+
+            _fileFinder
+                .Setup(mock => mock.GetDirectories())
+                .Returns(new[] { "a/xz", "a/xy" });
+
+            var suggestions = ComputeSuggestions("select \"a/x/b\"", 11);
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/xy/b\""));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/xz/b\""));
         }
     }
 }

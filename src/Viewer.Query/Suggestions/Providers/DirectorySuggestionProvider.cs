@@ -42,22 +42,23 @@ namespace Viewer.Query.Suggestions.Providers
             return pattern;
         }
 
+        private static bool IsSeparator(char c)
+        {
+            return c == '"' || PathUtils.PathSeparators.Contains(c);
+        }
+
         private (int StartIndex, int StopIndex) GetDirectoryAtCaret(string input)
         {
             var startIndex = _caret.StartIndex;
             var endIndex = startIndex;
 
-            while (startIndex > 0 && 
-                   input[startIndex - 1] != '"' &&
-                   !PathUtils.PathSeparators.Contains(input[startIndex - 1]))
+            while (startIndex > 0 && !IsSeparator(input[startIndex - 1]))
             {
                 --startIndex;
             }
-
+            
             var patternStopIndex = _caret.ParentToken.StopIndex;
-            while (endIndex < patternStopIndex &&
-                   input[endIndex + 1] != '"' &&
-                   !PathUtils.PathSeparators.Contains(input[endIndex + 1]))
+            while (endIndex < patternStopIndex && !IsSeparator(input[endIndex]))
             {
                 ++endIndex;
             }

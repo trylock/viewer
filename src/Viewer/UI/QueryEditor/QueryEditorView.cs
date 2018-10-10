@@ -12,14 +12,22 @@ using ScintillaNET;
 using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.Query;
+using Viewer.UI.Suggestions;
 
 namespace Viewer.UI.QueryEditor
 {
     internal partial class QueryEditorView : WindowView, IQueryEditorView
     {
+        private readonly SuggestionView _suggestionView;
+
         public QueryEditorView()
         {
             InitializeComponent();
+
+            _suggestionView = new SuggestionView(QueryTextBox)
+            {
+                DefaultSelectedIndex = 0
+            };
 
             ViewerForm.Theme.ApplyTo(EditorToolStrip);
 
@@ -46,10 +54,55 @@ namespace Viewer.UI.QueryEditor
             QueryTextBox.ClearCmdKey(Keys.Control | Keys.S);
             QueryTextBox.ClearCmdKey(Keys.Control | Keys.O);
         }
+        
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                _suggestionView?.Dispose();
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         #region Drop view
-        
+
         public event EventHandler<DragEventArgs> OnDrop;
+
+        #endregion
+
+        #region IQuerySuggestionView
+
+        public event EventHandler<SuggestionEventArgs> SuggestionAccepted
+        {
+            add => _suggestionView.Accepted += value;
+            remove => _suggestionView.Accepted -= value;
+        }
+
+        public int CaretPosition
+        {
+            get => QueryTextBox.AnchorPosition;
+            set => QueryTextBox.GotoPosition(value);
+        }
+
+        public IEnumerable<SuggestionItem> Suggestions
+        {
+            get => _suggestionView.Items;
+            set
+            {
+                var caretLocation = QueryTextBox.PointToScreen(new Point(
+                    QueryTextBox.PointXFromPosition(QueryTextBox.CurrentPosition),
+                    (int) (QueryTextBox.PointYFromPosition(QueryTextBox.CurrentPosition)
+                           + QueryTextBox.Font.Height * 1.5)
+                ));
+                _suggestionView.Items = value; 
+                _suggestionView.ShowAt(caretLocation);
+            }
+        }
 
         #endregion
 

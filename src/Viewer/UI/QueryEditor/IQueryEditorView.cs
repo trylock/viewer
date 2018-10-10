@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core.UI;
 using Viewer.Query;
+using Viewer.UI.Suggestions;
 
 namespace Viewer.UI.QueryEditor
 {
@@ -44,7 +45,25 @@ namespace Viewer.UI.QueryEditor
         event EventHandler<DragEventArgs> OnDrop;
     }
 
-    internal interface IQueryEditorView : IDropView, IWindowView
+    internal interface IQuerySuggestionView
+    {
+        /// <summary>
+        /// Event occcurs whenever a suggestion from <see cref="Suggestions"/> is selected.
+        /// </summary>
+        event EventHandler<SuggestionEventArgs> SuggestionAccepted;
+
+        /// <summary>
+        /// Caret position in the editor
+        /// </summary>
+        int CaretPosition { get; set; }
+
+        /// <summary>
+        /// Suggestions shown at editor cursor
+        /// </summary>
+        IEnumerable<SuggestionItem> Suggestions { get; set; }
+    }
+
+    internal interface IQueryEditorView : IDropView, IQuerySuggestionView, IWindowView
     {
         /// <summary>
         /// Event called when user requests to run the query

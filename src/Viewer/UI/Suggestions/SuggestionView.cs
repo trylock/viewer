@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -262,6 +262,25 @@ namespace Viewer.UI.Suggestions
         }
 
         /// <summary>
+        /// Show suggestions <paramref name="screenLocation"/>.
+        /// </summary>
+        /// <param name="screenLocation">
+        /// Location of the top left corner of the suggestions form in the screen coordinates.
+        /// </param>
+        public void ShowAt(Point screenLocation)
+        {
+            if (_items.Count <= 0 || _currentControl == null)
+            {
+                return;
+            }
+
+            SelectedIndex = DefaultSelectedIndex;
+            Location = screenLocation;
+            FixLocation();
+            Show();
+        }
+
+        /// <summary>
         /// Set <paramref name="control"/> as current control of this suggestion form.
         /// This is a no-op of <paramref name="control"/> is current control.
         /// </summary>
@@ -325,14 +344,18 @@ namespace Viewer.UI.Suggestions
         /// </summary>
         private void FixLocation()
         {
+            // find screen of the attached control
             if (_currentControl == null)
             {
                 return;
             }
 
             var screen = Screen.FromControl(_currentControl);
+
+            // make sure the bounding box of this form is fully visible on the selected screen
             var bounds = new Rectangle(PointToScreen(Point.Empty), Size);
             var correctedBounds = bounds.EnsureInside(screen.Bounds);
+            
             Location = correctedBounds.Location;
         }
 
@@ -444,15 +467,15 @@ namespace Viewer.UI.Suggestions
             if (!e.Control && !e.Shift)
             {
                 if (e.KeyCode == Keys.Down)
-            {
-                e.Handled = true;
-                selectedIndexDelta = 1;
-            }
-            else if (e.KeyCode == Keys.Up)
-            {
-                e.Handled = true;
-                selectedIndexDelta = -1;
-            }
+                {
+                    e.Handled = true;
+                    selectedIndexDelta = 1;
+                }
+                else if (e.KeyCode == Keys.Up)
+                {
+                    e.Handled = true;
+                    selectedIndexDelta = -1;
+                }
             }
 
             // change selected item

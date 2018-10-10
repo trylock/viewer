@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core.UI;
 using Viewer.Query;
+using Viewer.Query.Suggestions;
 using Viewer.UI.Explorer;
+using Viewer.UI.Suggestions;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.QueryEditor
@@ -21,6 +23,7 @@ namespace Viewer.UI.QueryEditor
         private readonly IFileSystemErrorView _dialogErrorView;
         private readonly IQueryCompiler _queryCompiler;
         private readonly IQueryErrorListener _queryErrorListener;
+        private readonly IQuerySuggestions _querySuggestions;
         private readonly IEditor _editor;
         
         private bool _isUnsaved = false;
@@ -31,12 +34,14 @@ namespace Viewer.UI.QueryEditor
             IQueryHistory appHistory, 
             IQueryCompiler queryCompiler, 
             IQueryErrorListener queryErrorListener,
+            IQuerySuggestions querySuggestions,
             IEditor editor)
         {
             View = view;
             _dialogErrorView = dialogErrorView;
             _queryCompiler = queryCompiler;
             _queryErrorListener = queryErrorListener;
+            _querySuggestions = querySuggestions;
             _appHistory = appHistory;
             _editor = editor;
 
@@ -148,7 +153,8 @@ namespace Viewer.UI.QueryEditor
         public async Task RunAsync()
         {
             var input = View.Query;
-            var query = await Task.Run(() => _queryCompiler.Compile(new StringReader(input), _queryErrorListener));
+            var query = await Task.Run(() => 
+                _queryCompiler.Compile(new StringReader(input), _queryErrorListener));
             if (query != null)
             {
                 _appHistory.ExecuteQuery(query);
@@ -203,9 +209,43 @@ namespace Viewer.UI.QueryEditor
             await RunAsync();
         }
 
-        private void View_QueryChanged(object sender, EventArgs e)
+        private async void View_QueryChanged(object sender, EventArgs e)
         {
             MarkUnsaved();
+
+            // load suggestions 
+            var query = View.Query;
+            var position = Math.Min(View.CaretPosition + 1, query.Length);
+            while (position < query.Length && query[position] == '\n')
+            {
+                ++position;
+            }
+
+            var suggestions = await Task.Run(() => _querySuggestions.Compute(query, position));
+            var result = suggestions.ToList();
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            // show the most useful suggestions first
+            result.Sort(QuerySuggestionComparer.Default);
+
+            // show suggestions
+            View.Suggestions = result.Select(suggestion => new SuggestionItem
+            {
+                Text = suggestion.Name,
+                Category = suggestion.Category,
+                UserData = suggestion
+            });
+        }
+
+        private void View_SuggestionAccepted(object sender, SuggestionEventArgs e)
+        {
+            var suggestion = (IQuerySuggestion) e.Value.UserData;
+            var result = suggestion.Apply();
+            View.Query = result.Query;
+            View.CaretPosition = result.Caret;
         }
 
         private async void View_OnDrop(object sender, DragEventArgs e)

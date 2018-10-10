@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -413,6 +413,7 @@ namespace Viewer.UI.Suggestions
         {
             if (!Visible)
             {
+                // show suggestions on Ctrl + Space
                 if (e.Control && e.KeyCode == Keys.Space)
                 {
                     e.Handled = true;
@@ -422,13 +423,27 @@ namespace Viewer.UI.Suggestions
                 return;
             }
 
-            var selectedIndexDelta = 0;
+            // hide suggestions on Escape, accept suggestion on Enter or Tab
             if (e.KeyCode == Keys.Escape)
             {
                 e.SuppressKeyPress = true;
                 Hide();
+                return;
             }
-            else if (e.KeyCode == Keys.Down)
+
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
+            {
+                e.SuppressKeyPress = true;
+                AcceptSelectedSuggestion();
+                return;
+            }
+
+            // move suggestions if no modifier keys are pressed (we don't want to overwrite text
+            // selection shortcuts)
+            var selectedIndexDelta = 0;
+            if (!e.Control && !e.Shift)
+            {
+                if (e.KeyCode == Keys.Down)
             {
                 e.Handled = true;
                 selectedIndexDelta = 1;
@@ -438,10 +453,6 @@ namespace Viewer.UI.Suggestions
                 e.Handled = true;
                 selectedIndexDelta = -1;
             }
-            else if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
-            {
-                e.SuppressKeyPress = true;
-                AcceptSelectedSuggestion();
             }
 
             // change selected item

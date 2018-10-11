@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -260,7 +260,7 @@ namespace ViewerTest.Query.Suggestions
         [TestMethod]
         public void Compute_DirectorySuggestionsAtTheEnd()
         {
-            _fileSystem.Setup(mock => mock.CreateFileFinder("a/*")).Returns(_fileFinder.Object);
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a\\*")).Returns(_fileFinder.Object);
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
@@ -277,7 +277,7 @@ namespace ViewerTest.Query.Suggestions
         [TestMethod]
         public void Compute_DirectorySuggestionsRemoveDuplicities()
         {
-            _fileSystem.Setup(mock => mock.CreateFileFinder("a/**/*")).Returns(_fileFinder.Object);
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a/**\\*")).Returns(_fileFinder.Object);
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
@@ -293,17 +293,40 @@ namespace ViewerTest.Query.Suggestions
         [TestMethod]
         public void Compute_DirectorySuggestionsInTheMiddle()
         {
-            _fileSystem.Setup(mock => mock.CreateFileFinder("a/x*")).Returns(_fileFinder.Object);
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a\\*x*")).Returns(_fileFinder.Object);
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
-                .Returns(new[] { "a/xz", "a/xy" });
+                .Returns(new[] { "a/xz", "a/xy", "a/yxz" });
 
             var suggestions = ComputeSuggestions("select \"a/x/b\"", 11);
 
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/xy/b\""));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/xz/b\""));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/yxz/b\""));
+        }
+
+        [TestMethod]
+        public void Compute_DirectorySuggestionsWillBeEmptyIfThePatternIsClosed()
+        {
+            var suggestions = ComputeSuggestions("select \"a/x/b\"");
+
+            Assert.AreEqual(0, suggestions.Count);
+        }
+
+        [TestMethod]
+        public void Compute_DirectorySuggestionsWillBeEmptyIfThePatternContainsInvalidCharacters()
+        {
+            _fileSystem
+                .Setup(mock => mock.CreateFileFinder("*x <> y*"))
+                .Throws(new ArgumentException());
+
+            var suggestions = ComputeSuggestions("select \"x <> y");
+
+            Assert.AreEqual(0, suggestions.Count);
+        }
+
 
         [TestMethod]
         public void Compute_SuggestAttributeNamesRightAfterLeftParentesis()

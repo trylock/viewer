@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,7 +58,7 @@ namespace Viewer.Query.Suggestions.Providers
                 --startIndex;
             }
             
-            var patternStopIndex = _caret.ParentToken.StopIndex;
+            var patternStopIndex = Math.Min(_caret.ParentToken.StopIndex, input.Length);
             while (endIndex < patternStopIndex && !IsSeparator(input[endIndex]))
             {
                 ++endIndex;
@@ -71,7 +72,9 @@ namespace Viewer.Query.Suggestions.Providers
             var input = _caret.InputStream.GetText(new Interval(0, _caret.InputStream.Size));
             
             var range = GetDirectoryAtCaret(input);
-            var transformedQuery = input.Remove(range.StartIndex, range.StopIndex - range.StartIndex);
+            var transformedQuery = input.Remove(
+                range.StartIndex, 
+                range.StopIndex - range.StartIndex);
             transformedQuery = transformedQuery.Insert(range.StartIndex, Name);
 
             return new QueryEditorState(transformedQuery, range.StartIndex + Name.Length);
@@ -85,6 +88,37 @@ namespace Viewer.Query.Suggestions.Providers
         public DirectorySuggestionProvider(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
+        }
+
+        private static string RangeSubstring(string value, int beginIndex, int endIndex)
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+            if (endIndex > value.Length)
+                throw new ArgumentOutOfRangeException(nameof(endIndex));
+
+            if (beginIndex > endIndex)
+            {
+                return "";
+            }
+            
+            return value.Substring(beginIndex, endIndex - beginIndex);
+        }
+
+        private static (string Prefix, string LastPart) Split(string pattern)
+        {
+            if (pattern.Length <= 1)
+            {
+                return ("", "");
+            }
+
+            var patternEndsWithQuote = pattern[pattern.Length - 1] == '\"';
+            var lastSeparatorIndex = pattern.LastIndexOfAny(PathUtils.PathSeparators);
+            var prefix = RangeSubstring(pattern, 1, lastSeparatorIndex);
+            var lastPart = RangeSubstring(pattern, 
+                Math.Max(lastSeparatorIndex + 1, 1), 
+                pattern.Length - (patternEndsWithQuote ? 1 : 0));
+            return (prefix, lastPart);
         }
 
         public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
@@ -108,21 +142,28 @@ namespace Viewer.Query.Suggestions.Providers
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
-
-            var patternPrefix = DirectorySuggestion.TrimQuotes(state.Caret.ParentPrefix);
+            
+            var patternParts = Split(state.Caret.ParentPrefix);
 
             // if the directory name at the caret is a pattern, don't suggest anything
-            var lastPart = Path.GetFileName(patternPrefix);
-            if (PathPattern.ContainsSpecialCharacters(lastPart))
+            if (PathPattern.ContainsSpecialCharacters(patternParts.LastPart))
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
 
-            patternPrefix += '*';
+            if (patternParts.LastPart.Length == 0)
+            {
+                patternParts.LastPart = "*";
+            }
+            else
+            {
+                patternParts.LastPart = "*" + patternParts.LastPart + "*";
+            }
 
             try
             {
-                var finder = _fileSystem.CreateFileFinder(patternPrefix);
+                var pattern = Path.Combine(patternParts.Prefix, patternParts.LastPart);
+                var finder = _fileSystem.CreateFileFinder(pattern);
                 var result = finder
                     .GetDirectories()
                     .Select(PathUtils.GetLastPart)

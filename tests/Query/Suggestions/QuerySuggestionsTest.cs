@@ -49,7 +49,7 @@ namespace ViewerTest.Query.Suggestions
                 new ViewSuggestionProviderFactory(_views.Object), 
                 new AttributeNameSuggestionProviderFactory(_attributeCache.Object), 
                 new DirectorySuggestionProviderFactory(_fileSystem.Object), 
-            });
+            }, new StateCollectorFactory());
         }
 
         private List<IQuerySuggestion> ComputeSuggestions(string queryPrefix)
@@ -260,7 +260,7 @@ namespace ViewerTest.Query.Suggestions
         [TestMethod]
         public void Compute_DirectorySuggestionsAtTheEnd()
         {
-            _fileSystem.Setup(mock => mock.CreateFileFinder("a\\*")).Returns(_fileFinder.Object);
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a/*")).Returns(_fileFinder.Object);
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
@@ -277,7 +277,7 @@ namespace ViewerTest.Query.Suggestions
         [TestMethod]
         public void Compute_DirectorySuggestionsRemoveDuplicities()
         {
-            _fileSystem.Setup(mock => mock.CreateFileFinder("a/**\\*")).Returns(_fileFinder.Object);
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a/**/*")).Returns(_fileFinder.Object);
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
@@ -293,7 +293,7 @@ namespace ViewerTest.Query.Suggestions
         [TestMethod]
         public void Compute_DirectorySuggestionsInTheMiddle()
         {
-            _fileSystem.Setup(mock => mock.CreateFileFinder("a\\*x*")).Returns(_fileFinder.Object);
+            _fileSystem.Setup(mock => mock.CreateFileFinder("a/*x*")).Returns(_fileFinder.Object);
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
@@ -316,6 +316,20 @@ namespace ViewerTest.Query.Suggestions
         }
 
         [TestMethod]
+        public void Compute_DirectorySuggestionsAfterDriveLetter()
+        {
+            _fileSystem.Setup(mock => mock.CreateFileFinder("D:/*a*")).Returns(_fileFinder.Object);
+            
+            _fileFinder
+                .Setup(mock => mock.GetDirectories())
+                .Returns(new string[] { });
+
+            var suggestions = ComputeSuggestions("select \"D:/a");
+
+            Assert.AreEqual(0, suggestions.Count);
+        }
+
+        [TestMethod]
         public void Compute_DirectorySuggestionsWillBeEmptyIfThePatternContainsInvalidCharacters()
         {
             _fileSystem
@@ -326,8 +340,7 @@ namespace ViewerTest.Query.Suggestions
 
             Assert.AreEqual(0, suggestions.Count);
         }
-
-
+        
         [TestMethod]
         public void Compute_SuggestAttributeNamesRightAfterLeftParentesis()
         {
@@ -339,7 +352,8 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions(query);
 
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (not"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (attr1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (attr2"));
         }

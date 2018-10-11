@@ -126,10 +126,11 @@
     <Compile Include="Suggestions\Providers\StaticTokenSuggestionProvider.cs" />
     <Compile Include="Suggestions\QuerySuggestion.cs" />
     <Compile Include="Suggestions\QuerySuggestionComparer.cs" />
-    <Compile Include="Suggestions\QuerySuggestions.cs" />
     <Compile Include="Suggestions\Providers\SuggestionProvider.cs" />
+    <Compile Include="Suggestions\QuerySuggestions.cs" />
     <Compile Include="Suggestions\SuggestionState.cs" />
     <Compile Include="Suggestions\Providers\ViewSuggestionProvider.cs" />
+    <Compile Include="Suggestions\StateCollector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Viewer.Core\Viewer.Core.csproj">

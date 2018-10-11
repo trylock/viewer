@@ -113,20 +113,25 @@ namespace Viewer.Query.Suggestions
 
         private IEnumerable<int> TraverseState(ATNState state, int tokenIndex)
         {
-            _rulePath.Push(state.ruleIndex);
-
             // don't traverse the same state at the same position twice
             if (_traverseStateCache.TryGetValue((state.stateNumber, tokenIndex),
-                    out var values))
+                out var values))
             {
                 return values;
             }
 
-            var result = TraverseStateImpl(state, tokenIndex);
-            _traverseStateCache.Add((state.stateNumber, tokenIndex), result);
+            _rulePath.Push(state.ruleIndex);
+            try
+            {
 
-            _rulePath.Pop();
-            return result;
+                var result = TraverseStateImpl(state, tokenIndex);
+                _traverseStateCache.Add((state.stateNumber, tokenIndex), result);
+                return result;
+            }
+            finally
+            {
+                _rulePath.Pop();
+            }
         }
 
         private List<int> TraverseStateImpl(ATNState startState, int tokenIndex)

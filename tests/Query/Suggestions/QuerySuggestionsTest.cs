@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -304,6 +304,21 @@ namespace ViewerTest.Query.Suggestions
             Assert.AreEqual(2, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/xy/b\""));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select \"a/xz/b\""));
+
+        [TestMethod]
+        public void Compute_SuggestAttributeNamesRightAfterLeftParentesis()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetNames(""))
+                .Returns(new[] { "attr1", "attr2" });
+
+            const string query = "select view where (";
+
+            var suggestions = ComputeSuggestions(query);
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (attr1"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (attr2"));
         }
     }
 }

@@ -65,7 +65,11 @@ namespace Viewer.Query.Suggestions
             
             var input = new AntlrInputStream(new StringReader(query));
             var lexer = new QueryLexer(input);
-            var tokenStream = new CommonTokenStream(new CaretTokenSource(lexer, index));
+            var tokenStream = new CommonTokenStream(new CaretTokenSource(lexer, index, new []
+            {
+                QueryLexer.ADD_SUB, QueryLexer.MULT_DIV, QueryLexer.REL_OP, QueryLexer.LPAREN,
+                QueryLexer.RPAREN
+            }));
             
             // parse everything up to the caret
             var state = new SuggestionState();

@@ -16,12 +16,32 @@ namespace Viewer.Query.Suggestions
     internal class CaretTokenSource : ITokenSource
     {
         private readonly Lexer _lexer;
-        private readonly int _caretPosition; 
+        private readonly int _caretPosition;
+        private readonly List<int> _separatorTokens;
 
-        public CaretTokenSource(Lexer lexer, int caretPosition)
+        /// <summary>
+        /// Create a new token source which will read tokens using <paramref name="lexer"/>.
+        /// </summary>
+        /// <param name="lexer">Lexer from which the tokens wil be read</param>
+        /// <param name="caretPosition">Character index of the caret</param>
+        /// <param name="separatorTokens">
+        /// <para>
+        /// Token types for which if the caret is right after them, they will be interpreted as
+        /// 2 independent tokens. Otherwise, the original token will be replaced with CARET
+        /// having the original token as ParentToken.
+        /// </para>
+        ///
+        /// <para>
+        /// <c>|</c> represents caret position in following examples. If ID is in the list,
+        /// <c>abcd|</c> will be read as 2 tokens: ID(abcd), CARET. Otherwise, the source will
+        /// return 1 token: CARET which will have ID(abcd) as its parent.
+        /// </para>
+        /// </param>
+        public CaretTokenSource(Lexer lexer, int caretPosition, IEnumerable<int> separatorTokens)
         {
             _lexer = lexer;
             _caretPosition = caretPosition;
+            _separatorTokens = separatorTokens.ToList();
         }
 
         private bool _caretTokenEmitted;
@@ -35,9 +55,10 @@ namespace Viewer.Query.Suggestions
             // emit caret token
             if (!_caretTokenEmitted)
             {
+                int separateCaret = _separatorTokens.Contains(token.Type) ? 0 : 1;
                 if (token.Type != Lexer.Eof &&
                     token.StartIndex <= _caretPosition &&
-                    token.StopIndex + 1 >= _caretPosition)
+                    token.StopIndex + separateCaret >= _caretPosition)
                 {
                     _caretTokenEmitted = true;
                     return new CaretToken(_lexer, InputStream, _caretPosition, token);

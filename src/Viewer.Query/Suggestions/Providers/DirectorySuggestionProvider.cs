@@ -32,17 +32,6 @@ namespace Viewer.Query.Suggestions.Providers
             Name = name;
         }
 
-        public static string TrimQuotes(string pattern)
-        {
-            pattern = pattern.Substring(1);
-            if (pattern.Length > 0 && pattern[pattern.Length - 1] == '"')
-            {
-                pattern = pattern.Remove(pattern.Length - 1, 1);
-            }
-
-            return pattern;
-        }
-
         private static bool IsSeparator(char c)
         {
             return c == '"' || PathUtils.PathSeparators.Contains(c);
@@ -114,7 +103,7 @@ namespace Viewer.Query.Suggestions.Providers
 
             var patternEndsWithQuote = pattern[pattern.Length - 1] == '\"';
             var lastSeparatorIndex = pattern.LastIndexOfAny(PathUtils.PathSeparators);
-            var prefix = RangeSubstring(pattern, 1, lastSeparatorIndex);
+            var prefix = RangeSubstring(pattern, 1, lastSeparatorIndex + 1);
             var lastPart = RangeSubstring(pattern, 
                 Math.Max(lastSeparatorIndex + 1, 1), 
                 pattern.Length - (patternEndsWithQuote ? 1 : 0));
@@ -123,8 +112,11 @@ namespace Viewer.Query.Suggestions.Providers
 
         public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
         {
+            var expected = state.Expected.Find(item => 
+                item.RuleIndices[0] == QueryParser.RULE_source);
+
             // make sure we are in the select part of a query
-            if (state.Context.RuleIndex != QueryParser.RULE_source)
+            if (expected == null)
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
@@ -190,7 +182,7 @@ namespace Viewer.Query.Suggestions.Providers
             _fileSystem = fileSystem;
         }
 
-        public ISuggestionProvider Create(Parser parser)
+        public ISuggestionProvider Create(IStateCollector stateCollector)
         {
             return new DirectorySuggestionProvider(_fileSystem);
         }

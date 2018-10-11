@@ -11,45 +11,6 @@ using Viewer.Data;
 
 namespace Viewer.Query.Suggestions.Providers
 {
-    internal class AttributeNameListener : QueryParserBaseListener
-    {
-        private readonly List<string> _names = new List<string>();
-
-        /// <summary>
-        /// List of rules which clear the _names list 
-        /// </summary>
-        private static readonly int[] ClearNamesRules =
-        {
-            QueryParser.RULE_comparison,
-            QueryParser.RULE_literal,
-            QueryParser.RULE_conjunction,
-            QueryParser.RULE_predicate
-        };
-
-        public IEnumerable<string> AttributeNames => _names;
-        
-        public override void EnterEveryRule(ParserRuleContext context)
-        {
-            base.EnterEveryRule(context);
-
-            if (ClearNamesRules.Contains(context.RuleIndex))
-            {
-                _names.Clear();
-            }
-        }
-
-        public override void ExitFactor(QueryParser.FactorContext context)
-        {
-            base.ExitFactor(context);
-
-            // find an attribute identifier and add it to current range
-            if (context.ID() != null && context.LPAREN() == null)
-            {
-                _names.Add(context.ID().GetText());
-            }
-        }
-    }
-    
     internal class AttributeValueSuggestionProvider : ISuggestionProvider
     {
         private readonly IAttributeCache _attributeCache;
@@ -62,38 +23,22 @@ namespace Viewer.Query.Suggestions.Providers
             _attributeCache = attributeCache;
             _listener = listener;
         }
-
-        /// <summary>
-        /// Indices of rules which generate a (sub)expression
-        /// </summary>
-        private static readonly int[] ExpressionRuleIndices =
-        {
-            QueryParser.RULE_factor,
-            QueryParser.RULE_multiplication,
-            QueryParser.RULE_expression,
-            QueryParser.RULE_comparison,
-            QueryParser.RULE_literal,
-            QueryParser.RULE_conjunction,
-            QueryParser.RULE_predicate,
-            QueryParser.RULE_argumentList,
-        };
-
+        
         public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
         {
+            var expected = state.Expected.Find(item =>
+                item.RuleIndices[0] == QueryParser.RULE_factor && (
+                    item.Tokens.Contains(QueryLexer.STRING) ||
+                    item.Tokens.Contains(QueryLexer.INT) ||
+                    item.Tokens.Contains(QueryLexer.REAL)
+                ));
+
             // only suggest attribute values in an expression factor
-            if (!ExpressionRuleIndices.Contains(state.Context.RuleIndex))
+            if (expected == null)
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
             
-            // a value has to be expected at the caret
-            if (!state.ExpectedTokens.Contains(QueryLexer.STRING) &&
-                !state.ExpectedTokens.Contains(QueryLexer.INT) &&
-                !state.ExpectedTokens.Contains(QueryLexer.REAL))
-            {
-                return Enumerable.Empty<IQuerySuggestion>();
-            }
-
             var text = state.Caret.ParentToken?.Text ?? "";
             return _listener.AttributeNames
                 .SelectMany(name => _attributeCache.GetValues(name))
@@ -109,6 +54,31 @@ namespace Viewer.Query.Suggestions.Providers
         }
     }
 
+    internal class AttributeNameListener : ISuggestionListener
+    {
+        // TODO: names should be isolated to their comparison rule
+        private readonly HashSet<string> _attributeNames = new HashSet<string>();
+
+        public IEnumerable<string> AttributeNames => _attributeNames;
+
+        public void MatchToken(IToken token, IReadOnlyList<int> rules)
+        {
+            // TODO: distinguish attribute and function identifiers 
+            if (token.Type == QueryLexer.ID && rules[0] == QueryParser.RULE_factor)
+            {
+                _attributeNames.Add(token.Text);
+            }
+        }
+
+        public void EnterRule(IReadOnlyList<int> rules)
+        {
+        }
+
+        public void ExitRule(IReadOnlyList<int> rules)
+        {
+        }
+    }
+
     [Export(typeof(ISuggestionProviderFactory))]
     public class AttributeValueSuggestionProviderFactory : ISuggestionProviderFactory
     {
@@ -120,11 +90,10 @@ namespace Viewer.Query.Suggestions.Providers
             _attributeCache = attributeCache;
         }
 
-        public ISuggestionProvider Create(Parser parser)
+        public ISuggestionProvider Create(IStateCollector stateCollector)
         {
             var listener = new AttributeNameListener();
-            parser.AddParseListener(listener);
-
+            stateCollector.AddListener(listener);
             return new AttributeValueSuggestionProvider(_attributeCache, listener);
         }
     }

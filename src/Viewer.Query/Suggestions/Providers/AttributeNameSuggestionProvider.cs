@@ -23,36 +23,21 @@ namespace Viewer.Query.Suggestions.Providers
         {
             _attributeCache = attributeCache;
         }
-
-        /// <summary>
-        /// Indices of rules which generate a (sub)expression
-        /// </summary>
-        private static readonly int[] ExpressionRuleIndices =
-        {
-            QueryParser.RULE_factor,
-            QueryParser.RULE_multiplication,
-            QueryParser.RULE_expression,
-            QueryParser.RULE_comparison,
-            QueryParser.RULE_literal,
-            QueryParser.RULE_conjunction,
-            QueryParser.RULE_predicate,
-            QueryParser.RULE_argumentList,
-        };
         
         public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
         {
-            // only suggest attribute names in an expression factor
-            if (!ExpressionRuleIndices.Contains(state.Context.RuleIndex))
-            {
-                return Enumerable.Empty<IQuerySuggestion>();
-            }
-            
-            if (!state.ExpectedTokens.Contains(QueryLexer.ID))
+            var expected = state.Expected.Find(item => 
+                item.RuleIndices[0] == QueryParser.RULE_factor &&
+                item.Tokens.Contains(QueryLexer.ID));
+
+            // only suggest attribute names in an expression factor where and identifier is
+            // expected
+            if (expected == null)
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
 
-            // if the caret is at a token which is not an identifier, don't suggest attribute names
+            // if the caret is in a token which is not an identifier, don't suggest attribute names
             if (state.Caret.ParentToken != null && state.Caret.ParentToken.Type != QueryLexer.ID)
             {
                 return Enumerable.Empty<IQuerySuggestion>();
@@ -76,7 +61,7 @@ namespace Viewer.Query.Suggestions.Providers
             _attributeCache = attributeCache;
         }
 
-        public ISuggestionProvider Create(Parser parser)
+        public ISuggestionProvider Create(IStateCollector stateCollector)
         {
             return new AttributeNameSuggestionProvider(_attributeCache);
         }

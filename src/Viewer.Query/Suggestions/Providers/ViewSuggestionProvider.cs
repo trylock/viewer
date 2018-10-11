@@ -24,17 +24,20 @@ namespace Viewer.Query.Suggestions.Providers
 
         public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
         {
-            // only suggest view identifiers in the select part of a query
-            if (state.Context.RuleIndex != QueryParser.RULE_source)
+            var expected = state.Expected.Find(item => 
+                item.RuleIndices[0] == QueryParser.RULE_source &&
+                item.Tokens.Contains(QueryLexer.ID));
+
+            // only suggest view identifiers in the select part of a query and an identifier 
+            // is expected (note, if the caret is in an identifier, it will replace it)
+            if (expected == null)
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
 
-            // We don't want to suggest views if it is not possilbe to suggest identifiers or 
-            // the caret is in a token which is not an identifier.
-            if (!state.ExpectedTokens.Contains(QueryLexer.ID) || (
-                    state.Caret.ParentToken != null &&
-                    state.Caret.ParentToken.Type != QueryLexer.ID))
+            // We don't want to suggest views if the caret is in a token which is not an
+            // identifier.
+            if (state.Caret.ParentToken != null && state.Caret.ParentToken.Type != QueryLexer.ID)
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
@@ -58,7 +61,7 @@ namespace Viewer.Query.Suggestions.Providers
             _views = views;
         }
 
-        public ISuggestionProvider Create(Parser parser)
+        public ISuggestionProvider Create(IStateCollector stateCollector)
         {
             return new ViewSuggestionProvider(_views);
         }

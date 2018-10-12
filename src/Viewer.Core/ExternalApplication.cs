@@ -13,9 +13,29 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Path = System.IO.Path;
 
 namespace Viewer.Core
 {
+    [Flags]
+    public enum ExternalApplicationFlags
+    {
+        /// <summary>
+        /// Applications with this flag can't be run with file paths as their arguments
+        /// </summary>
+        DisallowFiles = 1,
+        
+        /// <summary>
+        /// Applications with this flag can't be run with directory paths as their arguments
+        /// </summary>
+        DisallowDirectories = 2,
+
+        /// <summary>
+        /// Applications witch this flag can be run with multiple paths as their arguments
+        /// </summary>
+        AcceptMultiplePaths = 4
+    }
+
     /// <summary>
     /// This class represents an external application which can open a file from this program.
     /// </summary>
@@ -28,36 +48,60 @@ namespace Viewer.Core
         public string Name { get; set; }
 
         /// <summary>
-        /// Command to execute without arguments (i.e. path to executable or name of a system executable)
+        /// Command to execute without arguments (i.e. path to executable or name of a system
+        /// executable)
         /// </summary>
         public string Command { get; set; }
 
         /// <summary>
-        /// Command line arguments of Path.
-        /// Special string {0} will be replaced with a path of a file to open.
+        /// Command line arguments provided after <see cref="Command"/>.
         /// </summary>
         public string Arguments { get; set; }
 
         /// <summary>
-        /// Run application with <paramref name="path"/> as an argument.
-        /// <see cref="string.Format(string,object)"/> is used to format <see cref="Arguments"/> where <paramref name="path"/> is a parameter.
-        /// The result is then passed as arguments to <see cref="Command"/>
+        /// Application options
         /// </summary>
-        /// <param name="path">Path to open in this application</param>
-        /// <exception cref="ArgumentNullException"><paramref name="path"/> is null</exception>
-        /// <exception cref="InvalidOperationException"><see cref="Command"/> or <see cref="Arguments"/> is null</exception>
+        public ExternalApplicationFlags Flags { get; set; } 
+
+        /// <summary>
+        /// Run application with <paramref name="paths"/> as arguments.
+        /// <see cref="string.Format(string,object)"/> is used to format <see cref="Arguments"/>
+        /// where <paramref name="paths"/> is a parameter. The result is then passed as arguments
+        /// to <see cref="Command"/>
+        /// </summary>
+        /// <remarks>
+        /// > [!NOTE]
+        /// > It is up to the caller to ensure that the <paramref name="paths"/> argument contains
+        /// > correct number of paths with correct types according to <see cref="Flags"/>. This
+        /// > method does **not** use this flag.
+        /// </remarks>
+        /// <param name="paths">Paths to open using this program/script</param>
+        /// <exception cref="ArgumentNullException"><paramref name="paths"/> is null</exception>
+        /// <exception cref="InvalidOperationException">
+        /// <see cref="Command"/> or <see cref="Arguments"/> is null
+        /// </exception>
         /// <exception cref="Win32Exception">Starting the process failed</exception>
         /// <seealso cref="Process.Start(string, string)"/>
-        public void Run(string path)
+        public void Run(IEnumerable<string> paths)
         {
-            if (path == null)
-                throw new ArgumentNullException(nameof(path));
+            if (paths == null)
+                throw new ArgumentNullException(nameof(paths));
             if (Command == null || Arguments == null)
                 throw new InvalidOperationException();
-
-            var fullPath = Path.GetFullPath(path);
-            var fullCommand = string.Format(Arguments, fullPath);
-            var process = Process.Start(Command, fullCommand);
+            
+            var arguments = new StringBuilder();
+            arguments.Append(Arguments);
+            arguments.Append(' ');
+            foreach (var path in paths)
+            {
+                var fullPath = Path.GetFullPath(path);
+                arguments.Append('"');
+                arguments.Append(fullPath);
+                arguments.Append('"');
+                arguments.Append(' ');
+            }
+            
+            var process = Process.Start(Command, arguments.ToString());
             process?.Dispose();
         }
     }

@@ -720,6 +720,39 @@ namespace Viewer.UI.Images
             }
         }
 
+        private void View_RunProgram(object sender, ProgramEventArgs e)
+        {
+            // select files for which the program will run
+            var entities = GetEntitiesInSelection();
+            if (e.Program.Flags.HasFlag(ExternalApplicationFlags.DisallowDirectories))
+            {
+                entities = entities.OfType<FileEntity>();
+            }
+
+            if (e.Program.Flags.HasFlag(ExternalApplicationFlags.DisallowFiles))
+            {
+                entities = entities.OfType<DirectoryEntity>();
+            }
+
+            if (!e.Program.Flags.HasFlag(ExternalApplicationFlags.AcceptMultiplePaths))
+            {
+                if (e.ActiveEntity == null)
+                {
+                    return;
+                }
+
+                entities = new[] { e.ActiveEntity };
+            }
+
+            // run the program iff there is at least one file
+            if (!entities.Any())
+            {
+                return;
+            }
+            
+            e.Program.Run(entities.Select(item => item.Path));
+        }
+
         #endregion
     }
 }

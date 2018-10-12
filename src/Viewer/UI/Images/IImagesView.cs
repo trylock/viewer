@@ -43,6 +43,25 @@ namespace Viewer.UI.Images
         }
     }
 
+    internal class ProgramEventArgs : EventArgs
+    {
+        /// <summary>
+        /// External application to run
+        /// </summary>
+        public ExternalApplication Program { get; }
+
+        /// <summary>
+        /// Entity on which the event has been triggered
+        /// </summary>
+        public IEntity ActiveEntity { get; }
+
+        public ProgramEventArgs(ExternalApplication program, IEntity activeEntity)
+        {
+            Program = program ?? throw new ArgumentNullException(nameof(program));
+            ActiveEntity = activeEntity;
+        }
+    }
+
     /// <inheritdoc />
     /// <summary>
     /// Arguments used in the <see cref="E:Viewer.UI.Images.IImagesView.OnDrop" /> event.
@@ -180,7 +199,7 @@ namespace Viewer.UI.Images
         /// </returns>
         Task<string> PickDirectoryAsync(IEnumerable<string> options);
     }
-
+    
     internal interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IFileDropView
     {
         /// <summary>
@@ -250,6 +269,11 @@ namespace Viewer.UI.Images
         /// Event occurs when user tries to open current query text in query editor.
         /// </summary>
         event EventHandler ShowQuery;
+
+        /// <summary>
+        /// Event occurs when user requests to run a program on current selection
+        /// </summary>
+        event EventHandler<ProgramEventArgs> RunProgram;
 
         /// <summary>
         /// Textual representation of the query of this component

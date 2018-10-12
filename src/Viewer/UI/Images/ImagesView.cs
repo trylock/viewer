@@ -199,6 +199,7 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler ShowQuery;
+        public event EventHandler<ProgramEventArgs> RunProgram;
         public event EventHandler<EntityEventArgs> OpenItem;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
@@ -244,12 +245,8 @@ namespace Viewer.UI.Images
                     };
                     item.Click += (sender, args) =>
                     {
-                        if (_activeItem == null)
-                        {
-                            return;
-                        }
-
-                        optionCapture.Run(_activeItem.FullPath);
+                        RunProgram?.Invoke(this, 
+                            new ProgramEventArgs(optionCapture, _activeItem.Data));
                     };
                     ItemContextMenu.Items.Insert(1, item);
                 }

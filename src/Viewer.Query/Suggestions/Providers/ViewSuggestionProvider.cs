@@ -45,8 +45,8 @@ namespace Viewer.Query.Suggestions.Providers
             var prefix = state.Caret.ParentPrefix ?? "";
             return 
                 from view in _views
-                where view.Name.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase)
-                select new ReplaceSuggestion(state.Caret, view.Name, view.Name, CategoryName);
+                where view.Name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) >= 0
+                select new IdentifierSuggestion(state.Caret, view.Name, CategoryName);
         }
     }
 

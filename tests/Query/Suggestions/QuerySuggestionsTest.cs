@@ -17,8 +17,6 @@ namespace ViewerTest.Query.Suggestions
     [TestClass]
     public class QuerySuggestionsTest
     {
-        private List<QueryView> _viewList;
-
         private Mock<IFileFinder> _fileFinder;
         private Mock<IFileSystem> _fileSystem;
         private Mock<IAttributeCache> _attributeCache;
@@ -28,21 +26,10 @@ namespace ViewerTest.Query.Suggestions
         [TestInitialize]
         public void Setup()
         {
-            _viewList = new List<QueryView>
-            {
-                new QueryView("test1", "abc", "test1.vql"),
-                new QueryView("test2", "abcd", "test2.vql"),
-                new QueryView("another", "a", "another.vql"),
-            };
-
             _fileFinder = new Mock<IFileFinder>();
             _fileSystem = new Mock<IFileSystem>();
             _views = new Mock<IQueryViewRepository>();
             _attributeCache = new Mock<IAttributeCache>();
-
-            _views
-                .Setup(mock => mock.GetEnumerator())
-                .Returns(_viewList.GetEnumerator());
 
             _suggestions = new QuerySuggestions(new ISuggestionProviderFactory[]
             {
@@ -116,6 +103,15 @@ namespace ViewerTest.Query.Suggestions
         [TestMethod]
         public void Compute_SourceInSelect()
         {
+            _views
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(new List<QueryView>
+                {
+                    new QueryView("test1", "abc", "test1.vql"),
+                    new QueryView("test2", "abcd", "test2.vql"),
+                    new QueryView("another", "a", "another.vql"),
+                }.GetEnumerator());
+
             const string query = "select ";
 
             var suggestions = ComputeSuggestions(query);
@@ -141,11 +137,40 @@ namespace ViewerTest.Query.Suggestions
         [TestMethod]
         public void Compute_QueryViewName()
         {
+            _views
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(new List<QueryView>
+                {
+                    new QueryView("test1", "abc", "test1.vql"),
+                    new QueryView("test2", "abcd", "test2.vql"),
+                    new QueryView("another", "a", "another.vql"),
+                }.GetEnumerator());
+
             var suggestions = ComputeSuggestions("select TeS");
 
             Assert.AreEqual(2, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test2"));
+        }
+
+        [TestMethod]
+        public void Compute_ComplexViewName()
+        {
+            _views
+                .Setup(mock => mock.GetEnumerator())
+                .Returns(new List<QueryView>
+                {
+                    new QueryView("complex id", "abc", "complex id.vql"),
+                    new QueryView("complex-id", "abcd", "complex-id.vql"),
+                    new QueryView("non_complex_id", "abcd", "non_complex_id.vql"),
+                }.GetEnumerator());
+
+            var suggestions = ComputeSuggestions("select complex");
+
+            Assert.AreEqual(3, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select `complex id`"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select `complex-id`"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select non_complex_id"));
         }
 
         [TestMethod]

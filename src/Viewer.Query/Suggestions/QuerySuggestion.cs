@@ -54,7 +54,7 @@ namespace Viewer.Query.Suggestions
     /// Replace suggestion replaces the whole container token with given value. If the caret is not
     /// inside a token, the value will be inserted at the caret position.
     /// </summary>
-    internal class ReplaceSuggestion : IQuerySuggestion
+    public class ReplaceSuggestion : IQuerySuggestion
     {
         private readonly CaretToken _caret;
         private readonly string _value;

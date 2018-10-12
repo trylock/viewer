@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,11 +43,7 @@ namespace Viewer.Query.Search
 
         public IComparer<string> Create(ValueExpression expression)
         {
-            var statistics = Statistics.Fetch(_attributeCache, new AccessedAttributesVisitor(expression));
-
-            return new SearchPriorityComparer(
-                expression, 
-                new PriorityFunction(statistics, _metadataAttributeNames));
+            return new BreadthFirstSearchPriorityComparer();
         }
     }
 }

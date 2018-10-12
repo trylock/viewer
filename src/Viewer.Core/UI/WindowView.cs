@@ -32,7 +32,16 @@ namespace Viewer.Core.UI
             // register event handlers
             FormClosed += OnFormClosed;
             GotFocus += OnGotFocus;
-            DockPanel.ActiveContentChanged += DockPanelOnActiveContentChanged;
+        }
+
+        protected override void OnDockChanged(EventArgs e)
+        {
+            base.OnDockChanged(e);
+
+            if (DockPanel != null)
+            {
+                DockPanel.ActiveContentChanged += DockPanelOnActiveContentChanged;
+            }
         }
 
         protected override void OnClosed(EventArgs e)

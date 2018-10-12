@@ -43,12 +43,12 @@ namespace Viewer.Core
     public class ExternalApplication
     {
         /// <summary>
-        /// Name of the operation shown to the user (i.e. "Open in Explorer")
+        /// Name of the operation shown to the user (e.g. "Open in Explorer")
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
 
         /// <summary>
-        /// Command to execute without arguments (i.e. path to executable or name of a system
+        /// Command to execute without arguments (i.e., path to executable or name of a system
         /// executable)
         /// </summary>
         public string Command { get; set; }
@@ -56,7 +56,7 @@ namespace Viewer.Core
         /// <summary>
         /// Command line arguments provided after <see cref="Command"/>.
         /// </summary>
-        public string Arguments { get; set; }
+        public string Arguments { get; set; } = "";
 
         /// <summary>
         /// Application options

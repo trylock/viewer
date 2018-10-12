@@ -6,8 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core.Collections;
 using Viewer.Core.UI;
 using Viewer.Query;
 using Viewer.Query.Suggestions;
@@ -214,28 +216,45 @@ namespace Viewer.UI.QueryEditor
             MarkUnsaved();
         }
 
+        private int _suggestionVersion;
+
         private async void View_SuggestionsRequested(object sender, EventArgs e)
         {
             // load suggestions 
             var query = View.Query;
             var position = Math.Min(View.CaretPosition, query.Length);
+            var version = Interlocked.Increment(ref _suggestionVersion);
 
-            var suggestions = await Task.Run(() => _querySuggestions.Compute(query, position));
-            var result = suggestions.ToList();
-            if (_isDisposed)
+            var suggestions = await Task.Run(() =>
+            {
+                var result = new List<IQuerySuggestion>();
+                foreach (var item in _querySuggestions.Compute(query, position))
+                {
+                    if (_suggestionVersion != version)
+                    {
+                        break;
+                    }
+                    result.Add(item);
+                }
+
+                if (_suggestionVersion == version)
+                {
+                    result.Sort(QuerySuggestionComparer.Default);
+                }
+
+                return result;
+            });
+
+            if (_isDisposed || version != _suggestionVersion)
             {
                 return;
             }
 
-            // show the most useful suggestions first
-            result.Sort(QuerySuggestionComparer.Default);
-
-            // show suggestions
-            View.Suggestions = result.Select(suggestion => new SuggestionItem
+            View.Suggestions = suggestions.Select(item => new SuggestionItem
             {
-                Text = suggestion.Name,
-                Category = suggestion.Category,
-                UserData = suggestion
+                Text = item.Name,
+                Category = item.Category,
+                UserData = item
             });
         }
 

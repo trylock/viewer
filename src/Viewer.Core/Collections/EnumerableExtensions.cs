@@ -70,5 +70,33 @@ namespace Viewer.Core.Collections
 
             return result;
         }
+
+        /// <summary>
+        /// Same as <see cref="ToHashSet{T}(System.Collections.Generic.IEnumerable{T})"/> but
+        /// it uses <see cref="EqualityComparer{T}.Default"/> comparer.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> list)
+        {
+            return ToHashSet(list, EqualityComparer<T>.Default);
+        }
+
+        /// <summary>
+        /// Convert values from <paramref name="list"/> to a hash set.
+        /// </summary>
+        /// <typeparam name="T">Type of an item</typeparam>
+        /// <param name="list">List of items</param>
+        /// <param name="comparer">Comparer of items</param>
+        /// <returns>
+        /// Hash set which contains exactly elements from <paramref name="list"/>
+        /// </returns>
+        public static HashSet<T> ToHashSet<T>(
+            this IEnumerable<T> list,
+            IEqualityComparer<T> comparer)
+        {
+            return new HashSet<T>(list, comparer);
+        }
     }
 }

@@ -155,7 +155,7 @@ namespace ViewerTest.Query.Suggestions
 
             Assert.AreEqual(5, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where"));
-            Assert.IsTrue(ContainsSuggestion(suggestions, "select test order"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test union"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test except"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test intersect"));
@@ -169,7 +169,7 @@ namespace ViewerTest.Query.Suggestions
             Assert.AreEqual(6, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a and"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a or"));
-            Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a order"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a order by"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a intersect"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a union"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a except"));

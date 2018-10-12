@@ -40,6 +40,13 @@ namespace Viewer.Query.Suggestions.Providers
             }
             
             var text = state.Caret.ParentToken?.Text ?? "";
+            if (text.Length > 0 && (
+                text[text.Length - 1] == '\n' ||
+                text[text.Length - 1] == '\r'))
+            {
+                text = text.Remove(text.Length - 1, 1);
+            }
+
             return _listener.AttributeNames
                 .SelectMany(name => _attributeCache.GetValues(name))
                 .Where(item => 

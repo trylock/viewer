@@ -48,6 +48,7 @@ namespace ViewerTest.Query.Suggestions
             {
                 new ViewSuggestionProviderFactory(_views.Object), 
                 new AttributeNameSuggestionProviderFactory(_attributeCache.Object), 
+                new AttributeValueSuggestionProviderFactory(_attributeCache.Object), 
                 new DirectorySuggestionProviderFactory(_fileSystem.Object), 
             }, new StateCollectorFactory());
         }
@@ -356,6 +357,46 @@ namespace ViewerTest.Query.Suggestions
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (not"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (attr1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (attr2"));
+        }
+
+        [TestMethod]
+        public void Compute_SuggestStringAttributeValues()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetValues("a"))
+                .Returns(new BaseValue[]
+                {
+                    new StringValue("test1"), new StringValue("test2"), new IntValue(1),
+                });
+
+            const string query = "select view where a = \"\n";
+            var suggestions = ComputeSuggestions(query, query.Length - 1);
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"test1\""));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"test2\""));
+        }
+
+        [TestMethod]
+        public void Compute_SuggestionAttributeValuesBasedOnSubstringMatch()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetNames("value"))
+                .Returns(Enumerable.Empty<string>());
+            _attributeCache
+                .Setup(mock => mock.GetValues("a"))
+                .Returns(new BaseValue[]
+                {
+                    new StringValue("contains value"),
+                    new StringValue("does not contain val"),
+                    new IntValue(1),
+                });
+
+            const string query = "select view where a = value";
+            var suggestions = ComputeSuggestions(query);
+
+            Assert.AreEqual(1, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"contains value\""));
         }
     }
 }

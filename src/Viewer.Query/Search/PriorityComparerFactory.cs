@@ -43,7 +43,7 @@ namespace Viewer.Query.Search
 
         public IComparer<string> Create(ValueExpression expression)
         {
-            return new BreadthFirstSearchPriorityComparer();
+            return new BreadthFirstSearchComparer();
         }
     }
 }

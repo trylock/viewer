@@ -18,7 +18,7 @@ query: unorderedQuery optionalOrderBy;
 
 unorderedQuery: SELECT source optionalWhere;
 
-source: ID | STRING | LPAREN queryExpression RPAREN;
+source: ID | COMPLEX_ID | STRING | LPAREN queryExpression RPAREN;
 
 // WHERE
 optionalWhere: WHERE predicate | ;

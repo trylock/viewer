@@ -236,7 +236,7 @@ namespace Viewer.UI.Images
                 }
 
                 // add new custom items
-                foreach (var option in _contextOptions)
+                foreach (var option in _contextOptions.Reverse())
                 {
                     var optionCapture = option;
                     var item = new ToolStripMenuItem(option.Name)

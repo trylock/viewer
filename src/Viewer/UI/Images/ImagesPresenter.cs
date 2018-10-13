@@ -741,6 +741,12 @@ namespace Viewer.UI.Images
                 entities = entities.OfType<DirectoryEntity>();
             }
 
+            // run the program iff there is at least one file
+            if (!entities.Any())
+            {
+                return;
+            }
+
             if (!e.Program.AllowMultiplePaths)
             {
                 if (e.ActiveEntity == null)
@@ -749,12 +755,6 @@ namespace Viewer.UI.Images
                 }
 
                 entities = new[] { e.ActiveEntity };
-            }
-
-            // run the program iff there is at least one file
-            if (!entities.Any())
-            {
-                return;
             }
 
             try

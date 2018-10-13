@@ -164,7 +164,8 @@ namespace Viewer.UI.Images
         /// Index of the last item user clicked on with left mouse button.
         /// </summary>
         private EntityView _activeItem = null;
-
+        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IHistoryView History => HistoryView;
 
         public event KeyEventHandler HandleKeyDown;
@@ -251,7 +252,7 @@ namespace Viewer.UI.Images
                         RunProgram?.Invoke(this, 
                             new ProgramEventArgs(optionCapture, _activeItem.Data));
                     };
-                    ItemContextMenu.Items.Insert(1, item);
+                    ItemContextMenu.Items.Insert(2, item);
                 }
             }
         }

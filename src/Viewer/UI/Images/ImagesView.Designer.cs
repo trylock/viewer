@@ -55,6 +55,7 @@
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.GridView = new Viewer.UI.Images.GridView();
             this.HistoryView = new Viewer.UI.Images.HistoryView();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,6 +76,7 @@
             this.ItemContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ItemContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenMenuItem,
+            this.toolStripSeparator5,
             this.toolStripSeparator3,
             this.RefreshMenuItem,
             this.ShowQueryMenuItem,
@@ -90,7 +92,7 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 270);
+            this.ItemContextMenu.Size = new System.Drawing.Size(181, 298);
             // 
             // OpenMenuItem
             // 
@@ -232,26 +234,30 @@
             this.GridView.ItemPadding = new System.Drawing.Size(5, 5);
             this.GridView.Items = null;
             this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(0, 30);
+            this.GridView.Location = new System.Drawing.Point(0, 29);
             this.GridView.Margin = new System.Windows.Forms.Padding(2);
             this.GridView.Name = "GridView";
             this.GridView.NameHeight = 30;
             this.GridView.NameSpace = 5;
             this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(626, 323);
+            this.GridView.Size = new System.Drawing.Size(626, 324);
             this.GridView.TabIndex = 2;
             // 
             // HistoryView
             // 
+            this.HistoryView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
             this.HistoryView.CanGoBackInHistory = false;
             this.HistoryView.CanGoForwardInHistory = false;
             this.HistoryView.Dock = System.Windows.Forms.DockStyle.Top;
-            this.HistoryView.Items = ((System.Collections.Generic.IReadOnlyList<Viewer.UI.Images.QueryHistoryItem>)(resources.GetObject("HistoryView.Items")));
             this.HistoryView.Location = new System.Drawing.Point(0, 0);
             this.HistoryView.Name = "HistoryView";
-            this.HistoryView.SelectedItem = null;
             this.HistoryView.Size = new System.Drawing.Size(626, 29);
             this.HistoryView.TabIndex = 3;
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // ImagesView
             // 
@@ -300,5 +306,6 @@
         private System.Windows.Forms.ToolStripMenuItem UpMenuItem;
         private GridView GridView;
         private HistoryView HistoryView;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }

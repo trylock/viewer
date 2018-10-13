@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Deployment.Application;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
 using Viewer.Core.UI;
+using Viewer.IO;
 using Viewer.Properties;
 
 namespace Viewer.UI.UserSettings
@@ -27,7 +29,9 @@ namespace Viewer.UI.UserSettings
         private void View_ProgramsChanged(object sender, EventArgs e)
         {
             var programs = View.Programs
-                .Where(app => !string.IsNullOrWhiteSpace(app.Command))
+                .Where(app =>
+                    !string.IsNullOrWhiteSpace(app.Command) &&
+                    app.Command.IndexOfAny(Path.GetInvalidPathChars()) < 0)
                 .ToArray();
 
             // update settings

@@ -103,5 +103,23 @@ namespace Viewer.UI.UserSettings
                 ProgramsGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
         }
+
+        private void ProgramsGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            var column = ProgramsGridView.Columns[e.ColumnIndex];
+            if (column.HeaderText != "Command")
+            {
+                return;
+            }
+
+            var result = SelectFileDialog.ShowDialog();
+            if (result != DialogResult.OK)
+            {
+                return;
+            }
+
+            var path = SelectFileDialog.FileName;
+            ProgramsGridView[e.ColumnIndex, e.RowIndex].Value = path;
+        }
     }
 }

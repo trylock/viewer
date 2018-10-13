@@ -30,6 +30,7 @@
         {
             this.ProgramsLabel = new System.Windows.Forms.Label();
             this.ProgramsGridView = new Viewer.UI.Forms.BufferedDataGridView();
+            this.SelectFileDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.ProgramsGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,9 +57,14 @@
             this.ProgramsGridView.RowHeadersVisible = false;
             this.ProgramsGridView.Size = new System.Drawing.Size(653, 369);
             this.ProgramsGridView.TabIndex = 0;
+            this.ProgramsGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.ProgramsGridView_CellBeginEdit);
             this.ProgramsGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProgramsGridView_CellValueChanged);
             this.ProgramsGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.ProgramsGridView_CurrentCellDirtyStateChanged);
             this.ProgramsGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ProgramsGridView_KeyDown);
+            // 
+            // SelectFileDialog
+            // 
+            this.SelectFileDialog.Filter = "Executable files|*.exe|All files|*.*";
             // 
             // SettingsView
             // 
@@ -80,5 +86,6 @@
 
         private Forms.BufferedDataGridView ProgramsGridView;
         private System.Windows.Forms.Label ProgramsLabel;
+        private System.Windows.Forms.OpenFileDialog SelectFileDialog;
     }
 }

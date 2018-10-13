@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -72,6 +73,30 @@ namespace Viewer.Core
         /// </summary>
         [DisplayName("Allow multiple paths")]
         public bool AllowMultiplePaths { get; set; } = false;
+
+        /// <summary>
+        /// Get icon image associated with this program
+        /// </summary>
+        /// <returns>Icon image or null</returns>
+        public Image GetImage()
+        {
+            try
+            {
+                using (var icon = Icon.ExtractAssociatedIcon(Command))
+                {
+                    return icon?.ToBitmap();
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+            catch (ArgumentException)
+            {
+                // invalid path
+                return null;
+            }
+        }
 
         /// <summary>
         /// Run application with <paramref name="paths"/> as arguments.

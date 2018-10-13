@@ -72,6 +72,7 @@ namespace Viewer.UI.Images
         public event EventHandler<HistoryItemEventArgs> ItemAdded;
 
         [IgnoreDataMember]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IReadOnlyList<QueryHistoryItem> Items
         {
             get => HistoryComboBox.Items.OfType<QueryHistoryItem>().ToList();
@@ -90,6 +91,8 @@ namespace Viewer.UI.Images
             }
         }
 
+        [IgnoreDataMember]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public QueryHistoryItem SelectedItem
         {
             get => HistoryComboBox.SelectedItem as QueryHistoryItem;

@@ -226,6 +226,8 @@ namespace Viewer.UI.Images
                 {
                     if ((string) item.Tag == "custom")
                     {
+                        item.Image?.Dispose();
+                        item.Image = null;
                         remove.Add(item);
                     }
                 }
@@ -241,6 +243,7 @@ namespace Viewer.UI.Images
                     var optionCapture = option;
                     var item = new ToolStripMenuItem(option.Name)
                     {
+                        Image = optionCapture.GetImage(),
                         Tag = "custom",
                     };
                     item.Click += (sender, args) =>

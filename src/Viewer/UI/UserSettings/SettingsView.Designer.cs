@@ -57,6 +57,7 @@
             this.ProgramsGridView.Size = new System.Drawing.Size(653, 369);
             this.ProgramsGridView.TabIndex = 0;
             this.ProgramsGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProgramsGridView_CellValueChanged);
+            this.ProgramsGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.ProgramsGridView_CurrentCellDirtyStateChanged);
             this.ProgramsGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ProgramsGridView_KeyDown);
             // 
             // SettingsView

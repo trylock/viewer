@@ -94,5 +94,14 @@ namespace Viewer.UI.UserSettings
                 ProgramsChanged?.Invoke(sender, e);
             }
         }
+
+        private void ProgramsGridView_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (ProgramsGridView.CurrentCell is DataGridViewCheckBoxCell && 
+                ProgramsGridView.IsCurrentCellDirty)
+            {
+                ProgramsGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
     }
 }

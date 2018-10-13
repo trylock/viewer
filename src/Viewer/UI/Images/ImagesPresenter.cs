@@ -750,7 +750,13 @@ namespace Viewer.UI.Images
                 return;
             }
             
+            try
+            {
             e.Program.Run(entities.Select(item => item.Path));
+        }
+            catch (Win32Exception)
+            {
+            }
         }
 
         #endregion

@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
@@ -142,38 +143,20 @@ namespace Viewer.UI.Images
             _queryFactory = queryFactory;
             _queryEvaluatorFactory = queryEvaluatorFactory;
             _queryHistory = queryHistory;
-            _queryHistory.QueryExecuted += QueryHistoryOnQueryExecuted;
-
-            // initialize context menu options
-            UpdateContextOptions();
-
+            
             // initialize view
             View.ItemSize = CurrentItemSize;
+            View.ContextOptions = Settings.Default.ExternalApplications;
+
+            // subsribe to events 
+            _queryHistory.QueryExecuted += QueryHistory_QueryExecuted;
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
             SubscribeTo(View, "View");
             SubscribeTo(View.History, "HistoryView");
-            QueryHistoryOnQueryExecuted(this, new QueryEventArgs(_queryHistory.Current));
+
+            QueryHistory_QueryExecuted(this, new QueryEventArgs(_queryHistory.Current));
         }
-
-        private void QueryHistoryOnQueryExecuted(object sender, QueryEventArgs e)
-        {
-            if (e.Query == null)
-            {
-                return;
-            }
-
-            View.History.Items = _queryHistory
-                .Distinct(QueryTextComparer.Default)
-                .Select(item => new QueryHistoryItem(item))
-                .ToList();
-            View.History.SelectedItem = View.History.Items
-                .FirstOrDefault(item => QueryTextComparer.Default.Equals(item.Query, e.Query));
-        }
-
-        private void UpdateContextOptions()
-        {
-            View.ContextOptions = Settings.Default.ExternalApplications;
-        }
-
+        
         private bool _isDisposed = false;
 
         /// <summary>
@@ -190,10 +173,34 @@ namespace Viewer.UI.Images
         {
             _isDisposed = true;
             DisposeQuery();
-            _queryHistory.QueryExecuted -= QueryHistoryOnQueryExecuted;
+            Settings.Default.PropertyChanged -= Settings_PropertyChanged;
+            _queryHistory.QueryExecuted -= QueryHistory_QueryExecuted;
             base.Dispose();
         }
         
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ExternalApplications")
+            {
+                View.ContextOptions = Settings.Default.ExternalApplications;
+            }
+        }
+
+        private void QueryHistory_QueryExecuted(object sender, QueryEventArgs e)
+        {
+            if (e.Query == null)
+            {
+                return;
+            }
+
+            View.History.Items = _queryHistory
+                .Distinct(QueryTextComparer.Default)
+                .Select(item => new QueryHistoryItem(item))
+                .ToList();
+            View.History.SelectedItem = View.History.Items
+                .FirstOrDefault(item => QueryTextComparer.Default.Equals(item.Query, e.Query));
+        }
+
         /// <summary>
         /// Execute given query and show all entities in the result.
         /// </summary>
@@ -749,11 +756,11 @@ namespace Viewer.UI.Images
             {
                 return;
             }
-            
+
             try
             {
-            e.Program.Run(entities.Select(item => item.Path));
-        }
+                e.Program.Run(entities.Select(item => item.Path));
+            }
             catch (Win32Exception)
             {
             }

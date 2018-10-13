@@ -23,10 +23,26 @@ namespace Viewer.Core
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     public class ExternalApplication
     {
+        private string _name = "";
+
         /// <summary>
         /// Name of the operation shown to the user (e.g. "Open in Explorer")
         /// </summary>
-        public string Name { get; set; } = "";
+        public string Name
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_name) && 
+                    !string.IsNullOrWhiteSpace(Command) &&
+                    Command.IndexOfAny(Path.GetInvalidPathChars()) < 0)
+                {
+                    return Path.GetFileName(Command);
+                }
+
+                return _name;
+            }
+            set => _name = value;
+        } 
 
         /// <summary>
         /// Command to execute without arguments (i.e., path to executable or name of a system

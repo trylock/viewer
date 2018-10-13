@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -724,17 +724,17 @@ namespace Viewer.UI.Images
         {
             // select files for which the program will run
             var entities = GetEntitiesInSelection();
-            if (e.Program.Flags.HasFlag(ExternalApplicationFlags.DisallowDirectories))
+            if (!e.Program.RunWithDirectories)
             {
                 entities = entities.OfType<FileEntity>();
             }
 
-            if (e.Program.Flags.HasFlag(ExternalApplicationFlags.DisallowFiles))
+            if (!e.Program.RunWithFiles)
             {
                 entities = entities.OfType<DirectoryEntity>();
             }
 
-            if (!e.Program.Flags.HasFlag(ExternalApplicationFlags.AcceptMultiplePaths))
+            if (!e.Program.AllowMultiplePaths)
             {
                 if (e.ActiveEntity == null)
                 {

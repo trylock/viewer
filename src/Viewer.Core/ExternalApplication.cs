@@ -17,25 +17,6 @@ using Path = System.IO.Path;
 
 namespace Viewer.Core
 {
-    [Flags]
-    public enum ExternalApplicationFlags
-    {
-        /// <summary>
-        /// Applications with this flag can't be run with file paths as their arguments
-        /// </summary>
-        DisallowFiles = 1,
-        
-        /// <summary>
-        /// Applications with this flag can't be run with directory paths as their arguments
-        /// </summary>
-        DisallowDirectories = 2,
-
-        /// <summary>
-        /// Applications witch this flag can be run with multiple paths as their arguments
-        /// </summary>
-        AcceptMultiplePaths = 4
-    }
-
     /// <summary>
     /// This class represents an external application which can open a file from this program.
     /// </summary>
@@ -59,9 +40,22 @@ namespace Viewer.Core
         public string Arguments { get; set; } = "";
 
         /// <summary>
-        /// Application options
+        /// true iff this program can be run with files
         /// </summary>
-        public ExternalApplicationFlags Flags { get; set; } 
+        [DisplayName("Files")]
+        public bool RunWithFiles { get; set; } = true;
+
+        /// <summary>
+        /// true iff this program can be run with directories
+        /// </summary>
+        [DisplayName("Directories")]
+        public bool RunWithDirectories { get; set; } = true;
+
+        /// <summary>
+        /// true iff this program can be run with multiple paths as its argument
+        /// </summary>
+        [DisplayName("Allow multiple paths")]
+        public bool AllowMultiplePaths { get; set; } = false;
 
         /// <summary>
         /// Run application with <paramref name="paths"/> as arguments.
@@ -72,8 +66,9 @@ namespace Viewer.Core
         /// <remarks>
         /// > [!NOTE]
         /// > It is up to the caller to ensure that the <paramref name="paths"/> argument contains
-        /// > correct number of paths with correct types according to <see cref="Flags"/>. This
-        /// > method does **not** use this flag.
+        /// > correct number of paths with correct type. This method does **not** use the
+        /// <see cref="RunWithFiles"/>, <see cref="RunWithDirectories"/> and
+        /// <see cref="AllowMultiplePaths"/> properties.
         /// </remarks>
         /// <param name="paths">Paths to open using this program/script</param>
         /// <exception cref="ArgumentNullException"><paramref name="paths"/> is null</exception>

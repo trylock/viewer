@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
@@ -33,7 +34,6 @@ namespace Viewer.UI.Images
         private readonly IExplorer _explorer;
         private readonly IPresentation _presentation;
         private readonly IFileSystemErrorView _dialogView;
-        private readonly ISelection _selection;
         private readonly IEntityManager _entityManager;
         private readonly IClipboardService _clipboard;
         private readonly IQueryHistory _queryHistory;
@@ -52,9 +52,9 @@ namespace Viewer.UI.Images
         private double _thumbnailSize = 0;
 
         /// <summary>
-        /// Current state of the rectangle selection
+        /// Current state of selection
         /// </summary>
-        private readonly RectangleSelection<EntityView> _rectangleSelection = new RectangleSelection<EntityView>(new EntityViewPathComparer());
+        private readonly SelectionState _selection;
 
         /// <summary>
         /// Currently loaded query
@@ -76,30 +76,6 @@ namespace Viewer.UI.Images
         /// Label which shows current number of items in the query result set.
         /// </summary>
         public IStatusBarItem ItemCountLabel { get; set; }
-
-        /// <summary>
-        /// Get current selection strategy based on the state of modifier keys.
-        /// If a shift key is pressed, use <see cref="UnionSelectionStrategy{T}"/>.
-        /// If a control key is pressed, use <see cref="SymetricDifferenceSelectionStrategy{T}"/>.
-        /// Otherwise, use <see cref="ReplaceSelectionStrategy{T}"/>.
-        /// </summary>
-        public ISelectionStrategy<EntityView> CurrentSelectionStrategy
-        {
-            get
-            {
-                ISelectionStrategy<EntityView> strategy = ReplaceSelectionStrategy<EntityView>.Default;
-                if (View.ModifierKeyState.HasFlag(Keys.Shift))
-                {
-                    strategy = UnionSelectionStrategy<EntityView>.Default;
-                }
-                else if (View.ModifierKeyState.HasFlag(Keys.Control))
-                {
-                    strategy = SymetricDifferenceSelectionStrategy<EntityView>.Default;
-                }
-
-                return strategy;
-            }
-        }
 
         /// <summary>
         /// Current item size. It depends on current thumbnail size (see <see cref="SetThumbnailSize"/>).
@@ -136,44 +112,26 @@ namespace Viewer.UI.Images
             _explorer = explorer;
             _presentation = presentation;
             _dialogView = dialogView;
-            _selection = selection;
+            _selection = new SelectionState(View, selection);
             _entityManager = entityManager;
             _clipboard = clipboard;
             _queryFactory = queryFactory;
             _queryEvaluatorFactory = queryEvaluatorFactory;
             _queryHistory = queryHistory;
-            _queryHistory.QueryExecuted += QueryHistoryOnQueryExecuted;
-
-            // initialize context menu options
-            UpdateContextOptions();
-
+            
             // initialize view
             View.ItemSize = CurrentItemSize;
+            View.ContextOptions = Settings.Default.ExternalApplications;
+
+            // subsribe to events 
+            _queryHistory.QueryExecuted += QueryHistory_QueryExecuted;
+            Settings.Default.PropertyChanged += Settings_PropertyChanged;
             SubscribeTo(View, "View");
             SubscribeTo(View.History, "HistoryView");
-            QueryHistoryOnQueryExecuted(this, new QueryEventArgs(_queryHistory.Current));
+
+            QueryHistory_QueryExecuted(this, new QueryEventArgs(_queryHistory.Current));
         }
-
-        private void QueryHistoryOnQueryExecuted(object sender, QueryEventArgs e)
-        {
-            if (e.Query == null)
-            {
-                return;
-            }
-
-            View.History.Items = _queryHistory
-                .Distinct(QueryTextComparer.Default)
-                .Select(item => new QueryHistoryItem(item))
-                .ToList();
-            View.History.SelectedItem = View.History.Items
-                .FirstOrDefault(item => QueryTextComparer.Default.Equals(item.Query, e.Query));
-        }
-
-        private void UpdateContextOptions()
-        {
-            View.ContextOptions = Settings.Default.ExternalApplications;
-        }
-
+        
         private bool _isDisposed = false;
 
         /// <summary>
@@ -190,10 +148,34 @@ namespace Viewer.UI.Images
         {
             _isDisposed = true;
             DisposeQuery();
-            _queryHistory.QueryExecuted -= QueryHistoryOnQueryExecuted;
+            Settings.Default.PropertyChanged -= Settings_PropertyChanged;
+            _queryHistory.QueryExecuted -= QueryHistory_QueryExecuted;
             base.Dispose();
         }
         
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ExternalApplications")
+            {
+                View.ContextOptions = Settings.Default.ExternalApplications;
+            }
+        }
+
+        private void QueryHistory_QueryExecuted(object sender, QueryEventArgs e)
+        {
+            if (e.Query == null)
+            {
+                return;
+            }
+
+            View.History.Items = _queryHistory
+                .Distinct(QueryTextComparer.Default)
+                .Select(item => new QueryHistoryItem(item))
+                .ToList();
+            View.History.SelectedItem = View.History.Items
+                .FirstOrDefault(item => QueryTextComparer.Default.Equals(item.Query, e.Query));
+        }
+
         /// <summary>
         /// Execute given query and show all entities in the result.
         /// </summary>
@@ -202,9 +184,7 @@ namespace Viewer.UI.Images
         {
             // release all resources used by the previous query
             DisposeQuery();
-
-            // reset presenter state
-            _rectangleSelection.Clear();
+            
             _selection.Clear();
 
             // start the query
@@ -250,39 +230,7 @@ namespace Viewer.UI.Images
             View.ItemSize = CurrentItemSize;
             View.UpdateItems();
         }
-
-        private void ChangeSelection(IEnumerable<EntityView> newSelection)
-        {
-            var changed = _rectangleSelection.Set(newSelection, View.Items);
-            if (!changed)
-            {
-                return;
-            }
-
-            UpdateSelectedItems();
-        }
-
-        private void UpdateSelectedItems()
-        {
-            // set global selection
-            _selection.Replace(GetEntitiesInSelection());
-
-            // update the view
-            foreach (var item in View.Items)
-            {
-                item.State = _rectangleSelection.Contains(item) ? 
-                    EntityViewState.Selected : 
-                    EntityViewState.None;
-            }
-
-            View.UpdateItems();
-        }
-
-        private IEnumerable<IEntity> GetEntitiesInSelection()
-        {
-            return _rectangleSelection.Select(item => item.Data);
-        }
-
+        
         #region User input
 
         private void View_Poll(object sender, EventArgs e)
@@ -309,63 +257,23 @@ namespace Viewer.UI.Images
 
             View.UpdateItems();
         }
-
-        private void View_SelectionBegin(object sender, MouseEventArgs e)
-        {
-            _rectangleSelection.Begin(e.Location, CurrentSelectionStrategy);
-            UpdateSelectedItems();
-        }
-
-        private void View_SelectionDrag(object sender, MouseEventArgs e)
-        {
-            var bounds = _rectangleSelection.GetBounds(e.Location);
-            var newSelection = View.GetItemsIn(bounds);
-            ChangeSelection(newSelection);
-
-            View.ShowSelection(bounds);
-        }
-
-        private void View_SelectionEnd(object sender, MouseEventArgs e)
-        {
-            var bounds = _rectangleSelection.GetBounds(e.Location);
-            var newSelection = View.GetItemsIn(bounds);
-            ChangeSelection(newSelection);
-
-            _rectangleSelection.End();
-            View.HideSelection();
-        }
-
-        private void View_SelectItem(object sender, EntityEventArgs e)
-        {
-            var strategy = CurrentSelectionStrategy;
-            if (View.ModifierKeyState == Keys.Shift)
-            {
-                strategy = RangeSelectionStrategy<EntityView>.Default;
-            }
-
-            _rectangleSelection.Begin(Point.Empty, strategy);
-            ChangeSelection(new[] { e.Entity });
-            _rectangleSelection.End();
-        }
-
+        
         private void View_BeginDragItems(object sender, EventArgs e)
         {
-            var dragFiles = GetPathsInSelection().ToArray();
+            var dragFiles = _selection.GetPathsInSelection().ToArray();
             var data = new DataObject(DataFormats.FileDrop, dragFiles);
             View.BeginDragDrop(data, DragDropEffects.Move);
         }
         
-        private void View_HandleKeyDown(object sender, KeyEventArgs e)
+        private void View_BeginEditItemName(object sender, EventArgs e)
         {
-            if (e.Control && e.KeyCode == Keys.A)
+            var entity = _selection.ActiveItem;
+            if (entity == null)
             {
-                ChangeSelection(View.Items);
+                return;
             }
-        }
-        
-        private void View_BeginEditItemName(object sender, EntityEventArgs e)
-        {
-            View.ShowItemEditForm(e.Entity);
+
+            View.ShowItemEditForm(entity);
         }
 
         private void View_CancelEditItemName(object sender, EventArgs e)
@@ -383,7 +291,12 @@ namespace Viewer.UI.Images
             }
 
             // construct the new file path
-            var item = e.Entity;
+            var item = _selection.ActiveItem;
+            if (item == null)
+            {
+                return;
+            }
+
             var basePath = PathUtils.GetDirectoryPath(item.FullPath);
             var newPath = Path.Combine(basePath, e.NewName + Path.GetExtension(item.FullPath));
 
@@ -420,26 +333,10 @@ namespace Viewer.UI.Images
                 View.UpdateItems();
             }
         }
-
-        private void View_ViewGotFocus(object sender, EventArgs e)
-        {
-            _selection.Replace(GetEntitiesInSelection());
-        }
-
-        private void View_ViewLostFocus(object sender, EventArgs e)
-        {
-            _rectangleSelection.End();
-            View.HideSelection();
-        }
-
-        private IEnumerable<string> GetPathsInSelection()
-        {
-            return _rectangleSelection.Select(item => item.FullPath);
-        }
-
+        
         private void View_CopyItems(object sender, EventArgs e)
         {
-            var paths = GetPathsInSelection();
+            var paths = _selection.GetPathsInSelection();
             try
             {
                 _clipboard.SetFiles(new ClipboardFileDrop(paths, DragDropEffects.Copy));
@@ -452,7 +349,7 @@ namespace Viewer.UI.Images
 
         private void View_CutItems(object sender, EventArgs e)
         {
-            var paths = GetPathsInSelection();
+            var paths = _selection.GetPathsInSelection();
             try
             {
                 _clipboard.SetFiles(new ClipboardFileDrop(paths, DragDropEffects.Move));
@@ -465,20 +362,20 @@ namespace Viewer.UI.Images
 
         private void View_DeleteItems(object sender, EventArgs e)
         {
-            if (!_rectangleSelection.Any())
+            if (!_selection.Any())
             {
                 return;
             }
 
             // confirm delete
-            var filesToDelete = GetPathsInSelection().ToArray();
+            var filesToDelete = _selection.GetPathsInSelection().ToArray();
             if (!_dialogView.ConfirmDelete(filesToDelete))
             {
                 return;
             }
 
             // delete entities
-            var entitiesInSelection = _rectangleSelection.Select(item => item.Data);
+            var entitiesInSelection = _selection.Select(item => item.Data);
             foreach (var entity in entitiesInSelection)
             {
                 try
@@ -504,7 +401,7 @@ namespace Viewer.UI.Images
             }
 
             // clear selection
-            ChangeSelection(Enumerable.Empty<EntityView>());
+            _selection.Clear();
 
             // update view
             if (_queryEvaluator != null)
@@ -526,14 +423,20 @@ namespace Viewer.UI.Images
             await _presentation.PreviewAsync(items, index);
         }
 
-        private async void View_OpenItem(object sender, EntityEventArgs e)
+        private async void View_OpenItem(object sender, EventArgs e)
         {
-            if (!_rectangleSelection.Any())
+            if (!_selection.Any())
+            {
+                return;
+            }
+
+            var view = _selection.ActiveItem;
+            if (view == null)
             {
                 return;
             }
             
-            if (e.Entity.Data is FileEntity fileEntity)
+            if (view.Data is FileEntity fileEntity)
             {
                 var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
                 var index = items.IndexOf(fileEntity);
@@ -541,7 +444,7 @@ namespace Viewer.UI.Images
             }
             else
             {
-                var query = _queryFactory.CreateQuery(e.Entity.FullPath);
+                var query = _queryFactory.CreateQuery(view.FullPath);
                 _queryHistory.ExecuteQuery(query);
             }
         }
@@ -717,6 +620,46 @@ namespace Viewer.UI.Images
             {
                 var window = _editor.OpenNew(_queryHistory.Current.Text);
                 window.Show(View.DockPanel, DockState.Document);
+            }
+        }
+
+        private void View_RunProgram(object sender, ProgramEventArgs e)
+        {
+            // select files for which the program will run
+            var entities = _selection.Select(view => view.Data);
+            if (!e.Program.RunWithDirectories)
+            {
+                entities = entities.OfType<FileEntity>();
+            }
+
+            if (!e.Program.RunWithFiles)
+            {
+                entities = entities.OfType<DirectoryEntity>();
+            }
+
+            // run the program iff there is at least one file
+            if (!entities.Any())
+            {
+                return;
+            }
+
+            if (!e.Program.AllowMultiplePaths)
+            {
+                var active = _selection.ActiveItem;
+                if (active == null)
+                {
+                    return;
+                }
+
+                entities = new[] { active.Data };
+            }
+
+            try
+            {
+                e.Program.Run(entities.Select(item => item.Path));
+            }
+            catch (Win32Exception)
+            {
             }
         }
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core;
 using Viewer.Images;
 
 namespace Viewer.UI.Images
@@ -149,6 +150,37 @@ namespace Viewer.UI.Images
         {
             var cell = Grid.GetCell(index);
             return new Rectangle(GetNameLocation(cell.Bounds), GetNameSize(cell.Bounds));
+        }
+
+        public EntityView FindItem(EntityView currentItem, Point delta)
+        {
+            var index = Items.IndexOf(currentItem);
+            if (index < 0)
+            {
+                return null;
+            }
+            
+            var targetIndex = index + delta.X + delta.Y * Grid.ColumnCount;
+            if (targetIndex < 0 || targetIndex >= Items.Count)
+            {
+                return null;
+            }
+
+            return Items[targetIndex];
+        }
+
+        public void EnsureItemVisible(EntityView item)
+        {
+            var index = Items.IndexOf(item);
+            if (index < 0)
+            {
+                return; // the item is not in the view => this is a no-op
+            }
+
+            var cell = Grid.GetCell(index);
+            var viewport = UnprojectBounds(new Rectangle(Point.Empty, ClientSize));
+            var transformed = viewport.EnsureContains(cell.Bounds);
+            AutoScrollPosition = transformed.Location;
         }
 
         #endregion

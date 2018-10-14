@@ -20,6 +20,31 @@ namespace Viewer.Core
         }
 
         /// <summary>
+        /// Move rectangle <paramref name="rectangle"/> in <paramref name="container"/>
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        private static Point MoveRectangleIn(Rectangle rectangle, Rectangle container)
+        {
+            var deltaX = container.Right - rectangle.Right;
+            if (deltaX >= 0)
+            {
+                // if the difference is negative, the rectangle is in container in this dimension
+                deltaX = Math.Max(container.Left - rectangle.Left, 0);
+            }
+
+            var deltaY = container.Bottom - rectangle.Bottom;
+            if (deltaY >= 0)
+            {
+                // if the difference is negative, the rectangle is in container in this dimension
+                deltaY = Math.Max(container.Top - rectangle.Top, 0);
+            }
+
+            return new Point(deltaX, deltaY);
+        }
+
+        /// <summary>
         /// Transform <paramref name="rectangle"/> so that it is inside <paramref name="container"/>.
         /// The size of <paramref name="rectangle"/> will only be modified if
         /// <paramref name="container"/> is smaller than <paramref name="rectangle"/> is some axis.
@@ -37,25 +62,34 @@ namespace Viewer.Core
                 Math.Min(rectangle.Height, container.Height)
             );
 
-            var deltaX = container.Right - rectangle.Right;
-            if (deltaX >= 0)
-            {
-                // if the difference is negative, the rectangle is in container in this dimension
-                deltaX = Math.Max(container.Left - rectangle.Left, 0);
-            }
-
-            var deltaY = container.Bottom - rectangle.Bottom;
-            if (deltaY >= 0)
-            {
-                // if the difference is negative, the rectangle is in container in this dimension
-                deltaY = Math.Max(container.Top - rectangle.Top, 0);
-            }
-
+            var delta = MoveRectangleIn(rectangle, container);
             return new Rectangle(
-                rectangle.X + deltaX, 
-                rectangle.Y + deltaY,
+                rectangle.X + delta.X, 
+                rectangle.Y + delta.Y,
                 rectangle.Width, 
                 rectangle.Height);
+        }
+
+        /// <summary>
+        /// Dual method to <see cref="EnsureInside"/> but it transforms 
+        /// <paramref name="container"/> instread of <paramref name="rectangle"/>
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="rectangle"></param>
+        /// <returns></returns>
+        public static Rectangle EnsureContains(this Rectangle container, Rectangle rectangle)
+        {
+            container.Size = new Size(
+                Math.Max(container.Width, rectangle.Width),
+                Math.Max(container.Height, rectangle.Height)
+            );
+            
+            var delta = MoveRectangleIn(rectangle, container);
+            return new Rectangle(
+                container.X - delta.X,
+                container.Y - delta.Y,
+                container.Width,
+                container.Height);
         }
     }
 }

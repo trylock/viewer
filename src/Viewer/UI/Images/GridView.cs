@@ -181,6 +181,8 @@ namespace Viewer.UI.Images
             var viewport = UnprojectBounds(new Rectangle(Point.Empty, ClientSize));
             var transformed = viewport.EnsureContains(cell.Bounds);
             AutoScrollPosition = transformed.Location;
+
+            Invalidate();
         }
 
         #endregion

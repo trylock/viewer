@@ -350,9 +350,6 @@ namespace Viewer.UI.Images
             }
 
             var location = _view.UnprojectLocation(e.Location);
-            ProcessMouseDown?.Invoke(sender, 
-                new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-
             var item = _view.GetItemAt(location);
             if (item != null)
             {
@@ -361,6 +358,9 @@ namespace Viewer.UI.Images
                 _isDragging = true;
                 _dragOrigin = location;
             }
+
+            ProcessMouseDown?.Invoke(sender, 
+                new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
         }
 
         private void GridView_MouseUp(object sender, MouseEventArgs e)
@@ -368,6 +368,8 @@ namespace Viewer.UI.Images
             var location = _view.UnprojectLocation(e.Location);
             ProcessMouseUp?.Invoke(sender,
                 new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+
+            _isDragging = false;
         }
         
         private void GridView_MouseMove(object sender, MouseEventArgs e)
@@ -375,15 +377,13 @@ namespace Viewer.UI.Images
             var location = _view.UnprojectLocation(e.Location);
             ProcessMouseMove?.Invoke(sender,
                 new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-
+            
             if (_isDragging)
             {
-                var endLocation = _view.UnprojectLocation(e.Location);
                 const int threshold = BeginDragThreshold * BeginDragThreshold;
-                if (_dragOrigin.DistanceSquaredTo(endLocation) > threshold)
+                if (_dragOrigin.DistanceSquaredTo(location) > threshold)
                 {
                     BeginDragItems?.Invoke(sender, e);
-                    _isDragging = false;
                 }
             }
         }
@@ -391,6 +391,7 @@ namespace Viewer.UI.Images
         private void GridView_MouseLeave(object sender, EventArgs e)
         {
             ProcessMouseLeave?.Invoke(sender, e);
+            _isDragging = false;
         }
 
         private void GridView_DoubleClick(object sender, EventArgs e)

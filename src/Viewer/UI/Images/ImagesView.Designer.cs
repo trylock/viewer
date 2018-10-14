@@ -33,6 +33,7 @@
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.ItemContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ShowQueryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +56,6 @@
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.GridView = new Viewer.UI.Images.GridView();
             this.HistoryView = new Viewer.UI.Images.HistoryView();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -92,7 +92,7 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 298);
+            this.ItemContextMenu.Size = new System.Drawing.Size(181, 276);
             // 
             // OpenMenuItem
             // 
@@ -100,6 +100,11 @@
             this.OpenMenuItem.Size = new System.Drawing.Size(180, 22);
             this.OpenMenuItem.Text = "Open";
             this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // toolStripSeparator3
             // 
@@ -253,11 +258,6 @@
             this.HistoryView.Name = "HistoryView";
             this.HistoryView.Size = new System.Drawing.Size(626, 29);
             this.HistoryView.TabIndex = 3;
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // ImagesView
             // 

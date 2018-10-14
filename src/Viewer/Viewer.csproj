@@ -149,6 +149,7 @@
     <Compile Include="UI\Forms\BufferedTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UI\Images\SelectionState.cs" />
     <Compile Include="UI\Suggestions\SuggestionItem.cs" />
     <Compile Include="UI\Suggestions\SuggestionTextBoxCell.cs" />
     <Compile Include="UI\Forms\SliderControl.cs">
@@ -217,7 +218,6 @@
     <Compile Include="UI\Images\ImagesComponent.cs" />
     <Compile Include="UI\Images\LazyThumbnail.cs" />
     <Compile Include="UI\Images\QueryEvaluator.cs" />
-    <Compile Include="UI\Images\RectangleSelection.cs" />
     <Compile Include="UI\Errors\IErrorListView.cs" />
     <Compile Include="UI\Errors\ErrorList.cs" />
     <Compile Include="UI\Errors\ErrorListComponent.cs" />

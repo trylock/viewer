@@ -49,6 +49,8 @@ namespace Viewer.UI.Images
 
     public class EntityViewPathComparer : IEqualityComparer<EntityView>
     {
+        public static EntityViewPathComparer Default { get; } = new EntityViewPathComparer();
+
         public bool Equals(EntityView x, EntityView y)
         {
             if (x == null && y == null)

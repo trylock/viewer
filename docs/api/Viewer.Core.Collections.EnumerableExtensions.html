@@ -152,9 +152,6 @@
                           <li class="active">
                             <a href="Viewer.Core.Collections.EnumerableExtensions.html" title="EnumerableExtensions" class="active">EnumerableExtensions</a>
                           </li>
-                          <li class="">
-                            <a href="Viewer.Core.Collections.HistoryCollection-1.html" title="HistoryCollection&lt;T&gt;" class="">HistoryCollection&lt;T&gt;</a>
-                          </li>
                         </ul>  </li>
                     <li class="">
                       <span class="expand-stub"></span>
@@ -1025,6 +1022,15 @@
                         </ul>  </li>
                     <li class="">
                       <span class="expand-stub"></span>
+                      <a href="Viewer.UI.UserSettings.html" title="Viewer.UI.UserSettings" class="">Viewer.UI.UserSettings</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.UI.UserSettings.UserSettingsComponent.html" title="UserSettingsComponent" class="">UserSettingsComponent</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
                       <a href="ViewerTheme.html" title="ViewerTheme" class="">ViewerTheme</a>
                         
                         <ul class="nav level2">
@@ -1149,6 +1155,118 @@ collections, the caller guarantees they are sorted by <code data-dev-comment-typ
       <tr>
         <td><span class="parametername">T</span></td>
         <td><p>Type of an element in the collection</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_Collections_EnumerableExtensions_ToHashSet__1_System_Collections_Generic_IEnumerable___0__.md&amp;value=---%0Auid%3A%20Viewer.Core.Collections.EnumerableExtensions.ToHashSet%60%601(System.Collections.Generic.IEnumerable%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/Collections/EnumerableExtensions.cs/#L81">View Source</a>
+  </span>
+  <a id="Viewer_Core_Collections_EnumerableExtensions_ToHashSet_" data-uid="Viewer.Core.Collections.EnumerableExtensions.ToHashSet*"></a>
+  <h4 id="Viewer_Core_Collections_EnumerableExtensions_ToHashSet__1_System_Collections_Generic_IEnumerable___0__" data-uid="Viewer.Core.Collections.EnumerableExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0})">ToHashSet&lt;T&gt;(IEnumerable&lt;T&gt;)</h4>
+  <div class="markdown level1 summary"><p>Same as <a class="xref" href="Viewer.Core.Collections.EnumerableExtensions.html#Viewer_Core_Collections_EnumerableExtensions_ToHashSet__1_System_Collections_Generic_IEnumerable___0__">ToHashSet&lt;T&gt;(IEnumerable&lt;T&gt;)</a> but
+it uses <span class="xref">System.Collections.Generic.EqualityComparer`1.Default</span> comparer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HashSet&lt;T&gt; ToHashSet&lt;T&gt;(this IEnumerable&lt;T&gt; list)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;T&gt;</td>
+        <td><span class="parametername">list</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <span class="xref">System.Collections.Generic.HashSet</span>&lt;T&gt;
+  
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_Collections_EnumerableExtensions_ToHashSet__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__.md&amp;value=---%0Auid%3A%20Viewer.Core.Collections.EnumerableExtensions.ToHashSet%60%601(System.Collections.Generic.IEnumerable%7B%60%600%7D%2CSystem.Collections.Generic.IEqualityComparer%7B%60%600%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/Collections/EnumerableExtensions.cs/#L95">View Source</a>
+  </span>
+  <a id="Viewer_Core_Collections_EnumerableExtensions_ToHashSet_" data-uid="Viewer.Core.Collections.EnumerableExtensions.ToHashSet*"></a>
+  <h4 id="Viewer_Core_Collections_EnumerableExtensions_ToHashSet__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__" data-uid="Viewer.Core.Collections.EnumerableExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">ToHashSet&lt;T&gt;(IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;)</h4>
+  <div class="markdown level1 summary"><p>Convert values from <code data-dev-comment-type="paramref" class="paramref">list</code> to a hash set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HashSet&lt;T&gt; ToHashSet&lt;T&gt;(this IEnumerable&lt;T&gt; list, IEqualityComparer&lt;T&gt; comparer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;T&gt;</td>
+        <td><span class="parametername">list</span></td>
+        <td><p>List of items</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEqualityComparer</span>&lt;T&gt;</td>
+        <td><span class="parametername">comparer</span></td>
+        <td><p>Comparer of items</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <span class="xref">System.Collections.Generic.HashSet</span>&lt;T&gt;
+  <p>Hash set which contains exactly elements from <code data-dev-comment-type="paramref" class="paramref">list</code></p>
+
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>Type of an item</p>
 </td>
       </tr>
     </tbody>

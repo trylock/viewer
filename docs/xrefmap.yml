@@ -621,188 +621,31 @@ references:
   fullName.vb: Viewer.Core.Collections.EnumerableExtensions.Merge(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Collections.Generic.IEnumerable(Of T), System.Collections.Generic.IComparer(Of T))
   nameWithType: EnumerableExtensions.Merge<T>(IEnumerable<T>, IEnumerable<T>, IComparer<T>)
   nameWithType.vb: EnumerableExtensions.Merge(Of T)(IEnumerable(Of T), IEnumerable(Of T), IComparer(Of T))
-- uid: Viewer.Core.Collections.HistoryCollection`1
-  name: HistoryCollection<T>
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html
-  commentId: T:Viewer.Core.Collections.HistoryCollection`1
-  name.vb: HistoryCollection(Of T)
-  fullName: Viewer.Core.Collections.HistoryCollection<T>
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T)
-  nameWithType: HistoryCollection<T>
-  nameWithType.vb: HistoryCollection(Of T)
-- uid: Viewer.Core.Collections.HistoryCollection`1.Back
-  name: Back()
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Back
-  commentId: M:Viewer.Core.Collections.HistoryCollection`1.Back
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Back()
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Back()
-  nameWithType: HistoryCollection<T>.Back()
-  nameWithType.vb: HistoryCollection(Of T).Back()
-- uid: Viewer.Core.Collections.HistoryCollection`1.Back*
-  name: Back
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Back_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.Back
+- uid: Viewer.Core.Collections.EnumerableExtensions.ToHashSet*
+  name: ToHashSet
+  href: api/Viewer.Core.Collections.EnumerableExtensions.html#Viewer_Core_Collections_EnumerableExtensions_ToHashSet_
+  commentId: Overload:Viewer.Core.Collections.EnumerableExtensions.ToHashSet
   isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Back
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Back
-  nameWithType: HistoryCollection<T>.Back
-  nameWithType.vb: HistoryCollection(Of T).Back
-- uid: Viewer.Core.Collections.HistoryCollection`1.Count
-  name: Count
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Count
-  commentId: P:Viewer.Core.Collections.HistoryCollection`1.Count
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Count
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Count
-  nameWithType: HistoryCollection<T>.Count
-  nameWithType.vb: HistoryCollection(Of T).Count
-- uid: Viewer.Core.Collections.HistoryCollection`1.Count*
-  name: Count
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Count_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.Count
-  isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Count
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Count
-  nameWithType: HistoryCollection<T>.Count
-  nameWithType.vb: HistoryCollection(Of T).Count
-- uid: Viewer.Core.Collections.HistoryCollection`1.Current
-  name: Current
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Current
-  commentId: P:Viewer.Core.Collections.HistoryCollection`1.Current
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Current
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Current
-  nameWithType: HistoryCollection<T>.Current
-  nameWithType.vb: HistoryCollection(Of T).Current
-- uid: Viewer.Core.Collections.HistoryCollection`1.Current*
-  name: Current
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Current_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.Current
-  isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Current
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Current
-  nameWithType: HistoryCollection<T>.Current
-  nameWithType.vb: HistoryCollection(Of T).Current
-- uid: Viewer.Core.Collections.HistoryCollection`1.Forward
-  name: Forward()
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Forward
-  commentId: M:Viewer.Core.Collections.HistoryCollection`1.Forward
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Forward()
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Forward()
-  nameWithType: HistoryCollection<T>.Forward()
-  nameWithType.vb: HistoryCollection(Of T).Forward()
-- uid: Viewer.Core.Collections.HistoryCollection`1.Forward*
-  name: Forward
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Forward_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.Forward
-  isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Forward
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Forward
-  nameWithType: HistoryCollection<T>.Forward
-  nameWithType.vb: HistoryCollection(Of T).Forward
-- uid: Viewer.Core.Collections.HistoryCollection`1.GetEnumerator
-  name: GetEnumerator()
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_GetEnumerator
-  commentId: M:Viewer.Core.Collections.HistoryCollection`1.GetEnumerator
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.GetEnumerator()
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).GetEnumerator()
-  nameWithType: HistoryCollection<T>.GetEnumerator()
-  nameWithType.vb: HistoryCollection(Of T).GetEnumerator()
-- uid: Viewer.Core.Collections.HistoryCollection`1.GetEnumerator*
-  name: GetEnumerator
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_GetEnumerator_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.GetEnumerator
-  isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.GetEnumerator
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).GetEnumerator
-  nameWithType: HistoryCollection<T>.GetEnumerator
-  nameWithType.vb: HistoryCollection(Of T).GetEnumerator
-- uid: Viewer.Core.Collections.HistoryCollection`1.Item(System.Int32)
-  name: Item[Int32]
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Item_System_Int32_
-  commentId: P:Viewer.Core.Collections.HistoryCollection`1.Item(System.Int32)
-  name.vb: Item(Int32)
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Item[System.Int32]
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Item(System.Int32)
-  nameWithType: HistoryCollection<T>.Item[Int32]
-  nameWithType.vb: HistoryCollection(Of T).Item(Int32)
-- uid: Viewer.Core.Collections.HistoryCollection`1.Item*
-  name: Item
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Item_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.Item
-  isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Item
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Item
-  nameWithType: HistoryCollection<T>.Item
-  nameWithType.vb: HistoryCollection(Of T).Item
-- uid: Viewer.Core.Collections.HistoryCollection`1.Next
-  name: Next
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Next
-  commentId: P:Viewer.Core.Collections.HistoryCollection`1.Next
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Next
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Next
-  nameWithType: HistoryCollection<T>.Next
-  nameWithType.vb: HistoryCollection(Of T).Next
-- uid: Viewer.Core.Collections.HistoryCollection`1.Next*
-  name: Next
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Next_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.Next
-  isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Next
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Next
-  nameWithType: HistoryCollection<T>.Next
-  nameWithType.vb: HistoryCollection(Of T).Next
-- uid: Viewer.Core.Collections.HistoryCollection`1.Previous
-  name: Previous
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Previous
-  commentId: P:Viewer.Core.Collections.HistoryCollection`1.Previous
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Previous
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Previous
-  nameWithType: HistoryCollection<T>.Previous
-  nameWithType.vb: HistoryCollection(Of T).Previous
-- uid: Viewer.Core.Collections.HistoryCollection`1.Previous*
-  name: Previous
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Previous_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.Previous
-  isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Previous
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Previous
-  nameWithType: HistoryCollection<T>.Previous
-  nameWithType.vb: HistoryCollection(Of T).Previous
-- uid: Viewer.Core.Collections.HistoryCollection`1.Push(`0)
-  name: Push(T)
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Push__0_
-  commentId: M:Viewer.Core.Collections.HistoryCollection`1.Push(`0)
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Push(T)
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Push(T)
-  nameWithType: HistoryCollection<T>.Push(T)
-  nameWithType.vb: HistoryCollection(Of T).Push(T)
-- uid: Viewer.Core.Collections.HistoryCollection`1.Push*
-  name: Push
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_Push_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.Push
-  isSpec: "True"
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.Push
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).Push
-  nameWithType: HistoryCollection<T>.Push
-  nameWithType.vb: HistoryCollection(Of T).Push
-- uid: Viewer.Core.Collections.HistoryCollection`1.System#Collections#IEnumerable#GetEnumerator
-  name: IEnumerable.GetEnumerator()
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_System_Collections_IEnumerable_GetEnumerator
-  commentId: M:Viewer.Core.Collections.HistoryCollection`1.System#Collections#IEnumerable#GetEnumerator
-  name.vb: System.Collections.IEnumerable.GetEnumerator()
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.System.Collections.IEnumerable.GetEnumerator()
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).System.Collections.IEnumerable.GetEnumerator()
-  nameWithType: HistoryCollection<T>.IEnumerable.GetEnumerator()
-  nameWithType.vb: HistoryCollection(Of T).System.Collections.IEnumerable.GetEnumerator()
-- uid: Viewer.Core.Collections.HistoryCollection`1.System#Collections#IEnumerable#GetEnumerator*
-  name: IEnumerable.GetEnumerator
-  href: api/Viewer.Core.Collections.HistoryCollection-1.html#Viewer_Core_Collections_HistoryCollection_1_System_Collections_IEnumerable_GetEnumerator_
-  commentId: Overload:Viewer.Core.Collections.HistoryCollection`1.System#Collections#IEnumerable#GetEnumerator
-  isSpec: "True"
-  name.vb: System.Collections.IEnumerable.GetEnumerator
-  fullName: Viewer.Core.Collections.HistoryCollection<T>.System.Collections.IEnumerable.GetEnumerator
-  fullName.vb: Viewer.Core.Collections.HistoryCollection(Of T).System.Collections.IEnumerable.GetEnumerator
-  nameWithType: HistoryCollection<T>.IEnumerable.GetEnumerator
-  nameWithType.vb: HistoryCollection(Of T).System.Collections.IEnumerable.GetEnumerator
+  fullName: Viewer.Core.Collections.EnumerableExtensions.ToHashSet
+  nameWithType: EnumerableExtensions.ToHashSet
+- uid: Viewer.Core.Collections.EnumerableExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0})
+  name: ToHashSet<T>(IEnumerable<T>)
+  href: api/Viewer.Core.Collections.EnumerableExtensions.html#Viewer_Core_Collections_EnumerableExtensions_ToHashSet__1_System_Collections_Generic_IEnumerable___0__
+  commentId: M:Viewer.Core.Collections.EnumerableExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0})
+  name.vb: ToHashSet(Of T)(IEnumerable(Of T))
+  fullName: Viewer.Core.Collections.EnumerableExtensions.ToHashSet<T>(System.Collections.Generic.IEnumerable<T>)
+  fullName.vb: Viewer.Core.Collections.EnumerableExtensions.ToHashSet(Of T)(System.Collections.Generic.IEnumerable(Of T))
+  nameWithType: EnumerableExtensions.ToHashSet<T>(IEnumerable<T>)
+  nameWithType.vb: EnumerableExtensions.ToHashSet(Of T)(IEnumerable(Of T))
+- uid: Viewer.Core.Collections.EnumerableExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})
+  name: ToHashSet<T>(IEnumerable<T>, IEqualityComparer<T>)
+  href: api/Viewer.Core.Collections.EnumerableExtensions.html#Viewer_Core_Collections_EnumerableExtensions_ToHashSet__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__
+  commentId: M:Viewer.Core.Collections.EnumerableExtensions.ToHashSet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})
+  name.vb: ToHashSet(Of T)(IEnumerable(Of T), IEqualityComparer(Of T))
+  fullName: Viewer.Core.Collections.EnumerableExtensions.ToHashSet<T>(System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IEqualityComparer<T>)
+  fullName.vb: Viewer.Core.Collections.EnumerableExtensions.ToHashSet(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Collections.Generic.IEqualityComparer(Of T))
+  nameWithType: EnumerableExtensions.ToHashSet<T>(IEnumerable<T>, IEqualityComparer<T>)
+  nameWithType.vb: EnumerableExtensions.ToHashSet(Of T)(IEnumerable(Of T), IEqualityComparer(Of T))
 - uid: Viewer.Core.DeserializeCallback
   name: DeserializeCallback
   href: api/Viewer.Core.DeserializeCallback.html
@@ -815,6 +658,19 @@ references:
   commentId: T:Viewer.Core.ExternalApplication
   fullName: Viewer.Core.ExternalApplication
   nameWithType: ExternalApplication
+- uid: Viewer.Core.ExternalApplication.AllowMultiplePaths
+  name: AllowMultiplePaths
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_AllowMultiplePaths
+  commentId: P:Viewer.Core.ExternalApplication.AllowMultiplePaths
+  fullName: Viewer.Core.ExternalApplication.AllowMultiplePaths
+  nameWithType: ExternalApplication.AllowMultiplePaths
+- uid: Viewer.Core.ExternalApplication.AllowMultiplePaths*
+  name: AllowMultiplePaths
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_AllowMultiplePaths_
+  commentId: Overload:Viewer.Core.ExternalApplication.AllowMultiplePaths
+  isSpec: "True"
+  fullName: Viewer.Core.ExternalApplication.AllowMultiplePaths
+  nameWithType: ExternalApplication.AllowMultiplePaths
 - uid: Viewer.Core.ExternalApplication.Arguments
   name: Arguments
   href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Arguments
@@ -841,6 +697,19 @@ references:
   isSpec: "True"
   fullName: Viewer.Core.ExternalApplication.Command
   nameWithType: ExternalApplication.Command
+- uid: Viewer.Core.ExternalApplication.GetImage
+  name: GetImage()
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_GetImage
+  commentId: M:Viewer.Core.ExternalApplication.GetImage
+  fullName: Viewer.Core.ExternalApplication.GetImage()
+  nameWithType: ExternalApplication.GetImage()
+- uid: Viewer.Core.ExternalApplication.GetImage*
+  name: GetImage
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_GetImage_
+  commentId: Overload:Viewer.Core.ExternalApplication.GetImage
+  isSpec: "True"
+  fullName: Viewer.Core.ExternalApplication.GetImage
+  nameWithType: ExternalApplication.GetImage
 - uid: Viewer.Core.ExternalApplication.Name
   name: Name
   href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Name
@@ -854,12 +723,15 @@ references:
   isSpec: "True"
   fullName: Viewer.Core.ExternalApplication.Name
   nameWithType: ExternalApplication.Name
-- uid: Viewer.Core.ExternalApplication.Run(System.String)
-  name: Run(String)
-  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Run_System_String_
-  commentId: M:Viewer.Core.ExternalApplication.Run(System.String)
-  fullName: Viewer.Core.ExternalApplication.Run(System.String)
-  nameWithType: ExternalApplication.Run(String)
+- uid: Viewer.Core.ExternalApplication.Run(System.Collections.Generic.IEnumerable{System.String})
+  name: Run(IEnumerable<String>)
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Run_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Viewer.Core.ExternalApplication.Run(System.Collections.Generic.IEnumerable{System.String})
+  name.vb: Run(IEnumerable(Of String))
+  fullName: Viewer.Core.ExternalApplication.Run(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Viewer.Core.ExternalApplication.Run(System.Collections.Generic.IEnumerable(Of System.String))
+  nameWithType: ExternalApplication.Run(IEnumerable<String>)
+  nameWithType.vb: ExternalApplication.Run(IEnumerable(Of String))
 - uid: Viewer.Core.ExternalApplication.Run*
   name: Run
   href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Run_
@@ -867,6 +739,32 @@ references:
   isSpec: "True"
   fullName: Viewer.Core.ExternalApplication.Run
   nameWithType: ExternalApplication.Run
+- uid: Viewer.Core.ExternalApplication.RunWithDirectories
+  name: RunWithDirectories
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_RunWithDirectories
+  commentId: P:Viewer.Core.ExternalApplication.RunWithDirectories
+  fullName: Viewer.Core.ExternalApplication.RunWithDirectories
+  nameWithType: ExternalApplication.RunWithDirectories
+- uid: Viewer.Core.ExternalApplication.RunWithDirectories*
+  name: RunWithDirectories
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_RunWithDirectories_
+  commentId: Overload:Viewer.Core.ExternalApplication.RunWithDirectories
+  isSpec: "True"
+  fullName: Viewer.Core.ExternalApplication.RunWithDirectories
+  nameWithType: ExternalApplication.RunWithDirectories
+- uid: Viewer.Core.ExternalApplication.RunWithFiles
+  name: RunWithFiles
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_RunWithFiles
+  commentId: P:Viewer.Core.ExternalApplication.RunWithFiles
+  fullName: Viewer.Core.ExternalApplication.RunWithFiles
+  nameWithType: ExternalApplication.RunWithFiles
+- uid: Viewer.Core.ExternalApplication.RunWithFiles*
+  name: RunWithFiles
+  href: api/Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_RunWithFiles_
+  commentId: Overload:Viewer.Core.ExternalApplication.RunWithFiles
+  isSpec: "True"
+  fullName: Viewer.Core.ExternalApplication.RunWithFiles
+  nameWithType: ExternalApplication.RunWithFiles
 - uid: Viewer.Core.IComponent
   name: IComponent
   href: api/Viewer.Core.IComponent.html
@@ -1095,6 +993,19 @@ references:
   isSpec: "True"
   fullName: Viewer.Core.RectangleExtensions.Area
   nameWithType: RectangleExtensions.Area
+- uid: Viewer.Core.RectangleExtensions.EnsureContains(System.Drawing.Rectangle,System.Drawing.Rectangle)
+  name: EnsureContains(Rectangle, Rectangle)
+  href: api/Viewer.Core.RectangleExtensions.html#Viewer_Core_RectangleExtensions_EnsureContains_System_Drawing_Rectangle_System_Drawing_Rectangle_
+  commentId: M:Viewer.Core.RectangleExtensions.EnsureContains(System.Drawing.Rectangle,System.Drawing.Rectangle)
+  fullName: Viewer.Core.RectangleExtensions.EnsureContains(System.Drawing.Rectangle, System.Drawing.Rectangle)
+  nameWithType: RectangleExtensions.EnsureContains(Rectangle, Rectangle)
+- uid: Viewer.Core.RectangleExtensions.EnsureContains*
+  name: EnsureContains
+  href: api/Viewer.Core.RectangleExtensions.html#Viewer_Core_RectangleExtensions_EnsureContains_
+  commentId: Overload:Viewer.Core.RectangleExtensions.EnsureContains
+  isSpec: "True"
+  fullName: Viewer.Core.RectangleExtensions.EnsureContains
+  nameWithType: RectangleExtensions.EnsureContains
 - uid: Viewer.Core.RectangleExtensions.EnsureInside(System.Drawing.Rectangle,System.Drawing.Rectangle)
   name: EnsureInside(Rectangle, Rectangle)
   href: api/Viewer.Core.RectangleExtensions.html#Viewer_Core_RectangleExtensions_EnsureInside_System_Drawing_Rectangle_System_Drawing_Rectangle_
@@ -1706,6 +1617,12 @@ references:
   commentId: E:Viewer.Core.UI.IWindowView.ViewGotFocus
   fullName: Viewer.Core.UI.IWindowView.ViewGotFocus
   nameWithType: IWindowView.ViewGotFocus
+- uid: Viewer.Core.UI.IWindowView.ViewLostFocus
+  name: ViewLostFocus
+  href: api/Viewer.Core.UI.IWindowView.html#Viewer_Core_UI_IWindowView_ViewLostFocus
+  commentId: E:Viewer.Core.UI.IWindowView.ViewLostFocus
+  fullName: Viewer.Core.UI.IWindowView.ViewLostFocus
+  nameWithType: IWindowView.ViewLostFocus
 - uid: Viewer.Core.UI.Presenter`1
   name: Presenter<TView>
   href: api/Viewer.Core.UI.Presenter-1.html
@@ -2330,32 +2247,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.BaseValue.IsNull
   nameWithType: BaseValue.IsNull
-- uid: Viewer.Data.BaseValue.op_Equality(Viewer.Data.BaseValue,Viewer.Data.BaseValue)
-  name: Equality(BaseValue, BaseValue)
-  href: api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_op_Equality_Viewer_Data_BaseValue_Viewer_Data_BaseValue_
-  commentId: M:Viewer.Data.BaseValue.op_Equality(Viewer.Data.BaseValue,Viewer.Data.BaseValue)
-  fullName: Viewer.Data.BaseValue.Equality(Viewer.Data.BaseValue, Viewer.Data.BaseValue)
-  nameWithType: BaseValue.Equality(BaseValue, BaseValue)
-- uid: Viewer.Data.BaseValue.op_Equality*
-  name: Equality
-  href: api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_op_Equality_
-  commentId: Overload:Viewer.Data.BaseValue.op_Equality
-  isSpec: "True"
-  fullName: Viewer.Data.BaseValue.Equality
-  nameWithType: BaseValue.Equality
-- uid: Viewer.Data.BaseValue.op_Inequality(Viewer.Data.BaseValue,Viewer.Data.BaseValue)
-  name: Inequality(BaseValue, BaseValue)
-  href: api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_op_Inequality_Viewer_Data_BaseValue_Viewer_Data_BaseValue_
-  commentId: M:Viewer.Data.BaseValue.op_Inequality(Viewer.Data.BaseValue,Viewer.Data.BaseValue)
-  fullName: Viewer.Data.BaseValue.Inequality(Viewer.Data.BaseValue, Viewer.Data.BaseValue)
-  nameWithType: BaseValue.Inequality(BaseValue, BaseValue)
-- uid: Viewer.Data.BaseValue.op_Inequality*
-  name: Inequality
-  href: api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_op_Inequality_
-  commentId: Overload:Viewer.Data.BaseValue.op_Inequality
-  isSpec: "True"
-  fullName: Viewer.Data.BaseValue.Inequality
-  nameWithType: BaseValue.Inequality
 - uid: Viewer.Data.BaseValue.ToString
   name: ToString()
   href: api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_ToString
@@ -8903,32 +8794,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.ArgumentListContext.comparison
   nameWithType: QueryParser.ArgumentListContext.comparison
-- uid: Viewer.Query.QueryParser.ArgumentListContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.ArgumentListContext.html#Viewer_Query_QueryParser_ArgumentListContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.ArgumentListContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.ArgumentListContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.ArgumentListContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.ArgumentListContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.ArgumentListContext.html#Viewer_Query_QueryParser_ArgumentListContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.ArgumentListContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ArgumentListContext.EnterRule
-  nameWithType: QueryParser.ArgumentListContext.EnterRule
-- uid: Viewer.Query.QueryParser.ArgumentListContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.ArgumentListContext.html#Viewer_Query_QueryParser_ArgumentListContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.ArgumentListContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.ArgumentListContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.ArgumentListContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.ArgumentListContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.ArgumentListContext.html#Viewer_Query_QueryParser_ArgumentListContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.ArgumentListContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ArgumentListContext.ExitRule
-  nameWithType: QueryParser.ArgumentListContext.ExitRule
 - uid: Viewer.Query.QueryParser.ArgumentListContext.PARAM_DELIMITER
   name: PARAM_DELIMITER()
   href: api/Viewer.Query.QueryParser.ArgumentListContext.html#Viewer_Query_QueryParser_ArgumentListContext_PARAM_DELIMITER
@@ -9015,32 +8880,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.ComparisonContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.ComparisonContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.ComparisonContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.ComparisonContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.ComparisonContext.html#Viewer_Query_QueryParser_ComparisonContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.ComparisonContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.ComparisonContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.ComparisonContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.ComparisonContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.ComparisonContext.html#Viewer_Query_QueryParser_ComparisonContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.ComparisonContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ComparisonContext.EnterRule
-  nameWithType: QueryParser.ComparisonContext.EnterRule
-- uid: Viewer.Query.QueryParser.ComparisonContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.ComparisonContext.html#Viewer_Query_QueryParser_ComparisonContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.ComparisonContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.ComparisonContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.ComparisonContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.ComparisonContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.ComparisonContext.html#Viewer_Query_QueryParser_ComparisonContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.ComparisonContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ComparisonContext.ExitRule
-  nameWithType: QueryParser.ComparisonContext.ExitRule
 - uid: Viewer.Query.QueryParser.ComparisonContext.expression
   name: expression()
   href: api/Viewer.Query.QueryParser.ComparisonContext.html#Viewer_Query_QueryParser_ComparisonContext_expression
@@ -9166,32 +9005,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.ConjunctionContext.conjunction
   nameWithType: QueryParser.ConjunctionContext.conjunction
-- uid: Viewer.Query.QueryParser.ConjunctionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.ConjunctionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.ConjunctionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.ConjunctionContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.ConjunctionContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.ConjunctionContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ConjunctionContext.EnterRule
-  nameWithType: QueryParser.ConjunctionContext.EnterRule
-- uid: Viewer.Query.QueryParser.ConjunctionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.ConjunctionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.ConjunctionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.ConjunctionContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.ConjunctionContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.ConjunctionContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ConjunctionContext.ExitRule
-  nameWithType: QueryParser.ConjunctionContext.ExitRule
 - uid: Viewer.Query.QueryParser.ConjunctionContext.literal
   name: literal()
   href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_literal
@@ -9284,19 +9097,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.EntryContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.EntryContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.EntryContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.EntryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.EntryContext.html#Viewer_Query_QueryParser_EntryContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.EntryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.EntryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.EntryContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.EntryContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.EntryContext.html#Viewer_Query_QueryParser_EntryContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.EntryContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.EntryContext.EnterRule
-  nameWithType: QueryParser.EntryContext.EnterRule
 - uid: Viewer.Query.QueryParser.EntryContext.Eof
   name: Eof()
   href: api/Viewer.Query.QueryParser.EntryContext.html#Viewer_Query_QueryParser_EntryContext_Eof
@@ -9310,19 +9110,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.EntryContext.Eof
   nameWithType: QueryParser.EntryContext.Eof
-- uid: Viewer.Query.QueryParser.EntryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.EntryContext.html#Viewer_Query_QueryParser_EntryContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.EntryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.EntryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.EntryContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.EntryContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.EntryContext.html#Viewer_Query_QueryParser_EntryContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.EntryContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.EntryContext.ExitRule
-  nameWithType: QueryParser.EntryContext.ExitRule
 - uid: Viewer.Query.QueryParser.EntryContext.queryExpression
   name: queryExpression()
   href: api/Viewer.Query.QueryParser.EntryContext.html#Viewer_Query_QueryParser_EntryContext_queryExpression
@@ -9410,32 +9197,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.ExpressionContext.ADD_SUB
   nameWithType: QueryParser.ExpressionContext.ADD_SUB
-- uid: Viewer.Query.QueryParser.ExpressionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.ExpressionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.ExpressionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.ExpressionContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.ExpressionContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.ExpressionContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ExpressionContext.EnterRule
-  nameWithType: QueryParser.ExpressionContext.EnterRule
-- uid: Viewer.Query.QueryParser.ExpressionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.ExpressionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.ExpressionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.ExpressionContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.ExpressionContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.ExpressionContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ExpressionContext.ExitRule
-  nameWithType: QueryParser.ExpressionContext.ExitRule
 - uid: Viewer.Query.QueryParser.ExpressionContext.expression
   name: expression()
   href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_expression
@@ -9549,32 +9310,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.FactorContext.COMPLEX_ID
   nameWithType: QueryParser.FactorContext.COMPLEX_ID
-- uid: Viewer.Query.QueryParser.FactorContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.FactorContext.html#Viewer_Query_QueryParser_FactorContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.FactorContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.FactorContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.FactorContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.FactorContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.FactorContext.html#Viewer_Query_QueryParser_FactorContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.FactorContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.FactorContext.EnterRule
-  nameWithType: QueryParser.FactorContext.EnterRule
-- uid: Viewer.Query.QueryParser.FactorContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.FactorContext.html#Viewer_Query_QueryParser_FactorContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.FactorContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.FactorContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.FactorContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.FactorContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.FactorContext.html#Viewer_Query_QueryParser_FactorContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.FactorContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.FactorContext.ExitRule
-  nameWithType: QueryParser.FactorContext.ExitRule
 - uid: Viewer.Query.QueryParser.FactorContext.ID
   name: ID()
   href: api/Viewer.Query.QueryParser.FactorContext.html#Viewer_Query_QueryParser_FactorContext_ID
@@ -9758,32 +9493,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.IntersectionContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.IntersectionContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.IntersectionContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.IntersectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.IntersectionContext.html#Viewer_Query_QueryParser_IntersectionContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.IntersectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.IntersectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.IntersectionContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.IntersectionContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.IntersectionContext.html#Viewer_Query_QueryParser_IntersectionContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.IntersectionContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.IntersectionContext.EnterRule
-  nameWithType: QueryParser.IntersectionContext.EnterRule
-- uid: Viewer.Query.QueryParser.IntersectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.IntersectionContext.html#Viewer_Query_QueryParser_IntersectionContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.IntersectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.IntersectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.IntersectionContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.IntersectionContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.IntersectionContext.html#Viewer_Query_QueryParser_IntersectionContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.IntersectionContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.IntersectionContext.ExitRule
-  nameWithType: QueryParser.IntersectionContext.ExitRule
 - uid: Viewer.Query.QueryParser.IntersectionContext.INTERSECT
   name: INTERSECT()
   href: api/Viewer.Query.QueryParser.IntersectionContext.html#Viewer_Query_QueryParser_IntersectionContext_INTERSECT
@@ -9896,32 +9605,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.LiteralContext.comparison
   nameWithType: QueryParser.LiteralContext.comparison
-- uid: Viewer.Query.QueryParser.LiteralContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.LiteralContext.html#Viewer_Query_QueryParser_LiteralContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.LiteralContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.LiteralContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.LiteralContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.LiteralContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.LiteralContext.html#Viewer_Query_QueryParser_LiteralContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.LiteralContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.LiteralContext.EnterRule
-  nameWithType: QueryParser.LiteralContext.EnterRule
-- uid: Viewer.Query.QueryParser.LiteralContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.LiteralContext.html#Viewer_Query_QueryParser_LiteralContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.LiteralContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.LiteralContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.LiteralContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.LiteralContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.LiteralContext.html#Viewer_Query_QueryParser_LiteralContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.LiteralContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.LiteralContext.ExitRule
-  nameWithType: QueryParser.LiteralContext.ExitRule
 - uid: Viewer.Query.QueryParser.LiteralContext.NOT
   name: NOT()
   href: api/Viewer.Query.QueryParser.LiteralContext.html#Viewer_Query_QueryParser_LiteralContext_NOT
@@ -10008,32 +9691,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.MultiplicationContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.MultiplicationContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.MultiplicationContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.MultiplicationContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.MultiplicationContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.MultiplicationContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.MultiplicationContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.MultiplicationContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.MultiplicationContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.MultiplicationContext.EnterRule
-  nameWithType: QueryParser.MultiplicationContext.EnterRule
-- uid: Viewer.Query.QueryParser.MultiplicationContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.MultiplicationContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.MultiplicationContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.MultiplicationContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.MultiplicationContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.MultiplicationContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.MultiplicationContext.ExitRule
-  nameWithType: QueryParser.MultiplicationContext.ExitRule
 - uid: Viewer.Query.QueryParser.MultiplicationContext.factor
   name: factor()
   href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_factor
@@ -10153,32 +9810,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.OptionalDirectionContext.DIRECTION
   nameWithType: QueryParser.OptionalDirectionContext.DIRECTION
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OptionalDirectionContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule
-  nameWithType: QueryParser.OptionalDirectionContext.EnterRule
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OptionalDirectionContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule
-  nameWithType: QueryParser.OptionalDirectionContext.ExitRule
 - uid: Viewer.Query.QueryParser.OptionalDirectionContext.RuleIndex
   name: RuleIndex
   href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_RuleIndex
@@ -10253,32 +9884,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.OptionalOrderByContext.BY
   nameWithType: QueryParser.OptionalOrderByContext.BY
-- uid: Viewer.Query.QueryParser.OptionalOrderByContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OptionalOrderByContext.html#Viewer_Query_QueryParser_OptionalOrderByContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OptionalOrderByContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OptionalOrderByContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OptionalOrderByContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OptionalOrderByContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.OptionalOrderByContext.html#Viewer_Query_QueryParser_OptionalOrderByContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalOrderByContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalOrderByContext.EnterRule
-  nameWithType: QueryParser.OptionalOrderByContext.EnterRule
-- uid: Viewer.Query.QueryParser.OptionalOrderByContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OptionalOrderByContext.html#Viewer_Query_QueryParser_OptionalOrderByContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OptionalOrderByContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OptionalOrderByContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OptionalOrderByContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OptionalOrderByContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.OptionalOrderByContext.html#Viewer_Query_QueryParser_OptionalOrderByContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalOrderByContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalOrderByContext.ExitRule
-  nameWithType: QueryParser.OptionalOrderByContext.ExitRule
 - uid: Viewer.Query.QueryParser.OptionalOrderByContext.ORDER
   name: ORDER()
   href: api/Viewer.Query.QueryParser.OptionalOrderByContext.html#Viewer_Query_QueryParser_OptionalOrderByContext_ORDER
@@ -10366,32 +9971,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.OptionalWhereContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.OptionalWhereContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.OptionalWhereContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.OptionalWhereContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OptionalWhereContext.html#Viewer_Query_QueryParser_OptionalWhereContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OptionalWhereContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OptionalWhereContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OptionalWhereContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OptionalWhereContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.OptionalWhereContext.html#Viewer_Query_QueryParser_OptionalWhereContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalWhereContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalWhereContext.EnterRule
-  nameWithType: QueryParser.OptionalWhereContext.EnterRule
-- uid: Viewer.Query.QueryParser.OptionalWhereContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OptionalWhereContext.html#Viewer_Query_QueryParser_OptionalWhereContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OptionalWhereContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OptionalWhereContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OptionalWhereContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OptionalWhereContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.OptionalWhereContext.html#Viewer_Query_QueryParser_OptionalWhereContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalWhereContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalWhereContext.ExitRule
-  nameWithType: QueryParser.OptionalWhereContext.ExitRule
 - uid: Viewer.Query.QueryParser.OptionalWhereContext.predicate
   name: predicate()
   href: api/Viewer.Query.QueryParser.OptionalWhereContext.html#Viewer_Query_QueryParser_OptionalWhereContext_predicate
@@ -10504,32 +10083,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.OrderByKeyContext.comparison
   nameWithType: QueryParser.OrderByKeyContext.comparison
-- uid: Viewer.Query.QueryParser.OrderByKeyContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OrderByKeyContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OrderByKeyContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OrderByKeyContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OrderByKeyContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.OrderByKeyContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OrderByKeyContext.EnterRule
-  nameWithType: QueryParser.OrderByKeyContext.EnterRule
-- uid: Viewer.Query.QueryParser.OrderByKeyContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OrderByKeyContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OrderByKeyContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OrderByKeyContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OrderByKeyContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.OrderByKeyContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OrderByKeyContext.ExitRule
-  nameWithType: QueryParser.OrderByKeyContext.ExitRule
 - uid: Viewer.Query.QueryParser.OrderByKeyContext.optionalDirection
   name: optionalDirection()
   href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_optionalDirection
@@ -10604,32 +10157,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.OrderByListContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.OrderByListContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.OrderByListContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.OrderByListContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OrderByListContext.html#Viewer_Query_QueryParser_OrderByListContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OrderByListContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OrderByListContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OrderByListContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OrderByListContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.OrderByListContext.html#Viewer_Query_QueryParser_OrderByListContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.OrderByListContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OrderByListContext.EnterRule
-  nameWithType: QueryParser.OrderByListContext.EnterRule
-- uid: Viewer.Query.QueryParser.OrderByListContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OrderByListContext.html#Viewer_Query_QueryParser_OrderByListContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OrderByListContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OrderByListContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OrderByListContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OrderByListContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.OrderByListContext.html#Viewer_Query_QueryParser_OrderByListContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.OrderByListContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OrderByListContext.ExitRule
-  nameWithType: QueryParser.OrderByListContext.ExitRule
 - uid: Viewer.Query.QueryParser.OrderByListContext.orderByKey
   name: orderByKey()
   href: api/Viewer.Query.QueryParser.OrderByListContext.html#Viewer_Query_QueryParser_OrderByListContext_orderByKey
@@ -10748,32 +10275,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.PredicateContext.conjunction
   nameWithType: QueryParser.PredicateContext.conjunction
-- uid: Viewer.Query.QueryParser.PredicateContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.PredicateContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.PredicateContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.PredicateContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.PredicateContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.PredicateContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.PredicateContext.EnterRule
-  nameWithType: QueryParser.PredicateContext.EnterRule
-- uid: Viewer.Query.QueryParser.PredicateContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.PredicateContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.PredicateContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.PredicateContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.PredicateContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.PredicateContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.PredicateContext.ExitRule
-  nameWithType: QueryParser.PredicateContext.ExitRule
 - uid: Viewer.Query.QueryParser.PredicateContext.OR
   name: OR()
   href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_OR
@@ -10861,32 +10362,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.QueryContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.QueryContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.QueryContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.QueryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.QueryContext.html#Viewer_Query_QueryParser_QueryContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.QueryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.QueryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.QueryContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.QueryContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.QueryContext.html#Viewer_Query_QueryParser_QueryContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.QueryContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.QueryContext.EnterRule
-  nameWithType: QueryParser.QueryContext.EnterRule
-- uid: Viewer.Query.QueryParser.QueryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.QueryContext.html#Viewer_Query_QueryParser_QueryContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.QueryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.QueryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.QueryContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.QueryContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.QueryContext.html#Viewer_Query_QueryParser_QueryContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.QueryContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.QueryContext.ExitRule
-  nameWithType: QueryParser.QueryContext.ExitRule
 - uid: Viewer.Query.QueryParser.QueryContext.optionalOrderBy
   name: optionalOrderBy()
   href: api/Viewer.Query.QueryParser.QueryContext.html#Viewer_Query_QueryParser_QueryContext_optionalOrderBy
@@ -10974,32 +10449,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.QueryExpressionContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.QueryExpressionContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.QueryExpressionContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.QueryExpressionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.QueryExpressionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.QueryExpressionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.QueryExpressionContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.QueryExpressionContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.QueryExpressionContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.QueryExpressionContext.EnterRule
-  nameWithType: QueryParser.QueryExpressionContext.EnterRule
-- uid: Viewer.Query.QueryParser.QueryExpressionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.QueryExpressionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.QueryExpressionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.QueryExpressionContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.QueryExpressionContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.QueryExpressionContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.QueryExpressionContext.ExitRule
-  nameWithType: QueryParser.QueryExpressionContext.ExitRule
 - uid: Viewer.Query.QueryParser.QueryExpressionContext.intersection
   name: intersection()
   href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_intersection
@@ -11100,32 +10549,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.QueryFactorContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.QueryFactorContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.QueryFactorContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.QueryFactorContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.QueryFactorContext.html#Viewer_Query_QueryParser_QueryFactorContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.QueryFactorContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.QueryFactorContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.QueryFactorContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.QueryFactorContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.QueryFactorContext.html#Viewer_Query_QueryParser_QueryFactorContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.QueryFactorContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.QueryFactorContext.EnterRule
-  nameWithType: QueryParser.QueryFactorContext.EnterRule
-- uid: Viewer.Query.QueryParser.QueryFactorContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.QueryFactorContext.html#Viewer_Query_QueryParser_QueryFactorContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.QueryFactorContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.QueryFactorContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.QueryFactorContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.QueryFactorContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.QueryFactorContext.html#Viewer_Query_QueryParser_QueryFactorContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.QueryFactorContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.QueryFactorContext.ExitRule
-  nameWithType: QueryParser.QueryFactorContext.ExitRule
 - uid: Viewer.Query.QueryParser.QueryFactorContext.LPAREN
   name: LPAREN()
   href: api/Viewer.Query.QueryParser.QueryFactorContext.html#Viewer_Query_QueryParser_QueryFactorContext_LPAREN
@@ -11440,45 +10863,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.SourceContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.SourceContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.SourceContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.SourceContext.COMPLEX_ID
-  name: COMPLEX_ID()
-  href: api/Viewer.Query.QueryParser.SourceContext.html#Viewer_Query_QueryParser_SourceContext_COMPLEX_ID
-  commentId: M:Viewer.Query.QueryParser.SourceContext.COMPLEX_ID
-  fullName: Viewer.Query.QueryParser.SourceContext.COMPLEX_ID()
-  nameWithType: QueryParser.SourceContext.COMPLEX_ID()
-- uid: Viewer.Query.QueryParser.SourceContext.COMPLEX_ID*
-  name: COMPLEX_ID
-  href: api/Viewer.Query.QueryParser.SourceContext.html#Viewer_Query_QueryParser_SourceContext_COMPLEX_ID_
-  commentId: Overload:Viewer.Query.QueryParser.SourceContext.COMPLEX_ID
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.SourceContext.COMPLEX_ID
-  nameWithType: QueryParser.SourceContext.COMPLEX_ID
-- uid: Viewer.Query.QueryParser.SourceContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.SourceContext.html#Viewer_Query_QueryParser_SourceContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.SourceContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.SourceContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.SourceContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.SourceContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.SourceContext.html#Viewer_Query_QueryParser_SourceContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.SourceContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.SourceContext.EnterRule
-  nameWithType: QueryParser.SourceContext.EnterRule
-- uid: Viewer.Query.QueryParser.SourceContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.SourceContext.html#Viewer_Query_QueryParser_SourceContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.SourceContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.SourceContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.SourceContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.SourceContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.SourceContext.html#Viewer_Query_QueryParser_SourceContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.SourceContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.SourceContext.ExitRule
-  nameWithType: QueryParser.SourceContext.ExitRule
 - uid: Viewer.Query.QueryParser.SourceContext.ID
   name: ID()
   href: api/Viewer.Query.QueryParser.SourceContext.html#Viewer_Query_QueryParser_SourceContext_ID
@@ -11617,32 +11001,6 @@ references:
   fullName.vb: Viewer.Query.QueryParser.UnorderedQueryContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
   nameWithType: QueryParser.UnorderedQueryContext.Accept<TResult>(IParseTreeVisitor<TResult>)
   nameWithType.vb: QueryParser.UnorderedQueryContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.UnorderedQueryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.UnorderedQueryContext.html#Viewer_Query_QueryParser_UnorderedQueryContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.UnorderedQueryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.UnorderedQueryContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.UnorderedQueryContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.UnorderedQueryContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.UnorderedQueryContext.html#Viewer_Query_QueryParser_UnorderedQueryContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.UnorderedQueryContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.UnorderedQueryContext.EnterRule
-  nameWithType: QueryParser.UnorderedQueryContext.EnterRule
-- uid: Viewer.Query.QueryParser.UnorderedQueryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.UnorderedQueryContext.html#Viewer_Query_QueryParser_UnorderedQueryContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.UnorderedQueryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.UnorderedQueryContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.UnorderedQueryContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.UnorderedQueryContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.UnorderedQueryContext.html#Viewer_Query_QueryParser_UnorderedQueryContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.UnorderedQueryContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.UnorderedQueryContext.ExitRule
-  nameWithType: QueryParser.UnorderedQueryContext.ExitRule
 - uid: Viewer.Query.QueryParser.UnorderedQueryContext.optionalWhere
   name: optionalWhere()
   href: api/Viewer.Query.QueryParser.UnorderedQueryContext.html#Viewer_Query_QueryParser_UnorderedQueryContext_optionalWhere
@@ -16539,6 +15897,19 @@ references:
   commentId: T:Viewer.UI.Images.EntityViewPathComparer
   fullName: Viewer.UI.Images.EntityViewPathComparer
   nameWithType: EntityViewPathComparer
+- uid: Viewer.UI.Images.EntityViewPathComparer.Default
+  name: Default
+  href: api/Viewer.UI.Images.EntityViewPathComparer.html#Viewer_UI_Images_EntityViewPathComparer_Default
+  commentId: P:Viewer.UI.Images.EntityViewPathComparer.Default
+  fullName: Viewer.UI.Images.EntityViewPathComparer.Default
+  nameWithType: EntityViewPathComparer.Default
+- uid: Viewer.UI.Images.EntityViewPathComparer.Default*
+  name: Default
+  href: api/Viewer.UI.Images.EntityViewPathComparer.html#Viewer_UI_Images_EntityViewPathComparer_Default_
+  commentId: Overload:Viewer.UI.Images.EntityViewPathComparer.Default
+  isSpec: "True"
+  fullName: Viewer.UI.Images.EntityViewPathComparer.Default
+  nameWithType: EntityViewPathComparer.Default
 - uid: Viewer.UI.Images.EntityViewPathComparer.Equals(Viewer.UI.Images.EntityView,Viewer.UI.Images.EntityView)
   name: Equals(EntityView, EntityView)
   href: api/Viewer.UI.Images.EntityViewPathComparer.html#Viewer_UI_Images_EntityViewPathComparer_Equals_Viewer_UI_Images_EntityView_Viewer_UI_Images_EntityView_
@@ -18111,6 +17482,31 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Tasks.TaskLoader.CreateLoader
   nameWithType: TaskLoader.CreateLoader
+- uid: Viewer.UI.UserSettings
+  name: Viewer.UI.UserSettings
+  href: api/Viewer.UI.UserSettings.html
+  commentId: N:Viewer.UI.UserSettings
+  fullName: Viewer.UI.UserSettings
+  nameWithType: Viewer.UI.UserSettings
+- uid: Viewer.UI.UserSettings.UserSettingsComponent
+  name: UserSettingsComponent
+  href: api/Viewer.UI.UserSettings.UserSettingsComponent.html
+  commentId: T:Viewer.UI.UserSettings.UserSettingsComponent
+  fullName: Viewer.UI.UserSettings.UserSettingsComponent
+  nameWithType: UserSettingsComponent
+- uid: Viewer.UI.UserSettings.UserSettingsComponent.OnStartup(Viewer.Core.IViewerApplication)
+  name: OnStartup(IViewerApplication)
+  href: api/Viewer.UI.UserSettings.UserSettingsComponent.html#Viewer_UI_UserSettings_UserSettingsComponent_OnStartup_Viewer_Core_IViewerApplication_
+  commentId: M:Viewer.UI.UserSettings.UserSettingsComponent.OnStartup(Viewer.Core.IViewerApplication)
+  fullName: Viewer.UI.UserSettings.UserSettingsComponent.OnStartup(Viewer.Core.IViewerApplication)
+  nameWithType: UserSettingsComponent.OnStartup(IViewerApplication)
+- uid: Viewer.UI.UserSettings.UserSettingsComponent.OnStartup*
+  name: OnStartup
+  href: api/Viewer.UI.UserSettings.UserSettingsComponent.html#Viewer_UI_UserSettings_UserSettingsComponent_OnStartup_
+  commentId: Overload:Viewer.UI.UserSettings.UserSettingsComponent.OnStartup
+  isSpec: "True"
+  fullName: Viewer.UI.UserSettings.UserSettingsComponent.OnStartup
+  nameWithType: UserSettingsComponent.OnStartup
 - uid: Viewer.ViewerApplication
   name: ViewerApplication
   href: api/Viewer.ViewerApplication.html

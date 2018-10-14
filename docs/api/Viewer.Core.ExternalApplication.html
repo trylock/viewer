@@ -152,9 +152,6 @@
                           <li class="">
                             <a href="Viewer.Core.Collections.EnumerableExtensions.html" title="EnumerableExtensions" class="">EnumerableExtensions</a>
                           </li>
-                          <li class="">
-                            <a href="Viewer.Core.Collections.HistoryCollection-1.html" title="HistoryCollection&lt;T&gt;" class="">HistoryCollection&lt;T&gt;</a>
-                          </li>
                         </ul>  </li>
                     <li class="">
                       <span class="expand-stub"></span>
@@ -1025,6 +1022,15 @@
                         </ul>  </li>
                     <li class="">
                       <span class="expand-stub"></span>
+                      <a href="Viewer.UI.UserSettings.html" title="Viewer.UI.UserSettings" class="">Viewer.UI.UserSettings</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.UI.UserSettings.UserSettingsComponent.html" title="UserSettingsComponent" class="">UserSettingsComponent</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
                       <a href="ViewerTheme.html" title="ViewerTheme" class="">ViewerTheme</a>
                         
                         <ul class="nav level2">
@@ -1086,15 +1092,33 @@ public class ExternalApplication</code></pre>
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_AllowMultiplePaths.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.AllowMultiplePaths%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L74">View Source</a>
+  </span>
+  <a id="Viewer_Core_ExternalApplication_AllowMultiplePaths_" data-uid="Viewer.Core.ExternalApplication.AllowMultiplePaths*"></a>
+  <h4 id="Viewer_Core_ExternalApplication_AllowMultiplePaths" data-uid="Viewer.Core.ExternalApplication.AllowMultiplePaths">AllowMultiplePaths</h4>
+  <div class="markdown level1 summary"><p>true iff this program can be run with multiple paths as its argument</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AllowMultiplePaths { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <p><span class="xref">System.Boolean</span></p>
+  <p>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_Arguments.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.Arguments%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L39">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L57">View Source</a>
   </span>
   <a id="Viewer_Core_ExternalApplication_Arguments_" data-uid="Viewer.Core.ExternalApplication.Arguments*"></a>
   <h4 id="Viewer_Core_ExternalApplication_Arguments" data-uid="Viewer.Core.ExternalApplication.Arguments">Arguments</h4>
-  <div class="markdown level1 summary"><p>Command line arguments of Path.
-Special string {0} will be replaced with a path of a file to open.</p>
+  <div class="markdown level1 summary"><p>Command line arguments provided after <a class="xref" href="Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Command">Command</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1109,11 +1133,12 @@ Special string {0} will be replaced with a path of a file to open.</p>
     <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_Command.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.Command%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L33">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L52">View Source</a>
   </span>
   <a id="Viewer_Core_ExternalApplication_Command_" data-uid="Viewer.Core.ExternalApplication.Command*"></a>
   <h4 id="Viewer_Core_ExternalApplication_Command" data-uid="Viewer.Core.ExternalApplication.Command">Command</h4>
-  <div class="markdown level1 summary"><p>Command to execute without arguments (i.e. path to executable or name of a system executable)</p>
+  <div class="markdown level1 summary"><p>Command to execute without arguments (i.e., path to executable or name of a system
+executable)</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1128,11 +1153,11 @@ Special string {0} will be replaced with a path of a file to open.</p>
     <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_Name.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L28">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L32">View Source</a>
   </span>
   <a id="Viewer_Core_ExternalApplication_Name_" data-uid="Viewer.Core.ExternalApplication.Name*"></a>
   <h4 id="Viewer_Core_ExternalApplication_Name" data-uid="Viewer.Core.ExternalApplication.Name">Name</h4>
-  <div class="markdown level1 summary"><p>Name of the operation shown to the user (i.e. &quot;Open in Explorer&quot;)</p>
+  <div class="markdown level1 summary"><p>Name of the operation shown to the user (e.g. &quot;Open in Explorer&quot;)</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1142,25 +1167,84 @@ Special string {0} will be replaced with a path of a file to open.</p>
   <h5 class="propertyValue">Property Value</h5>
   <p><span class="xref">System.String</span></p>
   <p>
-  <h3 id="methods">Methods
-  </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_Run_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.Run(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_RunWithDirectories.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.RunWithDirectories%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L51">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L68">View Source</a>
   </span>
-  <a id="Viewer_Core_ExternalApplication_Run_" data-uid="Viewer.Core.ExternalApplication.Run*"></a>
-  <h4 id="Viewer_Core_ExternalApplication_Run_System_String_" data-uid="Viewer.Core.ExternalApplication.Run(System.String)">Run(String)</h4>
-  <div class="markdown level1 summary"><p>Run application with <code data-dev-comment-type="paramref" class="paramref">path</code> as an argument.
-<span class="xref">System.String.Format(System.String,System.Object)</span> is used to format <a class="xref" href="Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Arguments">Arguments</a> where <code data-dev-comment-type="paramref" class="paramref">path</code> is a parameter.
-The result is then passed as arguments to <a class="xref" href="Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Command">Command</a></p>
+  <a id="Viewer_Core_ExternalApplication_RunWithDirectories_" data-uid="Viewer.Core.ExternalApplication.RunWithDirectories*"></a>
+  <h4 id="Viewer_Core_ExternalApplication_RunWithDirectories" data-uid="Viewer.Core.ExternalApplication.RunWithDirectories">RunWithDirectories</h4>
+  <div class="markdown level1 summary"><p>true iff this program can be run with directories</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Run(string path)</code></pre>
+    <pre><code class="lang-csharp hljs">public bool RunWithDirectories { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <p><span class="xref">System.Boolean</span></p>
+  <p>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_RunWithFiles.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.RunWithFiles%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L62">View Source</a>
+  </span>
+  <a id="Viewer_Core_ExternalApplication_RunWithFiles_" data-uid="Viewer.Core.ExternalApplication.RunWithFiles*"></a>
+  <h4 id="Viewer_Core_ExternalApplication_RunWithFiles" data-uid="Viewer.Core.ExternalApplication.RunWithFiles">RunWithFiles</h4>
+  <div class="markdown level1 summary"><p>true iff this program can be run with files</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RunWithFiles { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <p><span class="xref">System.Boolean</span></p>
+  <p>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_GetImage.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.GetImage%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L81">View Source</a>
+  </span>
+  <a id="Viewer_Core_ExternalApplication_GetImage_" data-uid="Viewer.Core.ExternalApplication.GetImage*"></a>
+  <h4 id="Viewer_Core_ExternalApplication_GetImage" data-uid="Viewer.Core.ExternalApplication.GetImage">GetImage()</h4>
+  <div class="markdown level1 summary"><p>Get icon image associated with this program</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Image GetImage()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <span class="xref">System.Drawing.Image</span>
+  <p>Icon image or null</p>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication_Run_System_Collections_Generic_IEnumerable_System_String__.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication.Run(System.Collections.Generic.IEnumerable%7BSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L121">View Source</a>
+  </span>
+  <a id="Viewer_Core_ExternalApplication_Run_" data-uid="Viewer.Core.ExternalApplication.Run*"></a>
+  <h4 id="Viewer_Core_ExternalApplication_Run_System_Collections_Generic_IEnumerable_System_String__" data-uid="Viewer.Core.ExternalApplication.Run(System.Collections.Generic.IEnumerable{System.String})">Run(IEnumerable&lt;String&gt;)</h4>
+  <div class="markdown level1 summary"><p>Run application with <code data-dev-comment-type="paramref" class="paramref">paths</code> as arguments.
+<span class="xref">System.String.Format(System.String,System.Object)</span> is used to format <a class="xref" href="Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Arguments">Arguments</a>
+where <code data-dev-comment-type="paramref" class="paramref">paths</code> is a parameter. The result is then passed as arguments
+to <a class="xref" href="Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_Command">Command</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Run(IEnumerable&lt;string&gt; paths)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1173,13 +1257,22 @@ The result is then passed as arguments to <a class="xref" href="Viewer.Core.Exte
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">path</span></td>
-        <td><p>Path to open in this application</p>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">paths</span></td>
+        <td><p>Paths to open using this program/script</p>
 </td>
       </tr>
     </tbody>
   </table>
+  <h5 id="Viewer_Core_ExternalApplication_Run_System_Collections_Generic_IEnumerable_System_String___remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><div class="NOTE">
+<h5>Note</h5>
+<p>It is up to the caller to ensure that the <code data-dev-comment-type="paramref" class="paramref">paths</code> argument contains
+correct number of paths with correct type. This method does <strong>not</strong> use the
+<a class="xref" href="Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_RunWithFiles">RunWithFiles</a>, <a class="xref" href="Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_RunWithDirectories">RunWithDirectories</a> and
+<a class="xref" href="Viewer.Core.ExternalApplication.html#Viewer_Core_ExternalApplication_AllowMultiplePaths">AllowMultiplePaths</a> properties.</p>
+</div>
+</div>
   <h5 class="exceptions">Exceptions</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
@@ -1191,7 +1284,7 @@ The result is then passed as arguments to <a class="xref" href="Viewer.Core.Exte
     <tbody>
       <tr>
         <td><span class="xref">System.ArgumentNullException</span></td>
-        <td><p><code data-dev-comment-type="paramref" class="paramref">path</code> is null</p>
+        <td><p><code data-dev-comment-type="paramref" class="paramref">paths</code> is null</p>
 </td>
       </tr>
       <tr>
@@ -1206,7 +1299,7 @@ The result is then passed as arguments to <a class="xref" href="Viewer.Core.Exte
       </tr>
     </tbody>
   </table>
-  <h5 id="Viewer_Core_ExternalApplication_Run_System_String__seealso">See Also</h5>
+  <h5 id="Viewer_Core_ExternalApplication_Run_System_Collections_Generic_IEnumerable_System_String___seealso">See Also</h5>
   <div class="seealso">
       <div><span class="xref">System.Diagnostics.Process.Start(System.String,System.String)</span></div>
   </div>
@@ -1221,7 +1314,7 @@ The result is then passed as arguments to <a class="xref" href="Viewer.Core.Exte
                     <a href="https://github.com/trylock/viewer/new/dev/apiSpec/new?filename=Viewer_Core_ExternalApplication.md&amp;value=---%0Auid%3A%20Viewer.Core.ExternalApplication%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L22" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/dev/src/Viewer.Core/ExternalApplication.cs/#L24" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

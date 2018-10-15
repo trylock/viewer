@@ -17,18 +17,12 @@ namespace Viewer.UI.Images
     internal class RenameEventArgs : EventArgs
     {
         /// <summary>
-        /// Entity which should be renamed
-        /// </summary>
-        public EntityView Entity { get; }
-
-        /// <summary>
         /// New name of the file (just the name without directory separators and file extension)
         /// </summary>
         public string NewName { get; }
 
-        public RenameEventArgs(EntityView entity, string newName)
+        public RenameEventArgs(string newName)
         {
-            Entity = entity ?? throw new ArgumentNullException(nameof(entity));
             NewName = newName;
         }
     }
@@ -40,6 +34,19 @@ namespace Viewer.UI.Images
         public EntityEventArgs(EntityView entity)
         {
             Entity = entity ?? throw new ArgumentNullException(nameof(entity));
+        }
+    }
+
+    internal class ProgramEventArgs : EventArgs
+    {
+        /// <summary>
+        /// External application to run
+        /// </summary>
+        public ExternalApplication Program { get; }
+
+        public ProgramEventArgs(ExternalApplication program)
+        {
+            Program = program ?? throw new ArgumentNullException(nameof(program));
         }
     }
 
@@ -105,27 +112,47 @@ namespace Viewer.UI.Images
     /// View in which user can select items of type <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">Type of the items in selection</typeparam>
-    internal interface ISelectionView<out T>
+    internal interface ISelectionView<T> : IWindowView
     {
         /// <summary>
-        /// Event called when user starts a new range selection.
+        /// Event occurs whenever user releases a mouse button over this view
         /// </summary>
-        event MouseEventHandler SelectionBegin;
+        event MouseEventHandler ProcessMouseUp;
 
         /// <summary>
-        /// Event called when user end a range selection (i.e. releases LMB)
+        /// Event occurs whenever user presses a mouse button over this view
         /// </summary>
-        event MouseEventHandler SelectionEnd;
+        event MouseEventHandler ProcessMouseDown;
 
         /// <summary>
-        /// Event called when user moves with a mouse with active selection
+        /// Event occurs whenever user moves with a mouse cursor over this view
         /// </summary>
-        event MouseEventHandler SelectionDrag;
+        event MouseEventHandler ProcessMouseMove;
 
         /// <summary>
-        /// Event called when user selects a single item with a mouse click.
+        /// Event occurs whenever mouse cursor leaves this view
         /// </summary>
-        event EventHandler<EntityEventArgs> SelectItem;
+        event EventHandler ProcessMouseLeave;
+
+        /// <summary>
+        /// Event occurs whenever user presses a keyboard key down
+        /// </summary>
+        event KeyEventHandler HandleKeyDown;
+
+        /// <summary>
+        /// Event occurs whenever user releases a keyboard key
+        /// </summary>
+        event KeyEventHandler HandleKeyUp;
+
+        /// <summary>
+        /// List of items to show 
+        /// </summary>
+        List<T> Items { get; set; }
+
+        /// <summary>
+        /// Update all visible items in the <see cref="Items"/> collection.
+        /// </summary>
+        void UpdateItems();
 
         /// <summary>
         /// Draw rectangular selection area.
@@ -154,6 +181,27 @@ namespace Viewer.UI.Images
         ///     If there is no item at given location, it will return -1.
         /// </returns>
         T GetItemAt(Point location);
+
+        /// <summary>
+        /// Find an item whose distance is <paramref name="delta"/> items from
+        /// <paramref name="currentItem"/>.
+        /// </summary>
+        /// <param name="currentItem">Current item</param>
+        /// <param name="delta">
+        /// Distance from <paramref name="currentItem"/> (number of items in each dimension)
+        /// </param>
+        /// <returns>
+        /// Item which is <paramref name="delta"/> items away from <paramref name="currentItem"/>
+        /// or null if there is no such item.
+        /// </returns>
+        T FindItem(T currentItem, Point delta);
+
+        /// <summary>
+        /// Make sure <paramref name="item"/> is visible. If it is fully visible, this won't do
+        /// anything. Otherwise, it will scroll the view so that <paramref name="item"/> is visible
+        /// </summary>
+        /// <param name="item">Item which should be visible</param>
+        void EnsureItemVisible(T item);
     }
 
     internal interface IFileDropView
@@ -180,31 +228,18 @@ namespace Viewer.UI.Images
         /// </returns>
         Task<string> PickDirectoryAsync(IEnumerable<string> options);
     }
-
-    internal interface IImagesView : IWindowView, IPolledView, ISelectionView<EntityView>, IFileDropView
+    
+    internal interface IImagesView : IPolledView, ISelectionView<EntityView>, IFileDropView
     {
         /// <summary>
         /// Query history view
         /// </summary>
         IHistoryView History { get; }
-
-        event KeyEventHandler HandleKeyDown;
-        event KeyEventHandler HandleKeyUp;
-
-        /// <summary>
-        /// Event occurs when user moves cursor over an item.
-        /// </summary>
-        event EventHandler<EntityEventArgs> ItemHover;
-
-        /// <summary>
-        /// Event occurs whenever user clicks on an item in the grid.
-        /// </summary>
-        event EventHandler<EntityEventArgs> ItemClick;
-
+        
         /// <summary>
         /// Event occurs when user requests to edit file name
         /// </summary>
-        event EventHandler<EntityEventArgs> BeginEditItemName;
+        event EventHandler BeginEditItemName;
 
         /// <summary>
         /// Event occurs when user requests to cancel file name edit.
@@ -239,7 +274,12 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Event occurs when user tries to open an item
         /// </summary>
-        event EventHandler<EntityEventArgs> OpenItem;
+        event EventHandler OpenItem;
+
+        /// <summary>
+        /// Event occurs when user clicks on an item
+        /// </summary>
+        event EventHandler<EntityEventArgs> ItemClick;
 
         /// <summary>
         /// Event occurs when user tries to refresh current query.
@@ -252,6 +292,11 @@ namespace Viewer.UI.Images
         event EventHandler ShowQuery;
 
         /// <summary>
+        /// Event occurs when user requests to run a program on current selection
+        /// </summary>
+        event EventHandler<ProgramEventArgs> RunProgram;
+
+        /// <summary>
         /// Textual representation of the query of this component
         /// </summary>
         string Query { get; set; }
@@ -262,20 +307,10 @@ namespace Viewer.UI.Images
         IReadOnlyList<ExternalApplication> ContextOptions { get; set; }
 
         /// <summary>
-        /// List of items to show 
-        /// </summary>
-        List<EntityView> Items { get; set; }
-
-        /// <summary>
         /// Set an item size
         /// </summary>
         Size ItemSize { get; set; }
 
-        /// <summary>
-        /// Notify the view that the Items collection has changed.
-        /// </summary>
-        void UpdateItems();
-        
         /// <summary>
         /// Begin drag&amp;drop operation.
         /// </summary>

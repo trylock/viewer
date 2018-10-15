@@ -164,11 +164,9 @@
     <Compile Include="UI\BitmapMock.cs" />
     <Compile Include="UI\Explorer\ExplorerTest.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
-    <Compile Include="UI\Images\RangeSelectionStrategyTest.cs" />
     <Compile Include="UI\Images\ThumbnailLoaderTest.cs" />
     <Compile Include="UI\Images\LazyImageTest.cs" />
     <Compile Include="UI\Images\QueryEvaluatorTest.cs" />
-    <Compile Include="UI\Images\RectangleSelectionTest.cs" />
     <Compile Include="Images\ThumbnailGeneratorTest.cs" />
     <Compile Include="UI\Presentation\ImageWindowTest.cs" />
     <Compile Include="UI\QueryHistoryTest.cs" />

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core.Collections;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Data.Storage;
@@ -428,8 +429,11 @@ namespace Viewer.UI.Attributes
             {
                 return;
             }
-            
-            View.Suggestions = suggestions;
+
+            var setAttributeNames = View.Attributes
+                .Select(group => group.Value.Name)
+                .ToHashSet(StringComparer.CurrentCulture);
+            View.Suggestions = suggestions.Where(item => !setAttributeNames.Contains(item.Text));
         }
 
         private async void View_BeginValueEdit(object sender, NameEventArgs e)

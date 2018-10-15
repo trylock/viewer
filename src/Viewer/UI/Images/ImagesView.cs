@@ -50,14 +50,15 @@ namespace Viewer.UI.Images
             view.KeyDown += GridView_KeyDown;
             view.KeyUp += GridView_KeyUp;
             view.Resize += GridView_Resize;
+            view.PreviewKeyDown += GridView_PreviewKeyDown;
         }
-        
-        #region ISelectionView
 
-        public event MouseEventHandler SelectionBegin;
-        public event MouseEventHandler SelectionEnd;
-        public event MouseEventHandler SelectionDrag;
-        public event EventHandler<EntityEventArgs> SelectItem;
+        #region ISelectionView
+        
+        public event MouseEventHandler ProcessMouseUp;
+        public event MouseEventHandler ProcessMouseDown;
+        public event MouseEventHandler ProcessMouseMove;
+        public event EventHandler ProcessMouseLeave;
 
         public void ShowSelection(Rectangle bounds)
         {
@@ -77,6 +78,16 @@ namespace Viewer.UI.Images
         public EntityView GetItemAt(Point location)
         {
             return _view.GetItemAt(location);
+        }
+
+        public EntityView FindItem(EntityView currentItem, Point delta)
+        {
+            return _view.FindItem(currentItem, delta);
+        }
+
+        public void EnsureItemVisible(EntityView item)
+        {
+            _view.EnsureItemVisible(item);
         }
 
         #endregion
@@ -159,20 +170,13 @@ namespace Viewer.UI.Images
         #endregion 
 
         #region IImagesView
-
-        /// <summary>
-        /// Index of the last item user clicked on with left mouse button.
-        /// </summary>
-        private EntityView _activeItem = null;
-
+        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IHistoryView History => HistoryView;
 
         public event KeyEventHandler HandleKeyDown;
 
         public event KeyEventHandler HandleKeyUp;
-
-        public event EventHandler<EntityEventArgs> ItemHover;
-        public event EventHandler<EntityEventArgs> ItemClick;
 
         public event EventHandler CopyItems
         {
@@ -199,11 +203,13 @@ namespace Viewer.UI.Images
         }
 
         public event EventHandler ShowQuery;
-        public event EventHandler<EntityEventArgs> OpenItem;
         public event EventHandler CancelEditItemName;
         public event EventHandler BeginDragItems;
+        public event EventHandler BeginEditItemName;
+        public event EventHandler OpenItem;
         public event EventHandler<RenameEventArgs> RenameItem;
-        public event EventHandler<EntityEventArgs> BeginEditItemName;
+        public event EventHandler<EntityEventArgs> ItemClick;
+        public event EventHandler<ProgramEventArgs> RunProgram;
         
         public string Query { get; set; }
 
@@ -225,6 +231,8 @@ namespace Viewer.UI.Images
                 {
                     if ((string) item.Tag == "custom")
                     {
+                        item.Image?.Dispose();
+                        item.Image = null;
                         remove.Add(item);
                     }
                 }
@@ -235,23 +243,20 @@ namespace Viewer.UI.Images
                 }
 
                 // add new custom items
-                foreach (var option in _contextOptions)
+                foreach (var option in _contextOptions.Reverse())
                 {
                     var optionCapture = option;
                     var item = new ToolStripMenuItem(option.Name)
                     {
+                        Image = optionCapture.GetImage(),
                         Tag = "custom",
                     };
                     item.Click += (sender, args) =>
                     {
-                        if (_activeItem == null)
-                        {
-                            return;
-                        }
-
-                        optionCapture.Run(_activeItem.FullPath);
+                        RunProgram?.Invoke(this, 
+                            new ProgramEventArgs(optionCapture));
                     };
-                    ItemContextMenu.Items.Insert(1, item);
+                    ItemContextMenu.Items.Insert(2, item);
                 }
             }
         }
@@ -308,12 +313,6 @@ namespace Viewer.UI.Images
 
         #region GridView Events
         
-        // internal state changed by GridView events 
-        private bool _selectItemTriggered = false;
-        private bool _isSelectionActive = false;
-        private bool _isDragging = false;
-        private Point _dragOrigin;
-
         /// <summary>
         /// Distance in pixels after which we can begin the drag operation
         /// </summary>
@@ -334,6 +333,9 @@ namespace Viewer.UI.Images
                 location.Y + _view.Location.Y
             );
         }
+
+        private bool _isDragging;
+        private Point _dragOrigin;
         
         private void GridView_MouseDown(object sender, MouseEventArgs e)
         {
@@ -346,131 +348,49 @@ namespace Viewer.UI.Images
             {
                 HistoryView.GoForward();
             }
-            
-            // process events on grid view item
+
             var location = _view.UnprojectLocation(e.Location);
             var item = _view.GetItemAt(location);
             if (item != null)
             {
-                // set last item user clicked on using any button
-                _activeItem = item;
-                
-                if (e.Button.HasFlag(MouseButtons.Left))
-                {
-                    // preview the photo
-                    ItemClick?.Invoke(sender, new EntityEventArgs(item));
+                ItemClick?.Invoke(sender, new EntityEventArgs(item));
 
-                    if (item.State != EntityViewState.Selected)
-                    {
-                        SelectItem?.Invoke(sender, new EntityEventArgs(item));
-                        _selectItemTriggered = true;
-                    }
+                _isDragging = true;
+                _dragOrigin = location;
+            }
 
-                    // the MouseMove event will determine whether we will select this item
-                    // on MouseUp or drag the whole selection on MouseMove
-                    _isDragging = true;
-                    _dragOrigin = location;
-                }
-                else if (e.Button.HasFlag(MouseButtons.Right))
-                {
-                    if (item.State != EntityViewState.Selected)
-                    {
-                        SelectItem?.Invoke(sender, new EntityEventArgs(item));
-                    }
-                    else
-                    {
-                        // just open context menu for the whole selection
-                    }
-                }
-            }
-            else // there is no item at current mouse position
-            {
-                if (e.Button.HasFlag(MouseButtons.Left))
-                {
-                    // start a range selection
-                    _isSelectionActive = true;
-                    SelectionBegin?.Invoke(sender,
-                        new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-                }
-            }
+            ProcessMouseDown?.Invoke(sender, 
+                new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
         }
 
         private void GridView_MouseUp(object sender, MouseEventArgs e)
         {
-            // finish selection
-            if (_isSelectionActive)
-            {
-                var location = _view.UnprojectLocation(e.Location);
-                SelectionEnd?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-                _isSelectionActive = false;
-            }
-            else if (e.Button.HasFlag(MouseButtons.Left))
-            {
-                // select item
-                if (_activeItem != null && !_selectItemTriggered)
-                {
-                    SelectItem?.Invoke(sender, new EntityEventArgs(_activeItem));
-                }
-            }
+            var location = _view.UnprojectLocation(e.Location);
+            ProcessMouseUp?.Invoke(sender,
+                new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
 
-            // reset state
             _isDragging = false;
-            _selectItemTriggered = false;
         }
         
         private void GridView_MouseMove(object sender, MouseEventArgs e)
         {
             var location = _view.UnprojectLocation(e.Location);
-            if (_isSelectionActive)
+            ProcessMouseMove?.Invoke(sender,
+                new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+            
+            if (_isDragging)
             {
-                SelectionDrag?.Invoke(sender, new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-
-                // scroll up, down if we are outside of the control area
-                if (e.Button.HasFlag(MouseButtons.Left))
+                const int threshold = BeginDragThreshold * BeginDragThreshold;
+                if (_dragOrigin.DistanceSquaredTo(location) > threshold)
                 {
-                    var delta = 0;
-                    if (e.Location.Y < 0)
-                    {
-                        // scroll up
-                        delta = 10;
-                    }
-                    else if (e.Location.Y > ClientSize.Height)
-                    {
-                        // scroll down
-                        delta = -10;
-                    }
-                    
-                    if (delta != 0)
-                    {
-                        _view.AutoScrollPosition = new Point(0, -_view.AutoScrollPosition.Y - delta);
-                    }
-                }
-            }
-            else
-            {
-                // trigger the ItemHover event
-                var item = _view.GetItemAt(location);
-                if (item == null)
-                {
-                    return;
-                }
-                
-                ItemHover?.Invoke(sender, new EntityEventArgs(item));
-
-                // begin the drag operation
-                if (_isDragging)
-                {
-                    var distanceSquared = location.DistanceSquaredTo(_dragOrigin);
-                    if (distanceSquared >= BeginDragThreshold * BeginDragThreshold)
-                    {
-                        BeginDragItems?.Invoke(sender, e);
-                    }
+                    BeginDragItems?.Invoke(sender, e);
                 }
             }
         }
 
         private void GridView_MouseLeave(object sender, EventArgs e)
         {
+            ProcessMouseLeave?.Invoke(sender, e);
             _isDragging = false;
         }
 
@@ -482,8 +402,8 @@ namespace Viewer.UI.Images
             {
                 return;
             }
-            
-            OpenItem?.Invoke(sender, new EntityEventArgs(item));
+
+            OpenItem?.Invoke(sender, e);
         }
         
         private void GridView_MouseWheel(object sender, MouseEventArgs e)
@@ -506,9 +426,38 @@ namespace Viewer.UI.Images
                 e.Data));
         }
 
+        private void GridView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            const Keys mask = Keys.Left | Keys.Right | Keys.Up | Keys.Down;
+            if ((e.KeyCode & mask) != 0)
+            {
+                e.IsInputKey = true;
+            }
+
+            // make sure to reject shortcut keys used by the context menu
+            foreach (var item in ItemContextMenu.Items)
+            {
+                if (!(item is ToolStripMenuItem menuItem))
+                {
+                    continue;
+                }
+
+                if (menuItem.ShortcutKeys != 0 && // check if this item has a shortcut
+                    (e.KeyData & menuItem.ShortcutKeys) == menuItem.ShortcutKeys)
+                {
+                    e.IsInputKey = false;
+                }
+            }
+        }
+        
         private void GridView_KeyDown(object sender, KeyEventArgs e)
         {
             HandleKeyDown?.Invoke(sender, e);
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                OpenItem?.Invoke(sender, e);
+            }
         }
 
         private void GridView_KeyUp(object sender, KeyEventArgs e)
@@ -541,29 +490,19 @@ namespace Viewer.UI.Images
             else if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
-                RenameItem?.Invoke(sender, new RenameEventArgs(_activeItem, NameTextBox.Text));
+                RenameItem?.Invoke(sender, new RenameEventArgs(NameTextBox.Text));
             }
         }
 
         private void OpenMenuItem_Click(object sender, EventArgs e)
         {
-            if (_activeItem == null)
-            {
-                return;
-            }
-            
-            OpenItem?.Invoke(sender, new EntityEventArgs(_activeItem));
+            OpenItem?.Invoke(sender, e);
         }
 
         private void RenameMenuItem_Click(object sender, EventArgs e)
         {
-            if (_activeItem == null)
-            {
-                return;
-            }
-            
             NameTextBox.BringToFront();
-            BeginEditItemName?.Invoke(sender, new EntityEventArgs(_activeItem));
+            BeginEditItemName?.Invoke(sender, e);
         }
 
         private void PasteMenuItem_Click(object sender, EventArgs e)

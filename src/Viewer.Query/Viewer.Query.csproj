@@ -113,6 +113,7 @@
     <Compile Include="Runtime.cs" />
     <Compile Include="Search\AccessedAttributesVisitor.cs" />
     <Compile Include="Expressions\ConstantReductionVisitor.cs" />
+    <Compile Include="Search\BreadthFirstSearchComparer.cs" />
     <Compile Include="Search\IPriorityFunction.cs" />
     <Compile Include="Search\PriorityFunction.cs" />
     <Compile Include="Search\SearchPriorityComparer.cs" />

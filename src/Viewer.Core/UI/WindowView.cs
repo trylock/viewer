@@ -14,8 +14,8 @@ namespace Viewer.Core.UI
     public class WindowView : DockContent, IWindowView
     {
         public event EventHandler CloseView;
-        public event EventHandler ViewGotFocus;
-        public event EventHandler ViewLostFocus;
+        public event EventHandler ViewActivated;
+        public event EventHandler ViewDeactivated;
         
         public Keys ModifierKeyState => ModifierKeys;
         
@@ -31,8 +31,27 @@ namespace Viewer.Core.UI
 
             // register event handlers
             FormClosed += OnFormClosed;
-            GotFocus += OnGotFocus;
-            DockPanel.ActiveContentChanged += DockPanelOnActiveContentChanged;
+        }
+
+        protected virtual void OnViewActivated()
+        {
+            ViewActivated?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnViewDeactivated()
+        {
+            ViewDeactivated?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected override void OnDockStateChanged(EventArgs e)
+        {
+            base.OnDockStateChanged(e);
+
+            if (DockPanel != null)
+            {
+                DockPanel.ActiveContentChanged -= DockPanelOnActiveContentChanged;
+                DockPanel.ActiveContentChanged += DockPanelOnActiveContentChanged;
+            }
         }
 
         protected override void OnClosed(EventArgs e)
@@ -133,7 +152,11 @@ namespace Viewer.Core.UI
 
             if (_previousActiveContent == this && DockPanel.ActiveContent != this)
             {
-                ViewLostFocus?.Invoke(sender, e);
+                OnViewDeactivated();
+            }
+            else if (_previousActiveContent != this && DockPanel.ActiveContent == this)
+            {
+                OnViewActivated();
             }
 
             _previousActiveContent = DockPanel.ActiveContent;
@@ -142,11 +165,6 @@ namespace Viewer.Core.UI
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
             CloseView?.Invoke(sender, e);
-        }
-
-        private void OnGotFocus(object sender, EventArgs e)
-        {
-            ViewGotFocus?.Invoke(sender, e);
         }
     }
 }

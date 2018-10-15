@@ -183,6 +183,10 @@ namespace Viewer.UI.QueryEditor
             {
                 OpenButton_Click(sender, e);
             }
+            else if (e.Control && e.KeyCode == Keys.Space)
+            {
+                SuggestionsRequested?.Invoke(sender, e);
+            }
         }
 
         private void QueryTextBox_TextChanged(object sender, EventArgs e)
@@ -207,7 +211,13 @@ namespace Viewer.UI.QueryEditor
                 return;
             }
 
-            if ((e.Change & (UpdateChange.Selection | UpdateChange.Content)) != 0)
+
+            if ((e.Change & UpdateChange.Selection) != 0)
+            {
+                _suggestionView.Hide();
+            }
+
+            if ((e.Change & UpdateChange.Content) != 0)
             {
                 SuggestionsRequested?.Invoke(sender, e);
             }

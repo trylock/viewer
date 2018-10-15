@@ -76,8 +76,8 @@ namespace Viewer.UI.Images
             _view.ProcessMouseUp += View_ProcessMouseUp;
             _view.ProcessMouseMove += View_ProcessMouseMove;
             _view.HandleKeyDown += View_HandleKeyDown;
-            _view.ViewGotFocus += View_ViewGotFocus;
-            _view.ViewLostFocus += View_ViewLostFocus;
+            _view.ViewActivated += View_ViewActivated;
+            _view.ViewDeactivated += View_ViewDeactivated;
         }
         
         public void Dispose()
@@ -86,8 +86,8 @@ namespace Viewer.UI.Images
             _view.ProcessMouseUp -= View_ProcessMouseUp;
             _view.ProcessMouseMove -= View_ProcessMouseMove;
             _view.HandleKeyDown -= View_HandleKeyDown;
-            _view.ViewGotFocus -= View_ViewGotFocus;
-            _view.ViewLostFocus -= View_ViewLostFocus;
+            _view.ViewActivated -= View_ViewActivated;
+            _view.ViewDeactivated -= View_ViewDeactivated;
         }
 
         public void Clear()
@@ -307,12 +307,12 @@ namespace Viewer.UI.Images
             ActiveItem = item;
         }
         
-        private void View_ViewGotFocus(object sender, EventArgs e)
+        private void View_ViewActivated(object sender, EventArgs e)
         {
             SetGlobalSelection();
         }
 
-        private void View_ViewLostFocus(object sender, EventArgs e)
+        private void View_ViewDeactivated(object sender, EventArgs e)
         {
             EndRangeSelection(_rangeOrigin);
             _view.HideSelection();

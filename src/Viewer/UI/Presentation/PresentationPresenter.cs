@@ -236,5 +236,16 @@ namespace Viewer.UI.Presentation
             View.Zoom = Math.Max(View.Zoom / ScaleStep, Math.Pow(ScaleStep, -StepCount));
             View.UpdateImage();
         }
+
+        private void View_ViewActivated(object sender, EventArgs e)
+        {
+            var index = _images?.CurrnetIndex ?? -1;
+            if (_entities == null || index < 0 || index >= _entities.Count)
+            {
+                return;
+            }
+
+            _selection.Replace(new [] { _entities[index] });
+        }
     }
 }

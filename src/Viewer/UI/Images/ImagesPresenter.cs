@@ -147,6 +147,7 @@ namespace Viewer.UI.Images
         public override void Dispose()
         {
             _isDisposed = true;
+            _selection.Dispose();
             DisposeQuery();
             Settings.Default.PropertyChanged -= Settings_PropertyChanged;
             _queryHistory.QueryExecuted -= QueryHistory_QueryExecuted;

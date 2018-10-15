@@ -20,7 +20,7 @@ namespace Viewer.UI.Images
     /// This class contains selection logic for any thumbnail grid. It does not assume much
     /// about its view. The view interface should be easily implementable by any photos view.
     /// </remarks>
-    internal class SelectionState : IEnumerable<EntityView>
+    internal class SelectionState : IEnumerable<EntityView>, IDisposable
     {
         private readonly ISelectionView<EntityView> _view;
         private readonly ISelection _selection;
@@ -78,6 +78,16 @@ namespace Viewer.UI.Images
             _view.HandleKeyDown += View_HandleKeyDown;
             _view.ViewGotFocus += View_ViewGotFocus;
             _view.ViewLostFocus += View_ViewLostFocus;
+        }
+        
+        public void Dispose()
+        {
+            _view.ProcessMouseDown -= View_ProcessMouseDown;
+            _view.ProcessMouseUp -= View_ProcessMouseUp;
+            _view.ProcessMouseMove -= View_ProcessMouseMove;
+            _view.HandleKeyDown -= View_HandleKeyDown;
+            _view.ViewGotFocus -= View_ViewGotFocus;
+            _view.ViewLostFocus -= View_ViewLostFocus;
         }
 
         public void Clear()

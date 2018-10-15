@@ -125,6 +125,7 @@
     <Compile Include="Suggestions\CaretTokenSource.cs" />
     <Compile Include="Suggestions\Providers\DirectorySuggestionProvider.cs" />
     <Compile Include="Suggestions\Providers\IdentifierSuggestion.cs" />
+    <Compile Include="Suggestions\Providers\MetadataAttributeSuggestionProvider.cs" />
     <Compile Include="Suggestions\Providers\StaticTokenSuggestionProvider.cs" />
     <Compile Include="Suggestions\QuerySuggestion.cs" />
     <Compile Include="Suggestions\QuerySuggestionComparer.cs" />

@@ -211,7 +211,6 @@ namespace Viewer.UI.QueryEditor
                 return;
             }
 
-
             if ((e.Change & UpdateChange.Selection) != 0)
             {
                 _suggestionView.Hide();

@@ -19,7 +19,8 @@ namespace Viewer.Query.Suggestions
             { TypeId.Real.ToString(), 0 },
             { TypeId.DateTime.ToString(), 0 },
             { AttributeNameSuggestionProvider.CategoryName, 1 },
-            { "Keyword", 2 },
+            { MetadataAttributeSuggestionProvider.CategoryName, 2 },
+            { "Keyword", 3 },
         };
 
         private int GetCategoryPriority(string category)

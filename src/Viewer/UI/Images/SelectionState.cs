@@ -95,6 +95,8 @@ namespace Viewer.UI.Images
             _previousSelection.Clear();
             _currentSelection.Clear();
             _selection.Clear();
+            ActiveItem = null;
+            _rangeSelectAnchorItem = null;
         }
 
         public IEnumerable<string> GetPathsInSelection()
@@ -398,7 +400,7 @@ namespace Viewer.UI.Images
                 var target = _view.FindItem(activeItem, delta);
                 if (target == null)
                 {
-                    return; // there is no item in this direction
+                    target = activeItem; // there is no item in this direction
                 }
 
                 ProcessItemSelection(target, true);

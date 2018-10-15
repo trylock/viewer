@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -443,7 +443,7 @@ namespace Viewer.UI.Images
                 }
 
                 if (menuItem.ShortcutKeys != 0 && // check if this item has a shortcut
-                    (e.KeyCode & menuItem.ShortcutKeys) == menuItem.ShortcutKeys)
+                    (e.KeyData & menuItem.ShortcutKeys) == menuItem.ShortcutKeys)
                 {
                     e.IsInputKey = false;
                 }

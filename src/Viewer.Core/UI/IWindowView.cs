@@ -20,12 +20,12 @@ namespace Viewer.Core.UI
         /// <summary>
         /// Event occurs when this view gets focus.
         /// </summary>
-        event EventHandler ViewGotFocus;
+        event EventHandler ViewActivated;
 
         /// <summary>
         /// Event occurs when this view loses focus.
         /// </summary>
-        event EventHandler ViewLostFocus;
+        event EventHandler ViewDeactivated;
 
         /// <summary>
         /// Dock panel of this window or null if the window is not docked.

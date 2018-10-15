@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -453,6 +453,11 @@ namespace Viewer.UI.Images
         private void GridView_KeyDown(object sender, KeyEventArgs e)
         {
             HandleKeyDown?.Invoke(sender, e);
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                OpenItem?.Invoke(sender, e);
+            }
         }
 
         private void GridView_KeyUp(object sender, KeyEventArgs e)

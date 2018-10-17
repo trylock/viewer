@@ -20,5 +20,6 @@ src/Viewer.Query/QueryParserVisitor.cs
 src/Viewer.Query/QueryParserBaseVisitor.cs
 
 # Documentation
+docs_cs
 spec
 src/**/.antlr

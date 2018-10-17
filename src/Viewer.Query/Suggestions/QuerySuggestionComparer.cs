@@ -12,7 +12,8 @@ namespace Viewer.Query.Suggestions
     {
         public static QuerySuggestionComparer Default { get; } = new QuerySuggestionComparer();
 
-        private static readonly Dictionary<string, int> CategoryPriority = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> CategoryPriority = 
+            new Dictionary<string, int>
         {
             { TypeId.String.ToString(), 0 },
             { TypeId.Integer.ToString(), 0 },

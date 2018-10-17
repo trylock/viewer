@@ -31,7 +31,8 @@ namespace Viewer.Query.Suggestions
         /// <param name="rules">
         /// Path in the parse tree. The first rule is the rule which we have just entered.
         /// </param>
-        void EnterRule(IReadOnlyList<int> rules);
+        /// <param name="lookahead">Next token in the input</param>
+        void EnterRule(IReadOnlyList<int> rules, IToken lookahead);
 
         /// <summary>
         /// Method called whenever the algorithm exits a rule.
@@ -39,7 +40,8 @@ namespace Viewer.Query.Suggestions
         /// <param name="rules">
         /// Path in the parse tree. The first rule is the rule which we have just exited.
         /// </param>
-        void ExitRule(IReadOnlyList<int> rules);
+        /// <param name="lookahead">Next token in the input</param>
+        void ExitRule(IReadOnlyList<int> rules, IToken lookahead);
     }
 
     public interface IQuerySuggestions

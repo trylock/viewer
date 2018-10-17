@@ -66,19 +66,19 @@ namespace Viewer.Query.Suggestions
             }
         }
 
-        void ISuggestionListener.EnterRule(IReadOnlyList<int> rules)
+        void ISuggestionListener.EnterRule(IReadOnlyList<int> rules, IToken lookahead)
         {
             foreach (var listener in _listeners)
             {
-                listener.EnterRule(rules);
+                listener.EnterRule(rules, lookahead);
             }
         }
 
-        void ISuggestionListener.ExitRule(IReadOnlyList<int> rules)
+        void ISuggestionListener.ExitRule(IReadOnlyList<int> rules, IToken lookahead)
         {
             foreach (var listener in _listeners)
             {
-                listener.ExitRule(rules);
+                listener.ExitRule(rules, lookahead);
             }
         }
 
@@ -140,14 +140,15 @@ namespace Viewer.Query.Suggestions
             {
                 return new List<int>();
             }
-
-            Listener.EnterRule(_rulePath.ToList());
+            
+            Listener.EnterRule(_rulePath.ToList(), _tokens[tokenIndex]);
 
             // traverse subtree of this rule
             var tokens = new List<int>();
             var stack = new Stack<(ATNState State, int TokenIndex)>();
             stack.Push((startState, tokenIndex));
-
+            
+            // TODO: traversing all alternatives is overkill for (almost) an LL(1) language
             while (stack.Count > 0)
             {
                 var (state, inputPosition) = stack.Pop();
@@ -158,7 +159,7 @@ namespace Viewer.Query.Suggestions
                 {
                     // capture position where other rules can start
                     tokens.Add(inputPosition);
-                    Listener.ExitRule(_rulePath.ToList());
+                    Listener.ExitRule(_rulePath.ToList(), lookahead);
                     continue;
                 }
 
@@ -219,9 +220,7 @@ namespace Viewer.Query.Suggestions
                         // follow transition
                         if (transition is NotSetTransition)
                         {
-                            label = label.Complement(IntervalSet.Of(
-                                0,
-                                _parser.Atn.maxTokenType));
+                            label = label.Complement(IntervalSet.Of(0, _parser.Atn.maxTokenType));
                         }
 
                         if (label.Contains(lookahead.Type))

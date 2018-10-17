@@ -33,10 +33,10 @@ namespace ViewerTest.Query.Suggestions
 
             _suggestions = new QuerySuggestions(new ISuggestionProviderFactory[]
             {
-                new ViewSuggestionProviderFactory(_views.Object), 
-                new AttributeNameSuggestionProviderFactory(_attributeCache.Object), 
-                new AttributeValueSuggestionProviderFactory(_attributeCache.Object), 
-                new DirectorySuggestionProviderFactory(_fileSystem.Object), 
+                new ViewSuggestionProviderFactory(_views.Object),
+                new AttributeNameSuggestionProviderFactory(_attributeCache.Object),
+                new AttributeValueSuggestionProviderFactory(_attributeCache.Object),
+                new DirectorySuggestionProviderFactory(_fileSystem.Object),
             }, new StateCollectorFactory());
         }
 
@@ -78,7 +78,7 @@ namespace ViewerTest.Query.Suggestions
 
             Assert.AreEqual(0, suggestions.Count);
         }
-        
+
         [TestMethod]
         public void Compute_PartialKeywordAtTheStart()
         {
@@ -205,7 +205,7 @@ namespace ViewerTest.Query.Suggestions
         {
             _attributeCache
                 .Setup(mock => mock.GetNames(""))
-                .Returns(new[] { "attr1", "attr2" });
+                .Returns(new[] {"attr1", "attr2"});
 
             var suggestions = ComputeSuggestions("select test where ");
 
@@ -220,7 +220,7 @@ namespace ViewerTest.Query.Suggestions
         {
             _attributeCache
                 .Setup(mock => mock.GetNames("pr"))
-                .Returns(new[] { "prefix", "prefix2" });
+                .Returns(new[] {"prefix", "prefix2"});
 
             var suggestions = ComputeSuggestions("select test where pr");
 
@@ -234,8 +234,8 @@ namespace ViewerTest.Query.Suggestions
         {
             _attributeCache
                 .Setup(mock => mock.GetNames(""))
-                .Returns(new[] { "test1", "test2" });
-            
+                .Returns(new[] {"test1", "test2"});
+
             var suggestions = ComputeSuggestions("select test where a + ");
 
             Assert.AreEqual(2, suggestions.Count);
@@ -248,7 +248,7 @@ namespace ViewerTest.Query.Suggestions
         {
             _attributeCache
                 .Setup(mock => mock.GetNames("pr"))
-                .Returns(new[] { "prefix", "prefix2" });
+                .Returns(new[] {"prefix", "prefix2"});
 
             var suggestions = ComputeSuggestions("select test order by pr");
 
@@ -290,7 +290,7 @@ namespace ViewerTest.Query.Suggestions
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
-                .Returns(new[] {"a/b", "a/c", "a/d" });
+                .Returns(new[] {"a/b", "a/c", "a/d"});
 
             var suggestions = ComputeSuggestions("select \"a/");
 
@@ -307,7 +307,7 @@ namespace ViewerTest.Query.Suggestions
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
-                .Returns(new[] { "a/b", "a/c", "a/x/b" });
+                .Returns(new[] {"a/b", "a/c", "a/x/b"});
 
             var suggestions = ComputeSuggestions("select \"a/**/");
 
@@ -323,7 +323,7 @@ namespace ViewerTest.Query.Suggestions
 
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
-                .Returns(new[] { "a/xz", "a/xy", "a/yxz" });
+                .Returns(new[] {"a/xz", "a/xy", "a/yxz"});
 
             var suggestions = ComputeSuggestions("select \"a/x/b\"", 11);
 
@@ -345,7 +345,7 @@ namespace ViewerTest.Query.Suggestions
         public void Compute_DirectorySuggestionsAfterDriveLetter()
         {
             _fileSystem.Setup(mock => mock.CreateFileFinder("D:/*a*")).Returns(_fileFinder.Object);
-            
+
             _fileFinder
                 .Setup(mock => mock.GetDirectories())
                 .Returns(new string[] { });
@@ -366,13 +366,13 @@ namespace ViewerTest.Query.Suggestions
 
             Assert.AreEqual(0, suggestions.Count);
         }
-        
+
         [TestMethod]
         public void Compute_SuggestAttributeNamesRightAfterLeftParentesis()
         {
             _attributeCache
                 .Setup(mock => mock.GetNames(""))
-                .Returns(new[] { "attr1", "attr2" });
+                .Returns(new[] {"attr1", "attr2"});
 
             const string query = "select view where (";
 
@@ -422,6 +422,45 @@ namespace ViewerTest.Query.Suggestions
 
             Assert.AreEqual(1, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"contains value\""));
+        }
+
+        [TestMethod]
+        public void Compute_DontSuggestValuesOutsideOfTheirScope()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetNames(""))
+                .Returns(new[] {"a"});
+            _attributeCache
+                .Setup(mock => mock.GetValues("a"))
+                .Returns(new List<BaseValue>
+                {
+                    new StringValue("value")
+                });
+
+            var suggestions = ComputeSuggestions("select view where a = \"value\" and ");
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" and a"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" and not"));
+        }
+
+        [TestMethod]
+        public void Compute_DontSuggestValuesOutsideOfTheirScopeInOrderBy()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetNames(""))
+                .Returns(new[] { "a" });
+            _attributeCache
+                .Setup(mock => mock.GetValues("a"))
+                .Returns(new List<BaseValue>
+                {
+                    new StringValue("value")
+                });
+
+            var suggestions = ComputeSuggestions("select view where a = \"value\" order by ");
+            
+            Assert.AreEqual(1, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" order by a"));
         }
     }
 }

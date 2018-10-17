@@ -63,7 +63,6 @@ namespace Viewer.Query.Suggestions.Providers
 
     internal class AttributeNameListener : ISuggestionListener
     {
-        // TODO: names should be isolated to their comparison rule
         private readonly HashSet<string> _attributeNames = new HashSet<string>();
 
         public IEnumerable<string> AttributeNames => _attributeNames;
@@ -77,11 +76,15 @@ namespace Viewer.Query.Suggestions.Providers
             }
         }
 
-        public void EnterRule(IReadOnlyList<int> rules)
+        public void EnterRule(IReadOnlyList<int> rules, IToken lookahead)
         {
+            if (rules[0] == QueryParser.RULE_comparison)
+            {
+                _attributeNames.Clear();
+            }
         }
 
-        public void ExitRule(IReadOnlyList<int> rules)
+        public void ExitRule(IReadOnlyList<int> rules, IToken lookahead)
         {
         }
     }

@@ -56,6 +56,7 @@
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.GridView = new Viewer.UI.Images.GridView();
             this.HistoryView = new Viewer.UI.Images.HistoryView();
+            this.MoveTimer = new System.Windows.Forms.Timer(this.components);
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -259,6 +260,12 @@
             this.HistoryView.Size = new System.Drawing.Size(626, 29);
             this.HistoryView.TabIndex = 3;
             // 
+            // MoveTimer
+            // 
+            this.MoveTimer.Enabled = true;
+            this.MoveTimer.Interval = 33;
+            this.MoveTimer.Tick += new System.EventHandler(this.MoveTimer_Tick);
+            // 
             // ImagesView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -307,5 +314,6 @@
         private GridView GridView;
         private HistoryView HistoryView;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.Timer MoveTimer;
     }
 }

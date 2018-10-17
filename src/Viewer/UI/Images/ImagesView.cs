@@ -333,7 +333,7 @@ namespace Viewer.UI.Images
                 location.Y + _view.Location.Y
             );
         }
-
+        
         private bool _isDragging;
         private Point _dragOrigin;
         
@@ -368,7 +368,7 @@ namespace Viewer.UI.Images
             var location = _view.UnprojectLocation(e.Location);
             ProcessMouseUp?.Invoke(sender,
                 new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-
+            
             _isDragging = false;
         }
         
@@ -384,6 +384,7 @@ namespace Viewer.UI.Images
                 if (_dragOrigin.DistanceSquaredTo(location) > threshold)
                 {
                     BeginDragItems?.Invoke(sender, e);
+                    _isDragging = false;
                 }
             }
         }
@@ -528,6 +529,27 @@ namespace Viewer.UI.Images
         private void ShowQueryMenuItem_Click(object sender, EventArgs e)
         {
             ShowQuery?.Invoke(sender, e);
+        }
+
+        private void MoveTimer_Tick(object sender, EventArgs e)
+        {
+            var mouseLocation = _view.PointToClient(MousePosition);
+            if (_view.SelectionBounds == Rectangle.Empty ||
+                _view.ClientRectangle.Contains(mouseLocation))
+            {
+                return;
+            }
+
+            // range selection is active and the mouse cursor is outside of this control area
+            var speed = Math.Sign(mouseLocation.Y) * MoveTimer.Interval;
+            GridView.AutoScrollPosition = new Point(
+                0, 
+                -GridView.AutoScrollPosition.Y + speed);
+
+            // trigger an artificial MouseMove event to force the selection to update
+            var uiCoords = _view.UnprojectLocation(mouseLocation);
+            ProcessMouseMove?.Invoke(sender, 
+                new MouseEventArgs(MouseButtons.Left, 0, uiCoords.X, uiCoords.Y, 0));
         }
 
         protected override string GetPersistString()

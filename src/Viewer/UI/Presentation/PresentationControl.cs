@@ -206,6 +206,7 @@ namespace Viewer.UI.Presentation
             Focus();
             _fullscreenForm.Visible = false;
             ShowCursor();
+            Preview.Zoom = Preview.Zoom; // clamp current preview translation
         }
 
         #endregion

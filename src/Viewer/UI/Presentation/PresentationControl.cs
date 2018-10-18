@@ -375,6 +375,14 @@ namespace Viewer.UI.Presentation
             {
                 PlayPausePresentation?.Invoke(sender, e);
             }
+            else if (e.KeyCode == Keys.Add)
+            {
+                ZoomIn?.Invoke(sender, e);
+            }
+            else if (e.KeyCode == Keys.Subtract)
+            {
+                ZoomOut?.Invoke(sender, e);
+            }
         }
         
         private void HideControlsHandler(object sender, EventArgs e)

@@ -98,5 +98,49 @@ namespace Viewer.Core.Collections
         {
             return new HashSet<T>(list, comparer);
         }
+
+        /// <summary>
+        /// If <paramref name="items"/> contains a single item equal to <paramref name="item"/>,
+        /// it will return an empty set. Otherwise, <paramref name="items"/> will be returned.
+        /// </summary>
+        /// <typeparam name="T">Type of an item</typeparam>
+        /// <param name="items">Collection of items</param>
+        /// <param name="item">
+        /// If <paramref name="items"/> contains exactly this item (i.e., no other item).
+        /// </param>
+        /// <param name="comparer">
+        /// Equality comparer used to compare the first item from <paramref name="items"/>
+        /// with <paramref name="item"/>
+        /// </param>
+        /// <returns>
+        /// <paramref name="items"/> exepct if it only contains <paramref name="item"/>. In that
+        /// case, an empty enumerable will be returned.
+        /// </returns>
+        public static IEnumerable<T> SkipSingletonWith<T>(
+            this IEnumerable<T> items,
+            T item,
+            IEqualityComparer<T> comparer)
+        {
+            using (var enumerator = items.GetEnumerator())
+            {
+                var hasNext = enumerator.MoveNext();
+                if (!hasNext)
+                {
+                    yield break;
+                }
+
+                if (comparer.Equals(enumerator.Current, item))
+                {
+                    yield break;
+                }
+
+                yield return enumerator.Current;
+
+                while (enumerator.MoveNext())
+                {
+                    yield return enumerator.Current;
+                }
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using NLog;
+using Viewer.Core.Collections;
 using Viewer.Query.Suggestions.Providers;
 
 namespace Viewer.Query.Suggestions
@@ -102,11 +103,16 @@ namespace Viewer.Query.Suggestions
             var providers = _providerFactories
                 .Select(factory => factory.Create(stateCollector))
                 .Concat(_providers)
-                .ToList();
+                .ToList(); // create providers before collecting sates
 
             // compute suggestions based on collected state
             var state = stateCollector.Collect();
-            var suggestions = providers.SelectMany(provider => provider.Compute(state));
+            var text = state.Caret.ParentToken?.Text ?? "";
+            var suggestions = providers
+                .SelectMany(provider => provider.Compute(state))
+                .SkipSingletonWith(
+                    new NopSuggestion(state.Caret, text, text), 
+                    QuerySuggestionNameComparer.Default);
             return suggestions;
         }
         

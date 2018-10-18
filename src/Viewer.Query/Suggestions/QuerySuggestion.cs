@@ -49,6 +49,56 @@ namespace Viewer.Query.Suggestions
         /// <returns>Transformed query</returns>
         QueryEditorState Apply();
     }
+
+    /// <summary>
+    /// Compare suggestions based on their names
+    /// </summary>
+    public class QuerySuggestionNameComparer : 
+        IComparer<IQuerySuggestion>, 
+        IEqualityComparer<IQuerySuggestion>
+    {
+        public static QuerySuggestionNameComparer Default = new QuerySuggestionNameComparer();
+
+        public int Compare(IQuerySuggestion x, IQuerySuggestion y)
+        {
+            return StringComparer.CurrentCulture.Compare(x?.Name, y?.Name);
+        }
+
+        public bool Equals(IQuerySuggestion x, IQuerySuggestion y)
+        {
+            return StringComparer.CurrentCulture.Equals(x?.Name, y?.Name);
+        }
+
+        public int GetHashCode(IQuerySuggestion obj)
+        {
+            return StringComparer.CurrentCulture.GetHashCode(obj);
+        }
+    }
+
+    /// <summary>
+    /// <see cref="Apply"/> method of a no-op suggestion does not do anything. It just displys
+    /// <see cref="Name"/>.
+    /// </summary>
+    public class NopSuggestion : IQuerySuggestion
+    {
+        private readonly CaretToken _caret;
+
+        public string Name { get; }
+        public string Category { get; }
+
+        public NopSuggestion(CaretToken caret, string name, string category)
+        {
+            _caret = caret;
+            Name = name;
+            Category = category;
+        }
+
+        public QueryEditorState Apply()
+        {
+            var query = _caret.InputStream.GetText(new Interval(0, _caret.InputStream.Size));
+            return new QueryEditorState(query, _caret.StartIndex);
+        }
+    }
     
     /// <summary>
     /// Replace suggestion replaces the whole container token with given value. If the caret is not

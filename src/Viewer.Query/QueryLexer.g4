@@ -44,6 +44,8 @@ REL_OP: ('=' | '!=' | '<' | '<=' | '>' | '>=');
 
 WS : [ \t\r\n]+ -> skip;
 
+ERROR: .;
+
 // match string content
 mode STRING_CONTENT;
 

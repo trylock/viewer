@@ -262,7 +262,7 @@ namespace Viewer.UI.Suggestions
                 return;
             }
 
-            var location = _locationInControl;
+            var location = _currentControl.PointToScreen(_locationInControl);
             if (_locationInControl == Point.Empty)
             {
                 location = _currentControl.PointToScreen(new Point(0, 0));
@@ -378,6 +378,7 @@ namespace Viewer.UI.Suggestions
         #region Event Handlers
 
         private ParentFormDeactivated _formDeactivatedEvent;
+        private MovedOnScreenEvent _movedOnScreenEvent;
 
         private void RegisterControlEventHandlers(Control control)
         {
@@ -386,6 +387,8 @@ namespace Viewer.UI.Suggestions
             control.VisibleChanged += CurrentControl_VisibleChanged;
             _formDeactivatedEvent = control.CreateParentFormDeactivatedEvent();
             _formDeactivatedEvent += ApplicationForm_Deactivate;
+            _movedOnScreenEvent = control.CreateMovedOnScreenEvent();
+            _movedOnScreenEvent += Control_Moved;
         }
 
         private void UnregisterControlEventHandlers(Control control)
@@ -395,6 +398,16 @@ namespace Viewer.UI.Suggestions
             control.VisibleChanged -= CurrentControl_VisibleChanged;
             _formDeactivatedEvent.Dispose();
             _formDeactivatedEvent = null;
+            _movedOnScreenEvent -= Control_Moved;
+            _movedOnScreenEvent = null;
+        }
+
+        private void Control_Moved(object sender, EventArgs e)
+        {
+            if (Visible)
+            {
+                ShowAtCurrentControl();
+            }
         }
 
         private void ApplicationForm_Deactivate(object sender, EventArgs e)

@@ -535,7 +535,7 @@ namespace Viewer.UI.Images
         {
             var mouseLocation = _view.PointToClient(MousePosition);
             if (_view.SelectionBounds == Rectangle.Empty ||
-                _view.ClientRectangle.Contains(mouseLocation))
+                (mouseLocation.Y >= 0 && mouseLocation.Y <= _view.ClientSize.Height))
             {
                 return;
             }

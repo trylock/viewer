@@ -218,16 +218,19 @@ namespace Viewer.UI.QueryEditor
 
         private int _suggestionVersion;
 
+        private class SuggestionData
+        {
+            public int Version { get; set; }
+            public IQuerySuggestion Suggestion { get; set; }
+        }
+
         private async void View_SuggestionsRequested(object sender, EventArgs e)
         {
             // load suggestions 
             var query = View.Query;
             var position = Math.Min(View.CaretPosition, query.Length);
             var version = Interlocked.Increment(ref _suggestionVersion);
-
-            // hide previous suggestions
-            View.Suggestions = Enumerable.Empty<SuggestionItem>();
-
+            
             var suggestions = await Task.Run(() =>
             {
                 var result = new List<IQuerySuggestion>();
@@ -257,14 +260,23 @@ namespace Viewer.UI.QueryEditor
             {
                 Text = item.Name,
                 Category = item.Category,
-                UserData = item
+                UserData = new SuggestionData
+                {
+                    Version = version,
+                    Suggestion = item
+                }
             });
         }
 
         private void View_SuggestionAccepted(object sender, SuggestionEventArgs e)
         {
-            var suggestion = (IQuerySuggestion) e.Value.UserData;
-            var result = suggestion.Apply();
+            var data = (SuggestionData) e.Value.UserData;
+            if (data.Version != _suggestionVersion)
+            {
+                return; // reject outdated suggestions
+            }
+
+            var result = data.Suggestion.Apply();
             View.Query = result.Query;
             View.CaretPosition = result.Caret;
         }

@@ -428,26 +428,10 @@ namespace Viewer.UI.Images
 
         private void GridView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            const Keys mask = Keys.Left | Keys.Right | Keys.Up | Keys.Down;
-            if ((e.KeyCode & mask) != 0)
-            {
-                e.IsInputKey = true;
-            }
-
-            // make sure to reject shortcut keys used by the context menu
-            foreach (var item in ItemContextMenu.Items)
-            {
-                if (!(item is ToolStripMenuItem menuItem))
-                {
-                    continue;
-                }
-
-                if (menuItem.ShortcutKeys != 0 && // check if this item has a shortcut
-                    (e.KeyData & menuItem.ShortcutKeys) == menuItem.ShortcutKeys)
-                {
-                    e.IsInputKey = false;
-                }
-            }
+            e.IsInputKey = e.KeyCode == Keys.Left ||
+                           e.KeyCode == Keys.Right ||
+                           e.KeyCode == Keys.Up ||
+                           e.KeyCode == Keys.Down;
         }
         
         private void GridView_KeyDown(object sender, KeyEventArgs e)

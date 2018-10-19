@@ -277,11 +277,6 @@ namespace Viewer.UI.Images
         event EventHandler OpenItem;
 
         /// <summary>
-        /// Event occurs when user clicks on an item
-        /// </summary>
-        event EventHandler<EntityEventArgs> ItemClick;
-
-        /// <summary>
         /// Event occurs when user tries to refresh current query.
         /// </summary>
         event EventHandler RefreshQuery;

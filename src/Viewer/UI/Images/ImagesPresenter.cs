@@ -430,18 +430,6 @@ namespace Viewer.UI.Images
             }
         }
 
-        private async void View_ItemClick(object sender, EntityEventArgs e)
-        {
-            if (!(e.Entity.Data is FileEntity fileEntity))
-            {
-                return;
-            }
-
-            var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
-            var index = items.IndexOf(fileEntity);
-            await _presentation.PreviewAsync(items, index);
-        }
-
         private async void View_OpenItem(object sender, EventArgs e)
         {
             if (!_selection.Any())

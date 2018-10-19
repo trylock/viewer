@@ -208,7 +208,6 @@ namespace Viewer.UI.Images
         public event EventHandler BeginEditItemName;
         public event EventHandler OpenItem;
         public event EventHandler<RenameEventArgs> RenameItem;
-        public event EventHandler<EntityEventArgs> ItemClick;
         public event EventHandler<ProgramEventArgs> RunProgram;
         
         public string Query { get; set; }
@@ -353,8 +352,6 @@ namespace Viewer.UI.Images
             var item = _view.GetItemAt(location);
             if (item != null)
             {
-                ItemClick?.Invoke(sender, new EntityEventArgs(item));
-
                 _isDragging = true;
                 _dragOrigin = location;
             }

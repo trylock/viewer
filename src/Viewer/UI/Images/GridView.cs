@@ -270,7 +270,12 @@ namespace Viewer.UI.Images
             // update invalid items
             var clipBounds = UnprojectBounds(e.ClipRectangle);
             var cells = Grid.GetCellsInBounds(clipBounds);
-                
+
+            using (var background = new SolidBrush(Color.FromArgb(unchecked((int) 0xFFeeeef2))))
+            {
+                e.Graphics.FillRectangle(background, e.ClipRectangle);
+            }
+
             foreach (var cell in cells)
             {
                 PaintItem(e.Graphics, cell);

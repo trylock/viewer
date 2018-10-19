@@ -387,6 +387,8 @@ namespace Viewer.UI.Images
                     _isDragging = false;
                 }
             }
+
+            UpdateScrollPosition();
         }
 
         private void GridView_MouseLeave(object sender, EventArgs e)
@@ -473,7 +475,7 @@ namespace Viewer.UI.Images
                 ClientSize.Height / 2 - StatusLabel.Height / 2
             );
         }
-
+        
         #endregion
 
         private void NameTextBox_Leave(object sender, EventArgs e)
@@ -533,6 +535,26 @@ namespace Viewer.UI.Images
 
         private void MoveTimer_Tick(object sender, EventArgs e)
         {
+            UpdateScrollPosition();
+        }
+
+        private DateTime _lastUpdate = DateTime.Now;
+
+        /// <summary>
+        /// Scroll the thumbnail grid if a range selection is active and mouse cursor is outside
+        /// of the control area.
+        /// </summary>
+        private void UpdateScrollPosition()
+        {
+            // update the position at most ~60 times per second
+            var deltaTime = DateTime.Now - _lastUpdate;
+            if (deltaTime.TotalMilliseconds < 16)
+            {
+                return;
+            }
+            _lastUpdate = DateTime.Now;
+
+            // check if a range selection is active and whether the mouse cursor is outside
             var mouseLocation = _view.PointToClient(MousePosition);
             if (_view.SelectionBounds == Rectangle.Empty ||
                 (mouseLocation.Y >= 0 && mouseLocation.Y <= _view.ClientSize.Height))
@@ -540,15 +562,22 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            // range selection is active and the mouse cursor is outside of this control area
-            var speed = Math.Sign(mouseLocation.Y) * MoveTimer.Interval;
-            GridView.AutoScrollPosition = new Point(
-                0, 
-                -GridView.AutoScrollPosition.Y + speed);
+            // normalize distance to [0, 1]
+            double distance = mouseLocation.Y < 0 ? 
+                -mouseLocation.Y : 
+                mouseLocation.Y - _view.ClientSize.Height;
+            var maxDistance = Font.Height * 10;
+            distance = MathUtils.Clamp(distance, 0, maxDistance) / maxDistance;
+
+            // update scroll position
+            double speed = Math.Sign(mouseLocation.Y) * deltaTime.TotalMilliseconds;
+            speed *= MathUtils.Lerp(0.1, 10, distance);
+            GridView.AutoScrollPosition = new Point(0, 
+                -GridView.AutoScrollPosition.Y + (int) speed);
 
             // trigger an artificial MouseMove event to force the selection to update
             var uiCoords = _view.UnprojectLocation(mouseLocation);
-            ProcessMouseMove?.Invoke(sender, 
+            ProcessMouseMove?.Invoke(this,
                 new MouseEventArgs(MouseButtons.Left, 0, uiCoords.X, uiCoords.Y, 0));
         }
 

@@ -15,13 +15,31 @@ namespace Viewer.Query.Suggestions.Providers
     {
         private readonly IAttributeCache _attributeCache;
         private readonly AttributeNameListener _listener;
-        
+
         public AttributeValueSuggestionProvider(
-            IAttributeCache attributeCache, 
+            IAttributeCache attributeCache,
             AttributeNameListener listener)
         {
             _attributeCache = attributeCache;
             _listener = listener;
+        }
+
+        private static bool ContainsPrefixSuffix(BaseValue value, string prefix, string suffix)
+        {
+            var text = value.ToString();
+            var prefixIndex = text.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase);
+            if (prefixIndex < 0)
+            {
+                return false;
+            }
+
+            var suffixIndex = text.LastIndexOf(suffix, StringComparison.CurrentCultureIgnoreCase);
+            if (prefixIndex + prefix.Length > suffixIndex)
+            {
+                return false;
+            }
+
+            return true;
         }
         
         public IEnumerable<IQuerySuggestion> Compute(SuggestionState state)
@@ -38,20 +56,18 @@ namespace Viewer.Query.Suggestions.Providers
             {
                 return Enumerable.Empty<IQuerySuggestion>();
             }
-            
-            var text = state.Caret.ParentToken?.Text ?? "";
-            if (text.Length > 0 && (
-                text[text.Length - 1] == '\n' ||
-                text[text.Length - 1] == '\r'))
+
+            var parts = state.Caret.SplitParent();
+            if (parts.Suffix.Length > 0 && (
+                    parts.Suffix[parts.Suffix.Length - 1] == '\n' ||
+                    parts.Suffix[parts.Suffix.Length - 1] == '\r'))
             {
-                text = text.Remove(text.Length - 1, 1);
+                parts.Suffix = parts.Suffix.Substring(0, parts.Suffix.Length - 1);
             }
 
             return _listener.AttributeNames
                 .SelectMany(name => _attributeCache.GetValues(name))
-                .Where(item => 
-                    item.ToString()
-                        .IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                .Where(item => ContainsPrefixSuffix(item, parts.Prefix, parts.Suffix))
                 .Select(item => 
                     new ReplaceSuggestion(
                         state.Caret, 

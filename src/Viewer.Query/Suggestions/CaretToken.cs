@@ -83,5 +83,24 @@ namespace Viewer.Query.Suggestions
             ParentToken = parentToken;
             ParentOffset = position - parentToken.StartIndex;
         }
+
+        /// <summary>
+        /// Split parent token to the part before caret and the part after caret. 
+        /// </summary>
+        /// <returns>
+        /// Parent token text before caret and parent token text after caret. No part will be null.
+        /// If the caret does not have a parent token, both parts will be empty strings.
+        /// </returns>
+        public (string Prefix, string Suffix) SplitParent()
+        {
+            if (ParentToken == null)
+            {
+                return ("", "");
+            }
+
+            var beforeCaret = ParentToken.Text.Substring(0, ParentOffset);
+            var afterCaret = ParentToken.Text.Substring(ParentOffset);
+            return (beforeCaret, afterCaret);
+        }
     }
 }

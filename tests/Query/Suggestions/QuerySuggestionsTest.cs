@@ -476,5 +476,25 @@ namespace ViewerTest.Query.Suggestions
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where pref"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where prefix"));
         }
+
+        [TestMethod]
+        public void Compute_SuggestStringValueInString()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetValues("a"))
+                .Returns(new BaseValue[]
+                {
+                    new StringValue("prefix1"),
+                    new StringValue("prefix2"),
+                    new IntValue(1)
+                });
+
+            const string query = "select view where a = \"\"";
+            var suggestions = ComputeSuggestions(query, query.Length - 1);
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"prefix1\""));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"prefix2\""));
+        }
     }
 }

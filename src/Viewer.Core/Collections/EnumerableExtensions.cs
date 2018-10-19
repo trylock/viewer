@@ -123,19 +123,31 @@ namespace Viewer.Core.Collections
         {
             using (var enumerator = items.GetEnumerator())
             {
+                // if it is empty, we are done
                 var hasNext = enumerator.MoveNext();
                 if (!hasNext)
                 {
                     yield break;
                 }
 
-                if (comparer.Equals(enumerator.Current, item))
+                // move past the first item
+                var firstItem = enumerator.Current;
+                hasNext = enumerator.MoveNext();
+
+                // if there is only one item, check whether we should exit
+                if (!hasNext && comparer.Equals(enumerator.Current, item))
                 {
                     yield break;
                 }
 
-                yield return enumerator.Current;
+                // return the first item and item after that
+                yield return firstItem;
+                if (hasNext)
+                {
+                    yield return enumerator.Current;
+                }
 
+                // return the rest of the items
                 while (enumerator.MoveNext())
                 {
                     yield return enumerator.Current;

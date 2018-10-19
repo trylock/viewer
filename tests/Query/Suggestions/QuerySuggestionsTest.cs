@@ -462,5 +462,19 @@ namespace ViewerTest.Query.Suggestions
             Assert.AreEqual(1, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" order by a"));
         }
+
+        [TestMethod]
+        public void Compute_SuggestionsContainCaretToken()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetNames("pref"))
+                .Returns(new[] {"pref", "prefix"});
+
+            var suggestions = ComputeSuggestions("select view where pref");
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where pref"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where prefix"));
+        }
     }
 }

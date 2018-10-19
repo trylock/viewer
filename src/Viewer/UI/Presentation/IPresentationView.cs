@@ -13,14 +13,19 @@ namespace Viewer.UI.Presentation
     internal interface IZoomableView
     {
         /// <summary>
-        /// Event triggered when user tries to zoom in by one step
+        /// Event occurs when user tries to zoom in by one step
         /// </summary>
         event EventHandler ZoomIn;
 
         /// <summary>
-        /// Event triggered when user tries to zoom out by one step
+        /// Event occurs when user tries to zoom out by one step
         /// </summary>
         event EventHandler ZoomOut;
+
+        /// <summary>
+        /// Event occurs when user tries to reset zoom so that the photo is fully visible.
+        /// </summary>
+        event EventHandler ResetZoom;
 
         /// <summary>
         /// Current zoom (1.0 is original size and it is also the default value).

@@ -237,6 +237,12 @@ namespace Viewer.UI.Presentation
             View.UpdateImage();
         }
 
+        private void View_ResetZoom(object sender, EventArgs e)
+        {
+            View.Zoom = 1.0;
+            View.UpdateImage();
+        }
+
         private void View_ViewActivated(object sender, EventArgs e)
         {
             var index = _images?.CurrnetIndex ?? -1;

@@ -33,6 +33,7 @@ namespace Viewer.UI.Presentation
 
         public event EventHandler ZoomIn;
         public event EventHandler ZoomOut;
+        public event EventHandler ResetZoom;
 
         public SKBitmap Picture
         {
@@ -351,7 +352,9 @@ namespace Viewer.UI.Presentation
             if (e.KeyCode == Keys.Left || 
                 e.KeyCode == Keys.Right || 
                 e.KeyCode == Keys.Up || 
-                e.KeyCode == Keys.Down)
+                e.KeyCode == Keys.Down ||
+                e.KeyCode == Keys.Add ||
+                e.KeyCode == Keys.Subtract)
             {
                 e.IsInputKey = true;
             }
@@ -396,6 +399,9 @@ namespace Viewer.UI.Presentation
                     break;
                 case Keys.Subtract:
                     ZoomOut?.Invoke(sender, e);
+                    break;
+                case Keys.NumPad0:
+                    ResetZoom?.Invoke(sender, e);
                     break;
             }
 

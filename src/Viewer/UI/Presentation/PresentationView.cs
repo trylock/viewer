@@ -105,6 +105,12 @@ namespace Viewer.UI.Presentation
             remove => PresentationControl.ZoomOut -= value;
         }
 
+        public event EventHandler ResetZoom
+        {
+            add => PresentationControl.ResetZoom += value;
+            remove => PresentationControl.ResetZoom -= value;
+        }
+
         public double Zoom
         {
             get => PresentationControl.Zoom;

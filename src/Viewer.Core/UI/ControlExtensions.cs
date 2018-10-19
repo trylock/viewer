@@ -118,19 +118,23 @@ namespace Viewer.Core.UI
             {
                 form.Deactivate -= Form_Deactivate;
             }
+
+            if (control is WindowView view)
+            {
+                view.ViewDeactivated -= Form_Deactivate;
+            }
         }
 
         public override void OnSubscribe(Control control)
         {
-            var form = control as Form;
-            if (form == null)
-            {
-                return;
-            }
-
-            if (form.Parent == null)
+            if (control is Form form)
             {
                 form.Deactivate += Form_Deactivate;
+            }
+
+            if (control is WindowView view)
+            {
+                view.ViewDeactivated += Form_Deactivate;
             }
         }
 

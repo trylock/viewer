@@ -24,11 +24,16 @@ namespace Viewer.UI.Images
     {
         private readonly ISelectionView<EntityView> _view;
         private readonly ISelection _selection;
-        
+
+        /// <summary>
+        /// Event occurs whenever <see cref="ActiveItem"/> changes
+        /// </summary>
+        public event EventHandler ActiveItemChanged;
+
         /// <summary>
         /// The last item on which user clicked or to which .
         /// </summary>
-        public EntityView ActiveItem { get; set; }
+        public EntityView ActiveItem { get; private set; }
 
         private EntityView _rangeSelectAnchorItem;
 
@@ -310,6 +315,7 @@ namespace Viewer.UI.Images
         private void CaptureActiveItem(EntityView item)
         {
             ActiveItem = item;
+            ActiveItemChanged?.Invoke(this, EventArgs.Empty);
         }
         
         private void View_ViewActivated(object sender, EventArgs e)

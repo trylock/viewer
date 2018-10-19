@@ -124,6 +124,7 @@ namespace Viewer.UI.Images
             View.ContextOptions = Settings.Default.ExternalApplications;
 
             // subsribe to events 
+            _selection.ActiveItemChanged += SelectionState_ActiveItemChanged;
             _queryHistory.QueryExecuted += QueryHistory_QueryExecuted;
             Settings.Default.PropertyChanged += Settings_PropertyChanged;
             SubscribeTo(View, "View");
@@ -131,7 +132,7 @@ namespace Viewer.UI.Images
 
             QueryHistory_QueryExecuted(this, new QueryEventArgs(_queryHistory.Current));
         }
-        
+
         private bool _isDisposed = false;
 
         /// <summary>
@@ -231,8 +232,25 @@ namespace Viewer.UI.Images
             View.ItemSize = CurrentItemSize;
             View.UpdateItems();
         }
-        
+
         #region User input
+        
+        private async void SelectionState_ActiveItemChanged(object sender, EventArgs e)
+        {
+            if (_selection.ActiveItem == null)
+            {
+                return;
+            }
+
+            if (!(_selection.ActiveItem.Data is FileEntity fileEntity))
+            {
+                return;
+            }
+
+            var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
+            var index = items.IndexOf(fileEntity);
+            await _presentation.PreviewAsync(items, index);
+        }
 
         private void View_Poll(object sender, EventArgs e)
         {

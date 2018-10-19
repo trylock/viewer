@@ -114,13 +114,13 @@ namespace Viewer.UI.QueryEditor
             get => _suggestionView.Items;
             set
             {
-                var caretLocation = QueryTextBox.PointToScreen(new Point(
+                var caretLocation = new Point(
                     QueryTextBox.PointXFromPosition(QueryTextBox.CurrentPosition),
                     (int) (QueryTextBox.PointYFromPosition(QueryTextBox.CurrentPosition)
                            + QueryTextBox.Font.Height * 1.5)
-                ));
+                );
                 _suggestionView.Items = value; 
-                _suggestionView.ShowAt(caretLocation);
+                _suggestionView.ShowAtCurrentControl(caretLocation);
             }
         }
 

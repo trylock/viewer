@@ -188,6 +188,7 @@ namespace Viewer.UI.Suggestions
         public event EventHandler ItemsChanged;
 
         private Control _currentControl;
+        private Point _locationInControl;
 
         public SuggestionView() : this(null)
         {
@@ -249,31 +250,46 @@ namespace Viewer.UI.Suggestions
         /// Show suggestions at current control. If no control is attached (see
         /// <see cref="AttachTo"/>), this will be no-op.
         /// </summary>
+        /// <remarks>
+        /// If no location has been set using the <see cref="ShowAtCurrentControl(Point)"/>
+        /// method, the form will be shown below current control. Otherwise, previous location
+        /// will be used.
+        /// </remarks>
         public void ShowAtCurrentControl()
         {
             if (_items.Count <= 0 || _currentControl == null)
             {
                 return;
             }
-            
-            SelectedIndex = DefaultSelectedIndex;
-            SetLocation();
-            Show();
+
+            var location = _locationInControl;
+            if (_locationInControl == Point.Empty)
+            {
+                location = _currentControl.PointToScreen(new Point(0, 0));
+                location = new Point(location.X, location.Y + _currentControl.Height);
+            }
+            ShowAt(location);
         }
 
         /// <summary>
-        /// Show suggestions <paramref name="screenLocation"/>.
+        /// Show suggestions at <paramref name="controlLocation"/>.
         /// </summary>
-        /// <param name="screenLocation">
-        /// Location of the top left corner of the suggestions form in the screen coordinates.
+        /// <param name="controlLocation">
+        /// Location of the top left corner of the suggestions form in current control.
         /// </param>
-        public void ShowAt(Point screenLocation)
+        public void ShowAtCurrentControl(Point controlLocation)
         {
             if (_items.Count <= 0 || _currentControl == null)
             {
                 return;
             }
 
+            _locationInControl = controlLocation;
+            ShowAt(_currentControl.PointToScreen(_locationInControl));
+        }
+
+        private void ShowAt(Point screenLocation)
+        {
             SelectedIndex = DefaultSelectedIndex;
             Location = screenLocation;
             FixLocation();
@@ -308,21 +324,6 @@ namespace Viewer.UI.Suggestions
             UnregisterControlEventHandlers(_currentControl);
             _currentControl = null;
             Hide();
-        }
-
-        /// <summary>
-        /// Set correct location of this suggestion form.
-        /// </summary>
-        private void SetLocation()
-        {
-            if (_currentControl == null)
-            {
-                return;
-            }
-
-            var location = _currentControl.PointToScreen(new Point(0, 0));
-            Location = new Point(location.X, location.Y + _currentControl.Height);
-            FixLocation();
         }
 
         /// <summary>

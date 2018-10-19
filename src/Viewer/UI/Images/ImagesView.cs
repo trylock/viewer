@@ -571,7 +571,7 @@ namespace Viewer.UI.Images
 
             // update scroll position
             double speed = Math.Sign(mouseLocation.Y) * deltaTime.TotalMilliseconds;
-            speed *= MathUtils.Lerp(0.1, 10, distance);
+            speed *= MathUtils.Lerp(0.1, 10, distance * distance);
             GridView.AutoScrollPosition = new Point(0, 
                 -GridView.AutoScrollPosition.Y + (int) speed);
 

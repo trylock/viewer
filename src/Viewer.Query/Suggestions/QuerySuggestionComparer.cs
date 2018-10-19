@@ -24,6 +24,11 @@ namespace Viewer.Query.Suggestions
             { "Keyword", 3 },
         };
 
+        private static readonly string[] KeywordOrder =
+        {
+            "and", "or", "not", "select", "where", "order by", "union", "except", "intersect"
+        };
+
         private int GetCategoryPriority(string category)
         {
             if (CategoryPriority.TryGetValue(category, out var value))
@@ -32,6 +37,17 @@ namespace Viewer.Query.Suggestions
             }
 
             return int.MaxValue;
+        }
+
+        private int GetKeywordPriority(string keyword)
+        {
+            var index = Array.IndexOf(KeywordOrder, keyword);
+            if (index < 0)
+            {
+                return int.MaxValue;
+            }
+
+            return index;
         }
 
         public int Compare(IQuerySuggestion x, IQuerySuggestion y)
@@ -52,12 +68,23 @@ namespace Viewer.Query.Suggestions
             var xPriority = GetCategoryPriority(x.Category);
             var yPriority = GetCategoryPriority(y.Category);
             var priorityDiff = xPriority - yPriority;
-            if (priorityDiff == 0)
+            if (priorityDiff != 0)
             {
-                return StringComparer.CurrentCulture.Compare(x.Name, y.Name);
+                return priorityDiff;
             }
 
-            return priorityDiff;
+            if (xPriority == 3) // keyword
+            {
+                xPriority = GetKeywordPriority(x.Name);
+                yPriority = GetKeywordPriority(y.Name);
+                priorityDiff = xPriority - yPriority;
+                if (priorityDiff != 0)
+                {
+                    return priorityDiff;
+                }
+            }
+            return StringComparer.CurrentCulture.Compare(x.Name, y.Name);
+
         }
     }
 }

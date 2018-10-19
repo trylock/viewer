@@ -348,7 +348,10 @@ namespace Viewer.UI.Presentation
 
         private void ChildOnPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+            if (e.KeyCode == Keys.Left || 
+                e.KeyCode == Keys.Right || 
+                e.KeyCode == Keys.Up || 
+                e.KeyCode == Keys.Down)
             {
                 e.IsInputKey = true;
             }
@@ -356,33 +359,49 @@ namespace Viewer.UI.Presentation
 
         private void ShortcutHandler(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            var moveToNextPhoto = Preview.Zoom <= 1.001;
+            var originDelta = SKPoint.Empty;
+            switch (e.KeyCode)
             {
-                PrevImage?.Invoke(sender, e);
+                case Keys.Left when moveToNextPhoto:
+                    PrevImage?.Invoke(sender, e);
+                    break;
+                case Keys.Left:
+                    originDelta = new SKPoint(1, 0);
+                    break;
+                case Keys.Right when moveToNextPhoto:
+                    NextImage?.Invoke(sender, e);
+                    break;
+                case Keys.Right:
+                    originDelta = new SKPoint(-1, 0);
+                    break;
+                case Keys.Up:
+                    originDelta = new SKPoint(0, 1);
+                    break;
+                case Keys.Down:
+                    originDelta = new SKPoint(0, -1);
+                    break;
+                case Keys.F5:
+                case Keys.F:
+                    ToggleFullscreen?.Invoke(sender, e);
+                    break;
+                case Keys.Escape:
+                    ExitFullscreen?.Invoke(sender, e);
+                    break;
+                case Keys.Space:
+                    PlayPausePresentation?.Invoke(sender, e);
+                    break;
+                case Keys.Add:
+                    ZoomIn?.Invoke(sender, e);
+                    break;
+                case Keys.Subtract:
+                    ZoomOut?.Invoke(sender, e);
+                    break;
             }
-            else if (e.KeyCode == Keys.Right)
+
+            if (originDelta != SKPoint.Empty)
             {
-                NextImage?.Invoke(sender, e);
-            }
-            else if (e.KeyCode == Keys.F5 || e.KeyCode == Keys.F)
-            {
-                ToggleFullscreen?.Invoke(sender, e);
-            }
-            else if (e.KeyCode == Keys.Escape)
-            {
-                ExitFullscreen?.Invoke(sender, e);
-            }
-            else if (e.KeyCode == Keys.Space)
-            {
-                PlayPausePresentation?.Invoke(sender, e);
-            }
-            else if (e.KeyCode == Keys.Add)
-            {
-                ZoomIn?.Invoke(sender, e);
-            }
-            else if (e.KeyCode == Keys.Subtract)
-            {
-                ZoomOut?.Invoke(sender, e);
+                Preview.Origin += new SKPoint(originDelta.X * 10, originDelta.Y * 10);
             }
         }
         

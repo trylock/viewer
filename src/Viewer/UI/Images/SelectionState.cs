@@ -149,7 +149,7 @@ namespace Viewer.UI.Images
 
         #region Range selection
 
-        private void ProcessRangeSelection(Point location)
+        private void ProcessRangeSelection(Point location, bool showRangeSelection)
         {
             // reset current selection
             ResetSelectedItemsState();
@@ -191,7 +191,10 @@ namespace Viewer.UI.Images
                 }
                 
                 // update items in the view
-                _view.ShowSelection(bounds);
+                if (showRangeSelection)
+                {
+                    _view.ShowSelection(bounds);
+                }
             }
 
             SetGlobalSelection();
@@ -221,7 +224,7 @@ namespace Viewer.UI.Images
 
         private void EndRangeSelection(Point location)
         {
-            ProcessRangeSelection(location);
+            ProcessRangeSelection(location, false);
             _isRangeSelect = false;
             _view.HideSelection();
         }
@@ -327,7 +330,7 @@ namespace Viewer.UI.Images
             {
                 if ((e.Button & MouseButtons.Left) != 0)
                 {
-                    ProcessRangeSelection(e.Location);
+                    ProcessRangeSelection(e.Location, true);
                 }
             }
             else
@@ -341,7 +344,7 @@ namespace Viewer.UI.Images
         {
             if (_isRangeSelect)
             {
-                ProcessRangeSelection(e.Location);
+                ProcessRangeSelection(e.Location, true);
             }
         }
 
@@ -354,6 +357,14 @@ namespace Viewer.UI.Images
             else 
             {
                 var item = _view.GetItemAt(e.Location);
+                if (item == null && e.Button == MouseButtons.Right)
+                {
+                    ResetSelectedItemsState();
+                    _currentSelection.Clear();
+                    SetGlobalSelection();
+                    _view.UpdateItems();
+                }
+
                 if (item != null && !_view.ModifierKeyState.HasFlag(Keys.Shift))
                 {
                     CaptureAnchorItem(item);

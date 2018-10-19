@@ -225,6 +225,9 @@ namespace Viewer.UI.QueryEditor
             var position = Math.Min(View.CaretPosition, query.Length);
             var version = Interlocked.Increment(ref _suggestionVersion);
 
+            // hide previous suggestions
+            View.Suggestions = Enumerable.Empty<SuggestionItem>();
+
             var suggestions = await Task.Run(() =>
             {
                 var result = new List<IQuerySuggestion>();

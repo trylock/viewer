@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,7 +66,18 @@ namespace Viewer.Data
 
         public abstract override int GetHashCode();
 
+        /// <summary>
+        /// Convert this value to a string which can be used in a query for example.
+        /// </summary>
+        /// <returns></returns>
         public abstract override string ToString();
+
+        /// <summary>
+        /// Convert this value to a string using a specific <paramref name="culture"/>
+        /// </summary>
+        /// <param name="culture">Culture used to format this value</param>
+        /// <returns>This value formatted as a string</returns>
+        public abstract string ToString(CultureInfo culture);
 
         public virtual int CompareTo(BaseValue other)
         {
@@ -116,6 +128,7 @@ namespace Viewer.Data
         }
 
         public override string ToString() => Value?.ToString() ?? "null";
+        public override string ToString(CultureInfo culture) => Value?.ToString(culture) ?? "null";
 
         public override void Accept(IValueVisitor visitor)
         {
@@ -157,7 +170,8 @@ namespace Viewer.Data
             return Value.GetHashCode();
         }
 
-        public override string ToString() => Value?.ToString() ?? "null";
+        public override string ToString() => Value?.ToString(CultureInfo.InvariantCulture) ?? "null";
+        public override string ToString(CultureInfo culture) => Value?.ToString(culture) ?? "null";
 
         public override void Accept(IValueVisitor visitor)
         {
@@ -200,6 +214,7 @@ namespace Viewer.Data
         }
 
         public override string ToString() => Value == null ? "null" : "\"" + Value + "\"";
+        public override string ToString(CultureInfo culture) => ToString();
 
         public override void Accept(IValueVisitor visitor)
         {
@@ -246,7 +261,11 @@ namespace Viewer.Data
             return Value.GetHashCode();
         }
 
-        public override string ToString() => Value == null ? "null" : "\"" + Value + "\"";
+        public override string ToString() =>
+            Value == null ? "null" : "\"" + ((DateTime)Value).ToString(Format) + "\"";
+
+        public override string ToString(CultureInfo culture) =>
+            Value == null ? "null" : "\"" + ((DateTime)Value).ToString(culture) + "\"";
 
         public override void Accept(IValueVisitor visitor)
         {
@@ -283,6 +302,7 @@ namespace Viewer.Data
         }
 
         public override string ToString() => Value?.ToString() ?? "null";
+        public override string ToString(CultureInfo culture) => ToString();
 
         public override void Accept(IValueVisitor visitor)
         {

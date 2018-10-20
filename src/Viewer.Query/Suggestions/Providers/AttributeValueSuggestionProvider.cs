@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,7 +73,7 @@ namespace Viewer.Query.Suggestions.Providers
                     new ReplaceSuggestion(
                         state.Caret, 
                         item.ToString(), 
-                        item.ToString(), 
+                        item.ToString(CultureInfo.CurrentCulture), 
                         item.Type.ToString()));
         }
     }

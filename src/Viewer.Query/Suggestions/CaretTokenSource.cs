@@ -55,15 +55,19 @@ namespace Viewer.Query.Suggestions
             // emit caret token
             if (!_caretTokenEmitted)
             {
-                int separateCaret = _separatorTokens.Contains(token.Type) ? 0 : 1;
+                // The point of this is to separate caret token from certain token types if the 
+                // caret token is at the start or at the end of given token.
+                int stopIndexOffset = _separatorTokens.Contains(token.Type) ? 0 : 1;
+                int startIndexOffset = 1 - stopIndexOffset;
+
                 if (token.Type != Lexer.Eof &&
-                    token.StartIndex <= _caretPosition &&
-                    token.StopIndex + separateCaret >= _caretPosition)
+                    token.StartIndex + startIndexOffset <= _caretPosition &&
+                    token.StopIndex + stopIndexOffset >= _caretPosition)
                 {
                     _caretTokenEmitted = true;
                     return new CaretToken(_lexer, InputStream, _caretPosition, token);
                 }
-                else if (token.Type == Lexer.Eof || token.StartIndex > _caretPosition)
+                else if (token.Type == Lexer.Eof || token.StartIndex >= _caretPosition)
                 {
                     _caretTokenEmitted = true;
                     return new CaretToken(_lexer, InputStream, _caretPosition);

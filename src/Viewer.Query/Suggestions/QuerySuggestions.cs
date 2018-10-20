@@ -59,8 +59,6 @@ namespace Viewer.Query.Suggestions
     [Export(typeof(IQuerySuggestions))]
     public class QuerySuggestions : IQuerySuggestions
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly IEnumerable<ISuggestionProvider> _providers;
         private readonly IEnumerable<ISuggestionProviderFactory> _providerFactories;
         private readonly IStateCollectorFactory _stateCollectorFactory;
@@ -96,7 +94,7 @@ namespace Viewer.Query.Suggestions
                 throw new ArgumentNullException(nameof(query));
             if (index < 0 || index > query.Length)
                 throw new ArgumentOutOfRangeException(nameof(index));
-
+            
             var stateCollector = _stateCollectorFactory.Create(query, index);
 
             // create suggestion providers

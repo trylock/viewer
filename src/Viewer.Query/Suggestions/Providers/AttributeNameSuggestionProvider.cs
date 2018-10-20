@@ -39,12 +39,6 @@ namespace Viewer.Query.Suggestions.Providers
                 return Enumerable.Empty<IQuerySuggestion>();
             }
 
-            // if the caret is in a token which is not an identifier, don't suggest attribute names
-            if (state.Caret.ParentToken != null && state.Caret.ParentToken.Type != QueryLexer.ID)
-            {
-                return Enumerable.Empty<IQuerySuggestion>();
-            }
-
             var prefix = state.Caret.ParentPrefix ?? "";
             return _attributeCache
                 .GetNames(prefix)

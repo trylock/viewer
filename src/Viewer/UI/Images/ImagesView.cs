@@ -549,7 +549,7 @@ namespace Viewer.UI.Images
                 -mouseLocation.Y : 
                 mouseLocation.Y - _view.ClientSize.Height;
             var maxDistance = Font.Height * 10;
-            distance = MathUtils.Clamp(distance, 0, maxDistance) / maxDistance;
+            distance = distance.Clamp(0, maxDistance) / maxDistance;
 
             // update scroll position
             double speed = Math.Sign(mouseLocation.Y) * deltaTime.TotalMilliseconds;

@@ -18,7 +18,7 @@ namespace Viewer.Core
         /// <param name="num">Numerator</param>
         /// <param name="denom">Denominator</param>
         /// <returns>Result of the division rounded up</returns>
-        public static int RoundUpDiv(int num, int denom)
+        public static int RoundUpDiv(this int num, int denom)
         {
             if (num < 0 && denom < 0)
             {
@@ -58,7 +58,7 @@ namespace Viewer.Core
         ///     <paramref name="max"/> if <paramref name="value"/> is more than <paramref name="max"/>,
         ///     <paramref name="value"/> otherwise
         /// </returns>
-        public static double Clamp(double value, double min, double max)
+        public static double Clamp(this double value, double min, double max)
         {
             if (value < min)
                 return min;
@@ -78,7 +78,7 @@ namespace Viewer.Core
         ///     <paramref name="max"/> if <paramref name="value"/> is more than <paramref name="max"/>,
         ///     <paramref name="value"/> otherwise
         /// </returns>
-        public static int Clamp(int value, int min, int max)
+        public static int Clamp(this int value, int min, int max)
         {
             if (value < min)
                 return min;

@@ -134,7 +134,7 @@ namespace Viewer.UI.Presentation
             // preload images from the center of the window
             for (var i = 0; i < _buffer.Length; ++i)
             {
-                var bufferIndex = _buffer.Length / 2 + (i % 2 == 0 ? -1 : 1) * MathUtils.RoundUpDiv(i, 2);
+                var bufferIndex = _buffer.Length / 2 + (i % 2 == 0 ? -1 : 1) * i.RoundUpDiv(2);
                 Preload(bufferIndex);
             }
         }

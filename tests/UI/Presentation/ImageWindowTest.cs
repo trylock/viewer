@@ -33,7 +33,7 @@ namespace ViewerTest.UI.Presentation
                 new FileEntity("test6"),
             };
             _imageLoader = new Mock<IImageLoader>();
-            _window = new ImageWindow(_imageLoader.Object, _entities, 3);
+            _window = new ImageWindow(_imageLoader.Object, 3);
         }
 
         [TestMethod]
@@ -63,7 +63,7 @@ namespace ViewerTest.UI.Presentation
                 .Setup(mock => mock.LoadImage(It.Is<IEntity>(entity => entity == _entities[4])))
                 .Returns(image5);
 
-            _window.SetPosition(0);
+            _window.Initialize(_entities, 0);
             var first = await _window.GetCurrentAsync();
             Assert.AreEqual(1, first.Width);
 

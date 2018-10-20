@@ -428,10 +428,11 @@ namespace Viewer.UI.Images
 
         private void GridView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            e.IsInputKey = e.KeyCode == Keys.Left ||
-                           e.KeyCode == Keys.Right ||
-                           e.KeyCode == Keys.Up ||
-                           e.KeyCode == Keys.Down;
+            e.IsInputKey = !e.Alt && (
+                               e.KeyCode == Keys.Left ||
+                               e.KeyCode == Keys.Right ||
+                               e.KeyCode == Keys.Up ||
+                               e.KeyCode == Keys.Down);
         }
         
         private void GridView_KeyDown(object sender, KeyEventArgs e)

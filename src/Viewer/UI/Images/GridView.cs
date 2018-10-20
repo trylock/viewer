@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -169,6 +170,36 @@ namespace Viewer.UI.Images
             return Items[targetIndex];
         }
 
+        /// <summary>
+        /// Number of rows visible on screen at once
+        /// </summary>
+        private int CountRowsInViewport => 
+            ClientSize.Height.RoundUpDiv(Grid.CellHeight + Grid.CellMargin.Height);
+
+        public EntityView FindFirstItemAbove(EntityView currentItem)
+        {
+            var index = Items.IndexOf(currentItem);
+            if (index < 0)
+            {
+                return null;
+            }
+
+            index = Math.Max(index - Grid.ColumnCount * CountRowsInViewport, 0);
+            return Items[index];
+        }
+
+        public EntityView FindLastItemBelow(EntityView currentItem)
+        {
+            var index = Items.IndexOf(currentItem);
+            if (index < 0)
+            {
+                return null;
+            }
+
+            index = Math.Min(index + Grid.ColumnCount * CountRowsInViewport, Items.Count - 1);
+            return Items[index];
+        }
+
         public void EnsureItemVisible(EntityView item)
         {
             var index = Items.IndexOf(item);
@@ -270,7 +301,12 @@ namespace Viewer.UI.Images
             // update invalid items
             var clipBounds = UnprojectBounds(e.ClipRectangle);
             var cells = Grid.GetCellsInBounds(clipBounds);
-                
+
+            using (var background = new SolidBrush(Color.FromArgb(unchecked((int) 0xFFeeeef2))))
+            {
+                e.Graphics.FillRectangle(background, e.ClipRectangle);
+            }
+
             foreach (var cell in cells)
             {
                 PaintItem(e.Graphics, cell);

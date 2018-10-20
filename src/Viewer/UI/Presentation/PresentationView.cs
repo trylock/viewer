@@ -15,6 +15,10 @@ using Viewer.UI.Images;
 
 namespace Viewer.UI.Presentation
 {
+    /// <summary>
+    /// This class just redirects all calls to the PresentationControl. PresentationControl is used
+    /// so that it can be assigned to a different form (a fullscreen form).
+    /// </summary>
     internal partial class PresentationView : WindowView, IPresentationView
     {
         public PresentationView()
@@ -99,6 +103,12 @@ namespace Viewer.UI.Presentation
         {
             add => PresentationControl.ZoomOut += value;
             remove => PresentationControl.ZoomOut -= value;
+        }
+
+        public event EventHandler ResetZoom
+        {
+            add => PresentationControl.ResetZoom += value;
+            remove => PresentationControl.ResetZoom -= value;
         }
 
         public double Zoom

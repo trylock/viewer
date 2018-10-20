@@ -85,6 +85,16 @@ namespace Viewer.UI.Images
             return _view.FindItem(currentItem, delta);
         }
 
+        public EntityView FindFirstItemAbove(EntityView currentItem)
+        {
+            return _view.FindFirstItemAbove(currentItem);
+        }
+
+        public EntityView FindLastItemBelow(EntityView currentItem)
+        {
+            return _view.FindLastItemBelow(currentItem);
+        }
+
         public void EnsureItemVisible(EntityView item)
         {
             _view.EnsureItemVisible(item);
@@ -208,7 +218,6 @@ namespace Viewer.UI.Images
         public event EventHandler BeginEditItemName;
         public event EventHandler OpenItem;
         public event EventHandler<RenameEventArgs> RenameItem;
-        public event EventHandler<EntityEventArgs> ItemClick;
         public event EventHandler<ProgramEventArgs> RunProgram;
         
         public string Query { get; set; }
@@ -333,7 +342,7 @@ namespace Viewer.UI.Images
                 location.Y + _view.Location.Y
             );
         }
-
+        
         private bool _isDragging;
         private Point _dragOrigin;
         
@@ -353,8 +362,6 @@ namespace Viewer.UI.Images
             var item = _view.GetItemAt(location);
             if (item != null)
             {
-                ItemClick?.Invoke(sender, new EntityEventArgs(item));
-
                 _isDragging = true;
                 _dragOrigin = location;
             }
@@ -368,7 +375,7 @@ namespace Viewer.UI.Images
             var location = _view.UnprojectLocation(e.Location);
             ProcessMouseUp?.Invoke(sender,
                 new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-
+            
             _isDragging = false;
         }
         
@@ -384,8 +391,11 @@ namespace Viewer.UI.Images
                 if (_dragOrigin.DistanceSquaredTo(location) > threshold)
                 {
                     BeginDragItems?.Invoke(sender, e);
+                    _isDragging = false;
                 }
             }
+
+            UpdateScrollPosition();
         }
 
         private void GridView_MouseLeave(object sender, EventArgs e)
@@ -428,26 +438,11 @@ namespace Viewer.UI.Images
 
         private void GridView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            const Keys mask = Keys.Left | Keys.Right | Keys.Up | Keys.Down;
-            if ((e.KeyCode & mask) != 0)
-            {
-                e.IsInputKey = true;
-            }
-
-            // make sure to reject shortcut keys used by the context menu
-            foreach (var item in ItemContextMenu.Items)
-            {
-                if (!(item is ToolStripMenuItem menuItem))
-                {
-                    continue;
-                }
-
-                if (menuItem.ShortcutKeys != 0 && // check if this item has a shortcut
-                    (e.KeyData & menuItem.ShortcutKeys) == menuItem.ShortcutKeys)
-                {
-                    e.IsInputKey = false;
-                }
-            }
+            e.IsInputKey = !e.Alt && (
+                               e.KeyCode == Keys.Left ||
+                               e.KeyCode == Keys.Right ||
+                               e.KeyCode == Keys.Up ||
+                               e.KeyCode == Keys.Down);
         }
         
         private void GridView_KeyDown(object sender, KeyEventArgs e)
@@ -472,7 +467,7 @@ namespace Viewer.UI.Images
                 ClientSize.Height / 2 - StatusLabel.Height / 2
             );
         }
-
+        
         #endregion
 
         private void NameTextBox_Leave(object sender, EventArgs e)
@@ -528,6 +523,54 @@ namespace Viewer.UI.Images
         private void ShowQueryMenuItem_Click(object sender, EventArgs e)
         {
             ShowQuery?.Invoke(sender, e);
+        }
+
+        private void MoveTimer_Tick(object sender, EventArgs e)
+        {
+            UpdateScrollPosition();
+        }
+
+        private DateTime _lastUpdate = DateTime.Now;
+
+        /// <summary>
+        /// Scroll the thumbnail grid if a range selection is active and mouse cursor is outside
+        /// of the control area.
+        /// </summary>
+        private void UpdateScrollPosition()
+        {
+            // update the position at most ~60 times per second
+            var deltaTime = DateTime.Now - _lastUpdate;
+            if (deltaTime.TotalMilliseconds < 16)
+            {
+                return;
+            }
+            _lastUpdate = DateTime.Now;
+
+            // check if a range selection is active and whether the mouse cursor is outside
+            var mouseLocation = _view.PointToClient(MousePosition);
+            if (_view.SelectionBounds == Rectangle.Empty ||
+                (mouseLocation.Y >= 0 && mouseLocation.Y <= _view.ClientSize.Height))
+            {
+                return;
+            }
+
+            // normalize distance to [0, 1]
+            double distance = mouseLocation.Y < 0 ? 
+                -mouseLocation.Y : 
+                mouseLocation.Y - _view.ClientSize.Height;
+            var maxDistance = Font.Height * 10;
+            distance = distance.Clamp(0, maxDistance) / maxDistance;
+
+            // update scroll position
+            double speed = Math.Sign(mouseLocation.Y) * deltaTime.TotalMilliseconds;
+            speed *= MathUtils.Lerp(0.1, 10, distance * distance);
+            GridView.AutoScrollPosition = new Point(0, 
+                -GridView.AutoScrollPosition.Y + (int) speed);
+
+            // trigger an artificial MouseMove event to force the selection to update
+            var uiCoords = _view.UnprojectLocation(mouseLocation);
+            ProcessMouseMove?.Invoke(this,
+                new MouseEventArgs(MouseButtons.Left, 0, uiCoords.X, uiCoords.Y, 0));
         }
 
         protected override string GetPersistString()

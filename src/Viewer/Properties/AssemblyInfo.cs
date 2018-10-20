@@ -36,3 +36,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.4")]
 
 [assembly: InternalsVisibleTo("ViewerTest")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

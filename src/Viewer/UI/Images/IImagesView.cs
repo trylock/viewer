@@ -197,6 +197,24 @@ namespace Viewer.UI.Images
         T FindItem(T currentItem, Point delta);
 
         /// <summary>
+        /// Find the first visible item above <paramref name="currentItem"/>
+        /// </summary>
+        /// <param name="currentItem">Queried item</param>
+        /// <returns>
+        /// The first visible item which is directly above <paramref name="currentItem"/>
+        /// </returns>
+        T FindFirstItemAbove(T currentItem);
+
+        /// <summary>
+        /// Find the last visible item below <paramref name="currentItem"/>
+        /// </summary>
+        /// <param name="currentItem">Queried item</param>
+        /// <returns>
+        /// The last visible item which is directly below <paramref name="currentItem"/>
+        /// </returns>
+        T FindLastItemBelow(T currentItem);
+
+        /// <summary>
         /// Make sure <paramref name="item"/> is visible. If it is fully visible, this won't do
         /// anything. Otherwise, it will scroll the view so that <paramref name="item"/> is visible
         /// </summary>
@@ -275,11 +293,6 @@ namespace Viewer.UI.Images
         /// Event occurs when user tries to open an item
         /// </summary>
         event EventHandler OpenItem;
-
-        /// <summary>
-        /// Event occurs when user clicks on an item
-        /// </summary>
-        event EventHandler<EntityEventArgs> ItemClick;
 
         /// <summary>
         /// Event occurs when user tries to refresh current query.

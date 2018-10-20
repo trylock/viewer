@@ -31,7 +31,7 @@ namespace Viewer.Core.Collections
 
             Count = size;
             _data = new List<ulong>();
-            var blockCount = MathUtils.RoundUpDiv(Count, BlockSize);
+            var blockCount = Count.RoundUpDiv(BlockSize);
             for (var i = 0; i < blockCount; ++i)
             {
                 _data.Add(0);
@@ -46,7 +46,7 @@ namespace Viewer.Core.Collections
             var value = state ? ulong.MaxValue : 0;
             Count = size;
             _data = new List<ulong>();
-            var blockCount = MathUtils.RoundUpDiv(Count, BlockSize);
+            var blockCount = Count.RoundUpDiv(BlockSize);
             for (var i = 0; i < blockCount; ++i)
             {
                 _data.Add(value);

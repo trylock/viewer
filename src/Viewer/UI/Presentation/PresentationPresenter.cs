@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Images;
@@ -24,12 +25,10 @@ namespace Viewer.UI.Presentation
     internal class PresentationPresenter : Presenter<IPresentationView>
     {
         private readonly ISelection _selection;
-        private readonly IImageLoader _imageLoader;
         private readonly IFileSystemErrorView _dialogView;
         
         // state
-        private IReadOnlyList<IEntity> _entities;
-        private ImageWindow _images;
+        private readonly ImageWindow _window;
 
         /// <summary>
         /// Last time an image has changed in the presentation
@@ -43,8 +42,8 @@ namespace Viewer.UI.Presentation
             IFileSystemErrorView dialogView)
         {
             _selection = selection;
-            _imageLoader = imageLoader;
             _dialogView = dialogView;
+            _window = new ImageWindow(imageLoader, 3);
             View = view;
             SubscribeTo(View, "View");
         }
@@ -56,51 +55,41 @@ namespace Viewer.UI.Presentation
             _isDisposed = true;
             View.Picture?.Dispose();
             View.Picture = null; // make sure no code can access the disposed image
-            _images?.Dispose();
-            _images = null;
+            _window.Dispose();
             base.Dispose();
         }
-        
-        public async Task ShowEntityAsync(IEnumerable<IEntity> entities, int index)
-        {
-            _entities = entities.ToArray();
-            if (index < 0)
-                index = 0;
-            if (index >= _entities.Count)
-                index = _entities.Count - 1;
-            
-            _images?.Dispose();
-            _images = new ImageWindow(_imageLoader, _entities, 3);
-            _images.SetPosition(index);
 
-            await LoadCurrentEntityAsync();
-        }
-        
-        private async Task LoadCurrentEntityAsync()
+        public async Task ShowEntityAsync(IReadOnlyList<IEntity> entities, int index)
         {
-            if (_images == null)
+            _window.Initialize(entities, index.Clamp(0, entities.Count - 1));
+
+            await ShowCurrentImageAsync();
+        }
+
+        private async Task ShowCurrentImageAsync()
+        {
+            if (!_window.IsInitialized)
             {
                 return;
             }
 
-            // replace selection
-            var position = _images.CurrnetIndex;
-            var entity = _entities[position];
-            if (View.IsActivated)
+            // load current image
+            var image = await _window.GetCurrentAsync();
+            if (_isDisposed || image == null)
             {
-                _selection.Replace(new[] {entity});
+                image?.Dispose();
+                return;
             }
 
-            // load new image
+            // replace selection
+            var entity = _window.Entities[_window.CurrnetIndex];
+            if (View.IsActivated)
+            {
+                _selection.Replace(new[] { entity });
+            }
+
             try
             {
-                var image = await _images.GetCurrentAsync();
-                if (image == null || _isDisposed)
-                {
-                    image?.Dispose();
-                    return;
-                }
-
                 // update view
                 View.Picture?.Dispose();
                 View.Picture = image;
@@ -136,8 +125,8 @@ namespace Viewer.UI.Presentation
                 var confirmRetry = _dialogView.FailedToOpenFile(entity.Path, e.Message);
                 if (confirmRetry)
                 {
-                    _images.SetPosition(_images.CurrnetIndex);
-                    await LoadCurrentEntityAsync();
+                    _window.Initialize(_window.Entities, _window.CurrnetIndex);
+                    await ShowCurrentImageAsync();
                 }
             }
         }
@@ -146,14 +135,14 @@ namespace Viewer.UI.Presentation
         
         private async void View_NextImage(object sender, EventArgs e)
         {
-            if (_images == null || _isLoading)
+            if (!_window.IsInitialized || _isLoading)
                 return;
 
             _isLoading = true;
             try
             {
-                _images.Next();
-                await LoadCurrentEntityAsync();
+                _window.Next();
+                await ShowCurrentImageAsync();
             }
             finally
             {
@@ -163,14 +152,14 @@ namespace Viewer.UI.Presentation
 
         private async void View_PrevImage(object sender, EventArgs e)
         {
-            if (_images == null || _isLoading)
+            if (!_window.IsInitialized || _isLoading)
                 return;
 
             _isLoading = true;
             try
             {
-                _images.Previous();
-                await LoadCurrentEntityAsync();
+                _window.Previous();
+                await ShowCurrentImageAsync();
             }
             finally
             {
@@ -208,15 +197,6 @@ namespace Viewer.UI.Presentation
             }
         }
 
-        private void View_Activated(object sender, EventArgs e)
-        {
-            if (_entities == null || _entities.Count == 0)
-            {
-                return;
-            }
-            _selection.Replace(new []{ _entities[_images.CurrnetIndex] });
-        }
-
         private void View_CloseView(object sender, EventArgs e)
         {
             _selection.Clear();
@@ -237,15 +217,20 @@ namespace Viewer.UI.Presentation
             View.UpdateImage();
         }
 
+        private void View_ResetZoom(object sender, EventArgs e)
+        {
+            View.Zoom = 1.0;
+            View.UpdateImage();
+        }
+
         private void View_ViewActivated(object sender, EventArgs e)
         {
-            var index = _images?.CurrnetIndex ?? -1;
-            if (_entities == null || index < 0 || index >= _entities.Count)
+            if (!_window.IsInitialized)
             {
                 return;
             }
 
-            _selection.Replace(new [] { _entities[index] });
+            _selection.Replace(new [] { _window.Entities[_window.CurrnetIndex] });
         }
     }
 }

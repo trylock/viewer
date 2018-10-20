@@ -17,8 +17,40 @@ namespace Viewer.UI.Presentation
 {
     /// <inheritdoc />
     /// <summary>
-    /// Image window preloads images within a constant distance from the current image.
+    /// Image window preloads images within a constant distance from the current image. This
+    /// reduces preceivable delay when user goes to the next or the previous image in presentation.
     /// </summary>
+    /// <example>
+    /// The window is created with a fixed sized buffer. This buffer has to be a positive even
+    /// number.
+    /// <code>
+    /// var window = new ImageWindow(imageLoader, 3);
+    /// </code>
+    /// The window is initialized using the <see cref="Initialize"/> method. This method preloads
+    /// images within a constant distance from given position. The image in the center is loaded
+    /// first.
+    /// <code>
+    /// window.Initialize(entities, 22);
+    /// </code>
+    /// You can navigate throught the presentation using the <see cref="Previous"/> and
+    /// <see cref="Next"/> methods. These methods dispose old images and add new photos to the
+    /// loading queue. They do **not** wait for the image to load.
+    /// <code>
+    /// window.Previous();
+    /// window.Next();
+    /// window.Previous();
+    /// window.Next();
+    /// window.Next();
+    /// window.Next();
+    /// </code>
+    /// You can wait for current image to load using the <see cref="GetCurrentAsync"/> method.
+    /// <code>
+    /// using (var image = await window.GetCurrentAsync())
+    /// {
+    ///     // do things with the image and dispose it
+    /// }
+    /// </code>
+    /// </example>
     internal class ImageWindow : IDisposable
     {
         private class ImageProxy : IDisposable
@@ -35,9 +67,13 @@ namespace Viewer.UI.Presentation
             public async Task<SKBitmap> LoadAsync()
             {
                 var bitmap = await _loadTask.ConfigureAwait(false);
+
+                // the window is allowed to dispose this image whenever (usually when it gets
+                // outside of the window buffer). Therefore we have to check if it has been
+                // disposed in a way which is thread safe.
                 lock (_lock)
                 {
-                    return _isDisposed ? null : bitmap.Copy();
+                    return _isDisposed ? null : bitmap?.Copy();
                 }
             }
 
@@ -55,20 +91,33 @@ namespace Viewer.UI.Presentation
         }
         
         private readonly ImageProxy[] _buffer;
-        private readonly IReadOnlyList<IEntity> _entities;
-        private readonly IImageLoader _imageLoader;
         private int _position;
+
+        /// <summary>
+        /// All entities in the presentation
+        /// </summary>
+        public IReadOnlyList<IEntity> Entities { get; private set; }
 
         /// <summary>
         /// Index of the current image in presentation.
         /// </summary>
-        public int CurrnetIndex => (_position + _buffer.Length / 2) % _entities.Count;
+        public int CurrnetIndex => (_position + _buffer.Length / 2) % Entities.Count;
+
+        /// <summary>
+        /// Queue of loading images
+        /// </summary>
+        public PhotoLoadingQueue Queue { get; }
+
+        /// <summary>
+        /// true iff the window has been initialized. If it is false, you are only allowed to call
+        /// the <see cref="Initialize"/> method.
+        /// </summary>
+        public bool IsInitialized => Entities != null;
 
         /// <summary>
         /// Create a new image window.
         /// </summary>
         /// <param name="imageLoader">Service used to decode images</param>
-        /// <param name="entities">Entities in the presentation</param>
         /// <param name="windowSize">
         ///     Size of the image window. This has to be an odd number. <c>windowSize / 2</c> images
         ///     will be preloaded before and after currently loaded image.
@@ -76,13 +125,12 @@ namespace Viewer.UI.Presentation
         /// <exception cref="ArgumentOutOfRangeException">
         ///     <paramref name="windowSize"/> is negative or an even number
         /// </exception>
-        public ImageWindow(IImageLoader imageLoader, IReadOnlyList<IEntity> entities, int windowSize)
+        public ImageWindow(IImageLoader imageLoader, int windowSize)
         {
             if (windowSize < 0 || windowSize % 2 == 0)
                 throw new ArgumentOutOfRangeException(nameof(windowSize));
 
-            _entities = entities;
-            _imageLoader = imageLoader;
+            Queue = new PhotoLoadingQueue(imageLoader);
             _buffer = new ImageProxy[windowSize];
             _position = 0;
         }
@@ -99,7 +147,7 @@ namespace Viewer.UI.Presentation
         ///
         ///     <para>
         ///     The task can return null if the image has been disposed. This can happen if you call
-        ///     <see cref="SetPosition"/> or <see cref="Next"/> and <see cref="Previous"/> after
+        ///     <see cref="Initialize"/> or <see cref="Next"/> and <see cref="Previous"/> after
         ///     this too many times so that the current image will be disposed before it can load.
         ///     </para>
         /// </returns>
@@ -113,28 +161,39 @@ namespace Viewer.UI.Presentation
         /// Initialize window at <paramref name="position"/>. This will start loading files from the
         /// center of the window so that current image and neighboring images are loaded first.
         /// </summary>
-        /// <param name="position">New center of the window</param>
+        /// <remarks>
+        /// All pending load requests will be cancelled. All images in window buffer will be
+        /// disposed.
+        /// </remarks>
+        /// <param name="entities">List of entities in presentation</param>
+        /// <param name="position">
+        /// New center of the window (index of an entity from <paramref name="entities"/>)
+        /// </param>
         /// <exception cref="ArgumentOutOfRangeException">
-        ///     <paramref name="position"/> is out of range.
+        /// <paramref name="position"/> is out of range.
         /// </exception>
-        public void SetPosition(int position)
+        /// <exception cref="ArgumentNullException"><paramref name="entities"/> is null</exception>
+        public void Initialize(IReadOnlyList<IEntity> entities, int position)
         {
-            if (position < 0 || position >= _entities.Count)
+            // cancel pending load requests and dispose all images which have been loaded already
+            Queue.Cancel();
+            DisposeItemsInBuffer();
+
+            Entities = entities ?? throw new ArgumentNullException(nameof(entities));
+            if (position < 0 || position >= Entities.Count)
                 throw new ArgumentOutOfRangeException(nameof(position));
 
             // move the buffer position
             _position = position - _buffer.Length / 2;
-            while (_position < 0) // the buffer can be larger than _entities
+            if (_position < 0)
             {
-                _position = _position + _entities.Count;
+                _position = Entities.Count + (_position % Entities.Count);
             }
-
-            DisposeItemsInBuffer();
 
             // preload images from the center of the window
             for (var i = 0; i < _buffer.Length; ++i)
             {
-                var bufferIndex = _buffer.Length / 2 + (i % 2 == 0 ? -1 : 1) * MathUtils.RoundUpDiv(i, 2);
+                var bufferIndex = _buffer.Length / 2 + (i % 2 == 0 ? -1 : 1) * i.RoundUpDiv(2);
                 Preload(bufferIndex);
             }
         }
@@ -146,7 +205,7 @@ namespace Viewer.UI.Presentation
         {
             if (_buffer[0] == null)
                 throw new InvalidOperationException(
-                    "Window is not initialized. Call SetPosition to initialize it.");
+                    $"Window is not initialized. Call {nameof(Initialize)} to initialize it.");
 
             // dispose the first item
             _buffer[0].Dispose();
@@ -158,7 +217,7 @@ namespace Viewer.UI.Presentation
             }
 
             ++_position;
-            if (_position == _entities.Count)
+            if (_position == Entities.Count)
             {
                 _position = 0;
             }
@@ -173,7 +232,7 @@ namespace Viewer.UI.Presentation
         {
             if (_buffer[0] == null)
                 throw new InvalidOperationException(
-                    "Window is not initialized. Call SetPosition to initialize it.");
+                    $"Window is not initialized. Call {nameof(Initialize)} to initialize it.");
 
             // dispose the last item
             _buffer[_buffer.Length - 1].Dispose();
@@ -187,7 +246,7 @@ namespace Viewer.UI.Presentation
             --_position;
             if (_position < 0)
             {
-                _position = _entities.Count - 1;
+                _position = Entities.Count - 1;
             }
             
             Preload(0);
@@ -198,18 +257,10 @@ namespace Viewer.UI.Presentation
             if (bufferIndex < 0 || bufferIndex >= _buffer.Length)
                 throw new ArgumentOutOfRangeException(nameof(bufferIndex));
 
-            var entityIndex = (_position + bufferIndex) % _entities.Count;
-            var entity = _entities[entityIndex];
-            var loadTask = QueueLoadRequest(entity);
+            var entityIndex = (_position + bufferIndex) % Entities.Count;
+            var entity = Entities[entityIndex];
+            var loadTask = Queue.EnqueueAsync(entity);
             _buffer[bufferIndex] = new ImageProxy(loadTask);
-        }
-
-        private Task<SKBitmap> _loadQueue = Task.FromResult<SKBitmap>(null);
-
-        private Task<SKBitmap> QueueLoadRequest(IEntity entity)
-        {
-            _loadQueue = _loadQueue.ContinueWith(_ => _imageLoader.LoadImage(entity));
-            return _loadQueue;
         }
         
         private void DisposeItemsInBuffer()
@@ -222,6 +273,8 @@ namespace Viewer.UI.Presentation
         
         public void Dispose()
         {
+            Entities = null;
+            _position = 0;
             DisposeItemsInBuffer();
         }
     }

@@ -77,7 +77,7 @@ namespace Viewer.UI.Presentation
             {
                 _presenter.View.EnsureVisible();
             }
-            await _presenter.ShowEntityAsync(entities, index);
+            await _presenter.ShowEntityAsync(entities.ToList(), index);
         }
         
         public async void Open(IEnumerable<IEntity> entities, int activeIndex)
@@ -94,7 +94,7 @@ namespace Viewer.UI.Presentation
         {
             if (_presenter != null)
             {
-                await _presenter.ShowEntityAsync(entities, activeIndex);
+                await _presenter.ShowEntityAsync(entities.ToList(), activeIndex);
             }
         }
     }

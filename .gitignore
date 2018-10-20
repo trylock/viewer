@@ -22,5 +22,6 @@ src/Viewer.Query/QueryParserListener.cs
 src/Viewer.Query/QueryParserBaseListener.cs
 
 # Documentation
+docs_cs
 spec
 src/**/.antlr

@@ -24,11 +24,16 @@ namespace Viewer.UI.Images
     {
         private readonly ISelectionView<EntityView> _view;
         private readonly ISelection _selection;
-        
+
+        /// <summary>
+        /// Event occurs whenever <see cref="ActiveItem"/> changes
+        /// </summary>
+        public event EventHandler ActiveItemChanged;
+
         /// <summary>
         /// The last item on which user clicked or to which .
         /// </summary>
-        public EntityView ActiveItem { get; set; }
+        public EntityView ActiveItem { get; private set; }
 
         private EntityView _rangeSelectAnchorItem;
 
@@ -149,7 +154,7 @@ namespace Viewer.UI.Images
 
         #region Range selection
 
-        private void ProcessRangeSelection(Point location)
+        private void ProcessRangeSelection(Point location, bool showRangeSelection)
         {
             // reset current selection
             ResetSelectedItemsState();
@@ -191,7 +196,10 @@ namespace Viewer.UI.Images
                 }
                 
                 // update items in the view
-                _view.ShowSelection(bounds);
+                if (showRangeSelection)
+                {
+                    _view.ShowSelection(bounds);
+                }
             }
 
             SetGlobalSelection();
@@ -221,7 +229,7 @@ namespace Viewer.UI.Images
 
         private void EndRangeSelection(Point location)
         {
-            ProcessRangeSelection(location);
+            ProcessRangeSelection(location, false);
             _isRangeSelect = false;
             _view.HideSelection();
         }
@@ -307,6 +315,7 @@ namespace Viewer.UI.Images
         private void CaptureActiveItem(EntityView item)
         {
             ActiveItem = item;
+            ActiveItemChanged?.Invoke(this, EventArgs.Empty);
         }
         
         private void View_ViewActivated(object sender, EventArgs e)
@@ -327,7 +336,7 @@ namespace Viewer.UI.Images
             {
                 if ((e.Button & MouseButtons.Left) != 0)
                 {
-                    ProcessRangeSelection(e.Location);
+                    ProcessRangeSelection(e.Location, true);
                 }
             }
             else
@@ -341,7 +350,7 @@ namespace Viewer.UI.Images
         {
             if (_isRangeSelect)
             {
-                ProcessRangeSelection(e.Location);
+                ProcessRangeSelection(e.Location, true);
             }
         }
 
@@ -354,6 +363,14 @@ namespace Viewer.UI.Images
             else 
             {
                 var item = _view.GetItemAt(e.Location);
+                if (item == null && e.Button == MouseButtons.Right)
+                {
+                    ResetSelectedItemsState();
+                    _currentSelection.Clear();
+                    SetGlobalSelection();
+                    _view.UpdateItems();
+                }
+
                 if (item != null && !_view.ModifierKeyState.HasFlag(Keys.Shift))
                 {
                     CaptureAnchorItem(item);
@@ -371,48 +388,57 @@ namespace Viewer.UI.Images
                 SetSelectedItemsState();
             }
 
-            Point delta = Point.Empty;
-            if (e.KeyCode == Keys.Left)
+            // get current active item
+            var activeItem = ActiveItem ?? _view.Items.FirstOrDefault();
+            if (activeItem == null)
             {
-                delta.X = -1;
-            }
-            else if (e.KeyCode == Keys.Right)
-            {
-                delta.X = 1;
-            }
-            else if (e.KeyCode == Keys.Up)
-            {
-                delta.Y = -1;
-            }
-            else if (e.KeyCode == Keys.Down)
-            {
-                delta.Y = 1;
+                return; // there are no items
             }
 
-            if (delta != Point.Empty)
+            // move current active item
+            EntityView target = null;
+            switch (e.KeyCode)
             {
-                var activeItem = ActiveItem ?? _view.Items.FirstOrDefault();
-                if (activeItem == null)
-                {
-                    return; // there are no items
-                }
-
-                var target = _view.FindItem(activeItem, delta);
-                if (target == null)
-                {
-                    target = activeItem; // there is no item in this direction
-                }
-
-                ProcessItemSelection(target, true);
-                CaptureActiveItem(target);
-
-                if (!e.Shift)
-                {
-                    CaptureAnchorItem(target);
-                }
-
-                _view.EnsureItemVisible(target);
+                case Keys.Home when _view.Items.Count > 0:
+                    target = _view.Items.First();
+                    break;
+                case Keys.End when _view.Items.Count > 0:
+                    target = _view.Items.Last();
+                    break;
+                case Keys.PageUp:
+                    target = _view.FindFirstItemAbove(activeItem);
+                    break;
+                case Keys.PageDown:
+                    target = _view.FindLastItemBelow(activeItem);
+                    break;
+                case Keys.Left:
+                    target = _view.FindItem(activeItem, new Point(-1, 0));
+                    break;
+                case Keys.Right:
+                    target = _view.FindItem(activeItem, new Point(1, 0));
+                    break;
+                case Keys.Up:
+                    target = _view.FindItem(activeItem, new Point(0, -1));
+                    break;
+                case Keys.Down:
+                    target = _view.FindItem(activeItem, new Point(0, 1));
+                    break;
             }
+            
+            if (target == null)
+            {
+                return;
+            }
+            
+            ProcessItemSelection(target, true);
+            CaptureActiveItem(target);
+
+            if (!e.Shift)
+            {
+                CaptureAnchorItem(target);
+            }
+
+            _view.EnsureItemVisible(target);
         }
     }
 }

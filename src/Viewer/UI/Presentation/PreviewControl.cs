@@ -142,7 +142,9 @@ namespace Viewer.UI.Presentation
 
             // calculate scaled image size
             var pictureSize = new Size(Picture.Width, Picture.Height);
-            var pictureDrawSize = ThumbnailGenerator.GetThumbnailSize(pictureSize, ClientSize).ToSKSize();
+            var pictureDrawSize = ThumbnailGenerator
+                .GetThumbnailSize(pictureSize, ClientSize)
+                .ToSKSize();
 
             // apply transformations
             var zoomScale = (float) Zoom;

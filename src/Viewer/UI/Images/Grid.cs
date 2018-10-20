@@ -114,7 +114,7 @@ namespace Viewer.UI.Images
         /// Number of rows in the grid.
         /// This will always be >= 0.
         /// </summary>
-        public int RowCount => MathUtils.RoundUpDiv(CellCount, ColumnCount);
+        public int RowCount => CellCount.RoundUpDiv(ColumnCount);
 
         /// <summary>
         /// Actual size of each cell in the grid
@@ -227,8 +227,8 @@ namespace Viewer.UI.Images
             var height = CellSize.Height + CellMargin.Height;
             bounds.X = (bounds.X / width) * width;
             bounds.Y = (bounds.Y / height) * height;
-            bounds.Width = (MathUtils.RoundUpDiv(bounds.X, width) * width) - bounds.X;
-            bounds.Height = (MathUtils.RoundUpDiv(bounds.Y, height) * height) - bounds.Y;
+            bounds.Width = (bounds.X.RoundUpDiv(width) * width) - bounds.X;
+            bounds.Height = (bounds.Y.RoundUpDiv(height) * height) - bounds.Y;
             return bounds;
         }
 
@@ -275,14 +275,14 @@ namespace Viewer.UI.Images
                 yield break; // the intersection is empty
 
             // find first column and column after the last column
-            var beginColumn = MathUtils.RoundUpDiv(FindHorizontal(minX), 2);
+            var beginColumn = FindHorizontal(minX).RoundUpDiv(2);
             var endColumn = Math.Min(
                 FindHorizontal(maxX) / 2 + 1,
                 ColumnCount
             );
 
             // find first row and row after the last row
-            var beginRow = MathUtils.RoundUpDiv(FindVertical(minY), 2);
+            var beginRow = FindVertical(minY).RoundUpDiv(2);
             var endRow = Math.Min(
                 FindVertical(maxY) / 2 + 1,
                 RowCount

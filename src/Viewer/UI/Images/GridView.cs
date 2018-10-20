@@ -110,8 +110,8 @@ namespace Viewer.UI.Images
             _highlightFillColor = Color.FromArgb(226, 241, 255);
             _highlightStrokeColor = Color.FromArgb(221, 232, 248);
 
-            _selectedFillColor = Color.FromArgb(221, 232, 248);
-            _selectedStrokeColor = Color.FromArgb(210, 220, 236);
+            _selectedFillColor = Color.FromArgb(218, 231, 251);
+            _selectedStrokeColor = Color.FromArgb(194, 208, 229);
 
             _rangeSelectionFillColor = Color.FromArgb(150, 79, 143, 247);
             _rangeSelectionStrokeColor = Color.FromArgb(255, 79, 143, 247);

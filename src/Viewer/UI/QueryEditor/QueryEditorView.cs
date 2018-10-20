@@ -204,8 +204,14 @@ namespace Viewer.UI.QueryEditor
             e.Effect = DragDropEffects.Copy;
         }
 
+        private string _oldContent = "";
+
         private void QueryTextBox_UpdateUI(object sender, UpdateUIEventArgs e)
         {
+            // update old content
+            var oldContent = _oldContent;
+            _oldContent = QueryTextBox.Text;
+
             if (_suppressSuggestionsRequested)
             {
                 return;
@@ -216,7 +222,7 @@ namespace Viewer.UI.QueryEditor
                 _suggestionView.Hide();
             }
 
-            if ((e.Change & UpdateChange.Content) != 0)
+            if ((e.Change & UpdateChange.Content) != 0 && oldContent != QueryTextBox.Text)
             {
                 SuggestionsRequested?.Invoke(sender, e);
             }

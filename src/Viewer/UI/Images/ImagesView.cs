@@ -85,6 +85,16 @@ namespace Viewer.UI.Images
             return _view.FindItem(currentItem, delta);
         }
 
+        public EntityView FindFirstItemAbove(EntityView currentItem)
+        {
+            return _view.FindFirstItemAbove(currentItem);
+        }
+
+        public EntityView FindLastItemBelow(EntityView currentItem)
+        {
+            return _view.FindLastItemBelow(currentItem);
+        }
+
         public void EnsureItemVisible(EntityView item)
         {
             _view.EnsureItemVisible(item);

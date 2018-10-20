@@ -405,6 +405,12 @@ namespace Viewer.UI.Images
                 case Keys.End when _view.Items.Count > 0:
                     target = _view.Items.Last();
                     break;
+                case Keys.PageUp:
+                    target = _view.FindFirstItemAbove(activeItem);
+                    break;
+                case Keys.PageDown:
+                    target = _view.FindLastItemBelow(activeItem);
+                    break;
                 case Keys.Left:
                     target = _view.FindItem(activeItem, new Point(-1, 0));
                     break;

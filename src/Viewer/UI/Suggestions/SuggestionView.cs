@@ -560,7 +560,7 @@ namespace Viewer.UI.Suggestions
             /// <returns></returns>
             public int MeasureItemHeight()
             {
-                return (int) (Font.Height * 1.7);
+                return (int) (Font.Height * 1.8);
             }
 
             /// <summary>
@@ -693,25 +693,34 @@ namespace Viewer.UI.Suggestions
                     // draw text
                     SizeF metadataTextSize = e.Graphics.MeasureString(item.Category, Font);
 
+                    var paddingTop = itemBounds.Height / 2 - Font.Height / 2;
                     var mainTextBounds = new Rectangle(
                         itemBounds.X + Font.Height / 2,
-                        itemBounds.Y + itemBounds.Height / 2 - Font.Height / 2,
-                        ClientSize.Width - (int) metadataTextSize.Width - Font.Height / 2,
-                        Font.Height
+                        itemBounds.Y + paddingTop,
+                        ClientSize.Width - (int) metadataTextSize.Width - Font.Height,
+                        itemBounds.Height - paddingTop
                     );
 
-                    e.Graphics.DrawString(
-                        item.Text,
-                        Font,
-                        primaryTextBrush,
-                        mainTextBounds);
+                    using (var format = new StringFormat())
+                    {
+                        format.Trimming = StringTrimming.EllipsisCharacter;
+                        format.FormatFlags = StringFormatFlags.NoWrap;
 
-                    e.Graphics.DrawString(
-                        item.Category,
-                        Font,
-                        secondaryTextBrush,
-                        itemBounds.Width - metadataTextSize.Width - Font.Height / 2,
-                        itemBounds.Y + itemBounds.Height / 2 - Font.Height / 2);
+                        e.Graphics.DrawString(
+                            item.Text,
+                            Font,
+                            primaryTextBrush,
+                            mainTextBounds,
+                            format);
+
+                        e.Graphics.DrawString(
+                            item.Category,
+                            Font,
+                            secondaryTextBrush,
+                            itemBounds.Width - metadataTextSize.Width - Font.Height / 2,
+                            itemBounds.Y + itemBounds.Height / 2 - Font.Height / 2,
+                            format);
+                    }
                 }
             }
             

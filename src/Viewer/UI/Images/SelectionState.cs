@@ -388,48 +388,51 @@ namespace Viewer.UI.Images
                 SetSelectedItemsState();
             }
 
-            Point delta = Point.Empty;
-            if (e.KeyCode == Keys.Left)
+            // get current active item
+            var activeItem = ActiveItem ?? _view.Items.FirstOrDefault();
+            if (activeItem == null)
             {
-                delta.X = -1;
-            }
-            else if (e.KeyCode == Keys.Right)
-            {
-                delta.X = 1;
-            }
-            else if (e.KeyCode == Keys.Up)
-            {
-                delta.Y = -1;
-            }
-            else if (e.KeyCode == Keys.Down)
-            {
-                delta.Y = 1;
+                return; // there are no items
             }
 
-            if (delta != Point.Empty)
+            // move current active item
+            EntityView target = null;
+            switch (e.KeyCode)
             {
-                var activeItem = ActiveItem ?? _view.Items.FirstOrDefault();
-                if (activeItem == null)
-                {
-                    return; // there are no items
-                }
-
-                var target = _view.FindItem(activeItem, delta);
-                if (target == null)
-                {
-                    target = activeItem; // there is no item in this direction
-                }
-
-                ProcessItemSelection(target, true);
-                CaptureActiveItem(target);
-
-                if (!e.Shift)
-                {
-                    CaptureAnchorItem(target);
-                }
-
-                _view.EnsureItemVisible(target);
+                case Keys.Home when _view.Items.Count > 0:
+                    target = _view.Items.First();
+                    break;
+                case Keys.End when _view.Items.Count > 0:
+                    target = _view.Items.Last();
+                    break;
+                case Keys.Left:
+                    target = _view.FindItem(activeItem, new Point(-1, 0));
+                    break;
+                case Keys.Right:
+                    target = _view.FindItem(activeItem, new Point(1, 0));
+                    break;
+                case Keys.Up:
+                    target = _view.FindItem(activeItem, new Point(0, -1));
+                    break;
+                case Keys.Down:
+                    target = _view.FindItem(activeItem, new Point(0, 1));
+                    break;
             }
+            
+            if (target == null)
+            {
+                return;
+            }
+            
+            ProcessItemSelection(target, true);
+            CaptureActiveItem(target);
+
+            if (!e.Shift)
+            {
+                CaptureAnchorItem(target);
+            }
+
+            _view.EnsureItemVisible(target);
         }
     }
 }

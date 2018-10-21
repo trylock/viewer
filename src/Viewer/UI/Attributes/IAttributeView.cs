@@ -165,7 +165,7 @@ namespace Viewer.UI.Attributes
         /// Attribute name or value suggestions shown to the user. Where the suggestions will be
         /// shown depends on which property the user is editing.
         /// </summary>
-        IEnumerable<SuggestionItem> Suggestions { get; set; }
+        IEnumerable<Suggestion> Suggestions { get; set; }
 
         /// <summary>
         /// Identification string of this view.

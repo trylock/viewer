@@ -14,6 +14,7 @@ using Viewer.Core.UI;
 using Viewer.IO;
 using Viewer.Properties;
 using Viewer.Query;
+using Viewer.Query.Suggestions;
 using Viewer.UI.Explorer;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -75,6 +76,7 @@ namespace Viewer.UI.QueryEditor
         private readonly IQueryCompiler _queryCompiler;
         private readonly IQueryErrorListener _queryErrorListener;
         private readonly IFileSystemErrorView _dialogView;
+        private readonly IQuerySuggestions _querySuggestions;
         private readonly IFileSystem _fileSystem;
 
         /// <summary>
@@ -88,13 +90,15 @@ namespace Viewer.UI.QueryEditor
             IFileSystemErrorView dialogView,
             IQueryHistory queryHistory,
             IQueryCompiler queryCompiler,
-            IQueryErrorListener queryErrorListener)
+            IQueryErrorListener queryErrorListener,
+            IQuerySuggestions querySuggestions)
         {
             _fileSystem = fileSystem;
             _dialogView = dialogView;
             _queryHistory = queryHistory;
             _queryCompiler = queryCompiler;
             _queryErrorListener = queryErrorListener;
+            _querySuggestions = querySuggestions;
         }
 
         public async Task<IWindowView> OpenAsync(string path)
@@ -222,7 +226,9 @@ namespace Viewer.UI.QueryEditor
                 _dialogView, 
                 _queryHistory, 
                 _queryCompiler, 
-                _queryErrorListener, this);
+                _queryErrorListener, 
+                _querySuggestions, 
+                this);
 
             editor.View.CloseView += (sender, args) =>
             {

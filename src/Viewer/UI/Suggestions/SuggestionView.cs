@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core;
+using Viewer.Core.UI;
 
 namespace Viewer.UI.Suggestions
 {
@@ -42,12 +43,12 @@ namespace Viewer.UI.Suggestions
     internal partial class SuggestionView : Form
     {
         private readonly SuggestionControl _suggestionControl;
-        private readonly List<SuggestionItem> _items = new List<SuggestionItem>();
+        private readonly List<Suggestion> _items = new List<Suggestion>();
 
         /// <summary>
         /// List of suggestions shown to the user. 
         /// </summary>
-        public IEnumerable<SuggestionItem> Items
+        public IEnumerable<Suggestion> Items
         {
             get => _items;
             set
@@ -187,7 +188,7 @@ namespace Viewer.UI.Suggestions
         public event EventHandler ItemsChanged;
 
         private Control _currentControl;
-        private Form _applicationForm;
+        private Point _locationInControl;
 
         public SuggestionView() : this(null)
         {
@@ -249,15 +250,53 @@ namespace Viewer.UI.Suggestions
         /// Show suggestions at current control. If no control is attached (see
         /// <see cref="AttachTo"/>), this will be no-op.
         /// </summary>
+        /// <remarks>
+        /// If no location has been set using the <see cref="ShowAtCurrentControl(Point)"/>
+        /// method, the form will be shown below current control. Otherwise, previous location
+        /// will be used.
+        /// </remarks>
         public void ShowAtCurrentControl()
         {
             if (_items.Count <= 0 || _currentControl == null)
             {
                 return;
             }
-            
-            SelectedIndex = DefaultSelectedIndex;
-            SetLocation();
+
+            var location = _currentControl.PointToScreen(_locationInControl);
+            if (_locationInControl == Point.Empty)
+            {
+                location = _currentControl.PointToScreen(new Point(0, 0));
+                location = new Point(location.X, location.Y + _currentControl.Height);
+            }
+            ShowAt(location);
+        }
+
+        /// <summary>
+        /// Show suggestions at <paramref name="controlLocation"/>.
+        /// </summary>
+        /// <param name="controlLocation">
+        /// Location of the top left corner of the suggestions form in current control.
+        /// </param>
+        public void ShowAtCurrentControl(Point controlLocation)
+        {
+            if (_items.Count <= 0 || _currentControl == null)
+            {
+                return;
+            }
+
+            _locationInControl = controlLocation;
+            ShowAt(_currentControl.PointToScreen(_locationInControl));
+        }
+
+        private void ShowAt(Point screenLocation)
+        {
+            if (!Visible)
+            {
+                SelectedIndex = DefaultSelectedIndex;
+            }
+
+            Location = screenLocation;
+            FixLocation();
             Show();
         }
 
@@ -292,21 +331,6 @@ namespace Viewer.UI.Suggestions
         }
 
         /// <summary>
-        /// Set correct location of this suggestion form.
-        /// </summary>
-        private void SetLocation()
-        {
-            if (_currentControl == null)
-            {
-                return;
-            }
-
-            var location = _currentControl.PointToScreen(new Point(0, 0));
-            Location = new Point(location.X, location.Y + _currentControl.Height);
-            FixLocation();
-        }
-
-        /// <summary>
         /// Set form size so that there are at most <see cref="MaxVisibleItemCount"/> items
         /// visible at a time. If there is less items than that, the size will be adjusted to
         /// fit them all.
@@ -325,14 +349,18 @@ namespace Viewer.UI.Suggestions
         /// </summary>
         private void FixLocation()
         {
+            // find screen of the attached control
             if (_currentControl == null)
             {
                 return;
             }
 
             var screen = Screen.FromControl(_currentControl);
+
+            // make sure the bounding box of this form is fully visible on the selected screen
             var bounds = new Rectangle(PointToScreen(Point.Empty), Size);
             var correctedBounds = bounds.EnsureInside(screen.Bounds);
+            
             Location = correctedBounds.Location;
         }
 
@@ -353,44 +381,36 @@ namespace Viewer.UI.Suggestions
 
         #region Event Handlers
 
+        private ParentFormDeactivated _formDeactivatedEvent;
+        private MovedOnScreenEvent _movedOnScreenEvent;
+
         private void RegisterControlEventHandlers(Control control)
         {
-            control.ParentChanged += CurrentControl_ParentChanged;
             control.KeyDown += CurrentControl_KeyDown;
             control.Disposed += CurrentControl_Dispsed;
             control.VisibleChanged += CurrentControl_VisibleChanged;
+            _formDeactivatedEvent = control.CreateParentFormDeactivatedEvent();
+            _formDeactivatedEvent += ApplicationForm_Deactivate;
+            _movedOnScreenEvent = control.CreateMovedOnScreenEvent();
+            _movedOnScreenEvent += Control_Moved;
         }
 
         private void UnregisterControlEventHandlers(Control control)
         {
-            control.ParentChanged -= CurrentControl_ParentChanged;
             control.KeyDown -= CurrentControl_KeyDown;
             control.Disposed -= CurrentControl_Dispsed;
             control.VisibleChanged -= CurrentControl_VisibleChanged;
-
-            if (_applicationForm != null)
-            {
-                _applicationForm.Deactivate -= ApplicationForm_Deactivate;
-            }
+            _formDeactivatedEvent.Dispose();
+            _formDeactivatedEvent = null;
+            _movedOnScreenEvent -= Control_Moved;
+            _movedOnScreenEvent = null;
         }
 
-        private void CurrentControl_ParentChanged(object sender, EventArgs e)
+        private void Control_Moved(object sender, EventArgs e)
         {
-            if (_applicationForm == null)
+            if (Visible)
             {
-                // find application form (this should be the root component)
-                var root = _currentControl?.Parent;
-                while (root?.Parent != null)
-                {
-                    root = root.Parent;
-                }
-
-                // hide suggestions when the form is deactivated
-                _applicationForm = root as Form;
-                if (_applicationForm != null)
-                {
-                    _applicationForm.Deactivate += ApplicationForm_Deactivate;
-                }
+                ShowAtCurrentControl();
             }
         }
 
@@ -413,6 +433,7 @@ namespace Viewer.UI.Suggestions
         {
             if (!Visible)
             {
+                // show suggestions on Ctrl + Space
                 if (e.Control && e.KeyCode == Keys.Space)
                 {
                     e.Handled = true;
@@ -422,26 +443,36 @@ namespace Viewer.UI.Suggestions
                 return;
             }
 
-            var selectedIndexDelta = 0;
+            // hide suggestions on Escape, accept suggestion on Enter or Tab
             if (e.KeyCode == Keys.Escape)
             {
                 e.SuppressKeyPress = true;
                 Hide();
+                return;
             }
-            else if (e.KeyCode == Keys.Down)
-            {
-                e.Handled = true;
-                selectedIndexDelta = 1;
-            }
-            else if (e.KeyCode == Keys.Up)
-            {
-                e.Handled = true;
-                selectedIndexDelta = -1;
-            }
-            else if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
+
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
             {
                 e.SuppressKeyPress = true;
                 AcceptSelectedSuggestion();
+                return;
+            }
+
+            // move suggestions if no modifier keys are pressed (we don't want to overwrite text
+            // selection shortcuts)
+            var selectedIndexDelta = 0;
+            if (!e.Control && !e.Shift)
+            {
+                if (e.KeyCode == Keys.Down)
+                {
+                    e.Handled = true;
+                    selectedIndexDelta = 1;
+                }
+                else if (e.KeyCode == Keys.Up)
+                {
+                    e.Handled = true;
+                    selectedIndexDelta = -1;
+                }
             }
 
             // change selected item
@@ -533,7 +564,7 @@ namespace Viewer.UI.Suggestions
             /// <returns></returns>
             public int MeasureItemHeight()
             {
-                return (int) (Font.Height * 1.7);
+                return (int) (Font.Height * 1.8);
             }
 
             /// <summary>
@@ -666,25 +697,34 @@ namespace Viewer.UI.Suggestions
                     // draw text
                     SizeF metadataTextSize = e.Graphics.MeasureString(item.Category, Font);
 
+                    var paddingTop = itemBounds.Height / 2 - Font.Height / 2;
                     var mainTextBounds = new Rectangle(
                         itemBounds.X + Font.Height / 2,
-                        itemBounds.Y + itemBounds.Height / 2 - Font.Height / 2,
-                        ClientSize.Width - (int) metadataTextSize.Width - Font.Height / 2,
-                        Font.Height
+                        itemBounds.Y + paddingTop,
+                        ClientSize.Width - (int) metadataTextSize.Width - Font.Height,
+                        itemBounds.Height - paddingTop
                     );
 
-                    e.Graphics.DrawString(
-                        item.Text,
-                        Font,
-                        primaryTextBrush,
-                        mainTextBounds);
+                    using (var format = new StringFormat())
+                    {
+                        format.Trimming = StringTrimming.EllipsisCharacter;
+                        format.FormatFlags = StringFormatFlags.NoWrap;
 
-                    e.Graphics.DrawString(
-                        item.Category,
-                        Font,
-                        secondaryTextBrush,
-                        itemBounds.Width - metadataTextSize.Width - Font.Height / 2,
-                        itemBounds.Y + itemBounds.Height / 2 - Font.Height / 2);
+                        e.Graphics.DrawString(
+                            item.Text,
+                            Font,
+                            primaryTextBrush,
+                            mainTextBounds,
+                            format);
+
+                        e.Graphics.DrawString(
+                            item.Category,
+                            Font,
+                            secondaryTextBrush,
+                            itemBounds.Width - metadataTextSize.Width - Font.Height / 2,
+                            itemBounds.Y + itemBounds.Height / 2 - Font.Height / 2,
+                            format);
+                    }
                 }
             }
             

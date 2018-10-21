@@ -804,5 +804,42 @@ namespace ViewerTest.Query
             listener.Verify(mock => mock.AfterCompilation());
             listener.VerifyNoOtherCalls();
         }
+
+        [TestMethod]
+        public void Compile_ComplexIdentifierInSelect()
+        {
+            const string queryViewText = "select \"path\"";
+            const string queryText = "select `complex id`";
+
+            _queryViewRepository
+                .Setup(mock => mock.Find("complex id"))
+                .Returns(new QueryView("complex id", queryViewText, null));
+            
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _query.Verify(mock => mock.View("complex id"), Times.Once);
+            _query.Verify(mock => mock.WithText(queryViewText), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_UnicodeAlphanumericCharactersInIdentifier()
+        {
+            const string identifier = "ěščřžýáíéůúßüな";
+            const string queryViewText = "select \"path\"";
+            const string queryText = "select " + identifier;
+
+            _queryViewRepository
+                .Setup(mock => mock.Find(identifier))
+                .Returns(new QueryView(identifier, queryViewText, null));
+
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _query.Verify(mock => mock.View(identifier), Times.Once);
+            _query.Verify(mock => mock.WithText(queryViewText), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+        }
     }
 }

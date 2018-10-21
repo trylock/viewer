@@ -20,7 +20,7 @@ INTERSECT: I N T E R S E C T;
 
 UNION_EXCEPT: (U N I O N | E X C E P T);
 
-ID: [a-zA-Z_][a-zA-Z0-9_]*;
+ID: [\p{Alpha}_][\p{Alpha}0-9_]*;
 
 INT: [0-9]+;
 
@@ -43,6 +43,8 @@ MULT_DIV: ('*' | '/');
 REL_OP: ('=' | '!=' | '<' | '<=' | '>' | '>=');
 
 WS : [ \t\r\n]+ -> skip;
+
+ERROR: .;
 
 // match string content
 mode STRING_CONTENT;

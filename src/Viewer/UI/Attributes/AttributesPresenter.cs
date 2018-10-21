@@ -392,7 +392,7 @@ namespace Viewer.UI.Attributes
         private async void View_NameChanged(object sender, NameEventArgs e)
         {
             // reset suggestions
-            View.Suggestions = new List<SuggestionItem>();
+            View.Suggestions = new List<Suggestion>();
 
             var value = e.Value?.Trim();
             if (value == null)
@@ -404,16 +404,12 @@ namespace Viewer.UI.Attributes
 
             var suggestions = await Task.Run(() =>
             {
-                var items = new List<SuggestionItem>();
+                var items = new List<Suggestion>();
 
                 // load suggestions
                 foreach (var name in _attributeCache.GetNames(value))
                 {
-                    items.Add(new SuggestionItem
-                    {
-                        Text = name,
-                        Category = "User attribute"
-                    });
+                    items.Add(new Suggestion(name, "User attribute", null));
                 }
 
                 return items;
@@ -423,29 +419,21 @@ namespace Viewer.UI.Attributes
             {
                 return;
             }
-
-            var setAttributeNames = View.Attributes
-                .Select(group => group.Value.Name)
-                .ToHashSet(StringComparer.CurrentCulture);
-            View.Suggestions = suggestions.Where(item => !setAttributeNames.Contains(item.Text));
+            
+            View.Suggestions = suggestions;
         }
 
         private async void View_BeginValueEdit(object sender, NameEventArgs e)
         {
             // reset suggestions
-            View.Suggestions = new List<SuggestionItem>();
+            View.Suggestions = new List<Suggestion>();
 
             var suggestions = await Task.Run(() =>
             {
-                var items = new List<SuggestionItem>();
+                var items = new List<Suggestion>();
                 foreach (var value in _attributeCache.GetValues(e.Value))
                 {
-                    items.Add(new SuggestionItem
-                    {
-                        Text = value.ToString(),
-                        Category = value.Type.ToString(),
-                        UserData = value
-                    });
+                    items.Add(new Suggestion(value.ToString(), value.Type.ToString(), value));
                 }
 
                 return items;

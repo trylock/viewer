@@ -73,9 +73,9 @@ namespace Viewer.UI.Attributes
         /// If the current editing control supports suggestions (e.g., it is a SuggestionTextBox),
         /// this will forward all calls to its Suggestion control. Otherwise, this is just a no-op.
         /// </summary>
-        public IEnumerable<SuggestionItem> Suggestions
+        public IEnumerable<Suggestion> Suggestions
         {
-            get => SuggestionEditControl?.Suggestions.Items ?? Enumerable.Empty<SuggestionItem>();
+            get => SuggestionEditControl?.Suggestions.Items ?? Enumerable.Empty<Suggestion>();
             set
             {
                 var suggestions = SuggestionEditControl?.Suggestions;

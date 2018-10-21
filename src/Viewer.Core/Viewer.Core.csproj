@@ -63,6 +63,7 @@
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="Retry.cs" />
     <Compile Include="UI\ClipboardService.cs" />
+    <Compile Include="UI\ControlExtensions.cs" />
     <Compile Include="UI\IStatusBarItem.cs" />
     <Compile Include="UI\IWindowView.cs" />
     <Compile Include="UI\Presenter.cs" />

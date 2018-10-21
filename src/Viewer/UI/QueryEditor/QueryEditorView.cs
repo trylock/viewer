@@ -12,14 +12,22 @@ using ScintillaNET;
 using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.Query;
+using Viewer.UI.Suggestions;
 
 namespace Viewer.UI.QueryEditor
 {
     internal partial class QueryEditorView : WindowView, IQueryEditorView
     {
+        private readonly SuggestionView _suggestionView;
+
         public QueryEditorView()
         {
             InitializeComponent();
+
+            _suggestionView = new SuggestionView(QueryTextBox)
+            {
+                DefaultSelectedIndex = 0
+            };
 
             ViewerForm.Theme.ApplyTo(EditorToolStrip);
 
@@ -46,10 +54,76 @@ namespace Viewer.UI.QueryEditor
             QueryTextBox.ClearCmdKey(Keys.Control | Keys.S);
             QueryTextBox.ClearCmdKey(Keys.Control | Keys.O);
         }
+        
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                _suggestionView?.Dispose();
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         #region Drop view
-        
+
         public event EventHandler<DragEventArgs> OnDrop;
+
+        #endregion
+
+        #region IQuerySuggestionView
+
+        public event EventHandler<SuggestionEventArgs> SuggestionAccepted
+        {
+            add => _suggestionView.Accepted += value;
+            remove => _suggestionView.Accepted -= value;
+        }
+
+        public event EventHandler SuggestionsRequested;
+        public event EventHandler Poll;
+
+        /// <summary>
+        /// If true, <see cref="SuggestionsRequested"/> event won't be triggered. This is used to
+        /// distinguish user caret changed event from system caret changed event (when a suggestion
+        /// is accepted)
+        /// </summary>
+        private bool _suppressSuggestionsRequested;
+
+        public int CaretPosition
+        {
+            get => QueryTextBox.CurrentPosition;
+            set
+            {
+                _suppressSuggestionsRequested = true;
+                try
+                {
+                    QueryTextBox.GotoPosition(value);
+                }
+                finally
+                {
+                    _suppressSuggestionsRequested = false;
+                }
+            } 
+        }
+
+        public IEnumerable<Suggestion> Suggestions
+        {
+            get => _suggestionView.Items;
+            set
+            {
+                var caretLocation = new Point(
+                    QueryTextBox.PointXFromPosition(QueryTextBox.CurrentPosition),
+                    (int) (QueryTextBox.PointYFromPosition(QueryTextBox.CurrentPosition)
+                           + QueryTextBox.Font.Height * 1.5)
+                );
+                _suggestionView.Items = value; 
+                _suggestionView.ShowAtCurrentControl(caretLocation);
+            }
+        }
 
         #endregion
 
@@ -110,6 +184,10 @@ namespace Viewer.UI.QueryEditor
             {
                 OpenButton_Click(sender, e);
             }
+            else if (e.Control && e.KeyCode == Keys.Space)
+            {
+                SuggestionsRequested?.Invoke(sender, e);
+            }
         }
 
         private void QueryTextBox_TextChanged(object sender, EventArgs e)
@@ -125,6 +203,30 @@ namespace Viewer.UI.QueryEditor
         private void QueryTextBox_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Copy;
+        }
+
+        private string _oldContent = "";
+
+        private void QueryTextBox_UpdateUI(object sender, UpdateUIEventArgs e)
+        {
+            // update old content
+            var oldContent = _oldContent;
+            _oldContent = QueryTextBox.Text;
+
+            if (_suppressSuggestionsRequested)
+            {
+                return;
+            }
+
+            if ((e.Change & UpdateChange.Selection) != 0)
+            {
+                _suggestionView.Hide();
+            }
+
+            if ((e.Change & UpdateChange.Content) != 0 && oldContent != QueryTextBox.Text)
+            {
+                SuggestionsRequested?.Invoke(sender, e);
+            }
         }
 
         private void OpenButton_Click(object sender, EventArgs e)
@@ -151,6 +253,11 @@ namespace Viewer.UI.QueryEditor
         protected override string GetPersistString()
         {
             return base.GetPersistString() + ";" + Query + ";" + (FullPath ?? "");
+        }
+
+        private void PollTimer_Tick(object sender, EventArgs e)
+        {
+            Poll?.Invoke(sender, e);
         }
     }
 }

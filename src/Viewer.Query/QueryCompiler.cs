@@ -299,16 +299,28 @@ namespace Viewer.Query
                 return new CompilationResult{ Query = query };
             }
 
-            var viewId = context.ID();
-            if (viewId != null)
+            IToken identifierSymbol = null;
+            string identifier = "";
+            if (context.COMPLEX_ID() != null)
             {
-                var view = _queryCompiler.Views.Find(viewId.GetText());
+                identifierSymbol = context.COMPLEX_ID().Symbol;
+                identifier = identifierSymbol.Text.Substring(1, identifierSymbol.Text.Length - 2);
+            }
+            else if (context.ID() != null)
+            {
+                identifierSymbol = context.ID().Symbol;
+                identifier = identifierSymbol.Text;
+            }
+            
+            if (identifierSymbol != null)
+            {
+                var view = _queryCompiler.Views.Find(identifier);
                 if (view == null)
                 {
                     return ReportError(
-                        viewId.Symbol.Line, 
-                        viewId.Symbol.Column, 
-                        "Unknown view '" + viewId.GetText() + "'");
+                        identifierSymbol.Line,
+                        identifierSymbol.Column, 
+                        "Unknown view '" + identifier + "'");
                 }
 
                 query = _queryCompiler.Compile(new StringReader(view.Text), _queryErrorListener) as IQuery;

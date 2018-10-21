@@ -18,6 +18,8 @@ src/Viewer.Query/QueryParser.interp
 src/Viewer.Query/QueryParser.tokens
 src/Viewer.Query/QueryParserVisitor.cs
 src/Viewer.Query/QueryParserBaseVisitor.cs
+src/Viewer.Query/QueryParserListener.cs
+src/Viewer.Query/QueryParserBaseListener.cs
 
 # Documentation
 docs_cs

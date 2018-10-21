@@ -8,9 +8,9 @@ namespace Viewer.UI.Suggestions
 {
     internal class SuggestionEventArgs : EventArgs
     {
-        public SuggestionItem Value { get; }
+        public Suggestion Value { get; }
 
-        public SuggestionEventArgs(SuggestionItem value)
+        public SuggestionEventArgs(Suggestion value)
         {
             Value = value ?? throw new ArgumentNullException(nameof(value));
         }

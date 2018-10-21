@@ -54,6 +54,7 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.4.5.8\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
@@ -62,6 +63,10 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple">
+      <HintPath>..\..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -98,7 +103,9 @@
     <Compile Include="QueryCompiler.cs" />
     <Compile Include="QueryLexer.cs" />
     <Compile Include="QueryParser.cs" />
+    <Compile Include="QueryParserBaseListener.cs" />
     <Compile Include="QueryParserBaseVisitor.cs" />
+    <Compile Include="QueryParserListener.cs" />
     <Compile Include="QueryParserVisitor.cs" />
     <Compile Include="QueryProgress.cs" />
     <Compile Include="QueryTextComparer.cs" />
@@ -112,6 +119,21 @@
     <Compile Include="Search\SearchPriorityComparer.cs" />
     <Compile Include="Search\PriorityComparerFactory.cs" />
     <Compile Include="Search\SubsetCollection.cs" />
+    <Compile Include="Suggestions\Providers\AttributeNameSuggestionProvider.cs" />
+    <Compile Include="Suggestions\Providers\AttributeValueSuggestionProvider.cs" />
+    <Compile Include="Suggestions\CaretToken.cs" />
+    <Compile Include="Suggestions\CaretTokenSource.cs" />
+    <Compile Include="Suggestions\Providers\DirectorySuggestionProvider.cs" />
+    <Compile Include="Suggestions\Providers\IdentifierSuggestion.cs" />
+    <Compile Include="Suggestions\Providers\MetadataAttributeSuggestionProvider.cs" />
+    <Compile Include="Suggestions\Providers\StaticTokenSuggestionProvider.cs" />
+    <Compile Include="Suggestions\QuerySuggestion.cs" />
+    <Compile Include="Suggestions\QuerySuggestionComparer.cs" />
+    <Compile Include="Suggestions\Providers\SuggestionProvider.cs" />
+    <Compile Include="Suggestions\QuerySuggestions.cs" />
+    <Compile Include="Suggestions\SuggestionState.cs" />
+    <Compile Include="Suggestions\Providers\ViewSuggestionProvider.cs" />
+    <Compile Include="Suggestions\StateCollector.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Viewer.Core\Viewer.Core.csproj">
@@ -130,9 +152,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>call $(SolutionDir)tools/antlr4 -package Viewer.Query -o $(ProjectDir) $(ProjectDir)QueryLexer.g4
-call $(SolutionDir)tools/antlr4 -no-listener -visitor -package Viewer.Query -o $(ProjectDir) $(ProjectDir)QueryParser.g4</PreBuildEvent>
+call $(SolutionDir)tools/antlr4 -visitor -package Viewer.Query -o $(ProjectDir) $(ProjectDir)QueryParser.g4</PreBuildEvent>
   </PropertyGroup>
 </Project>

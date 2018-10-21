@@ -320,13 +320,20 @@ namespace Viewer.UI.Images
         
         private void View_ViewActivated(object sender, EventArgs e)
         {
-            SetGlobalSelection();
+            if (_isRangeSelect)
+            {
+                _isRangeSelect = false;
+                _view.HideSelection();
+            }
         }
 
         private void View_ViewDeactivated(object sender, EventArgs e)
         {
-            EndRangeSelection(_rangeOrigin);
-            _view.HideSelection();
+            if (_isRangeSelect)
+            {
+                _isRangeSelect = false;
+                _view.HideSelection();
+            }
         }
 
         private void View_ProcessMouseDown(object sender, MouseEventArgs e)

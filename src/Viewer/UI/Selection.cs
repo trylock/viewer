@@ -10,6 +10,14 @@ using Viewer.Data;
 
 namespace Viewer.UI
 {
+    public class BeforeChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// If true, the selection replacement will be canceled
+        /// </summary>
+        public bool Cancel { get; set; }
+    }
+
     /// <inheritdoc />
     /// <summary>
     /// Collection of entities currently selected by the user.
@@ -22,6 +30,11 @@ namespace Viewer.UI
         /// Event occurs when the selection changes.
         /// </summary>
         event EventHandler Changed;
+
+        /// <summary>
+        /// Event occurs before the selection changes. Listeners can cancel the change
+        /// </summary>
+        event EventHandler<BeforeChangedEventArgs> BeforeChanged;
         
         /// <summary>
         /// Replace current selection with <paramref name="newSelection"/>
@@ -42,7 +55,8 @@ namespace Viewer.UI
         private readonly List<IEntity> _currentSelection = new List<IEntity>();
 
         public event EventHandler Changed;
-        
+        public event EventHandler<BeforeChangedEventArgs> BeforeChanged;
+
         public IEnumerator<IEntity> GetEnumerator()
         {
             return _currentSelection.GetEnumerator();
@@ -59,7 +73,15 @@ namespace Viewer.UI
             {
                 throw new ArgumentNullException(nameof(newSelection));
             }
-            
+
+            // raise the BeforeChanged event
+            var args = new BeforeChangedEventArgs();
+            BeforeChanged?.Invoke(this, args);
+            if (args.Cancel)
+            {
+                return;
+            }
+
             _currentSelection.Clear();
             _currentSelection.AddRange(newSelection);
 
@@ -69,6 +91,14 @@ namespace Viewer.UI
 
         public void Clear()
         {
+            // raise the BeforeChanged event
+            var args = new BeforeChangedEventArgs();
+            BeforeChanged?.Invoke(this, args);
+            if (args.Cancel)
+            {
+                return;
+            }
+
             _currentSelection.Clear();
             Changed?.Invoke(this, EventArgs.Empty);
         }

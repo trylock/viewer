@@ -58,6 +58,7 @@ namespace Viewer.UI.Attributes
 
             // register event handlers
             _queryHistory.BeforeQueryExecuted += QueryHistory_BeforeQueryExecuted;
+            _attributes.Selection.BeforeChanged += Selection_BeforeChanged;
             _attributes.Selection.Changed += Selection_Changed;
 
             SubscribeTo(View, "View");
@@ -79,6 +80,7 @@ namespace Viewer.UI.Attributes
         {
             _isDisposed = true;
             _queryHistory.BeforeQueryExecuted -= QueryHistory_BeforeQueryExecuted;
+            _attributes.Selection.BeforeChanged -= Selection_BeforeChanged;
             _attributes.Selection.Changed -= Selection_Changed;
 
             base.Dispose();
@@ -116,10 +118,7 @@ namespace Viewer.UI.Attributes
                 IsInAllEntities = true
             };
         }
-
-        private List<IEntity> _unsavedSelection = new List<IEntity>();
-        private bool _suppressUnsavedCheck = false;
-
+        
         /// <summary>
         /// Ask user what to do with unsaved attributes and then carry out the selected action
         /// </summary>
@@ -127,7 +126,7 @@ namespace Viewer.UI.Attributes
         private UnsavedDecision HandleUnsavedAttributes()
         {
             var decision = UnsavedDecision.None;
-            if (_suppressUnsavedCheck || !IsEditingEnabled)
+            if (!IsEditingEnabled)
             {
                 return decision;
             }
@@ -137,7 +136,7 @@ namespace Viewer.UI.Attributes
             {
                 return decision;
             }
-
+            
             decision = View.ReportUnsavedAttributes();
 
             if (decision == UnsavedDecision.Save)
@@ -162,31 +161,26 @@ namespace Viewer.UI.Attributes
                 }
                 
                 View.EnsureVisible();
-
-                // reset current selection to the previous selection
-                _suppressUnsavedCheck = true;
-                try
-                {
-                    _attributes.Selection.Replace(_unsavedSelection);
-                }
-                finally
-                {
-                    _suppressUnsavedCheck = false;
-                }
             }
 
             return decision;
         }
+
+        private void Selection_Changed(object sender, EventArgs e)
+        {
+            UpdateAttributes();
+        }
         
-        private void Selection_Changed(object sender, EventArgs eventArgs)
+        private void Selection_BeforeChanged(object sender, BeforeChangedEventArgs e)
         {
             if (IsEditingEnabled)
             {
-                HandleUnsavedAttributes();
-                _unsavedSelection = _attributes.Selection.ToList();
+                var result = HandleUnsavedAttributes();
+                if (result == UnsavedDecision.Cancel)
+                {
+                    e.Cancel = true;
+                }
             }
-
-            UpdateAttributes();
         }
 
         private IEnumerable<AttributeGroup> GetSelectedAttributes()

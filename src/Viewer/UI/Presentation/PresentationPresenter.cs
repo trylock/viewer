@@ -222,15 +222,5 @@ namespace Viewer.UI.Presentation
             View.Zoom = 1.0;
             View.UpdateImage();
         }
-
-        private void View_ViewActivated(object sender, EventArgs e)
-        {
-            if (!_window.IsInitialized)
-            {
-                return;
-            }
-
-            _selection.Replace(new [] { _window.Entities[_window.CurrnetIndex] });
-        }
     }
 }

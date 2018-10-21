@@ -21,6 +21,7 @@ namespace Viewer.Data.SQLite
         private readonly IFileSystem _fileSystem;
         private readonly string _dataSource;
         private bool _isInitialized;
+        private readonly object _initializationLock = new object();
 
         [ImportingConstructor]
         public SQLiteConnectionFactory(IFileSystem fileSystem) 
@@ -82,11 +83,15 @@ namespace Viewer.Data.SQLite
         /// <returns>New connection.</returns>
         public SQLiteConnection Create()
         {
-            if (!_isInitialized)
+            lock (_initializationLock)
             {
-                _isInitialized = true;
-                Initialize(_dataSource);
+                if (!_isInitialized)
+                {
+                    _isInitialized = true;
+                    Initialize(_dataSource);
+                }
             }
+
             return Create(_dataSource);
         }
 

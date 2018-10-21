@@ -2,8 +2,6 @@
 
 Viewer is a program that lets you store custom attributes directly into JPEG files. Tagged files can then be searched using a SQL-like query language. Since all tags are stored directly in JPEG files, you can freely move the files (even between 2 computers) without losing any tags.
 
-**Important**: this application is in active development. There has not been a stable version release yet.
-
 ## Links
 
 - [Download the latest version](https://github.com/trylock/viewer/releases)

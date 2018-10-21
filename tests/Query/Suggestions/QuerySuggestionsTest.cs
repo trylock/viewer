@@ -512,5 +512,19 @@ namespace ViewerTest.Query.Suggestions
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (test or attr2)"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (test or not)"));
         }
+
+        [TestMethod]
+        public void Compute_SuggestValuesOfComplexIdentifiers()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetValues("complex id"))
+                .Returns(new BaseValue[] {new StringValue("string"), new IntValue(1),});
+
+            var suggestions = ComputeSuggestions("select all where `complex id` = ");
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where `complex id` = \"string\""));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where `complex id` = 1"));
+        }
     }
 }

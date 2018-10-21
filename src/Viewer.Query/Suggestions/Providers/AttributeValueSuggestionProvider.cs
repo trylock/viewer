@@ -87,9 +87,17 @@ namespace Viewer.Query.Suggestions.Providers
         public void MatchToken(IToken token, IReadOnlyList<int> rules)
         {
             // TODO: distinguish attribute and function identifiers 
-            if (token.Type == QueryLexer.ID && rules[0] == QueryParser.RULE_factor)
+            if (rules[0] == QueryParser.RULE_factor)
             {
-                _attributeNames.Add(token.Text);
+                if (token.Type == QueryLexer.ID)
+                {
+                    _attributeNames.Add(token.Text);
+                }
+
+                if (token.Type == QueryLexer.COMPLEX_ID)
+                {
+                    _attributeNames.Add(token.Text.Substring(1, token.Text.Length - 2));
+                }
             }
         }
 

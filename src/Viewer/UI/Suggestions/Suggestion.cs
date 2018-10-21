@@ -30,4 +30,32 @@ namespace Viewer.UI.Suggestions
             UserData = userData;
         }
     }
+
+    /// <summary>
+    /// Compare <see cref="Suggestion"/> based on its <see cref="Suggestion.UserData"/> property.
+    /// </summary>
+    /// <typeparam name="T">Type stored in <see cref="Suggestion.UserData"/></typeparam>
+    internal class SuggestionComparer<T> : IComparer<Suggestion>, IEqualityComparer<Suggestion> 
+        where T : class
+    {
+        private T GetItem(Suggestion suggestion)
+        {
+            return suggestion.UserData as T;
+        }
+
+        public int Compare(Suggestion x, Suggestion y)
+        {
+            return Comparer<T>.Default.Compare(GetItem(x), GetItem(y));
+        }
+
+        public bool Equals(Suggestion x, Suggestion y)
+        {
+            return EqualityComparer<T>.Default.Equals(GetItem(x), GetItem(y));
+        }
+
+        public int GetHashCode(Suggestion obj)
+        {
+            return EqualityComparer<T>.Default.GetHashCode(GetItem(obj));
+        }
+    }
 }

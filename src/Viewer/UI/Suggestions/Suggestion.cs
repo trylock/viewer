@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Viewer.UI.Suggestions
 {
-    internal class SuggestionItem
+    internal class Suggestion
     {
         /// <summary>
         /// Text of the suggestion
@@ -23,7 +23,7 @@ namespace Viewer.UI.Suggestions
         /// </summary>
         public object UserData { get; }
 
-        public SuggestionItem(string text, string category, object userData)
+        public Suggestion(string text, string category, object userData)
         {
             Text = text ?? throw new ArgumentNullException(nameof(text));
             Category = category ?? throw new ArgumentNullException(nameof(category));

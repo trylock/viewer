@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -43,12 +43,12 @@ namespace Viewer.UI.Suggestions
     internal partial class SuggestionView : Form
     {
         private readonly SuggestionControl _suggestionControl;
-        private readonly List<SuggestionItem> _items = new List<SuggestionItem>();
+        private readonly List<Suggestion> _items = new List<Suggestion>();
 
         /// <summary>
         /// List of suggestions shown to the user. 
         /// </summary>
-        public IEnumerable<SuggestionItem> Items
+        public IEnumerable<Suggestion> Items
         {
             get => _items;
             set

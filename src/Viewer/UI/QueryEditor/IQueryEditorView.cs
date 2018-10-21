@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -66,7 +66,7 @@ namespace Viewer.UI.QueryEditor
         /// <summary>
         /// Suggestions shown at editor cursor
         /// </summary>
-        IEnumerable<SuggestionItem> Suggestions { get; set; }
+        IEnumerable<Suggestion> Suggestions { get; set; }
     }
 
     internal interface IQueryEditorView : IDropView, IQuerySuggestionView, IWindowView

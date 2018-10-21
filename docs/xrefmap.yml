@@ -922,6 +922,12 @@ references:
   commentId: M:Viewer.Core.MathUtils.Clamp(System.Double,System.Double,System.Double)
   fullName: Viewer.Core.MathUtils.Clamp(System.Double, System.Double, System.Double)
   nameWithType: MathUtils.Clamp(Double, Double, Double)
+- uid: Viewer.Core.MathUtils.Clamp(System.Int32,System.Int32,System.Int32)
+  name: Clamp(Int32, Int32, Int32)
+  href: api/Viewer.Core.MathUtils.html#Viewer_Core_MathUtils_Clamp_System_Int32_System_Int32_System_Int32_
+  commentId: M:Viewer.Core.MathUtils.Clamp(System.Int32,System.Int32,System.Int32)
+  fullName: Viewer.Core.MathUtils.Clamp(System.Int32, System.Int32, System.Int32)
+  nameWithType: MathUtils.Clamp(Int32, Int32, Int32)
 - uid: Viewer.Core.MathUtils.Clamp*
   name: Clamp
   href: api/Viewer.Core.MathUtils.html#Viewer_Core_MathUtils_Clamp_
@@ -1611,18 +1617,18 @@ references:
   isSpec: "True"
   fullName: Viewer.Core.UI.IWindowView.Text
   nameWithType: IWindowView.Text
-- uid: Viewer.Core.UI.IWindowView.ViewGotFocus
-  name: ViewGotFocus
-  href: api/Viewer.Core.UI.IWindowView.html#Viewer_Core_UI_IWindowView_ViewGotFocus
-  commentId: E:Viewer.Core.UI.IWindowView.ViewGotFocus
-  fullName: Viewer.Core.UI.IWindowView.ViewGotFocus
-  nameWithType: IWindowView.ViewGotFocus
-- uid: Viewer.Core.UI.IWindowView.ViewLostFocus
-  name: ViewLostFocus
-  href: api/Viewer.Core.UI.IWindowView.html#Viewer_Core_UI_IWindowView_ViewLostFocus
-  commentId: E:Viewer.Core.UI.IWindowView.ViewLostFocus
-  fullName: Viewer.Core.UI.IWindowView.ViewLostFocus
-  nameWithType: IWindowView.ViewLostFocus
+- uid: Viewer.Core.UI.IWindowView.ViewActivated
+  name: ViewActivated
+  href: api/Viewer.Core.UI.IWindowView.html#Viewer_Core_UI_IWindowView_ViewActivated
+  commentId: E:Viewer.Core.UI.IWindowView.ViewActivated
+  fullName: Viewer.Core.UI.IWindowView.ViewActivated
+  nameWithType: IWindowView.ViewActivated
+- uid: Viewer.Core.UI.IWindowView.ViewDeactivated
+  name: ViewDeactivated
+  href: api/Viewer.Core.UI.IWindowView.html#Viewer_Core_UI_IWindowView_ViewDeactivated
+  commentId: E:Viewer.Core.UI.IWindowView.ViewDeactivated
+  fullName: Viewer.Core.UI.IWindowView.ViewDeactivated
+  nameWithType: IWindowView.ViewDeactivated
 - uid: Viewer.Core.UI.Presenter`1
   name: Presenter<TView>
   href: api/Viewer.Core.UI.Presenter-1.html
@@ -1848,19 +1854,19 @@ references:
   isSpec: "True"
   fullName: Viewer.Core.UI.WindowView.OnClosed
   nameWithType: WindowView.OnClosed
-- uid: Viewer.Core.UI.WindowView.OnDockChanged(System.EventArgs)
-  name: OnDockChanged(EventArgs)
-  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnDockChanged_System_EventArgs_
-  commentId: M:Viewer.Core.UI.WindowView.OnDockChanged(System.EventArgs)
-  fullName: Viewer.Core.UI.WindowView.OnDockChanged(System.EventArgs)
-  nameWithType: WindowView.OnDockChanged(EventArgs)
-- uid: Viewer.Core.UI.WindowView.OnDockChanged*
-  name: OnDockChanged
-  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnDockChanged_
-  commentId: Overload:Viewer.Core.UI.WindowView.OnDockChanged
+- uid: Viewer.Core.UI.WindowView.OnDockStateChanged(System.EventArgs)
+  name: OnDockStateChanged(EventArgs)
+  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnDockStateChanged_System_EventArgs_
+  commentId: M:Viewer.Core.UI.WindowView.OnDockStateChanged(System.EventArgs)
+  fullName: Viewer.Core.UI.WindowView.OnDockStateChanged(System.EventArgs)
+  nameWithType: WindowView.OnDockStateChanged(EventArgs)
+- uid: Viewer.Core.UI.WindowView.OnDockStateChanged*
+  name: OnDockStateChanged
+  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnDockStateChanged_
+  commentId: Overload:Viewer.Core.UI.WindowView.OnDockStateChanged
   isSpec: "True"
-  fullName: Viewer.Core.UI.WindowView.OnDockChanged
-  nameWithType: WindowView.OnDockChanged
+  fullName: Viewer.Core.UI.WindowView.OnDockStateChanged
+  nameWithType: WindowView.OnDockStateChanged
 - uid: Viewer.Core.UI.WindowView.OnLoad(System.EventArgs)
   name: OnLoad(EventArgs)
   href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnLoad_System_EventArgs_
@@ -1874,6 +1880,32 @@ references:
   isSpec: "True"
   fullName: Viewer.Core.UI.WindowView.OnLoad
   nameWithType: WindowView.OnLoad
+- uid: Viewer.Core.UI.WindowView.OnViewActivated
+  name: OnViewActivated()
+  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnViewActivated
+  commentId: M:Viewer.Core.UI.WindowView.OnViewActivated
+  fullName: Viewer.Core.UI.WindowView.OnViewActivated()
+  nameWithType: WindowView.OnViewActivated()
+- uid: Viewer.Core.UI.WindowView.OnViewActivated*
+  name: OnViewActivated
+  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnViewActivated_
+  commentId: Overload:Viewer.Core.UI.WindowView.OnViewActivated
+  isSpec: "True"
+  fullName: Viewer.Core.UI.WindowView.OnViewActivated
+  nameWithType: WindowView.OnViewActivated
+- uid: Viewer.Core.UI.WindowView.OnViewDeactivated
+  name: OnViewDeactivated()
+  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnViewDeactivated
+  commentId: M:Viewer.Core.UI.WindowView.OnViewDeactivated
+  fullName: Viewer.Core.UI.WindowView.OnViewDeactivated()
+  nameWithType: WindowView.OnViewDeactivated()
+- uid: Viewer.Core.UI.WindowView.OnViewDeactivated*
+  name: OnViewDeactivated
+  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_OnViewDeactivated_
+  commentId: Overload:Viewer.Core.UI.WindowView.OnViewDeactivated
+  isSpec: "True"
+  fullName: Viewer.Core.UI.WindowView.OnViewDeactivated
+  nameWithType: WindowView.OnViewDeactivated
 - uid: Viewer.Core.UI.WindowView.ProcessCmdKey(System.Windows.Forms.Message@,System.Windows.Forms.Keys)
   name: ProcessCmdKey(ref Message, Keys)
   href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_ProcessCmdKey_System_Windows_Forms_Message__System_Windows_Forms_Keys_
@@ -1890,18 +1922,18 @@ references:
   isSpec: "True"
   fullName: Viewer.Core.UI.WindowView.ProcessCmdKey
   nameWithType: WindowView.ProcessCmdKey
-- uid: Viewer.Core.UI.WindowView.ViewGotFocus
-  name: ViewGotFocus
-  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_ViewGotFocus
-  commentId: E:Viewer.Core.UI.WindowView.ViewGotFocus
-  fullName: Viewer.Core.UI.WindowView.ViewGotFocus
-  nameWithType: WindowView.ViewGotFocus
-- uid: Viewer.Core.UI.WindowView.ViewLostFocus
-  name: ViewLostFocus
-  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_ViewLostFocus
-  commentId: E:Viewer.Core.UI.WindowView.ViewLostFocus
-  fullName: Viewer.Core.UI.WindowView.ViewLostFocus
-  nameWithType: WindowView.ViewLostFocus
+- uid: Viewer.Core.UI.WindowView.ViewActivated
+  name: ViewActivated
+  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_ViewActivated
+  commentId: E:Viewer.Core.UI.WindowView.ViewActivated
+  fullName: Viewer.Core.UI.WindowView.ViewActivated
+  nameWithType: WindowView.ViewActivated
+- uid: Viewer.Core.UI.WindowView.ViewDeactivated
+  name: ViewDeactivated
+  href: api/Viewer.Core.UI.WindowView.html#Viewer_Core_UI_WindowView_ViewDeactivated
+  commentId: E:Viewer.Core.UI.WindowView.ViewDeactivated
+  fullName: Viewer.Core.UI.WindowView.ViewDeactivated
+  nameWithType: WindowView.ViewDeactivated
 - uid: Viewer.Data
   name: Viewer.Data
   href: api/Viewer.Data.html

@@ -19,4 +19,4 @@ The [Execute](xref:Viewer.Query.IExecutableQuery) method supports standard cance
 
 The program uses ANTLR4 to generate query parser and lexer. 
 
-[!code-csharp[Grammar](../../../Viewer.Query/Query.g4)]
+[!code-csharp[Grammar](../../../Viewer.Query/ParserQuery.g4)]

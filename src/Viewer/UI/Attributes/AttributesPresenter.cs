@@ -425,11 +425,8 @@ namespace Viewer.UI.Attributes
             {
                 return;
             }
-
-            var setAttributeNames = View.Attributes
-                .Select(group => group.Value.Name)
-                .ToHashSet(StringComparer.CurrentCulture);
-            View.Suggestions = suggestions.Where(item => !setAttributeNames.Contains(item.Text));
+            
+            View.Suggestions = suggestions;
         }
 
         private async void View_BeginValueEdit(object sender, NameEventArgs e)

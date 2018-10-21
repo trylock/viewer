@@ -415,11 +415,7 @@ namespace Viewer.UI.Attributes
                 // load suggestions
                 foreach (var name in _attributeCache.GetNames(value))
                 {
-                    items.Add(new SuggestionItem
-                    {
-                        Text = name,
-                        Category = "User attribute"
-                    });
+                    items.Add(new SuggestionItem(name, "User attribute", null));
                 }
 
                 return items;
@@ -446,12 +442,7 @@ namespace Viewer.UI.Attributes
                 var items = new List<SuggestionItem>();
                 foreach (var value in _attributeCache.GetValues(e.Value))
                 {
-                    items.Add(new SuggestionItem
-                    {
-                        Text = value.ToString(),
-                        Category = value.Type.ToString(),
-                        UserData = value
-                    });
+                    items.Add(new SuggestionItem(value.ToString(), value.Type.ToString(), value));
                 }
 
                 return items;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -290,7 +290,11 @@ namespace Viewer.UI.Suggestions
 
         private void ShowAt(Point screenLocation)
         {
-            SelectedIndex = DefaultSelectedIndex;
+            if (!Visible)
+            {
+                SelectedIndex = DefaultSelectedIndex;
+            }
+
             Location = screenLocation;
             FixLocation();
             Show();

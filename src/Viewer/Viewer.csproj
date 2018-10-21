@@ -151,7 +151,7 @@
     </Compile>
     <Compile Include="UI\Images\SelectionState.cs" />
     <Compile Include="UI\Presentation\PhotoLoadingQueue.cs" />
-    <Compile Include="UI\Suggestions\SuggestionItem.cs" />
+    <Compile Include="UI\Suggestions\Suggestion.cs" />
     <Compile Include="UI\Suggestions\SuggestionTextBoxCell.cs" />
     <Compile Include="UI\Forms\SliderControl.cs">
       <SubType>Component</SubType>

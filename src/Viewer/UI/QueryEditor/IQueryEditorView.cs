@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core.UI;
 using Viewer.Query;
+using Viewer.Query.Suggestions;
 using Viewer.UI.Suggestions;
 
 namespace Viewer.UI.QueryEditor
@@ -48,7 +49,7 @@ namespace Viewer.UI.QueryEditor
     internal interface IQuerySuggestionView
     {
         /// <summary>
-        /// Event occcurs whenever a suggestion from <see cref="Suggestions"/> is selected.
+        /// Event occurs whenever a suggestion from <see cref="Suggestions"/> is selected.
         /// </summary>
         event EventHandler<SuggestionEventArgs> SuggestionAccepted;
 
@@ -57,6 +58,11 @@ namespace Viewer.UI.QueryEditor
         /// has changed the caret position)
         /// </summary>
         event EventHandler SuggestionsRequested;
+
+        /// <summary>
+        /// Event occurs every k milliseconds
+        /// </summary>
+        event EventHandler Poll;
 
         /// <summary>
         /// Caret position in the editor

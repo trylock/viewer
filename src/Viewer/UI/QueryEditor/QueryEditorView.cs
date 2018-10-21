@@ -84,6 +84,7 @@ namespace Viewer.UI.QueryEditor
         }
 
         public event EventHandler SuggestionsRequested;
+        public event EventHandler Poll;
 
         /// <summary>
         /// If true, <see cref="SuggestionsRequested"/> event won't be triggered. This is used to
@@ -109,7 +110,7 @@ namespace Viewer.UI.QueryEditor
             } 
         }
 
-        public IEnumerable<SuggestionItem> Suggestions
+        public IEnumerable<Suggestion> Suggestions
         {
             get => _suggestionView.Items;
             set
@@ -252,6 +253,11 @@ namespace Viewer.UI.QueryEditor
         protected override string GetPersistString()
         {
             return base.GetPersistString() + ";" + Query + ";" + (FullPath ?? "");
+        }
+
+        private void PollTimer_Tick(object sender, EventArgs e)
+        {
+            Poll?.Invoke(sender, e);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Viewer.UI.QueryEditor
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QueryEditorView));
             this.OpenDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDialog = new System.Windows.Forms.SaveFileDialog();
@@ -25,6 +26,7 @@ namespace Viewer.UI.QueryEditor
             this.QueryViewsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
             this.SaveButton = new System.Windows.Forms.ToolStripButton();
             this.RunButton = new System.Windows.Forms.ToolStripButton();
+            this.PollTimer = new System.Windows.Forms.Timer(this.components);
             this.QueryTextBox = new Viewer.UI.QueryEditor.EditorControl();
             this.EditorToolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -98,6 +100,12 @@ namespace Viewer.UI.QueryEditor
             this.RunButton.ToolTipText = "Run query (F5, Ctrl + Enter)";
             this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
+            // PollTimer
+            // 
+            this.PollTimer.Enabled = true;
+            this.PollTimer.Interval = 40;
+            this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
+            // 
             // QueryTextBox
             // 
             this.QueryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -143,5 +151,6 @@ namespace Viewer.UI.QueryEditor
         private System.Windows.Forms.ToolStripButton SaveButton;
         private System.Windows.Forms.ToolStripButton RunButton;
         private System.Windows.Forms.ToolStripDropDownButton QueryViewsDropDown;
+        private System.Windows.Forms.Timer PollTimer;
     }
 }

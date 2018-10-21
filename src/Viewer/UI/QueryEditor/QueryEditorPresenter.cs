@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -215,13 +216,100 @@ namespace Viewer.UI.QueryEditor
         {
             MarkUnsaved();
         }
-
-        private int _suggestionVersion;
-
-        private class SuggestionData
+        
+        private class QuerySuggestion : IComparable<QuerySuggestion>
         {
             public int Version { get; set; }
             public IQuerySuggestion Suggestion { get; set; }
+
+            public int CompareTo(QuerySuggestion other)
+            {
+                if (ReferenceEquals(this, other))
+                    return 0;
+                if (ReferenceEquals(null, other))
+                    return 1;
+
+                var versionComparison = Version.CompareTo(other.Version);
+                if (versionComparison != 0)
+                {
+                    return versionComparison;
+                }
+                return QuerySuggestionComparer.Default.Compare(Suggestion, other.Suggestion);
+            }
+        }
+
+        private int _suggestionVersion;
+        private readonly ConcurrentQueue<QuerySuggestion> _waitingSuggestions = 
+            new ConcurrentQueue<QuerySuggestion>();
+
+        private void LoadSuggestions(string query, int position, int version)
+        {
+            if (version != _suggestionVersion)
+            {
+                return;
+            }
+
+            foreach (var item in _querySuggestions.Compute(query, position))
+            {
+                if (version != _suggestionVersion)
+                {
+                    return;
+                }
+
+                _waitingSuggestions.Enqueue(new QuerySuggestion
+                {
+                    Suggestion = item,
+                    Version = version
+                });
+            }
+        }
+
+        private int _lastVersion;
+        
+        private void SynchronizeSuggestions()
+        {
+            var lastVersion = _lastVersion;
+            _lastVersion = _suggestionVersion;
+
+            // get all new suggestions which have been generated for current input
+            var suggestions = new List<Suggestion>();
+            while (_waitingSuggestions.TryDequeue(out var data))
+            {
+                if (data.Version != _suggestionVersion)
+                {
+                    continue;
+                }
+
+                suggestions.Add(new Suggestion(
+                    data.Suggestion.Name, 
+                    data.Suggestion.Category, 
+                    data));
+            }
+
+            if (suggestions.Count == 0)
+            {
+                if (lastVersion != _suggestionVersion)
+                {
+                    View.Suggestions = Enumerable.Empty<Suggestion>();
+                }
+                return;
+            }
+            
+            // combine new and old suggestions
+            if (lastVersion == _suggestionVersion)
+            {
+                suggestions.AddRange(View.Suggestions);
+            }
+
+            suggestions.Sort(new SuggestionComparer<QuerySuggestion>());
+
+            // update view
+            View.Suggestions = suggestions;
+        }
+
+        private void View_Poll(object sender, EventArgs e)
+        {
+            SynchronizeSuggestions();
         }
 
         private async void View_SuggestionsRequested(object sender, EventArgs e)
@@ -230,47 +318,13 @@ namespace Viewer.UI.QueryEditor
             var query = View.Query;
             var position = Math.Min(View.CaretPosition, query.Length);
             var version = Interlocked.Increment(ref _suggestionVersion);
-            
-            var suggestions = await Task.Run(() =>
-            {
-                var result = new List<IQuerySuggestion>();
-                foreach (var item in _querySuggestions.Compute(query, position))
-                {
-                    if (_suggestionVersion != version)
-                    {
-                        break;
-                    }
-                    result.Add(item);
-                }
 
-                if (_suggestionVersion == version)
-                {
-                    result.Sort(QuerySuggestionComparer.Default);
-                }
-
-                return result;
-            });
-
-            if (_isDisposed || version != _suggestionVersion)
-            {
-                return;
-            }
-
-            View.Suggestions = suggestions.Select(item => new SuggestionItem
-            {
-                Text = item.Name,
-                Category = item.Category,
-                UserData = new SuggestionData
-                {
-                    Version = version,
-                    Suggestion = item
-                }
-            });
+            await Task.Run(() => LoadSuggestions(query, position, version));
         }
 
         private void View_SuggestionAccepted(object sender, SuggestionEventArgs e)
         {
-            var data = (SuggestionData) e.Value.UserData;
+            var data = (QuerySuggestion) e.Value.UserData;
             if (data.Version != _suggestionVersion)
             {
                 return; // reject outdated suggestions

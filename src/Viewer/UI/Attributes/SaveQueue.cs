@@ -21,7 +21,8 @@ namespace Viewer.UI.Attributes
     {
         /// <summary>
         /// Save <paramref name="entities"/> to their file. If there is a save job running already,
-        /// saving <paramref name="entities"/> will be queued after it.
+        /// saving <paramref name="entities"/> will be queued after it. All the necessary UI for
+        /// updating save progress is managed by this class.
         /// </summary>
         /// <remarks>
         /// This class is **not** thread safe and it should be called from the UI thread.

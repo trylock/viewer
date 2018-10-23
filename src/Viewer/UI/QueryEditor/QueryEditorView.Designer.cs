@@ -103,7 +103,7 @@ namespace Viewer.UI.QueryEditor
             // PollTimer
             // 
             this.PollTimer.Enabled = true;
-            this.PollTimer.Interval = 40;
+            this.PollTimer.Interval = 33;
             this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
             // 
             // QueryTextBox

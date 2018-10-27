@@ -544,5 +544,23 @@ namespace ViewerTest.Query.Suggestions
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not a = 1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not a = 2"));
         }
+
+        [TestMethod]
+        public void Compute_DateTimeValueSuggestion()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetValues("a"))
+                .Returns(new BaseValue[]
+                {
+                    new DateTimeValue(new DateTime(2018, 10, 27, 19, 23, 0)),
+                    new DateTimeValue(new DateTime(2015, 1, 26, 1, 21, 0)),
+                });
+            
+            var suggestions = ComputeSuggestions("select all where a >= ");
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where a >= date(\"2018-10-27 19:23:00\")"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where a >= date(\"2015-01-26 01:21:00\")"));
+        }
     }
 }

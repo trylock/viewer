@@ -69,12 +69,7 @@ namespace Viewer.Query.Suggestions.Providers
             return _listener.AttributeNames
                 .SelectMany(name => _attributeCache.GetValues(name))
                 .Where(item => ContainsPrefixSuffix(item, parts.Prefix, parts.Suffix))
-                .Select(item => 
-                    new ReplaceSuggestion(
-                        state.Caret, 
-                        item.ToString(), 
-                        item.ToString(CultureInfo.CurrentCulture), 
-                        item.Type.ToString()));
+                .Select(item => new ValueSuggestion(state.Caret, item));
         }
     }
 

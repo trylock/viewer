@@ -234,6 +234,11 @@ namespace Viewer.Data
         /// </summary>
         public const string Format = "yyyy-MM-ddTHH:mm:ss.szzz";
 
+        /// <summary>
+        /// Format of a DateTime value in a query
+        /// </summary>
+        public const string QueryFormat = "yyyy-MM-dd HH:mm:ss";
+
         public DateTime? Value { get; }
 
         public override TypeId Type => TypeId.DateTime;
@@ -262,7 +267,7 @@ namespace Viewer.Data
         }
 
         public override string ToString() =>
-            Value == null ? "null" : "\"" + ((DateTime)Value).ToString(Format) + "\"";
+            Value == null ? "null" : "\"" + ((DateTime)Value).ToString(QueryFormat) + "\"";
 
         public override string ToString(CultureInfo culture) =>
             Value == null ? "null" : "\"" + ((DateTime)Value).ToString(culture) + "\"";

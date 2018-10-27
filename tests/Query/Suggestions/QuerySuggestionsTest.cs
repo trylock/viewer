@@ -526,5 +526,23 @@ namespace ViewerTest.Query.Suggestions
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where `complex id` = \"string\""));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where `complex id` = 1"));
         }
+
+        [TestMethod]
+        public void Compute_SuggestValuesCorrectlyInLiteralRule()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetValues("a"))
+                .Returns(new BaseValue[]
+                {
+                    new IntValue(1),
+                    new IntValue(2),
+                });
+
+            var suggestions = ComputeSuggestions("select all where not a = ");
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not a = 1"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not a = 2"));
+        }
     }
 }

@@ -162,7 +162,7 @@ namespace Viewer.Query.Suggestions
                     Listener.ExitRule(_rulePath.ToList(), lookahead);
                     continue;
                 }
-
+                
                 foreach (var transition in state.TransitionsArray)
                 {
                     if (transition is RuleTransition ruleTransition)

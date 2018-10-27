@@ -103,7 +103,10 @@ namespace Viewer.Query.Suggestions.Providers
 
         public void EnterRule(IReadOnlyList<int> rules, IToken lookahead)
         {
-            if (rules[0] == QueryParser.RULE_comparison)
+            // We also want to clear the attribute names list if we have entered an order by clause
+            // since literal is not allowed to be there.
+            if (rules[0] == QueryParser.RULE_literal || 
+                rules[0] == QueryParser.RULE_orderByKey)
             {
                 _attributeNames.Clear();
             }

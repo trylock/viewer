@@ -19,7 +19,7 @@ create table if not exists `files`(
     foreign key(`parent_id`)
         references `files`(`id`)
             on update cascade
-            on delete delete
+            on delete cascade
 );
 
 -- attributes of files
@@ -46,6 +46,7 @@ create table if not exists `files_closure`(
     `parent_id` integer not null,
     `child_id` integer not null,
 
+	primary key(`parent_id`, `child_id`),
     foreign key(`parent_id`)
         references `files`(`id`)
             on update cascade
@@ -53,7 +54,7 @@ create table if not exists `files_closure`(
     foreign key(`child_id`)
         references `files`(`id`)
             on update cascade
-            on delete cascade,
+            on delete cascade
 ) without rowid; -- we want the (parent_id, child_id) index to be the clustered index of this table
 
 

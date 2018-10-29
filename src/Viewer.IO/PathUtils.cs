@@ -219,12 +219,23 @@ namespace Viewer.IO
         /// </returns>
         public static string NormalizePath(string path)
         {
-            if (path == null)
+            if (path == null || path.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
             {
                 return null;
             }
 
-            path = Path.GetFullPath(path);
+            // get full path
+            try
+            {
+                path = Path.GetFullPath(path);
+            }
+            catch (ArgumentException) 
+            {
+                // invalid path (e.g. it starts with // but it isn't a valid UNC path)
+                return null;
+            }
+
+            // normalize directory separators
             var unifiedPath = new StringBuilder();
             foreach (var c in path)
             {

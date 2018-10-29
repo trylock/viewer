@@ -92,5 +92,51 @@ namespace ViewerTest.IO
             parts = PathUtils.Split("\\\\NAS\\Photos\\");
             CollectionAssert.AreEqual(new[] { "\\\\NAS", "Photos" }, parts.ToArray());
         }
+
+        [TestMethod]
+        public void Normalize_UNCPathWithJustTheFirstSlashes()
+        {
+            var path = PathUtils.NormalizePath("//");
+            Assert.IsNull(path);
+            
+            path = PathUtils.NormalizePath("\\\\");
+            Assert.IsNull(path);
+        }
+
+        [TestMethod]
+        public void Normalize_UNCPathWithJustTheServerName()
+        {
+            var path = PathUtils.NormalizePath("//NAS");
+            Assert.IsNull(path);
+
+            path = PathUtils.NormalizePath("\\\\NAS");
+            Assert.IsNull(path);
+        }
+
+        [TestMethod]
+        public void Normalize_MinimalUNCPath()
+        {
+            var path = PathUtils.NormalizePath("//NAS/fotky");
+            Assert.AreEqual("//NAS/fotky", path);
+
+            path = PathUtils.NormalizePath("\\\\NAS\\fotky");
+            Assert.AreEqual("//NAS/fotky", path);
+        }
+
+        [TestMethod]
+        public void Normalize_InvalidCharactersInPath()
+        {
+            var path = PathUtils.NormalizePath("C:/a < b");
+            Assert.IsNull(path);
+        }
+
+        [TestMethod]
+        public void Normalize_EmptyPath()
+        {
+            var path = PathUtils.NormalizePath("");
+            Assert.IsNull(path);
+            path = PathUtils.NormalizePath("  \t   \n");
+            Assert.IsNull(path);
+        }
     }
 }

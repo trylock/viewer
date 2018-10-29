@@ -221,7 +221,16 @@ namespace Viewer.UI.Explorer
 
         private IEnumerable<DirectoryView> EnumerateValidSubdirectories(string fullPath)
         {
-            var di = new DirectoryInfo(fullPath);
+            DirectoryInfo di = null;
+            try
+            {
+                di = new DirectoryInfo(fullPath);
+            }
+            catch (ArgumentException) // invalid path
+            {
+                yield break;
+            }
+
             foreach (var item in di.EnumerateDirectories())
             {
                 if ((item.Attributes & HideFlags) != 0)

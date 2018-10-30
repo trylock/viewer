@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data.SQLite;
@@ -60,6 +60,7 @@ namespace Viewer.Data.SQLite
             {
                 SQLiteFunction.RegisterFunction(typeof(InvariantCulture));
                 SQLiteFunction.RegisterFunction(typeof(InvariantCultureIgnoreCase));
+                SQLiteFunction.RegisterFunction(typeof(GetParentPathFunction));
 
                 var initialization = Resources.SqliteInitializationScript.Split(';');
                 using (var command = connection.CreateCommand())

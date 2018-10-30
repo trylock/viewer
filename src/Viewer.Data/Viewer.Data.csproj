@@ -84,6 +84,9 @@
   <ItemGroup>
     <Compile Include="Attribute.cs" />
     <Compile Include="AttributeCache.cs" />
+    <Compile Include="SQLite\Attributes.cs" />
+    <Compile Include="SQLite\Files.cs" />
+    <Compile Include="SQLite\GetParentPathFunction.cs" />
     <Compile Include="SQLite\InvariantCulture.cs" />
     <Compile Include="SQLite\InvariantCultureIgnoreCase.cs" />
     <Compile Include="Entity.cs" />

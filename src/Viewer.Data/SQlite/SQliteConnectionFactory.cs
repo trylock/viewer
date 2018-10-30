@@ -64,8 +64,8 @@ namespace Viewer.Data.SQLite
                 SQLiteFunction.RegisterFunction(typeof(InvariantCultureIgnoreCase));
                 SQLiteFunction.RegisterFunction(typeof(GetParentPathFunction));
 
-                var initialization = Resources.SqliteInitializationScript.Split(
-                    new []{ "----" }, StringSplitOptions.None);
+                var initialization = Resources.Structure.Split(new []{ "----" }, 
+                    StringSplitOptions.None);
                 using (var command = connection.CreateCommand())
                 {
                     foreach (var part in initialization)

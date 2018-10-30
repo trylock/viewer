@@ -22,6 +22,8 @@ create table if not exists `files`(
             on delete cascade
 );
 
+----
+
 -- attributes of files
 create table if not exists `attributes`(
     `id` integer not null,
@@ -37,6 +39,8 @@ create table if not exists `attributes`(
             on update cascade
             on delete cascade
 );
+
+----
 
 /** Closure of the tree order relation (the relation: "is ancestor of")
  * We need this table for efficient subtree queries used for query optimizations. While it could 
@@ -57,7 +61,7 @@ create table if not exists `files_closure`(
             on delete cascade
 ) without rowid; -- we want the (parent_id, child_id) index to be the clustered index of this table
 
-
+----
 
 /** Indexes */
 
@@ -66,11 +70,7 @@ create unique index if not exists `files_path_index` on `files`(
     `path` asc
 );
 
--- TODO: is this index necessary?
-create unique index if not exists `attributes_file_id_name_index` on `attributes`(
-    `file_id` asc,
-    `name` asc
-);
+----
 
 -- index used for random access to custom attribute names (in attribute name suggestion)
 create index if not exists `attributes_source_name_index` on `attributes`(
@@ -78,11 +78,14 @@ create index if not exists `attributes_source_name_index` on `attributes`(
     `name` asc
 );
 
+----
+
 -- access to the closure table from the other side (e.g., during the `files_closure_after_insert` trigger)
 create index if not exists `files_closure_child_id_index` on `files_closure`(
     `child_id` asc
 );
 
+----
 
 /** Triggers */
 
@@ -97,6 +100,41 @@ begin
     insert into files_closure (parent_id, child_id) 
         select parent_id, NEW.id 
         from files_closure 
-        where child_id = NEW.parent; 
+        where child_id = NEW.parent_id; 
 end;
 
+----
+
+/** This will update the closure for all elements on the path to the root 
+ * (i.e., every explicit parent_id update has to be done on leaf nodes)
+ */
+create trigger if not exists `files_closure_after_update`
+after update on `files`
+for each row when NEW.parent_id is not null and (OLD.parent_id is null or NEW.parent_id <> OLD.parent_id)
+begin
+    -- remove all nodes above it
+    delete from files_closure where child_id = NEW.id;
+    -- add new nodes above it
+    insert into files_closure (parent_id, child_id) 
+        select parent_id, NEW.id 
+        from files_closure 
+        where child_id = NEW.parent_id; 
+end;
+
+----
+
+-- this trigger will insert file parent directory to the database if it doesn't exist
+-- NOTE: this is a recursive trigger
+create trigger if not exists `files_insert_parent_trigger`
+after insert on `files`
+for each row when (NEW.parent_id is null) and (getParentPath(NEW.path) is not null) 
+begin
+    insert or ignore into `files`(`path`, `parent_id`) values(getParentPath(NEW.path), null);
+    update `files` 
+    set `parent_id` = (
+        select `id` 
+        from `files` 
+        where `path` = getParentPath(NEW.path)
+    )
+    where `id` = NEW.id;
+end;

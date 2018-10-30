@@ -1,5 +1,5 @@
 /** Attribute cache database structure.
- * Scripts will be separated by 4 dashes and run separately.
+ * Scripts are separated with 4 dashes and run separately.
  *
  * We assume following things:
  * (1) file paths as normalized and they use / (forward slash) as directory separator
@@ -70,6 +70,13 @@ create table if not exists `files_closure`(
 -- index used for random access to files
 create unique index if not exists `files_path_index` on `files`(
     `path` asc
+);
+
+----
+
+-- index used for access to attributes of given file
+create index if not exists `attributes_file_id_index` on `attributes`(
+    `file_id` asc
 );
 
 ----

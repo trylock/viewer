@@ -10,7 +10,7 @@
 create table if not exists `files`(
     `id` integer not null,
     `path` text not null unique, -- COLLATE INVARIANT_CULTURE_IGNORE_CASE -- it is assumed to be normalized
-    `parent_id` integer not null,
+    `parent_id` integer,
     -- the following 2 columns are only used for leaf nodes (i.e., files, not directories)
     `last_file_write_time` text, -- the last write time of this file in the file system
     `last_row_access_time` text, -- the last access time of this row entry in the database

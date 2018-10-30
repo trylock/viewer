@@ -73,7 +73,7 @@ create unique index if not exists `attributes_file_id_name_index` on `attributes
 );
 
 -- index used for random access to custom attribute names (in attribute name suggestion)
-create unique index if not exists `attributes_source_name_index` on `attributes`(
+create index if not exists `attributes_source_name_index` on `attributes`(
     `source` asc,
     `name` asc
 );

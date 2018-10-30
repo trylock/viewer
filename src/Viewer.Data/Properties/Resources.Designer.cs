@@ -70,7 +70,7 @@ namespace Viewer.Data.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source={0};Version=3;Pooling=True;foreign keys=true.
+        ///   Looks up a localized string similar to Data Source={0};Version=3;Pooling=True;foreign keys=true;recursive_triggers=true.
         /// </summary>
         internal static string SqliteConnectionString {
             get {
@@ -79,23 +79,20 @@ namespace Viewer.Data.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BEGIN TRANSACTION;
-        ///CREATE TABLE IF NOT EXISTS `files` (
-        ///	`id`	INTEGER NOT NULL,
-        ///	`path`	TEXT NOT NULL UNIQUE COLLATE INVARIANT_CULTURE_IGNORE_CASE,
-        ///	`lastWriteTime`	TEXT NOT NULL,
-        ///	`lastAccessTime`	TEXT NOT NULL,
-        ///	PRIMARY KEY(`id`)
-        ///);
-        ///CREATE TABLE IF NOT EXISTS `attributes` (
-        ///	`id`	INTEGER NOT NULL,
-        ///	`name`	TEXT NOT NULL COLLATE INVARIANT_CULTURE,
-        ///	`source`	INTEGER NOT NULL DEFAULT 0,
-        ///	`type`	INTEGER NOT NULL DEFAULT 0,
-        ///	`value`	BLOB NOT NULL,
-        ///	`owner`	INTEGER NOT NULL,
-        ///	PRIMARY KEY(`id`),
-        ///	 [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to /** Attribute cache database structure.
+        /// * We assume following things:
+        /// * (1) file paths as normalized and they use / (forward slash) as directory separator
+        /// * (2) file paths as case INsensitive
+        /// */
+        ///
+        ////** Tables */
+        ///
+        ///-- files
+        ///create table if not exists `files`(
+        ///    `id` integer not null,
+        ///    `path` text not null unique, -- COLLATE INVARIANT_CULTURE_IGNORE_CASE -- it is assumed to be normalized
+        ///    `parent_id` integer,
+        ///    -- the following 2 columns are only used for leaf nodes (i.e., files, not d [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SqliteInitializationScript {
             get {

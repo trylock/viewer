@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,8 @@ namespace Viewer.Data.SQLite
         /// <summary>
         /// Current user version of the schema initialized by the <see cref="Initialize"/> method.
         /// </summary>
-        private const int CurrentVersion = 1;
+        private const int CurrentVersion = 2;
+
         private readonly IFileSystem _fileSystem;
         private readonly string _dataSource;
         private bool _isInitialized;
@@ -62,7 +64,8 @@ namespace Viewer.Data.SQLite
                 SQLiteFunction.RegisterFunction(typeof(InvariantCultureIgnoreCase));
                 SQLiteFunction.RegisterFunction(typeof(GetParentPathFunction));
 
-                var initialization = Resources.SqliteInitializationScript.Split(';');
+                var initialization = Resources.SqliteInitializationScript.Split(
+                    new []{ "----" }, StringSplitOptions.None);
                 using (var command = connection.CreateCommand())
                 {
                     foreach (var part in initialization)

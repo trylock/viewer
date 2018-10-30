@@ -1,4 +1,6 @@
 /** Attribute cache database structure.
+ * Scripts will be separated by 4 dashes and run separately.
+ *
  * We assume following things:
  * (1) file paths as normalized and they use / (forward slash) as directory separator
  * (2) file paths as case INsensitive

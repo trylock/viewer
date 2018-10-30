@@ -11,7 +11,7 @@ namespace Viewer.Data.SQLite
     /// This service provides access to the table of files in the cache database
     /// </summary>
     /// <remarks>
-    /// > !NOTE
+    /// > [!NOTE]
     /// > No operation is done in transaction so that the caller can decide what will be executed
     /// > in a transaction. Methods like <see cref="Move"/> are not atomic and require a transaction.
     /// </remarks>

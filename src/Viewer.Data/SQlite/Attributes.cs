@@ -243,6 +243,7 @@ namespace Viewer.Data.SQLite
 
         public void Dispose()
         {
+            _loadEntity?.Dispose();
             _updateThumbnail?.Dispose();
             _insertAttribute?.Dispose();
             _connection?.Dispose();

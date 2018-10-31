@@ -187,7 +187,7 @@ namespace Viewer.Data.SQLite
                 _command?.Dispose();
             }
         }
-
+        
         public void Insert(Attribute attribute, long file)
         {
             _insertAttribute.Execute(attribute, file);

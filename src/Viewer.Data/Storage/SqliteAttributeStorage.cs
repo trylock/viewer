@@ -96,7 +96,7 @@ namespace Viewer.Data.Storage
                 throw new ArgumentNullException(nameof(path));
 
             path = PathUtils.NormalizePath(path);
-
+            
             // check if there is a pending change in main memory
             lock (_requests)
             {

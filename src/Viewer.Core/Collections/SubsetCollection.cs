@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viewer.Query.Search
+namespace Viewer.Core.Collections
 {
     /// <summary>
     /// Collection of subsets of items of type <typeparamref name="T"/>
     /// </summary>
     /// <typeparam name="T">Type of items in subsets</typeparam>
-    internal class SubsetCollection<T> : IReadOnlyList<IReadOnlyList<T>>
+    public class SubsetCollection<T> : IReadOnlyList<IReadOnlyList<T>>
     {
         private readonly List<List<T>> _subsets = new List<List<T>>();
 
@@ -38,6 +38,12 @@ namespace Viewer.Query.Search
                 _subsets.Add(list);
             }
 
+            return index;
+        }
+
+        public int Find(IEnumerable<T> subset)
+        {
+            var index = _subsets.FindIndex(item => item.SequenceEqual(subset));
             return index;
         }
 

@@ -156,7 +156,6 @@
     <Compile Include="Query\QueryExpression\WhereQueryTest.cs" />
     <Compile Include="Query\QueryTest.cs" />
     <Compile Include="Query\RuntimeTest.cs" />
-    <Compile Include="Query\StatisticsTest.cs" />
     <Compile Include="Query\Suggestions\QuerySuggestionsTest.cs" />
     <Compile Include="Query\ValueConverterTest.cs" />
     <Compile Include="UI\Attributes\AttributeManagerTest.cs" />

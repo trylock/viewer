@@ -118,7 +118,6 @@
     <Compile Include="Search\PriorityFunction.cs" />
     <Compile Include="Search\SearchPriorityComparer.cs" />
     <Compile Include="Search\PriorityComparerFactory.cs" />
-    <Compile Include="Search\SubsetCollection.cs" />
     <Compile Include="Suggestions\Providers\AttributeNameSuggestionProvider.cs" />
     <Compile Include="Suggestions\Providers\AttributeValueSuggestionProvider.cs" />
     <Compile Include="Suggestions\CaretToken.cs" />

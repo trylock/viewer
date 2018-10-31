@@ -54,7 +54,8 @@ namespace Viewer.IO
         PathPattern Pattern { get; }
         
         /// <summary>
-        /// Same as <see cref="GetDirectories()"/> but it searches the directories in alphabetical order.
+        /// Same as <see cref="GetDirectories()"/> but it searches the directories in alphabetical
+        /// order.
         /// </summary>
         /// <returns>List of directories matching the pattern</returns>
         IEnumerable<string> GetDirectories();
@@ -87,7 +88,7 @@ namespace Viewer.IO
             public string Path { get; }
 
             /// <summary>
-            /// Number of pattern pats <see cref="Path"/> has matched.
+            /// Number of pattern parts <see cref="Path"/> has matched.
             /// </summary>
             public int MatchedPartCount { get; }
 

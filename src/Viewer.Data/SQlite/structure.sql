@@ -2,7 +2,7 @@
  * Scripts are separated with 4 dashes and run separately.
  *
  * We assume following things:
- * (1) file paths are normalized and they use / (forward slash) as directory separator
+ * (1) file paths are normalized 
  * (2) file paths are case INsensitive
  */
 
@@ -47,6 +47,7 @@ create table if not exists `attributes`(
 /** Closure of the tree order relation (the relation: "is ancestor of")
  * We need this table for efficient subtree queries used for query optimizations. While it could 
  * be quite large, its blocking factor is also big and it takes far less space than thumbnails.
+ * NOTE: this table is updated automatically. You should not update it manually.
  */
 create table if not exists `files_closure`(
     `parent_id` integer not null,

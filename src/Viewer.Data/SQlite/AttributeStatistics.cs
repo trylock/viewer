@@ -51,44 +51,31 @@ namespace Viewer.Data.SQLite
         }
     }
 
-    public interface IAttributeStatistics : IDisposable
+    public interface IAttributeStatistics 
     {
         /// <summary>
-        /// Fetch subset counts for all folders in the subtree rooted at <paramref name="path"/>
+        /// Fetch subset counts for all folders which contain a file with an attribute from
+        /// <paramref name="attributeNames"/>
         /// </summary>
-        /// <param name="path">Path to the root of a subtree</param>
+        /// <param name="attributeNames">Names of attributes to fetch</param>
         /// <returns>Map directory names to their subset counts</returns>
-        Dictionary<string, AttributeSubtreeStatistics> IndexSubsetCounts(string path);
+        Dictionary<string, AttributeSubtreeStatistics> GetSubsetCounts(
+            IEnumerable<string> attributeNames);
     }
 
-    public interface IAttributeStatisticsFactory
-    {
-        /// <summary>
-        /// Create attribute statistics service for <paramref name="attributeNames"/>
-        /// </summary>
-        /// <param name="attributeNames">Names of custom (user) attributes in the query</param>
-        /// <returns>Attribute statistics for given attribute names</returns>
-        IAttributeStatistics Create(IEnumerable<string> attributeNames);
-    }
-
+    [Export(typeof(IAttributeStatistics))]
     public class AttributeStatistics : IAttributeStatistics
     {
-        private readonly SQLiteConnection _connection;
-        private readonly FolderAttributesCommand _countSubsetsCommand;
+        private readonly SQLiteConnectionFactory _connectionFactory;
 
-        public AttributeStatistics(SQLiteConnection connection, IEnumerable<string> attributeNames)
+        [ImportingConstructor]
+        public AttributeStatistics(SQLiteConnectionFactory connectionFactory)
         {
-            var names = BindAttributeNames(attributeNames);
-            _connection = connection;
-            _countSubsetsCommand = new FolderAttributesCommand(
-                _connection, 
-                names.Snippet, 
-                names.Parameters);
+            _connectionFactory = connectionFactory;
         }
 
         private class FolderAttributesCommand : IDisposable
         {
-            private readonly SQLiteParameter _path = new SQLiteParameter(":path");
             private readonly SQLiteCommand _command;
 
             public FolderAttributesCommand(
@@ -98,7 +85,6 @@ namespace Viewer.Data.SQLite
             {
                 _command = connection.CreateCommand();
                 _command.Parameters.AddRange(names);
-                _command.Parameters.Add(_path);
                 _command.CommandText = @"
                     with recursive directories as (
                         -- compute aggregations for top-level folders (i.e., folders which contain photos)
@@ -107,16 +93,12 @@ namespace Viewer.Data.SQLite
                             group_concat(name) as name
                         from (
                             select 
-                                fc.path as path, 
+                                f.path as path, 
                                 a.name as name
-                            from files as f
-                                inner join files_closure as c
-                                    on (c.parent_id = f.id)
-                                inner join attributes as a
-                                    on (a.file_id = c.child_id)
-                                inner join files as fc
-                                    on (fc.id = c.child_id)
-                            where f.path = :path and a.source = 0 and (" + namesSnippet + @")
+                            from attributes as a
+                                inner join files as f
+                                    on (a.file_id = f.id)
+                            where a.source = 0 and (" + namesSnippet + @")
                             order by a.name
                         )
                         group by path
@@ -135,10 +117,8 @@ namespace Viewer.Data.SQLite
                 ";
             }
 
-            public IEnumerable<(string Path, string Group, long Count)> Execute(string path)
+            public IEnumerable<(string Path, string Group, long Count)> Execute()
             {
-                _path.Value = path;
-
                 using (var reader = _command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -183,46 +163,27 @@ namespace Viewer.Data.SQLite
             return (parameters.ToArray(), sb.ToString());
         }
 
-        public Dictionary<string, AttributeSubtreeStatistics> IndexSubsetCounts(string path)
+        public Dictionary<string, AttributeSubtreeStatistics> GetSubsetCounts(IEnumerable<string> names)
         {
-            var index = new Dictionary<string, AttributeSubtreeStatistics>(
-                StringComparer.CurrentCultureIgnoreCase);
-
-            foreach (var item in _countSubsetsCommand.Execute(path))
+            var attrs = BindAttributeNames(names);
+            using (var connection = _connectionFactory.Create())
+            using (var command = new FolderAttributesCommand(connection, attrs.Snippet, attrs.Parameters))
             {
-                if (!index.TryGetValue(item.Path, out var statistics))
+                var index = new Dictionary<string, AttributeSubtreeStatistics>(
+                    StringComparer.CurrentCultureIgnoreCase);
+
+                foreach (var item in command.Execute())
                 {
-                    statistics = new AttributeSubtreeStatistics();
-                    index.Add(item.Path, statistics);
+                    if (!index.TryGetValue(item.Path, out var statistics))
+                    {
+                        statistics = new AttributeSubtreeStatistics();
+                        index.Add(item.Path, statistics);
+                    }
+
+                    statistics.AddSubset(item.Group.Split(','), item.Count);
                 }
-
-                statistics.AddSubset(item.Group.Split(','), item.Count);
+                return index;
             }
-            
-            return index;
-        }
-
-        public void Dispose()
-        {
-            _countSubsetsCommand?.Dispose();
-            _connection?.Dispose();
-        }
-    }
-
-    [Export(typeof(IAttributeStatisticsFactory))]
-    public class AttributeStatisticsFactory : IAttributeStatisticsFactory
-    {
-        private readonly SQLiteConnectionFactory _connectionFactory;
-
-        [ImportingConstructor]
-        public AttributeStatisticsFactory(SQLiteConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
-
-        public IAttributeStatistics Create(IEnumerable<string> attributeNames)
-        {
-            return new AttributeStatistics(_connectionFactory.Create(), attributeNames);
         }
     }
 }

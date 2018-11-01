@@ -12,8 +12,17 @@ using Viewer.Core.Collections;
 
 namespace Viewer.Data.SQLite
 {
+    /// <summary>
+    /// Basically a histogram of attribute name subsets
+    /// </summary>
     public class AttributeSubtreeStatistics
     {
+        /// <summary>
+        /// Index of the empty subset. <see cref="AttributeSubsets"/> will always contain an empty
+        /// subset.
+        /// </summary>
+        public const int EmptySubsetIndex = 0;
+
         private readonly List<long> _subsetCount = new List<long>();
 
         public SubsetCollection<string> AttributeSubsets { get; } = new SubsetCollection<string>();
@@ -51,27 +60,80 @@ namespace Viewer.Data.SQLite
         }
     }
 
-    public interface IAttributeStatistics 
+    public interface IAttributeStatistics : IDisposable
     {
         /// <summary>
-        /// Fetch subset counts for all folders which contain a file with an attribute from
-        /// <paramref name="attributeNames"/>
+        /// Get statistics for the directory subtree rooted at <paramref name="path"/>
         /// </summary>
-        /// <param name="attributeNames">Names of attributes to fetch</param>
-        /// <returns>Map directory names to their subset counts</returns>
-        Dictionary<string, AttributeSubtreeStatistics> GetSubsetCounts(
-            IEnumerable<string> attributeNames);
+        /// <param name="path">Path to a directory</param>
+        /// <returns>
+        /// Statistics for directory subtree rooted at <paramref name="path"/>. If there are no
+        /// statistics for this subtree, null will be returned.
+        /// </returns>
+        AttributeSubtreeStatistics GetStatistics(string path);
     }
 
-    [Export(typeof(IAttributeStatistics))]
+    public interface IAttributeStatisticsFactory
+    {
+        /// <summary>
+        /// Fetch attribute statistics for <paramref name="attributeNames"/>
+        /// </summary>
+        /// <param name="attributeNames">Names of attributes</param>
+        /// <returns>Statistics for <paramref name="attributeNames"/></returns>
+        IAttributeStatistics Create(IEnumerable<string> attributeNames);
+    }
+    
     public class AttributeStatistics : IAttributeStatistics
     {
-        private readonly SQLiteConnectionFactory _connectionFactory;
+        private readonly SQLiteConnection _connection;
+        private readonly FolderAttributesCommand _fetchCommand;
+        private readonly CountFilesCommand _countFiles;
 
-        [ImportingConstructor]
-        public AttributeStatistics(SQLiteConnectionFactory connectionFactory)
+        private Dictionary<string, (
+            AttributeSubtreeStatistics Statistics, 
+            bool IsInitialized)> _statistics;
+        
+        public AttributeStatistics(SQLiteConnection connection, IEnumerable<string> attributeNames)
         {
-            _connectionFactory = connectionFactory;
+            var attrs = BindAttributeNames(attributeNames);
+            _connection = connection;
+            _fetchCommand = new FolderAttributesCommand(_connection, attrs.Snippet, attrs.Parameters);
+            _countFiles = new CountFilesCommand(connection);
+        }
+
+        private class CountFilesCommand : IDisposable
+        {
+            private readonly SQLiteParameter _path = new SQLiteParameter(":path");
+            private readonly SQLiteCommand _command;
+
+            public CountFilesCommand(SQLiteConnection connection)
+            {
+                _command = connection.CreateCommand();
+                _command.Parameters.Add(_path);
+                _command.CommandText = @"
+                select count(*)
+                from files as f
+                    inner join files_closure as c 
+                        on (c.parent_id = f.id)
+                where f.path = :path";
+            }
+
+            public long Execute(string path)
+            {
+                _path.Value = path;
+
+                if (!(_command.ExecuteScalar() is long value))
+                {
+                    return 0;
+                }
+
+                return value;
+            }
+
+            public void Dispose()
+            {
+                _command?.Dispose();
+            }
         }
 
         private class FolderAttributesCommand : IDisposable
@@ -162,28 +224,68 @@ namespace Viewer.Data.SQLite
 
             return (parameters.ToArray(), sb.ToString());
         }
-
-        public Dictionary<string, AttributeSubtreeStatistics> GetSubsetCounts(IEnumerable<string> names)
+        
+        public void Dispose()
         {
-            var attrs = BindAttributeNames(names);
-            using (var connection = _connectionFactory.Create())
-            using (var command = new FolderAttributesCommand(connection, attrs.Snippet, attrs.Parameters))
-            {
-                var index = new Dictionary<string, AttributeSubtreeStatistics>(
-                    StringComparer.CurrentCultureIgnoreCase);
+            _countFiles?.Dispose();
+            _fetchCommand?.Dispose();
+            _connection?.Dispose();
+        }
 
-                foreach (var item in command.Execute())
+        public AttributeSubtreeStatistics GetStatistics(string path)
+        {
+            // fetch all statistics
+            if (_statistics == null)
+            {
+                _statistics = new Dictionary<string, (AttributeSubtreeStatistics, bool)>(
+                    StringComparer.CurrentCultureIgnoreCase);
+                
+                foreach (var item in _fetchCommand.Execute())
                 {
-                    if (!index.TryGetValue(item.Path, out var statistics))
+                    if (!_statistics.TryGetValue(item.Path, out var statistics))
                     {
-                        statistics = new AttributeSubtreeStatistics();
-                        index.Add(item.Path, statistics);
+                        statistics.Statistics = new AttributeSubtreeStatistics();
+                        statistics.IsInitialized = false;
+                        _statistics.Add(item.Path, statistics);
                     }
 
-                    statistics.AddSubset(item.Group.Split(','), item.Count);
+                    statistics.Statistics.AddSubset(item.Group.Split(','), item.Count);
                 }
-                return index;
             }
+
+            // get cached statistics for this directory
+            if (!_statistics.TryGetValue(path, out var result))
+            {
+                return null;
+            }
+
+            // count empty subsets if we haven't already
+            /*
+            if (!result.IsInitialized)
+            {
+                result.IsInitialized = true;
+                result.Statistics.AddSubset(Enumerable.Empty<string>(), _countFiles.Execute(path));
+            }
+            */
+
+            return result.Statistics;
+        }
+    }
+
+    [Export(typeof(IAttributeStatisticsFactory))]
+    public class AttributeStatisticsFactory : IAttributeStatisticsFactory
+    {
+        private readonly SQLiteConnectionFactory _connectionFactory;
+
+        [ImportingConstructor]
+        public AttributeStatisticsFactory(SQLiteConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
+
+        public IAttributeStatistics Create(IEnumerable<string> attributeNames)
+        {
+            return new AttributeStatistics(_connectionFactory.Create(), attributeNames);
         }
     }
 }

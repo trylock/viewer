@@ -103,17 +103,23 @@ namespace Viewer.Data.SQLite
                     with recursive directories as (
                         -- compute aggregations for top-level folders (i.e., folders which contain photos)
                         select 
-                            getParentPath(fc.path) as path, 
-                            group_concat(a.name) as name
-                        from files as f
-                            inner join files_closure as c
-                                on (c.parent_id = f.id)
-                            inner join attributes as a
-                                on (a.file_id = c.child_id)
-                            inner join files as fc
-                                on (fc.id = c.child_id)
-                        where f.path = :path and a.source = 0 and (" + namesSnippet + @")
-                        group by fc.path
+                            getParentPath(path) as path, 
+                            group_concat(name) as name
+                        from (
+                            select 
+                                fc.path as path, 
+                                a.name as name
+                            from files as f
+                                inner join files_closure as c
+                                    on (c.parent_id = f.id)
+                                inner join attributes as a
+                                    on (a.file_id = c.child_id)
+                                inner join files as fc
+                                    on (fc.id = c.child_id)
+                            where f.path = :path and a.source = 0 and (" + namesSnippet + @")
+                            order by a.name
+                        )
+                        group by path
 
                         union all
         

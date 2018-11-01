@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data;
 using Viewer.Data.Formats;
+using Viewer.Data.SQLite;
 using Viewer.Query.Expressions;
 
 namespace Viewer.Query.Search
@@ -28,22 +29,27 @@ namespace Viewer.Query.Search
     [Export(typeof(IPriorityComparerFactory))]
     internal class PriorityComparerFactory : IPriorityComparerFactory
     {
-        private readonly IAttributeCache _attributeCache;
+        private readonly IAttributeStatisticsFactory _attributeStatisticsFactory;
         private readonly HashSet<string> _metadataAttributeNames;
 
         [ImportingConstructor]
         public PriorityComparerFactory(
-            IAttributeCache attributeCache, 
+            IAttributeStatisticsFactory attributeStatisticsFactory, 
             [ImportMany] IEnumerable<IAttributeReaderFactory> attrReaderFactories)
         {
-            _attributeCache = attributeCache;
+            _attributeStatisticsFactory = attributeStatisticsFactory;
             _metadataAttributeNames = new HashSet<string>(
                 attrReaderFactories.SelectMany(item => item.MetadataAttributeNames));
         }
 
         public IComparer<string> Create(ValueExpression expression)
         {
-            return new BreadthFirstSearchComparer();
+            var attributes = new AccessedAttributesVisitor(expression)
+                .Where(name => !_metadataAttributeNames.Contains(name));
+            
+            var statistics = _attributeStatisticsFactory.Create(attributes);
+            var priority = new PriorityFunction(statistics, _metadataAttributeNames);
+            return new SearchPriorityComparer(expression, priority);
         }
     }
 }

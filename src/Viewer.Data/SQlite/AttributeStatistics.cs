@@ -197,7 +197,9 @@ namespace Viewer.Data.SQLite
         {
             if (_statistics == null)
             {
-                _statistics = new Dictionary<string, AttributeSubtreeStatistics>(StringComparer.CurrentCultureIgnoreCase);
+                // fetch the distribution to main memory
+                _statistics = new Dictionary<string, AttributeSubtreeStatistics>(
+                    StringComparer.CurrentCultureIgnoreCase);
                 foreach (var item in _fetchCommand.Execute())
                 {
                     if (!_statistics.TryGetValue(item.Path, out var statistics))
@@ -215,6 +217,9 @@ namespace Viewer.Data.SQLite
                         statistics.AddSubset(item.Group.Split(','), item.Count);
                     }
                 }
+
+                // there is no point in keeping the connection open once we have the data
+                Dispose();
             }
 
             if (!_statistics.TryGetValue(path, out var result))

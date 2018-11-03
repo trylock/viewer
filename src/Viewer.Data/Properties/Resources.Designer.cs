@@ -70,7 +70,7 @@ namespace Viewer.Data.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source={0};Version=3;Pooling=True;foreign keys=true;recursive_triggers=true.
+        ///   Looks up a localized string similar to Data Source={0};Version=3;Pooling=True;foreign keys=true;recursive_triggers=true;journal_mode=WAL.
         /// </summary>
         internal static string SqliteConnectionString {
             get {
@@ -80,11 +80,11 @@ namespace Viewer.Data.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to /** Attribute cache database structure.
-        /// * Scripts will be separated by ---- and evaluated individually. 
+        /// * Scripts are separated with 4 dashes and run separately.
         /// *
         /// * We assume following things:
-        /// * (1) file paths as normalized and they use / (forward slash) as directory separator
-        /// * (2) file paths as case INsensitive
+        /// * (1) file paths are normalized 
+        /// * (2) file paths are case INsensitive
         /// */
         ///
         ////** Tables */
@@ -94,7 +94,7 @@ namespace Viewer.Data.Properties {
         ///    `id` integer not null,
         ///    `path` text not null unique, -- COLLATE INVARIANT_CULTURE_IGNORE_CASE -- it is assumed to be normalized
         ///    `parent_id` integer,
-        ///    -- t [rest of string was truncated]&quot;;.
+        ///    -- the following 2 columns are only used for leaf nodes (i.e., [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Structure {
             get {

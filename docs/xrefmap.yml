@@ -1,6 +1,102 @@
 ### YamlMime:XRefMap
 sorted: true
 references:
+- uid: benchmarks
+  name: benchmarks
+  href: api/benchmarks.html
+  commentId: N:benchmarks
+  fullName: benchmarks
+  nameWithType: benchmarks
+- uid: benchmarks.Configuration
+  name: Configuration
+  href: api/benchmarks.Configuration.html
+  commentId: T:benchmarks.Configuration
+  fullName: benchmarks.Configuration
+  nameWithType: Configuration
+- uid: benchmarks.Configuration.CacheLifespan
+  name: CacheLifespan
+  href: api/benchmarks.Configuration.html#benchmarks_Configuration_CacheLifespan
+  commentId: P:benchmarks.Configuration.CacheLifespan
+  fullName: benchmarks.Configuration.CacheLifespan
+  nameWithType: Configuration.CacheLifespan
+- uid: benchmarks.Configuration.CacheLifespan*
+  name: CacheLifespan
+  href: api/benchmarks.Configuration.html#benchmarks_Configuration_CacheLifespan_
+  commentId: Overload:benchmarks.Configuration.CacheLifespan
+  isSpec: "True"
+  fullName: benchmarks.Configuration.CacheLifespan
+  nameWithType: Configuration.CacheLifespan
+- uid: benchmarks.Configuration.CacheMaxFileCount
+  name: CacheMaxFileCount
+  href: api/benchmarks.Configuration.html#benchmarks_Configuration_CacheMaxFileCount
+  commentId: P:benchmarks.Configuration.CacheMaxFileCount
+  fullName: benchmarks.Configuration.CacheMaxFileCount
+  nameWithType: Configuration.CacheMaxFileCount
+- uid: benchmarks.Configuration.CacheMaxFileCount*
+  name: CacheMaxFileCount
+  href: api/benchmarks.Configuration.html#benchmarks_Configuration_CacheMaxFileCount_
+  commentId: Overload:benchmarks.Configuration.CacheMaxFileCount
+  isSpec: "True"
+  fullName: benchmarks.Configuration.CacheMaxFileCount
+  nameWithType: Configuration.CacheMaxFileCount
+- uid: benchmarks.ErrorListener
+  name: ErrorListener
+  href: api/benchmarks.ErrorListener.html
+  commentId: T:benchmarks.ErrorListener
+  fullName: benchmarks.ErrorListener
+  nameWithType: ErrorListener
+- uid: benchmarks.ErrorListener.AfterCompilation
+  name: AfterCompilation()
+  href: api/benchmarks.ErrorListener.html#benchmarks_ErrorListener_AfterCompilation
+  commentId: M:benchmarks.ErrorListener.AfterCompilation
+  fullName: benchmarks.ErrorListener.AfterCompilation()
+  nameWithType: ErrorListener.AfterCompilation()
+- uid: benchmarks.ErrorListener.AfterCompilation*
+  name: AfterCompilation
+  href: api/benchmarks.ErrorListener.html#benchmarks_ErrorListener_AfterCompilation_
+  commentId: Overload:benchmarks.ErrorListener.AfterCompilation
+  isSpec: "True"
+  fullName: benchmarks.ErrorListener.AfterCompilation
+  nameWithType: ErrorListener.AfterCompilation
+- uid: benchmarks.ErrorListener.BeforeCompilation
+  name: BeforeCompilation()
+  href: api/benchmarks.ErrorListener.html#benchmarks_ErrorListener_BeforeCompilation
+  commentId: M:benchmarks.ErrorListener.BeforeCompilation
+  fullName: benchmarks.ErrorListener.BeforeCompilation()
+  nameWithType: ErrorListener.BeforeCompilation()
+- uid: benchmarks.ErrorListener.BeforeCompilation*
+  name: BeforeCompilation
+  href: api/benchmarks.ErrorListener.html#benchmarks_ErrorListener_BeforeCompilation_
+  commentId: Overload:benchmarks.ErrorListener.BeforeCompilation
+  isSpec: "True"
+  fullName: benchmarks.ErrorListener.BeforeCompilation
+  nameWithType: ErrorListener.BeforeCompilation
+- uid: benchmarks.ErrorListener.OnCompilerError(System.Int32,System.Int32,System.String)
+  name: OnCompilerError(Int32, Int32, String)
+  href: api/benchmarks.ErrorListener.html#benchmarks_ErrorListener_OnCompilerError_System_Int32_System_Int32_System_String_
+  commentId: M:benchmarks.ErrorListener.OnCompilerError(System.Int32,System.Int32,System.String)
+  fullName: benchmarks.ErrorListener.OnCompilerError(System.Int32, System.Int32, System.String)
+  nameWithType: ErrorListener.OnCompilerError(Int32, Int32, String)
+- uid: benchmarks.ErrorListener.OnCompilerError*
+  name: OnCompilerError
+  href: api/benchmarks.ErrorListener.html#benchmarks_ErrorListener_OnCompilerError_
+  commentId: Overload:benchmarks.ErrorListener.OnCompilerError
+  isSpec: "True"
+  fullName: benchmarks.ErrorListener.OnCompilerError
+  nameWithType: ErrorListener.OnCompilerError
+- uid: benchmarks.ErrorListener.OnRuntimeError(System.Int32,System.Int32,System.String)
+  name: OnRuntimeError(Int32, Int32, String)
+  href: api/benchmarks.ErrorListener.html#benchmarks_ErrorListener_OnRuntimeError_System_Int32_System_Int32_System_String_
+  commentId: M:benchmarks.ErrorListener.OnRuntimeError(System.Int32,System.Int32,System.String)
+  fullName: benchmarks.ErrorListener.OnRuntimeError(System.Int32, System.Int32, System.String)
+  nameWithType: ErrorListener.OnRuntimeError(Int32, Int32, String)
+- uid: benchmarks.ErrorListener.OnRuntimeError*
+  name: OnRuntimeError
+  href: api/benchmarks.ErrorListener.html#benchmarks_ErrorListener_OnRuntimeError_
+  commentId: Overload:benchmarks.ErrorListener.OnRuntimeError
+  isSpec: "True"
+  fullName: benchmarks.ErrorListener.OnRuntimeError
+  nameWithType: ErrorListener.OnRuntimeError
 - uid: Viewer
   name: Viewer
   href: api/Viewer.html
@@ -662,6 +758,140 @@ references:
   fullName.vb: Viewer.Core.Collections.EnumerableExtensions.ToHashSet(Of T)(System.Collections.Generic.IEnumerable(Of T), System.Collections.Generic.IEqualityComparer(Of T))
   nameWithType: EnumerableExtensions.ToHashSet<T>(IEnumerable<T>, IEqualityComparer<T>)
   nameWithType.vb: EnumerableExtensions.ToHashSet(Of T)(IEnumerable(Of T), IEqualityComparer(Of T))
+- uid: Viewer.Core.Collections.SubsetCollection`1
+  name: SubsetCollection<T>
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html
+  commentId: T:Viewer.Core.Collections.SubsetCollection`1
+  name.vb: SubsetCollection(Of T)
+  fullName: Viewer.Core.Collections.SubsetCollection<T>
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T)
+  nameWithType: SubsetCollection<T>
+  nameWithType.vb: SubsetCollection(Of T)
+- uid: Viewer.Core.Collections.SubsetCollection`1.Add(System.Collections.Generic.IEnumerable{`0})
+  name: Add(IEnumerable<T>)
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_Add_System_Collections_Generic_IEnumerable__0__
+  commentId: M:Viewer.Core.Collections.SubsetCollection`1.Add(System.Collections.Generic.IEnumerable{`0})
+  name.vb: Add(IEnumerable(Of T))
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.Add(System.Collections.Generic.IEnumerable<T>)
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).Add(System.Collections.Generic.IEnumerable(Of T))
+  nameWithType: SubsetCollection<T>.Add(IEnumerable<T>)
+  nameWithType.vb: SubsetCollection(Of T).Add(IEnumerable(Of T))
+- uid: Viewer.Core.Collections.SubsetCollection`1.Add*
+  name: Add
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_Add_
+  commentId: Overload:Viewer.Core.Collections.SubsetCollection`1.Add
+  isSpec: "True"
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.Add
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).Add
+  nameWithType: SubsetCollection<T>.Add
+  nameWithType.vb: SubsetCollection(Of T).Add
+- uid: Viewer.Core.Collections.SubsetCollection`1.Count
+  name: Count
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_Count
+  commentId: P:Viewer.Core.Collections.SubsetCollection`1.Count
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.Count
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).Count
+  nameWithType: SubsetCollection<T>.Count
+  nameWithType.vb: SubsetCollection(Of T).Count
+- uid: Viewer.Core.Collections.SubsetCollection`1.Count*
+  name: Count
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_Count_
+  commentId: Overload:Viewer.Core.Collections.SubsetCollection`1.Count
+  isSpec: "True"
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.Count
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).Count
+  nameWithType: SubsetCollection<T>.Count
+  nameWithType.vb: SubsetCollection(Of T).Count
+- uid: Viewer.Core.Collections.SubsetCollection`1.Find(System.Collections.Generic.IEnumerable{`0})
+  name: Find(IEnumerable<T>)
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_Find_System_Collections_Generic_IEnumerable__0__
+  commentId: M:Viewer.Core.Collections.SubsetCollection`1.Find(System.Collections.Generic.IEnumerable{`0})
+  name.vb: Find(IEnumerable(Of T))
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.Find(System.Collections.Generic.IEnumerable<T>)
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).Find(System.Collections.Generic.IEnumerable(Of T))
+  nameWithType: SubsetCollection<T>.Find(IEnumerable<T>)
+  nameWithType.vb: SubsetCollection(Of T).Find(IEnumerable(Of T))
+- uid: Viewer.Core.Collections.SubsetCollection`1.Find*
+  name: Find
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_Find_
+  commentId: Overload:Viewer.Core.Collections.SubsetCollection`1.Find
+  isSpec: "True"
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.Find
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).Find
+  nameWithType: SubsetCollection<T>.Find
+  nameWithType.vb: SubsetCollection(Of T).Find
+- uid: Viewer.Core.Collections.SubsetCollection`1.FindIndices(System.Predicate{`0})
+  name: FindIndices(Predicate<T>)
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_FindIndices_System_Predicate__0__
+  commentId: M:Viewer.Core.Collections.SubsetCollection`1.FindIndices(System.Predicate{`0})
+  name.vb: FindIndices(Predicate(Of T))
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.FindIndices(System.Predicate<T>)
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).FindIndices(System.Predicate(Of T))
+  nameWithType: SubsetCollection<T>.FindIndices(Predicate<T>)
+  nameWithType.vb: SubsetCollection(Of T).FindIndices(Predicate(Of T))
+- uid: Viewer.Core.Collections.SubsetCollection`1.FindIndices*
+  name: FindIndices
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_FindIndices_
+  commentId: Overload:Viewer.Core.Collections.SubsetCollection`1.FindIndices
+  isSpec: "True"
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.FindIndices
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).FindIndices
+  nameWithType: SubsetCollection<T>.FindIndices
+  nameWithType.vb: SubsetCollection(Of T).FindIndices
+- uid: Viewer.Core.Collections.SubsetCollection`1.GetEnumerator
+  name: GetEnumerator()
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_GetEnumerator
+  commentId: M:Viewer.Core.Collections.SubsetCollection`1.GetEnumerator
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.GetEnumerator()
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).GetEnumerator()
+  nameWithType: SubsetCollection<T>.GetEnumerator()
+  nameWithType.vb: SubsetCollection(Of T).GetEnumerator()
+- uid: Viewer.Core.Collections.SubsetCollection`1.GetEnumerator*
+  name: GetEnumerator
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_GetEnumerator_
+  commentId: Overload:Viewer.Core.Collections.SubsetCollection`1.GetEnumerator
+  isSpec: "True"
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.GetEnumerator
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).GetEnumerator
+  nameWithType: SubsetCollection<T>.GetEnumerator
+  nameWithType.vb: SubsetCollection(Of T).GetEnumerator
+- uid: Viewer.Core.Collections.SubsetCollection`1.Item(System.Int32)
+  name: Item[Int32]
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_Item_System_Int32_
+  commentId: P:Viewer.Core.Collections.SubsetCollection`1.Item(System.Int32)
+  name.vb: Item(Int32)
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.Item[System.Int32]
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).Item(System.Int32)
+  nameWithType: SubsetCollection<T>.Item[Int32]
+  nameWithType.vb: SubsetCollection(Of T).Item(Int32)
+- uid: Viewer.Core.Collections.SubsetCollection`1.Item*
+  name: Item
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_Item_
+  commentId: Overload:Viewer.Core.Collections.SubsetCollection`1.Item
+  isSpec: "True"
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.Item
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).Item
+  nameWithType: SubsetCollection<T>.Item
+  nameWithType.vb: SubsetCollection(Of T).Item
+- uid: Viewer.Core.Collections.SubsetCollection`1.System#Collections#IEnumerable#GetEnumerator
+  name: IEnumerable.GetEnumerator()
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_System_Collections_IEnumerable_GetEnumerator
+  commentId: M:Viewer.Core.Collections.SubsetCollection`1.System#Collections#IEnumerable#GetEnumerator
+  name.vb: System.Collections.IEnumerable.GetEnumerator()
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.System.Collections.IEnumerable.GetEnumerator()
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).System.Collections.IEnumerable.GetEnumerator()
+  nameWithType: SubsetCollection<T>.IEnumerable.GetEnumerator()
+  nameWithType.vb: SubsetCollection(Of T).System.Collections.IEnumerable.GetEnumerator()
+- uid: Viewer.Core.Collections.SubsetCollection`1.System#Collections#IEnumerable#GetEnumerator*
+  name: IEnumerable.GetEnumerator
+  href: api/Viewer.Core.Collections.SubsetCollection-1.html#Viewer_Core_Collections_SubsetCollection_1_System_Collections_IEnumerable_GetEnumerator_
+  commentId: Overload:Viewer.Core.Collections.SubsetCollection`1.System#Collections#IEnumerable#GetEnumerator
+  isSpec: "True"
+  name.vb: System.Collections.IEnumerable.GetEnumerator
+  fullName: Viewer.Core.Collections.SubsetCollection<T>.System.Collections.IEnumerable.GetEnumerator
+  fullName.vb: Viewer.Core.Collections.SubsetCollection(Of T).System.Collections.IEnumerable.GetEnumerator
+  nameWithType: SubsetCollection<T>.IEnumerable.GetEnumerator
+  nameWithType.vb: SubsetCollection(Of T).System.Collections.IEnumerable.GetEnumerator
 - uid: Viewer.Core.DeserializeCallback
   name: DeserializeCallback
   href: api/Viewer.Core.DeserializeCallback.html
@@ -2335,35 +2565,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.AttributeCache.AttributeCache
   nameWithType: AttributeCache.AttributeCache
-- uid: Viewer.Data.AttributeCache.CreateFileAggregate
-  name: CreateFileAggregate()
-  href: api/Viewer.Data.AttributeCache.html#Viewer_Data_AttributeCache_CreateFileAggregate
-  commentId: M:Viewer.Data.AttributeCache.CreateFileAggregate
-  fullName: Viewer.Data.AttributeCache.CreateFileAggregate()
-  nameWithType: AttributeCache.CreateFileAggregate()
-- uid: Viewer.Data.AttributeCache.CreateFileAggregate*
-  name: CreateFileAggregate
-  href: api/Viewer.Data.AttributeCache.html#Viewer_Data_AttributeCache_CreateFileAggregate_
-  commentId: Overload:Viewer.Data.AttributeCache.CreateFileAggregate
-  isSpec: "True"
-  fullName: Viewer.Data.AttributeCache.CreateFileAggregate
-  nameWithType: AttributeCache.CreateFileAggregate
-- uid: Viewer.Data.AttributeCache.GetAttributes(System.Collections.Generic.IReadOnlyList{System.String})
-  name: GetAttributes(IReadOnlyList<String>)
-  href: api/Viewer.Data.AttributeCache.html#Viewer_Data_AttributeCache_GetAttributes_System_Collections_Generic_IReadOnlyList_System_String__
-  commentId: M:Viewer.Data.AttributeCache.GetAttributes(System.Collections.Generic.IReadOnlyList{System.String})
-  name.vb: GetAttributes(IReadOnlyList(Of String))
-  fullName: Viewer.Data.AttributeCache.GetAttributes(System.Collections.Generic.IReadOnlyList<System.String>)
-  fullName.vb: Viewer.Data.AttributeCache.GetAttributes(System.Collections.Generic.IReadOnlyList(Of System.String))
-  nameWithType: AttributeCache.GetAttributes(IReadOnlyList<String>)
-  nameWithType.vb: AttributeCache.GetAttributes(IReadOnlyList(Of String))
-- uid: Viewer.Data.AttributeCache.GetAttributes*
-  name: GetAttributes
-  href: api/Viewer.Data.AttributeCache.html#Viewer_Data_AttributeCache_GetAttributes_
-  commentId: Overload:Viewer.Data.AttributeCache.GetAttributes
-  isSpec: "True"
-  fullName: Viewer.Data.AttributeCache.GetAttributes
-  nameWithType: AttributeCache.GetAttributes
 - uid: Viewer.Data.AttributeCache.GetNames(System.String)
   name: GetNames(String)
   href: api/Viewer.Data.AttributeCache.html#Viewer_Data_AttributeCache_GetNames_System_String_
@@ -2403,38 +2604,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.AttributeCache.GetValuesImpl
   nameWithType: AttributeCache.GetValuesImpl
-- uid: Viewer.Data.AttributeGroup
-  name: AttributeGroup
-  href: api/Viewer.Data.AttributeGroup.html
-  commentId: T:Viewer.Data.AttributeGroup
-  fullName: Viewer.Data.AttributeGroup
-  nameWithType: AttributeGroup
-- uid: Viewer.Data.AttributeGroup.Attributes
-  name: Attributes
-  href: api/Viewer.Data.AttributeGroup.html#Viewer_Data_AttributeGroup_Attributes
-  commentId: P:Viewer.Data.AttributeGroup.Attributes
-  fullName: Viewer.Data.AttributeGroup.Attributes
-  nameWithType: AttributeGroup.Attributes
-- uid: Viewer.Data.AttributeGroup.Attributes*
-  name: Attributes
-  href: api/Viewer.Data.AttributeGroup.html#Viewer_Data_AttributeGroup_Attributes_
-  commentId: Overload:Viewer.Data.AttributeGroup.Attributes
-  isSpec: "True"
-  fullName: Viewer.Data.AttributeGroup.Attributes
-  nameWithType: AttributeGroup.Attributes
-- uid: Viewer.Data.AttributeGroup.FilePath
-  name: FilePath
-  href: api/Viewer.Data.AttributeGroup.html#Viewer_Data_AttributeGroup_FilePath
-  commentId: P:Viewer.Data.AttributeGroup.FilePath
-  fullName: Viewer.Data.AttributeGroup.FilePath
-  nameWithType: AttributeGroup.FilePath
-- uid: Viewer.Data.AttributeGroup.FilePath*
-  name: FilePath
-  href: api/Viewer.Data.AttributeGroup.html#Viewer_Data_AttributeGroup_FilePath_
-  commentId: Overload:Viewer.Data.AttributeGroup.FilePath
-  isSpec: "True"
-  fullName: Viewer.Data.AttributeGroup.FilePath
-  nameWithType: AttributeGroup.FilePath
 - uid: Viewer.Data.AttributeSource
   name: AttributeSource
   href: api/Viewer.Data.AttributeSource.html
@@ -2660,6 +2829,12 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.DateTimeValue.IsNull
   nameWithType: DateTimeValue.IsNull
+- uid: Viewer.Data.DateTimeValue.QueryFormat
+  name: QueryFormat
+  href: api/Viewer.Data.DateTimeValue.html#Viewer_Data_DateTimeValue_QueryFormat
+  commentId: F:Viewer.Data.DateTimeValue.QueryFormat
+  fullName: Viewer.Data.DateTimeValue.QueryFormat
+  nameWithType: DateTimeValue.QueryFormat
 - uid: Viewer.Data.DateTimeValue.ToString
   name: ToString()
   href: api/Viewer.Data.DateTimeValue.html#Viewer_Data_DateTimeValue_ToString
@@ -4533,35 +4708,6 @@ references:
   commentId: T:Viewer.Data.IAttributeCache
   fullName: Viewer.Data.IAttributeCache
   nameWithType: IAttributeCache
-- uid: Viewer.Data.IAttributeCache.CreateFileAggregate
-  name: CreateFileAggregate()
-  href: api/Viewer.Data.IAttributeCache.html#Viewer_Data_IAttributeCache_CreateFileAggregate
-  commentId: M:Viewer.Data.IAttributeCache.CreateFileAggregate
-  fullName: Viewer.Data.IAttributeCache.CreateFileAggregate()
-  nameWithType: IAttributeCache.CreateFileAggregate()
-- uid: Viewer.Data.IAttributeCache.CreateFileAggregate*
-  name: CreateFileAggregate
-  href: api/Viewer.Data.IAttributeCache.html#Viewer_Data_IAttributeCache_CreateFileAggregate_
-  commentId: Overload:Viewer.Data.IAttributeCache.CreateFileAggregate
-  isSpec: "True"
-  fullName: Viewer.Data.IAttributeCache.CreateFileAggregate
-  nameWithType: IAttributeCache.CreateFileAggregate
-- uid: Viewer.Data.IAttributeCache.GetAttributes(System.Collections.Generic.IReadOnlyList{System.String})
-  name: GetAttributes(IReadOnlyList<String>)
-  href: api/Viewer.Data.IAttributeCache.html#Viewer_Data_IAttributeCache_GetAttributes_System_Collections_Generic_IReadOnlyList_System_String__
-  commentId: M:Viewer.Data.IAttributeCache.GetAttributes(System.Collections.Generic.IReadOnlyList{System.String})
-  name.vb: GetAttributes(IReadOnlyList(Of String))
-  fullName: Viewer.Data.IAttributeCache.GetAttributes(System.Collections.Generic.IReadOnlyList<System.String>)
-  fullName.vb: Viewer.Data.IAttributeCache.GetAttributes(System.Collections.Generic.IReadOnlyList(Of System.String))
-  nameWithType: IAttributeCache.GetAttributes(IReadOnlyList<String>)
-  nameWithType.vb: IAttributeCache.GetAttributes(IReadOnlyList(Of String))
-- uid: Viewer.Data.IAttributeCache.GetAttributes*
-  name: GetAttributes
-  href: api/Viewer.Data.IAttributeCache.html#Viewer_Data_IAttributeCache_GetAttributes_
-  commentId: Overload:Viewer.Data.IAttributeCache.GetAttributes
-  isSpec: "True"
-  fullName: Viewer.Data.IAttributeCache.GetAttributes
-  nameWithType: IAttributeCache.GetAttributes
 - uid: Viewer.Data.IAttributeCache.GetNames(System.String)
   name: GetNames(String)
   href: api/Viewer.Data.IAttributeCache.html#Viewer_Data_IAttributeCache_GetNames_System_String_
@@ -4790,25 +4936,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.IEntityManager.SetEntity
   nameWithType: IEntityManager.SetEntity
-- uid: Viewer.Data.IFileAggregate
-  name: IFileAggregate
-  href: api/Viewer.Data.IFileAggregate.html
-  commentId: T:Viewer.Data.IFileAggregate
-  fullName: Viewer.Data.IFileAggregate
-  nameWithType: IFileAggregate
-- uid: Viewer.Data.IFileAggregate.Count(System.String)
-  name: Count(String)
-  href: api/Viewer.Data.IFileAggregate.html#Viewer_Data_IFileAggregate_Count_System_String_
-  commentId: M:Viewer.Data.IFileAggregate.Count(System.String)
-  fullName: Viewer.Data.IFileAggregate.Count(System.String)
-  nameWithType: IFileAggregate.Count(String)
-- uid: Viewer.Data.IFileAggregate.Count*
-  name: Count
-  href: api/Viewer.Data.IFileAggregate.html#Viewer_Data_IFileAggregate_Count_
-  commentId: Overload:Viewer.Data.IFileAggregate.Count
-  isSpec: "True"
-  fullName: Viewer.Data.IFileAggregate.Count
-  nameWithType: IFileAggregate.Count
 - uid: Viewer.Data.ImageValue
   name: ImageValue
   href: api/Viewer.Data.ImageValue.html
@@ -5418,6 +5545,535 @@ references:
   commentId: N:Viewer.Data.SQLite
   fullName: Viewer.Data.SQLite
   nameWithType: Viewer.Data.SQLite
+- uid: Viewer.Data.SQLite.Attributes
+  name: Attributes
+  href: api/Viewer.Data.SQLite.Attributes.html
+  commentId: T:Viewer.Data.SQLite.Attributes
+  fullName: Viewer.Data.SQLite.Attributes
+  nameWithType: Attributes
+- uid: Viewer.Data.SQLite.Attributes.#ctor(System.Data.SQLite.SQLiteConnection)
+  name: Attributes(SQLiteConnection)
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes__ctor_System_Data_SQLite_SQLiteConnection_
+  commentId: M:Viewer.Data.SQLite.Attributes.#ctor(System.Data.SQLite.SQLiteConnection)
+  fullName: Viewer.Data.SQLite.Attributes.Attributes(System.Data.SQLite.SQLiteConnection)
+  nameWithType: Attributes.Attributes(SQLiteConnection)
+- uid: Viewer.Data.SQLite.Attributes.#ctor*
+  name: Attributes
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes__ctor_
+  commentId: Overload:Viewer.Data.SQLite.Attributes.#ctor
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Attributes.Attributes
+  nameWithType: Attributes.Attributes
+- uid: Viewer.Data.SQLite.Attributes.Dispose
+  name: Dispose()
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_Dispose
+  commentId: M:Viewer.Data.SQLite.Attributes.Dispose
+  fullName: Viewer.Data.SQLite.Attributes.Dispose()
+  nameWithType: Attributes.Dispose()
+- uid: Viewer.Data.SQLite.Attributes.Dispose*
+  name: Dispose
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_Dispose_
+  commentId: Overload:Viewer.Data.SQLite.Attributes.Dispose
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Attributes.Dispose
+  nameWithType: Attributes.Dispose
+- uid: Viewer.Data.SQLite.Attributes.FindAttributes(System.String,System.DateTime)
+  name: FindAttributes(String, DateTime)
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_FindAttributes_System_String_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.Attributes.FindAttributes(System.String,System.DateTime)
+  fullName: Viewer.Data.SQLite.Attributes.FindAttributes(System.String, System.DateTime)
+  nameWithType: Attributes.FindAttributes(String, DateTime)
+- uid: Viewer.Data.SQLite.Attributes.FindAttributes*
+  name: FindAttributes
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_FindAttributes_
+  commentId: Overload:Viewer.Data.SQLite.Attributes.FindAttributes
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Attributes.FindAttributes
+  nameWithType: Attributes.FindAttributes
+- uid: Viewer.Data.SQLite.Attributes.Insert(Viewer.Data.Attribute,System.Int64)
+  name: Insert(Attribute, Int64)
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_Insert_Viewer_Data_Attribute_System_Int64_
+  commentId: M:Viewer.Data.SQLite.Attributes.Insert(Viewer.Data.Attribute,System.Int64)
+  fullName: Viewer.Data.SQLite.Attributes.Insert(Viewer.Data.Attribute, System.Int64)
+  nameWithType: Attributes.Insert(Attribute, Int64)
+- uid: Viewer.Data.SQLite.Attributes.Insert*
+  name: Insert
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_Insert_
+  commentId: Overload:Viewer.Data.SQLite.Attributes.Insert
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Attributes.Insert
+  nameWithType: Attributes.Insert
+- uid: Viewer.Data.SQLite.Attributes.SetThumbnail(System.Byte[],System.Int64)
+  name: SetThumbnail(Byte[], Int64)
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_SetThumbnail_System_Byte___System_Int64_
+  commentId: M:Viewer.Data.SQLite.Attributes.SetThumbnail(System.Byte[],System.Int64)
+  name.vb: SetThumbnail(Byte(), Int64)
+  fullName: Viewer.Data.SQLite.Attributes.SetThumbnail(System.Byte[], System.Int64)
+  fullName.vb: Viewer.Data.SQLite.Attributes.SetThumbnail(System.Byte(), System.Int64)
+  nameWithType: Attributes.SetThumbnail(Byte[], Int64)
+  nameWithType.vb: Attributes.SetThumbnail(Byte(), Int64)
+- uid: Viewer.Data.SQLite.Attributes.SetThumbnail*
+  name: SetThumbnail
+  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_SetThumbnail_
+  commentId: Overload:Viewer.Data.SQLite.Attributes.SetThumbnail
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Attributes.SetThumbnail
+  nameWithType: Attributes.SetThumbnail
+- uid: Viewer.Data.SQLite.AttributeStatistics
+  name: AttributeStatistics
+  href: api/Viewer.Data.SQLite.AttributeStatistics.html
+  commentId: T:Viewer.Data.SQLite.AttributeStatistics
+  fullName: Viewer.Data.SQLite.AttributeStatistics
+  nameWithType: AttributeStatistics
+- uid: Viewer.Data.SQLite.AttributeStatistics.#ctor(System.Data.SQLite.SQLiteConnection,System.Collections.Generic.IEnumerable{System.String})
+  name: AttributeStatistics(SQLiteConnection, IEnumerable<String>)
+  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics__ctor_System_Data_SQLite_SQLiteConnection_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Viewer.Data.SQLite.AttributeStatistics.#ctor(System.Data.SQLite.SQLiteConnection,System.Collections.Generic.IEnumerable{System.String})
+  name.vb: AttributeStatistics(SQLiteConnection, IEnumerable(Of String))
+  fullName: Viewer.Data.SQLite.AttributeStatistics.AttributeStatistics(System.Data.SQLite.SQLiteConnection, System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Viewer.Data.SQLite.AttributeStatistics.AttributeStatistics(System.Data.SQLite.SQLiteConnection, System.Collections.Generic.IEnumerable(Of System.String))
+  nameWithType: AttributeStatistics.AttributeStatistics(SQLiteConnection, IEnumerable<String>)
+  nameWithType.vb: AttributeStatistics.AttributeStatistics(SQLiteConnection, IEnumerable(Of String))
+- uid: Viewer.Data.SQLite.AttributeStatistics.#ctor*
+  name: AttributeStatistics
+  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics__ctor_
+  commentId: Overload:Viewer.Data.SQLite.AttributeStatistics.#ctor
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeStatistics.AttributeStatistics
+  nameWithType: AttributeStatistics.AttributeStatistics
+- uid: Viewer.Data.SQLite.AttributeStatistics.Dispose
+  name: Dispose()
+  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics_Dispose
+  commentId: M:Viewer.Data.SQLite.AttributeStatistics.Dispose
+  fullName: Viewer.Data.SQLite.AttributeStatistics.Dispose()
+  nameWithType: AttributeStatistics.Dispose()
+- uid: Viewer.Data.SQLite.AttributeStatistics.Dispose*
+  name: Dispose
+  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics_Dispose_
+  commentId: Overload:Viewer.Data.SQLite.AttributeStatistics.Dispose
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeStatistics.Dispose
+  nameWithType: AttributeStatistics.Dispose
+- uid: Viewer.Data.SQLite.AttributeStatistics.GetStatistics(System.String)
+  name: GetStatistics(String)
+  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics_GetStatistics_System_String_
+  commentId: M:Viewer.Data.SQLite.AttributeStatistics.GetStatistics(System.String)
+  fullName: Viewer.Data.SQLite.AttributeStatistics.GetStatistics(System.String)
+  nameWithType: AttributeStatistics.GetStatistics(String)
+- uid: Viewer.Data.SQLite.AttributeStatistics.GetStatistics*
+  name: GetStatistics
+  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics_GetStatistics_
+  commentId: Overload:Viewer.Data.SQLite.AttributeStatistics.GetStatistics
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeStatistics.GetStatistics
+  nameWithType: AttributeStatistics.GetStatistics
+- uid: Viewer.Data.SQLite.AttributeStatisticsFactory
+  name: AttributeStatisticsFactory
+  href: api/Viewer.Data.SQLite.AttributeStatisticsFactory.html
+  commentId: T:Viewer.Data.SQLite.AttributeStatisticsFactory
+  fullName: Viewer.Data.SQLite.AttributeStatisticsFactory
+  nameWithType: AttributeStatisticsFactory
+- uid: Viewer.Data.SQLite.AttributeStatisticsFactory.#ctor(Viewer.Data.SQLite.SQLiteConnectionFactory)
+  name: AttributeStatisticsFactory(SQLiteConnectionFactory)
+  href: api/Viewer.Data.SQLite.AttributeStatisticsFactory.html#Viewer_Data_SQLite_AttributeStatisticsFactory__ctor_Viewer_Data_SQLite_SQLiteConnectionFactory_
+  commentId: M:Viewer.Data.SQLite.AttributeStatisticsFactory.#ctor(Viewer.Data.SQLite.SQLiteConnectionFactory)
+  fullName: Viewer.Data.SQLite.AttributeStatisticsFactory.AttributeStatisticsFactory(Viewer.Data.SQLite.SQLiteConnectionFactory)
+  nameWithType: AttributeStatisticsFactory.AttributeStatisticsFactory(SQLiteConnectionFactory)
+- uid: Viewer.Data.SQLite.AttributeStatisticsFactory.#ctor*
+  name: AttributeStatisticsFactory
+  href: api/Viewer.Data.SQLite.AttributeStatisticsFactory.html#Viewer_Data_SQLite_AttributeStatisticsFactory__ctor_
+  commentId: Overload:Viewer.Data.SQLite.AttributeStatisticsFactory.#ctor
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeStatisticsFactory.AttributeStatisticsFactory
+  nameWithType: AttributeStatisticsFactory.AttributeStatisticsFactory
+- uid: Viewer.Data.SQLite.AttributeStatisticsFactory.Create(System.Collections.Generic.IEnumerable{System.String})
+  name: Create(IEnumerable<String>)
+  href: api/Viewer.Data.SQLite.AttributeStatisticsFactory.html#Viewer_Data_SQLite_AttributeStatisticsFactory_Create_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Viewer.Data.SQLite.AttributeStatisticsFactory.Create(System.Collections.Generic.IEnumerable{System.String})
+  name.vb: Create(IEnumerable(Of String))
+  fullName: Viewer.Data.SQLite.AttributeStatisticsFactory.Create(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Viewer.Data.SQLite.AttributeStatisticsFactory.Create(System.Collections.Generic.IEnumerable(Of System.String))
+  nameWithType: AttributeStatisticsFactory.Create(IEnumerable<String>)
+  nameWithType.vb: AttributeStatisticsFactory.Create(IEnumerable(Of String))
+- uid: Viewer.Data.SQLite.AttributeStatisticsFactory.Create*
+  name: Create
+  href: api/Viewer.Data.SQLite.AttributeStatisticsFactory.html#Viewer_Data_SQLite_AttributeStatisticsFactory_Create_
+  commentId: Overload:Viewer.Data.SQLite.AttributeStatisticsFactory.Create
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeStatisticsFactory.Create
+  nameWithType: AttributeStatisticsFactory.Create
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics
+  name: AttributeSubtreeStatistics
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html
+  commentId: T:Viewer.Data.SQLite.AttributeSubtreeStatistics
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics
+  nameWithType: AttributeSubtreeStatistics
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.#ctor
+  name: AttributeSubtreeStatistics()
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics__ctor
+  commentId: M:Viewer.Data.SQLite.AttributeSubtreeStatistics.#ctor
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.AttributeSubtreeStatistics()
+  nameWithType: AttributeSubtreeStatistics.AttributeSubtreeStatistics()
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.#ctor*
+  name: AttributeSubtreeStatistics
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics__ctor_
+  commentId: Overload:Viewer.Data.SQLite.AttributeSubtreeStatistics.#ctor
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.AttributeSubtreeStatistics
+  nameWithType: AttributeSubtreeStatistics.AttributeSubtreeStatistics
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.AddSubset(System.Collections.Generic.IEnumerable{System.String},System.Int64)
+  name: AddSubset(IEnumerable<String>, Int64)
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics_AddSubset_System_Collections_Generic_IEnumerable_System_String__System_Int64_
+  commentId: M:Viewer.Data.SQLite.AttributeSubtreeStatistics.AddSubset(System.Collections.Generic.IEnumerable{System.String},System.Int64)
+  name.vb: AddSubset(IEnumerable(Of String), Int64)
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.AddSubset(System.Collections.Generic.IEnumerable<System.String>, System.Int64)
+  fullName.vb: Viewer.Data.SQLite.AttributeSubtreeStatistics.AddSubset(System.Collections.Generic.IEnumerable(Of System.String), System.Int64)
+  nameWithType: AttributeSubtreeStatistics.AddSubset(IEnumerable<String>, Int64)
+  nameWithType.vb: AttributeSubtreeStatistics.AddSubset(IEnumerable(Of String), Int64)
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.AddSubset*
+  name: AddSubset
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics_AddSubset_
+  commentId: Overload:Viewer.Data.SQLite.AttributeSubtreeStatistics.AddSubset
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.AddSubset
+  nameWithType: AttributeSubtreeStatistics.AddSubset
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.AttributeSubsets
+  name: AttributeSubsets
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics_AttributeSubsets
+  commentId: P:Viewer.Data.SQLite.AttributeSubtreeStatistics.AttributeSubsets
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.AttributeSubsets
+  nameWithType: AttributeSubtreeStatistics.AttributeSubsets
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.AttributeSubsets*
+  name: AttributeSubsets
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics_AttributeSubsets_
+  commentId: Overload:Viewer.Data.SQLite.AttributeSubtreeStatistics.AttributeSubsets
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.AttributeSubsets
+  nameWithType: AttributeSubtreeStatistics.AttributeSubsets
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.EmptySubsetIndex
+  name: EmptySubsetIndex
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics_EmptySubsetIndex
+  commentId: F:Viewer.Data.SQLite.AttributeSubtreeStatistics.EmptySubsetIndex
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.EmptySubsetIndex
+  nameWithType: AttributeSubtreeStatistics.EmptySubsetIndex
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.GetSubsetCount(System.Int32)
+  name: GetSubsetCount(Int32)
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics_GetSubsetCount_System_Int32_
+  commentId: M:Viewer.Data.SQLite.AttributeSubtreeStatistics.GetSubsetCount(System.Int32)
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.GetSubsetCount(System.Int32)
+  nameWithType: AttributeSubtreeStatistics.GetSubsetCount(Int32)
+- uid: Viewer.Data.SQLite.AttributeSubtreeStatistics.GetSubsetCount*
+  name: GetSubsetCount
+  href: api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html#Viewer_Data_SQLite_AttributeSubtreeStatistics_GetSubsetCount_
+  commentId: Overload:Viewer.Data.SQLite.AttributeSubtreeStatistics.GetSubsetCount
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.AttributeSubtreeStatistics.GetSubsetCount
+  nameWithType: AttributeSubtreeStatistics.GetSubsetCount
+- uid: Viewer.Data.SQLite.Files
+  name: Files
+  href: api/Viewer.Data.SQLite.Files.html
+  commentId: T:Viewer.Data.SQLite.Files
+  fullName: Viewer.Data.SQLite.Files
+  nameWithType: Files
+- uid: Viewer.Data.SQLite.Files.#ctor(System.Data.SQLite.SQLiteConnection)
+  name: Files(SQLiteConnection)
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files__ctor_System_Data_SQLite_SQLiteConnection_
+  commentId: M:Viewer.Data.SQLite.Files.#ctor(System.Data.SQLite.SQLiteConnection)
+  fullName: Viewer.Data.SQLite.Files.Files(System.Data.SQLite.SQLiteConnection)
+  nameWithType: Files.Files(SQLiteConnection)
+- uid: Viewer.Data.SQLite.Files.#ctor*
+  name: Files
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files__ctor_
+  commentId: Overload:Viewer.Data.SQLite.Files.#ctor
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Files.Files
+  nameWithType: Files.Files
+- uid: Viewer.Data.SQLite.Files.Delete(System.String)
+  name: Delete(String)
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Delete_System_String_
+  commentId: M:Viewer.Data.SQLite.Files.Delete(System.String)
+  fullName: Viewer.Data.SQLite.Files.Delete(System.String)
+  nameWithType: Files.Delete(String)
+- uid: Viewer.Data.SQLite.Files.Delete*
+  name: Delete
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Delete_
+  commentId: Overload:Viewer.Data.SQLite.Files.Delete
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Files.Delete
+  nameWithType: Files.Delete
+- uid: Viewer.Data.SQLite.Files.DeleteOutdated(System.DateTime)
+  name: DeleteOutdated(DateTime)
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_DeleteOutdated_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.Files.DeleteOutdated(System.DateTime)
+  fullName: Viewer.Data.SQLite.Files.DeleteOutdated(System.DateTime)
+  nameWithType: Files.DeleteOutdated(DateTime)
+- uid: Viewer.Data.SQLite.Files.DeleteOutdated*
+  name: DeleteOutdated
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_DeleteOutdated_
+  commentId: Overload:Viewer.Data.SQLite.Files.DeleteOutdated
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Files.DeleteOutdated
+  nameWithType: Files.DeleteOutdated
+- uid: Viewer.Data.SQLite.Files.Dispose
+  name: Dispose()
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Dispose
+  commentId: M:Viewer.Data.SQLite.Files.Dispose
+  fullName: Viewer.Data.SQLite.Files.Dispose()
+  nameWithType: Files.Dispose()
+- uid: Viewer.Data.SQLite.Files.Dispose*
+  name: Dispose
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Dispose_
+  commentId: Overload:Viewer.Data.SQLite.Files.Dispose
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Files.Dispose
+  nameWithType: Files.Dispose
+- uid: Viewer.Data.SQLite.Files.FindId(System.String)
+  name: FindId(String)
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_FindId_System_String_
+  commentId: M:Viewer.Data.SQLite.Files.FindId(System.String)
+  fullName: Viewer.Data.SQLite.Files.FindId(System.String)
+  nameWithType: Files.FindId(String)
+- uid: Viewer.Data.SQLite.Files.FindId*
+  name: FindId
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_FindId_
+  commentId: Overload:Viewer.Data.SQLite.Files.FindId
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Files.FindId
+  nameWithType: Files.FindId
+- uid: Viewer.Data.SQLite.Files.Insert(System.String,System.DateTime)
+  name: Insert(String, DateTime)
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Insert_System_String_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.Files.Insert(System.String,System.DateTime)
+  fullName: Viewer.Data.SQLite.Files.Insert(System.String, System.DateTime)
+  nameWithType: Files.Insert(String, DateTime)
+- uid: Viewer.Data.SQLite.Files.Insert*
+  name: Insert
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Insert_
+  commentId: Overload:Viewer.Data.SQLite.Files.Insert
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Files.Insert
+  nameWithType: Files.Insert
+- uid: Viewer.Data.SQLite.Files.Move(System.String,System.String)
+  name: Move(String, String)
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Move_System_String_System_String_
+  commentId: M:Viewer.Data.SQLite.Files.Move(System.String,System.String)
+  fullName: Viewer.Data.SQLite.Files.Move(System.String, System.String)
+  nameWithType: Files.Move(String, String)
+- uid: Viewer.Data.SQLite.Files.Move*
+  name: Move
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Move_
+  commentId: Overload:Viewer.Data.SQLite.Files.Move
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Files.Move
+  nameWithType: Files.Move
+- uid: Viewer.Data.SQLite.Files.Touch(System.String,System.DateTime)
+  name: Touch(String, DateTime)
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Touch_System_String_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.Files.Touch(System.String,System.DateTime)
+  fullName: Viewer.Data.SQLite.Files.Touch(System.String, System.DateTime)
+  nameWithType: Files.Touch(String, DateTime)
+- uid: Viewer.Data.SQLite.Files.Touch*
+  name: Touch
+  href: api/Viewer.Data.SQLite.Files.html#Viewer_Data_SQLite_Files_Touch_
+  commentId: Overload:Viewer.Data.SQLite.Files.Touch
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.Files.Touch
+  nameWithType: Files.Touch
+- uid: Viewer.Data.SQLite.GetParentPathFunction
+  name: GetParentPathFunction
+  href: api/Viewer.Data.SQLite.GetParentPathFunction.html
+  commentId: T:Viewer.Data.SQLite.GetParentPathFunction
+  fullName: Viewer.Data.SQLite.GetParentPathFunction
+  nameWithType: GetParentPathFunction
+- uid: Viewer.Data.SQLite.GetParentPathFunction.Invoke(System.Object[])
+  name: Invoke(Object[])
+  href: api/Viewer.Data.SQLite.GetParentPathFunction.html#Viewer_Data_SQLite_GetParentPathFunction_Invoke_System_Object___
+  commentId: M:Viewer.Data.SQLite.GetParentPathFunction.Invoke(System.Object[])
+  name.vb: Invoke(Object())
+  fullName: Viewer.Data.SQLite.GetParentPathFunction.Invoke(System.Object[])
+  fullName.vb: Viewer.Data.SQLite.GetParentPathFunction.Invoke(System.Object())
+  nameWithType: GetParentPathFunction.Invoke(Object[])
+  nameWithType.vb: GetParentPathFunction.Invoke(Object())
+- uid: Viewer.Data.SQLite.GetParentPathFunction.Invoke*
+  name: Invoke
+  href: api/Viewer.Data.SQLite.GetParentPathFunction.html#Viewer_Data_SQLite_GetParentPathFunction_Invoke_
+  commentId: Overload:Viewer.Data.SQLite.GetParentPathFunction.Invoke
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.GetParentPathFunction.Invoke
+  nameWithType: GetParentPathFunction.Invoke
+- uid: Viewer.Data.SQLite.IAttributes
+  name: IAttributes
+  href: api/Viewer.Data.SQLite.IAttributes.html
+  commentId: T:Viewer.Data.SQLite.IAttributes
+  fullName: Viewer.Data.SQLite.IAttributes
+  nameWithType: IAttributes
+- uid: Viewer.Data.SQLite.IAttributes.FindAttributes(System.String,System.DateTime)
+  name: FindAttributes(String, DateTime)
+  href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_FindAttributes_System_String_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.IAttributes.FindAttributes(System.String,System.DateTime)
+  fullName: Viewer.Data.SQLite.IAttributes.FindAttributes(System.String, System.DateTime)
+  nameWithType: IAttributes.FindAttributes(String, DateTime)
+- uid: Viewer.Data.SQLite.IAttributes.FindAttributes*
+  name: FindAttributes
+  href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_FindAttributes_
+  commentId: Overload:Viewer.Data.SQLite.IAttributes.FindAttributes
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IAttributes.FindAttributes
+  nameWithType: IAttributes.FindAttributes
+- uid: Viewer.Data.SQLite.IAttributes.Insert(Viewer.Data.Attribute,System.Int64)
+  name: Insert(Attribute, Int64)
+  href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_Insert_Viewer_Data_Attribute_System_Int64_
+  commentId: M:Viewer.Data.SQLite.IAttributes.Insert(Viewer.Data.Attribute,System.Int64)
+  fullName: Viewer.Data.SQLite.IAttributes.Insert(Viewer.Data.Attribute, System.Int64)
+  nameWithType: IAttributes.Insert(Attribute, Int64)
+- uid: Viewer.Data.SQLite.IAttributes.Insert*
+  name: Insert
+  href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_Insert_
+  commentId: Overload:Viewer.Data.SQLite.IAttributes.Insert
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IAttributes.Insert
+  nameWithType: IAttributes.Insert
+- uid: Viewer.Data.SQLite.IAttributes.SetThumbnail(System.Byte[],System.Int64)
+  name: SetThumbnail(Byte[], Int64)
+  href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_SetThumbnail_System_Byte___System_Int64_
+  commentId: M:Viewer.Data.SQLite.IAttributes.SetThumbnail(System.Byte[],System.Int64)
+  name.vb: SetThumbnail(Byte(), Int64)
+  fullName: Viewer.Data.SQLite.IAttributes.SetThumbnail(System.Byte[], System.Int64)
+  fullName.vb: Viewer.Data.SQLite.IAttributes.SetThumbnail(System.Byte(), System.Int64)
+  nameWithType: IAttributes.SetThumbnail(Byte[], Int64)
+  nameWithType.vb: IAttributes.SetThumbnail(Byte(), Int64)
+- uid: Viewer.Data.SQLite.IAttributes.SetThumbnail*
+  name: SetThumbnail
+  href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_SetThumbnail_
+  commentId: Overload:Viewer.Data.SQLite.IAttributes.SetThumbnail
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IAttributes.SetThumbnail
+  nameWithType: IAttributes.SetThumbnail
+- uid: Viewer.Data.SQLite.IAttributeStatistics
+  name: IAttributeStatistics
+  href: api/Viewer.Data.SQLite.IAttributeStatistics.html
+  commentId: T:Viewer.Data.SQLite.IAttributeStatistics
+  fullName: Viewer.Data.SQLite.IAttributeStatistics
+  nameWithType: IAttributeStatistics
+- uid: Viewer.Data.SQLite.IAttributeStatistics.GetStatistics(System.String)
+  name: GetStatistics(String)
+  href: api/Viewer.Data.SQLite.IAttributeStatistics.html#Viewer_Data_SQLite_IAttributeStatistics_GetStatistics_System_String_
+  commentId: M:Viewer.Data.SQLite.IAttributeStatistics.GetStatistics(System.String)
+  fullName: Viewer.Data.SQLite.IAttributeStatistics.GetStatistics(System.String)
+  nameWithType: IAttributeStatistics.GetStatistics(String)
+- uid: Viewer.Data.SQLite.IAttributeStatistics.GetStatistics*
+  name: GetStatistics
+  href: api/Viewer.Data.SQLite.IAttributeStatistics.html#Viewer_Data_SQLite_IAttributeStatistics_GetStatistics_
+  commentId: Overload:Viewer.Data.SQLite.IAttributeStatistics.GetStatistics
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IAttributeStatistics.GetStatistics
+  nameWithType: IAttributeStatistics.GetStatistics
+- uid: Viewer.Data.SQLite.IAttributeStatisticsFactory
+  name: IAttributeStatisticsFactory
+  href: api/Viewer.Data.SQLite.IAttributeStatisticsFactory.html
+  commentId: T:Viewer.Data.SQLite.IAttributeStatisticsFactory
+  fullName: Viewer.Data.SQLite.IAttributeStatisticsFactory
+  nameWithType: IAttributeStatisticsFactory
+- uid: Viewer.Data.SQLite.IAttributeStatisticsFactory.Create(System.Collections.Generic.IEnumerable{System.String})
+  name: Create(IEnumerable<String>)
+  href: api/Viewer.Data.SQLite.IAttributeStatisticsFactory.html#Viewer_Data_SQLite_IAttributeStatisticsFactory_Create_System_Collections_Generic_IEnumerable_System_String__
+  commentId: M:Viewer.Data.SQLite.IAttributeStatisticsFactory.Create(System.Collections.Generic.IEnumerable{System.String})
+  name.vb: Create(IEnumerable(Of String))
+  fullName: Viewer.Data.SQLite.IAttributeStatisticsFactory.Create(System.Collections.Generic.IEnumerable<System.String>)
+  fullName.vb: Viewer.Data.SQLite.IAttributeStatisticsFactory.Create(System.Collections.Generic.IEnumerable(Of System.String))
+  nameWithType: IAttributeStatisticsFactory.Create(IEnumerable<String>)
+  nameWithType.vb: IAttributeStatisticsFactory.Create(IEnumerable(Of String))
+- uid: Viewer.Data.SQLite.IAttributeStatisticsFactory.Create*
+  name: Create
+  href: api/Viewer.Data.SQLite.IAttributeStatisticsFactory.html#Viewer_Data_SQLite_IAttributeStatisticsFactory_Create_
+  commentId: Overload:Viewer.Data.SQLite.IAttributeStatisticsFactory.Create
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IAttributeStatisticsFactory.Create
+  nameWithType: IAttributeStatisticsFactory.Create
+- uid: Viewer.Data.SQLite.IFiles
+  name: IFiles
+  href: api/Viewer.Data.SQLite.IFiles.html
+  commentId: T:Viewer.Data.SQLite.IFiles
+  fullName: Viewer.Data.SQLite.IFiles
+  nameWithType: IFiles
+- uid: Viewer.Data.SQLite.IFiles.Delete(System.String)
+  name: Delete(String)
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_Delete_System_String_
+  commentId: M:Viewer.Data.SQLite.IFiles.Delete(System.String)
+  fullName: Viewer.Data.SQLite.IFiles.Delete(System.String)
+  nameWithType: IFiles.Delete(String)
+- uid: Viewer.Data.SQLite.IFiles.Delete*
+  name: Delete
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_Delete_
+  commentId: Overload:Viewer.Data.SQLite.IFiles.Delete
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IFiles.Delete
+  nameWithType: IFiles.Delete
+- uid: Viewer.Data.SQLite.IFiles.DeleteOutdated(System.DateTime)
+  name: DeleteOutdated(DateTime)
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_DeleteOutdated_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.IFiles.DeleteOutdated(System.DateTime)
+  fullName: Viewer.Data.SQLite.IFiles.DeleteOutdated(System.DateTime)
+  nameWithType: IFiles.DeleteOutdated(DateTime)
+- uid: Viewer.Data.SQLite.IFiles.DeleteOutdated*
+  name: DeleteOutdated
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_DeleteOutdated_
+  commentId: Overload:Viewer.Data.SQLite.IFiles.DeleteOutdated
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IFiles.DeleteOutdated
+  nameWithType: IFiles.DeleteOutdated
+- uid: Viewer.Data.SQLite.IFiles.FindId(System.String)
+  name: FindId(String)
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_FindId_System_String_
+  commentId: M:Viewer.Data.SQLite.IFiles.FindId(System.String)
+  fullName: Viewer.Data.SQLite.IFiles.FindId(System.String)
+  nameWithType: IFiles.FindId(String)
+- uid: Viewer.Data.SQLite.IFiles.FindId*
+  name: FindId
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_FindId_
+  commentId: Overload:Viewer.Data.SQLite.IFiles.FindId
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IFiles.FindId
+  nameWithType: IFiles.FindId
+- uid: Viewer.Data.SQLite.IFiles.Insert(System.String,System.DateTime)
+  name: Insert(String, DateTime)
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_Insert_System_String_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.IFiles.Insert(System.String,System.DateTime)
+  fullName: Viewer.Data.SQLite.IFiles.Insert(System.String, System.DateTime)
+  nameWithType: IFiles.Insert(String, DateTime)
+- uid: Viewer.Data.SQLite.IFiles.Insert*
+  name: Insert
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_Insert_
+  commentId: Overload:Viewer.Data.SQLite.IFiles.Insert
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IFiles.Insert
+  nameWithType: IFiles.Insert
+- uid: Viewer.Data.SQLite.IFiles.Move(System.String,System.String)
+  name: Move(String, String)
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_Move_System_String_System_String_
+  commentId: M:Viewer.Data.SQLite.IFiles.Move(System.String,System.String)
+  fullName: Viewer.Data.SQLite.IFiles.Move(System.String, System.String)
+  nameWithType: IFiles.Move(String, String)
+- uid: Viewer.Data.SQLite.IFiles.Move*
+  name: Move
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_Move_
+  commentId: Overload:Viewer.Data.SQLite.IFiles.Move
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IFiles.Move
+  nameWithType: IFiles.Move
+- uid: Viewer.Data.SQLite.IFiles.Touch(System.String,System.DateTime)
+  name: Touch(String, DateTime)
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_Touch_System_String_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.IFiles.Touch(System.String,System.DateTime)
+  fullName: Viewer.Data.SQLite.IFiles.Touch(System.String, System.DateTime)
+  nameWithType: IFiles.Touch(String, DateTime)
+- uid: Viewer.Data.SQLite.IFiles.Touch*
+  name: Touch
+  href: api/Viewer.Data.SQLite.IFiles.html#Viewer_Data_SQLite_IFiles_Touch_
+  commentId: Overload:Viewer.Data.SQLite.IFiles.Touch
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.IFiles.Touch
+  nameWithType: IFiles.Touch
 - uid: Viewer.Data.SQLite.InvariantCulture
   name: InvariantCulture
   href: api/Viewer.Data.SQLite.InvariantCulture.html
@@ -14407,6 +15063,25 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.Suggestions.Providers.MetadataAttributeSuggestionProviderFactory.Create
   nameWithType: MetadataAttributeSuggestionProviderFactory.Create
+- uid: Viewer.Query.Suggestions.Providers.ValueSuggestion
+  name: ValueSuggestion
+  href: api/Viewer.Query.Suggestions.Providers.ValueSuggestion.html
+  commentId: T:Viewer.Query.Suggestions.Providers.ValueSuggestion
+  fullName: Viewer.Query.Suggestions.Providers.ValueSuggestion
+  nameWithType: ValueSuggestion
+- uid: Viewer.Query.Suggestions.Providers.ValueSuggestion.#ctor(Viewer.Query.Suggestions.CaretToken,Viewer.Data.BaseValue)
+  name: ValueSuggestion(CaretToken, BaseValue)
+  href: api/Viewer.Query.Suggestions.Providers.ValueSuggestion.html#Viewer_Query_Suggestions_Providers_ValueSuggestion__ctor_Viewer_Query_Suggestions_CaretToken_Viewer_Data_BaseValue_
+  commentId: M:Viewer.Query.Suggestions.Providers.ValueSuggestion.#ctor(Viewer.Query.Suggestions.CaretToken,Viewer.Data.BaseValue)
+  fullName: Viewer.Query.Suggestions.Providers.ValueSuggestion.ValueSuggestion(Viewer.Query.Suggestions.CaretToken, Viewer.Data.BaseValue)
+  nameWithType: ValueSuggestion.ValueSuggestion(CaretToken, BaseValue)
+- uid: Viewer.Query.Suggestions.Providers.ValueSuggestion.#ctor*
+  name: ValueSuggestion
+  href: api/Viewer.Query.Suggestions.Providers.ValueSuggestion.html#Viewer_Query_Suggestions_Providers_ValueSuggestion__ctor_
+  commentId: Overload:Viewer.Query.Suggestions.Providers.ValueSuggestion.#ctor
+  isSpec: "True"
+  fullName: Viewer.Query.Suggestions.Providers.ValueSuggestion.ValueSuggestion
+  nameWithType: ValueSuggestion.ValueSuggestion
 - uid: Viewer.Query.Suggestions.Providers.ViewSuggestionProviderFactory
   name: ViewSuggestionProviderFactory
   href: api/Viewer.Query.Suggestions.Providers.ViewSuggestionProviderFactory.html

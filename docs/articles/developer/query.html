@@ -132,9 +132,64 @@
 <p>Returned entities are not sorted. This allows for a lazy execution even if the evaluated query is ordered and it drastically reduces latency since user does not have to wait for the query to search all entities.</p>
 </div>
 <p>The <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Execute</a> method supports standard cancellation and progress even though it is not an async method and it executes completely synchronously.</p>
+<h3 id="search-order">Search order</h3>
+<p>When we first see a directory, we don't know much about the files it contains. The program will just simply search all files there in a BFS order. Performance of this approach depends on file distribution in said direcotry. If we are lucky, all files from the result set will be in the first searched folder. Unfortunately, we could also be really unlucky and all files from the result set will be in the last direcotry.</p>
+<p>So, it wouldn't be a good idea to search the same folder in a BFS order again but what should we do about it? We could remember the distribution of individual attribute names and use that. Consider this example of a possible query predicate: <code>a and not b</code>. What if we knew <code>a</code> and <code>b</code> is there is a 1000 times? Well, we don't know much about <code>a and not b</code>, since in the best case none of the files with <code>a</code> contain <code>b</code>, but in the worst case all of them do. It would be wrong to assume <code>a</code> and <code>b</code> independent without additinal information. That's why the query evaluator remembers distribution of attribute name subsets rather than individual attribute names. We can afford to do that because, in a typical situation, the number of used subsets is linear with the number of used attribute names and we don't have to wory about subsets which are not used.</p>
+<h3 id="we-know-the-distribution-what-now">We know the distribution. What now?</h3>
+<p>We have to come up with an optimal search order of directories. The query evaluator looks at the query predicate and detemrines which attribute name subsets will likely cause the predicate to evaluate to true. Note, we still don't know for sure whether the predicate evaluates to true for given subset since it could have a form: <code>a = &quot;value&quot;</code>. We do know, however, that all subsets we have eliminated using this process will evaluate to false (unless user defines a custom function like <code>rand</code>). Finally, we can just add up the numbers since they represent sizes of disjoint sets. This will be our search priority.</p>
 <h2 id="grammar">Grammar</h2>
 <p>The program uses ANTLR4 to generate query parser and lexer.</p>
-[!code-csharp[Grammar](../../../Viewer.Query/ParserQuery.g4)]</article>
+<pre><code class="lang-csharp" name="Grammar">parser grammar QueryParser;
+
+options {
+  tokenVocab=QueryLexer;
+}
+
+entry: queryExpression EOF;
+
+// set operations on queries
+queryExpression: queryExpression UNION_EXCEPT intersection | intersection;
+
+intersection: queryFactor (INTERSECT queryFactor)*;
+
+queryFactor: query | LPAREN queryExpression RPAREN;
+
+// query
+query: unorderedQuery optionalOrderBy;
+
+unorderedQuery: SELECT source optionalWhere;
+
+source: ID | COMPLEX_ID | STRING | LPAREN queryExpression RPAREN;
+
+// WHERE
+optionalWhere: WHERE predicate | ;
+
+// ORDER BY
+optionalOrderBy: ORDER BY orderByList | ;
+
+orderByList: orderByKey (PARAM_DELIMITER orderByKey)*;
+
+orderByKey: comparison optionalDirection;
+
+optionalDirection: DIRECTION | ;
+
+// expressions
+predicate: predicate OR conjunction | conjunction;
+
+conjunction: conjunction AND literal | literal; 
+
+literal: comparison | NOT comparison;
+
+comparison: expression REL_OP expression | expression;
+
+expression: expression ADD_SUB multiplication | multiplication; 
+
+multiplication: multiplication MULT_DIV factor | factor;
+
+factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID | ID | ID LPAREN argumentList RPAREN;
+
+argumentList: comparison (PARAM_DELIMITER comparison)* | ;
+</code></pre></article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">
@@ -142,7 +197,7 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

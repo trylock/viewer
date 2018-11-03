@@ -375,6 +375,11 @@ namespace Viewer.UI.Attributes
 
         private void GridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (GridView.CurrentCell == null)
+            {
+                return;
+            }
+
             if (e.ColumnIndex == 2) // type column
             {
                 GridView.BeginEdit(false);

@@ -86,61 +86,22 @@ namespace Viewer.Data.SQLite
     public class AttributeStatistics : IAttributeStatistics
     {
         private readonly SQLiteConnection _connection;
-        private readonly FolderAttributesCommand _fetchCommand;
-        private readonly CountFilesCommand _countFiles;
+        private readonly FileDistributionCommand _fetchCommand;
 
-        private Dictionary<string, (
-            AttributeSubtreeStatistics Statistics, 
-            bool IsInitialized)> _statistics;
+        private Dictionary<string, AttributeSubtreeStatistics> _statistics;
         
         public AttributeStatistics(SQLiteConnection connection, IEnumerable<string> attributeNames)
         {
             var attrs = BindAttributeNames(attributeNames);
             _connection = connection;
-            _fetchCommand = new FolderAttributesCommand(_connection, attrs.Snippet, attrs.Parameters);
-            _countFiles = new CountFilesCommand(connection);
+            _fetchCommand = new FileDistributionCommand(_connection, attrs.Snippet, attrs.Parameters);
         }
 
-        private class CountFilesCommand : IDisposable
-        {
-            private readonly SQLiteParameter _path = new SQLiteParameter(":path");
-            private readonly SQLiteCommand _command;
-
-            public CountFilesCommand(SQLiteConnection connection)
-            {
-                _command = connection.CreateCommand();
-                _command.Parameters.Add(_path);
-                _command.CommandText = @"
-                select count(*)
-                from files as f
-                    inner join files_closure as c 
-                        on (c.parent_id = f.id)
-                where f.path = :path";
-            }
-
-            public long Execute(string path)
-            {
-                _path.Value = path;
-
-                if (!(_command.ExecuteScalar() is long value))
-                {
-                    return 0;
-                }
-
-                return value;
-            }
-
-            public void Dispose()
-            {
-                _command?.Dispose();
-            }
-        }
-
-        private class FolderAttributesCommand : IDisposable
+        private class FileDistributionCommand : IDisposable
         {
             private readonly SQLiteCommand _command;
 
-            public FolderAttributesCommand(
+            public FileDistributionCommand(
                 SQLiteConnection connection, 
                 string namesSnippet, 
                 SQLiteParameter[] names)
@@ -148,34 +109,35 @@ namespace Viewer.Data.SQLite
                 _command = connection.CreateCommand();
                 _command.Parameters.AddRange(names);
                 _command.CommandText = @"
-                    with recursive directories as (
+                    WITH RECURSIVE directories AS (
                         -- compute aggregations for top-level folders (i.e., folders which contain photos)
-                        select 
-                            getParentPath(path) as path, 
-                            group_concat(name) as name
-                        from (
-                            select 
-                                f.path as path, 
-                                a.name as name
-                            from attributes as a
-                                inner join files as f
-                                    on (a.file_id = f.id)
-                            where a.source = 0 and (" + namesSnippet + @")
-                            order by a.name
+                        SELECT
+                            getParentPath(path) AS path, 
+                            group_concat(name) AS name
+                        FROM (
+                            SELECT
+                                f.path AS path, 
+                                a.name AS name
+                            FROM attributes AS a
+                                INNER JOIN files AS f
+                                    ON (a.file_id = f.id)
+                            WHERE a.source = 0 AND (" + namesSnippet + @")
+                            ORDER BY a.name
                         )
-                        group by path
+                        GROUP BY path
 
-                        union all
+                        UNION ALL
         
                         -- compute aggregations for all parent folders
-                        select getParentPath(d.path) as path, d.name
-                        from directories as d
-                        where getParentPath(d.path) is not null and 
+                        SELECT getParentPath(d.path) AS path, d.name
+                        FROM directories AS d
+                        WHERE getParentPath(d.path) IS NOT NULL AND
                               getParentPath(d.path) <> d.path
                     )
-                    select path, name, count(*) as count
-                    from directories
-                    group by path, name
+
+                    SELECT path, name, count(*) AS count
+                    FROM directories
+                    GROUP BY path, name
                 ";
             }
 
@@ -210,7 +172,7 @@ namespace Viewer.Data.SQLite
             {
                 if (index > 0)
                 {
-                    sb.Append(" or ");
+                    sb.Append(" OR ");
                 }
 
                 sb.Append("a.name = :param");
@@ -227,48 +189,40 @@ namespace Viewer.Data.SQLite
         
         public void Dispose()
         {
-            _countFiles?.Dispose();
             _fetchCommand?.Dispose();
             _connection?.Dispose();
         }
 
         public AttributeSubtreeStatistics GetStatistics(string path)
         {
-            // fetch all statistics
             if (_statistics == null)
             {
-                _statistics = new Dictionary<string, (AttributeSubtreeStatistics, bool)>(
-                    StringComparer.CurrentCultureIgnoreCase);
-                
+                _statistics = new Dictionary<string, AttributeSubtreeStatistics>(StringComparer.CurrentCultureIgnoreCase);
                 foreach (var item in _fetchCommand.Execute())
                 {
                     if (!_statistics.TryGetValue(item.Path, out var statistics))
                     {
-                        statistics.Statistics = new AttributeSubtreeStatistics();
-                        statistics.IsInitialized = false;
+                        statistics = new AttributeSubtreeStatistics();
                         _statistics.Add(item.Path, statistics);
                     }
 
-                    statistics.Statistics.AddSubset(item.Group.Split(','), item.Count);
+                    if (string.IsNullOrEmpty(item.Group))
+                    {
+                        statistics.AddSubset(Enumerable.Empty<string>(), item.Count);
+                    }
+                    else
+                    {
+                        statistics.AddSubset(item.Group.Split(','), item.Count);
+                    }
                 }
             }
 
-            // get cached statistics for this directory
             if (!_statistics.TryGetValue(path, out var result))
             {
                 return null;
             }
 
-            // count empty subsets if we haven't already
-            /*
-            if (!result.IsInitialized)
-            {
-                result.IsInitialized = true;
-                result.Statistics.AddSubset(Enumerable.Empty<string>(), _countFiles.Execute(path));
-            }
-            */
-
-            return result.Statistics;
+            return result;
         }
     }
 

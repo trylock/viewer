@@ -74,10 +74,7 @@ namespace Viewer.Data.Storage
         private readonly SQLiteConnectionFactory _connectionFactory;
         private readonly IStorageConfiguration _configuration;
         private readonly IAttributeReaderFactory _fileAttributeReaderFactory;
-
-        private readonly object _readAttributesLock = new object();
-        private Attributes _readAttributes;
-
+        
         [ImportingConstructor]
         public SqliteAttributeStorage(
             SQLiteConnectionFactory connectionFactory, 
@@ -89,14 +86,62 @@ namespace Viewer.Data.Storage
             _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             _configuration = configuration;
         }
-        
-        public IEntity Load(string path)
+
+        private class Reader : IReadableAttributeStorage
+        {
+            private readonly SqliteAttributeStorage _storage;
+            private readonly ThreadLocal<LoadEntityQuery> _query;
+
+            public Reader(SqliteAttributeStorage storage)
+            {
+                _storage = storage;
+                _query = new ThreadLocal<LoadEntityQuery>(CreateQuery, true);
+            }
+
+            private LoadEntityQuery CreateQuery()
+            {
+                return new LoadEntityQuery(_storage._connectionFactory.Create());
+            }
+
+            public IEntity Load(string path)
+            {
+                return _storage.LoadImpl(path, 
+                    () => _query.Value, dispose: false);
+            }
+
+            public void Dispose()
+            {
+                foreach (var value in _query.Values)
+                {
+                    value.Dispose();
+                }
+                _query.Dispose();
+            }
+        }
+
+        public IReadableAttributeStorage CreateReader()
+        {
+            return new Reader(this);
+        }
+
+        /// <summary>
+        /// Load an entity at <paramref name="path"/> using query returned from
+        /// <paramref name="queryGetter"/>. The query is disposed iff <paramref name="dispose"/>
+        /// is true.
+        /// </summary>
+        /// <param name="path">Path to load</param>
+        /// <param name="queryGetter">Function which returns load query</param>
+        /// <param name="dispose">
+        /// ture iff we should dispose the query returned from <paramref name="queryGetter"/>
+        /// </param>
+        /// <returns>Loaded entity of null</returns>
+        private IEntity LoadImpl(string path, Func<LoadEntityQuery> queryGetter, bool dispose)
         {
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
 
             path = PathUtils.NormalizePath(path);
-            
+
             // check if there is a pending change in main memory
             lock (_requests)
             {
@@ -149,17 +194,12 @@ namespace Viewer.Data.Storage
             }
 
             // otherwise, load the entity from the database
-            // make sure this is the only thread which uses _readAttributes
-            lock (_readAttributesLock)
+            var query = queryGetter();
+            try
             {
-                if (_readAttributes == null)
-                {
-                    _readAttributes = new Attributes(_connectionFactory.Create());
-                }
-
                 // load valid attributes
                 int count = 0;
-                foreach (var attr in _readAttributes.FindAttributes(entity.Path, lastWriteTime))
+                foreach (var attr in query.Fetch(entity.Path, lastWriteTime))
                 {
                     entity.SetAttribute(attr);
                     ++count;
@@ -177,8 +217,22 @@ namespace Viewer.Data.Storage
 
                 return result;
             }
+            finally
+            {
+                if (dispose)
+                {
+                    query.Dispose();
+                }
+            }
         }
 
+        public IEntity Load(string path)
+        {
+            return LoadImpl(path, 
+                () => new LoadEntityQuery(_connectionFactory.Create()), 
+                dispose: true);
+        }
+        
         private DateTime GetLastWriteTime(string path)
         {
             var lastWriteTime = DateTime.MinValue;
@@ -282,10 +336,6 @@ namespace Viewer.Data.Storage
                 transaction.Commit();
             }
         }
-
-        #region SQL commands
-
-        #endregion
         
         private class SavepointCommand : IDisposable
         {
@@ -438,7 +488,6 @@ namespace Viewer.Data.Storage
 
         public void Dispose()
         {
-            _readAttributes?.Dispose();
         }
     }
 }

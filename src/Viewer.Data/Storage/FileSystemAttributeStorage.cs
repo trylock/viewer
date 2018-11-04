@@ -63,6 +63,11 @@ namespace Viewer.Data.Storage
             _attrReaderFactories = attrReaderFactories;
             _attrWriterFactory = attrWriterFactory;
         }
+        
+        public IReadableAttributeStorage CreateReader()
+        {
+            return new ReadableStorageProxy(this);
+        }
 
         /// <inheritdoc />
         /// <summary>

@@ -12,6 +12,11 @@ namespace Viewer.Data.Storage
     {
         private readonly Dictionary<string, IEntity> _files = new Dictionary<string, IEntity>();
         
+        public IReadableAttributeStorage CreateReader()
+        {
+            return new ReadableStorageProxy(this);
+        }
+
         public IEntity Load(string path)
         {
             if (path == null)

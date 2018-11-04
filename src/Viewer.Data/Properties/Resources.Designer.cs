@@ -92,9 +92,9 @@ namespace Viewer.Data.Properties {
         ///-- files
         ///create table if not exists `files`(
         ///    `id` integer not null,
-        ///    `path` text not null unique, -- COLLATE INVARIANT_CULTURE_IGNORE_CASE -- it is assumed to be normalized
-        ///    `parent_id` integer,
-        ///    -- the following 2 columns are only used for leaf nodes (i.e., [rest of string was truncated]&quot;;.
+        ///    `path` text not null unique COLLATE INVARIANT_CULTURE_IGNORE_CASE, -- it is assumed to be normalized
+        ///    `last_file_write_time` text, -- the last write time of this file in the file system
+        ///    `l [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Structure {
             get {

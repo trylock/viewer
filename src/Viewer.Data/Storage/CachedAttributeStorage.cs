@@ -48,14 +48,47 @@ namespace Viewer.Data.Storage
             _writeThread.Start();
         }
 
-        public IEntity Load(string path)
+        private class CachedReader : IReadableAttributeStorage
+        {
+            private readonly IReadableAttributeStorage _persistentReader;
+            private readonly IReadableAttributeStorage _cacheReader;
+            private readonly CachedAttributeStorage _storage;
+
+            public CachedReader(CachedAttributeStorage storage)
+            {
+                _persistentReader = storage._persistentStorage.CreateReader();
+                _cacheReader = storage._cacheStorage.CreateReader();
+                _storage = storage;
+            }
+
+            public void Dispose()
+            {
+                _persistentReader?.Dispose();
+                _cacheReader?.Dispose();
+            }
+
+            public IEntity Load(string path)
+            {
+                return _storage.LoadImpl(_persistentReader, _cacheReader, path);
+            }
+        }
+
+        public IReadableAttributeStorage CreateReader()
+        {
+            return new CachedReader(this);
+        }
+
+        private IEntity LoadImpl(
+            IReadableAttributeStorage persistentStorage,
+            IReadableAttributeStorage cacheStorage,
+            string path)
         {
             // try to load the entity from cache storage
-            var entity = _cacheStorage.Load(path);
+            var entity = cacheStorage.Load(path);
             if (entity == null)
             {
                 // try to load the entity from the main storage
-                entity = _persistentStorage.Load(path);
+                entity = persistentStorage.Load(path);
                 if (entity != null)
                 {
                     _cacheStorage.Store(entity);
@@ -63,7 +96,13 @@ namespace Viewer.Data.Storage
             }
 
             Notify();
+
             return entity;
+        }
+
+        public IEntity Load(string path)
+        {
+            return LoadImpl(_persistentStorage, _cacheStorage, path);
         }
 
         /// <inheritdoc />

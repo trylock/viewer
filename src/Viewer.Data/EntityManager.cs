@@ -86,8 +86,9 @@ namespace Viewer.Data
     /// This type is thread safe.
     /// </summary>
     /// <remarks>
-    /// Entities are loaded by calling the <see cref="GetEntity"/> method. The implementation
-    /// keeps 2 lists: the modified list and the saving list. Lifetime of an entity is as follows:
+    /// Entities are loaded using reader returned from the <see cref="CreateReader"/> method. The
+    /// implementation keeps 2 lists: the modified list and the saving list. Lifetime of an entity
+    /// is as follows:
     /// <list type="number">
     /// <item>
     /// <description>
@@ -128,9 +129,9 @@ namespace Viewer.Data
     /// </description>
     /// </item>
     /// </list>
-    /// The <see cref="GetEntity"/> method uses these 2 lists to load an entity. This assures that
-    /// the most recent version of an entity will always be loaded even if it is not saved in a
-    /// file yet.
+    /// The <see cref="CreateReader"/> method uses these 2 lists to load an entity. This assures
+    /// that the most recent version of an entity will always be loaded even if it has not been
+    /// saved in a file yet.
     /// </remarks>
     public interface IEntityManager
     {
@@ -149,14 +150,22 @@ namespace Viewer.Data
         /// Event occurs whenever an entity is moved due to calling <see cref="MoveEntity"/>.
         /// </summary>
         event EventHandler<EntityMovedEventArgs> Moved;
+        
+        /// <summary>
+        /// Load a single entity. If you are only going to load a single entity, use this method
+        /// instead of <see cref="CreateReader"/>. In all other cases, use <see cref="CreateReader"/>
+        /// </summary>
+        /// <param name="path">Path to a file to load</param>
+        /// <returns>Loaded entity</returns>
+        /// <seealso cref="IAttributeStorage.Load"/>
+        IEntity GetEntity(string path);
 
         /// <summary>
-        /// Load it from an attribute storage. See <see cref="IAttributeStorage.Load"/> for the list of
-        /// possible exceptions this method can throw.
+        /// Create an entity reader. If you're gonna do many load operations, this method can
+        /// perform better depending on the used attribute storage implementation.
         /// </summary>
-        /// <param name="path">Path to an entity</param>
-        /// <returns>Loaded entity</returns>
-        IEntity GetEntity(string path);
+        /// <returns></returns>
+        IReadableAttributeStorage CreateReader();
 
         /// <summary>
         /// Add the entity to the modified list. If an entity with the same path is in the list
@@ -387,7 +396,29 @@ namespace Viewer.Data
         public event EventHandler<EntityEventArgs> Deleted;
         public event EventHandler<EntityMovedEventArgs> Moved;
 
-        public IEntity GetEntity(string path)
+        private class Reader : IReadableAttributeStorage
+        {
+            private readonly EntityManager _entityManager;
+            private readonly IReadableAttributeStorage _reader;
+
+            public Reader(EntityManager entityManager, IReadableAttributeStorage reader)
+            {
+                _entityManager = entityManager;
+                _reader = reader;
+            }
+
+            public IEntity Load(string path)
+            {
+                return _entityManager.GetEntityImpl(_reader, path);
+            }
+
+            public void Dispose()
+            {
+                _reader?.Dispose();
+            }
+        }
+
+        private IEntity GetEntityImpl(IReadableAttributeStorage storage, string path)
         {
             var normalizedPath = PathUtils.NormalizePath(path);
             lock (_modified)
@@ -398,7 +429,17 @@ namespace Viewer.Data
                 }
             }
 
-            return _storage.Load(path);
+            return storage.Load(path);
+        }
+
+        public IEntity GetEntity(string path)
+        {
+            return GetEntityImpl(_storage, path);
+        }
+
+        public IReadableAttributeStorage CreateReader()
+        {
+            return new Reader(this, _storage.CreateReader());
         }
 
         public void SetEntity(IEntity entity, bool replace)

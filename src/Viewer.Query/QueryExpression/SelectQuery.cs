@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using NLog;
 using Viewer.Data;
 using Viewer.Data.Formats;
+using Viewer.Data.Storage;
 using Viewer.IO;
 
 namespace Viewer.Query.QueryExpression
@@ -53,27 +55,30 @@ namespace Viewer.Query.QueryExpression
         {
             progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
 
-            foreach (var file in EnumeratePaths(progress, cancellationToken, searchOrder))
+            using (var reader = _entities.CreateReader())
             {
-                progress.Report(new QueryProgressReport(ReportType.BeginLoading, file.Path));
-                IEntity entity;
-                if (file.IsFile)
+                foreach (var file in EnumeratePaths(progress, cancellationToken, searchOrder))
                 {
-                    entity = LoadEntity(file.Path);
-                }
-                else
-                {
-                    entity = new DirectoryEntity(file.Path);
-                }
+                    progress.Report(new QueryProgressReport(ReportType.BeginLoading, file.Path));
+                    IEntity entity;
+                    if (file.IsFile)
+                    {
+                        entity = LoadEntity(reader, file.Path);
+                    }
+                    else
+                    {
+                        entity = new DirectoryEntity(file.Path);
+                    }
 
-                progress.Report(new QueryProgressReport(ReportType.EndLoading, file.Path));
+                    progress.Report(new QueryProgressReport(ReportType.EndLoading, file.Path));
 
-                if (entity != null)
-                {
-                    yield return entity;
+                    if (entity != null)
+                    {
+                        yield return entity;
+                    }
                 }
             }
-
+            
             progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
         }
 
@@ -218,11 +223,11 @@ namespace Viewer.Query.QueryExpression
             return Enumerable.Empty<string>();
         }
 
-        private IEntity LoadEntity(string path)
+        private IEntity LoadEntity(IReadableAttributeStorage storage, string path)
         {
             try
             {
-                return _entities.GetEntity(path);
+                return storage.Load(path);
             }
             catch (InvalidDataFormatException e)
             {

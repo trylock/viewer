@@ -23,7 +23,7 @@ So, it wouldn't be a good idea to search the same folder in a BFS order again bu
 
 ### We know the distribution. What now?
 
-We have to come up with an optimal search order of directories. The query evaluator looks at the query predicate and detemrines which attribute name subsets will likely cause the predicate to evaluate to true. Note, we still don't know for sure whether the predicate evaluates to true for given subset since it could have a form: `a = "value"`. We do know, however, that all subsets we have eliminated using this process will evaluate to false (unless user defines a custom function like `rand`). Finally, we can just add up the numbers since they represent sizes of disjoint sets. This will be our search priority.
+We have to come up with an optimal search order of directories. The query evaluator looks at the query predicate and detemrines which attribute name subsets will likely cause the predicate to evaluate to true. Note, we still don't know for sure whether the predicate evaluates to true for given subset since it could have a form: `a = "value"`. Finally, we can just add up the numbers since they represent sizes of disjoint sets. This will be our search priority.
 
 ## Grammar
 

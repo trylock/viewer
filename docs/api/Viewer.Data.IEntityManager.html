@@ -453,6 +453,9 @@
                             <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.SQLite.LoadEntityQuery.html" title="LoadEntityQuery" class="">LoadEntityQuery</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
                           </li>
                         </ul>  </li>
@@ -474,10 +477,16 @@
                             <a href="Viewer.Data.Storage.IDeferredAttributeStorage.html" title="IDeferredAttributeStorage" class="">IDeferredAttributeStorage</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.Storage.IReadableAttributeStorage.html" title="IReadableAttributeStorage" class="">IReadableAttributeStorage</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.Storage.IStorageConfiguration.html" title="IStorageConfiguration" class="">IStorageConfiguration</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.MemoryAttributeStorage.html" title="MemoryAttributeStorage" class="">MemoryAttributeStorage</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.Storage.ReadableStorageProxy.html" title="ReadableStorageProxy" class="">ReadableStorageProxy</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.SqliteAttributeStorage.html" title="SqliteAttributeStorage" class="">SqliteAttributeStorage</a>
@@ -568,6 +577,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
@@ -688,6 +700,15 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.Runtime.html" title="Runtime" class="">Runtime</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Viewer.Query.Execution.html" title="Viewer.Query.Execution" class="">Viewer.Query.Execution</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.Query.Execution.ExecutionOptions.html" title="ExecutionOptions" class="">ExecutionOptions</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1208,8 +1229,9 @@ This type is thread safe.</p>
     <pre><code class="lang-csharp hljs">public interface IEntityManager</code></pre>
   </div>
   <h5 id="Viewer_Data_IEntityManager_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p>Entities are loaded by calling the <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_GetEntity_System_String_">GetEntity(String)</a> method. The implementation
-keeps 2 lists: the modified list and the saving list. Lifetime of an entity is as follows:</p>
+  <div class="markdown level0 remarks"><p>Entities are loaded using reader returned from the <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_CreateReader">CreateReader()</a> method. The
+implementation keeps 2 lists: the modified list and the saving list. Lifetime of an entity
+is as follows:</p>
 <ol><li>
 Before modifying an entity, its initial state is captured in the modified list by calling
 the <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_SetEntity_Viewer_Data_IEntity_System_Boolean_">SetEntity(IEntity, Boolean)</a> method.
@@ -1230,23 +1252,43 @@ captured by the first call to the <a class="xref" href="Viewer.Data.IEntityManag
 Call the <a class="xref" href="Viewer.Data.IModifiedEntity.html#Viewer_Data_IModifiedEntity_Save">Save()</a> method to save the entity to its file.
 </li></ul>
 </li></ol>
-The <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_GetEntity_System_String_">GetEntity(String)</a> method uses these 2 lists to load an entity. This assures that
-the most recent version of an entity will always be loaded even if it is not saved in a
-file yet.
+The <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_CreateReader">CreateReader()</a> method uses these 2 lists to load an entity. This assures
+that the most recent version of an entity will always be loaded even if it has not been
+saved in a file yet.
 </div>
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_CreateReader.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.CreateReader%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L168">View Source</a>
+  </span>
+  <a id="Viewer_Data_IEntityManager_CreateReader_" data-uid="Viewer.Data.IEntityManager.CreateReader*"></a>
+  <h4 id="Viewer_Data_IEntityManager_CreateReader" data-uid="Viewer.Data.IEntityManager.CreateReader">CreateReader()</h4>
+  <div class="markdown level1 summary"><p>Create an entity reader. If you're gonna do many load operations, this method can
+perform better depending on the used attribute storage implementation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadableAttributeStorage CreateReader()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html">IReadableAttributeStorage</a>
+  
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_GetEntity_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.GetEntity(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L159">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L161">View Source</a>
   </span>
   <a id="Viewer_Data_IEntityManager_GetEntity_" data-uid="Viewer.Data.IEntityManager.GetEntity*"></a>
   <h4 id="Viewer_Data_IEntityManager_GetEntity_System_String_" data-uid="Viewer.Data.IEntityManager.GetEntity(System.String)">GetEntity(String)</h4>
-  <div class="markdown level1 summary"><p>Load it from an attribute storage. See <a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Load_System_String_">Load(String)</a> for the list of
-possible exceptions this method can throw.</p>
+  <div class="markdown level1 summary"><p>Load a single entity. If you are only going to load a single entity, use this method
+instead of <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_CreateReader">CreateReader()</a>. In all other cases, use <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_CreateReader">CreateReader()</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -1266,7 +1308,7 @@ possible exceptions this method can throw.</p>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">path</span></td>
-        <td><p>Path to an entity</p>
+        <td><p>Path to a file to load</p>
 </td>
       </tr>
     </tbody>
@@ -1280,7 +1322,7 @@ possible exceptions this method can throw.</p>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_GetModified.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.GetModified%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L195">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L204">View Source</a>
   </span>
   <a id="Viewer_Data_IEntityManager_GetModified_" data-uid="Viewer.Data.IEntityManager.GetModified*"></a>
   <h4 id="Viewer_Data_IEntityManager_GetModified" data-uid="Viewer.Data.IEntityManager.GetModified">GetModified()</h4>
@@ -1301,7 +1343,7 @@ All entities in the snapshot are copies.</p>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_MoveEntity_Viewer_Data_IEntity_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.MoveEntity(Viewer.Data.IEntity%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L182">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L191">View Source</a>
   </span>
   <a id="Viewer_Data_IEntityManager_MoveEntity_" data-uid="Viewer.Data.IEntityManager.MoveEntity*"></a>
   <h4 id="Viewer_Data_IEntityManager_MoveEntity_Viewer_Data_IEntity_System_String_" data-uid="Viewer.Data.IEntityManager.MoveEntity(Viewer.Data.IEntity,System.String)">MoveEntity(IEntity, String)</h4>
@@ -1341,7 +1383,7 @@ This will set entity path to <code data-dev-comment-type="paramref" class="param
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_RemoveEntity_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.RemoveEntity(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L188">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L197">View Source</a>
   </span>
   <a id="Viewer_Data_IEntityManager_RemoveEntity_" data-uid="Viewer.Data.IEntityManager.RemoveEntity*"></a>
   <h4 id="Viewer_Data_IEntityManager_RemoveEntity_Viewer_Data_IEntity_" data-uid="Viewer.Data.IEntityManager.RemoveEntity(Viewer.Data.IEntity)">RemoveEntity(IEntity)</h4>
@@ -1375,7 +1417,7 @@ This will set entity path to <code data-dev-comment-type="paramref" class="param
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_SetEntity_Viewer_Data_IEntity_System_Boolean_.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.SetEntity(Viewer.Data.IEntity%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L173">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L182">View Source</a>
   </span>
   <a id="Viewer_Data_IEntityManager_SetEntity_" data-uid="Viewer.Data.IEntityManager.SetEntity*"></a>
   <h4 id="Viewer_Data_IEntityManager_SetEntity_Viewer_Data_IEntity_System_Boolean_" data-uid="Viewer.Data.IEntityManager.SetEntity(Viewer.Data.IEntity,System.Boolean)">SetEntity(IEntity, Boolean)</h4>
@@ -1424,7 +1466,7 @@ path as <code data-dev-comment-type="paramref" class="paramref">entity</code> in
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_Changed.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.Changed%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L141">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L142">View Source</a>
   </span>
   <h4 id="Viewer_Data_IEntityManager_Changed" data-uid="Viewer.Data.IEntityManager.Changed">Changed</h4>
   <div class="markdown level1 summary"><p>Event occurs whenever an entity changes due to calling <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_SetEntity_Viewer_Data_IEntity_System_Boolean_">SetEntity(IEntity, Boolean)</a>.
@@ -1455,7 +1497,7 @@ This means that only attributes have changed, not its path. See <a class="xref" 
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_Deleted.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.Deleted%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L146">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L147">View Source</a>
   </span>
   <h4 id="Viewer_Data_IEntityManager_Deleted" data-uid="Viewer.Data.IEntityManager.Deleted">Deleted</h4>
   <div class="markdown level1 summary"><p>Event occurs whenever an entity is deleted due to calling <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_RemoveEntity_Viewer_Data_IEntity_">RemoveEntity(IEntity)</a>.</p>
@@ -1485,7 +1527,7 @@ This means that only attributes have changed, not its path. See <a class="xref" 
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager_Moved.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager.Moved%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L151">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L152">View Source</a>
   </span>
   <h4 id="Viewer_Data_IEntityManager_Moved" data-uid="Viewer.Data.IEntityManager.Moved">Moved</h4>
   <div class="markdown level1 summary"><p>Event occurs whenever an entity is moved due to calling <a class="xref" href="Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_MoveEntity_Viewer_Data_IEntity_System_String_">MoveEntity(IEntity, String)</a>.</p>
@@ -1521,7 +1563,7 @@ This means that only attributes have changed, not its path. See <a class="xref" 
                     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_IEntityManager.md&amp;value=---%0Auid%3A%20Viewer.Data.IEntityManager%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L135" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/EntityManager.cs/#L136" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

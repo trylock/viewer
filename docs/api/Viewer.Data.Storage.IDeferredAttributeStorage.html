@@ -453,6 +453,9 @@
                             <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.SQLite.LoadEntityQuery.html" title="LoadEntityQuery" class="">LoadEntityQuery</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
                           </li>
                         </ul>  </li>
@@ -474,10 +477,16 @@
                             <a href="Viewer.Data.Storage.IDeferredAttributeStorage.html" title="IDeferredAttributeStorage" class="active">IDeferredAttributeStorage</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.Storage.IReadableAttributeStorage.html" title="IReadableAttributeStorage" class="">IReadableAttributeStorage</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.Storage.IStorageConfiguration.html" title="IStorageConfiguration" class="">IStorageConfiguration</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.MemoryAttributeStorage.html" title="MemoryAttributeStorage" class="">MemoryAttributeStorage</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.Storage.ReadableStorageProxy.html" title="ReadableStorageProxy" class="">ReadableStorageProxy</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.SqliteAttributeStorage.html" title="SqliteAttributeStorage" class="">SqliteAttributeStorage</a>
@@ -568,6 +577,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
@@ -688,6 +700,15 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.Runtime.html" title="Runtime" class="">Runtime</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Viewer.Query.Execution.html" title="Viewer.Query.Execution" class="">Viewer.Query.Execution</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.Query.Execution.ExecutionOptions.html" title="ExecutionOptions" class="">ExecutionOptions</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1197,14 +1218,14 @@
   <h1 id="Viewer_Data_Storage_IDeferredAttributeStorage" data-uid="Viewer.Data.Storage.IDeferredAttributeStorage" class="text-break">Interface IDeferredAttributeStorage
   </h1>
   <div class="markdown level0 summary"><p>Deferred attribute storage can deferr all write requests (everything but
-<a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Load_System_String_">Load(String)</a>) for later. Specifically, until
+<see cref="!:IAttributeStorage.Load"></see>) for later. Specifically, until
 <a class="xref" href="Viewer.Data.Storage.IDeferredAttributeStorage.html#Viewer_Data_Storage_IDeferredAttributeStorage_ApplyChanges">ApplyChanges()</a> is called.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
-      <a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Load_System_String_">IAttributeStorage.Load(String)</a>
+      <a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_CreateReader">IAttributeStorage.CreateReader()</a>
     </div>
     <div>
       <a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Store_Viewer_Data_IEntity_">IAttributeStorage.Store(IEntity)</a>
@@ -1219,6 +1240,9 @@
       <a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Move_Viewer_Data_IEntity_System_String_">IAttributeStorage.Move(IEntity, String)</a>
     </div>
     <div>
+      <a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html#Viewer_Data_Storage_IReadableAttributeStorage_Load_System_String_">IReadableAttributeStorage.Load(String)</a>
+    </div>
+    <div>
       <span class="xref">System.IDisposable.Dispose()</span>
     </div>
   </div>
@@ -1226,7 +1250,7 @@
   <h6><strong>Assembly</strong>: Viewer.Data.dll</h6>
   <h5 id="Viewer_Data_Storage_IDeferredAttributeStorage_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IDeferredAttributeStorage : IAttributeStorage, IDisposable</code></pre>
+    <pre><code class="lang-csharp hljs">public interface IDeferredAttributeStorage : IAttributeStorage, IReadableAttributeStorage, IDisposable</code></pre>
   </div>
   <h3 id="methods">Methods
   </h3>
@@ -1235,7 +1259,7 @@
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_IDeferredAttributeStorage_ApplyChanges.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IDeferredAttributeStorage.ApplyChanges%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L106">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L161">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_IDeferredAttributeStorage_ApplyChanges_" data-uid="Viewer.Data.Storage.IDeferredAttributeStorage.ApplyChanges*"></a>
   <h4 id="Viewer_Data_Storage_IDeferredAttributeStorage_ApplyChanges" data-uid="Viewer.Data.Storage.IDeferredAttributeStorage.ApplyChanges">ApplyChanges()</h4>
@@ -1275,7 +1299,7 @@ re-added to the pending queue so that it will be retried next time you call this
                     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_IDeferredAttributeStorage.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IDeferredAttributeStorage%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L98" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L153" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

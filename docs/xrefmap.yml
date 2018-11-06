@@ -3147,6 +3147,19 @@ references:
   commentId: E:Viewer.Data.EntityManager.Changed
   fullName: Viewer.Data.EntityManager.Changed
   nameWithType: EntityManager.Changed
+- uid: Viewer.Data.EntityManager.CreateReader
+  name: CreateReader()
+  href: api/Viewer.Data.EntityManager.html#Viewer_Data_EntityManager_CreateReader
+  commentId: M:Viewer.Data.EntityManager.CreateReader
+  fullName: Viewer.Data.EntityManager.CreateReader()
+  nameWithType: EntityManager.CreateReader()
+- uid: Viewer.Data.EntityManager.CreateReader*
+  name: CreateReader
+  href: api/Viewer.Data.EntityManager.html#Viewer_Data_EntityManager_CreateReader_
+  commentId: Overload:Viewer.Data.EntityManager.CreateReader
+  isSpec: "True"
+  fullName: Viewer.Data.EntityManager.CreateReader
+  nameWithType: EntityManager.CreateReader
 - uid: Viewer.Data.EntityManager.Deleted
   name: Deleted
   href: api/Viewer.Data.EntityManager.html#Viewer_Data_EntityManager_Deleted
@@ -4859,6 +4872,19 @@ references:
   commentId: E:Viewer.Data.IEntityManager.Changed
   fullName: Viewer.Data.IEntityManager.Changed
   nameWithType: IEntityManager.Changed
+- uid: Viewer.Data.IEntityManager.CreateReader
+  name: CreateReader()
+  href: api/Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_CreateReader
+  commentId: M:Viewer.Data.IEntityManager.CreateReader
+  fullName: Viewer.Data.IEntityManager.CreateReader()
+  nameWithType: IEntityManager.CreateReader()
+- uid: Viewer.Data.IEntityManager.CreateReader*
+  name: CreateReader
+  href: api/Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_CreateReader_
+  commentId: Overload:Viewer.Data.IEntityManager.CreateReader
+  isSpec: "True"
+  fullName: Viewer.Data.IEntityManager.CreateReader
+  nameWithType: IEntityManager.CreateReader
 - uid: Viewer.Data.IEntityManager.Deleted
   name: Deleted
   href: api/Viewer.Data.IEntityManager.html#Viewer_Data_IEntityManager_Deleted
@@ -5577,19 +5603,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.SQLite.Attributes.Dispose
   nameWithType: Attributes.Dispose
-- uid: Viewer.Data.SQLite.Attributes.FindAttributes(System.String,System.DateTime)
-  name: FindAttributes(String, DateTime)
-  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_FindAttributes_System_String_System_DateTime_
-  commentId: M:Viewer.Data.SQLite.Attributes.FindAttributes(System.String,System.DateTime)
-  fullName: Viewer.Data.SQLite.Attributes.FindAttributes(System.String, System.DateTime)
-  nameWithType: Attributes.FindAttributes(String, DateTime)
-- uid: Viewer.Data.SQLite.Attributes.FindAttributes*
-  name: FindAttributes
-  href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_FindAttributes_
-  commentId: Overload:Viewer.Data.SQLite.Attributes.FindAttributes
-  isSpec: "True"
-  fullName: Viewer.Data.SQLite.Attributes.FindAttributes
-  nameWithType: Attributes.FindAttributes
 - uid: Viewer.Data.SQLite.Attributes.Insert(Viewer.Data.Attribute,System.Int64)
   name: Insert(Attribute, Int64)
   href: api/Viewer.Data.SQLite.Attributes.html#Viewer_Data_SQLite_Attributes_Insert_Viewer_Data_Attribute_System_Int64_
@@ -5907,19 +5920,6 @@ references:
   commentId: T:Viewer.Data.SQLite.IAttributes
   fullName: Viewer.Data.SQLite.IAttributes
   nameWithType: IAttributes
-- uid: Viewer.Data.SQLite.IAttributes.FindAttributes(System.String,System.DateTime)
-  name: FindAttributes(String, DateTime)
-  href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_FindAttributes_System_String_System_DateTime_
-  commentId: M:Viewer.Data.SQLite.IAttributes.FindAttributes(System.String,System.DateTime)
-  fullName: Viewer.Data.SQLite.IAttributes.FindAttributes(System.String, System.DateTime)
-  nameWithType: IAttributes.FindAttributes(String, DateTime)
-- uid: Viewer.Data.SQLite.IAttributes.FindAttributes*
-  name: FindAttributes
-  href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_FindAttributes_
-  commentId: Overload:Viewer.Data.SQLite.IAttributes.FindAttributes
-  isSpec: "True"
-  fullName: Viewer.Data.SQLite.IAttributes.FindAttributes
-  nameWithType: IAttributes.FindAttributes
 - uid: Viewer.Data.SQLite.IAttributes.Insert(Viewer.Data.Attribute,System.Int64)
   name: Insert(Attribute, Int64)
   href: api/Viewer.Data.SQLite.IAttributes.html#Viewer_Data_SQLite_IAttributes_Insert_Viewer_Data_Attribute_System_Int64_
@@ -6112,6 +6112,64 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.SQLite.InvariantCultureIgnoreCase.Compare
   nameWithType: InvariantCultureIgnoreCase.Compare
+- uid: Viewer.Data.SQLite.LoadEntityQuery
+  name: LoadEntityQuery
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html
+  commentId: T:Viewer.Data.SQLite.LoadEntityQuery
+  fullName: Viewer.Data.SQLite.LoadEntityQuery
+  nameWithType: LoadEntityQuery
+- uid: Viewer.Data.SQLite.LoadEntityQuery.#ctor(System.Data.SQLite.SQLiteConnection)
+  name: LoadEntityQuery(SQLiteConnection)
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html#Viewer_Data_SQLite_LoadEntityQuery__ctor_System_Data_SQLite_SQLiteConnection_
+  commentId: M:Viewer.Data.SQLite.LoadEntityQuery.#ctor(System.Data.SQLite.SQLiteConnection)
+  fullName: Viewer.Data.SQLite.LoadEntityQuery.LoadEntityQuery(System.Data.SQLite.SQLiteConnection)
+  nameWithType: LoadEntityQuery.LoadEntityQuery(SQLiteConnection)
+- uid: Viewer.Data.SQLite.LoadEntityQuery.#ctor*
+  name: LoadEntityQuery
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html#Viewer_Data_SQLite_LoadEntityQuery__ctor_
+  commentId: Overload:Viewer.Data.SQLite.LoadEntityQuery.#ctor
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.LoadEntityQuery.LoadEntityQuery
+  nameWithType: LoadEntityQuery.LoadEntityQuery
+- uid: Viewer.Data.SQLite.LoadEntityQuery.Dispose
+  name: Dispose()
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html#Viewer_Data_SQLite_LoadEntityQuery_Dispose
+  commentId: M:Viewer.Data.SQLite.LoadEntityQuery.Dispose
+  fullName: Viewer.Data.SQLite.LoadEntityQuery.Dispose()
+  nameWithType: LoadEntityQuery.Dispose()
+- uid: Viewer.Data.SQLite.LoadEntityQuery.Dispose*
+  name: Dispose
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html#Viewer_Data_SQLite_LoadEntityQuery_Dispose_
+  commentId: Overload:Viewer.Data.SQLite.LoadEntityQuery.Dispose
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.LoadEntityQuery.Dispose
+  nameWithType: LoadEntityQuery.Dispose
+- uid: Viewer.Data.SQLite.LoadEntityQuery.Execute(System.String,System.DateTime)
+  name: Execute(String, DateTime)
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html#Viewer_Data_SQLite_LoadEntityQuery_Execute_System_String_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.LoadEntityQuery.Execute(System.String,System.DateTime)
+  fullName: Viewer.Data.SQLite.LoadEntityQuery.Execute(System.String, System.DateTime)
+  nameWithType: LoadEntityQuery.Execute(String, DateTime)
+- uid: Viewer.Data.SQLite.LoadEntityQuery.Execute*
+  name: Execute
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html#Viewer_Data_SQLite_LoadEntityQuery_Execute_
+  commentId: Overload:Viewer.Data.SQLite.LoadEntityQuery.Execute
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.LoadEntityQuery.Execute
+  nameWithType: LoadEntityQuery.Execute
+- uid: Viewer.Data.SQLite.LoadEntityQuery.Fetch(System.String,System.DateTime)
+  name: Fetch(String, DateTime)
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html#Viewer_Data_SQLite_LoadEntityQuery_Fetch_System_String_System_DateTime_
+  commentId: M:Viewer.Data.SQLite.LoadEntityQuery.Fetch(System.String,System.DateTime)
+  fullName: Viewer.Data.SQLite.LoadEntityQuery.Fetch(System.String, System.DateTime)
+  nameWithType: LoadEntityQuery.Fetch(String, DateTime)
+- uid: Viewer.Data.SQLite.LoadEntityQuery.Fetch*
+  name: Fetch
+  href: api/Viewer.Data.SQLite.LoadEntityQuery.html#Viewer_Data_SQLite_LoadEntityQuery_Fetch_
+  commentId: Overload:Viewer.Data.SQLite.LoadEntityQuery.Fetch
+  isSpec: "True"
+  fullName: Viewer.Data.SQLite.LoadEntityQuery.Fetch
+  nameWithType: LoadEntityQuery.Fetch
 - uid: Viewer.Data.SQLite.SQLiteConnectionFactory
   name: SQLiteConnectionFactory
   href: api/Viewer.Data.SQLite.SQLiteConnectionFactory.html
@@ -6175,6 +6233,19 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.Storage.CachedAttributeStorage.CachedAttributeStorage
   nameWithType: CachedAttributeStorage.CachedAttributeStorage
+- uid: Viewer.Data.Storage.CachedAttributeStorage.CreateReader
+  name: CreateReader()
+  href: api/Viewer.Data.Storage.CachedAttributeStorage.html#Viewer_Data_Storage_CachedAttributeStorage_CreateReader
+  commentId: M:Viewer.Data.Storage.CachedAttributeStorage.CreateReader
+  fullName: Viewer.Data.Storage.CachedAttributeStorage.CreateReader()
+  nameWithType: CachedAttributeStorage.CreateReader()
+- uid: Viewer.Data.Storage.CachedAttributeStorage.CreateReader*
+  name: CreateReader
+  href: api/Viewer.Data.Storage.CachedAttributeStorage.html#Viewer_Data_Storage_CachedAttributeStorage_CreateReader_
+  commentId: Overload:Viewer.Data.Storage.CachedAttributeStorage.CreateReader
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.CachedAttributeStorage.CreateReader
+  nameWithType: CachedAttributeStorage.CreateReader
 - uid: Viewer.Data.Storage.CachedAttributeStorage.Delete(Viewer.Data.IEntity)
   name: Delete(IEntity)
   href: api/Viewer.Data.Storage.CachedAttributeStorage.html#Viewer_Data_Storage_CachedAttributeStorage_Delete_Viewer_Data_IEntity_
@@ -6275,6 +6346,19 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.Storage.FileSystemAttributeStorage.FileSystemAttributeStorage
   nameWithType: FileSystemAttributeStorage.FileSystemAttributeStorage
+- uid: Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader
+  name: CreateReader()
+  href: api/Viewer.Data.Storage.FileSystemAttributeStorage.html#Viewer_Data_Storage_FileSystemAttributeStorage_CreateReader
+  commentId: M:Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader
+  fullName: Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader()
+  nameWithType: FileSystemAttributeStorage.CreateReader()
+- uid: Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader*
+  name: CreateReader
+  href: api/Viewer.Data.Storage.FileSystemAttributeStorage.html#Viewer_Data_Storage_FileSystemAttributeStorage_CreateReader_
+  commentId: Overload:Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader
+  nameWithType: FileSystemAttributeStorage.CreateReader
 - uid: Viewer.Data.Storage.FileSystemAttributeStorage.Delete(Viewer.Data.IEntity)
   name: Delete(IEntity)
   href: api/Viewer.Data.Storage.FileSystemAttributeStorage.html#Viewer_Data_Storage_FileSystemAttributeStorage_Delete_Viewer_Data_IEntity_
@@ -6359,6 +6443,19 @@ references:
   commentId: T:Viewer.Data.Storage.IAttributeStorage
   fullName: Viewer.Data.Storage.IAttributeStorage
   nameWithType: IAttributeStorage
+- uid: Viewer.Data.Storage.IAttributeStorage.CreateReader
+  name: CreateReader()
+  href: api/Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_CreateReader
+  commentId: M:Viewer.Data.Storage.IAttributeStorage.CreateReader
+  fullName: Viewer.Data.Storage.IAttributeStorage.CreateReader()
+  nameWithType: IAttributeStorage.CreateReader()
+- uid: Viewer.Data.Storage.IAttributeStorage.CreateReader*
+  name: CreateReader
+  href: api/Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_CreateReader_
+  commentId: Overload:Viewer.Data.Storage.IAttributeStorage.CreateReader
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.IAttributeStorage.CreateReader
+  nameWithType: IAttributeStorage.CreateReader
 - uid: Viewer.Data.Storage.IAttributeStorage.Delete(Viewer.Data.IEntity)
   name: Delete(IEntity)
   href: api/Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Delete_Viewer_Data_IEntity_
@@ -6372,19 +6469,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.Storage.IAttributeStorage.Delete
   nameWithType: IAttributeStorage.Delete
-- uid: Viewer.Data.Storage.IAttributeStorage.Load(System.String)
-  name: Load(String)
-  href: api/Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Load_System_String_
-  commentId: M:Viewer.Data.Storage.IAttributeStorage.Load(System.String)
-  fullName: Viewer.Data.Storage.IAttributeStorage.Load(System.String)
-  nameWithType: IAttributeStorage.Load(String)
-- uid: Viewer.Data.Storage.IAttributeStorage.Load*
-  name: Load
-  href: api/Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Load_
-  commentId: Overload:Viewer.Data.Storage.IAttributeStorage.Load
-  isSpec: "True"
-  fullName: Viewer.Data.Storage.IAttributeStorage.Load
-  nameWithType: IAttributeStorage.Load
 - uid: Viewer.Data.Storage.IAttributeStorage.Move(Viewer.Data.IEntity,System.String)
   name: Move(IEntity, String)
   href: api/Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Move_Viewer_Data_IEntity_System_String_
@@ -6443,6 +6527,25 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.Storage.IDeferredAttributeStorage.ApplyChanges
   nameWithType: IDeferredAttributeStorage.ApplyChanges
+- uid: Viewer.Data.Storage.IReadableAttributeStorage
+  name: IReadableAttributeStorage
+  href: api/Viewer.Data.Storage.IReadableAttributeStorage.html
+  commentId: T:Viewer.Data.Storage.IReadableAttributeStorage
+  fullName: Viewer.Data.Storage.IReadableAttributeStorage
+  nameWithType: IReadableAttributeStorage
+- uid: Viewer.Data.Storage.IReadableAttributeStorage.Load(System.String)
+  name: Load(String)
+  href: api/Viewer.Data.Storage.IReadableAttributeStorage.html#Viewer_Data_Storage_IReadableAttributeStorage_Load_System_String_
+  commentId: M:Viewer.Data.Storage.IReadableAttributeStorage.Load(System.String)
+  fullName: Viewer.Data.Storage.IReadableAttributeStorage.Load(System.String)
+  nameWithType: IReadableAttributeStorage.Load(String)
+- uid: Viewer.Data.Storage.IReadableAttributeStorage.Load*
+  name: Load
+  href: api/Viewer.Data.Storage.IReadableAttributeStorage.html#Viewer_Data_Storage_IReadableAttributeStorage_Load_
+  commentId: Overload:Viewer.Data.Storage.IReadableAttributeStorage.Load
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.IReadableAttributeStorage.Load
+  nameWithType: IReadableAttributeStorage.Load
 - uid: Viewer.Data.Storage.IStorageConfiguration
   name: IStorageConfiguration
   href: api/Viewer.Data.Storage.IStorageConfiguration.html
@@ -6481,6 +6584,19 @@ references:
   commentId: T:Viewer.Data.Storage.MemoryAttributeStorage
   fullName: Viewer.Data.Storage.MemoryAttributeStorage
   nameWithType: MemoryAttributeStorage
+- uid: Viewer.Data.Storage.MemoryAttributeStorage.CreateReader
+  name: CreateReader()
+  href: api/Viewer.Data.Storage.MemoryAttributeStorage.html#Viewer_Data_Storage_MemoryAttributeStorage_CreateReader
+  commentId: M:Viewer.Data.Storage.MemoryAttributeStorage.CreateReader
+  fullName: Viewer.Data.Storage.MemoryAttributeStorage.CreateReader()
+  nameWithType: MemoryAttributeStorage.CreateReader()
+- uid: Viewer.Data.Storage.MemoryAttributeStorage.CreateReader*
+  name: CreateReader
+  href: api/Viewer.Data.Storage.MemoryAttributeStorage.html#Viewer_Data_Storage_MemoryAttributeStorage_CreateReader_
+  commentId: Overload:Viewer.Data.Storage.MemoryAttributeStorage.CreateReader
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.MemoryAttributeStorage.CreateReader
+  nameWithType: MemoryAttributeStorage.CreateReader
 - uid: Viewer.Data.Storage.MemoryAttributeStorage.Delete(Viewer.Data.IEntity)
   name: Delete(IEntity)
   href: api/Viewer.Data.Storage.MemoryAttributeStorage.html#Viewer_Data_Storage_MemoryAttributeStorage_Delete_Viewer_Data_IEntity_
@@ -6559,6 +6675,51 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.Storage.MemoryAttributeStorage.StoreThumbnail
   nameWithType: MemoryAttributeStorage.StoreThumbnail
+- uid: Viewer.Data.Storage.ReadableStorageProxy
+  name: ReadableStorageProxy
+  href: api/Viewer.Data.Storage.ReadableStorageProxy.html
+  commentId: T:Viewer.Data.Storage.ReadableStorageProxy
+  fullName: Viewer.Data.Storage.ReadableStorageProxy
+  nameWithType: ReadableStorageProxy
+- uid: Viewer.Data.Storage.ReadableStorageProxy.#ctor(Viewer.Data.Storage.IReadableAttributeStorage)
+  name: ReadableStorageProxy(IReadableAttributeStorage)
+  href: api/Viewer.Data.Storage.ReadableStorageProxy.html#Viewer_Data_Storage_ReadableStorageProxy__ctor_Viewer_Data_Storage_IReadableAttributeStorage_
+  commentId: M:Viewer.Data.Storage.ReadableStorageProxy.#ctor(Viewer.Data.Storage.IReadableAttributeStorage)
+  fullName: Viewer.Data.Storage.ReadableStorageProxy.ReadableStorageProxy(Viewer.Data.Storage.IReadableAttributeStorage)
+  nameWithType: ReadableStorageProxy.ReadableStorageProxy(IReadableAttributeStorage)
+- uid: Viewer.Data.Storage.ReadableStorageProxy.#ctor*
+  name: ReadableStorageProxy
+  href: api/Viewer.Data.Storage.ReadableStorageProxy.html#Viewer_Data_Storage_ReadableStorageProxy__ctor_
+  commentId: Overload:Viewer.Data.Storage.ReadableStorageProxy.#ctor
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.ReadableStorageProxy.ReadableStorageProxy
+  nameWithType: ReadableStorageProxy.ReadableStorageProxy
+- uid: Viewer.Data.Storage.ReadableStorageProxy.Dispose
+  name: Dispose()
+  href: api/Viewer.Data.Storage.ReadableStorageProxy.html#Viewer_Data_Storage_ReadableStorageProxy_Dispose
+  commentId: M:Viewer.Data.Storage.ReadableStorageProxy.Dispose
+  fullName: Viewer.Data.Storage.ReadableStorageProxy.Dispose()
+  nameWithType: ReadableStorageProxy.Dispose()
+- uid: Viewer.Data.Storage.ReadableStorageProxy.Dispose*
+  name: Dispose
+  href: api/Viewer.Data.Storage.ReadableStorageProxy.html#Viewer_Data_Storage_ReadableStorageProxy_Dispose_
+  commentId: Overload:Viewer.Data.Storage.ReadableStorageProxy.Dispose
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.ReadableStorageProxy.Dispose
+  nameWithType: ReadableStorageProxy.Dispose
+- uid: Viewer.Data.Storage.ReadableStorageProxy.Load(System.String)
+  name: Load(String)
+  href: api/Viewer.Data.Storage.ReadableStorageProxy.html#Viewer_Data_Storage_ReadableStorageProxy_Load_System_String_
+  commentId: M:Viewer.Data.Storage.ReadableStorageProxy.Load(System.String)
+  fullName: Viewer.Data.Storage.ReadableStorageProxy.Load(System.String)
+  nameWithType: ReadableStorageProxy.Load(String)
+- uid: Viewer.Data.Storage.ReadableStorageProxy.Load*
+  name: Load
+  href: api/Viewer.Data.Storage.ReadableStorageProxy.html#Viewer_Data_Storage_ReadableStorageProxy_Load_
+  commentId: Overload:Viewer.Data.Storage.ReadableStorageProxy.Load
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.ReadableStorageProxy.Load
+  nameWithType: ReadableStorageProxy.Load
 - uid: Viewer.Data.Storage.SqliteAttributeStorage
   name: SqliteAttributeStorage
   href: api/Viewer.Data.Storage.SqliteAttributeStorage.html
@@ -6591,6 +6752,19 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.Storage.SqliteAttributeStorage.ApplyChanges
   nameWithType: SqliteAttributeStorage.ApplyChanges
+- uid: Viewer.Data.Storage.SqliteAttributeStorage.CreateReader
+  name: CreateReader()
+  href: api/Viewer.Data.Storage.SqliteAttributeStorage.html#Viewer_Data_Storage_SqliteAttributeStorage_CreateReader
+  commentId: M:Viewer.Data.Storage.SqliteAttributeStorage.CreateReader
+  fullName: Viewer.Data.Storage.SqliteAttributeStorage.CreateReader()
+  nameWithType: SqliteAttributeStorage.CreateReader()
+- uid: Viewer.Data.Storage.SqliteAttributeStorage.CreateReader*
+  name: CreateReader
+  href: api/Viewer.Data.Storage.SqliteAttributeStorage.html#Viewer_Data_Storage_SqliteAttributeStorage_CreateReader_
+  commentId: Overload:Viewer.Data.Storage.SqliteAttributeStorage.CreateReader
+  isSpec: "True"
+  fullName: Viewer.Data.Storage.SqliteAttributeStorage.CreateReader
+  nameWithType: SqliteAttributeStorage.CreateReader
 - uid: Viewer.Data.Storage.SqliteAttributeStorage.Delete(Viewer.Data.IEntity)
   name: Delete(IEntity)
   href: api/Viewer.Data.Storage.SqliteAttributeStorage.html#Viewer_Data_Storage_SqliteAttributeStorage_Delete_Viewer_Data_IEntity_
@@ -8089,6 +8263,12 @@ references:
   fullName.vb: Viewer.Query.EmptyQuery.Execute(System.IProgress(Of Viewer.Query.QueryProgressReport), System.Threading.CancellationToken)
   nameWithType: EmptyQuery.Execute(IProgress<QueryProgressReport>, CancellationToken)
   nameWithType.vb: EmptyQuery.Execute(IProgress(Of QueryProgressReport), CancellationToken)
+- uid: Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
+  name: Execute(ExecutionOptions, IQueryExecutionListener)
+  href: api/Viewer.Query.EmptyQuery.html#Viewer_Query_EmptyQuery_Execute_Viewer_Query_Execution_ExecutionOptions_Viewer_Query_IQueryExecutionListener_
+  commentId: M:Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
+  fullName: Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions, Viewer.Query.IQueryExecutionListener)
+  nameWithType: EmptyQuery.Execute(ExecutionOptions, IQueryExecutionListener)
 - uid: Viewer.Query.EmptyQuery.Execute*
   name: Execute
   href: api/Viewer.Query.EmptyQuery.html#Viewer_Query_EmptyQuery_Execute_
@@ -8135,6 +8315,57 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.EmptyQuery.Text
   nameWithType: EmptyQuery.Text
+- uid: Viewer.Query.Execution
+  name: Viewer.Query.Execution
+  href: api/Viewer.Query.Execution.html
+  commentId: N:Viewer.Query.Execution
+  fullName: Viewer.Query.Execution
+  nameWithType: Viewer.Query.Execution
+- uid: Viewer.Query.Execution.ExecutionOptions
+  name: ExecutionOptions
+  href: api/Viewer.Query.Execution.ExecutionOptions.html
+  commentId: T:Viewer.Query.Execution.ExecutionOptions
+  fullName: Viewer.Query.Execution.ExecutionOptions
+  nameWithType: ExecutionOptions
+- uid: Viewer.Query.Execution.ExecutionOptions.CancellationToken
+  name: CancellationToken
+  href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_CancellationToken
+  commentId: P:Viewer.Query.Execution.ExecutionOptions.CancellationToken
+  fullName: Viewer.Query.Execution.ExecutionOptions.CancellationToken
+  nameWithType: ExecutionOptions.CancellationToken
+- uid: Viewer.Query.Execution.ExecutionOptions.CancellationToken*
+  name: CancellationToken
+  href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_CancellationToken_
+  commentId: Overload:Viewer.Query.Execution.ExecutionOptions.CancellationToken
+  isSpec: "True"
+  fullName: Viewer.Query.Execution.ExecutionOptions.CancellationToken
+  nameWithType: ExecutionOptions.CancellationToken
+- uid: Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
+  name: MaxDegreeOfParallelism
+  href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_MaxDegreeOfParallelism
+  commentId: P:Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
+  fullName: Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
+  nameWithType: ExecutionOptions.MaxDegreeOfParallelism
+- uid: Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism*
+  name: MaxDegreeOfParallelism
+  href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_MaxDegreeOfParallelism_
+  commentId: Overload:Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
+  isSpec: "True"
+  fullName: Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
+  nameWithType: ExecutionOptions.MaxDegreeOfParallelism
+- uid: Viewer.Query.Execution.ExecutionOptions.Progress
+  name: Progress
+  href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_Progress
+  commentId: P:Viewer.Query.Execution.ExecutionOptions.Progress
+  fullName: Viewer.Query.Execution.ExecutionOptions.Progress
+  nameWithType: ExecutionOptions.Progress
+- uid: Viewer.Query.Execution.ExecutionOptions.Progress*
+  name: Progress
+  href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_Progress_
+  commentId: Overload:Viewer.Query.Execution.ExecutionOptions.Progress
+  isSpec: "True"
+  fullName: Viewer.Query.Execution.ExecutionOptions.Progress
+  nameWithType: ExecutionOptions.Progress
 - uid: Viewer.Query.ExecutionContext
   name: ExecutionContext
   href: api/Viewer.Query.ExecutionContext.html
@@ -8372,6 +8603,12 @@ references:
   fullName.vb: Viewer.Query.IExecutableQuery.Execute(System.IProgress(Of Viewer.Query.QueryProgressReport), System.Threading.CancellationToken)
   nameWithType: IExecutableQuery.Execute(IProgress<QueryProgressReport>, CancellationToken)
   nameWithType.vb: IExecutableQuery.Execute(IProgress(Of QueryProgressReport), CancellationToken)
+- uid: Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
+  name: Execute(ExecutionOptions, IQueryExecutionListener)
+  href: api/Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Execute_Viewer_Query_Execution_ExecutionOptions_Viewer_Query_IQueryExecutionListener_
+  commentId: M:Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
+  fullName: Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions, Viewer.Query.IQueryExecutionListener)
+  nameWithType: IExecutableQuery.Execute(ExecutionOptions, IQueryExecutionListener)
 - uid: Viewer.Query.IExecutableQuery.Execute*
   name: Execute
   href: api/Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Execute_
@@ -8633,6 +8870,38 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.IQueryErrorListener.OnRuntimeError
   nameWithType: IQueryErrorListener.OnRuntimeError
+- uid: Viewer.Query.IQueryExecutionListener
+  name: IQueryExecutionListener
+  href: api/Viewer.Query.IQueryExecutionListener.html
+  commentId: T:Viewer.Query.IQueryExecutionListener
+  fullName: Viewer.Query.IQueryExecutionListener
+  nameWithType: IQueryExecutionListener
+- uid: Viewer.Query.IQueryExecutionListener.OnCompleted
+  name: OnCompleted()
+  href: api/Viewer.Query.IQueryExecutionListener.html#Viewer_Query_IQueryExecutionListener_OnCompleted
+  commentId: M:Viewer.Query.IQueryExecutionListener.OnCompleted
+  fullName: Viewer.Query.IQueryExecutionListener.OnCompleted()
+  nameWithType: IQueryExecutionListener.OnCompleted()
+- uid: Viewer.Query.IQueryExecutionListener.OnCompleted*
+  name: OnCompleted
+  href: api/Viewer.Query.IQueryExecutionListener.html#Viewer_Query_IQueryExecutionListener_OnCompleted_
+  commentId: Overload:Viewer.Query.IQueryExecutionListener.OnCompleted
+  isSpec: "True"
+  fullName: Viewer.Query.IQueryExecutionListener.OnCompleted
+  nameWithType: IQueryExecutionListener.OnCompleted
+- uid: Viewer.Query.IQueryExecutionListener.OnNext(Viewer.Data.IEntity)
+  name: OnNext(IEntity)
+  href: api/Viewer.Query.IQueryExecutionListener.html#Viewer_Query_IQueryExecutionListener_OnNext_Viewer_Data_IEntity_
+  commentId: M:Viewer.Query.IQueryExecutionListener.OnNext(Viewer.Data.IEntity)
+  fullName: Viewer.Query.IQueryExecutionListener.OnNext(Viewer.Data.IEntity)
+  nameWithType: IQueryExecutionListener.OnNext(IEntity)
+- uid: Viewer.Query.IQueryExecutionListener.OnNext*
+  name: OnNext
+  href: api/Viewer.Query.IQueryExecutionListener.html#Viewer_Query_IQueryExecutionListener_OnNext_
+  commentId: Overload:Viewer.Query.IQueryExecutionListener.OnNext
+  isSpec: "True"
+  fullName: Viewer.Query.IQueryExecutionListener.OnNext
+  nameWithType: IQueryExecutionListener.OnNext
 - uid: Viewer.Query.IQueryFactory
   name: IQueryFactory
   href: api/Viewer.Query.IQueryFactory.html
@@ -9731,6 +10000,12 @@ references:
   fullName.vb: Viewer.Query.MemoryQuery.Execute(System.IProgress(Of Viewer.Query.QueryProgressReport), System.Threading.CancellationToken)
   nameWithType: MemoryQuery.Execute(IProgress<QueryProgressReport>, CancellationToken)
   nameWithType.vb: MemoryQuery.Execute(IProgress(Of QueryProgressReport), CancellationToken)
+- uid: Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
+  name: Execute(ExecutionOptions, IQueryExecutionListener)
+  href: api/Viewer.Query.MemoryQuery.html#Viewer_Query_MemoryQuery_Execute_Viewer_Query_Execution_ExecutionOptions_Viewer_Query_IQueryExecutionListener_
+  commentId: M:Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
+  fullName: Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions, Viewer.Query.IQueryExecutionListener)
+  nameWithType: MemoryQuery.Execute(ExecutionOptions, IQueryExecutionListener)
 - uid: Viewer.Query.MemoryQuery.Execute*
   name: Execute
   href: api/Viewer.Query.MemoryQuery.html#Viewer_Query_MemoryQuery_Execute_
@@ -19962,6 +20237,40 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Images.QueryEvaluator.Update
   nameWithType: QueryEvaluator.Update
+- uid: Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnCompleted
+  name: IQueryExecutionListener.OnCompleted()
+  href: api/Viewer.UI.Images.QueryEvaluator.html#Viewer_UI_Images_QueryEvaluator_Viewer_Query_IQueryExecutionListener_OnCompleted
+  commentId: M:Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnCompleted
+  name.vb: Viewer.Query.IQueryExecutionListener.OnCompleted()
+  fullName: Viewer.UI.Images.QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnCompleted()
+  nameWithType: QueryEvaluator.IQueryExecutionListener.OnCompleted()
+  nameWithType.vb: QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnCompleted()
+- uid: Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnCompleted*
+  name: IQueryExecutionListener.OnCompleted
+  href: api/Viewer.UI.Images.QueryEvaluator.html#Viewer_UI_Images_QueryEvaluator_Viewer_Query_IQueryExecutionListener_OnCompleted_
+  commentId: Overload:Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnCompleted
+  isSpec: "True"
+  name.vb: Viewer.Query.IQueryExecutionListener.OnCompleted
+  fullName: Viewer.UI.Images.QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnCompleted
+  nameWithType: QueryEvaluator.IQueryExecutionListener.OnCompleted
+  nameWithType.vb: QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnCompleted
+- uid: Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnNext(Viewer.Data.IEntity)
+  name: IQueryExecutionListener.OnNext(IEntity)
+  href: api/Viewer.UI.Images.QueryEvaluator.html#Viewer_UI_Images_QueryEvaluator_Viewer_Query_IQueryExecutionListener_OnNext_Viewer_Data_IEntity_
+  commentId: M:Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnNext(Viewer.Data.IEntity)
+  name.vb: Viewer.Query.IQueryExecutionListener.OnNext(IEntity)
+  fullName: Viewer.UI.Images.QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnNext(Viewer.Data.IEntity)
+  nameWithType: QueryEvaluator.IQueryExecutionListener.OnNext(IEntity)
+  nameWithType.vb: QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnNext(IEntity)
+- uid: Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnNext*
+  name: IQueryExecutionListener.OnNext
+  href: api/Viewer.UI.Images.QueryEvaluator.html#Viewer_UI_Images_QueryEvaluator_Viewer_Query_IQueryExecutionListener_OnNext_
+  commentId: Overload:Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnNext
+  isSpec: "True"
+  name.vb: Viewer.Query.IQueryExecutionListener.OnNext
+  fullName: Viewer.UI.Images.QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnNext
+  nameWithType: QueryEvaluator.IQueryExecutionListener.OnNext
+  nameWithType.vb: QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnNext
 - uid: Viewer.UI.Images.QueryEvaluatorFactory
   name: QueryEvaluatorFactory
   href: api/Viewer.UI.Images.QueryEvaluatorFactory.html

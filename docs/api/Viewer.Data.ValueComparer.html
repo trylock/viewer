@@ -453,6 +453,9 @@
                             <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.SQLite.LoadEntityQuery.html" title="LoadEntityQuery" class="">LoadEntityQuery</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
                           </li>
                         </ul>  </li>
@@ -474,10 +477,16 @@
                             <a href="Viewer.Data.Storage.IDeferredAttributeStorage.html" title="IDeferredAttributeStorage" class="">IDeferredAttributeStorage</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.Storage.IReadableAttributeStorage.html" title="IReadableAttributeStorage" class="">IReadableAttributeStorage</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.Storage.IStorageConfiguration.html" title="IStorageConfiguration" class="">IStorageConfiguration</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.MemoryAttributeStorage.html" title="MemoryAttributeStorage" class="">MemoryAttributeStorage</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.Storage.ReadableStorageProxy.html" title="ReadableStorageProxy" class="">ReadableStorageProxy</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.SqliteAttributeStorage.html" title="SqliteAttributeStorage" class="">SqliteAttributeStorage</a>
@@ -568,6 +577,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
@@ -688,6 +700,15 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.Runtime.html" title="Runtime" class="">Runtime</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Viewer.Query.Execution.html" title="Viewer.Query.Execution" class="">Viewer.Query.Execution</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.Query.Execution.ExecutionOptions.html" title="ExecutionOptions" class="">ExecutionOptions</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1266,7 +1287,7 @@
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_ValueComparer_Compare_Viewer_Data_BaseValue_Viewer_Data_BaseValue_.md&amp;value=---%0Auid%3A%20Viewer.Data.ValueComparer.Compare(Viewer.Data.BaseValue%2CViewer.Data.BaseValue)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/ValueComparer.cs/#L125">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/ValueComparer.cs/#L130">View Source</a>
   </span>
   <a id="Viewer_Data_ValueComparer_Compare_" data-uid="Viewer.Data.ValueComparer.Compare*"></a>
   <h4 id="Viewer_Data_ValueComparer_Compare_Viewer_Data_BaseValue_Viewer_Data_BaseValue_" data-uid="Viewer.Data.ValueComparer.Compare(Viewer.Data.BaseValue,Viewer.Data.BaseValue)">Compare(BaseValue, BaseValue)</h4>
@@ -1320,6 +1341,13 @@ compare then as <span class="xref">System.DateTime</span>.</p>
   <h5 class="returns">Returns</h5>
   <span class="xref">System.Int32</span>
   
+  <h5 id="Viewer_Data_ValueComparer_Compare_Viewer_Data_BaseValue_Viewer_Data_BaseValue__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><div class="NOTE">
+<h5>Note</h5>
+<p>Query evaluation uses a different order for comparison of values. However, this
+comparer is used to sort query results.</p>
+</div>
+</div>
   <h3 id="implements">Implements</h3>
   <div>
       <span class="xref">System.Collections.Generic.IComparer&lt;T&gt;</span>

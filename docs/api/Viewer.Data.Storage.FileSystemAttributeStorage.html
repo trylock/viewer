@@ -453,6 +453,9 @@
                             <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.SQLite.LoadEntityQuery.html" title="LoadEntityQuery" class="">LoadEntityQuery</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
                           </li>
                         </ul>  </li>
@@ -474,10 +477,16 @@
                             <a href="Viewer.Data.Storage.IDeferredAttributeStorage.html" title="IDeferredAttributeStorage" class="">IDeferredAttributeStorage</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.Storage.IReadableAttributeStorage.html" title="IReadableAttributeStorage" class="">IReadableAttributeStorage</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.Storage.IStorageConfiguration.html" title="IStorageConfiguration" class="">IStorageConfiguration</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.MemoryAttributeStorage.html" title="MemoryAttributeStorage" class="">MemoryAttributeStorage</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.Storage.ReadableStorageProxy.html" title="ReadableStorageProxy" class="">ReadableStorageProxy</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.SqliteAttributeStorage.html" title="SqliteAttributeStorage" class="">SqliteAttributeStorage</a>
@@ -568,6 +577,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
@@ -688,6 +700,15 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.Runtime.html" title="Runtime" class="">Runtime</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Viewer.Query.Execution.html" title="Viewer.Query.Execution" class="">Viewer.Query.Execution</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.Query.Execution.ExecutionOptions.html" title="ExecutionOptions" class="">ExecutionOptions</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1207,6 +1228,7 @@
   <div classs="implements">
     <h5>Implements</h5>
     <div><a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html">IAttributeStorage</a></div>
+    <div><a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html">IReadableAttributeStorage</a></div>
     <div><span class="xref">System.IDisposable</span></div>
   </div>
   <div class="inheritedMembers">
@@ -1238,8 +1260,18 @@
   <h5 id="Viewer_Data_Storage_FileSystemAttributeStorage_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Export]
-public class FileSystemAttributeStorage : IAttributeStorage, IDisposable</code></pre>
+public class FileSystemAttributeStorage : IAttributeStorage, IReadableAttributeStorage, IDisposable</code></pre>
   </div>
+  <h5 id="Viewer_Data_Storage_FileSystemAttributeStorage_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><div class="IMPORTANT">
+<h5>Important</h5>
+<p>This class implements <span class="xref">System.IDisposable</span> interface. You should call the Dispose
+method once you are done with the instance.</p>
+</div>
+<p>The <a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html#Viewer_Data_Storage_IReadableAttributeStorage_Load_System_String_">Load(String)</a> method of this class is thread-safe. The Dispose method is <strong>not</strong>.
+You must not call the Dispose method from multiple threads and/or concurrently with other
+methods.</p>
+</div>
   <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
@@ -1307,10 +1339,28 @@ various JPEG segments.</p>
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_FileSystemAttributeStorage_CreateReader.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L67">View Source</a>
+  </span>
+  <a id="Viewer_Data_Storage_FileSystemAttributeStorage_CreateReader_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader*"></a>
+  <h4 id="Viewer_Data_Storage_FileSystemAttributeStorage_CreateReader" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.CreateReader">CreateReader()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadableAttributeStorage CreateReader()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html">IReadableAttributeStorage</a>
+  
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_FileSystemAttributeStorage_Delete_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.FileSystemAttributeStorage.Delete(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L190">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L195">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_FileSystemAttributeStorage_Delete_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Delete*"></a>
   <h4 id="Viewer_Data_Storage_FileSystemAttributeStorage_Delete_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Delete(Viewer.Data.IEntity)">Delete(IEntity)</h4>
@@ -1342,7 +1392,7 @@ various JPEG segments.</p>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_FileSystemAttributeStorage_Dispose.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.FileSystemAttributeStorage.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L250">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L255">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_FileSystemAttributeStorage_Dispose_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Dispose*"></a>
   <h4 id="Viewer_Data_Storage_FileSystemAttributeStorage_Dispose" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Dispose">Dispose()</h4>
@@ -1357,7 +1407,7 @@ various JPEG segments.</p>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_FileSystemAttributeStorage_Load_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.FileSystemAttributeStorage.Load(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L88">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L93">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_FileSystemAttributeStorage_Load_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Load*"></a>
   <h4 id="Viewer_Data_Storage_FileSystemAttributeStorage_Load_System_String_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Load(System.String)">Load(String)</h4>
@@ -1455,7 +1505,7 @@ decode data in JPEG segments (using readers returned by all
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_FileSystemAttributeStorage_Move_Viewer_Data_IEntity_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.FileSystemAttributeStorage.Move(Viewer.Data.IEntity%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L209">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L214">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_FileSystemAttributeStorage_Move_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Move*"></a>
   <h4 id="Viewer_Data_Storage_FileSystemAttributeStorage_Move_Viewer_Data_IEntity_System_String_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Move(Viewer.Data.IEntity,System.String)">Move(IEntity, String)</h4>
@@ -1492,7 +1542,7 @@ decode data in JPEG segments (using readers returned by all
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_FileSystemAttributeStorage_Store_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.FileSystemAttributeStorage.Store(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L140">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L145">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_FileSystemAttributeStorage_Store_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Store*"></a>
   <h4 id="Viewer_Data_Storage_FileSystemAttributeStorage_Store_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.Store(Viewer.Data.IEntity)">Store(IEntity)</h4>
@@ -1524,7 +1574,7 @@ decode data in JPEG segments (using readers returned by all
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_FileSystemAttributeStorage_StoreThumbnail_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.FileSystemAttributeStorage.StoreThumbnail(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L184">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/FileSystemAttributeStorage.cs/#L189">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_FileSystemAttributeStorage_StoreThumbnail_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.StoreThumbnail*"></a>
   <h4 id="Viewer_Data_Storage_FileSystemAttributeStorage_StoreThumbnail_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.FileSystemAttributeStorage.StoreThumbnail(Viewer.Data.IEntity)">StoreThumbnail(IEntity)</h4>
@@ -1554,6 +1604,9 @@ decode data in JPEG segments (using readers returned by all
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html">IAttributeStorage</a>
+  </div>
+  <div>
+      <a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html">IReadableAttributeStorage</a>
   </div>
   <div>
       <span class="xref">System.IDisposable</span>

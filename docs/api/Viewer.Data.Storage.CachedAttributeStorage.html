@@ -453,6 +453,9 @@
                             <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.SQLite.LoadEntityQuery.html" title="LoadEntityQuery" class="">LoadEntityQuery</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
                           </li>
                         </ul>  </li>
@@ -474,10 +477,16 @@
                             <a href="Viewer.Data.Storage.IDeferredAttributeStorage.html" title="IDeferredAttributeStorage" class="">IDeferredAttributeStorage</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.Storage.IReadableAttributeStorage.html" title="IReadableAttributeStorage" class="">IReadableAttributeStorage</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.Storage.IStorageConfiguration.html" title="IStorageConfiguration" class="">IStorageConfiguration</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.MemoryAttributeStorage.html" title="MemoryAttributeStorage" class="">MemoryAttributeStorage</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.Storage.ReadableStorageProxy.html" title="ReadableStorageProxy" class="">ReadableStorageProxy</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.SqliteAttributeStorage.html" title="SqliteAttributeStorage" class="">SqliteAttributeStorage</a>
@@ -568,6 +577,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
@@ -688,6 +700,15 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.Runtime.html" title="Runtime" class="">Runtime</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Viewer.Query.Execution.html" title="Viewer.Query.Execution" class="">Viewer.Query.Execution</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.Query.Execution.ExecutionOptions.html" title="ExecutionOptions" class="">ExecutionOptions</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1206,6 +1227,7 @@
   <div classs="implements">
     <h5>Implements</h5>
     <div><a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html">IAttributeStorage</a></div>
+    <div><a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html">IReadableAttributeStorage</a></div>
     <div><span class="xref">System.IDisposable</span></div>
   </div>
   <div class="inheritedMembers">
@@ -1238,7 +1260,7 @@
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Export]
 [Export(typeof(IAttributeStorage))]
-public class CachedAttributeStorage : IAttributeStorage, IDisposable</code></pre>
+public class CachedAttributeStorage : IAttributeStorage, IReadableAttributeStorage, IDisposable</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -1284,10 +1306,28 @@ public CachedAttributeStorage([Import(typeof(FileSystemAttributeStorage))] IAttr
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_CachedAttributeStorage_CreateReader.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.CachedAttributeStorage.CreateReader%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L76">View Source</a>
+  </span>
+  <a id="Viewer_Data_Storage_CachedAttributeStorage_CreateReader_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.CreateReader*"></a>
+  <h4 id="Viewer_Data_Storage_CachedAttributeStorage_CreateReader" data-uid="Viewer.Data.Storage.CachedAttributeStorage.CreateReader">CreateReader()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadableAttributeStorage CreateReader()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html">IReadableAttributeStorage</a>
+  
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_CachedAttributeStorage_Delete_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.CachedAttributeStorage.Delete(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L94">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L133">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_CachedAttributeStorage_Delete_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Delete*"></a>
   <h4 id="Viewer_Data_Storage_CachedAttributeStorage_Delete_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Delete(Viewer.Data.IEntity)">Delete(IEntity)</h4>
@@ -1319,7 +1359,7 @@ public CachedAttributeStorage([Import(typeof(FileSystemAttributeStorage))] IAttr
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_CachedAttributeStorage_Dispose.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.CachedAttributeStorage.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L136">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L175">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_CachedAttributeStorage_Dispose_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Dispose*"></a>
   <h4 id="Viewer_Data_Storage_CachedAttributeStorage_Dispose" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Dispose">Dispose()</h4>
@@ -1334,7 +1374,7 @@ public CachedAttributeStorage([Import(typeof(FileSystemAttributeStorage))] IAttr
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_CachedAttributeStorage_Load_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.CachedAttributeStorage.Load(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L51">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L103">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_CachedAttributeStorage_Load_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Load*"></a>
   <h4 id="Viewer_Data_Storage_CachedAttributeStorage_Load_System_String_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Load(System.String)">Load(String)</h4>
@@ -1369,7 +1409,7 @@ public CachedAttributeStorage([Import(typeof(FileSystemAttributeStorage))] IAttr
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_CachedAttributeStorage_Move_Viewer_Data_IEntity_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.CachedAttributeStorage.Move(Viewer.Data.IEntity%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L104">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L143">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_CachedAttributeStorage_Move_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Move*"></a>
   <h4 id="Viewer_Data_Storage_CachedAttributeStorage_Move_Viewer_Data_IEntity_System_String_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Move(Viewer.Data.IEntity,System.String)">Move(IEntity, String)</h4>
@@ -1406,7 +1446,7 @@ public CachedAttributeStorage([Import(typeof(FileSystemAttributeStorage))] IAttr
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_CachedAttributeStorage_Store_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.CachedAttributeStorage.Store(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L75">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L114">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_CachedAttributeStorage_Store_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Store*"></a>
   <h4 id="Viewer_Data_Storage_CachedAttributeStorage_Store_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.Store(Viewer.Data.IEntity)">Store(IEntity)</h4>
@@ -1456,7 +1496,7 @@ The cache update is non-blocking and it is done asynchronously on a background t
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_CachedAttributeStorage_StoreThumbnail_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.CachedAttributeStorage.StoreThumbnail(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L85">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/CachedAttributeStorage.cs/#L124">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_CachedAttributeStorage_StoreThumbnail_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.StoreThumbnail*"></a>
   <h4 id="Viewer_Data_Storage_CachedAttributeStorage_StoreThumbnail_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.CachedAttributeStorage.StoreThumbnail(Viewer.Data.IEntity)">StoreThumbnail(IEntity)</h4>
@@ -1486,6 +1526,9 @@ The cache update is non-blocking and it is done asynchronously on a background t
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html">IAttributeStorage</a>
+  </div>
+  <div>
+      <a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html">IReadableAttributeStorage</a>
   </div>
   <div>
       <span class="xref">System.IDisposable</span>

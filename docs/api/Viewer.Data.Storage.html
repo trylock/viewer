@@ -453,6 +453,9 @@
                             <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.SQLite.LoadEntityQuery.html" title="LoadEntityQuery" class="">LoadEntityQuery</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
                           </li>
                         </ul>  </li>
@@ -474,10 +477,16 @@
                             <a href="Viewer.Data.Storage.IDeferredAttributeStorage.html" title="IDeferredAttributeStorage" class="">IDeferredAttributeStorage</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.Storage.IReadableAttributeStorage.html" title="IReadableAttributeStorage" class="">IReadableAttributeStorage</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.Storage.IStorageConfiguration.html" title="IStorageConfiguration" class="">IStorageConfiguration</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.MemoryAttributeStorage.html" title="MemoryAttributeStorage" class="">MemoryAttributeStorage</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.Storage.ReadableStorageProxy.html" title="ReadableStorageProxy" class="">ReadableStorageProxy</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.SqliteAttributeStorage.html" title="SqliteAttributeStorage" class="">SqliteAttributeStorage</a>
@@ -568,6 +577,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
@@ -688,6 +700,15 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.Runtime.html" title="Runtime" class="">Runtime</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Viewer.Query.Execution.html" title="Viewer.Query.Execution" class="">Viewer.Query.Execution</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.Query.Execution.ExecutionOptions.html" title="ExecutionOptions" class="">ExecutionOptions</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1208,6 +1229,9 @@
 </section>
       <h4><a class="xref" href="Viewer.Data.Storage.MemoryAttributeStorage.html">MemoryAttributeStorage</a></h4>
       <section></section>
+      <h4><a class="xref" href="Viewer.Data.Storage.ReadableStorageProxy.html">ReadableStorageProxy</a></h4>
+      <section><p>Simple proxy which will only allow users to read attributes from given storage.</p>
+</section>
       <h4><a class="xref" href="Viewer.Data.Storage.SqliteAttributeStorage.html">SqliteAttributeStorage</a></h4>
       <section></section>
     <h3 id="interfaces">Interfaces
@@ -1218,8 +1242,11 @@ has to be thread safe.</p>
 </section>
       <h4><a class="xref" href="Viewer.Data.Storage.IDeferredAttributeStorage.html">IDeferredAttributeStorage</a></h4>
       <section><p>Deferred attribute storage can deferr all write requests (everything but
-<a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_Load_System_String_">Load(String)</a>) for later. Specifically, until
+<see cref="!:IAttributeStorage.Load"></see>) for later. Specifically, until
 <a class="xref" href="Viewer.Data.Storage.IDeferredAttributeStorage.html#Viewer_Data_Storage_IDeferredAttributeStorage_ApplyChanges">ApplyChanges()</a> is called.</p>
+</section>
+      <h4><a class="xref" href="Viewer.Data.Storage.IReadableAttributeStorage.html">IReadableAttributeStorage</a></h4>
+      <section><p>Thread-safe storage of attributes from which it is possible to read entities.</p>
 </section>
       <h4><a class="xref" href="Viewer.Data.Storage.IStorageConfiguration.html">IStorageConfiguration</a></h4>
       <section><p>Provides options used by the attribute storage.</p>

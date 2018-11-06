@@ -85,7 +85,7 @@ Function has a name and parameters. It takes the parameters and produces a singl
 
 ### Comparison operators
 
-Values can be compared using the following operators. Comparison operators are non-associative (i.e., `1 = 2 = 3` is not allowed, you can only compare 2 values).
+Values can be compared using the following operators. Comparison operators are non-associative (i.e., ~~`1 = 2 = 3`~~ is not allowed, you can only compare 2 values).
 
 - `=` (is equal to), for example: `city = "Edinburgh"` (finds all photos from Edinburgh)
 - `<=` (is less than or equal to), for example `DateTaken <= date("2018-08-28")` (finds all photos taken before August 29th 2018, i.e., it includes photos from August 28th)
@@ -94,7 +94,10 @@ Values can be compared using the following operators. Comparison operators are n
 - `>` (is greater than), for example `DateTaken > date("2018-08-28")` (finds all photos taken after August 28th 2018)
 - `!=` (is not equal to), for example `city != "Amsterdam"` (finds all photos which are not from Amsterdam)
 
-Notice, you can compute a value using an expression (e.g. `1 + 1 = 2`, `date("2018-08-28") > date("2018-08-27")` are all valid comparisons whose result is `true`)
+> [!NOTE]
+> `a != b` is **not** equivalent to `not (a = b)`, `not (a < b)` is **not** equivalent to `a >= b`.
+
+Expressions above are only equivalent if `a` and `b` are not `null` for all values of `a` and `b`. This is because `a REL_OP b` (`REL_OP` is any of the operators defined above) is actualy evaluated as: `a AND b AND (a REL_OP' b)`. 
 
 ### Arithmetic operators
 

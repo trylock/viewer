@@ -453,6 +453,9 @@
                             <a href="Viewer.Data.SQLite.InvariantCultureIgnoreCase.html" title="InvariantCultureIgnoreCase" class="">InvariantCultureIgnoreCase</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.SQLite.LoadEntityQuery.html" title="LoadEntityQuery" class="">LoadEntityQuery</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.SQLite.SQLiteConnectionFactory.html" title="SQLiteConnectionFactory" class="">SQLiteConnectionFactory</a>
                           </li>
                         </ul>  </li>
@@ -474,10 +477,16 @@
                             <a href="Viewer.Data.Storage.IDeferredAttributeStorage.html" title="IDeferredAttributeStorage" class="">IDeferredAttributeStorage</a>
                           </li>
                           <li class="">
+                            <a href="Viewer.Data.Storage.IReadableAttributeStorage.html" title="IReadableAttributeStorage" class="">IReadableAttributeStorage</a>
+                          </li>
+                          <li class="">
                             <a href="Viewer.Data.Storage.IStorageConfiguration.html" title="IStorageConfiguration" class="">IStorageConfiguration</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.MemoryAttributeStorage.html" title="MemoryAttributeStorage" class="">MemoryAttributeStorage</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Data.Storage.ReadableStorageProxy.html" title="ReadableStorageProxy" class="">ReadableStorageProxy</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Data.Storage.SqliteAttributeStorage.html" title="SqliteAttributeStorage" class="">SqliteAttributeStorage</a>
@@ -568,6 +577,9 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
+                          </li>
+                          <li class="">
+                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
@@ -688,6 +700,15 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.Runtime.html" title="Runtime" class="">Runtime</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Viewer.Query.Execution.html" title="Viewer.Query.Execution" class="">Viewer.Query.Execution</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Viewer.Query.Execution.ExecutionOptions.html" title="ExecutionOptions" class="">ExecutionOptions</a>
                           </li>
                         </ul>  </li>
                     <li class="">
@@ -1211,7 +1232,7 @@
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_IExecutableQuery_Comparer.md&amp;value=---%0Auid%3A%20Viewer.Query.IExecutableQuery.Comparer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L37">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L54">View Source</a>
   </span>
   <a id="Viewer_Query_IExecutableQuery_Comparer_" data-uid="Viewer.Query.IExecutableQuery.Comparer*"></a>
   <h4 id="Viewer_Query_IExecutableQuery_Comparer" data-uid="Viewer.Query.IExecutableQuery.Comparer">Comparer</h4>
@@ -1230,7 +1251,7 @@
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_IExecutableQuery_Patterns.md&amp;value=---%0Auid%3A%20Viewer.Query.IExecutableQuery.Patterns%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L42">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L59">View Source</a>
   </span>
   <a id="Viewer_Query_IExecutableQuery_Patterns_" data-uid="Viewer.Query.IExecutableQuery.Patterns*"></a>
   <h4 id="Viewer_Query_IExecutableQuery_Patterns" data-uid="Viewer.Query.IExecutableQuery.Patterns">Patterns</h4>
@@ -1249,7 +1270,7 @@
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_IExecutableQuery_Text.md&amp;value=---%0Auid%3A%20Viewer.Query.IExecutableQuery.Text%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L32">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L49">View Source</a>
   </span>
   <a id="Viewer_Query_IExecutableQuery_Text_" data-uid="Viewer.Query.IExecutableQuery.Text*"></a>
   <h4 id="Viewer_Query_IExecutableQuery_Text" data-uid="Viewer.Query.IExecutableQuery.Text">Text</h4>
@@ -1271,17 +1292,16 @@ a textual representation.</p>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_IExecutableQuery_Execute_System_IProgress_Viewer_Query_QueryProgressReport__System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20Viewer.Query.IExecutableQuery.Execute(System.IProgress%7BViewer.Query.QueryProgressReport%7D%2CSystem.Threading.CancellationToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L56">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L61">View Source</a>
   </span>
   <a id="Viewer_Query_IExecutableQuery_Execute_" data-uid="Viewer.Query.IExecutableQuery.Execute*"></a>
   <h4 id="Viewer_Query_IExecutableQuery_Execute_System_IProgress_Viewer_Query_QueryProgressReport__System_Threading_CancellationToken_" data-uid="Viewer.Query.IExecutableQuery.Execute(System.IProgress{Viewer.Query.QueryProgressReport},System.Threading.CancellationToken)">Execute(IProgress&lt;QueryProgressReport&gt;, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Evaluate this query. Entities are loaded lazily as much as possible and they are not
-sorted.</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IEnumerable&lt;IEntity&gt; Execute(IProgress&lt;QueryProgressReport&gt; progress, CancellationToken cancellationToken)</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use the Execute(ExecutionOptions, IQueryExecutionListener) method instead.&quot;)]
+IEnumerable&lt;IEntity&gt; Execute(IProgress&lt;QueryProgressReport&gt; progress, CancellationToken cancellationToken)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -1296,28 +1316,63 @@ sorted.</p>
       <tr>
         <td><span class="xref">System.IProgress</span>&lt;<a class="xref" href="Viewer.Query.QueryProgressReport.html">QueryProgressReport</a>&gt;</td>
         <td><span class="parametername">progress</span></td>
-        <td><p>This class is used to report query execution progress. You can use
-<a class="xref" href="Viewer.Query.NullQueryProgress.html">NullQueryProgress</a>.</p>
-</td>
+        <td></td>
       </tr>
       <tr>
         <td><span class="xref">System.Threading.CancellationToken</span></td>
         <td><span class="parametername">cancellationToken</span></td>
-        <td><p>Cancellation token used to cancel the execution.</p>
-</td>
+        <td></td>
       </tr>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
   <span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="Viewer.Data.IEntity.html">IEntity</a>&gt;
-  <p>Matched entities.</p>
-
+  
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_IExecutableQuery_Execute_Viewer_Query_Execution_ExecutionOptions_Viewer_Query_IQueryExecutionListener_.md&amp;value=---%0Auid%3A%20Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions%2CViewer.Query.IQueryExecutionListener)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L72">View Source</a>
+  </span>
+  <a id="Viewer_Query_IExecutableQuery_Execute_" data-uid="Viewer.Query.IExecutableQuery.Execute*"></a>
+  <h4 id="Viewer_Query_IExecutableQuery_Execute_Viewer_Query_Execution_ExecutionOptions_Viewer_Query_IQueryExecutionListener_" data-uid="Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)">Execute(ExecutionOptions, IQueryExecutionListener)</h4>
+  <div class="markdown level1 summary"><p>Evaluate this query. Entities are loaded lazily. You can explicitly stop query
+evaluation using the cancellation token set in <code data-dev-comment-type="paramref" class="paramref">options</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Execute(ExecutionOptions options, IQueryExecutionListener listener)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Viewer.Query.Execution.ExecutionOptions.html">ExecutionOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Viewer.Query.IQueryExecutionListener.html">IQueryExecutionListener</a></td>
+        <td><span class="parametername">listener</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_IExecutableQuery_Match_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Query.IExecutableQuery.Match(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L66">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L80">View Source</a>
   </span>
   <a id="Viewer_Query_IExecutableQuery_Match_" data-uid="Viewer.Query.IExecutableQuery.Match*"></a>
   <h4 id="Viewer_Query_IExecutableQuery_Match_Viewer_Data_IEntity_" data-uid="Viewer.Query.IExecutableQuery.Match(Viewer.Data.IEntity)">Match(IEntity)</h4>
@@ -1377,7 +1432,7 @@ sorted.</p>
                     <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_IExecutableQuery.md&amp;value=---%0Auid%3A%20Viewer.Query.IExecutableQuery%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L26" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Query.cs/#L43" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

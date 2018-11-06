@@ -178,7 +178,7 @@ order by DateTaken desc
 <h3 id="functions">Functions</h3>
 <p>Function has a name and parameters. It takes the parameters and produces a single value as a result. In a query, you call a function by typing its name followed by arguments in parentheses separated by comma (e.g. <code>func(1, &quot;test&quot;)</code> would call function called <code>func</code> with 2 parameters: a number <code>1</code> and a string <code>&quot;test&quot;</code>). There are several functions in current implementation (see <a class="xref" href="../../api/Viewer.Query.IFunction.html">IFunction</a> if you want to implement a custom function).</p>
 <h3 id="comparison-operators">Comparison operators</h3>
-<p>Values can be compared using the following operators. Comparison operators are non-associative (i.e., <code>1 = 2 = 3</code> is not allowed, you can only compare 2 values).</p>
+<p>Values can be compared using the following operators. Comparison operators are non-associative (i.e., <del><code>1 = 2 = 3</code></del> is not allowed, you can only compare 2 values).</p>
 <ul>
 <li><code>=</code> (is equal to), for example: <code>city = &quot;Edinburgh&quot;</code> (finds all photos from Edinburgh)</li>
 <li><code>&lt;=</code> (is less than or equal to), for example <code>DateTaken &lt;= date(&quot;2018-08-28&quot;)</code> (finds all photos taken before August 29th 2018, i.e., it includes photos from August 28th)</li>
@@ -187,7 +187,11 @@ order by DateTaken desc
 <li><code>&gt;</code> (is greater than), for example <code>DateTaken &gt; date(&quot;2018-08-28&quot;)</code> (finds all photos taken after August 28th 2018)</li>
 <li><code>!=</code> (is not equal to), for example <code>city != &quot;Amsterdam&quot;</code> (finds all photos which are not from Amsterdam)</li>
 </ul>
-<p>Notice, you can compute a value using an expression (e.g. <code>1 + 1 = 2</code>, <code>date(&quot;2018-08-28&quot;) &gt; date(&quot;2018-08-27&quot;)</code> are all valid comparisons whose result is <code>true</code>)</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>a != b</code> is <strong>not</strong> equivalent to <code>not (a = b)</code>, <code>not (a &lt; b)</code> is <strong>not</strong> equivalent to <code>a &gt;= b</code>.</p>
+</div>
+<p>Expressions above are only equivalent if <code>a</code> and <code>b</code> are not <code>null</code> for all values of <code>a</code> and <code>b</code>. This is because <code>a REL_OP b</code> (<code>REL_OP</code> is any of the operators defined above) is actualy evaluated as: <code>a AND b AND (a REL_OP' b)</code>.</p>
 <h3 id="arithmetic-operators">Arithmetic operators</h3>
 <p>You can use arithmetic operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> with number types. For example, <code>1 + 3</code> produces an integer value <code>4</code>, <code>3.14159 + 1</code> produces a real value <code>4.14159</code>. Moreover, the <code>+</code> operator can be used with strings and it concatenates them (i.e., <code>&quot;a&quot; + &quot;b&quot; = &quot;ab&quot;</code>).</p>
 <p><code>*</code> and <code>/</code> take precedence over <code>+</code> and <code>-</code>. For example, <code>3 * 2 + 1</code> is evaluated as <code>(3 * 2) + 1 = 7</code> and <code>2.5 / 0.5 - 0.5</code> is evaluated as <code>(2.5 / 0.5) - 0.5 = 4.5</code>.</p>
@@ -225,7 +229,7 @@ order by DateTaken desc
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/user/query.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/docs/articles/user/query.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

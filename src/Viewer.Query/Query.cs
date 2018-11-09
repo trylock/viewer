@@ -305,7 +305,7 @@ namespace Viewer.Query
 
         public IQuery View(string queryViewName)
         {
-            return new Query(_runtime, _priorityComparerFactory, _source, _text);
+            return new Query(_runtime, _priorityComparerFactory, _source, $"select {queryViewName}");
         }
 
         public IQuery WithText(string text)

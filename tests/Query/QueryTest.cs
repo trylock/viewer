@@ -258,5 +258,14 @@ namespace ViewerTest.Query
             var result = query.Execute(new ExecutionOptions()).ToArray();
             Assert.AreEqual(0, result.Length);
         }
+
+        [TestMethod]
+        public void View_SetQueryCorrectText()
+        {
+            IQuery query = CreateQuery(new MemoryQuery(Enumerable.Empty<IEntity>()));
+            query = query.View("view");
+
+            Assert.AreEqual("select view", query.Text);
+        }
     }
 }

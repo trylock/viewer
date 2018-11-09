@@ -119,6 +119,11 @@ namespace Viewer.Data
         ///     </item>
         /// </list>
         /// </summary>
+        /// <remarks>
+        /// > [!NOTE]
+        /// > Query evaluation uses a different order for comparison of values. However, this
+        /// > comparer is used to sort query results.
+        /// </remarks>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>

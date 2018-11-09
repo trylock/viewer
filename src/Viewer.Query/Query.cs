@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,8 +17,8 @@ using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.Data.Storage;
 using Viewer.IO;
+using Viewer.Query.Execution;
 using Viewer.Query.Expressions;
-using Viewer.Query.QueryExpression;
 using Viewer.Query.Search;
 
 namespace Viewer.Query
@@ -41,21 +41,19 @@ namespace Viewer.Query
         /// </summary>
         IEnumerable<PathPattern> Patterns { get; }
 
-        /// <summary>
-        /// Evaluate this query. Entities are loaded lazily as much as possible and they are not
-        /// sorted.
-        /// </summary>
-        /// <param name="progress">
-        /// This class is used to report query execution progress. You can use
-        /// <see cref="NullQueryProgress"/>.
-        /// </param>
-        /// <param name="cancellationToken">
-        /// Cancellation token used to cancel the execution.
-        /// </param>
-        /// <returns>Matched entities.</returns>
+        [Obsolete("Use the Execute(ExecutionOptions) method instead.")]
         IEnumerable<IEntity> Execute(
             IProgress<QueryProgressReport> progress, 
             CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Execute the query using <paramref name="options"/>.
+        /// </summary>
+        /// <param name="options">
+        /// Options which contain progress object and cancellation token
+        /// </param>
+        /// <returns>Found entities</returns>
+        IEnumerable<IEntity> Execute(ExecutionOptions options);
 
         /// <summary>
         /// Check whether <paramref name="entity"/> matches the query (i.e., it sould be in the query result)
@@ -82,6 +80,11 @@ namespace Viewer.Query
             return Enumerable.Empty<IEntity>();
         }
 
+        public IEnumerable<IEntity> Execute(ExecutionOptions options)
+        {
+            return Enumerable.Empty<IEntity>();
+        }
+        
         public bool Match(IEntity entity)
         {
             if (entity == null)
@@ -112,13 +115,23 @@ namespace Viewer.Query
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
-            progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
+            return Execute(new ExecutionOptions
+            {
+                Progress = progress,
+                CancellationToken = cancellationToken
+            });
+        }
+
+        public IEnumerable<IEntity> Execute(ExecutionOptions options)
+        {
+            options.Progress.Report(new QueryProgressReport(ReportType.BeginExecution, null));
             foreach (var entity in _entities)
             {
-                progress.Report(new QueryProgressReport(ReportType.EndLoading, entity.Path));
+                options.CancellationToken.ThrowIfCancellationRequested();
+                options.Progress.Report(new QueryProgressReport(ReportType.EndLoading, entity.Path));
                 yield return entity;
             }
-            progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
+            options.Progress.Report(new QueryProgressReport(ReportType.EndExecution, null));
         }
 
         public bool Match(IEntity entity)
@@ -229,6 +242,11 @@ namespace Viewer.Query
             return _source.Execute(progress, cancellationToken);
         }
 
+        public IEnumerable<IEntity> Execute(ExecutionOptions options)
+        {
+            return _source.Execute(options);
+        }
+        
         public bool Match(IEntity entity)
         {
             return _source.Match(entity);

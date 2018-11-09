@@ -100,12 +100,14 @@ namespace Viewer.Data.SQLite
         private class FileDistributionCommand : IDisposable
         {
             private readonly SQLiteCommand _command;
+            private bool _hasNames;
 
             public FileDistributionCommand(
                 SQLiteConnection connection, 
                 string namesSnippet, 
                 SQLiteParameter[] names)
             {
+                _hasNames = names.Length > 0;
                 _command = connection.CreateCommand();
                 _command.Parameters.AddRange(names);
                 _command.CommandText = @"
@@ -143,6 +145,11 @@ namespace Viewer.Data.SQLite
 
             public IEnumerable<(string Path, string Group, long Count)> Execute()
             {
+                if (!_hasNames)
+                {
+                    yield break;
+                }
+
                 using (var reader = _command.ExecuteReader())
                 {
                     while (reader.Read())

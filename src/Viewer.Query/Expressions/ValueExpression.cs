@@ -14,6 +14,12 @@ namespace Viewer.Query.Expressions
     internal abstract class ValueExpression
     {
         /// <summary>
+        /// An expression which always evaluates to true when compiles to a predicate.
+        /// </summary>
+        public static ValueExpression True { get; } = 
+            new ConstantExpression(0, 0, new IntValue(1));
+
+        /// <summary>
         /// Line in the query on which this value expression starts
         /// </summary>
         public int Line { get; }
@@ -27,6 +33,13 @@ namespace Viewer.Query.Expressions
         /// Get all subexpressions of this expression
         /// </summary>
         public virtual IEnumerable<ValueExpression> Children => Enumerable.Empty<ValueExpression>();
+
+        /// <summary>
+        /// This should only be used in tests
+        /// </summary>
+        internal ValueExpression()
+        {
+        }
 
         protected ValueExpression(int line, int column)
         {
@@ -49,7 +62,9 @@ namespace Viewer.Query.Expressions
         {
             var entityParameter = Expression.Parameter(typeof(IEntity), "entity");
             var expression = ToExpressionTree(entityParameter, runtime);
-            var functionExpression = Expression.Lambda<Func<IEntity, BaseValue>>(expression, entityParameter);
+            var functionExpression = Expression.Lambda<Func<IEntity, BaseValue>>(
+                expression, 
+                entityParameter);
             var function = functionExpression.Compile();
             return function;
         }

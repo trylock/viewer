@@ -12,7 +12,6 @@ using Antlr4.Runtime.Tree;
 using Viewer.Data;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Query.Expressions;
-using Viewer.Query.QueryExpression;
 using Attribute = Viewer.Data.Attribute;
 using ConstantExpression = Viewer.Query.Expressions.ConstantExpression;
 

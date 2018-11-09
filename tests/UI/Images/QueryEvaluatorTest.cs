@@ -11,6 +11,7 @@ using Moq;
 using Viewer.Data;
 using Viewer.IO;
 using Viewer.Query;
+using Viewer.Query.Execution;
 using Viewer.UI.Images;
 using Attribute = Viewer.Data.Attribute;
 
@@ -63,9 +64,7 @@ namespace ViewerTest.UI.Images
                 .Returns(thumbnail1.Object)
                 .Returns(thumbnail2.Object);
 
-            _query.Setup(mock => mock.Execute(
-                It.IsAny<IProgress<QueryProgressReport>>(), 
-                It.IsAny<CancellationToken>()))
+            _query.Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
                 .Returns(new[]{ entity1, entity2 });
 
             _evaluator.Run();
@@ -89,9 +88,8 @@ namespace ViewerTest.UI.Images
             var thumbnail2 = new Mock<ILazyThumbnail>();
             var thumbnail3 = new Mock<ILazyThumbnail>();
             
-            _query.Setup(mock => mock.Execute(
-                    It.IsAny<IProgress<QueryProgressReport>>(),
-                    It.IsAny<CancellationToken>()))
+            _query
+                .Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
                 .Returns(entities);
             _thumbnailFactory
                 .SetupSequence(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))
@@ -130,9 +128,8 @@ namespace ViewerTest.UI.Images
             var thumbnail1 = new Mock<ILazyThumbnail>();
             var thumbnail2 = new Mock<ILazyThumbnail>();
             var thumbnail3 = new Mock<ILazyThumbnail>();
-            _query.Setup(mock => mock.Execute(
-                    It.IsAny<IProgress<QueryProgressReport>>(),
-                    It.IsAny<CancellationToken>()))
+            _query
+                .Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
                 .Returns(entities);
             _thumbnailFactory
                 .SetupSequence(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))
@@ -163,9 +160,7 @@ namespace ViewerTest.UI.Images
             };
             var thumbnail1 = new Mock<ILazyThumbnail>();
             var thumbnail2 = new Mock<ILazyThumbnail>();
-            _query.Setup(mock => mock.Execute(
-                    It.IsAny<IProgress<QueryProgressReport>>(),
-                    It.IsAny<CancellationToken>()))
+            _query.Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
                 .Returns(entities);
             _thumbnailFactory
                 .SetupSequence(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))

@@ -10,7 +10,6 @@ using Moq;
 using Viewer.Data;
 using Viewer.IO;
 using Viewer.Query;
-using Viewer.Query.QueryExpression;
 using Viewer.Query.Search;
 using Attribute = Viewer.Data.Attribute;
 

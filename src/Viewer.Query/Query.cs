@@ -239,7 +239,9 @@ namespace Viewer.Query
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             return _source.Execute(progress, cancellationToken);
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         public IEnumerable<IEntity> Execute(ExecutionOptions options)

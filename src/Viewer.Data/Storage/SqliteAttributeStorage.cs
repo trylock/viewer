@@ -87,6 +87,10 @@ namespace Viewer.Data.Storage
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// SQLite connection and commands are kept in a thread-local variable. This way, it is
+        /// safe to call the Load method from multiple threads.
+        /// </summary>
         private class Reader : IReadableAttributeStorage
         {
             private readonly SqliteAttributeStorage _storage;

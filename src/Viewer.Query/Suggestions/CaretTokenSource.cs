@@ -22,7 +22,7 @@ namespace Viewer.Query.Suggestions
         /// <summary>
         /// Create a new token source which will read tokens using <paramref name="lexer"/>.
         /// </summary>
-        /// <param name="lexer">Lexer from which the tokens wil be read</param>
+        /// <param name="lexer">Lexer from which the tokens will be read</param>
         /// <param name="caretPosition">Character index of the caret</param>
         /// <param name="separatorTokens">
         /// <para>

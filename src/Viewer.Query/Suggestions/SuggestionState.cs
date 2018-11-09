@@ -39,8 +39,8 @@ namespace Viewer.Query.Suggestions
         public List<FollowList> Expected { get; }
 
         /// <summary>
-        /// List of all expected tokens without a context (union of the Follow properties from
-        /// the Expected list)
+        /// List of all expected tokens without a context (union of the
+        /// <see cref="FollowList.Tokens"/> properties from the <see cref="Expected"/> list)
         /// </summary>
         public IntervalSet ExpectedTokens { get; }
 

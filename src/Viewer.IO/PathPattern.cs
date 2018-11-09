@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -121,11 +121,18 @@ namespace Viewer.IO
                         sb.Append(@"[/\\]");
                     }
 
+                    if (part == "*") // make sure "*" won't match an empty string
+                    {
+                        sb.Append(@"[^/\\]+");
+                    }
+                    else
+                    {
                     var partPattern = part
                         .Replace("*", @"[^/\\]*")
                         .Replace("?", @"[^/\\]");
                     sb.Append(partPattern);
                 }
+            }
             }
             sb.Append(@"[/\\]*$");
             return new Regex(sb.ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled);

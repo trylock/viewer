@@ -194,13 +194,26 @@ namespace ViewerTest.IO
         {
             var pattern = new PathPattern("*");
 
-            Assert.IsTrue(pattern.Match(""));
-            Assert.IsTrue(pattern.Match("/"));
+            Assert.IsFalse(pattern.Match(""));
+            Assert.IsFalse(pattern.Match("/"));
             Assert.IsTrue(pattern.Match("a"));
             Assert.IsTrue(pattern.Match("a/"));
             Assert.IsFalse(pattern.Match("a/b"));
             Assert.IsFalse(pattern.Match("a/b/c"));
             Assert.IsFalse(pattern.Match("c/a/b"));
+        }
+
+        [TestMethod]
+        public void Match_StarPatternWontMatchEmptyString()
+        {
+            var pattern = new PathPattern("a/*/b");
+
+            Assert.IsFalse(pattern.Match("a"));
+            Assert.IsFalse(pattern.Match("a/"));
+            Assert.IsFalse(pattern.Match("a/b"));
+            Assert.IsFalse(pattern.Match("a//b"));
+            Assert.IsFalse(pattern.Match("a\\\\b"));
+            Assert.IsTrue(pattern.Match("a/c/b"));
         }
 
         [TestMethod]

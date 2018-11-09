@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace Viewer.Query
         /// Path patterns to directories searched by this query
         /// </summary>
         IEnumerable<PathPattern> Patterns { get; }
-
+        
         [Obsolete("Use the Execute(ExecutionOptions) method instead.")]
         IEnumerable<IEntity> Execute(
             IProgress<QueryProgressReport> progress, 
@@ -252,14 +252,38 @@ namespace Viewer.Query
             return _source.Match(entity);
         }
 
+        private IExecutableQuery ModifyQueryLeafs(
+            IExecutableQuery node, 
+            Func<SimpleQuery, SimpleQuery> transformation)
+        {
+            if (node is SimpleQuery simpleQuery)
+            {
+                return transformation(simpleQuery);
+            }
+
+            var op = (BinaryQueryOperator) node;
+            var left = ModifyQueryLeafs(op.First, transformation);
+
+            if (op.GetType() == typeof(UnionQuery))
+                return new UnionQuery(left, ModifyQueryLeafs(op.Second, transformation));
+            else if (op.GetType() == typeof(IntersectQuery))
+                return new IntersectQuery(left, ModifyQueryLeafs(op.Second, transformation));
+            else if (op.GetType() == typeof(ExceptQuery))
+                return new ExceptQuery(left, op.Second);
+
+            return null;
+        }
+        
         public IQuery WithComparer(IComparer<IEntity> comparer, string comparerText)
         {
-            return new Query(_runtime, _priorityComparerFactory, new OrderedQuery(_source, comparer, comparerText), _text);
+            var query = ModifyQueryLeafs(_source, value => value.WithComparer(comparer, comparerText));
+            return new Query(_runtime, _priorityComparerFactory, query, _text);
         }
 
         public IQuery Where(ValueExpression expression)
         {
-            return new Query(_runtime, _priorityComparerFactory, new WhereQuery(_runtime, _priorityComparerFactory, _source, expression), _text);
+            var query = ModifyQueryLeafs(_source, value => value.AppendPredicate(expression));
+            return new Query(_runtime, _priorityComparerFactory, query, _text);
         }
 
         public IQuery Except(IExecutableQuery entities)
@@ -279,7 +303,7 @@ namespace Viewer.Query
 
         public IQuery View(string queryViewName)
         {
-            return new Query(_runtime, _priorityComparerFactory, new QueryViewQuery(_source, queryViewName), _text);
+            return new Query(_runtime, _priorityComparerFactory, _source, _text);
         }
 
         public IQuery WithText(string text)
@@ -340,11 +364,15 @@ namespace Viewer.Query
 
         public IExecutableQuery CreateQuery(string pattern)
         {
-            return new Query(_runtime, _priorityComparerFactory, new SelectQuery(
+            return new Query(_runtime, _priorityComparerFactory, new SimpleQuery(
+                _entities,
                 _fileSystem, 
-                _entities, 
+                _runtime,
+                _priorityComparerFactory,
                 pattern, 
-                FileAttributes.System | FileAttributes.Temporary
+                ValueExpression.True, 
+                EntityComparer.Default, 
+                ""
             ), null);
         }
 

@@ -92,6 +92,21 @@ namespace Viewer.Data.Storage
     ///     entity.SetAttribute(new Attribute("place", new StringValue("Edinburgh")));
     ///     storage.Store(entity);
     /// </code>
+    ///
+    /// If you want to load more than 1 entity, you should use the <see cref="CreateReader"/>
+    /// method. The following example shows to to efficiently load all files in a folder:
+    ///
+    /// <code>
+    /// IAttributeStorage storage = ...;
+    /// var results = new List&lt;IEntity&gt;();
+    /// using (var readable = storage.CreateReader())
+    /// {
+    ///     foreach (var file in Directory.EnumerateFiles("C:/photos"))
+    ///     {
+    ///         results.Add(readable.Load(file));
+    ///     }
+    /// }
+    /// </code>
     /// </example>
     public interface IAttributeStorage : IReadableAttributeStorage
     {

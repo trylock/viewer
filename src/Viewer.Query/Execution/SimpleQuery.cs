@@ -31,13 +31,13 @@ namespace Viewer.Query.Execution
 
         // properties
         private readonly IFileFinder _fileFinder;
-        private readonly ValueExpression _predicate;
         private readonly Func<IEntity, bool> _compiledPredicate;
 
         private static readonly FileAttributes HiddenFlags = FileAttributes.System | 
                                                              FileAttributes.Temporary;
-
+        
         public string Text { get; }
+        public ValueExpression Predicate { get; }
         public IComparer<IEntity> Comparer { get; }
         public IEnumerable<PathPattern> Patterns => Enumerable.Repeat(_fileFinder.Pattern, 1);
 
@@ -57,14 +57,14 @@ namespace Viewer.Query.Execution
             _priorityComparerFactory = priorityComparerFactory;
 
             _fileFinder = _fileSystem.CreateFileFinder(pattern);
-            _predicate = predicate;
-            _compiledPredicate = _predicate.CompilePredicate(_runtime);
+            Predicate = predicate;
+            _compiledPredicate = Predicate.CompilePredicate(_runtime);
             Comparer = comparer;
 
             var text = $"select {_fileFinder.Pattern.Text}";
-            if (_predicate != ValueExpression.True)
+            if (Predicate != ValueExpression.True)
             {
-                text += $" where {_predicate}";
+                text += $" where {Predicate}";
             }
 
             if (!string.IsNullOrWhiteSpace(comparerText))
@@ -95,7 +95,7 @@ namespace Viewer.Query.Execution
         private IEnumerable<IEntity> ExecuteImpl(ExecutionOptions options)
         {
             // determine an optimal search order
-            var searchOrder = _priorityComparerFactory.Create(_predicate);
+            var searchOrder = _priorityComparerFactory.Create(Predicate);
             var files = EnumeratePaths(options.Progress, options.CancellationToken, searchOrder);
 
             // execute the query
@@ -155,7 +155,7 @@ namespace Viewer.Query.Execution
         {
             return new SimpleQuery(
                 _entityManager, _fileSystem, _runtime, _priorityComparerFactory, 
-                _fileFinder.Pattern.Text, _predicate, comparer, text);
+                _fileFinder.Pattern.Text, Predicate, comparer, text);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Viewer.Query.Execution
             var newPredicate = new AndExpression(
                 predicate.Line, 
                 predicate.Column, 
-                _predicate, 
+                Predicate, 
                 predicate);
             return new SimpleQuery(
                 _entityManager, _fileSystem, _runtime, _priorityComparerFactory,

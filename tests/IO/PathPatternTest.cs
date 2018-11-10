@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -173,7 +173,62 @@ namespace ViewerTest.IO
             Assert.IsFalse(pattern.Match("b"));
             Assert.IsTrue(pattern.Match("a/b"));
             Assert.IsFalse(pattern.Match("a//b"));
+            Assert.IsFalse(pattern.Match("a///b"));
             Assert.IsFalse(pattern.Match(@"a\\b"));
+        }
+
+        [TestMethod]
+        public void Match_RecursiveGeneralPatternWithNonRecursivePattern()
+        {
+            var pattern = new PathPattern("**/*");
+
+            Assert.IsFalse(pattern.Match(""));
+            Assert.IsTrue(pattern.Match("a"));
+            Assert.IsTrue(pattern.Match("abcd"));
+            Assert.IsTrue(pattern.Match("ab/cd"));
+            Assert.IsTrue(pattern.Match("ab/cd/efg"));
+            Assert.IsFalse(pattern.Match("a//b"));
+        }
+
+        [TestMethod]
+        public void Match_DifferentOrderOfRecursiveGeneralPatternWithNonRecursivePattern()
+        {
+            var pattern = new PathPattern("*/**");
+
+            Assert.IsFalse(pattern.Match(""));
+            Assert.IsTrue(pattern.Match("a"));
+            Assert.IsTrue(pattern.Match("abcd"));
+            Assert.IsTrue(pattern.Match("ab/cd"));
+            Assert.IsTrue(pattern.Match("ab/cd/efg"));
+        }
+
+        [TestMethod]
+        public void Match_StartsWithPattern()
+        {
+            var pattern = new PathPattern("a?b*c/**");
+
+            Assert.IsFalse(pattern.Match(""));
+            Assert.IsFalse(pattern.Match("a"));
+            Assert.IsFalse(pattern.Match("ab"));
+            Assert.IsFalse(pattern.Match("abc"));
+            Assert.IsTrue(pattern.Match("axbc"));
+            Assert.IsTrue(pattern.Match("axbc/yz"));
+            Assert.IsFalse(pattern.Match("abc/yz/uv"));
+        }
+
+        [TestMethod]
+        public void Match_EndsWithPattern()
+        {
+            var pattern = new PathPattern("**/a?b*c");
+
+            Assert.IsFalse(pattern.Match(""));
+            Assert.IsFalse(pattern.Match("a"));
+            Assert.IsFalse(pattern.Match("ab"));
+            Assert.IsFalse(pattern.Match("abc"));
+            Assert.IsTrue(pattern.Match("axbc"));
+            Assert.IsTrue(pattern.Match("yz/axbc"));
+            Assert.IsTrue(pattern.Match("yz/uv/axbc"));
+            Assert.IsFalse(pattern.Match("axbc/uv"));
         }
 
         [TestMethod]
@@ -187,6 +242,10 @@ namespace ViewerTest.IO
             Assert.IsTrue(pattern.Match("a/b"));
             Assert.IsTrue(pattern.Match("a/b/c"));
             Assert.IsTrue(pattern.Match("c/a/b"));
+            Assert.IsTrue(pattern.Match("//"));
+            Assert.IsTrue(pattern.Match("/\\"));
+            Assert.IsTrue(pattern.Match("/\\/"));
+            Assert.IsFalse(pattern.Match("c//a/b"));
         }
 
         [TestMethod]

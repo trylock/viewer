@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -80,11 +81,17 @@ namespace Viewer.IO
         }
 
         /// <summary>
-        /// Compile <paramref name="pattern"/> to a regex.
+        /// Given a path <paramref name="pattern"/>, find a regular expressin which acepts the
+        /// same language.
         /// </summary>
-        /// <param name="pattern">Directory path pattern</param>
-        /// <returns>Compiled regex</returns>
-        private static Regex CompileRegex(string pattern)
+        /// <remarks>
+        /// When it comes to directory separators, the returned regexp will allow an arbitrary
+        /// number of them at the end of a path (including no separator at all). Individual folders
+        /// have to be separated with exactly one directory separator.
+        /// </remarks>
+        /// <param name="pattern">Path pattern</param>
+        /// <returns>Equivalent regular expression</returns>
+        private static string BuildRegex(string pattern)
         {
             var sb = new StringBuilder();
             sb.Append("^");
@@ -96,22 +103,22 @@ namespace Viewer.IO
                 {
                     if (parts.Length == 1) // the whole pattern is "**"
                     {
-                        sb.Append(@".*");
+                        sb.Append(@"(([^/\\]+[/\\])*([^/\\]+))?");
                     }
                     else if (i == 0)
                     {
                         // the pattern starts with "**" but this is not the last part
-                        sb.Append(@"(.+[/\\])?");
+                        sb.Append(@"([^/\\]+[/\\])*");
                     }
                     else if (i == parts.Length - 1)
                     {
                         // the pattern ends with "**" but this is not the first part
-                        sb.Append(@"([/\\].+)?");
+                        sb.Append(@"([/\\][^/\\]+)*");
                     }
                     else
                     {
                         // this part is in the middle
-                        sb.Append(@"([/\\].+)?[/\\]");
+                        sb.Append(@"([/\\][^/\\]+)*[/\\]");
                     }
                 }
                 else
@@ -135,7 +142,17 @@ namespace Viewer.IO
             }
             }
             sb.Append(@"[/\\]*$");
-            return new Regex(sb.ToString(), RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Compile <paramref name="pattern"/> to a regex.
+        /// </summary>
+        /// <param name="pattern">Directory path pattern</param>
+        /// <returns>Compiled regex</returns>
+        private static Regex CompileRegex(string pattern)
+        {
+            return new Regex(BuildRegex(pattern), RegexOptions.IgnoreCase | RegexOptions.Compiled);
         }
 
         /// <summary>

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -40,85 +42,582 @@ namespace Viewer.Query
         IExecutableQuery Compile(string query);
     }
 
-    internal class CompilationResult
+    internal class QueryCompilationListener : IQueryParserListener
     {
-        /// <summary>
-        /// Expression which computes a value
-        /// </summary>
-        public ValueExpression Value { get; set; }
+        private readonly Stack<IQuery> _queries = new Stack<IQuery>();
+        private readonly Stack<ValueExpression> _expressions = new Stack<ValueExpression>();
+        private readonly Stack<EntityComparer> _comparers = new Stack<EntityComparer>();
+        private readonly Stack<int> _expressionsFrameStart = new Stack<int>();
 
-        /// <summary>
-        /// List of values (returned by the argument list rule)
-        /// </summary>
-        public List<ValueExpression> Values { get; set; }
-
-        /// <summary>
-        /// Subquery
-        /// </summary>
-        public IQuery Query { get; set; }
-
-        /// <summary>
-        /// Textual representation of this part of the query. It can be null. Only some rules
-        /// provide a textual representation.
-        /// </summary>
-        public string Text { get; set; }
-
-        /// <summary>
-        /// Value getter for construction of a comparer
-        /// </summary>
-        public SortParameter Order { get; set; }
-
-        /// <summary>
-        /// Entity comparer
-        /// </summary>
-        public IComparer<IEntity> Comparer { get; set; }
-    }
-
-    internal class QueryCompilerVisitor : IQueryParserVisitor<CompilationResult>
-    {
-        private readonly IQueryCompiler _queryCompiler;
-        private readonly IQueryErrorListener _queryErrorListener;
         private readonly IQueryFactory _queryFactory;
+        private readonly IQueryCompiler _compiler;
+        private readonly IQueryErrorListener _errorListener;
         private readonly IRuntime _runtime;
-        
-        public QueryCompilerVisitor(
-            IQueryFactory queryFactory, 
-            IRuntime runtime, 
-            IQueryCompiler compiler, 
-            IQueryErrorListener queryErrorListener)
+
+        public QueryCompilationListener(
+            IQueryFactory queryFactory,
+            IQueryCompiler compiler,
+            IQueryErrorListener errorListener,
+            IRuntime runtime)
         {
             _queryFactory = queryFactory;
+            _compiler = compiler;
+            _errorListener = errorListener;
             _runtime = runtime;
-            _queryCompiler = compiler;
-            _queryErrorListener = queryErrorListener;
         }
 
-        private CompilationResult ReportError(int line, int column, string message)
+        public IQuery Finish()
         {
-            _queryErrorListener.OnCompilerError(line, column, message);
-            return null;
-        }
-
-        public IQuery Compile(IParseTree tree)
-        {
-            var query = Visit(tree)?.Query;
+            var query = _queries.Pop();
+            Trace.Assert(query != null, "query != null");
+            Trace.Assert(_queries.Count == 0, "_queries.Count == 0");
             return query;
         }
 
-        public CompilationResult Visit(IParseTree tree)
+        private void CompileLeftAssociativeOperator<T>(
+            ITerminalNode[] operators,
+            Stack<T> stack,
+            Func<ITerminalNode, T, T, T> applyOperator)
         {
-            return tree.Accept(this);
+            if (operators.Length <= 0)
+                return;
+
+            // fetch operands
+            var operands = new List<T>
+            {
+                stack.Pop()
+            };
+            for (var i = 0; i < operators.Length; ++i)
+            {
+                operands.Add(stack.Pop());
+            }
+
+            // make sure we apply operators from left to right 
+            operands.Reverse();
+
+            // apply operators
+            var result = operands[0];
+            for (var i = 0; i < operators.Length; ++i)
+            {
+                result = applyOperator(operators[i], result, operands[i + 1]);
+            }
+            stack.Push(result);
         }
 
-        public CompilationResult VisitChildren(IRuleNode node)
+        public void VisitTerminal(ITerminalNode node)
         {
-            throw new NotImplementedException();
         }
 
-        public CompilationResult VisitErrorNode(IErrorNode node)
+        public void VisitErrorNode(IErrorNode node)
         {
-            throw new NotImplementedException();
         }
+
+        public void EnterEveryRule(ParserRuleContext ctx)
+        {
+        }
+
+        public void ExitEveryRule(ParserRuleContext ctx)
+        {
+        }
+
+        public void EnterEntry(QueryParser.EntryContext context)
+        {
+        }
+
+        public void ExitEntry(QueryParser.EntryContext context)
+        {
+        }
+
+        #region Query expression (UNION, EXCEPT and INTERSECT)
+
+        // All methods in this group are either no-ops or they pop 1 or more queries from the
+        // _queries stack and push one query to the _queries stack as a result of an operation.
+
+        public void EnterQueryExpression(QueryParser.QueryExpressionContext context)
+        {
+        }
+
+        public void ExitQueryExpression(QueryParser.QueryExpressionContext context)
+        {
+            var operators = context.UNION_EXCEPT();
+
+            CompileLeftAssociativeOperator(operators, _queries, (op, left, right) =>
+            {
+                if (string.Equals(op.Symbol.Text, "union", StringComparison.OrdinalIgnoreCase))
+                {
+                    var union = left.Union(right);
+                    return union;
+                }
+
+                Trace.Assert(string.Equals(
+                    op.Symbol.Text, 
+                    "except", 
+                    StringComparison.OrdinalIgnoreCase
+                ), $"Expecting UNION or EXCEPT, got {op.Symbol.Text}");
+
+                var except = left.Except(right);
+                return except;
+            });
+        }
+
+        public void EnterIntersection(QueryParser.IntersectionContext context)
+        {
+        }
+
+        public void ExitIntersection(QueryParser.IntersectionContext context)
+        {
+            CompileLeftAssociativeOperator(
+                context.INTERSECT(),
+                _queries, 
+                (op, left, right) => left.Intersect(right));
+        }
+
+        public void EnterQueryFactor(QueryParser.QueryFactorContext context)
+        {
+        }
+
+        public void ExitQueryFactor(QueryParser.QueryFactorContext context)
+        {
+        }
+
+        #endregion
+
+        #region Simple query (SELECT, WHERE, ORDER BY)
+
+        // All methods in this group are either no-ops or they pop one query from the _queries
+        // stack, transform it and push the transfromed query back to the _queries stack.
+        // ExitSource is a source of queries. It only pushes 1 query to the _queries stack.
+        // No queries will be removed from the stack in this method.
+
+        public void EnterQuery(QueryParser.QueryContext context)
+        {
+        }
+
+        public void ExitQuery(QueryParser.QueryContext context)
+        {
+        }
+
+        public void EnterUnorderedQuery(QueryParser.UnorderedQueryContext context)
+        {
+        }
+
+        public void ExitUnorderedQuery(QueryParser.UnorderedQueryContext context)
+        {
+        }
+
+        public void EnterSource(QueryParser.SourceContext context)
+        {
+        }
+
+        public void ExitSource(QueryParser.SourceContext context)
+        {
+            string viewIdentifier = null;
+            var viewIdentifierToken = context.ID();
+            if (viewIdentifierToken != null)
+            {
+                viewIdentifier = viewIdentifierToken.Symbol.Text;
+            }
+            else
+            {
+                viewIdentifierToken = context.COMPLEX_ID();
+                if (viewIdentifierToken != null)
+                {
+                    viewIdentifier = viewIdentifierToken.Symbol.Text.Substring(
+                        1, 
+                        viewIdentifierToken.Symbol.Text.Length - 2);
+                }
+            }
+
+            // create a query SELECT view
+            if (viewIdentifier != null)
+            {
+                var view = _compiler.Views.Find(viewIdentifier);
+                if (view == null)
+                {
+                    ReportError(
+                        viewIdentifierToken.Symbol.Line, 
+                        viewIdentifierToken.Symbol.Column,
+                        $"Unknown view '{viewIdentifier}'");
+                    return;
+                }
+
+                var query = _compiler.Compile(new StringReader(view.Text), _errorListener) as IQuery;
+                if (query == null) // compilation of the view failed
+                {
+                    HaltCompilation();
+                    return;
+                }
+
+                _queries.Push(query.View(viewIdentifier));
+            }
+            else if (context.STRING() != null) // create a query SELECT pattern
+            {
+                var patternSymbol = context.STRING().Symbol;
+                var pattern = ParseString(
+                    patternSymbol.Line, 
+                    patternSymbol.Column, 
+                    patternSymbol.Text);
+
+                try
+                {
+                    var query = _queryFactory.CreateQuery(pattern) as IQuery;
+                    _queries.Push(query);
+                }
+                catch (ArgumentException) // invalid pattern
+                {
+                    ReportError(
+                        patternSymbol.Line, 
+                        patternSymbol.Column, 
+                        $"Invalid path pattern: {pattern}");
+                }
+            }
+
+            // otherwise, this is a subquery => it will push its own tree to the stack
+        }
+
+        public void EnterOptionalWhere(QueryParser.OptionalWhereContext context)
+        {
+        }
+
+        public void ExitOptionalWhere(QueryParser.OptionalWhereContext context)
+        {
+            if (context.WHERE() != null)
+            {
+                var query = _queries.Pop();
+                var predicate = _expressions.Pop();
+                _queries.Push(query.Where(predicate));
+            }
+        }
+
+        public void EnterOptionalOrderBy(QueryParser.OptionalOrderByContext context)
+        {
+        }
+
+        public void ExitOptionalOrderBy(QueryParser.OptionalOrderByContext context)
+        {
+            if (context.ORDER() != null)
+            {
+                var query = _queries.Pop();
+                var comparer = _comparers.Pop();
+
+                var startIndex = context.BY().Symbol.StopIndex + 1;
+                var endIndex = context.Stop.StopIndex;
+                var text = context.Stop.InputStream
+                    .GetText(new Interval(startIndex, endIndex))
+                    .Trim();
+                _queries.Push(query.WithComparer(comparer, text));
+            }
+        }
+
+        public void EnterOrderByList(QueryParser.OrderByListContext context)
+        {
+        }
+
+        public void ExitOrderByList(QueryParser.OrderByListContext context)
+        {
+            CompileLeftAssociativeOperator(
+                context.PARAM_DELIMITER(), 
+                _comparers, 
+                (_, left, right) => new EntityComparer(left, right));
+        }
+        
+        public void EnterOrderByKey(QueryParser.OrderByKeyContext context)
+        {
+        }
+
+        private int _sortDirection;
+        private int SortDirection
+        {
+            get => _sortDirection;
+            set
+            {
+                if (value != 1 && value != -1)
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                _sortDirection = value;
+            }
+        }
+
+        public void ExitOrderByKey(QueryParser.OrderByKeyContext context)
+        {
+            var valueExpression = _expressions.Pop();
+            var key = new SortParameter
+            {
+                Direction = SortDirection,
+                Getter = valueExpression.CompileFunction(_runtime)
+            };
+
+            _comparers.Push(new EntityComparer(new List<SortParameter>{ key }));
+        }
+
+        public void EnterOptionalDirection(QueryParser.OptionalDirectionContext context)
+        {
+        }
+
+        public void ExitOptionalDirection(QueryParser.OptionalDirectionContext context)
+        {
+            SortDirection = 1;
+            var directionString = context.DIRECTION()?.Symbol.Text;
+            if (string.Equals(directionString, "desc", StringComparison.OrdinalIgnoreCase))
+            {
+                SortDirection = -1;
+            }
+        }
+
+        #endregion
+
+        #region Value expression
+
+        // Methods in this group are either no-ops or they pop 1 or more expressions from the
+        // _expression stack and push 1 expression as a result of some function on the removed
+        // subexpressions. The ExitFactor method is a soruce of expressions. It pushes 1
+        // expression to the _expressions stack. No expressions will be removed by this method.
+
+        public void EnterPredicate(QueryParser.PredicateContext context)
+        {
+        }
+
+        public void ExitPredicate(QueryParser.PredicateContext context)
+        {
+            CompileLeftAssociativeOperator(context.OR(), _expressions, 
+                (op, left, right) => 
+                    new OrExpression(op.Symbol.Line, op.Symbol.Column, left, right));
+        }
+        
+        public void EnterConjunction(QueryParser.ConjunctionContext context)
+        {
+        }
+
+        public void ExitConjunction(QueryParser.ConjunctionContext context)
+        {
+            CompileLeftAssociativeOperator(context.AND(), _expressions,
+                (op, left, right) =>
+                    new AndExpression(op.Symbol.Line, op.Symbol.Column, left, right));
+        }
+        
+        public void EnterLiteral(QueryParser.LiteralContext context)
+        {
+        }
+
+        public void ExitLiteral(QueryParser.LiteralContext context)
+        {
+            var op = context.NOT();
+            if (op == null)
+            {
+                return;
+            }
+            
+            var expr = _expressions.Pop();
+            _expressions.Push(new NotExpression(op.Symbol.Line, op.Symbol.Column, expr));
+        }
+
+        public void EnterComparison(QueryParser.ComparisonContext context)
+        {
+        }
+
+        public void ExitComparison(QueryParser.ComparisonContext context)
+        {
+        }
+
+        public void EnterComparisonRemainder(QueryParser.ComparisonRemainderContext context)
+        {
+        }
+
+        public void ExitComparisonRemainder(QueryParser.ComparisonRemainderContext context)
+        {
+            var opToken = context.REL_OP();
+            if (opToken == null)
+            {
+                return;
+            }
+
+            var op = opToken.Symbol;
+            var right = _expressions.Pop();
+            var left = _expressions.Pop();
+
+            BinaryOperatorExpression value = null;
+            switch (op.Text)
+            {
+                case "<":
+                    value = new LessThanOperator(op.Line, op.Column, left, right);
+                    break;
+                case "<=":
+                    value = new LessThanOrEqualOperator(op.Line, op.Column, left, right);
+                    break;
+                case "!=":
+                    value = new NotEqualOperator(op.Line, op.Column, left, right);
+                    break;
+                case "=":
+                    value = new EqualOperator(op.Line, op.Column, left, right);
+                    break;
+                case ">":
+                    value = new GreaterThanOperator(op.Line, op.Column, left, right);
+                    break;
+                case ">=":
+                    value = new GreaterThanOrEqualOperator(op.Line, op.Column, left, right);
+                    break;
+            }
+
+            Trace.Assert(value != null, "Invalid comparison operator " + op.Text);
+
+            _expressions.Push(value);
+        }
+
+        public void EnterExpression(QueryParser.ExpressionContext context)
+        {
+        }
+
+        public void ExitExpression(QueryParser.ExpressionContext context)
+        {
+            CompileLeftAssociativeOperator(context.ADD_SUB(), _expressions, 
+                (opNode, left, right) =>
+                {
+                    var op = opNode.Symbol;
+                    BinaryOperatorExpression value = null;
+                    switch (op.Text)
+                    {
+                        case "+":
+                            value = new AdditionExpression(op.Line, op.Column, left, right);
+                            break;
+                        case "-":
+                            value = new SubtractionExpression(op.Line, op.Column, left, right);
+                            break;
+                    }
+
+                    Trace.Assert(value != null, "Invalid addition operator " + op.Text);
+                    return value;
+                });
+        }
+        
+        public void EnterMultiplication(QueryParser.MultiplicationContext context)
+        {
+        }
+
+        public void ExitMultiplication(QueryParser.MultiplicationContext context)
+        {
+            CompileLeftAssociativeOperator(context.MULT_DIV(), _expressions,
+                (opNode, left, right) =>
+                {
+                    var op = opNode.Symbol;
+                    BinaryOperatorExpression value = null;
+                    switch (op.Text)
+                    {
+                        case "*":
+                            value = new MultiplicationExpression(op.Line, op.Column, left, right);
+                            break;
+                        case "/":
+                            value = new DivisionExpression(op.Line, op.Column, left, right);
+                            break;
+                    }
+
+                    Trace.Assert(value != null, "Invalid multiplication operator " + op.Text);
+
+                    return value;
+                });
+        }
+        
+        public void EnterFactor(QueryParser.FactorContext context)
+        {
+        }
+
+        public void ExitFactor(QueryParser.FactorContext context)
+        {
+            BaseValue constantValue = null;
+
+            // parse INT
+            var constantToken = context.INT();
+            if (constantToken != null)
+            {
+                var value = int.Parse(constantToken.Symbol.Text, CultureInfo.InvariantCulture);
+                constantValue = new IntValue(value);
+            }
+            else if (context.REAL() != null) // parse REAL
+            {
+                constantToken = context.REAL();
+                var value = double.Parse(constantToken.Symbol.Text, CultureInfo.InvariantCulture);
+                constantValue = new RealValue(value);
+            }
+            else if (context.STRING() != null) // parse STRING
+            {
+                constantToken = context.STRING();
+                constantValue = new StringValue(ParseString(
+                    constantToken.Symbol.Line,
+                    constantToken.Symbol.Column,
+                    constantToken.Symbol.Text));
+            }
+            
+            // if this is a constant
+            if (constantValue != null)
+            {
+                _expressions.Push(new ConstantExpression(
+                    constantToken.Symbol.Line, 
+                    constantToken.Symbol.Column, 
+                    constantValue));
+                return;
+            }
+            
+            // parse ID
+            string identifier = null;
+            var identifierToken = context.ID();
+            if (identifierToken != null)
+            {
+                identifier = identifierToken.Symbol.Text;
+            }
+            else if (context.COMPLEX_ID() != null) // parse COMPLEX_ID
+            {
+                identifierToken = context.COMPLEX_ID();
+                identifier = identifierToken.Symbol.Text.Substring(
+                    1,
+                    identifierToken.Symbol.Text.Length - 2);
+            }
+            
+            // if this is an attribute identifier
+            if (identifierToken != null && context.LPAREN() == null)
+            {
+                _expressions.Push(new AttributeAccessExpression(
+                    identifierToken.Symbol.Line, 
+                    identifierToken.Symbol.Column, 
+                    identifier));
+                return;
+            }
+
+            // if this is a function identifier
+            if (identifierToken != null)
+            {
+                var stackTop = _expressionsFrameStart.Pop();
+                var parameters = new List<ValueExpression>();
+                while (_expressions.Count > stackTop)
+                {
+                    parameters.Add(_expressions.Pop());
+                }
+
+                parameters.Reverse();
+                _expressions.Push(new FunctionCallExpression(
+                    identifierToken.Symbol.Line, 
+                    identifierToken.Symbol.Column, 
+                    identifier, 
+                    parameters));
+                return;
+            }
+
+            // otherwise, this is a subexpression => it is already on the stack
+        }
+
+        /// <summary>
+        /// In this method we remember the "return address" of a function. That is, a place
+        /// in the _expressions stack where we should return after the function call. To put
+        /// it in another way, it is the index of the first argument of this function in the stack.
+        /// </summary>
+        /// <param name="context"></param>
+        public void EnterArgumentList(QueryParser.ArgumentListContext context)
+        {
+            _expressionsFrameStart.Push(_expressions.Count);
+        }
+
+        public void ExitArgumentList(QueryParser.ArgumentListContext context)
+        {
+        }
+
+        #endregion
 
         private string ParseString(int line, int column, string value)
         {
@@ -133,522 +632,31 @@ namespace Viewer.Query
             // we have reached the EOF)
             var lastCharacter = value[value.Length - 1];
             if (value.Length > 1 && (
-                    lastCharacter == '"' || 
-                    lastCharacter == '\n' || 
+                    lastCharacter == '"' ||
+                    lastCharacter == '\n' ||
                     lastCharacter == '\r'))
             {
                 trimEnd = 1;
             }
 
             // check if the string is terminated correctly
-            if (value.Length <= 1 || value[value.Length - 1] != '"') 
+            if (value.Length <= 1 || value[value.Length - 1] != '"')
             {
-                _queryErrorListener.OnCompilerError(line, column, "Unterminated string literal");
+                _errorListener.OnCompilerError(line, column, "Unterminated string literal");
             }
 
             return value.Substring(trimStart, value.Length - trimStart - trimEnd);
         }
 
-        public CompilationResult VisitTerminal(ITerminalNode node)
+        private void ReportError(int line, int column, string message)
         {
-            var line = node.Symbol.Line;
-            var column = node.Symbol.Column;
-            ValueExpression expr = null;
-            switch (node.Symbol.Type)
-            {
-                case QueryLexer.INT:
-                    var intValue = int.Parse(node.Symbol.Text);
-                    expr = new ConstantExpression(line, column, new IntValue(intValue));
-                    break;
-                case QueryLexer.REAL:
-                    var doubleValue = double.Parse(node.Symbol.Text);
-                    expr = new ConstantExpression(line, column, new RealValue(doubleValue));
-                    break;
-                case QueryLexer.STRING:
-                    var stringValue = ParseString(node.Symbol.Line, node.Symbol.Column, node.Symbol.Text);
-                    expr = new ConstantExpression(line, column, new StringValue(stringValue));
-                    break;
-                case QueryLexer.COMPLEX_ID:
-                    expr = new AttributeAccessExpression(
-                        line, 
-                        column, 
-                        node.Symbol.Text.Substring(1, node.Symbol.Text.Length - 2));
-                    break;
-                case QueryLexer.ID:
-                    expr = new AttributeAccessExpression(line, column, node.Symbol.Text);
-                    break;
-            }
-
-            return new CompilationResult{ Value = expr };
+            _errorListener.OnCompilerError(line, column, message);
+            HaltCompilation();
         }
 
-        public CompilationResult VisitEntry(QueryParser.EntryContext context)
+        private void HaltCompilation()
         {
-            return context.queryExpression().Accept(this);
-        }
-
-        public CompilationResult VisitQueryExpression(QueryParser.QueryExpressionContext context)
-        {
-            if (context.queryExpression() == null)
-            {
-                return context.intersection().Accept(this);
-            }
-
-            // parse UNION, EXCEPT
-            var left = context.queryExpression().Accept(this);
-            var right = context.intersection().Accept(this);
-            var op = context.UNION_EXCEPT().Symbol.Text;
-            if (left == null || right == null)
-            {
-                return null;
-            }
-
-            var result = StringComparer.InvariantCultureIgnoreCase.Compare(op, "union") == 0 ? 
-                left.Query.Union(right.Query) : 
-                left.Query.Except(right.Query);
-            return new CompilationResult{ Query = result };
-        }
-
-        public CompilationResult VisitIntersection(QueryParser.IntersectionContext context)
-        {
-            // parse INTERSECT
-            IQuery query = null;
-            foreach (var result in context.queryFactor())
-            {
-                var subquery = result.Accept(this)?.Query;
-                if (subquery == null)
-                {
-                    return null;
-                }
-
-                query = query == null ? 
-                    subquery : 
-                    query.Intersect(subquery);
-            }
-            return new CompilationResult{ Query = query };
-        }
-
-        public CompilationResult VisitQueryFactor(QueryParser.QueryFactorContext context)
-        {
-            var query = context.query();
-            if (query != null)
-            {
-                return query.Accept(this);
-            }
-
-            return context.queryExpression().Accept(this);
-        }
-
-        public CompilationResult VisitQuery(QueryParser.QueryContext context)
-        {
-            // parse unordered query
-            var query = context.unorderedQuery().Accept(this)?.Query;
-            if (query == null)
-            {
-                return null;
-            }
-
-            // parse ORDER BY
-            var orderBy = context.optionalOrderBy();
-            if (orderBy != null)
-            {
-                var result = context.optionalOrderBy().Accept(this);
-                if (result != null)
-                {
-                    query = query.WithComparer(result.Comparer, result.Text);
-                }
-            }
-
-            return new CompilationResult{ Query = query };
-        }
-
-        public CompilationResult VisitUnorderedQuery(QueryParser.UnorderedQueryContext context)
-        {
-            var source = context.source();
-            var optionalWhere = context.optionalWhere();
-
-            // visit children
-            var sourceResult = source.Accept(this);
-            if (sourceResult == null)
-            {
-                return null; // the source compilation has failed
-            }
-
-            var optionalWhereResult = optionalWhere.Accept(this);
-            if (optionalWhereResult == null)
-            {
-                return sourceResult; // the query does not have a WHERE part
-            }
-
-            // compile the where condition
-            return new CompilationResult
-            {
-                Query = sourceResult.Query.Where(optionalWhereResult.Value)
-            };
-        }
-
-        public CompilationResult VisitSource(QueryParser.SourceContext context)
-        {
-            IQuery query = null;
-            var subquery = context.queryExpression();
-            if (subquery != null)
-            {
-                // compile subquery
-                query = subquery.Accept(this).Query;
-                return new CompilationResult{ Query = query };
-            }
-
-            IToken identifierSymbol = null;
-            string identifier = "";
-            if (context.COMPLEX_ID() != null)
-            {
-                identifierSymbol = context.COMPLEX_ID().Symbol;
-                identifier = identifierSymbol.Text.Substring(1, identifierSymbol.Text.Length - 2);
-            }
-            else if (context.ID() != null)
-            {
-                identifierSymbol = context.ID().Symbol;
-                identifier = identifierSymbol.Text;
-            }
-            
-            if (identifierSymbol != null)
-            {
-                var view = _queryCompiler.Views.Find(identifier);
-                if (view == null)
-                {
-                    return ReportError(
-                        identifierSymbol.Line,
-                        identifierSymbol.Column, 
-                        "Unknown view '" + identifier + "'");
-                }
-
-                query = _queryCompiler.Compile(new StringReader(view.Text), _queryErrorListener) as IQuery;
-                if (query == null)
-                {
-                    // compilation of the subquery failed
-                    return null;
-                }
-
-                return new CompilationResult
-                {
-                    Query = query.View(view.Name)
-                };
-            }
-            
-            // set path pattern
-            var pattern = context.STRING();
-            var pathPattern = ParseString(pattern.Symbol.Line, pattern.Symbol.Column, pattern.GetText());
-            try
-            {
-                query = _queryFactory.CreateQuery(pathPattern) as IQuery;
-                return new CompilationResult {Query = query};
-            }
-            catch (ArgumentException) // pathPattern contains invalid characters
-            {
-                return ReportError(
-                    pattern.Symbol.Line, 
-                    pattern.Symbol.Column, 
-                    "Invalid characters in path pattern.");
-            }
-        }
-
-        public CompilationResult VisitOptionalWhere(QueryParser.OptionalWhereContext context)
-        {
-            var condition = context.predicate();
-            if (condition == null)
-            {
-                return null;
-            }
-
-            var predicate = condition.Accept(this).Value;
-            return new CompilationResult
-            {
-                Value = predicate,
-                Text = condition.Start.InputStream.GetText(new Interval(
-                    condition.Start.StartIndex,
-                    condition.Stop.StopIndex
-                ))
-            };
-        }
-
-        public CompilationResult VisitOptionalOrderBy(QueryParser.OptionalOrderByContext context)
-        {
-            var orderByList = context.orderByList();
-            if (orderByList != null)
-            {
-                return orderByList.Accept(this);
-            }
-
-            return null;
-        }
-
-        public CompilationResult VisitOrderByList(QueryParser.OrderByListContext context)
-        {
-            var orderByList = new List<SortParameter>();
-            foreach (var child in context.orderByKey())
-            {
-                var item = child.Accept(this).Order;
-                orderByList.Add(item);
-            }
-
-            return new CompilationResult
-            {
-                Comparer = new EntityComparer(orderByList),
-                Text = context.Start.InputStream.GetText(new Interval(
-                    context.Start.StartIndex,
-                    context.Stop.StopIndex
-                ))
-            };
-        }
-
-        public CompilationResult VisitOrderByKey(QueryParser.OrderByKeyContext context)
-        {
-            var valueExpr = context.comparison().Accept(this).Value;
-            var valueGetter = valueExpr.CompileFunction(_runtime);
-            var direction = context.optionalDirection().GetText().ToLowerInvariant() == "desc" ? -1 : 1;
-
-            return new CompilationResult
-            {
-                Order = new SortParameter
-                {
-                    Getter = valueGetter,
-                    Direction = direction
-                }
-            };
-        }
-
-        public CompilationResult VisitOptionalDirection(QueryParser.OptionalDirectionContext context)
-        {
-            return null;
-        }
-
-        public CompilationResult VisitPredicate(QueryParser.PredicateContext context)
-        {
-            var right = context.conjunction();
-            var rhs = right.Accept(this).Value;
-
-            // just return the computed value if this is a production: predicate -> conjunction
-            var left = context.predicate();
-            if (left == null)
-            {
-                return new CompilationResult{ Value = rhs };
-            }
-
-            // compile OR
-            var symbol = context.OR().Symbol;
-            var lhs = left.Accept(this).Value;
-            return new CompilationResult
-            {
-                Value = new OrExpression(symbol.Line, symbol.Column, lhs, rhs)
-            };
-        }
-
-        public CompilationResult VisitConjunction(QueryParser.ConjunctionContext context)
-        {
-            // compile right subexpression
-            var right = context.literal();
-            var rhs = right.Accept(this).Value;
-
-            // if this is a production: conjunction -> comparison
-            var left = context.conjunction();
-            if (left == null)
-            {
-                return new CompilationResult{ Value = rhs };
-            }
-            
-            // compile AND
-            var symbol = context.AND().Symbol;
-            var lhs = left.Accept(this).Value;
-            return new CompilationResult
-            {
-                Value = new AndExpression(symbol.Line, symbol.Column, lhs, rhs)
-            };
-        }
-
-        public CompilationResult VisitLiteral(QueryParser.LiteralContext context)
-        {
-            var value = context.comparison().Accept(this).Value;
-            if (context.NOT() != null)
-            {
-                var symbol = context.NOT().Symbol;
-                return new CompilationResult
-                {
-                    Value = new NotExpression(symbol.Line, symbol.Column, value)
-                };
-            }
-
-            return new CompilationResult{ Value = value };
-        }
-
-        public CompilationResult VisitComparison(QueryParser.ComparisonContext context)
-        {
-            var lhs = context.expression(0);
-            var rhs = context.expression(1);
-            if (rhs == null)
-            {
-                return lhs.Accept(this);
-            }
-
-            var left = lhs.Accept(this);
-            var right = rhs.Accept(this);
-            var op = context.REL_OP().Symbol;
-            BinaryOperatorExpression value = null;
-            switch (op.Text)
-            {
-                case "<":
-                    value = new LessThanOperator(op.Line, op.Column, left.Value, right.Value);
-                    break;
-                case "<=":
-                    value = new LessThanOrEqualOperator(op.Line, op.Column, left.Value, right.Value);
-                    break;
-                case "!=":
-                    value = new NotEqualOperator(op.Line, op.Column, left.Value, right.Value);
-                    break;
-                case "=":
-                    value = new EqualOperator(op.Line, op.Column, left.Value, right.Value);
-                    break;
-                case ">":
-                    value = new GreaterThanOperator(op.Line, op.Column, left.Value, right.Value);
-                    break;
-                case ">=":
-                    value = new GreaterThanOrEqualOperator(op.Line, op.Column, left.Value, right.Value);
-                    break;
-            }
-
-            Trace.Assert(value != null, "Invalid comparison operator " + op.Text);
-
-            return new CompilationResult
-            {
-                Value = value
-            };
-        }
-
-        public CompilationResult VisitExpression(QueryParser.ExpressionContext context)
-        {
-            var lhs = context.expression();
-            var rhs = context.multiplication();
-            if (lhs == null)
-            {
-                return rhs.Accept(this);
-            }
-
-            var left = lhs.Accept(this);
-            var right = rhs.Accept(this);
-            var op = context.ADD_SUB().Symbol;
-
-            BinaryOperatorExpression value = null;
-            switch (op.Text)
-            {
-                case "+":
-                    value = new AdditionExpression(op.Line, op.Column, left.Value, right.Value);
-                    break;
-                case "-":
-                    value = new SubtractionExpression(op.Line, op.Column, left.Value, right.Value);
-                    break;
-            }
-
-            Trace.Assert(value != null, "Invalid addition operator " + op.Text);
-
-            return new CompilationResult
-            {
-                Value = value
-            };
-        }
-
-        public CompilationResult VisitMultiplication(QueryParser.MultiplicationContext context)
-        {
-            var lhs = context.multiplication();
-            var rhs = context.factor();
-            if (lhs == null)
-            {
-                return rhs.Accept(this);
-            }
-            
-            var left = lhs.Accept(this);
-            var right = rhs.Accept(this);
-            var op = context.MULT_DIV().Symbol;
-
-            BinaryOperatorExpression value = null;
-            switch (op.Text)
-            {
-                case "*":
-                    value = new MultiplicationExpression(op.Line, op.Column, left.Value, right.Value);
-                    break;
-                case "/":
-                    value = new DivisionExpression(op.Line, op.Column, left.Value, right.Value);
-                    break;
-            }
-
-            Trace.Assert(value != null, "Invalid multiplication operator " + op.Text);
-
-            return new CompilationResult
-            {
-                Value = value
-            };
-        }
-
-        public CompilationResult VisitFactor(QueryParser.FactorContext context)
-        {
-            var comparison = context.predicate();
-            if (comparison != null)
-            {
-                return comparison.Accept(this);
-            }
-
-            var intValue = context.INT();
-            if (intValue != null)
-            {
-                return intValue.Accept(this);
-            }
-
-            var doubleValue = context.REAL();
-            if (doubleValue != null)
-            {
-                return doubleValue.Accept(this);
-            }
-
-            var stringValue = context.STRING();
-            if (stringValue != null)
-            {
-                return stringValue.Accept(this);
-            }
-
-            var complexId = context.COMPLEX_ID();
-            if (complexId != null)
-            {
-                return complexId.Accept(this);
-            }
-
-            var id = context.ID();
-            var argumentList = context.argumentList(); 
-            if (argumentList != null)
-            {
-                // function call
-                var arguments = argumentList.Accept(this).Values;
-                return new CompilationResult
-                {
-                    Value = new FunctionCallExpression(id.Symbol.Line, id.Symbol.Column, id.GetText(), arguments)
-                };
-            }
-
-            // attribute identifier
-            return id.Accept(this);
-        }
-
-        public CompilationResult VisitArgumentList(QueryParser.ArgumentListContext context)
-        {
-            var argumentCount = context.comparison().Length;
-            var arguments = new List<ValueExpression>();
-            for (var i = 0; i < argumentCount; ++i)
-            {
-                var argument = context.comparison(i).Accept(this).Value;
-                arguments.Add(argument);
-            }
-
-            return new CompilationResult
-            {
-                Values = arguments
-            };
+            throw new ParseCanceledException();
         }
     }
     
@@ -726,25 +734,25 @@ namespace Viewer.Query
             var lexer = new QueryLexer(input);
             lexer.AddErrorListener(new LexerErrorListener(queryErrorListener));
 
+            var compiler = new QueryCompilationListener(
+                _queryFactory,
+                this,
+                queryErrorListener,
+                _runtime);
+
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new QueryParser(tokenStream);
+            parser.BuildParseTree = false;
             parser.AddErrorListener(new ParserErrorListener(queryErrorListener));
+            parser.AddParseListener(compiler);
 
             // parse and compile the query
             queryErrorListener.BeforeCompilation();
             IQuery result;
             try
             {
-                var query = parser.entry();
-                var compiler = new QueryCompilerVisitor(_queryFactory, _runtime, this, queryErrorListener);
-                result = compiler.Compile(query);
-
-                // if the compilation failed
-                if (result == null)
-                {
-                    return null;
-                }
-
+                parser.entry();
+                result = compiler.Finish();
                 result = result.WithText(input.ToString());
             }
             catch (ParseCanceledException)

@@ -7,7 +7,7 @@ options {
 entry: queryExpression EOF;
 
 // set operations on queries
-queryExpression: queryExpression UNION_EXCEPT intersection | intersection;
+queryExpression: intersection (UNION_EXCEPT intersection)*;
 
 intersection: queryFactor (INTERSECT queryFactor)*;
 
@@ -33,17 +33,19 @@ orderByKey: comparison optionalDirection;
 optionalDirection: DIRECTION | ;
 
 // expressions
-predicate: predicate OR conjunction | conjunction;
+predicate: conjunction (OR conjunction)*;
 
-conjunction: conjunction AND literal | literal; 
+conjunction: literal (AND literal)*; 
 
 literal: comparison | NOT comparison;
 
-comparison: expression REL_OP expression | expression;
+comparison: expression comparisonRemainder;
 
-expression: expression ADD_SUB multiplication | multiplication; 
+comparisonRemainder: REL_OP expression | ;
 
-multiplication: multiplication MULT_DIV factor | factor;
+expression: multiplication (ADD_SUB multiplication)*;
+
+multiplication: factor (MULT_DIV factor)*;
 
 factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID | ID | ID LPAREN argumentList RPAREN;
 

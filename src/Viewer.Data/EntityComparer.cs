@@ -64,6 +64,18 @@ namespace Viewer.Data
         {
             _parameters = parameters;
         }
+        
+        /// <summary>
+        /// Combine 2 entity comparers so that values will be sorted by <paramref name="first"/>
+        /// fist, and <paramref name="second"/> second.
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        public EntityComparer(EntityComparer first, EntityComparer second)
+        {
+            _parameters = new List<SortParameter>(first._parameters);
+            _parameters.AddRange(second._parameters);
+        }
 
         /// <inheritdoc />
         /// <summary>

@@ -151,6 +151,29 @@ namespace ViewerTest.Query
         }
 
         [TestMethod]
+        public void Compile_RealValueLiteral()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new RealValue(3.14159), new IntValue(null))))
+                .Returns(new RealValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new RealValue(3.14159), new RealValue(3.14159))))
+                .Returns(new RealValue(3.14159));
+
+            const string queryText = "SELECT \"a\" WHERE 3.14159 = x";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(
+                    predicate =>
+                        !predicate(new FileEntity("test")) &&
+                        predicate(new FileEntity("test")
+                            .SetAttribute(new Attribute("x", new RealValue(3.14159), AttributeSource.Custom)))
+                )
+            ), Times.Once);
+        }
+
+        [TestMethod]
         public void Compile_ComparisonBetweenAttributes()
         {
             _runtime
@@ -186,6 +209,22 @@ namespace ViewerTest.Query
             ), Times.Once);
             _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_ComparisonIsNonAssociative()
+        {
+            var listener = new Mock<IQueryErrorListener>();
+            
+            const string queryText = "SELECT \"pattern\" WHERE 1 = 1 < 2";
+            var result = _compiler.Compile(new StringReader(queryText), listener.Object);
+            
+            Assert.IsNull(result);
+
+            listener.Verify(mock => mock.BeforeCompilation());
+            listener.Verify(mock => mock.OnCompilerError(1, 29, It.IsAny<string>()));
+            listener.Verify(mock => mock.AfterCompilation());
+            listener.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -364,6 +403,35 @@ namespace ViewerTest.Query
             _runtime
                 .Setup(mock => mock.FindAndCall("=", Context(new IntValue(7), new IntValue(7))))
                 .Returns(new IntValue(1));
+
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate => predicate(new FileEntity("test")))
+            ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_AdditionSubtractionIsLeftAssociative()
+        {
+            const string queryText = "SELECT \"pattern\" WHERE 1 + 2 * 3 - 4 + 5 = 8";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("+", Context(new IntValue(1), new IntValue(6))))
+                .Returns(new IntValue(7));
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(2), new IntValue(3))))
+                .Returns(new IntValue(6));
+            _runtime
+                .Setup(mock => mock.FindAndCall("-", Context(new IntValue(7), new IntValue(4))))
+                .Returns(new IntValue(3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("+", Context(new IntValue(3), new IntValue(5))))
+                .Returns(new IntValue(8));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(8), new IntValue(8))))
+                .Returns(new IntValue(8));
 
             _query.Verify(mock => mock.Where(
                 CheckPredicate(predicate => predicate(new FileEntity("test")))
@@ -634,6 +702,50 @@ namespace ViewerTest.Query
             ));
             _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_NestedFunctionCalls()
+        {
+            const string queryText = "select \"a\" where f(1, g(b(2), 3), h(), a(4, 5, 6)) = a";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("b", Context(new IntValue(2))))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("g", Context(new IntValue(1), new IntValue(3))))
+                .Returns(new IntValue(2));
+            _runtime
+                .Setup(mock => mock.FindAndCall("h", Context()))
+                .Returns(new IntValue(3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("a", Context(new IntValue(4), new IntValue(5), new IntValue(6))))
+                .Returns(new IntValue(4));
+            _runtime
+                .Setup(mock =>
+                    mock.FindAndCall("f", Context(new IntValue(1), new IntValue(2), new IntValue(3), new IntValue(4))))
+                .Returns(new IntValue(42));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(42), new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(42), new IntValue(41))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(42), new IntValue(42))))
+                .Returns(new IntValue(42));
+
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    !predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("a", new IntValue(41), AttributeSource.Custom))) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("a", new IntValue(42), AttributeSource.Custom)))
+                )
+            ));
         }
 
         [TestMethod]

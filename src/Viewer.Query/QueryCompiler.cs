@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -41,7 +42,7 @@ namespace Viewer.Query
         /// <returns>Compiled query or null if there were errors during compilation</returns>
         IExecutableQuery Compile(string query);
     }
-
+    
     internal class QueryCompilationListener : IQueryParserListener
     {
         private readonly Stack<IQuery> _queries = new Stack<IQuery>();
@@ -50,24 +51,30 @@ namespace Viewer.Query
         private readonly Stack<int> _expressionsFrameStart = new Stack<int>();
 
         private readonly IQueryFactory _queryFactory;
-        private readonly IQueryCompiler _compiler;
+        private readonly QueryCompiler _compiler;
         private readonly IQueryErrorListener _errorListener;
         private readonly IRuntime _runtime;
+        private readonly QueryCompilationParameters _parameters;
 
         public QueryCompilationListener(
             IQueryFactory queryFactory,
-            IQueryCompiler compiler,
+            QueryCompiler compiler,
             IQueryErrorListener errorListener,
-            IRuntime runtime)
+            IRuntime runtime,
+            QueryCompilationParameters parameters)
         {
             _queryFactory = queryFactory;
             _compiler = compiler;
             _errorListener = errorListener;
             _runtime = runtime;
+            _parameters = parameters;
         }
 
         public IQuery Finish()
         {
+            if (IsHalted)
+                return null;
+
             var query = _queries.Pop();
             Trace.Assert(query != null, "query != null");
             Trace.Assert(_queries.Count == 0, "_queries.Count == 0");
@@ -149,6 +156,9 @@ namespace Viewer.Query
 
         public void ExitQueryExpression(QueryParser.QueryExpressionContext context)
         {
+            if (IsHalted)
+                return;
+
             var operators = context.UNION_EXCEPT();
 
             CompileLeftAssociativeOperator(operators, _queries, (op, left, right) =>
@@ -176,6 +186,9 @@ namespace Viewer.Query
 
         public void ExitIntersection(QueryParser.IntersectionContext context)
         {
+            if (IsHalted)
+                return;
+
             CompileLeftAssociativeOperator(
                 context.INTERSECT(),
                 _queries, 
@@ -221,6 +234,9 @@ namespace Viewer.Query
 
         public void ExitSource(QueryParser.SourceContext context)
         {
+            if (IsHalted)
+                return;
+
             string viewIdentifier = null;
             var viewIdentifierToken = context.ID();
             if (viewIdentifierToken != null)
@@ -239,6 +255,16 @@ namespace Viewer.Query
             // create a query SELECT view
             if (viewIdentifier != null)
             {
+                // if there is a cycle, report it and halt
+                if (ReportCycle(
+                        viewIdentifierToken.Symbol.Line, 
+                        viewIdentifierToken.Symbol.Column, 
+                        viewIdentifier))
+                {
+                    return;
+                }
+
+                // otherwise, compile the view
                 var view = _compiler.Views.Find(viewIdentifier);
                 if (view == null)
                 {
@@ -249,7 +275,12 @@ namespace Viewer.Query
                     return;
                 }
 
-                var query = _compiler.Compile(new StringReader(view.Text), _errorListener) as IQuery;
+                // compile view
+                var query = _compiler.Compile(
+                    new StringReader(view.Text),
+                    _errorListener, 
+                    _parameters.Create(view.Name)) as IQuery;
+
                 if (query == null) // compilation of the view failed
                 {
                     HaltCompilation();
@@ -286,6 +317,9 @@ namespace Viewer.Query
 
         public void ExitOptionalWhere(QueryParser.OptionalWhereContext context)
         {
+            if (IsHalted)
+                return;
+
             if (context.WHERE() != null)
             {
                 var query = _queries.Pop();
@@ -300,6 +334,9 @@ namespace Viewer.Query
 
         public void ExitOptionalOrderBy(QueryParser.OptionalOrderByContext context)
         {
+            if (IsHalted)
+                return;
+
             if (context.ORDER() != null)
             {
                 var query = _queries.Pop();
@@ -320,6 +357,9 @@ namespace Viewer.Query
 
         public void ExitOrderByList(QueryParser.OrderByListContext context)
         {
+            if (IsHalted)
+                return;
+
             CompileLeftAssociativeOperator(
                 context.PARAM_DELIMITER(), 
                 _comparers, 
@@ -332,6 +372,9 @@ namespace Viewer.Query
 
         public void ExitOrderByKey(QueryParser.OrderByKeyContext context)
         {
+            if (IsHalted)
+                return;
+
             // parse direction
             var sortDirection = 1;
             var directionString = context.DIRECTION()?.Symbol.Text;
@@ -366,6 +409,9 @@ namespace Viewer.Query
 
         public void ExitPredicate(QueryParser.PredicateContext context)
         {
+            if (IsHalted)
+                return;
+
             CompileLeftAssociativeOperator(context.OR(), _expressions, 
                 (op, left, right) => 
                     new OrExpression(op.Symbol.Line, op.Symbol.Column, left, right));
@@ -377,6 +423,9 @@ namespace Viewer.Query
 
         public void ExitConjunction(QueryParser.ConjunctionContext context)
         {
+            if (IsHalted)
+                return;
+
             CompileLeftAssociativeOperator(context.AND(), _expressions,
                 (op, left, right) =>
                     new AndExpression(op.Symbol.Line, op.Symbol.Column, left, right));
@@ -388,6 +437,9 @@ namespace Viewer.Query
 
         public void ExitLiteral(QueryParser.LiteralContext context)
         {
+            if (IsHalted)
+                return;
+
             var op = context.NOT();
             if (op == null)
             {
@@ -404,6 +456,9 @@ namespace Viewer.Query
 
         public void ExitComparison(QueryParser.ComparisonContext context)
         {
+            if (IsHalted)
+                return;
+
             var opToken = context.REL_OP();
             if (opToken == null)
             {
@@ -448,6 +503,9 @@ namespace Viewer.Query
 
         public void ExitExpression(QueryParser.ExpressionContext context)
         {
+            if (IsHalted)
+                return;
+
             CompileLeftAssociativeOperator(context.ADD_SUB(), _expressions, 
                 (opNode, left, right) =>
                 {
@@ -474,6 +532,9 @@ namespace Viewer.Query
 
         public void ExitMultiplication(QueryParser.MultiplicationContext context)
         {
+            if (IsHalted)
+                return;
+
             CompileLeftAssociativeOperator(context.MULT_DIV(), _expressions,
                 (opNode, left, right) =>
                 {
@@ -501,6 +562,9 @@ namespace Viewer.Query
 
         public void ExitFactor(QueryParser.FactorContext context)
         {
+            if (IsHalted)
+                return;
+
             BaseValue constantValue = null;
 
             // parse INT
@@ -585,6 +649,9 @@ namespace Viewer.Query
         /// <param name="context"></param>
         public void EnterArgumentList(QueryParser.ArgumentListContext context)
         {
+            if (IsHalted)
+                return;
+
             _expressionsFrameStart.Push(_expressions.Count);
         }
 
@@ -654,22 +721,57 @@ namespace Viewer.Query
             return token.Text.Substring(trimStart, token.Text.Length - trimStart - trimEnd);
         }
         
+        private bool IsHalted { get; set; }
+        
         private void ReportError(int line, int column, string message)
         {
             _errorListener.OnCompilerError(line, column, message);
             HaltCompilation();
         }
 
+        private bool ReportCycle(int line, int column, string viewName)
+        {
+            if (!_parameters.Parent.ContainsKey(viewName))
+            {
+                return false;
+            }
+
+            // fetch query view names in the cycle and format an error
+            var name = viewName;
+            var sb = new StringBuilder();
+            sb.Append("Query view cycle detected (");
+
+            var path = new List<string> { viewName };
+            while (_parameters.Parent.TryGetValue(name, out var parent))
+            {
+                path.Add(parent);
+                name = parent;
+            }
+            
+            sb.Append(path[path.Count - 1]);
+            foreach (var element in path)
+            {
+                sb.Append(" -> ");
+                sb.Append(element);
+            }
+
+            sb.Append(')');
+            
+            ReportError(line, column, sb.ToString());
+
+            return true;
+        }
+
         private void HaltCompilation()
         {
-            throw new ParseCanceledException();
+            IsHalted = true;
         }
     }
     
     internal class ParserErrorListener : IAntlrErrorListener<IToken>
     {
         private readonly IQueryErrorListener _queryErrorListener;
-
+        
         public ParserErrorListener(IQueryErrorListener listener)
         {
             _queryErrorListener = listener;
@@ -711,6 +813,47 @@ namespace Viewer.Query
         }
     }
 
+    internal class QueryCompilationParameters
+    {
+        /// <summary>
+        /// Name of the query view which is currently being compiled.
+        /// </summary>
+        public string ViewName { get; private set; }
+
+        /// <summary>
+        /// Map query view dependencies 
+        /// </summary>
+        public Dictionary<string, string> Parent { get; private set; } = 
+            new Dictionary<string, string>();
+
+        /// <summary>
+        /// true iff this is a recursive compilation call
+        /// </summary>
+        public bool IsRecursiveCall => ViewName != null;
+        
+        /// <summary>
+        /// Create a new parameters for recursive compilation of <paramref name="newViewName"/>
+        /// </summary>
+        /// <param name="newViewName">
+        /// Name of the view which will be compiled using these parameters.
+        /// </param>
+        /// <returns></returns>
+        public QueryCompilationParameters Create(string newViewName)
+        {
+            if (ViewName != null)
+            {
+                Parent[ViewName] = newViewName;
+            }
+
+            var result = new QueryCompilationParameters
+            {
+                ViewName = newViewName,
+                Parent = Parent
+            };
+            return result;
+        }
+    }
+
     [Export(typeof(IQueryCompiler))]
     public class QueryCompiler : IQueryCompiler
     {
@@ -733,7 +876,15 @@ namespace Viewer.Query
             Views = queryViewRepository;
         }
 
-        public IExecutableQuery Compile(TextReader inputQuery, IQueryErrorListener queryErrorListener)
+        public IExecutableQuery Compile(TextReader reader, IQueryErrorListener listener)
+        {
+            return Compile(reader, listener, new QueryCompilationParameters());
+        }
+        
+        internal IExecutableQuery Compile(
+            TextReader inputQuery, 
+            IQueryErrorListener queryErrorListener,
+            QueryCompilationParameters parameters)
         {
             // create all necessary components to parse a query
             var input = new AntlrInputStream(inputQuery);
@@ -744,21 +895,33 @@ namespace Viewer.Query
                 _queryFactory,
                 this,
                 queryErrorListener,
-                _runtime);
+                _runtime,
+                parameters);
 
             var tokenStream = new CommonTokenStream(lexer);
+            var errorListener = new ParserErrorListener(queryErrorListener);
             var parser = new QueryParser(tokenStream);
             parser.BuildParseTree = false;
-            parser.AddErrorListener(new ParserErrorListener(queryErrorListener));
+            parser.AddErrorListener(errorListener);
             parser.AddParseListener(compiler);
 
             // parse and compile the query
-            queryErrorListener.BeforeCompilation();
+            if (!parameters.IsRecursiveCall)
+            {
+                queryErrorListener.BeforeCompilation();
+            }
+
             IQuery result;
             try
             {
                 parser.entry();
                 result = compiler.Finish();
+
+                if (result == null)
+                {
+                    return null;
+                }
+
                 result = result.WithText(input.ToString());
             }
             catch (ParseCanceledException)
@@ -768,7 +931,10 @@ namespace Viewer.Query
             }
             finally
             {
-                queryErrorListener.AfterCompilation();
+                if (!parameters.IsRecursiveCall)
+                {
+                    queryErrorListener.AfterCompilation();
+                }
             }
 
             return result;

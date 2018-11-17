@@ -884,6 +884,28 @@ namespace ViewerTest.Query
         }
 
         [TestMethod]
+        public void Compile_ErrorInView()
+        {
+            const string queryViewText = "select \"path\" wh";
+            const string queryText = "select view";
+
+            _queryViewRepository
+                .Setup(mock => mock.Find("view"))
+                .Returns(new QueryView("view", queryViewText, null));
+            
+            var listener = new Mock<IQueryErrorListener>();
+            var result = _compiler.Compile(new StringReader(queryText), listener.Object);
+
+            // this is an unrecoverable error
+            Assert.IsNull(result);
+
+            listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 14, It.IsAny<string>()));
+            listener.Verify(mock => mock.AfterCompilation(), Times.Once);
+            listener.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
         public void Compile_UnterminatedComplexViewIdentifierBeforeEof()
         {
             const string queryViewText = "select \"path\"";
@@ -1104,7 +1126,10 @@ namespace ViewerTest.Query
             var listener = new Mock<IQueryErrorListener>();
             _compiler.Compile(new StringReader("select testView"), listener.Object);
 
-            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unknown view 'testView'"), Times.AtLeastOnce);
+            listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unknown view 'testView'"), Times.Once);
+            listener.Verify(mock => mock.AfterCompilation(), Times.Once);
+            listener.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -1227,6 +1252,31 @@ namespace ViewerTest.Query
             _query.Verify(mock => mock.WithText(queryViewText), Times.Once);
             _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_CycleInQueryViewReferences()
+        {
+            const string a = "select b";
+            const string b = "select c";
+            const string c = "select a";
+
+            _queryViewRepository
+                .Setup(mock => mock.Find("a"))
+                .Returns(new QueryView("a", a, null));
+            _queryViewRepository
+                .Setup(mock => mock.Find("b"))
+                .Returns(new QueryView("b", b, null));
+            _queryViewRepository
+                .Setup(mock => mock.Find("c"))
+                .Returns(new QueryView("c", c, null));
+
+            var listener = new Mock<IQueryErrorListener>();
+            _compiler.Compile(new StringReader(a), listener.Object);
+
+            listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Query view cycle detected (a -> b -> c -> a)"));
+            listener.Verify(mock => mock.AfterCompilation(), Times.Once);
         }
     }
 }

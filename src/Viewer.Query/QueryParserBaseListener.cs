@@ -168,18 +168,6 @@ public partial class QueryParserBaseListener : IQueryParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitOrderByKey([NotNull] QueryParser.OrderByKeyContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.optionalDirection"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterOptionalDirection([NotNull] QueryParser.OptionalDirectionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.optionalDirection"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitOptionalDirection([NotNull] QueryParser.OptionalDirectionContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="QueryParser.predicate"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -227,18 +215,6 @@ public partial class QueryParserBaseListener : IQueryParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitComparison([NotNull] QueryParser.ComparisonContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.comparisonRemainder"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterComparisonRemainder([NotNull] QueryParser.ComparisonRemainderContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.comparisonRemainder"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitComparisonRemainder([NotNull] QueryParser.ComparisonRemainderContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="QueryParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>

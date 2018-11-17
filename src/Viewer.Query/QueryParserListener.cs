@@ -142,16 +142,6 @@ public interface IQueryParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitOrderByKey([NotNull] QueryParser.OrderByKeyContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.optionalDirection"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterOptionalDirection([NotNull] QueryParser.OptionalDirectionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.optionalDirection"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitOptionalDirection([NotNull] QueryParser.OptionalDirectionContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="QueryParser.predicate"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -191,16 +181,6 @@ public interface IQueryParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitComparison([NotNull] QueryParser.ComparisonContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="QueryParser.comparisonRemainder"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterComparisonRemainder([NotNull] QueryParser.ComparisonRemainderContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="QueryParser.comparisonRemainder"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitComparisonRemainder([NotNull] QueryParser.ComparisonRemainderContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="QueryParser.expression"/>.
 	/// </summary>

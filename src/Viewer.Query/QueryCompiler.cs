@@ -335,42 +335,25 @@ namespace Viewer.Query
         {
         }
 
-        private int _sortDirection;
-        private int SortDirection
-        {
-            get => _sortDirection;
-            set
-            {
-                if (value != 1 && value != -1)
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                _sortDirection = value;
-            }
-        }
-
         public void ExitOrderByKey(QueryParser.OrderByKeyContext context)
         {
+            // parse direction
+            var sortDirection = 1;
+            var directionString = context.DIRECTION()?.Symbol.Text;
+            if (string.Equals(directionString, "desc", StringComparison.OrdinalIgnoreCase))
+            {
+                sortDirection = -1;
+            }
+
+            // parse sort key
             var valueExpression = _expressions.Pop();
             var key = new SortParameter
             {
-                Direction = SortDirection,
+                Direction = sortDirection,
                 Getter = valueExpression.CompileFunction(_runtime)
             };
 
             _comparers.Push(new EntityComparer(new List<SortParameter>{ key }));
-        }
-
-        public void EnterOptionalDirection(QueryParser.OptionalDirectionContext context)
-        {
-        }
-
-        public void ExitOptionalDirection(QueryParser.OptionalDirectionContext context)
-        {
-            SortDirection = 1;
-            var directionString = context.DIRECTION()?.Symbol.Text;
-            if (string.Equals(directionString, "desc", StringComparison.OrdinalIgnoreCase))
-            {
-                SortDirection = -1;
-            }
         }
 
         #endregion
@@ -425,14 +408,6 @@ namespace Viewer.Query
         }
 
         public void ExitComparison(QueryParser.ComparisonContext context)
-        {
-        }
-
-        public void EnterComparisonRemainder(QueryParser.ComparisonRemainderContext context)
-        {
-        }
-
-        public void ExitComparisonRemainder(QueryParser.ComparisonRemainderContext context)
         {
             var opToken = context.REL_OP();
             if (opToken == null)
@@ -581,37 +556,38 @@ namespace Viewer.Query
             }
             
             // if this is an attribute identifier
-            if (identifierToken != null && context.LPAREN() == null)
-            {
-                _expressions.Push(new AttributeAccessExpression(
-                    identifierToken.Symbol.Line, 
-                    identifierToken.Symbol.Column, 
-                    identifier));
-                return;
-            }
-
-            // if this is a function identifier
             if (identifierToken != null)
             {
-                var stackTop = _expressionsFrameStart.Pop();
-                var parameters = new List<ValueExpression>();
-                while (_expressions.Count > stackTop)
+                if (context.LPAREN() == null)
                 {
-                    parameters.Add(_expressions.Pop());
+                    _expressions.Push(new AttributeAccessExpression(
+                        identifierToken.Symbol.Line,
+                        identifierToken.Symbol.Column,
+                        identifier));
+                }
+                else // this is a function call
+                {
+                    var stackTop = _expressionsFrameStart.Pop();
+                    var parameters = new List<ValueExpression>();
+                    while (_expressions.Count > stackTop)
+                    {
+                        parameters.Add(_expressions.Pop());
+                    }
+
+                    parameters.Reverse();
+                    _expressions.Push(new FunctionCallExpression(
+                        identifierToken.Symbol.Line,
+                        identifierToken.Symbol.Column,
+                        identifierToken.Symbol.Text,
+                        parameters));
                 }
 
-                parameters.Reverse();
-                _expressions.Push(new FunctionCallExpression(
-                    identifierToken.Symbol.Line, 
-                    identifierToken.Symbol.Column, 
-                    identifier, 
-                    parameters));
                 return;
             }
 
             // otherwise, this is a subexpression => it is already on the stack
         }
-
+        
         /// <summary>
         /// In this method we remember the "return address" of a function. That is, a place
         /// in the _expressions stack where we should return after the function call. To put

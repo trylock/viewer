@@ -28,9 +28,7 @@ optionalOrderBy: ORDER BY orderByList | ;
 
 orderByList: orderByKey (PARAM_DELIMITER orderByKey)*;
 
-orderByKey: comparison optionalDirection;
-
-optionalDirection: DIRECTION | ;
+orderByKey: comparison DIRECTION?;
 
 // expressions
 predicate: conjunction (OR conjunction)*;
@@ -39,14 +37,12 @@ conjunction: literal (AND literal)*;
 
 literal: comparison | NOT comparison;
 
-comparison: expression comparisonRemainder;
-
-comparisonRemainder: REL_OP expression | ;
+comparison: expression (REL_OP expression)?;
 
 expression: multiplication (ADD_SUB multiplication)*;
 
 multiplication: factor (MULT_DIV factor)*;
 
-factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID | ID | ID LPAREN argumentList RPAREN;
+factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID | ID (LPAREN argumentList RPAREN)?;
 
 argumentList: comparison (PARAM_DELIMITER comparison)* | ;

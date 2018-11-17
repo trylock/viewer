@@ -74,6 +74,16 @@ namespace Viewer.Query
             return query;
         }
 
+        /// <summary>
+        /// This method will compile a sequence of left associative binary
+        /// <paramref name="operators"/> with the same priority. All operands are fetched from the
+        /// <paramref name="stack"/>. Operator is evaluated using the
+        /// <paramref name="applyOperator"/> function.
+        /// </summary>
+        /// <typeparam name="T">Type of operands</typeparam>
+        /// <param name="operators">Operator terminals</param>
+        /// <param name="stack">Stack with operands</param>
+        /// <param name="applyOperator">Operator evaluation function</param>
         private void CompileLeftAssociativeOperator<T>(
             ITerminalNode[] operators,
             Stack<T> stack,

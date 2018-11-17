@@ -778,8 +778,7 @@ namespace ViewerTest.Query
             _runtime
                 .Setup(mock => mock.FindAndCall("f", Context(new IntValue(null))))
                 .Returns(new IntValue(null));
-
-
+            
             _query.Verify(mock => mock.Where(
                 CheckPredicate(predicate =>
                     !predicate(new FileEntity("test")) &&
@@ -1050,6 +1049,27 @@ namespace ViewerTest.Query
             listener.Verify(mock => mock.OnCompilerError(1, 17, "Unterminated COMPLEX_ID"), Times.Once);
             listener.Verify(mock => mock.AfterCompilation());
             listener.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_ComplexFunctionIdentifier()
+        {
+            const string queryText = "select \"a\" where `some function`(1, 2)";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("some function", Context(new IntValue(1), new IntValue(2))))
+                .Returns(new IntValue(9000));
+
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    predicate(new FileEntity("test")) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)))
+                )
+            ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
         }
 
         [TestMethod]

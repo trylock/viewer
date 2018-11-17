@@ -545,17 +545,16 @@ namespace Viewer.Query
                 identifier = ParseComplexIdentifier(identifierToken.Symbol);
             }
             
-            // if this is an attribute identifier
             if (identifierToken != null)
             {
-                if (context.LPAREN() == null)
+                if (context.LPAREN() == null) // attribute access
                 {
                     _expressions.Push(new AttributeAccessExpression(
                         identifierToken.Symbol.Line,
                         identifierToken.Symbol.Column,
                         identifier));
                 }
-                else // this is a function call
+                else // function call
                 {
                     var stackTop = _expressionsFrameStart.Pop();
                     var parameters = new List<ValueExpression>();
@@ -568,7 +567,7 @@ namespace Viewer.Query
                     _expressions.Push(new FunctionCallExpression(
                         identifierToken.Symbol.Line,
                         identifierToken.Symbol.Column,
-                        identifierToken.Symbol.Text,
+                        identifier,
                         parameters));
                 }
 

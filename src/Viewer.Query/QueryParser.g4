@@ -43,6 +43,6 @@ expression: multiplication (ADD_SUB multiplication)*;
 
 multiplication: factor (MULT_DIV factor)*;
 
-factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID | ID (LPAREN argumentList RPAREN)?;
+factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID  (LPAREN argumentList RPAREN)? | ID (LPAREN argumentList RPAREN)?;
 
 argumentList: comparison (PARAM_DELIMITER comparison)* | ;

@@ -59,3 +59,10 @@ create index if not exists `attributes_source_name_index` on `attributes`(
     `source` asc,
     `name` asc
 );
+
+----
+
+-- index used for deleting outdated records
+create index if not exists `files_last_row_access_time_index` on `files`(
+    `last_row_access_time` asc
+);

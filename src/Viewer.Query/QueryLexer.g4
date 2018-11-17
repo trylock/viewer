@@ -32,7 +32,7 @@ RPAREN: ')';
 
 PARAM_DELIMITER: ',';
 
-COMPLEX_ID: '`' ~('`')+ '`';
+GRAVE: '`' -> more, mode(COMPLEX_ID_CONTENT);
 
 QUOTE: '"' -> more, mode(STRING_CONTENT);
 
@@ -52,6 +52,12 @@ mode STRING_CONTENT;
 STRING: ('"' | '\n' | '\r' | EOF) -> mode(DEFAULT_MODE);
 
 CONTENT: . -> more;
+
+mode COMPLEX_ID_CONTENT;
+
+COMPLEX_ID: ('`' | '\n' | '\r' | EOF) -> mode(DEFAULT_MODE);
+
+COMPLEX_ID_CONTENT: . -> more;
 
 // fragments
 fragment A: [aA];

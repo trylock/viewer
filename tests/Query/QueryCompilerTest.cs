@@ -703,6 +703,93 @@ namespace ViewerTest.Query
             _query.Verify(mock => mock.WithText(queryText), Times.Once);
             _query.VerifyNoOtherCalls();
         }
+        
+        [TestMethod]
+        public void Compile_NestedFunctionCallsWithoutParameters()
+        {
+            const string queryText = "select \"a\" where f(g(h(k()))) = a";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+            
+            _runtime
+                .Setup(mock => mock.FindAndCall("k", Context()))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("h", Context(new IntValue(1))))
+                .Returns(new IntValue(2));
+            _runtime
+                .Setup(mock => mock.FindAndCall("g", Context(new IntValue(2))))
+                .Returns(new IntValue(3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("f", Context(new IntValue(3))))
+                .Returns(new IntValue(4));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(4), new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(4), new IntValue(2))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(4), new IntValue(4))))
+                .Returns(new IntValue(4));
+
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    !predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("a", new IntValue(2), AttributeSource.Custom))) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("a", new IntValue(4), AttributeSource.Custom)))
+                )
+            ));
+        }
+
+        [TestMethod]
+        public void Compile_NestedFunctionCallsWithAttributeNameParameter()
+        {
+            const string queryText = "select \"a\" where f(g(h(k(a))))";
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("k", Context(new IntValue(42))))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("h", Context(new IntValue(1))))
+                .Returns(new IntValue(2));
+            _runtime
+                .Setup(mock => mock.FindAndCall("g", Context(new IntValue(2))))
+                .Returns(new IntValue(3));
+            _runtime
+                .Setup(mock => mock.FindAndCall("f", Context(new IntValue(3))))
+                .Returns(new IntValue(4));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("k", Context(new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("k", Context(new IntValue(2))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("h", Context(new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("g", Context(new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("f", Context(new IntValue(null))))
+                .Returns(new IntValue(null));
+
+
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    !predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("a", new IntValue(2), AttributeSource.Custom))) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("a", new IntValue(42), AttributeSource.Custom)))
+                )
+            ));
+        }
 
         [TestMethod]
         public void Compile_NestedFunctionCalls()
@@ -798,6 +885,174 @@ namespace ViewerTest.Query
         }
 
         [TestMethod]
+        public void Compile_UnterminatedComplexViewIdentifierBeforeEof()
+        {
+            const string queryViewText = "select \"path\"";
+            const string queryText = "select `view";
+
+            _queryViewRepository
+                .Setup(mock => mock.Find("view"))
+                .Returns(new QueryView("view", queryViewText, null));
+
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _query.Verify(mock => mock.View("view"), Times.Once);
+            _query.Verify(mock => mock.WithText(queryViewText), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_UnterminatedComplexViewIdentifierBeforeNewLine()
+        {
+            const string queryViewText = "select \"path\"";
+            const string queryText = "select `view\nwhere test";
+
+            _queryViewRepository
+                .Setup(mock => mock.Find("view"))
+                .Returns(new QueryView("view", queryViewText, null));
+
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _query.Verify(mock => mock.View("view"), Times.Once);
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)))
+                )
+            ));
+            _query.Verify(mock => mock.WithText(queryViewText), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_UnterminatedComplexViewIdentifierBeforeCarriageReturn()
+        {
+            const string queryViewText = "select \"path\"";
+            const string queryText = "select `view\rwhere test";
+
+            _queryViewRepository
+                .Setup(mock => mock.Find("view"))
+                .Returns(new QueryView("view", queryViewText, null));
+
+            _compiler.Compile(new StringReader(queryText), new NullQueryErrorListener());
+
+            _query.Verify(mock => mock.View("view"), Times.Once);
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)))
+                )
+            ));
+            _query.Verify(mock => mock.WithText(queryViewText), Times.Once);
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_UnterminatedComplexAttributeIdentifierBeforeEof()
+        {
+            const string queryText = "select \"a\" where `some long id";
+
+            var listener = new Mock<IQueryErrorListener>();
+            _compiler.Compile(new StringReader(queryText), listener.Object);
+            
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    !predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("`some long id", new IntValue(1), AttributeSource.Custom))) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("some long id", new IntValue(2), AttributeSource.Custom)))
+                )
+            ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+
+            listener.Verify(mock => mock.BeforeCompilation());
+            listener.Verify(mock => mock.OnCompilerError(1, 17, "Unterminated COMPLEX_ID"), Times.Once);
+            listener.Verify(mock => mock.AfterCompilation());
+            listener.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_UnterminatedComplexAttributeIdentifierBeforeNewLine()
+        {
+            const string queryText = "select \"a\" where `some long id\norder by test";
+
+            var listener = new Mock<IQueryErrorListener>();
+            _compiler.Compile(new StringReader(queryText), listener.Object);
+
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    !predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("`some long id", new IntValue(1), AttributeSource.Custom))) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("some long id", new IntValue(2), AttributeSource.Custom)))
+                )
+            ));
+            _query.Verify(mock => mock.WithComparer(
+                It.Is<IComparer<IEntity>>(comparer =>
+                    comparer.Compare(
+                        new FileEntity("test")
+                            .SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)),
+                        new FileEntity("test")
+                            .SetAttribute(new Attribute("test", new IntValue(2), AttributeSource.Custom))
+                    ) < 0
+                ),
+                "test"
+            ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+
+            listener.Verify(mock => mock.BeforeCompilation());
+            listener.Verify(mock => mock.OnCompilerError(1, 17, "Unterminated COMPLEX_ID"), Times.Once);
+            listener.Verify(mock => mock.AfterCompilation());
+            listener.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public void Compile_UnterminatedComplexAttributeIdentifierBeforecarriageReturn()
+        {
+            const string queryText = "select \"a\" where `some long id\rorder by test";
+
+            var listener = new Mock<IQueryErrorListener>();
+            _compiler.Compile(new StringReader(queryText), listener.Object);
+
+            _query.Verify(mock => mock.Where(
+                CheckPredicate(predicate =>
+                    !predicate(new FileEntity("test")) &&
+                    !predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("`some long id", new IntValue(1), AttributeSource.Custom))) &&
+                    predicate(new FileEntity("test")
+                        .SetAttribute(new Attribute("some long id", new IntValue(2), AttributeSource.Custom)))
+                )
+            ));
+            _query.Verify(mock => mock.WithComparer(
+                It.Is<IComparer<IEntity>>(comparer =>
+                    comparer.Compare(
+                        new FileEntity("test")
+                            .SetAttribute(new Attribute("test", new IntValue(1), AttributeSource.Custom)),
+                        new FileEntity("test")
+                            .SetAttribute(new Attribute("test", new IntValue(2), AttributeSource.Custom))
+                    ) < 0
+                ),
+                "test"
+            ));
+            _query.Verify(mock => mock.WithText(queryText), Times.Once);
+            _query.VerifyNoOtherCalls();
+
+            listener.Verify(mock => mock.BeforeCompilation());
+            listener.Verify(mock => mock.OnCompilerError(1, 17, "Unterminated COMPLEX_ID"), Times.Once);
+            listener.Verify(mock => mock.AfterCompilation());
+            listener.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
         public void Compile_NestedQueryExpression()
         {
             _query
@@ -862,7 +1117,7 @@ namespace ViewerTest.Query
 
             // the error is still reported
             listener.Verify(mock => mock.BeforeCompilation());
-            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated string literal"), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated STRING"), Times.Once);
             listener.Verify(mock => mock.AfterCompilation());
             listener.VerifyNoOtherCalls();
         }
@@ -887,7 +1142,7 @@ namespace ViewerTest.Query
 
             // the error is still reported
             listener.Verify(mock => mock.BeforeCompilation());
-            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated string literal"), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated STRING"), Times.Once);
             listener.Verify(mock => mock.AfterCompilation());
             listener.VerifyNoOtherCalls();
         }
@@ -912,7 +1167,7 @@ namespace ViewerTest.Query
 
             // the error is still reported
             listener.Verify(mock => mock.BeforeCompilation());
-            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated string literal"), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Unterminated STRING"), Times.Once);
             listener.Verify(mock => mock.AfterCompilation());
             listener.VerifyNoOtherCalls();
         }

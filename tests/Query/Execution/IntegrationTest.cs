@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -25,10 +27,12 @@ namespace ViewerTest.Query.Execution
 
         public void OnCompilerError(int line, int column, string errorMessage)
         {
+            Debug.WriteLine($"[{line}][{column}] Compilation error: {errorMessage}");
         }
 
         public void OnRuntimeError(int line, int column, string errorMessage)
         {
+            Debug.WriteLine($"[{line}][{column}] Runtime error: {errorMessage}");
         }
 
         public void AfterCompilation()
@@ -106,7 +110,9 @@ namespace ViewerTest.Query.Execution
             return new ResultSet(compiledQuery.Execute(new ExecutionOptions()));
         }
 
-        private const string BaseDir = "../../ExecutionTestData";
+        private static readonly string BaseDir = Path.Combine(
+            Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory)),
+            "ExecutionTestData");
 
         [TestMethod]
         public void Select_NonExistentFolder()
@@ -274,6 +280,28 @@ namespace ViewerTest.Query.Execution
             Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a"));
             Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b"));
             Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b/c"));
+        }
+
+        [TestMethod]
+        public void Intersect_PatternSubset()
+        {
+            var result = Execute("select \"" + BaseDir + "/**\" intersect select \"" + BaseDir + "/a/**\"");
+
+            Assert.AreEqual(3, result.Count);
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item4.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item5.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item6.jpg"));
+        }
+        
+        [TestMethod]
+        public void Intersect_PatternSuperset()
+        {
+            var result = Execute("select \"" + BaseDir + "/a/**\" intersect select \"" + BaseDir + "/**\"");
+
+            Assert.AreEqual(3, result.Count);
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item4.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item5.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item6.jpg"));
         }
     }
 }

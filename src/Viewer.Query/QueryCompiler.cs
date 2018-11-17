@@ -232,9 +232,7 @@ namespace Viewer.Query
                 viewIdentifierToken = context.COMPLEX_ID();
                 if (viewIdentifierToken != null)
                 {
-                    viewIdentifier = viewIdentifierToken.Symbol.Text.Substring(
-                        1, 
-                        viewIdentifierToken.Symbol.Text.Length - 2);
+                    viewIdentifier = ParseComplexIdentifier(viewIdentifierToken.Symbol);
                 }
             }
 
@@ -263,10 +261,7 @@ namespace Viewer.Query
             else if (context.STRING() != null) // create a query SELECT pattern
             {
                 var patternSymbol = context.STRING().Symbol;
-                var pattern = ParseString(
-                    patternSymbol.Line, 
-                    patternSymbol.Column, 
-                    patternSymbol.Text);
+                var pattern = ParseStringValue(patternSymbol);
 
                 try
                 {
@@ -524,10 +519,7 @@ namespace Viewer.Query
             else if (context.STRING() != null) // parse STRING
             {
                 constantToken = context.STRING();
-                constantValue = new StringValue(ParseString(
-                    constantToken.Symbol.Line,
-                    constantToken.Symbol.Column,
-                    constantToken.Symbol.Text));
+                constantValue = new StringValue(ParseStringValue(constantToken.Symbol));
             }
             
             // if this is a constant
@@ -550,9 +542,7 @@ namespace Viewer.Query
             else if (context.COMPLEX_ID() != null) // parse COMPLEX_ID
             {
                 identifierToken = context.COMPLEX_ID();
-                identifier = identifierToken.Symbol.Text.Substring(
-                    1,
-                    identifierToken.Symbol.Text.Length - 2);
+                identifier = ParseComplexIdentifier(identifierToken.Symbol);
             }
             
             // if this is an attribute identifier
@@ -605,10 +595,38 @@ namespace Viewer.Query
 
         #endregion
 
-        private string ParseString(int line, int column, string value)
+        private string ParseStringValue(IToken token)
         {
-            if (value.Length <= 0 || value[0] != '"')
-                throw new ArgumentOutOfRangeException(nameof(value));
+            if (token.Type != QueryLexer.STRING)
+                throw new ArgumentOutOfRangeException(nameof(token));
+            return ParseBoundedValue(token, '"');
+        }
+
+        private string ParseComplexIdentifier(IToken token)
+        {
+            if (token.Type != QueryLexer.COMPLEX_ID)
+                throw new ArgumentOutOfRangeException(nameof(token));
+            return ParseBoundedValue(token, '`');
+        }
+
+        /// <summary>
+        /// Parse string value of <paramref name="token"/> which should be bounded between
+        /// 2 characters (<paramref name="bound"/>). The token value is required to start
+        /// with <paramref name="bound"/> but it doesn't have to end with <paramref name="bound"/>.
+        /// If it ends with a new line character, <paramref name="bound"/> or EOF, it will be
+        /// trimmed.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="token"/> is not properly terminated with the <paramref name="bound"/>
+        /// character, a compilation error will be reported but a value will still be returned.
+        /// </remarks>
+        /// <param name="token"></param>
+        /// <param name="bound"></param>
+        /// <returns></returns>
+        private string ParseBoundedValue(IToken token, char bound)
+        {
+            if (token.Text.Length <= 0 || token.Text[0] != bound)
+                throw new ArgumentOutOfRangeException(nameof(token));
 
             // number of characters to remove from the start and from the end
             int trimStart = 1;
@@ -616,24 +634,27 @@ namespace Viewer.Query
 
             // remove the end character if the value is terminated (it won't be terminated iff
             // we have reached the EOF)
-            var lastCharacter = value[value.Length - 1];
-            if (value.Length > 1 && (
-                    lastCharacter == '"' ||
+            var lastCharacter = token.Text[token.Text.Length - 1];
+            if (token.Text.Length > 1 && (
+                    lastCharacter == bound ||
                     lastCharacter == '\n' ||
                     lastCharacter == '\r'))
             {
                 trimEnd = 1;
             }
 
-            // check if the string is terminated correctly
-            if (value.Length <= 1 || value[value.Length - 1] != '"')
+            // check if the token is terminated correctly
+            if (token.Text.Length <= 1 || token.Text[token.Text.Length - 1] != bound)
             {
-                _errorListener.OnCompilerError(line, column, "Unterminated string literal");
+                _errorListener.OnCompilerError(
+                    token.Line, 
+                    token.Column, 
+                    $"Unterminated {QueryLexer.DefaultVocabulary.GetDisplayName(token.Type)}");
             }
 
-            return value.Substring(trimStart, value.Length - trimStart - trimEnd);
+            return token.Text.Substring(trimStart, token.Text.Length - trimStart - trimEnd);
         }
-
+        
         private void ReportError(int line, int column, string message)
         {
             _errorListener.OnCompilerError(line, column, message);

@@ -82,35 +82,28 @@ namespace Viewer.Data.SQLite
         /// <returns>Statistics for <paramref name="attributeNames"/></returns>
         IAttributeStatistics Create(IEnumerable<string> attributeNames);
     }
-    
-    public class AttributeStatistics : IAttributeStatistics
+
+    /// <summary>
+    /// This SQL query finds all directories which contain files with given attribute names
+    /// and counts the number of files for each used attribute name subset.
+    /// </summary>
+    internal class FileDistributionCommand : IDisposable
     {
         private readonly SQLiteConnection _connection;
-        private readonly FileDistributionCommand _fetchCommand;
+        private readonly SQLiteCommand _command;
+        private readonly bool _hasNames;
 
-        private Dictionary<string, AttributeSubtreeStatistics> _statistics;
-        
-        public AttributeStatistics(SQLiteConnection connection, IEnumerable<string> attributeNames)
+        public FileDistributionCommand(
+            SQLiteConnection connection,
+            IEnumerable<string> attrNames)
         {
-            var attrs = BindAttributeNames(attributeNames);
+            var name = BindAttributeNames(attrNames);
+
             _connection = connection;
-            _fetchCommand = new FileDistributionCommand(_connection, attrs.Snippet, attrs.Parameters);
-        }
-
-        private class FileDistributionCommand : IDisposable
-        {
-            private readonly SQLiteCommand _command;
-            private bool _hasNames;
-
-            public FileDistributionCommand(
-                SQLiteConnection connection, 
-                string namesSnippet, 
-                SQLiteParameter[] names)
-            {
-                _hasNames = names.Length > 0;
-                _command = connection.CreateCommand();
-                _command.Parameters.AddRange(names);
-                _command.CommandText = @"
+            _hasNames = name.Parameters.Length > 0;
+            _command = connection.CreateCommand();
+            _command.Parameters.AddRange(name.Parameters);
+            _command.CommandText = @"
                     WITH RECURSIVE directories AS (
                         -- compute aggregations for top-level folders (i.e., folders which contain photos)
                         SELECT
@@ -123,7 +116,7 @@ namespace Viewer.Data.SQLite
                             FROM attributes AS a
                                 INNER JOIN files AS f
                                     ON (a.file_id = f.id)
-                            WHERE a.source = 0 AND (" + namesSnippet + @")
+                            WHERE a.source = 0 AND (" + name.Snippet + @")
                             ORDER BY a.name
                         )
                         GROUP BY path
@@ -141,35 +134,29 @@ namespace Viewer.Data.SQLite
                     FROM directories
                     GROUP BY path, name
                 ";
+        }
+
+        public IEnumerable<(string Path, string Group, long Count)> Execute()
+        {
+            if (!_hasNames)
+            {
+                yield break;
             }
 
-            public IEnumerable<(string Path, string Group, long Count)> Execute()
+            using (var reader = _command.ExecuteReader())
             {
-                if (!_hasNames)
+                while (reader.Read())
                 {
-                    yield break;
+                    var dir = reader.GetString(0);
+                    var group = reader.GetString(1);
+                    var count = reader.GetInt64(2);
+
+                    yield return (dir, group, count);
                 }
-
-                using (var reader = _command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var dir = reader.GetString(0);
-                        var group = reader.GetString(1);
-                        var count = reader.GetInt64(2);
-
-                        yield return (dir, group, count);
-                    }
-                }
-            }
-
-            public void Dispose()
-            {
-                _command?.Dispose();
             }
         }
-        
-        private static (SQLiteParameter[] Parameters, string Snippet) 
+
+        private static (SQLiteParameter[] Parameters, string Snippet)
             BindAttributeNames(IEnumerable<string> names)
         {
             var parameters = new List<SQLiteParameter>();
@@ -193,48 +180,35 @@ namespace Viewer.Data.SQLite
 
             return (parameters.ToArray(), sb.ToString());
         }
-        
+
         public void Dispose()
         {
-            _fetchCommand?.Dispose();
+            _command?.Dispose();
             _connection?.Dispose();
+        }
+    }
+
+    internal class AttributeStatistics : IAttributeStatistics
+    {
+        private readonly Dictionary<string, AttributeSubtreeStatistics> _index;
+
+        public AttributeStatistics(Dictionary<string, AttributeSubtreeStatistics> index)
+        {
+            _index = index;
         }
 
         public AttributeSubtreeStatistics GetStatistics(string path)
         {
-            if (_statistics == null)
+            if (_index.TryGetValue(path, out var result))
             {
-                // fetch the distribution to main memory
-                _statistics = new Dictionary<string, AttributeSubtreeStatistics>(
-                    StringComparer.CurrentCultureIgnoreCase);
-                foreach (var item in _fetchCommand.Execute())
-                {
-                    if (!_statistics.TryGetValue(item.Path, out var statistics))
-                    {
-                        statistics = new AttributeSubtreeStatistics();
-                        _statistics.Add(item.Path, statistics);
-                    }
-
-                    if (string.IsNullOrEmpty(item.Group))
-                    {
-                        statistics.AddSubset(Enumerable.Empty<string>(), item.Count);
-                    }
-                    else
-                    {
-                        statistics.AddSubset(item.Group.Split(','), item.Count);
-                    }
-                }
-
-                // there is no point in keeping the connection open once we have the data
-                Dispose();
+                return result;
             }
 
-            if (!_statistics.TryGetValue(path, out var result))
-            {
-                return null;
-            }
+            return null;
+        }
 
-            return result;
+        public void Dispose()
+        {
         }
     }
 
@@ -249,9 +223,39 @@ namespace Viewer.Data.SQLite
             _connectionFactory = connectionFactory;
         }
 
+        private Dictionary<string, AttributeSubtreeStatistics> FetchStatistics(
+            FileDistributionCommand command)
+        {
+            var index = new Dictionary<string, AttributeSubtreeStatistics>(
+                StringComparer.CurrentCultureIgnoreCase);
+            foreach (var item in command.Execute())
+            {
+                if (!index.TryGetValue(item.Path, out var statistics))
+                {
+                    statistics = new AttributeSubtreeStatistics();
+                    index.Add(item.Path, statistics);
+                }
+
+                if (string.IsNullOrEmpty(item.Group))
+                {
+                    statistics.AddSubset(Enumerable.Empty<string>(), item.Count);
+                }
+                else
+                {
+                    statistics.AddSubset(item.Group.Split(','), item.Count);
+                }
+            }
+
+            return index;
+        }
+
         public IAttributeStatistics Create(IEnumerable<string> attributeNames)
         {
-            return new AttributeStatistics(_connectionFactory.Create(), attributeNames);
+            using (var connection = _connectionFactory.Create())
+            using (var command = new FileDistributionCommand(connection, attributeNames))
+            {
+                return new AttributeStatistics(FetchStatistics(command));
+            }
         }
     }
 }

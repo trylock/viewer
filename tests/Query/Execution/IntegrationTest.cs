@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Viewer.Data;
+using Viewer.Data.SQLite;
 using Viewer.Data.Storage;
 using Viewer.IO;
 using Viewer.Query;
@@ -47,9 +49,12 @@ namespace ViewerTest.Query.Execution
         public int CacheMaxFileCount => int.MaxValue;
     }
 
+    
     [TestClass]
     public class IntegrationTest
     {
+        private const string DatabaseFile = "test.db";
+
         private IExecutableQuery Compile(string text)
         {
             var catalog = new AggregateCatalog(
@@ -62,6 +67,11 @@ namespace ViewerTest.Query.Execution
 
             using (var container = new CompositionContainer(catalog))
             {
+                // make SQLite connection factory create and use database in a local file
+                var fileSystem = container.GetExportedValue<IFileSystem>();
+                container.ComposeExportedValue<SQLiteConnectionFactory>(
+                    new SQLiteConnectionFactory(fileSystem, DatabaseFile));
+
                 var compiler = container.GetExportedValue<IQueryCompiler>();
                 return compiler.Compile(text);
             }
@@ -113,6 +123,13 @@ namespace ViewerTest.Query.Execution
         private static readonly string BaseDir = Path.Combine(
             Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory)),
             "ExecutionTestData");
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            SQLiteConnection.ClearAllPools();
+            File.Delete(DatabaseFile);
+        }
 
         [TestMethod]
         public void Select_NonExistentFolder()

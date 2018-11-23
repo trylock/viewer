@@ -167,6 +167,10 @@ namespace Viewer.UI.Explorer
                     {
                         break;
                     }
+                    catch (IOException)
+                    {
+                        break;
+                    }
                 }
 
                 return folders;
@@ -230,7 +234,7 @@ namespace Viewer.UI.Explorer
             {
                 yield break;
             }
-
+            
             foreach (var item in di.EnumerateDirectories())
             {
                 if ((item.Attributes & HideFlags) != 0)
@@ -277,6 +281,9 @@ namespace Viewer.UI.Explorer
             catch (DirectoryNotFoundException)
             {
                 _dialogView.DirectoryNotFound(fullPath);
+            }
+            catch (IOException)
+            {
             }
 
             return Enumerable.Empty<DirectoryView>();

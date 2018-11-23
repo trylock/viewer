@@ -55,28 +55,14 @@ namespace ViewerTest.Query.Execution
     {
         private const string DatabaseFile = "test.db";
 
+        private CompositionContainer _container;
+
         private IExecutableQuery Compile(string text)
         {
-            var catalog = new AggregateCatalog(
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Data.IEntity))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Query.IRuntime))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.QueryRuntime.IntValueAdditionFunction))),
-                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.IO.IFileSystem))),
-                new TypeCatalog(typeof(ErrorListener)),
-                new TypeCatalog(typeof(Configuration)));
-
-            using (var container = new CompositionContainer(catalog))
-            {
-                // make SQLite connection factory create and use database in a local file
-                var fileSystem = container.GetExportedValue<IFileSystem>();
-                container.ComposeExportedValue<SQLiteConnectionFactory>(
-                    new SQLiteConnectionFactory(fileSystem, DatabaseFile));
-
-                var compiler = container.GetExportedValue<IQueryCompiler>();
-                return compiler.Compile(text);
-            }
+            var compiler = _container.GetExportedValue<IQueryCompiler>();
+            return compiler.Compile(text);
         }
-
+        
         private class ResultSet : IReadOnlyList<IEntity>
         {
             private readonly List<IEntity> _entities = new List<IEntity>();
@@ -123,10 +109,30 @@ namespace ViewerTest.Query.Execution
         private static readonly string BaseDir = Path.Combine(
             Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory)),
             "ExecutionTestData");
+        
+        [TestInitialize]
+        public void Setup()
+        {
+            var catalog = new AggregateCatalog(
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Data.IEntity))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.Query.IRuntime))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.QueryRuntime.IntValueAdditionFunction))),
+                new AssemblyCatalog(Assembly.GetAssembly(typeof(Viewer.IO.IFileSystem))),
+                new TypeCatalog(typeof(ErrorListener)),
+                new TypeCatalog(typeof(Configuration)));
+
+            _container = new CompositionContainer(catalog);
+
+            // make SQLite connection factory create and use database in a local file
+            var fileSystem = _container.GetExportedValue<IFileSystem>();
+            _container.ComposeExportedValue<SQLiteConnectionFactory>(
+                new SQLiteConnectionFactory(fileSystem, DatabaseFile));
+        }
 
         [TestCleanup]
         public void Cleanup()
         {
+            _container.Dispose();
             SQLiteConnection.ClearAllPools();
             File.Delete(DatabaseFile);
         }

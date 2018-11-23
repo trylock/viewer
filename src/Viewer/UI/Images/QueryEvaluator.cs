@@ -16,6 +16,7 @@ using Viewer.Data;
 using Viewer.Data.Formats;
 using Viewer.IO;
 using Viewer.Query;
+using Viewer.Query.Execution;
 
 namespace Viewer.UI.Images
 {
@@ -292,11 +293,14 @@ namespace Viewer.UI.Images
         public void Run()
         {
             var progress = AggregateProgress.Create(Progress, new FolderQueryProgress(_fileWatcher));
-
-            foreach (var entity in Query.Execute(progress, Cancellation.Token))
+            var options = new ExecutionOptions
             {
-                Cancellation.Token.ThrowIfCancellationRequested();
-                
+                CancellationToken = Cancellation.Token,
+                Progress = progress
+            };
+
+            foreach (var entity in Query.Execute(options))
+            {
                 _added.Add(new EntityView(entity, _thumbnailFactory.Create(entity, Cancellation.Token)));
             }
         }

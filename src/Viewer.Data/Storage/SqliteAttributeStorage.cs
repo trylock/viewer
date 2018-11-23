@@ -88,6 +88,24 @@ namespace Viewer.Data.Storage
         }
 
         /// <summary>
+        /// Every <see cref="Reader"/> acquires this lock as a reader whenever it is created. The
+        /// <see cref="ApplyChanges"/> method tries to acquire it as a writer whenever it tries
+        /// to delete outdated files. The purpose of it is to prevent the <see cref="ApplyChanges"/>
+        /// method from evicting files which will be read right after that.
+        /// </summary>
+        private readonly ReaderWriterLockSlim _readerLock = new ReaderWriterLockSlim();
+
+        private void OnReaderCreated()
+        {
+            _readerLock.EnterReadLock();
+        }
+
+        private void OnReaderDisposed()
+        {
+            _readerLock.ExitReadLock();
+        }
+
+        /// <summary>
         /// SQLite connection and commands are kept in a thread-local variable. This way, it is
         /// safe to call the Load method from multiple threads.
         /// </summary>
@@ -99,6 +117,7 @@ namespace Viewer.Data.Storage
             public Reader(SqliteAttributeStorage storage)
             {
                 _storage = storage;
+                _storage.OnReaderCreated();
                 _query = new ThreadLocal<LoadEntityQuery>(CreateQuery, true);
             }
 
@@ -115,6 +134,7 @@ namespace Viewer.Data.Storage
 
             public void Dispose()
             {
+                _storage.OnReaderDisposed();
                 foreach (var value in _query.Values)
                 {
                     value.Dispose();
@@ -473,13 +493,20 @@ namespace Viewer.Data.Storage
                 transaction.Commit();
 
                 // clean outdated files
-                try
+                if (_readerLock.TryEnterWriteLock(100))
                 {
-                    files.DeleteOutdated(DateTime.Now - _configuration.CacheLifespan);
-                }
-                catch (Exception e)
-                {
-                    exceptions.Add(e);
+                    try
+                    {
+                        files.DeleteOutdated(DateTime.Now - _configuration.CacheLifespan);
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                    finally
+                    {
+                        _readerLock.ExitWriteLock();
+                    }
                 }
             }
 

@@ -1278,5 +1278,22 @@ namespace ViewerTest.Query
             listener.Verify(mock => mock.OnCompilerError(1, 7, "Query view cycle detected (a -> b -> c -> a)"));
             listener.Verify(mock => mock.AfterCompilation(), Times.Once);
         }
+
+        [TestMethod]
+        public void Compile_ViewSelfCycle()
+        {
+            const string a = "select a";
+
+            _queryViewRepository
+                .Setup(mock => mock.Find("a"))
+                .Returns(new QueryView("a", a, null));
+
+            var listener = new Mock<IQueryErrorListener>();
+            _compiler.Compile(new StringReader(a), listener.Object);
+
+            listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 7, "Query view cycle detected (a -> a)"));
+            listener.Verify(mock => mock.AfterCompilation(), Times.Once);
+        }
     }
 }

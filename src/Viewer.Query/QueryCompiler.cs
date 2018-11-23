@@ -744,6 +744,8 @@ namespace Viewer.Query
             var path = new List<string> { viewName };
             while (_parameters.Parent.TryGetValue(name, out var parent))
             {
+                if (name == parent)
+                    break; // self cycle
                 path.Add(parent);
                 name = parent;
             }

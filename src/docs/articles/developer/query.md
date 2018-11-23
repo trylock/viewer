@@ -37,9 +37,7 @@ We have to come up with an optimal search order of directories. The query evalua
 
 ### Nested queries 
 
-The compiler will automatically flatten nested queries (including query views).  
-
-TODO: how?
+The compiler will automatically flatten nested queries (including query views). Conditions in the `where` clause are joined using the `and` operator. Order of the outer query is used (for example: `select (select a order by b) order by c` will be ordered by `c` only).
 
 ### Set operators
 

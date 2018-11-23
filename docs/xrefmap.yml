@@ -3057,6 +3057,12 @@ references:
   fullName.vb: Viewer.Data.EntityComparer.EntityComparer(System.Collections.Generic.List(Of Viewer.Data.SortParameter))
   nameWithType: EntityComparer.EntityComparer(List<SortParameter>)
   nameWithType.vb: EntityComparer.EntityComparer(List(Of SortParameter))
+- uid: Viewer.Data.EntityComparer.#ctor(Viewer.Data.EntityComparer,Viewer.Data.EntityComparer)
+  name: EntityComparer(EntityComparer, EntityComparer)
+  href: api/Viewer.Data.EntityComparer.html#Viewer_Data_EntityComparer__ctor_Viewer_Data_EntityComparer_Viewer_Data_EntityComparer_
+  commentId: M:Viewer.Data.EntityComparer.#ctor(Viewer.Data.EntityComparer,Viewer.Data.EntityComparer)
+  fullName: Viewer.Data.EntityComparer.EntityComparer(Viewer.Data.EntityComparer, Viewer.Data.EntityComparer)
+  nameWithType: EntityComparer.EntityComparer(EntityComparer, EntityComparer)
 - uid: Viewer.Data.EntityComparer.#ctor*
   name: EntityComparer
   href: api/Viewer.Data.EntityComparer.html#Viewer_Data_EntityComparer__ctor_
@@ -5632,54 +5638,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Data.SQLite.Attributes.SetThumbnail
   nameWithType: Attributes.SetThumbnail
-- uid: Viewer.Data.SQLite.AttributeStatistics
-  name: AttributeStatistics
-  href: api/Viewer.Data.SQLite.AttributeStatistics.html
-  commentId: T:Viewer.Data.SQLite.AttributeStatistics
-  fullName: Viewer.Data.SQLite.AttributeStatistics
-  nameWithType: AttributeStatistics
-- uid: Viewer.Data.SQLite.AttributeStatistics.#ctor(System.Data.SQLite.SQLiteConnection,System.Collections.Generic.IEnumerable{System.String})
-  name: AttributeStatistics(SQLiteConnection, IEnumerable<String>)
-  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics__ctor_System_Data_SQLite_SQLiteConnection_System_Collections_Generic_IEnumerable_System_String__
-  commentId: M:Viewer.Data.SQLite.AttributeStatistics.#ctor(System.Data.SQLite.SQLiteConnection,System.Collections.Generic.IEnumerable{System.String})
-  name.vb: AttributeStatistics(SQLiteConnection, IEnumerable(Of String))
-  fullName: Viewer.Data.SQLite.AttributeStatistics.AttributeStatistics(System.Data.SQLite.SQLiteConnection, System.Collections.Generic.IEnumerable<System.String>)
-  fullName.vb: Viewer.Data.SQLite.AttributeStatistics.AttributeStatistics(System.Data.SQLite.SQLiteConnection, System.Collections.Generic.IEnumerable(Of System.String))
-  nameWithType: AttributeStatistics.AttributeStatistics(SQLiteConnection, IEnumerable<String>)
-  nameWithType.vb: AttributeStatistics.AttributeStatistics(SQLiteConnection, IEnumerable(Of String))
-- uid: Viewer.Data.SQLite.AttributeStatistics.#ctor*
-  name: AttributeStatistics
-  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics__ctor_
-  commentId: Overload:Viewer.Data.SQLite.AttributeStatistics.#ctor
-  isSpec: "True"
-  fullName: Viewer.Data.SQLite.AttributeStatistics.AttributeStatistics
-  nameWithType: AttributeStatistics.AttributeStatistics
-- uid: Viewer.Data.SQLite.AttributeStatistics.Dispose
-  name: Dispose()
-  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics_Dispose
-  commentId: M:Viewer.Data.SQLite.AttributeStatistics.Dispose
-  fullName: Viewer.Data.SQLite.AttributeStatistics.Dispose()
-  nameWithType: AttributeStatistics.Dispose()
-- uid: Viewer.Data.SQLite.AttributeStatistics.Dispose*
-  name: Dispose
-  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics_Dispose_
-  commentId: Overload:Viewer.Data.SQLite.AttributeStatistics.Dispose
-  isSpec: "True"
-  fullName: Viewer.Data.SQLite.AttributeStatistics.Dispose
-  nameWithType: AttributeStatistics.Dispose
-- uid: Viewer.Data.SQLite.AttributeStatistics.GetStatistics(System.String)
-  name: GetStatistics(String)
-  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics_GetStatistics_System_String_
-  commentId: M:Viewer.Data.SQLite.AttributeStatistics.GetStatistics(System.String)
-  fullName: Viewer.Data.SQLite.AttributeStatistics.GetStatistics(System.String)
-  nameWithType: AttributeStatistics.GetStatistics(String)
-- uid: Viewer.Data.SQLite.AttributeStatistics.GetStatistics*
-  name: GetStatistics
-  href: api/Viewer.Data.SQLite.AttributeStatistics.html#Viewer_Data_SQLite_AttributeStatistics_GetStatistics_
-  commentId: Overload:Viewer.Data.SQLite.AttributeStatistics.GetStatistics
-  isSpec: "True"
-  fullName: Viewer.Data.SQLite.AttributeStatistics.GetStatistics
-  nameWithType: AttributeStatistics.GetStatistics
 - uid: Viewer.Data.SQLite.AttributeStatisticsFactory
   name: AttributeStatisticsFactory
   href: api/Viewer.Data.SQLite.AttributeStatisticsFactory.html
@@ -8263,12 +8221,12 @@ references:
   fullName.vb: Viewer.Query.EmptyQuery.Execute(System.IProgress(Of Viewer.Query.QueryProgressReport), System.Threading.CancellationToken)
   nameWithType: EmptyQuery.Execute(IProgress<QueryProgressReport>, CancellationToken)
   nameWithType.vb: EmptyQuery.Execute(IProgress(Of QueryProgressReport), CancellationToken)
-- uid: Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
-  name: Execute(ExecutionOptions, IQueryExecutionListener)
-  href: api/Viewer.Query.EmptyQuery.html#Viewer_Query_EmptyQuery_Execute_Viewer_Query_Execution_ExecutionOptions_Viewer_Query_IQueryExecutionListener_
-  commentId: M:Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
-  fullName: Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions, Viewer.Query.IQueryExecutionListener)
-  nameWithType: EmptyQuery.Execute(ExecutionOptions, IQueryExecutionListener)
+- uid: Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  name: Execute(ExecutionOptions)
+  href: api/Viewer.Query.EmptyQuery.html#Viewer_Query_EmptyQuery_Execute_Viewer_Query_Execution_ExecutionOptions_
+  commentId: M:Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  fullName: Viewer.Query.EmptyQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  nameWithType: EmptyQuery.Execute(ExecutionOptions)
 - uid: Viewer.Query.EmptyQuery.Execute*
   name: Execute
   href: api/Viewer.Query.EmptyQuery.html#Viewer_Query_EmptyQuery_Execute_
@@ -8340,19 +8298,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.Execution.ExecutionOptions.CancellationToken
   nameWithType: ExecutionOptions.CancellationToken
-- uid: Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
-  name: MaxDegreeOfParallelism
-  href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_MaxDegreeOfParallelism
-  commentId: P:Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
-  fullName: Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
-  nameWithType: ExecutionOptions.MaxDegreeOfParallelism
-- uid: Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism*
-  name: MaxDegreeOfParallelism
-  href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_MaxDegreeOfParallelism_
-  commentId: Overload:Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
-  isSpec: "True"
-  fullName: Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism
-  nameWithType: ExecutionOptions.MaxDegreeOfParallelism
 - uid: Viewer.Query.Execution.ExecutionOptions.Progress
   name: Progress
   href: api/Viewer.Query.Execution.ExecutionOptions.html#Viewer_Query_Execution_ExecutionOptions_Progress
@@ -8603,12 +8548,12 @@ references:
   fullName.vb: Viewer.Query.IExecutableQuery.Execute(System.IProgress(Of Viewer.Query.QueryProgressReport), System.Threading.CancellationToken)
   nameWithType: IExecutableQuery.Execute(IProgress<QueryProgressReport>, CancellationToken)
   nameWithType.vb: IExecutableQuery.Execute(IProgress(Of QueryProgressReport), CancellationToken)
-- uid: Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
-  name: Execute(ExecutionOptions, IQueryExecutionListener)
-  href: api/Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Execute_Viewer_Query_Execution_ExecutionOptions_Viewer_Query_IQueryExecutionListener_
-  commentId: M:Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
-  fullName: Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions, Viewer.Query.IQueryExecutionListener)
-  nameWithType: IExecutableQuery.Execute(ExecutionOptions, IQueryExecutionListener)
+- uid: Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  name: Execute(ExecutionOptions)
+  href: api/Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Execute_Viewer_Query_Execution_ExecutionOptions_
+  commentId: M:Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  fullName: Viewer.Query.IExecutableQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  nameWithType: IExecutableQuery.Execute(ExecutionOptions)
 - uid: Viewer.Query.IExecutableQuery.Execute*
   name: Execute
   href: api/Viewer.Query.IExecutableQuery.html#Viewer_Query_IExecutableQuery_Execute_
@@ -8870,38 +8815,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.IQueryErrorListener.OnRuntimeError
   nameWithType: IQueryErrorListener.OnRuntimeError
-- uid: Viewer.Query.IQueryExecutionListener
-  name: IQueryExecutionListener
-  href: api/Viewer.Query.IQueryExecutionListener.html
-  commentId: T:Viewer.Query.IQueryExecutionListener
-  fullName: Viewer.Query.IQueryExecutionListener
-  nameWithType: IQueryExecutionListener
-- uid: Viewer.Query.IQueryExecutionListener.OnCompleted
-  name: OnCompleted()
-  href: api/Viewer.Query.IQueryExecutionListener.html#Viewer_Query_IQueryExecutionListener_OnCompleted
-  commentId: M:Viewer.Query.IQueryExecutionListener.OnCompleted
-  fullName: Viewer.Query.IQueryExecutionListener.OnCompleted()
-  nameWithType: IQueryExecutionListener.OnCompleted()
-- uid: Viewer.Query.IQueryExecutionListener.OnCompleted*
-  name: OnCompleted
-  href: api/Viewer.Query.IQueryExecutionListener.html#Viewer_Query_IQueryExecutionListener_OnCompleted_
-  commentId: Overload:Viewer.Query.IQueryExecutionListener.OnCompleted
-  isSpec: "True"
-  fullName: Viewer.Query.IQueryExecutionListener.OnCompleted
-  nameWithType: IQueryExecutionListener.OnCompleted
-- uid: Viewer.Query.IQueryExecutionListener.OnNext(Viewer.Data.IEntity)
-  name: OnNext(IEntity)
-  href: api/Viewer.Query.IQueryExecutionListener.html#Viewer_Query_IQueryExecutionListener_OnNext_Viewer_Data_IEntity_
-  commentId: M:Viewer.Query.IQueryExecutionListener.OnNext(Viewer.Data.IEntity)
-  fullName: Viewer.Query.IQueryExecutionListener.OnNext(Viewer.Data.IEntity)
-  nameWithType: IQueryExecutionListener.OnNext(IEntity)
-- uid: Viewer.Query.IQueryExecutionListener.OnNext*
-  name: OnNext
-  href: api/Viewer.Query.IQueryExecutionListener.html#Viewer_Query_IQueryExecutionListener_OnNext_
-  commentId: Overload:Viewer.Query.IQueryExecutionListener.OnNext
-  isSpec: "True"
-  fullName: Viewer.Query.IQueryExecutionListener.OnNext
-  nameWithType: IQueryExecutionListener.OnNext
 - uid: Viewer.Query.IQueryFactory
   name: IQueryFactory
   href: api/Viewer.Query.IQueryFactory.html
@@ -9063,19 +8976,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.IQueryParserListener.EnterMultiplication
   nameWithType: IQueryParserListener.EnterMultiplication
-- uid: Viewer.Query.IQueryParserListener.EnterOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  name: EnterOptionalDirection(QueryParser.OptionalDirectionContext)
-  href: api/Viewer.Query.IQueryParserListener.html#Viewer_Query_IQueryParserListener_EnterOptionalDirection_Viewer_Query_QueryParser_OptionalDirectionContext_
-  commentId: M:Viewer.Query.IQueryParserListener.EnterOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  fullName: Viewer.Query.IQueryParserListener.EnterOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  nameWithType: IQueryParserListener.EnterOptionalDirection(QueryParser.OptionalDirectionContext)
-- uid: Viewer.Query.IQueryParserListener.EnterOptionalDirection*
-  name: EnterOptionalDirection
-  href: api/Viewer.Query.IQueryParserListener.html#Viewer_Query_IQueryParserListener_EnterOptionalDirection_
-  commentId: Overload:Viewer.Query.IQueryParserListener.EnterOptionalDirection
-  isSpec: "True"
-  fullName: Viewer.Query.IQueryParserListener.EnterOptionalDirection
-  nameWithType: IQueryParserListener.EnterOptionalDirection
 - uid: Viewer.Query.IQueryParserListener.EnterOptionalOrderBy(Viewer.Query.QueryParser.OptionalOrderByContext)
   name: EnterOptionalOrderBy(QueryParser.OptionalOrderByContext)
   href: api/Viewer.Query.IQueryParserListener.html#Viewer_Query_IQueryParserListener_EnterOptionalOrderBy_Viewer_Query_QueryParser_OptionalOrderByContext_
@@ -9323,19 +9223,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.IQueryParserListener.ExitMultiplication
   nameWithType: IQueryParserListener.ExitMultiplication
-- uid: Viewer.Query.IQueryParserListener.ExitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  name: ExitOptionalDirection(QueryParser.OptionalDirectionContext)
-  href: api/Viewer.Query.IQueryParserListener.html#Viewer_Query_IQueryParserListener_ExitOptionalDirection_Viewer_Query_QueryParser_OptionalDirectionContext_
-  commentId: M:Viewer.Query.IQueryParserListener.ExitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  fullName: Viewer.Query.IQueryParserListener.ExitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  nameWithType: IQueryParserListener.ExitOptionalDirection(QueryParser.OptionalDirectionContext)
-- uid: Viewer.Query.IQueryParserListener.ExitOptionalDirection*
-  name: ExitOptionalDirection
-  href: api/Viewer.Query.IQueryParserListener.html#Viewer_Query_IQueryParserListener_ExitOptionalDirection_
-  commentId: Overload:Viewer.Query.IQueryParserListener.ExitOptionalDirection
-  isSpec: "True"
-  fullName: Viewer.Query.IQueryParserListener.ExitOptionalDirection
-  nameWithType: IQueryParserListener.ExitOptionalDirection
 - uid: Viewer.Query.IQueryParserListener.ExitOptionalOrderBy(Viewer.Query.QueryParser.OptionalOrderByContext)
   name: ExitOptionalOrderBy(QueryParser.OptionalOrderByContext)
   href: api/Viewer.Query.IQueryParserListener.html#Viewer_Query_IQueryParserListener_ExitOptionalOrderBy_Viewer_Query_QueryParser_OptionalOrderByContext_
@@ -9628,23 +9515,6 @@ references:
   fullName.vb: Viewer.Query.IQueryParserVisitor(Of Result).VisitMultiplication
   nameWithType: IQueryParserVisitor<Result>.VisitMultiplication
   nameWithType.vb: IQueryParserVisitor(Of Result).VisitMultiplication
-- uid: Viewer.Query.IQueryParserVisitor`1.VisitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  name: VisitOptionalDirection(QueryParser.OptionalDirectionContext)
-  href: api/Viewer.Query.IQueryParserVisitor-1.html#Viewer_Query_IQueryParserVisitor_1_VisitOptionalDirection_Viewer_Query_QueryParser_OptionalDirectionContext_
-  commentId: M:Viewer.Query.IQueryParserVisitor`1.VisitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  fullName: Viewer.Query.IQueryParserVisitor<Result>.VisitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  fullName.vb: Viewer.Query.IQueryParserVisitor(Of Result).VisitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  nameWithType: IQueryParserVisitor<Result>.VisitOptionalDirection(QueryParser.OptionalDirectionContext)
-  nameWithType.vb: IQueryParserVisitor(Of Result).VisitOptionalDirection(QueryParser.OptionalDirectionContext)
-- uid: Viewer.Query.IQueryParserVisitor`1.VisitOptionalDirection*
-  name: VisitOptionalDirection
-  href: api/Viewer.Query.IQueryParserVisitor-1.html#Viewer_Query_IQueryParserVisitor_1_VisitOptionalDirection_
-  commentId: Overload:Viewer.Query.IQueryParserVisitor`1.VisitOptionalDirection
-  isSpec: "True"
-  fullName: Viewer.Query.IQueryParserVisitor<Result>.VisitOptionalDirection
-  fullName.vb: Viewer.Query.IQueryParserVisitor(Of Result).VisitOptionalDirection
-  nameWithType: IQueryParserVisitor<Result>.VisitOptionalDirection
-  nameWithType.vb: IQueryParserVisitor(Of Result).VisitOptionalDirection
 - uid: Viewer.Query.IQueryParserVisitor`1.VisitOptionalOrderBy(Viewer.Query.QueryParser.OptionalOrderByContext)
   name: VisitOptionalOrderBy(QueryParser.OptionalOrderByContext)
   href: api/Viewer.Query.IQueryParserVisitor-1.html#Viewer_Query_IQueryParserVisitor_1_VisitOptionalOrderBy_Viewer_Query_QueryParser_OptionalOrderByContext_
@@ -10000,12 +9870,12 @@ references:
   fullName.vb: Viewer.Query.MemoryQuery.Execute(System.IProgress(Of Viewer.Query.QueryProgressReport), System.Threading.CancellationToken)
   nameWithType: MemoryQuery.Execute(IProgress<QueryProgressReport>, CancellationToken)
   nameWithType.vb: MemoryQuery.Execute(IProgress(Of QueryProgressReport), CancellationToken)
-- uid: Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
-  name: Execute(ExecutionOptions, IQueryExecutionListener)
-  href: api/Viewer.Query.MemoryQuery.html#Viewer_Query_MemoryQuery_Execute_Viewer_Query_Execution_ExecutionOptions_Viewer_Query_IQueryExecutionListener_
-  commentId: M:Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions,Viewer.Query.IQueryExecutionListener)
-  fullName: Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions, Viewer.Query.IQueryExecutionListener)
-  nameWithType: MemoryQuery.Execute(ExecutionOptions, IQueryExecutionListener)
+- uid: Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  name: Execute(ExecutionOptions)
+  href: api/Viewer.Query.MemoryQuery.html#Viewer_Query_MemoryQuery_Execute_Viewer_Query_Execution_ExecutionOptions_
+  commentId: M:Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  fullName: Viewer.Query.MemoryQuery.Execute(Viewer.Query.Execution.ExecutionOptions)
+  nameWithType: MemoryQuery.Execute(ExecutionOptions)
 - uid: Viewer.Query.MemoryQuery.Execute*
   name: Execute
   href: api/Viewer.Query.MemoryQuery.html#Viewer_Query_MemoryQuery_Execute_
@@ -10254,6 +10124,12 @@ references:
   commentId: F:Viewer.Query.QueryLexer.COMPLEX_ID
   fullName: Viewer.Query.QueryLexer.COMPLEX_ID
   nameWithType: QueryLexer.COMPLEX_ID
+- uid: Viewer.Query.QueryLexer.COMPLEX_ID_CONTENT
+  name: COMPLEX_ID_CONTENT
+  href: api/Viewer.Query.QueryLexer.html#Viewer_Query_QueryLexer_COMPLEX_ID_CONTENT
+  commentId: F:Viewer.Query.QueryLexer.COMPLEX_ID_CONTENT
+  fullName: Viewer.Query.QueryLexer.COMPLEX_ID_CONTENT
+  nameWithType: QueryLexer.COMPLEX_ID_CONTENT
 - uid: Viewer.Query.QueryLexer.decisionToDFA
   name: decisionToDFA
   href: api/Viewer.Query.QueryLexer.html#Viewer_Query_QueryLexer_decisionToDFA
@@ -10291,6 +10167,12 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryLexer.GrammarFileName
   nameWithType: QueryLexer.GrammarFileName
+- uid: Viewer.Query.QueryLexer.GRAVE
+  name: GRAVE
+  href: api/Viewer.Query.QueryLexer.html#Viewer_Query_QueryLexer_GRAVE
+  commentId: F:Viewer.Query.QueryLexer.GRAVE
+  fullName: Viewer.Query.QueryLexer.GRAVE
+  nameWithType: QueryLexer.GRAVE
 - uid: Viewer.Query.QueryLexer.ID
   name: ID
   href: api/Viewer.Query.QueryLexer.html#Viewer_Query_QueryLexer_ID
@@ -10828,6 +10710,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.ConjunctionContext.AND
   fullName: Viewer.Query.QueryParser.ConjunctionContext.AND()
   nameWithType: QueryParser.ConjunctionContext.AND()
+- uid: Viewer.Query.QueryParser.ConjunctionContext.AND(System.Int32)
+  name: AND(Int32)
+  href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_AND_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.ConjunctionContext.AND(System.Int32)
+  fullName: Viewer.Query.QueryParser.ConjunctionContext.AND(System.Int32)
+  nameWithType: QueryParser.ConjunctionContext.AND(Int32)
 - uid: Viewer.Query.QueryParser.ConjunctionContext.AND*
   name: AND
   href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_AND_
@@ -10835,19 +10723,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.ConjunctionContext.AND
   nameWithType: QueryParser.ConjunctionContext.AND
-- uid: Viewer.Query.QueryParser.ConjunctionContext.conjunction
-  name: conjunction()
-  href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_conjunction
-  commentId: M:Viewer.Query.QueryParser.ConjunctionContext.conjunction
-  fullName: Viewer.Query.QueryParser.ConjunctionContext.conjunction()
-  nameWithType: QueryParser.ConjunctionContext.conjunction()
-- uid: Viewer.Query.QueryParser.ConjunctionContext.conjunction*
-  name: conjunction
-  href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_conjunction_
-  commentId: Overload:Viewer.Query.QueryParser.ConjunctionContext.conjunction
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ConjunctionContext.conjunction
-  nameWithType: QueryParser.ConjunctionContext.conjunction
 - uid: Viewer.Query.QueryParser.ConjunctionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
   name: EnterRule(IParseTreeListener)
   href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
@@ -10880,6 +10755,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.ConjunctionContext.literal
   fullName: Viewer.Query.QueryParser.ConjunctionContext.literal()
   nameWithType: QueryParser.ConjunctionContext.literal()
+- uid: Viewer.Query.QueryParser.ConjunctionContext.literal(System.Int32)
+  name: literal(Int32)
+  href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_literal_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.ConjunctionContext.literal(System.Int32)
+  fullName: Viewer.Query.QueryParser.ConjunctionContext.literal(System.Int32)
+  nameWithType: QueryParser.ConjunctionContext.literal(Int32)
 - uid: Viewer.Query.QueryParser.ConjunctionContext.literal*
   name: literal
   href: api/Viewer.Query.QueryParser.ConjunctionContext.html#Viewer_Query_QueryParser_ConjunctionContext_literal_
@@ -11091,6 +10972,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.ExpressionContext.ADD_SUB
   fullName: Viewer.Query.QueryParser.ExpressionContext.ADD_SUB()
   nameWithType: QueryParser.ExpressionContext.ADD_SUB()
+- uid: Viewer.Query.QueryParser.ExpressionContext.ADD_SUB(System.Int32)
+  name: ADD_SUB(Int32)
+  href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_ADD_SUB_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.ExpressionContext.ADD_SUB(System.Int32)
+  fullName: Viewer.Query.QueryParser.ExpressionContext.ADD_SUB(System.Int32)
+  nameWithType: QueryParser.ExpressionContext.ADD_SUB(Int32)
 - uid: Viewer.Query.QueryParser.ExpressionContext.ADD_SUB*
   name: ADD_SUB
   href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_ADD_SUB_
@@ -11124,25 +11011,18 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.ExpressionContext.ExitRule
   nameWithType: QueryParser.ExpressionContext.ExitRule
-- uid: Viewer.Query.QueryParser.ExpressionContext.expression
-  name: expression()
-  href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_expression
-  commentId: M:Viewer.Query.QueryParser.ExpressionContext.expression
-  fullName: Viewer.Query.QueryParser.ExpressionContext.expression()
-  nameWithType: QueryParser.ExpressionContext.expression()
-- uid: Viewer.Query.QueryParser.ExpressionContext.expression*
-  name: expression
-  href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_expression_
-  commentId: Overload:Viewer.Query.QueryParser.ExpressionContext.expression
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.ExpressionContext.expression
-  nameWithType: QueryParser.ExpressionContext.expression
 - uid: Viewer.Query.QueryParser.ExpressionContext.multiplication
   name: multiplication()
   href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_multiplication
   commentId: M:Viewer.Query.QueryParser.ExpressionContext.multiplication
   fullName: Viewer.Query.QueryParser.ExpressionContext.multiplication()
   nameWithType: QueryParser.ExpressionContext.multiplication()
+- uid: Viewer.Query.QueryParser.ExpressionContext.multiplication(System.Int32)
+  name: multiplication(Int32)
+  href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_multiplication_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.ExpressionContext.multiplication(System.Int32)
+  fullName: Viewer.Query.QueryParser.ExpressionContext.multiplication(System.Int32)
+  nameWithType: QueryParser.ExpressionContext.multiplication(Int32)
 - uid: Viewer.Query.QueryParser.ExpressionContext.multiplication*
   name: multiplication
   href: api/Viewer.Query.QueryParser.ExpressionContext.html#Viewer_Query_QueryParser_ExpressionContext_multiplication_
@@ -11380,6 +11260,12 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.GrammarFileName
   nameWithType: QueryParser.GrammarFileName
+- uid: Viewer.Query.QueryParser.GRAVE
+  name: GRAVE
+  href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_GRAVE
+  commentId: F:Viewer.Query.QueryParser.GRAVE
+  fullName: Viewer.Query.QueryParser.GRAVE
+  nameWithType: QueryParser.GRAVE
 - uid: Viewer.Query.QueryParser.ID
   name: ID
   href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_ID
@@ -11728,6 +11614,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.MultiplicationContext.factor
   fullName: Viewer.Query.QueryParser.MultiplicationContext.factor()
   nameWithType: QueryParser.MultiplicationContext.factor()
+- uid: Viewer.Query.QueryParser.MultiplicationContext.factor(System.Int32)
+  name: factor(Int32)
+  href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_factor_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.MultiplicationContext.factor(System.Int32)
+  fullName: Viewer.Query.QueryParser.MultiplicationContext.factor(System.Int32)
+  nameWithType: QueryParser.MultiplicationContext.factor(Int32)
 - uid: Viewer.Query.QueryParser.MultiplicationContext.factor*
   name: factor
   href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_factor_
@@ -11741,6 +11633,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.MultiplicationContext.MULT_DIV
   fullName: Viewer.Query.QueryParser.MultiplicationContext.MULT_DIV()
   nameWithType: QueryParser.MultiplicationContext.MULT_DIV()
+- uid: Viewer.Query.QueryParser.MultiplicationContext.MULT_DIV(System.Int32)
+  name: MULT_DIV(Int32)
+  href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_MULT_DIV_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.MultiplicationContext.MULT_DIV(System.Int32)
+  fullName: Viewer.Query.QueryParser.MultiplicationContext.MULT_DIV(System.Int32)
+  nameWithType: QueryParser.MultiplicationContext.MULT_DIV(Int32)
 - uid: Viewer.Query.QueryParser.MultiplicationContext.MULT_DIV*
   name: MULT_DIV
   href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_MULT_DIV_
@@ -11748,19 +11646,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.MultiplicationContext.MULT_DIV
   nameWithType: QueryParser.MultiplicationContext.MULT_DIV
-- uid: Viewer.Query.QueryParser.MultiplicationContext.multiplication
-  name: multiplication()
-  href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_multiplication
-  commentId: M:Viewer.Query.QueryParser.MultiplicationContext.multiplication
-  fullName: Viewer.Query.QueryParser.MultiplicationContext.multiplication()
-  nameWithType: QueryParser.MultiplicationContext.multiplication()
-- uid: Viewer.Query.QueryParser.MultiplicationContext.multiplication*
-  name: multiplication
-  href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_multiplication_
-  commentId: Overload:Viewer.Query.QueryParser.MultiplicationContext.multiplication
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.MultiplicationContext.multiplication
-  nameWithType: QueryParser.MultiplicationContext.multiplication
 - uid: Viewer.Query.QueryParser.MultiplicationContext.RuleIndex
   name: RuleIndex
   href: api/Viewer.Query.QueryParser.MultiplicationContext.html#Viewer_Query_QueryParser_MultiplicationContext_RuleIndex
@@ -11780,106 +11665,6 @@ references:
   commentId: F:Viewer.Query.QueryParser.NOT
   fullName: Viewer.Query.QueryParser.NOT
   nameWithType: QueryParser.NOT
-- uid: Viewer.Query.QueryParser.optionalDirection
-  name: optionalDirection()
-  href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_optionalDirection
-  commentId: M:Viewer.Query.QueryParser.optionalDirection
-  fullName: Viewer.Query.QueryParser.optionalDirection()
-  nameWithType: QueryParser.optionalDirection()
-- uid: Viewer.Query.QueryParser.optionalDirection*
-  name: optionalDirection
-  href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_optionalDirection_
-  commentId: Overload:Viewer.Query.QueryParser.optionalDirection
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.optionalDirection
-  nameWithType: QueryParser.optionalDirection
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext
-  name: QueryParser.OptionalDirectionContext
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html
-  commentId: T:Viewer.Query.QueryParser.OptionalDirectionContext
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext
-  nameWithType: QueryParser.OptionalDirectionContext
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.#ctor(Antlr4.Runtime.ParserRuleContext,System.Int32)
-  name: OptionalDirectionContext(ParserRuleContext, Int32)
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext__ctor_Antlr4_Runtime_ParserRuleContext_System_Int32_
-  commentId: M:Viewer.Query.QueryParser.OptionalDirectionContext.#ctor(Antlr4.Runtime.ParserRuleContext,System.Int32)
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.OptionalDirectionContext(Antlr4.Runtime.ParserRuleContext, System.Int32)
-  nameWithType: QueryParser.OptionalDirectionContext.OptionalDirectionContext(ParserRuleContext, Int32)
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.#ctor*
-  name: OptionalDirectionContext
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext__ctor_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalDirectionContext.#ctor
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.OptionalDirectionContext
-  nameWithType: QueryParser.OptionalDirectionContext.OptionalDirectionContext
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.Accept*
-  name: Accept
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_Accept_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalDirectionContext.Accept
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.Accept
-  nameWithType: QueryParser.OptionalDirectionContext.Accept
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.Accept``1(Antlr4.Runtime.Tree.IParseTreeVisitor{``0})
-  name: Accept<TResult>(IParseTreeVisitor<TResult>)
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_Accept__1_Antlr4_Runtime_Tree_IParseTreeVisitor___0__
-  commentId: M:Viewer.Query.QueryParser.OptionalDirectionContext.Accept``1(Antlr4.Runtime.Tree.IParseTreeVisitor{``0})
-  name.vb: Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.Accept<TResult>(Antlr4.Runtime.Tree.IParseTreeVisitor<TResult>)
-  fullName.vb: Viewer.Query.QueryParser.OptionalDirectionContext.Accept(Of TResult)(Antlr4.Runtime.Tree.IParseTreeVisitor(Of TResult))
-  nameWithType: QueryParser.OptionalDirectionContext.Accept<TResult>(IParseTreeVisitor<TResult>)
-  nameWithType.vb: QueryParser.OptionalDirectionContext.Accept(Of TResult)(IParseTreeVisitor(Of TResult))
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.DIRECTION
-  name: DIRECTION()
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_DIRECTION
-  commentId: M:Viewer.Query.QueryParser.OptionalDirectionContext.DIRECTION
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.DIRECTION()
-  nameWithType: QueryParser.OptionalDirectionContext.DIRECTION()
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.DIRECTION*
-  name: DIRECTION
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_DIRECTION_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalDirectionContext.DIRECTION
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.DIRECTION
-  nameWithType: QueryParser.OptionalDirectionContext.DIRECTION
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: EnterRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OptionalDirectionContext.EnterRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule*
-  name: EnterRule
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_EnterRule_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.EnterRule
-  nameWithType: QueryParser.OptionalDirectionContext.EnterRule
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  name: ExitRule(IParseTreeListener)
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_ExitRule_Antlr4_Runtime_Tree_IParseTreeListener_
-  commentId: M:Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule(Antlr4.Runtime.Tree.IParseTreeListener)
-  nameWithType: QueryParser.OptionalDirectionContext.ExitRule(IParseTreeListener)
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule*
-  name: ExitRule
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_ExitRule_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.ExitRule
-  nameWithType: QueryParser.OptionalDirectionContext.ExitRule
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.RuleIndex
-  name: RuleIndex
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_RuleIndex
-  commentId: P:Viewer.Query.QueryParser.OptionalDirectionContext.RuleIndex
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.RuleIndex
-  nameWithType: QueryParser.OptionalDirectionContext.RuleIndex
-- uid: Viewer.Query.QueryParser.OptionalDirectionContext.RuleIndex*
-  name: RuleIndex
-  href: api/Viewer.Query.QueryParser.OptionalDirectionContext.html#Viewer_Query_QueryParser_OptionalDirectionContext_RuleIndex_
-  commentId: Overload:Viewer.Query.QueryParser.OptionalDirectionContext.RuleIndex
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OptionalDirectionContext.RuleIndex
-  nameWithType: QueryParser.OptionalDirectionContext.RuleIndex
 - uid: Viewer.Query.QueryParser.optionalOrderBy
   name: optionalOrderBy()
   href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_optionalOrderBy
@@ -12192,6 +11977,19 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.OrderByKeyContext.comparison
   nameWithType: QueryParser.OrderByKeyContext.comparison
+- uid: Viewer.Query.QueryParser.OrderByKeyContext.DIRECTION
+  name: DIRECTION()
+  href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_DIRECTION
+  commentId: M:Viewer.Query.QueryParser.OrderByKeyContext.DIRECTION
+  fullName: Viewer.Query.QueryParser.OrderByKeyContext.DIRECTION()
+  nameWithType: QueryParser.OrderByKeyContext.DIRECTION()
+- uid: Viewer.Query.QueryParser.OrderByKeyContext.DIRECTION*
+  name: DIRECTION
+  href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_DIRECTION_
+  commentId: Overload:Viewer.Query.QueryParser.OrderByKeyContext.DIRECTION
+  isSpec: "True"
+  fullName: Viewer.Query.QueryParser.OrderByKeyContext.DIRECTION
+  nameWithType: QueryParser.OrderByKeyContext.DIRECTION
 - uid: Viewer.Query.QueryParser.OrderByKeyContext.EnterRule(Antlr4.Runtime.Tree.IParseTreeListener)
   name: EnterRule(IParseTreeListener)
   href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_EnterRule_Antlr4_Runtime_Tree_IParseTreeListener_
@@ -12218,19 +12016,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.OrderByKeyContext.ExitRule
   nameWithType: QueryParser.OrderByKeyContext.ExitRule
-- uid: Viewer.Query.QueryParser.OrderByKeyContext.optionalDirection
-  name: optionalDirection()
-  href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_optionalDirection
-  commentId: M:Viewer.Query.QueryParser.OrderByKeyContext.optionalDirection
-  fullName: Viewer.Query.QueryParser.OrderByKeyContext.optionalDirection()
-  nameWithType: QueryParser.OrderByKeyContext.optionalDirection()
-- uid: Viewer.Query.QueryParser.OrderByKeyContext.optionalDirection*
-  name: optionalDirection
-  href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_optionalDirection_
-  commentId: Overload:Viewer.Query.QueryParser.OrderByKeyContext.optionalDirection
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.OrderByKeyContext.optionalDirection
-  nameWithType: QueryParser.OrderByKeyContext.optionalDirection
 - uid: Viewer.Query.QueryParser.OrderByKeyContext.RuleIndex
   name: RuleIndex
   href: api/Viewer.Query.QueryParser.OrderByKeyContext.html#Viewer_Query_QueryParser_OrderByKeyContext_RuleIndex
@@ -12429,6 +12214,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.PredicateContext.conjunction
   fullName: Viewer.Query.QueryParser.PredicateContext.conjunction()
   nameWithType: QueryParser.PredicateContext.conjunction()
+- uid: Viewer.Query.QueryParser.PredicateContext.conjunction(System.Int32)
+  name: conjunction(Int32)
+  href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_conjunction_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.PredicateContext.conjunction(System.Int32)
+  fullName: Viewer.Query.QueryParser.PredicateContext.conjunction(System.Int32)
+  nameWithType: QueryParser.PredicateContext.conjunction(Int32)
 - uid: Viewer.Query.QueryParser.PredicateContext.conjunction*
   name: conjunction
   href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_conjunction_
@@ -12468,6 +12259,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.PredicateContext.OR
   fullName: Viewer.Query.QueryParser.PredicateContext.OR()
   nameWithType: QueryParser.PredicateContext.OR()
+- uid: Viewer.Query.QueryParser.PredicateContext.OR(System.Int32)
+  name: OR(Int32)
+  href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_OR_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.PredicateContext.OR(System.Int32)
+  fullName: Viewer.Query.QueryParser.PredicateContext.OR(System.Int32)
+  nameWithType: QueryParser.PredicateContext.OR(Int32)
 - uid: Viewer.Query.QueryParser.PredicateContext.OR*
   name: OR
   href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_OR_
@@ -12475,19 +12272,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.PredicateContext.OR
   nameWithType: QueryParser.PredicateContext.OR
-- uid: Viewer.Query.QueryParser.PredicateContext.predicate
-  name: predicate()
-  href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_predicate
-  commentId: M:Viewer.Query.QueryParser.PredicateContext.predicate
-  fullName: Viewer.Query.QueryParser.PredicateContext.predicate()
-  nameWithType: QueryParser.PredicateContext.predicate()
-- uid: Viewer.Query.QueryParser.PredicateContext.predicate*
-  name: predicate
-  href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_predicate_
-  commentId: Overload:Viewer.Query.QueryParser.PredicateContext.predicate
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.PredicateContext.predicate
-  nameWithType: QueryParser.PredicateContext.predicate
 - uid: Viewer.Query.QueryParser.PredicateContext.RuleIndex
   name: RuleIndex
   href: api/Viewer.Query.QueryParser.PredicateContext.html#Viewer_Query_QueryParser_PredicateContext_RuleIndex
@@ -12694,6 +12478,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.QueryExpressionContext.intersection
   fullName: Viewer.Query.QueryParser.QueryExpressionContext.intersection()
   nameWithType: QueryParser.QueryExpressionContext.intersection()
+- uid: Viewer.Query.QueryParser.QueryExpressionContext.intersection(System.Int32)
+  name: intersection(Int32)
+  href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_intersection_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.QueryExpressionContext.intersection(System.Int32)
+  fullName: Viewer.Query.QueryParser.QueryExpressionContext.intersection(System.Int32)
+  nameWithType: QueryParser.QueryExpressionContext.intersection(Int32)
 - uid: Viewer.Query.QueryParser.QueryExpressionContext.intersection*
   name: intersection
   href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_intersection_
@@ -12701,19 +12491,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParser.QueryExpressionContext.intersection
   nameWithType: QueryParser.QueryExpressionContext.intersection
-- uid: Viewer.Query.QueryParser.QueryExpressionContext.queryExpression
-  name: queryExpression()
-  href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_queryExpression
-  commentId: M:Viewer.Query.QueryParser.QueryExpressionContext.queryExpression
-  fullName: Viewer.Query.QueryParser.QueryExpressionContext.queryExpression()
-  nameWithType: QueryParser.QueryExpressionContext.queryExpression()
-- uid: Viewer.Query.QueryParser.QueryExpressionContext.queryExpression*
-  name: queryExpression
-  href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_queryExpression_
-  commentId: Overload:Viewer.Query.QueryParser.QueryExpressionContext.queryExpression
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.QueryExpressionContext.queryExpression
-  nameWithType: QueryParser.QueryExpressionContext.queryExpression
 - uid: Viewer.Query.QueryParser.QueryExpressionContext.RuleIndex
   name: RuleIndex
   href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_RuleIndex
@@ -12733,6 +12510,12 @@ references:
   commentId: M:Viewer.Query.QueryParser.QueryExpressionContext.UNION_EXCEPT
   fullName: Viewer.Query.QueryParser.QueryExpressionContext.UNION_EXCEPT()
   nameWithType: QueryParser.QueryExpressionContext.UNION_EXCEPT()
+- uid: Viewer.Query.QueryParser.QueryExpressionContext.UNION_EXCEPT(System.Int32)
+  name: UNION_EXCEPT(Int32)
+  href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_UNION_EXCEPT_System_Int32_
+  commentId: M:Viewer.Query.QueryParser.QueryExpressionContext.UNION_EXCEPT(System.Int32)
+  fullName: Viewer.Query.QueryParser.QueryExpressionContext.UNION_EXCEPT(System.Int32)
+  nameWithType: QueryParser.QueryExpressionContext.UNION_EXCEPT(Int32)
 - uid: Viewer.Query.QueryParser.QueryExpressionContext.UNION_EXCEPT*
   name: UNION_EXCEPT
   href: api/Viewer.Query.QueryParser.QueryExpressionContext.html#Viewer_Query_QueryParser_QueryExpressionContext_UNION_EXCEPT_
@@ -12957,12 +12740,6 @@ references:
   commentId: F:Viewer.Query.QueryParser.RULE_multiplication
   fullName: Viewer.Query.QueryParser.RULE_multiplication
   nameWithType: QueryParser.RULE_multiplication
-- uid: Viewer.Query.QueryParser.RULE_optionalDirection
-  name: RULE_optionalDirection
-  href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_RULE_optionalDirection
-  commentId: F:Viewer.Query.QueryParser.RULE_optionalDirection
-  fullName: Viewer.Query.QueryParser.RULE_optionalDirection
-  nameWithType: QueryParser.RULE_optionalDirection
 - uid: Viewer.Query.QueryParser.RULE_optionalOrderBy
   name: RULE_optionalOrderBy
   href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_RULE_optionalOrderBy
@@ -13048,19 +12825,6 @@ references:
   commentId: F:Viewer.Query.QueryParser.SELECT
   fullName: Viewer.Query.QueryParser.SELECT
   nameWithType: QueryParser.SELECT
-- uid: Viewer.Query.QueryParser.Sempred(Antlr4.Runtime.RuleContext,System.Int32,System.Int32)
-  name: Sempred(RuleContext, Int32, Int32)
-  href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_Sempred_Antlr4_Runtime_RuleContext_System_Int32_System_Int32_
-  commentId: M:Viewer.Query.QueryParser.Sempred(Antlr4.Runtime.RuleContext,System.Int32,System.Int32)
-  fullName: Viewer.Query.QueryParser.Sempred(Antlr4.Runtime.RuleContext, System.Int32, System.Int32)
-  nameWithType: QueryParser.Sempred(RuleContext, Int32, Int32)
-- uid: Viewer.Query.QueryParser.Sempred*
-  name: Sempred
-  href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_Sempred_
-  commentId: Overload:Viewer.Query.QueryParser.Sempred
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParser.Sempred
-  nameWithType: QueryParser.Sempred
 - uid: Viewer.Query.QueryParser.SerializedAtn
   name: SerializedAtn
   href: api/Viewer.Query.QueryParser.html#Viewer_Query_QueryParser_SerializedAtn
@@ -13544,19 +13308,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParserBaseListener.EnterMultiplication
   nameWithType: QueryParserBaseListener.EnterMultiplication
-- uid: Viewer.Query.QueryParserBaseListener.EnterOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  name: EnterOptionalDirection(QueryParser.OptionalDirectionContext)
-  href: api/Viewer.Query.QueryParserBaseListener.html#Viewer_Query_QueryParserBaseListener_EnterOptionalDirection_Viewer_Query_QueryParser_OptionalDirectionContext_
-  commentId: M:Viewer.Query.QueryParserBaseListener.EnterOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  fullName: Viewer.Query.QueryParserBaseListener.EnterOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  nameWithType: QueryParserBaseListener.EnterOptionalDirection(QueryParser.OptionalDirectionContext)
-- uid: Viewer.Query.QueryParserBaseListener.EnterOptionalDirection*
-  name: EnterOptionalDirection
-  href: api/Viewer.Query.QueryParserBaseListener.html#Viewer_Query_QueryParserBaseListener_EnterOptionalDirection_
-  commentId: Overload:Viewer.Query.QueryParserBaseListener.EnterOptionalDirection
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParserBaseListener.EnterOptionalDirection
-  nameWithType: QueryParserBaseListener.EnterOptionalDirection
 - uid: Viewer.Query.QueryParserBaseListener.EnterOptionalOrderBy(Viewer.Query.QueryParser.OptionalOrderByContext)
   name: EnterOptionalOrderBy(QueryParser.OptionalOrderByContext)
   href: api/Viewer.Query.QueryParserBaseListener.html#Viewer_Query_QueryParserBaseListener_EnterOptionalOrderBy_Viewer_Query_QueryParser_OptionalOrderByContext_
@@ -13817,19 +13568,6 @@ references:
   isSpec: "True"
   fullName: Viewer.Query.QueryParserBaseListener.ExitMultiplication
   nameWithType: QueryParserBaseListener.ExitMultiplication
-- uid: Viewer.Query.QueryParserBaseListener.ExitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  name: ExitOptionalDirection(QueryParser.OptionalDirectionContext)
-  href: api/Viewer.Query.QueryParserBaseListener.html#Viewer_Query_QueryParserBaseListener_ExitOptionalDirection_Viewer_Query_QueryParser_OptionalDirectionContext_
-  commentId: M:Viewer.Query.QueryParserBaseListener.ExitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  fullName: Viewer.Query.QueryParserBaseListener.ExitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  nameWithType: QueryParserBaseListener.ExitOptionalDirection(QueryParser.OptionalDirectionContext)
-- uid: Viewer.Query.QueryParserBaseListener.ExitOptionalDirection*
-  name: ExitOptionalDirection
-  href: api/Viewer.Query.QueryParserBaseListener.html#Viewer_Query_QueryParserBaseListener_ExitOptionalDirection_
-  commentId: Overload:Viewer.Query.QueryParserBaseListener.ExitOptionalDirection
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParserBaseListener.ExitOptionalDirection
-  nameWithType: QueryParserBaseListener.ExitOptionalDirection
 - uid: Viewer.Query.QueryParserBaseListener.ExitOptionalOrderBy(Viewer.Query.QueryParser.OptionalOrderByContext)
   name: ExitOptionalOrderBy(QueryParser.OptionalOrderByContext)
   href: api/Viewer.Query.QueryParserBaseListener.html#Viewer_Query_QueryParserBaseListener_ExitOptionalOrderBy_Viewer_Query_QueryParser_OptionalOrderByContext_
@@ -14148,23 +13886,6 @@ references:
   fullName.vb: Viewer.Query.QueryParserBaseVisitor(Of Result).VisitMultiplication
   nameWithType: QueryParserBaseVisitor<Result>.VisitMultiplication
   nameWithType.vb: QueryParserBaseVisitor(Of Result).VisitMultiplication
-- uid: Viewer.Query.QueryParserBaseVisitor`1.VisitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  name: VisitOptionalDirection(QueryParser.OptionalDirectionContext)
-  href: api/Viewer.Query.QueryParserBaseVisitor-1.html#Viewer_Query_QueryParserBaseVisitor_1_VisitOptionalDirection_Viewer_Query_QueryParser_OptionalDirectionContext_
-  commentId: M:Viewer.Query.QueryParserBaseVisitor`1.VisitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  fullName: Viewer.Query.QueryParserBaseVisitor<Result>.VisitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  fullName.vb: Viewer.Query.QueryParserBaseVisitor(Of Result).VisitOptionalDirection(Viewer.Query.QueryParser.OptionalDirectionContext)
-  nameWithType: QueryParserBaseVisitor<Result>.VisitOptionalDirection(QueryParser.OptionalDirectionContext)
-  nameWithType.vb: QueryParserBaseVisitor(Of Result).VisitOptionalDirection(QueryParser.OptionalDirectionContext)
-- uid: Viewer.Query.QueryParserBaseVisitor`1.VisitOptionalDirection*
-  name: VisitOptionalDirection
-  href: api/Viewer.Query.QueryParserBaseVisitor-1.html#Viewer_Query_QueryParserBaseVisitor_1_VisitOptionalDirection_
-  commentId: Overload:Viewer.Query.QueryParserBaseVisitor`1.VisitOptionalDirection
-  isSpec: "True"
-  fullName: Viewer.Query.QueryParserBaseVisitor<Result>.VisitOptionalDirection
-  fullName.vb: Viewer.Query.QueryParserBaseVisitor(Of Result).VisitOptionalDirection
-  nameWithType: QueryParserBaseVisitor<Result>.VisitOptionalDirection
-  nameWithType.vb: QueryParserBaseVisitor(Of Result).VisitOptionalDirection
 - uid: Viewer.Query.QueryParserBaseVisitor`1.VisitOptionalOrderBy(Viewer.Query.QueryParser.OptionalOrderByContext)
   name: VisitOptionalOrderBy(QueryParser.OptionalOrderByContext)
   href: api/Viewer.Query.QueryParserBaseVisitor-1.html#Viewer_Query_QueryParserBaseVisitor_1_VisitOptionalOrderBy_Viewer_Query_QueryParser_OptionalOrderByContext_
@@ -20237,40 +19958,6 @@ references:
   isSpec: "True"
   fullName: Viewer.UI.Images.QueryEvaluator.Update
   nameWithType: QueryEvaluator.Update
-- uid: Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnCompleted
-  name: IQueryExecutionListener.OnCompleted()
-  href: api/Viewer.UI.Images.QueryEvaluator.html#Viewer_UI_Images_QueryEvaluator_Viewer_Query_IQueryExecutionListener_OnCompleted
-  commentId: M:Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnCompleted
-  name.vb: Viewer.Query.IQueryExecutionListener.OnCompleted()
-  fullName: Viewer.UI.Images.QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnCompleted()
-  nameWithType: QueryEvaluator.IQueryExecutionListener.OnCompleted()
-  nameWithType.vb: QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnCompleted()
-- uid: Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnCompleted*
-  name: IQueryExecutionListener.OnCompleted
-  href: api/Viewer.UI.Images.QueryEvaluator.html#Viewer_UI_Images_QueryEvaluator_Viewer_Query_IQueryExecutionListener_OnCompleted_
-  commentId: Overload:Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnCompleted
-  isSpec: "True"
-  name.vb: Viewer.Query.IQueryExecutionListener.OnCompleted
-  fullName: Viewer.UI.Images.QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnCompleted
-  nameWithType: QueryEvaluator.IQueryExecutionListener.OnCompleted
-  nameWithType.vb: QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnCompleted
-- uid: Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnNext(Viewer.Data.IEntity)
-  name: IQueryExecutionListener.OnNext(IEntity)
-  href: api/Viewer.UI.Images.QueryEvaluator.html#Viewer_UI_Images_QueryEvaluator_Viewer_Query_IQueryExecutionListener_OnNext_Viewer_Data_IEntity_
-  commentId: M:Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnNext(Viewer.Data.IEntity)
-  name.vb: Viewer.Query.IQueryExecutionListener.OnNext(IEntity)
-  fullName: Viewer.UI.Images.QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnNext(Viewer.Data.IEntity)
-  nameWithType: QueryEvaluator.IQueryExecutionListener.OnNext(IEntity)
-  nameWithType.vb: QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnNext(IEntity)
-- uid: Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnNext*
-  name: IQueryExecutionListener.OnNext
-  href: api/Viewer.UI.Images.QueryEvaluator.html#Viewer_UI_Images_QueryEvaluator_Viewer_Query_IQueryExecutionListener_OnNext_
-  commentId: Overload:Viewer.UI.Images.QueryEvaluator.Viewer#Query#IQueryExecutionListener#OnNext
-  isSpec: "True"
-  name.vb: Viewer.Query.IQueryExecutionListener.OnNext
-  fullName: Viewer.UI.Images.QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnNext
-  nameWithType: QueryEvaluator.IQueryExecutionListener.OnNext
-  nameWithType.vb: QueryEvaluator.Viewer.Query.IQueryExecutionListener.OnNext
 - uid: Viewer.UI.Images.QueryEvaluatorFactory
   name: QueryEvaluatorFactory
   href: api/Viewer.UI.Images.QueryEvaluatorFactory.html

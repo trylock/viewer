@@ -420,9 +420,6 @@
                             <a href="Viewer.Data.SQLite.Attributes.html" title="Attributes" class="">Attributes</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.Data.SQLite.AttributeStatistics.html" title="AttributeStatistics" class="">AttributeStatistics</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.Data.SQLite.AttributeStatisticsFactory.html" title="AttributeStatisticsFactory" class="">AttributeStatisticsFactory</a>
                           </li>
                           <li class="">
@@ -579,9 +576,6 @@
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
                           </li>
                           <li class="">
@@ -640,9 +634,6 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryParser.MultiplicationContext.html" title="QueryParser.MultiplicationContext" class="">QueryParser.MultiplicationContext</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.Query.QueryParser.OptionalDirectionContext.html" title="QueryParser.OptionalDirectionContext" class="">QueryParser.OptionalDirectionContext</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryParser.OptionalOrderByContext.html" title="QueryParser.OptionalOrderByContext" class="">QueryParser.OptionalOrderByContext</a>
@@ -1243,15 +1234,26 @@ attribute and stores all attributes back to the file.</p>
     var entity = storage.Load(&quot;C:/photo.jpeg&quot;);
     entity.SetAttribute(new Attribute(&quot;place&quot;, new StringValue(&quot;Edinburgh&quot;)));
     storage.Store(entity);</code></pre>
+<p>If you want to load more than 1 entity, you should use the <a class="xref" href="Viewer.Data.Storage.IAttributeStorage.html#Viewer_Data_Storage_IAttributeStorage_CreateReader">CreateReader()</a>
+method. The following example shows to to efficiently load all files in a folder:</p>
+<pre><code>IAttributeStorage storage = ...;
+var results = new List&lt;IEntity>();
+using (var readable = storage.CreateReader())
+{
+    foreach (var file in Directory.EnumerateFiles(&quot;C:/photos&quot;))
+    {
+        results.Add(readable.Load(file));
+    }
+}</code></pre>
 
   <h3 id="methods">Methods
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_CreateReader.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.CreateReader%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_CreateReader.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.CreateReader%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L112">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Data/Storage/IAttributeStorage.cs/#L127">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_IAttributeStorage_CreateReader_" data-uid="Viewer.Data.Storage.IAttributeStorage.CreateReader*"></a>
   <h4 id="Viewer_Data_Storage_IAttributeStorage_CreateReader" data-uid="Viewer.Data.Storage.IAttributeStorage.CreateReader">CreateReader()</h4>
@@ -1278,10 +1280,10 @@ itself as the caller is supposed to Dispose the returned value. Return
 </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_Delete_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.Delete(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_Delete_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.Delete(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L134">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Data/Storage/IAttributeStorage.cs/#L149">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_IAttributeStorage_Delete_" data-uid="Viewer.Data.Storage.IAttributeStorage.Delete*"></a>
   <h4 id="Viewer_Data_Storage_IAttributeStorage_Delete_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.IAttributeStorage.Delete(Viewer.Data.IEntity)">Delete(IEntity)</h4>
@@ -1328,10 +1330,10 @@ itself as the caller is supposed to Dispose the returned value. Return
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_Move_Viewer_Data_IEntity_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.Move(Viewer.Data.IEntity%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_Move_Viewer_Data_IEntity_System_String_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.Move(Viewer.Data.IEntity%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L144">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Data/Storage/IAttributeStorage.cs/#L159">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_IAttributeStorage_Move_" data-uid="Viewer.Data.Storage.IAttributeStorage.Move*"></a>
   <h4 id="Viewer_Data_Storage_IAttributeStorage_Move_Viewer_Data_IEntity_System_String_" data-uid="Viewer.Data.Storage.IAttributeStorage.Move(Viewer.Data.IEntity,System.String)">Move(IEntity, String)</h4>
@@ -1384,10 +1386,10 @@ itself as the caller is supposed to Dispose the returned value. Return
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_Store_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.Store(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_Store_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.Store(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L119">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Data/Storage/IAttributeStorage.cs/#L134">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_IAttributeStorage_Store_" data-uid="Viewer.Data.Storage.IAttributeStorage.Store*"></a>
   <h4 id="Viewer_Data_Storage_IAttributeStorage_Store_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.IAttributeStorage.Store(Viewer.Data.IEntity)">Store(IEntity)</h4>
@@ -1434,10 +1436,10 @@ itself as the caller is supposed to Dispose the returned value. Return
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_StoreThumbnail_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.StoreThumbnail(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage_StoreThumbnail_Viewer_Data_IEntity_.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage.StoreThumbnail(Viewer.Data.IEntity)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L127">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Data/Storage/IAttributeStorage.cs/#L142">View Source</a>
   </span>
   <a id="Viewer_Data_Storage_IAttributeStorage_StoreThumbnail_" data-uid="Viewer.Data.Storage.IAttributeStorage.StoreThumbnail*"></a>
   <h4 id="Viewer_Data_Storage_IAttributeStorage_StoreThumbnail_Viewer_Data_IEntity_" data-uid="Viewer.Data.Storage.IAttributeStorage.StoreThumbnail(Viewer.Data.IEntity)">StoreThumbnail(IEntity)</h4>
@@ -1491,10 +1493,10 @@ not stored in this storage or the storage does not support storing thumbnails.</
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Data_Storage_IAttributeStorage.md&amp;value=---%0Auid%3A%20Viewer.Data.Storage.IAttributeStorage%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Data/Storage/IAttributeStorage.cs/#L96" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Data/Storage/IAttributeStorage.cs/#L111" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

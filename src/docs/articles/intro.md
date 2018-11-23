@@ -4,14 +4,14 @@ Viewer is a program that lets you store key/value pairs directly into JPEG files
 
 <a href="https://github.com/trylock/viewer/releases" class="button-download">
     <h5>Download for Windows</h5>
-    <p>latest version 1.0.0</p>
+    <p>latest version 1.2.0</p>
 </a>
 
 ![Overview](../images/overview.png)
 
 ## User manual
 
-- Installation TBD
+- [Installation](user/installation.md)
 - [UI overview](user/ui-overview.md)
 - [Query language](user/query.md)
 

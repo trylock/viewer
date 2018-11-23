@@ -8,10 +8,8 @@ The project uses [git](https://git-scm.com/) version control system and it is ho
 
 1. Download and install [Visual Studio 2017](https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio?view=vs-2017) or newer with the .NET Framework 4.7
 2. Download Java (version 1.6 or higher, required in order to run ANTLR4)
-3. Download the `antlr-4.7.1-complete.jar` file from the [ANTLR4 website](http://www.antlr.org/download.html) 
-4. Place the `antlr-4.7.1-complete.jar` file into the `tools` directory located in the project root directory.
-5. Open the project solution in Visual Studio `Viewer.sln`. It is located in the project root directory.
-6. Build the solution (this should also install all necessary packages from NuGet)
+3. Open the project solution in Visual Studio `Viewer.sln`. It is located in the project root directory.
+4. Build the solution (this should also install all necessary packages from NuGet)
 
 ### Building the installer
 

@@ -420,9 +420,6 @@
                             <a href="Viewer.Data.SQLite.Attributes.html" title="Attributes" class="">Attributes</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.Data.SQLite.AttributeStatistics.html" title="AttributeStatistics" class="">AttributeStatistics</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.Data.SQLite.AttributeStatisticsFactory.html" title="AttributeStatisticsFactory" class="">AttributeStatisticsFactory</a>
                           </li>
                           <li class="">
@@ -579,9 +576,6 @@
                             <a href="Viewer.Query.IQueryErrorListener.html" title="IQueryErrorListener" class="">IQueryErrorListener</a>
                           </li>
                           <li class="">
-                            <a href="Viewer.Query.IQueryExecutionListener.html" title="IQueryExecutionListener" class="">IQueryExecutionListener</a>
-                          </li>
-                          <li class="">
                             <a href="Viewer.Query.IQueryFactory.html" title="IQueryFactory" class="">IQueryFactory</a>
                           </li>
                           <li class="">
@@ -640,9 +634,6 @@
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryParser.MultiplicationContext.html" title="QueryParser.MultiplicationContext" class="">QueryParser.MultiplicationContext</a>
-                          </li>
-                          <li class="">
-                            <a href="Viewer.Query.QueryParser.OptionalDirectionContext.html" title="QueryParser.OptionalDirectionContext" class="">QueryParser.OptionalDirectionContext</a>
                           </li>
                           <li class="">
                             <a href="Viewer.Query.QueryParser.OptionalOrderByContext.html" title="QueryParser.OptionalOrderByContext" class="">QueryParser.OptionalOrderByContext</a>
@@ -1258,10 +1249,10 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_Execution_ExecutionOptions_CancellationToken.md&amp;value=---%0Auid%3A%20Viewer.Query.Execution.ExecutionOptions.CancellationToken%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_Execution_ExecutionOptions_CancellationToken.md&amp;value=---%0Auid%3A%20Viewer.Query.Execution.ExecutionOptions.CancellationToken%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Execution/ExecutionOptions.cs/#L16">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Execution/ExecutionOptions.cs/#L16">View Source</a>
   </span>
   <a id="Viewer_Query_Execution_ExecutionOptions_CancellationToken_" data-uid="Viewer.Query.Execution.ExecutionOptions.CancellationToken*"></a>
   <h4 id="Viewer_Query_Execution_ExecutionOptions_CancellationToken" data-uid="Viewer.Query.Execution.ExecutionOptions.CancellationToken">CancellationToken</h4>
@@ -1278,37 +1269,10 @@
   <p>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_Execution_ExecutionOptions_MaxDegreeOfParallelism.md&amp;value=---%0Auid%3A%20Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_Execution_ExecutionOptions_Progress.md&amp;value=---%0Auid%3A%20Viewer.Query.Execution.ExecutionOptions.Progress%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Execution/ExecutionOptions.cs/#L35">View Source</a>
-  </span>
-  <a id="Viewer_Query_Execution_ExecutionOptions_MaxDegreeOfParallelism_" data-uid="Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism*"></a>
-  <h4 id="Viewer_Query_Execution_ExecutionOptions_MaxDegreeOfParallelism" data-uid="Viewer.Query.Execution.ExecutionOptions.MaxDegreeOfParallelism">MaxDegreeOfParallelism</h4>
-  <div class="markdown level1 summary"><p>Maximal number of worker threads used for query execution (including the execution
-thread). Value of 1 means the execution will be single-threaded.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int MaxDegreeOfParallelism { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <p><span class="xref">System.Int32</span></p>
-  <p>
-  <h5 id="Viewer_Query_Execution_ExecutionOptions_MaxDegreeOfParallelism_remarks">Remarks</h5>
-  <div class="markdown level1 remarks"><p>Usefulness of this option depends on the storage type on which the index database is
-stored. Using more than 1 thread can seriously hinder performance if the database
-is large and seek performance of its drive is slow (e.g., if the index is stored
-on an HDD). Using values higher than 1 can be beneficial in other situations (for
-example, if the database is stored on an SSD)</p>
-</div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_Execution_ExecutionOptions_Progress.md&amp;value=---%0Auid%3A%20Viewer.Query.Execution.ExecutionOptions.Progress%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Execution/ExecutionOptions.cs/#L22">View Source</a>
+    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Execution/ExecutionOptions.cs/#L22">View Source</a>
   </span>
   <a id="Viewer_Query_Execution_ExecutionOptions_Progress_" data-uid="Viewer.Query.Execution.ExecutionOptions.Progress*"></a>
   <h4 id="Viewer_Query_Execution_ExecutionOptions_Progress" data-uid="Viewer.Query.Execution.ExecutionOptions.Progress">Progress</h4>
@@ -1331,10 +1295,10 @@ example, if the database is stored on an SSD)</p>
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/new/optimizations/apiSpec/new?filename=Viewer_Query_Execution_ExecutionOptions.md&amp;value=---%0Auid%3A%20Viewer.Query.Execution.ExecutionOptions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/new/master/apiSpec/new?filename=Viewer_Query_Execution_ExecutionOptions.md&amp;value=---%0Auid%3A%20Viewer.Query.Execution.ExecutionOptions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/Viewer.Query/Execution/ExecutionOptions.cs/#L10" class="contribution-link">View Source</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/Viewer.Query/Execution/ExecutionOptions.cs/#L10" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

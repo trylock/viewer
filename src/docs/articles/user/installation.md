@@ -1,6 +1,6 @@
 # Installation
 
-1. Download the installer (not available yet)
+1. [Download the latest version installer](https://github.com/trylock/viewer/releases)
 2. Optionally, click the `Options` button and choose another installation location. Otherwise, it will be installed in standard directories (`C:/Program Files x86` for 32 bit version, `C:/Program Files` for 64 bit version)
 3. Click the `Install` button to start the installation.
 

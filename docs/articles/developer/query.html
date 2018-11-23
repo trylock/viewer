@@ -143,8 +143,7 @@
 <h3 id="we-know-the-distribution-what-now">We know the distribution. What now?</h3>
 <p>We have to come up with an optimal search order of directories. The query evaluator looks at the query predicate and detemrines which attribute name subsets will likely cause the predicate to evaluate to true. Note, we still don't know for sure whether the predicate evaluates to true for given subset since it could have a form: <code>a = &quot;value&quot;</code>. Finally, we can just add up the numbers since they represent sizes of disjoint sets. This will be our search priority.</p>
 <h3 id="nested-queries">Nested queries</h3>
-<p>The compiler will automatically flatten nested queries (including query views).</p>
-<p>TODO: how?</p>
+<p>The compiler will automatically flatten nested queries (including query views). Conditions in the <code>where</code> clause are joined using the <code>and</code> operator. Order of the outer query is used (for example: <code>select (select a order by b) order by c</code> will be ordered by <code>c</code> only).</p>
 <h3 id="set-operators">Set operators</h3>
 <p>One of the goals of the query evaluator is to deliver the first photo to the user as fast as possible. It achives this goal in many ways. For example, found photos are returnd in an arbitrary order and are sorted incrementally. Another challenge for the evaluator, in this sense, are most of the set operators (namely <code>intersect</code> and <code>except</code>). A naïve way of evaluating a query of type <code>A intersect B</code> would first evaluate <code>A</code>, then evaluate <code>B</code> and only return files which have been found by both queries. One major disadvatage is that if <code>A</code> has to search many files and most of them are not in the query result set, the user will have to wait a long time. We can make an optimization which would load files from both queries at the same time in a round-robin fashion (i.e., load the next file from <code>A</code> then load the next file from <code>B</code> and repeat). There is an even better way.</p>
 <p>Given attributes of a photo and its path, the evaluator can determine whether it belogs to the result set of some query without reading any other files. For simple queries, we can create a regular expression whose language is exactly the set of paths to folders searched by given path pattern. Query predicate can easily be evaluated on loaded attributes. To determine whether a file is in an <code>intersection</code>, we check whether it is in both subqueries. <code>union</code> can be satisfied if it is in either subquery and for <code>except</code> it has to be in the first subquery but not in the second one. In the previous section <a href="#Nested-queries">Nested queries</a> we have discused how are nested queries transformed to queries without nested subqueries. Thus, by induction, we can do this with zero additional I/O for every query.</p>
@@ -160,7 +159,7 @@ options {
 entry: queryExpression EOF;
 
 // set operations on queries
-queryExpression: queryExpression UNION_EXCEPT intersection | intersection;
+queryExpression: intersection (UNION_EXCEPT intersection)*;
 
 intersection: queryFactor (INTERSECT queryFactor)*;
 
@@ -181,24 +180,22 @@ optionalOrderBy: ORDER BY orderByList | ;
 
 orderByList: orderByKey (PARAM_DELIMITER orderByKey)*;
 
-orderByKey: comparison optionalDirection;
-
-optionalDirection: DIRECTION | ;
+orderByKey: comparison DIRECTION?;
 
 // expressions
-predicate: predicate OR conjunction | conjunction;
+predicate: conjunction (OR conjunction)*;
 
-conjunction: conjunction AND literal | literal; 
+conjunction: literal (AND literal)*; 
 
 literal: comparison | NOT comparison;
 
-comparison: expression REL_OP expression | expression;
+comparison: expression (REL_OP expression)?;
 
-expression: expression ADD_SUB multiplication | multiplication; 
+expression: multiplication (ADD_SUB multiplication)*;
 
-multiplication: multiplication MULT_DIV factor | factor;
+multiplication: factor (MULT_DIV factor)*;
 
-factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID | ID | ID LPAREN argumentList RPAREN;
+factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID  (LPAREN argumentList RPAREN)? | ID (LPAREN argumentList RPAREN)?;
 
 argumentList: comparison (PARAM_DELIMITER comparison)* | ;
 </code></pre></article>
@@ -209,7 +206,7 @@ argumentList: comparison (PARAM_DELIMITER comparison)* | ;
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

@@ -149,6 +149,8 @@
     <Compile Include="UI\Forms\BufferedTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UI\Images\Layout\VerticalGridLayout.cs" />
+    <Compile Include="UI\Images\Layout\Layout.cs" />
     <Compile Include="UI\Images\SelectionState.cs" />
     <Compile Include="UI\Presentation\PhotoLoadingQueue.cs" />
     <Compile Include="UI\Suggestions\Suggestion.cs" />
@@ -435,6 +437,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

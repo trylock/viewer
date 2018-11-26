@@ -131,5 +131,81 @@ namespace ViewerTest.UI.Images.Layout
             var expectedItem = _layout.Groups[new IntValue(0)].Items[2];
             Assert.AreEqual(expectedItem, item);
         }
+
+        [TestMethod]
+        public void GetGroupsIn_EmptyBounds()
+        {
+            var groups = _layout.GetGroupsIn(Rectangle.Empty).ToList();
+
+            Assert.AreEqual(0, groups.Count);
+        }
+
+        [TestMethod]
+        public void GetGroupsIn_BoundsInGroupLabel()
+        {
+            var groups = _layout
+                .GetGroupsIn(new Rectangle(0, 0, 1, 1))
+                .Select(element => element.Item)
+                .ToArray();
+
+            var expectedGroup = _layout.Groups[new IntValue(0)];
+            CollectionAssert.AreEqual(new[]{ expectedGroup }, groups);
+        }
+
+        [TestMethod]
+        public void GetGroupsIn_BoundsInGridArea()
+        {
+            var groups = _layout
+                .GetGroupsIn(new Rectangle(50, 50, 100, 200))
+                .Select(element => element.Item)
+                .ToArray();
+
+            var expectedGroup = _layout.Groups[new IntValue(0)];
+            CollectionAssert.AreEqual(new[] { expectedGroup }, groups);
+        }
+
+        [TestMethod]
+        public void GetGroupsIn_MultipleGroups()
+        {
+            var groups = _layout
+                .GetGroupsIn(new Rectangle(50, 315, 100, 60))
+                .Select(element => element.Item)
+                .ToArray();
+
+            var expectedGroups = new[]
+            {
+                _layout.Groups[new IntValue(1)],
+                _layout.Groups[new IntValue(2)],
+            };
+            CollectionAssert.AreEqual(expectedGroups, groups);
+        }
+
+        [TestMethod]
+        public void GetItemsIn_EmptyBounds()
+        {
+            var items = _layout.GetGroupsIn(Rectangle.Empty).ToList();
+
+            Assert.AreEqual(0, items.Count);
+        }
+        
+        [TestMethod]
+        public void GetItemsIn_ItemsInGroupLabel()
+        {
+            var items = _layout.GetItemsIn(new Rectangle(10, 20, 100, 14)).ToList();
+
+            Assert.AreEqual(0, items.Count);
+        }
+
+        [TestMethod]
+        public void GetItemsIn_AllItemsInGroup()
+        {
+            var items = _layout
+                .GetItemsIn(new Rectangle(10, 35, 760, 250))
+                .Select(element => element.Item)
+                .ToArray();
+
+            var expectedItems = _layout.Groups[new IntValue(0)].Items.ToArray();
+            CollectionAssert.AreEqual(expectedItems, items);
+        }
     }
 }

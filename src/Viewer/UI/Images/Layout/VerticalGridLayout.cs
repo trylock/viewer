@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -30,6 +30,10 @@ namespace Viewer.UI.Images.Layout
             ItemSize.Height
         );
 
+        private Size CellSizeWithMargin => new Size(
+            CellSize.Width + ItemMargin.Horizontal,
+            CellSize.Height + ItemMargin.Vertical);
+
         private int ColumnCount => 
             Math.Max(
                 (Width + ItemMargin.Horizontal) / (ItemSize.Width + ItemMargin.Horizontal),
@@ -60,7 +64,10 @@ namespace Viewer.UI.Images.Layout
                 height += rowCount * (ItemSize.Height + ItemMargin.Vertical);
 
                 // we don't use vertical item margin for the top and the bottom row
-                height -= ItemMargin.Vertical;
+                if (rowCount > 0)
+                {
+                    height -= ItemMargin.Vertical;
+                }
             }
 
             return height;
@@ -99,6 +106,11 @@ namespace Viewer.UI.Images.Layout
                 location.Y - element.Bounds.Y - GroupLabelSize.Height - GroupLabelMargin.Vertical);
         }
 
+        private Rectangle TransformToGroup(LayoutElement<Group> element, Rectangle bounds)
+        {
+            return new Rectangle(TransformToGroup(element, bounds.Location), bounds.Size);
+        }
+
         public override EntityView GetItemAt(Point location)
         {
             var element = FindGroup(location);
@@ -112,15 +124,12 @@ namespace Viewer.UI.Images.Layout
             {
                 return null;
             }
+            
+            var column = localPoint.X / CellSizeWithMargin.Width;
+            var row = localPoint.Y / CellSizeWithMargin.Height;
 
-            var itemSizeWithMargin = new Size(
-                CellSize.Width + ItemMargin.Horizontal,
-                CellSize.Height + ItemMargin.Vertical);
-            var column = localPoint.X / itemSizeWithMargin.Width;
-            var row = localPoint.Y / itemSizeWithMargin.Height;
-
-            if ((localPoint.X % itemSizeWithMargin.Width) > CellSize.Width ||
-                (localPoint.Y % itemSizeWithMargin.Height) > CellSize.Height)
+            if ((localPoint.X % CellSizeWithMargin.Width) > CellSize.Width ||
+                (localPoint.Y % CellSizeWithMargin.Height) > CellSize.Height)
             {
                 return null; // the location is in an empty space between items
             }
@@ -130,7 +139,56 @@ namespace Viewer.UI.Images.Layout
 
         public override IEnumerable<LayoutElement<EntityView>> GetItemsIn(Rectangle bounds)
         {
-            throw new NotImplementedException();
+            foreach (var element in GetGroupsIn(bounds))
+            {
+                var localBounds = TransformToGroup(element, bounds);
+                var gridBounds = new Rectangle(
+                    0, 0, 
+                    Width, 
+                    element.Bounds.Height - GroupLabelSize.Height - GroupLabelMargin.Vertical);
+                localBounds.Intersect(gridBounds);
+
+                if (localBounds.IsEmpty)
+                    continue;
+
+                // find start and end row/column
+                var minColumn = localBounds.X / CellSizeWithMargin.Width;
+                var minRow = localBounds.Y / CellSizeWithMargin.Height;
+                if ((localBounds.X % CellSizeWithMargin.Width) > CellSize.Width)
+                    ++minColumn;
+                if ((localBounds.Y % CellSizeWithMargin.Height) > CellSize.Height)
+                    ++minRow;
+
+                var maxColumn = localBounds.Right / CellSizeWithMargin.Width + 1;
+                var maxRow = localBounds.Bottom / CellSizeWithMargin.Height + 1;
+
+                // make sure to only iterate over cells in the grid
+                var rowCount = element.Item.Items.Count.RoundUpDiv(ColumnCount);
+                maxColumn = Math.Min(maxColumn, ColumnCount);
+                maxRow = Math.Min(maxRow, rowCount);
+
+                // retrun all cells in this grid range
+                for (var i = minRow; i < maxRow; ++i)
+                {
+                    // the last row has fewer cells
+                    var columnCount = maxColumn;
+                    if (i + 1 == rowCount)
+                    {
+                        columnCount = element.Item.Items.Count % columnCount;
+                    }
+
+                    for (var j = minColumn; j < columnCount; ++j)
+                    {
+                        var item = element.Item.Items[i * ColumnCount + j];
+                        var itemBounds = new Rectangle(
+                            j * CellSizeWithMargin.Width, 
+                            i * CellSizeWithMargin.Height + element.Bounds.Top + GroupLabelSize.Height + GroupLabelMargin.Vertical,
+                            CellSize.Width, 
+                            CellSize.Height);
+                        yield return new LayoutElement<EntityView>(itemBounds, item);
+                    }
+                }
+            }
         }
 
         public override Group GetGroupLabelAt(Point location)
@@ -140,7 +198,19 @@ namespace Viewer.UI.Images.Layout
 
         public override IEnumerable<LayoutElement<Group>> GetGroupsIn(Rectangle bounds)
         {
-            throw new NotImplementedException();
+            var top = 0;
+            foreach (var pair in Groups)
+            {
+                Group group = pair.Value;
+                var height = GetGroupHeight(group);
+                var groupBounds = new Rectangle(0, top, Width, height);
+                if (bounds.IntersectsWith(groupBounds))
+                {
+                    yield return new LayoutElement<Group>(groupBounds, group);
+                }
+
+                top += height;
+            }
         }
     }
 }

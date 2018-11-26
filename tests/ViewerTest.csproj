@@ -165,6 +165,7 @@
     <Compile Include="UI\BitmapMock.cs" />
     <Compile Include="UI\Explorer\ExplorerTest.cs" />
     <Compile Include="UI\Images\GridTest.cs" />
+    <Compile Include="UI\Images\Layout\VerticalGridLayoutTest.cs" />
     <Compile Include="UI\Images\SelectionStateTest.cs" />
     <Compile Include="UI\Images\ThumbnailLoaderTest.cs" />
     <Compile Include="UI\Images\LazyImageTest.cs" />

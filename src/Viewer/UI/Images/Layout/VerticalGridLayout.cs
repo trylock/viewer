@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -24,6 +24,11 @@ namespace Viewer.UI.Images.Layout
         private Size ItemSize => new Size(
             ThumbnailAreaSize.Width + ItemPadding.Horizontal,
             ThumbnailAreaSize.Height + ItemPadding.Vertical);
+
+        public Size CellSize => new Size(
+            (Width + ItemMargin.Horizontal) / ColumnCount - ItemMargin.Horizontal,
+            ItemSize.Height
+        );
 
         private int ColumnCount => 
             Math.Max(
@@ -109,13 +114,13 @@ namespace Viewer.UI.Images.Layout
             }
 
             var itemSizeWithMargin = new Size(
-                ItemSize.Width + ItemMargin.Horizontal,
-                ItemSize.Height + ItemMargin.Vertical);
+                CellSize.Width + ItemMargin.Horizontal,
+                CellSize.Height + ItemMargin.Vertical);
             var column = localPoint.X / itemSizeWithMargin.Width;
             var row = localPoint.Y / itemSizeWithMargin.Height;
 
-            if ((localPoint.X % itemSizeWithMargin.Width) > ItemSize.Width ||
-                (localPoint.Y % itemSizeWithMargin.Height) > ItemSize.Height)
+            if ((localPoint.X % itemSizeWithMargin.Width) > CellSize.Width ||
+                (localPoint.Y % itemSizeWithMargin.Height) > CellSize.Height)
             {
                 return null; // the location is in an empty space between items
             }

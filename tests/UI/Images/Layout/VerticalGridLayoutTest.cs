@@ -121,5 +121,15 @@ namespace ViewerTest.UI.Images.Layout
             var item = _layout.GetItemAt(new Point(40, 395));
             Assert.IsNull(item);
         }
+
+        [TestMethod]
+        public void GetItemAt_CellSizeStretchesInWidth()
+        {
+            var item = _layout.GetItemAt(new Point(790, 70));
+            Assert.IsNotNull(item);
+
+            var expectedItem = _layout.Groups[new IntValue(0)].Items[2];
+            Assert.AreEqual(expectedItem, item);
+        }
     }
 }

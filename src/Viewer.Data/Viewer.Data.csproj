@@ -85,6 +85,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Attribute.cs" />
     <Compile Include="AttributeCache.cs" />
     <Compile Include="SQLite\Attributes.cs" />

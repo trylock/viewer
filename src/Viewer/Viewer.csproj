@@ -122,6 +122,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Component.cs" />
     <Compile Include="Images\ImageLoader.cs" />
     <Compile Include="Images\ThumbnailGenerator.cs" />

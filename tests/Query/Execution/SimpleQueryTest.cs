@@ -45,6 +45,9 @@ namespace ViewerTest.Query.Execution
             predicate
                 .Setup(mock => mock.CompilePredicate(It.IsAny<IRuntime>()))
                 .Returns(func);
+            predicate
+                .Setup(mock => mock.ToString())
+                .Returns("predicate");
             return predicate.Object;
         }
 
@@ -71,6 +74,8 @@ namespace ViewerTest.Query.Execution
             var predicate = CreatePredicate(entity => true);
             var query = Create("test", predicate, EntityComparer.Default);
 
+            Assert.AreEqual("select \"test\" where predicate", query.Text);
+
             _fileFinder
                 .Setup(mock => mock.GetDirectories(It.IsAny<IComparer<string>>()))
                 .Returns(new string[] { });
@@ -87,7 +92,9 @@ namespace ViewerTest.Query.Execution
                 return entity.GetAttribute("a") == null;
             });
             var query = Create("test", predicate, EntityComparer.Default);
-            
+
+            Assert.AreEqual("select \"test\" where predicate", query.Text);
+
             _fileFinder
                 .Setup(mock => mock.GetDirectories(It.IsAny<IComparer<string>>()))
                 .Returns(new[]

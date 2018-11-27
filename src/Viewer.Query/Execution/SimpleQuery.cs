@@ -61,7 +61,7 @@ namespace Viewer.Query.Execution
             _compiledPredicate = Predicate.CompilePredicate(_runtime);
             Comparer = comparer;
 
-            var text = $"select {_fileFinder.Pattern.Text}";
+            var text = $"select \"{_fileFinder.Pattern.Text}\"";
             if (Predicate != ValueExpression.True)
             {
                 text += $" where {Predicate}";

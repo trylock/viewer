@@ -16,8 +16,3 @@ using System.Runtime.InteropServices;
 [assembly: Guid("b4bc3ebd-1dc2-40a5-9939-7f2f5baa26eb")]
 
 // [assembly: AssemblyVersion("1.0.*")]
-<<<<<<< HEAD
-=======
-[assembly: AssemblyVersion("1.2.0.0")]
-[assembly: AssemblyFileVersion("1.2.0.0")]
->>>>>>> Fix: bump version of the tests assembly

@@ -303,8 +303,7 @@ namespace Viewer.UI.Images
             if (entityView == null)
                 throw new ArgumentNullException(nameof(entityView));
             
-            var index = Items.IndexOf(entityView);
-            var bounds = _view.GetNameBounds(index);
+            var bounds = _view.GetNameBounds(entityView);
 
             NameTextBox.Visible = true;
             NameTextBox.Text = entityView.Name;

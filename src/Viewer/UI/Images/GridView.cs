@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core;
 using Viewer.Images;
+using Viewer.UI.Images.Layout;
 
 namespace Viewer.UI.Images
 {
@@ -20,17 +21,12 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Height of the area for file name
         /// </summary>
-        public int NameHeight { get; set; } = 30;
+        public int NameHeight { get; set; }
 
         /// <summary>
         /// Space between the thumbnail and the name label
         /// </summary>
-        public int NameSpace { get; set; } = 5;
-
-        /// <summary>
-        /// Size between thumbnail and an edge of an item
-        /// </summary>
-        public Size ItemPadding { get; set; } = new Size(5, 5);
+        public int NameSpace { get; set; }
 
         /// <summary>
         /// Size of a cell in the grid
@@ -41,8 +37,7 @@ namespace Viewer.UI.Images
             set
             {
                 _itemSize = value;
-                Grid.MinCellWidth = _itemSize.Width + ItemPadding.Width * 2;
-                Grid.CellHeight = _itemSize.Height + NameHeight + NameSpace + ItemPadding.Height * 2;
+                Layout.ThumbnailAreaSize = _itemSize;
                 UpdateScrollableSize();
             }
         }
@@ -61,9 +56,9 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Grid of the view
+        /// Layout of this component
         /// </summary>
-        public Grid Grid { get; }
+        public ImagesLayout Layout { get; set; }
 
         /// <summary>
         /// Items to show in the component
@@ -100,10 +95,18 @@ namespace Viewer.UI.Images
 
         public GridView()
         {
-            Grid = new Grid { CellMargin = new Size(10, 10) };
-            Grid.Resize(ClientSize.Width);
+            Layout = new VerticalGridLayout
+            {
+                GroupLabelSize = new Size(0, 30),
+                ItemPadding = new Padding(5),
+                ItemMargin = new Padding(5)
+            };
+            Layout.Resize(ClientSize);
 
             InitializeComponent();
+
+            NameHeight = Font.Height * 2;
+            NameSpace = Font.Height;
 
             SetStyle(ControlStyles.DoubleBuffer, true);
 
@@ -126,9 +129,7 @@ namespace Viewer.UI.Images
 
         public IEnumerable<EntityView> GetItemsIn(Rectangle bounds)
         {
-            return Grid.GetCellsInBounds(bounds)
-                .Where(cell => cell.Index >= 0 && cell.Index < Items.Count)
-                .Select(cell => Items[cell.Index]);
+            return Layout.GetItemsIn(bounds).Select(element => element.Item);
         }
 
         /// <summary>
@@ -138,79 +139,40 @@ namespace Viewer.UI.Images
         /// <returns>Item at <paramref name="location"/> or null if there is no item</returns>
         public EntityView GetItemAt(Point location)
         {
-            var index = Grid.GetCellAt(location).Index;
-            if (index < 0 || index >= Items.Count)
-            {
-                return null;
-            }
-
-            return Items[index];
+            return Layout.GetItemAt(location);
         }
 
-        public Rectangle GetNameBounds(int index)
+        public Rectangle GetNameBounds(EntityView item)
         {
-            var cell = Grid.GetCell(index);
-            return new Rectangle(GetNameLocation(cell.Bounds), GetNameSize(cell.Bounds));
+            var bounds = Layout.GetItemBounds(item);
+            return new Rectangle(GetNameLocation(bounds), GetNameSize(bounds));
         }
 
         public EntityView FindItem(EntityView currentItem, Point delta)
         {
-            var index = Items.IndexOf(currentItem);
-            if (index < 0)
-            {
-                return null;
-            }
-            
-            var targetIndex = index + delta.X + delta.Y * Grid.ColumnCount;
-            if (targetIndex < 0 || targetIndex >= Items.Count)
-            {
-                return null;
-            }
-
-            return Items[targetIndex];
+            throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Number of rows visible on screen at once
-        /// </summary>
-        private int CountRowsInViewport => 
-            ClientSize.Height.RoundUpDiv(Grid.CellHeight + Grid.CellMargin.Height);
 
         public EntityView FindFirstItemAbove(EntityView currentItem)
         {
-            var index = Items.IndexOf(currentItem);
-            if (index < 0)
-            {
-                return null;
-            }
-
-            index = Math.Max(index - Grid.ColumnCount * CountRowsInViewport, 0);
-            return Items[index];
+            throw new NotImplementedException();
         }
 
         public EntityView FindLastItemBelow(EntityView currentItem)
         {
-            var index = Items.IndexOf(currentItem);
-            if (index < 0)
-            {
-                return null;
-            }
-
-            index = Math.Min(index + Grid.ColumnCount * CountRowsInViewport, Items.Count - 1);
-            return Items[index];
+            throw new NotImplementedException();
         }
 
         public void EnsureItemVisible(EntityView item)
         {
-            var index = Items.IndexOf(item);
-            if (index < 0)
+            var bounds = Layout.GetItemBounds(item);
+            if (bounds.IsEmpty)
             {
-                return; // the item is not in the view => this is a no-op
+                return; // item has not been found
             }
 
-            var cell = Grid.GetCell(index);
             var viewport = UnprojectBounds(new Rectangle(Point.Empty, ClientSize));
-            var transformed = viewport.EnsureContains(cell.Bounds);
+            var transformed = viewport.EnsureContains(bounds);
             AutoScrollPosition = transformed.Location;
 
             Invalidate();
@@ -231,15 +193,15 @@ namespace Viewer.UI.Images
         public Point GetNameLocation(Rectangle cellBounds)
         {
             return new Point(
-                cellBounds.X + ItemPadding.Width,
-                cellBounds.Y + (cellBounds.Height - NameHeight) + NameSpace - ItemPadding.Height
+                cellBounds.X + Layout.ItemPadding.Left,
+                cellBounds.Y + (cellBounds.Height - NameHeight) + NameSpace - Layout.ItemPadding.Vertical
             );
         }
 
         public Size GetNameSize(Rectangle cellBounds)
         {
             return new Size(
-                cellBounds.Width - 2 * ItemPadding.Width,
+                cellBounds.Width - Layout.ItemPadding.Horizontal,
                 NameHeight
             );
         }
@@ -300,16 +262,16 @@ namespace Viewer.UI.Images
         {
             // update invalid items
             var clipBounds = UnprojectBounds(e.ClipRectangle);
-            var cells = Grid.GetCellsInBounds(clipBounds);
+            var elements = Layout.GetItemsIn(clipBounds);
 
             using (var background = new SolidBrush(Color.FromArgb(unchecked((int) 0xFFeeeef2))))
             {
                 e.Graphics.FillRectangle(background, e.ClipRectangle);
             }
 
-            foreach (var cell in cells)
+            foreach (var element in elements)
             {
-                PaintItem(e.Graphics, cell);
+                PaintItem(e.Graphics, element);
             }
 
             // update selection 
@@ -325,11 +287,11 @@ namespace Viewer.UI.Images
             }
         }
 
-        private void PaintItem(Graphics graphics, GridCell cell)
+        private void PaintItem(Graphics graphics, LayoutElement<EntityView> element)
         {
             // find thumbnail
-            var item = Items[cell.Index];
-            var bounds = ProjectBounds(cell.Bounds);
+            var item = element.Item;
+            var bounds = ProjectBounds(element.Bounds);
 
             // clear grid cell area
             graphics.FillRectangle(Brushes.White, bounds);
@@ -391,11 +353,10 @@ namespace Viewer.UI.Images
 
         private void UpdateScrollableSize()
         {
-            Grid.Resize(Math.Max(ClientSize.Width, 0));
-            Grid.CellCount = _items?.Count ?? 0;
+            Layout.Resize(ClientSize);
             AutoScrollMinSize = new Size(
                 0, // we don't want to have a horizontal scroll bar
-                Grid.GridSize.Height
+                Layout.GetSize().Height
             );
         }
     }

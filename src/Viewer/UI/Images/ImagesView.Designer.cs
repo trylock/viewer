@@ -237,7 +237,6 @@
             this.GridView.AutoScroll = true;
             this.GridView.ContextMenuStrip = this.ItemContextMenu;
             this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GridView.ItemPadding = new System.Drawing.Size(5, 5);
             this.GridView.Items = null;
             this.GridView.ItemSize = new System.Drawing.Size(0, 0);
             this.GridView.Location = new System.Drawing.Point(0, 29);

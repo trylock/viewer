@@ -207,5 +207,38 @@ namespace ViewerTest.UI.Images.Layout
             var expectedItems = _layout.Groups[new IntValue(0)].Items.ToArray();
             CollectionAssert.AreEqual(expectedItems, items);
         }
+
+        [TestMethod]
+        public void GetItemBounds_NullItem()
+        {
+            var bounds = _layout.GetItemBounds(null);
+            Assert.IsTrue(bounds.IsEmpty);
+        }
+
+        [TestMethod]
+        public void GetItemBounds_NonExistentItem()
+        {
+            var bounds = _layout.GetItemBounds(new EntityView(null, null));
+            Assert.IsTrue(bounds.IsEmpty);
+        }
+
+        [TestMethod]
+        public void GetItemBounds_ItemInCollapsedGroup()
+        {
+            var item = _layout.Groups[new IntValue(2)].Items[2];
+            var bounds = _layout.GetItemBounds(item);
+            Assert.IsTrue(bounds.IsEmpty);
+        }
+        
+        [TestMethod]
+        public void GetItemBounds_VisibleItem()
+        {
+            var item = _layout.Groups[new IntValue(3)].Items[4];
+            var bounds = _layout.GetItemBounds(item);
+            Assert.AreEqual(270, bounds.X);
+            Assert.AreEqual(570, bounds.Y);
+            Assert.AreEqual(210, bounds.Width);
+            Assert.AreEqual(130, bounds.Height);
+        }
     }
 }

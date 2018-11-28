@@ -11,14 +11,30 @@ namespace Viewer.UI.Images.Layout
 {
     internal class VerticalGridLayout : ImagesLayout
     {
+        /// <summary>
+        /// Size of the label of each group
+        /// </summary>
         public Size GroupLabelSize { get; set; }
 
+        /// <summary>
+        /// Space around group label
+        /// </summary>
         public Padding GroupLabelMargin { get; set; }
+        
+        private Size LabelSizeWithMargin => new Size(
+            GroupLabelSize.Width + GroupLabelMargin.Horizontal,
+            GroupLabelSize.Height + GroupLabelMargin.Vertical);
 
+        /// <summary>
+        /// Non-stretched item size (i.e., it does not change with the layout client size)
+        /// </summary>
         private Size ItemSize => new Size(
             ThumbnailAreaSize.Width + ItemPadding.Horizontal,
             ThumbnailAreaSize.Height + ItemPadding.Vertical);
 
+        /// <summary>
+        /// Stretched item size (it tries to fill the whole layout in the horizontal axis)
+        /// </summary>
         public Size CellSize => new Size(
             (ClientSize.Width + ItemMargin.Horizontal) / ColumnCount - ItemMargin.Horizontal,
             ItemSize.Height
@@ -28,6 +44,9 @@ namespace Viewer.UI.Images.Layout
             CellSize.Width + ItemMargin.Horizontal,
             CellSize.Height + ItemMargin.Vertical);
 
+        /// <summary>
+        /// Number of grid columns of each group
+        /// </summary>
         private int ColumnCount => 
             Math.Max(
                 (ClientSize.Width + ItemMargin.Horizontal) / (ItemSize.Width + ItemMargin.Horizontal),
@@ -40,7 +59,7 @@ namespace Viewer.UI.Images.Layout
             foreach (var pair in Groups)
             {
                 var group = pair.Value;
-                result.Height += GetGroupHeight(group);
+                result.Height += MeasureGroupHeight(group);
             }
 
             return result;
@@ -48,13 +67,40 @@ namespace Viewer.UI.Images.Layout
 
         public override Rectangle GetItemBounds(EntityView item)
         {
-            throw new NotImplementedException();
+            if (item == null)
+                return Rectangle.Empty;
+
+            // find group of the item
+            var top = 0;
+            Group group = null;
+            int itemIndex = -1;
+            foreach (var pair in Groups)
+            {
+                group = pair.Value;
+                itemIndex = group.Items.IndexOf(item);
+                if (itemIndex >= 0)
+                    break;
+                top += MeasureGroupHeight(group);
+            }
+
+            // check if the item is in a non-collapsed group
+            if (itemIndex < 0 || group.IsCollapsed)
+                return Rectangle.Empty;
+
+            // find bounds of the item within the group
+            var row = itemIndex / ColumnCount;
+            var column = itemIndex % ColumnCount;
+            return new Rectangle(
+                column * CellSizeWithMargin.Width, 
+                row * CellSizeWithMargin.Height + top + LabelSizeWithMargin.Height,
+                ItemSize.Width,
+                ItemSize.Height);
         }
 
-        private int GetGroupHeight(Group group)
+        private int MeasureGroupHeight(Group group)
         {
             // group label
-            int height = GroupLabelSize.Height + GroupLabelMargin.Vertical;
+            int height = LabelSizeWithMargin.Height;
 
             // group content
             if (!group.IsCollapsed)
@@ -84,7 +130,7 @@ namespace Viewer.UI.Images.Layout
             foreach (var pair in Groups)
             {
                 group = pair.Value;
-                bounds.Height = GetGroupHeight(group);
+                bounds.Height = MeasureGroupHeight(group);
                 if (bounds.Y + bounds.Height > location.Y)
                     break;
                 bounds.Y += bounds.Height;
@@ -144,7 +190,7 @@ namespace Viewer.UI.Images.Layout
                 var gridBounds = new Rectangle(
                     0, 0,
                     ClientSize.Width, 
-                    element.Bounds.Height - GroupLabelSize.Height - GroupLabelMargin.Vertical);
+                    element.Bounds.Height - LabelSizeWithMargin.Height);
                 localBounds.Intersect(gridBounds);
 
                 if (localBounds.IsEmpty)
@@ -181,7 +227,7 @@ namespace Viewer.UI.Images.Layout
                         var item = element.Item.Items[i * ColumnCount + j];
                         var itemBounds = new Rectangle(
                             j * CellSizeWithMargin.Width, 
-                            i * CellSizeWithMargin.Height + element.Bounds.Top + GroupLabelSize.Height + GroupLabelMargin.Vertical,
+                            i * CellSizeWithMargin.Height + element.Bounds.Top + LabelSizeWithMargin.Height,
                             CellSize.Width, 
                             CellSize.Height);
                         yield return new LayoutElement<EntityView>(itemBounds, item);
@@ -201,7 +247,7 @@ namespace Viewer.UI.Images.Layout
             foreach (var pair in Groups)
             {
                 Group group = pair.Value;
-                var height = GetGroupHeight(group);
+                var height = MeasureGroupHeight(group);
                 var groupBounds = new Rectangle(0, top, ClientSize.Width, height);
                 if (bounds.IntersectsWith(groupBounds))
                 {

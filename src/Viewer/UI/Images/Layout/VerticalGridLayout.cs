@@ -11,12 +11,6 @@ namespace Viewer.UI.Images.Layout
 {
     internal class VerticalGridLayout : ImagesLayout
     {
-        public int Width { get; set; }
-
-        public Padding ItemMargin { get; set; }
-
-        public Padding ItemPadding { get; set; }
-
         public Size GroupLabelSize { get; set; }
 
         public Padding GroupLabelMargin { get; set; }
@@ -26,7 +20,7 @@ namespace Viewer.UI.Images.Layout
             ThumbnailAreaSize.Height + ItemPadding.Vertical);
 
         public Size CellSize => new Size(
-            (Width + ItemMargin.Horizontal) / ColumnCount - ItemMargin.Horizontal,
+            (ClientSize.Width + ItemMargin.Horizontal) / ColumnCount - ItemMargin.Horizontal,
             ItemSize.Height
         );
 
@@ -36,13 +30,13 @@ namespace Viewer.UI.Images.Layout
 
         private int ColumnCount => 
             Math.Max(
-                (Width + ItemMargin.Horizontal) / (ItemSize.Width + ItemMargin.Horizontal),
+                (ClientSize.Width + ItemMargin.Horizontal) / (ItemSize.Width + ItemMargin.Horizontal),
                 1
             );
 
         public override Size GetSize()
         {
-            var result = new Size(Width, 0);
+            var result = new Size(ClientSize.Width, 0);
             foreach (var pair in Groups)
             {
                 var group = pair.Value;
@@ -50,6 +44,11 @@ namespace Viewer.UI.Images.Layout
             }
 
             return result;
+        }
+
+        public override Rectangle GetItemBounds(EntityView item)
+        {
+            throw new NotImplementedException();
         }
 
         private int GetGroupHeight(Group group)
@@ -75,13 +74,13 @@ namespace Viewer.UI.Images.Layout
 
         private LayoutElement<Group> FindGroup(Point location)
         {
-            if (location.X < 0 || location.X > Width)
+            if (location.X < 0 || location.X > ClientSize.Width)
                 return null;
             if (location.Y < 0)
                 return null;
 
             Group group = null;
-            var bounds = new Rectangle(0, 0, Width, 0);
+            var bounds = new Rectangle(0, 0, ClientSize.Width, 0);
             foreach (var pair in Groups)
             {
                 group = pair.Value;
@@ -143,8 +142,8 @@ namespace Viewer.UI.Images.Layout
             {
                 var localBounds = TransformToGroup(element, bounds);
                 var gridBounds = new Rectangle(
-                    0, 0, 
-                    Width, 
+                    0, 0,
+                    ClientSize.Width, 
                     element.Bounds.Height - GroupLabelSize.Height - GroupLabelMargin.Vertical);
                 localBounds.Intersect(gridBounds);
 
@@ -203,7 +202,7 @@ namespace Viewer.UI.Images.Layout
             {
                 Group group = pair.Value;
                 var height = GetGroupHeight(group);
-                var groupBounds = new Rectangle(0, top, Width, height);
+                var groupBounds = new Rectangle(0, top, ClientSize.Width, height);
                 if (bounds.IntersectsWith(groupBounds))
                 {
                     yield return new LayoutElement<Group>(groupBounds, group);

@@ -50,10 +50,44 @@ namespace Viewer.UI.Images.Layout
         public Size ThumbnailAreaSize { get; set; }
 
         /// <summary>
+        /// Space around each item
+        /// </summary>
+        public Padding ItemMargin { get; set; }
+
+        /// <summary>
+        /// Inner space in each item
+        /// </summary>
+        public Padding ItemPadding { get; set; }
+
+        /// <summary>
+        /// Size of the client area in which this layout is used
+        /// </summary>
+        /// <remarks>
+        /// Layout can be larger than the client size. In that case, the client should draw
+        /// scroll bars accordingly.
+        /// </remarks>
+        public Size ClientSize { get; private set; }
+
+        public virtual void Resize(Size clientSize)
+        {
+            ClientSize = new Size(Math.Max(clientSize.Width, 0), Math.Max(clientSize.Height, 0));
+        }
+
+        /// <summary>
         /// Compute size of the whole layout
         /// </summary>
         /// <returns></returns>
         public abstract Size GetSize();
+
+        /// <summary>
+        /// Find item bounds 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns>
+        /// <paramref name="item"/> bounds or an empty rectangle if <paramref name="item"/>
+        /// has not been found.
+        /// </returns>
+        public abstract Rectangle GetItemBounds(EntityView item);
 
         /// <summary>
         /// Find item at given location.

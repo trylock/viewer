@@ -40,6 +40,16 @@ namespace Viewer.Query
         /// Path patterns to directories searched by this query
         /// </summary>
         IEnumerable<PathPattern> Patterns { get; }
+
+        /// <summary>
+        /// Get entity group according to this query <c>group by</c> expression.
+        /// </summary>
+        /// <param name="entity">Entity for which you want to compute the group key</param>
+        /// <returns>
+        /// Computed group key. Queries without a group by clause will return
+        /// <c>IntValue(null)</c>.
+        /// </returns>
+        BaseValue GetGroup(IEntity entity);
         
         [Obsolete("Use the Execute(ExecutionOptions) method instead.")]
         IEnumerable<IEntity> Execute(
@@ -74,6 +84,11 @@ namespace Viewer.Query
         public string Text => null;
         public IComparer<IEntity> Comparer => EntityComparer.Default;
         public IEnumerable<PathPattern> Patterns => Enumerable.Empty<PathPattern>();
+
+        public BaseValue GetGroup(IEntity entity)
+        {
+            return new IntValue(null);
+        }
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
@@ -111,6 +126,11 @@ namespace Viewer.Query
         public MemoryQuery(IEnumerable<IEntity> entities)
         {
             _entities = entities;
+        }
+
+        public BaseValue GetGroup(IEntity entity)
+        {
+            return new IntValue(null);
         }
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
@@ -235,6 +255,11 @@ namespace Viewer.Query
         public override string ToString()
         {
             return Text;
+        }
+
+        public BaseValue GetGroup(IEntity entity)
+        {
+            return _source.GetGroup(entity);
         }
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)

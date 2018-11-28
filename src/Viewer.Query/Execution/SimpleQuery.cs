@@ -75,6 +75,11 @@ namespace Viewer.Query.Execution
             Text = text;
         }
 
+        public BaseValue GetGroup(IEntity entity)
+        {
+            return new IntValue(null);
+        }
+
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
         {
             return Execute(new ExecutionOptions

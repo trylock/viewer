@@ -30,6 +30,17 @@ namespace Viewer.Query.Execution
             Second = second;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Return group key of the second query
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public BaseValue GetGroup(IEntity entity)
+        {
+            return Second.GetGroup(entity);
+        }
+
         public virtual IEnumerable<IEntity> Execute(
             IProgress<QueryProgressReport> progress,
             CancellationToken cancellationToken)

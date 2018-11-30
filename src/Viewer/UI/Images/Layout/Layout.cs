@@ -12,17 +12,26 @@ using Viewer.Data;
 
 namespace Viewer.UI.Images.Layout
 {
-    internal class Group
+    public class Group : IDisposable
     {
         public BaseValue Key { get; }
 
-        public List<EntityView> Items { get; } = new List<EntityView>();
+        public List<EntityView> Items { get; set; } = new List<EntityView>();
 
         public bool IsCollapsed { get; set; }
 
         public Group(BaseValue key)
         {
             Key = key;
+        }
+
+        public void Dispose()
+        {
+            foreach (var item in Items)
+            {
+                item.Dispose();
+            }
+            Items.Clear();
         }
     }
 

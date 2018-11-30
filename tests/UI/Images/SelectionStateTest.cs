@@ -17,14 +17,14 @@ namespace ViewerTest.UI.Images
     public class SelectionStateTest
     {
         private Mock<ISelection> _selection;
-        private Mock<ISelectionView<EntityView>> _view;
+        private Mock<ISelectionView> _view;
         private SelectionState _state;
 
         [TestInitialize]
         public void Setup()
         {
             _selection = new Mock<ISelection>();
-            _view = new Mock<ISelectionView<EntityView>>();
+            _view = new Mock<ISelectionView>();
             _state = new SelectionState(_view.Object, _selection.Object);
         }
 

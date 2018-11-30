@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -55,6 +55,11 @@ namespace Viewer.UI.Images.Layout
 
         public override Size GetSize()
         {
+            if (Groups == null)
+            {
+                return Size.Empty;
+            }
+
             var result = new Size(ClientSize.Width, 0);
             foreach (var pair in Groups)
             {
@@ -67,8 +72,10 @@ namespace Viewer.UI.Images.Layout
 
         public override Rectangle GetItemBounds(EntityView item)
         {
-            if (item == null)
+            if (item == null || Groups == null)
+            {
                 return Rectangle.Empty;
+            }
 
             // find group of the item
             var top = 0;
@@ -120,6 +127,8 @@ namespace Viewer.UI.Images.Layout
 
         private LayoutElement<Group> FindGroup(Point location)
         {
+            if (Groups == null)
+                return null;
             if (location.X < 0 || location.X > ClientSize.Width)
                 return null;
             if (location.Y < 0)
@@ -243,6 +252,11 @@ namespace Viewer.UI.Images.Layout
 
         public override IEnumerable<LayoutElement<Group>> GetGroupsIn(Rectangle bounds)
         {
+            if (Groups == null)
+            {
+                yield break;
+            }
+
             var top = 0;
             foreach (var pair in Groups)
             {

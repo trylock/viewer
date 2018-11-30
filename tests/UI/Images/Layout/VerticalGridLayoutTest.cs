@@ -48,7 +48,7 @@ namespace ViewerTest.UI.Images.Layout
                 largeCollapsedGroup.Items.Add(new EntityView(null, null));
             }
 
-            for (var i = 0; i < 20; ++i)
+            for (var i = 0; i < 21; ++i)
             {
                 largeGroup.Items.Add(new EntityView(null, null));
             }
@@ -204,6 +204,17 @@ namespace ViewerTest.UI.Images.Layout
         }
 
         [TestMethod]
+        public void GetItemsIn_LastRowIsFull()
+        {
+            var items = _layout.GetItemsIn(new Rectangle(0, 1340, 800, 1))
+                .Select(element => element.Item)
+                .ToArray();
+
+            var expectedItems = _layout.Groups[new IntValue(3)].Items.Skip(18).ToArray();
+            CollectionAssert.AreEqual(expectedItems, items);
+        }
+
+        [TestMethod]
         public void GetItemsIn_AllItemsInGroup()
         {
             var items = _layout
@@ -247,5 +258,6 @@ namespace ViewerTest.UI.Images.Layout
             Assert.AreEqual(210, bounds.Width);
             Assert.AreEqual(130, bounds.Height);
         }
+
     }
 }

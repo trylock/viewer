@@ -16,6 +16,7 @@ using Viewer.Properties;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.UI.Forms;
+using Viewer.UI.Images.Layout;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.Images
@@ -270,13 +271,13 @@ namespace Viewer.UI.Images
             }
         }
 
-        public List<EntityView> Items
+        public SortedDictionary<BaseValue, Group> Items
         {
             get => _view.Items;
             set
             {
                 _view.Items = value;
-                var itemCount = value?.Count ?? 0;
+                var itemCount = value?.Sum(group => group.Value.Items.Count) ?? 0;
                 StatusLabel.Visible = itemCount <= 0;
             }
         }

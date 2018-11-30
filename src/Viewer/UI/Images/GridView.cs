@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core;
+using Viewer.Data;
 using Viewer.Images;
 using Viewer.UI.Images.Layout;
 
@@ -42,6 +43,8 @@ namespace Viewer.UI.Images
             }
         }
 
+        private Size _itemSize;
+
         /// <summary>
         /// Bounds of a selection 
         /// </summary>
@@ -59,24 +62,22 @@ namespace Viewer.UI.Images
         /// Layout of this component
         /// </summary>
         public ImagesLayout Layout { get; set; }
-
+        
         /// <summary>
         /// Items to show in the component
         /// </summary>
-        public List<EntityView> Items
+        public SortedDictionary<BaseValue, Group> Items
         {
-            get => _items;
+            get => Layout.Groups;
             set
             {
-                _items = value;
+                Layout.Groups = value;
                 UpdateScrollableSize();
                 Refresh();
             }
         }
 
-        private Size _itemSize;
         private Rectangle _selectionBounds;
-        private List<EntityView> _items;
         
         #region Graphics settings
 
@@ -95,18 +96,18 @@ namespace Viewer.UI.Images
 
         public GridView()
         {
-            Layout = new VerticalGridLayout
-            {
-                GroupLabelSize = new Size(0, 30),
-                ItemPadding = new Padding(5),
-                ItemMargin = new Padding(5)
-            };
-            Layout.Resize(ClientSize);
-
             InitializeComponent();
 
             NameHeight = Font.Height * 2;
             NameSpace = Font.Height;
+
+            Layout = new VerticalGridLayout
+            {
+                GroupLabelSize = new Size(0, 30),
+                ItemPadding = new Padding(5, 5, 5, 5 + NameHeight + NameSpace),
+                ItemMargin = new Padding(5)
+            };
+            Layout.Resize(ClientSize);
 
             SetStyle(ControlStyles.DoubleBuffer, true);
 
@@ -194,7 +195,8 @@ namespace Viewer.UI.Images
         {
             return new Point(
                 cellBounds.X + Layout.ItemPadding.Left,
-                cellBounds.Y + (cellBounds.Height - NameHeight) + NameSpace - Layout.ItemPadding.Vertical
+                cellBounds.Y + (cellBounds.Height - NameHeight) + 
+                    NameSpace - Layout.ItemPadding.Top
             );
         }
 

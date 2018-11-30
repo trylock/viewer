@@ -11,6 +11,7 @@ using Viewer.Data;
 using Viewer.Properties;
 using Viewer.Core.UI;
 using Viewer.Query;
+using Viewer.UI.Images.Layout;
 
 namespace Viewer.UI.Images
 {
@@ -109,10 +110,9 @@ namespace Viewer.UI.Images
     }
 
     /// <summary>
-    /// View in which user can select items of type <typeparamref name="T"/>.
+    /// View in which user can select items.
     /// </summary>
-    /// <typeparam name="T">Type of the items in selection</typeparam>
-    internal interface ISelectionView<T> : IWindowView
+    internal interface ISelectionView : IWindowView
     {
         /// <summary>
         /// Event occurs whenever user releases a mouse button over this view
@@ -147,7 +147,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// List of items to show 
         /// </summary>
-        List<T> Items { get; set; }
+        SortedDictionary<BaseValue, Group> Items { get; set; }
 
         /// <summary>
         /// Update all visible items in the <see cref="Items"/> collection.
@@ -170,7 +170,7 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="bounds">Query area</param>
         /// <returns>Indicies of items in this area</returns>
-        IEnumerable<T> GetItemsIn(Rectangle bounds);
+        IEnumerable<EntityView> GetItemsIn(Rectangle bounds);
 
         /// <summary>
         /// Get index of an item at <paramref name="location"/>.
@@ -180,7 +180,7 @@ namespace Viewer.UI.Images
         ///     Index of an item at <paramref name="location"/>.
         ///     If there is no item at given location, it will return -1.
         /// </returns>
-        T GetItemAt(Point location);
+        EntityView GetItemAt(Point location);
 
         /// <summary>
         /// Find an item whose distance is <paramref name="delta"/> items from
@@ -194,7 +194,7 @@ namespace Viewer.UI.Images
         /// Item which is <paramref name="delta"/> items away from <paramref name="currentItem"/>
         /// or null if there is no such item.
         /// </returns>
-        T FindItem(T currentItem, Point delta);
+        EntityView FindItem(EntityView currentItem, Point delta);
 
         /// <summary>
         /// Find the first visible item above <paramref name="currentItem"/>
@@ -203,7 +203,7 @@ namespace Viewer.UI.Images
         /// <returns>
         /// The first visible item which is directly above <paramref name="currentItem"/>
         /// </returns>
-        T FindFirstItemAbove(T currentItem);
+        EntityView FindFirstItemAbove(EntityView currentItem);
 
         /// <summary>
         /// Find the last visible item below <paramref name="currentItem"/>
@@ -212,14 +212,14 @@ namespace Viewer.UI.Images
         /// <returns>
         /// The last visible item which is directly below <paramref name="currentItem"/>
         /// </returns>
-        T FindLastItemBelow(T currentItem);
+        EntityView FindLastItemBelow(EntityView currentItem);
 
         /// <summary>
         /// Make sure <paramref name="item"/> is visible. If it is fully visible, this won't do
         /// anything. Otherwise, it will scroll the view so that <paramref name="item"/> is visible
         /// </summary>
         /// <param name="item">Item which should be visible</param>
-        void EnsureItemVisible(T item);
+        void EnsureItemVisible(EntityView item);
     }
 
     internal interface IFileDropView
@@ -247,7 +247,7 @@ namespace Viewer.UI.Images
         Task<string> PickDirectoryAsync(IEnumerable<string> options);
     }
     
-    internal interface IImagesView : IPolledView, ISelectionView<EntityView>, IFileDropView
+    internal interface IImagesView : IPolledView, ISelectionView, IFileDropView
     {
         /// <summary>
         /// Query history view

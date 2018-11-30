@@ -247,7 +247,11 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
+            var items = View.Items
+                .SelectMany(pair => pair.Value.Items)
+                .Select(item => item.Data)
+                .OfType<FileEntity>()
+                .ToList();
             var index = items.IndexOf(fileEntity);
             await _presentation.PreviewAsync(items, index);
         }
@@ -264,13 +268,16 @@ namespace Viewer.UI.Images
                 {
                     var loadingFile = _queryEvaluator.Progress.LoadingFile;
                     var loadedCount = _queryEvaluator.Progress.FileCount;
-                    StatusLabel.Text = loadingFile != null ? $"{loadedCount:N0}: {loadingFile}" : "Done.";
+                    StatusLabel.Text = loadingFile != null ? 
+                        $"{loadedCount:N0}: {loadingFile}" : 
+                        "Done.";
                 }
 
                 // update item count
                 if (ItemCountLabel != null)
                 {
-                    ItemCountLabel.Text = string.Format(Resources.ItemCount_Label, View.Items?.Count);
+                    var itemCount = View.Items.Sum(pair => pair.Value.Items.Count);
+                    ItemCountLabel.Text = string.Format(Resources.ItemCount_Label, itemCount);
                 }
             }
 
@@ -445,7 +452,11 @@ namespace Viewer.UI.Images
             
             if (view.Data is FileEntity fileEntity)
             {
-                var items = View.Items.Select(item => item.Data).OfType<FileEntity>().ToList();
+                var items = View.Items
+                    .SelectMany(pair => pair.Value.Items)
+                    .Select(item => item.Data)
+                    .OfType<FileEntity>()
+                    .ToList();
                 var index = items.IndexOf(fileEntity);
                 await _presentation.OpenAsync(items, index < 0 ? 0 : index);
             }

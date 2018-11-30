@@ -22,7 +22,7 @@ namespace Viewer.UI.Images
     /// </remarks>
     internal class SelectionState : IEnumerable<EntityView>, IDisposable
     {
-        private readonly ISelectionView<EntityView> _view;
+        private readonly ISelectionView _view;
         private readonly ISelection _selection;
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Viewer.UI.Images
         public event EventHandler ActiveItemChanged;
 
         /// <summary>
-        /// The last item on which user clicked or to which .
+        /// The last item which user interacted with.
         /// </summary>
         public EntityView ActiveItem { get; private set; }
 
@@ -48,7 +48,7 @@ namespace Viewer.UI.Images
             {
                 if (_rangeSelectAnchorItem == null)
                 {
-                    return _view.Items.FirstOrDefault();
+                    return GetFirstItem();
                 }
 
                 return _rangeSelectAnchorItem;
@@ -72,7 +72,7 @@ namespace Viewer.UI.Images
         private readonly HashSet<EntityView> _previousSelection =
             new HashSet<EntityView>(EntityViewPathComparer.Default);
 
-        public SelectionState(ISelectionView<EntityView> view, ISelection selection)
+        public SelectionState(ISelectionView view, ISelection selection)
         {
             _view = view;
             _selection = selection;
@@ -254,15 +254,27 @@ namespace Viewer.UI.Images
         {
             _currentSelection.Clear();
 
-            var indexA = _view.Items.IndexOf(_rangeSelectAnchorItem);
-            var indexB = _view.Items.IndexOf(item);
-
-            var beginIndex = Math.Max(Math.Min(indexA, indexB), 0);
-            var endIndex = Math.Max(indexA, indexB) + 1;
-
-            for (; beginIndex < endIndex; ++beginIndex)
+            var isStart = false;
+            var views = _view.Items.SelectMany(pair => pair.Value.Items);
+            foreach (var view in views)
             {
-                _currentSelection.Add(_view.Items[beginIndex]);
+                if (!isStart)
+                {
+                    if (view == item || view == _rangeSelectAnchorItem)
+                    {
+                        isStart = true;
+                        _currentSelection.Add(view);
+                    }
+                }
+                else
+                {
+                    _currentSelection.Add(view);
+
+                    if (view == item || view == _rangeSelectAnchorItem)
+                    {
+                        break;
+                    }
+                }
             }
         }
 
@@ -306,6 +318,13 @@ namespace Viewer.UI.Images
         }
 
         #endregion
+
+        private EntityView GetFirstItem()
+        {
+            if (_view.Items.Count == 0)
+                return null;
+            return _view.Items.First().Value.Items.FirstOrDefault();
+        }
 
         private void CaptureAnchorItem(EntityView item)
         {
@@ -390,13 +409,13 @@ namespace Viewer.UI.Images
             if (e.Control && e.KeyCode == Keys.A)
             {
                 _currentSelection.Clear();
-                _currentSelection.UnionWith(_view.Items);
+                _currentSelection.UnionWith(_view.Items.SelectMany(pair => pair.Value.Items));
                 SetGlobalSelection();
                 SetSelectedItemsState();
             }
 
             // get current active item
-            var activeItem = ActiveItem ?? _view.Items.FirstOrDefault();
+            var activeItem = ActiveItem ?? GetFirstItem();
             if (activeItem == null)
             {
                 return; // there are no items
@@ -407,10 +426,10 @@ namespace Viewer.UI.Images
             switch (e.KeyCode)
             {
                 case Keys.Home when _view.Items.Count > 0:
-                    target = _view.Items.First();
+                    target = GetFirstItem();
                     break;
                 case Keys.End when _view.Items.Count > 0:
-                    target = _view.Items.Last();
+                    target = _view.Items.Last().Value.Items.LastOrDefault();
                     break;
                 case Keys.PageUp:
                     target = _view.FindFirstItemAbove(activeItem);

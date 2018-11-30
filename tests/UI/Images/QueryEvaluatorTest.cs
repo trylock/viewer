@@ -64,12 +64,20 @@ namespace ViewerTest.UI.Images
                 .Returns(thumbnail1.Object)
                 .Returns(thumbnail2.Object);
 
-            _query.Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
+            _query
+                .Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
                 .Returns(new[]{ entity1, entity2 });
+            _query
+                .Setup(mock => mock.GetGroup(It.IsAny<IEntity>()))
+                .Returns(new IntValue(null));
 
             _evaluator.Run();
 
-            var items = _evaluator.Update();
+            _evaluator.ProcessChanges();
+            var groups = _evaluator.Update();
+            Assert.AreEqual(1, groups.Count);
+
+            var items = groups[new IntValue(null)].Items;
             Assert.AreEqual(2, items.Count);
             Assert.AreEqual(entity1, items[0].Data);
             Assert.AreEqual(entity2, items[1].Data);
@@ -91,14 +99,21 @@ namespace ViewerTest.UI.Images
             _query
                 .Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
                 .Returns(entities);
+            _query
+                .Setup(mock => mock.GetGroup(It.IsAny<IEntity>()))
+                .Returns(new IntValue(null));
             _thumbnailFactory
                 .SetupSequence(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))
                 .Returns(thumbnail1.Object)
                 .Returns(thumbnail2.Object)
                 .Returns(thumbnail3.Object);
-            _evaluator.Run();
 
-            var items = _evaluator.Update();
+            _evaluator.Run();
+            
+            _evaluator.ProcessChanges();
+            var groups = _evaluator.Update();
+            Assert.AreEqual(1, groups.Count);
+            var items = groups[new IntValue(null)].Items;
             Assert.AreEqual(3, items.Count);
 
             _fileWatcher.Raise(mock => mock.Deleted += null, 
@@ -106,7 +121,11 @@ namespace ViewerTest.UI.Images
             _fileWatcher.Raise(mock => mock.Deleted += null,
                 new FileSystemEventArgs(WatcherChangeTypes.Deleted, Path.GetDirectoryName(entities[0].Path), Path.GetFileName(entities[0].Path)));
 
-            items = _evaluator.Update();
+            _evaluator.ProcessChanges();
+            groups = _evaluator.Update();
+            Assert.AreEqual(1, groups.Count);
+
+            items = groups[new IntValue(null)].Items;
             Assert.AreEqual(1, items.Count);
             Assert.AreEqual(entities[1], items[0].Data);
             Assert.AreEqual(thumbnail2.Object, items[0].Thumbnail);
@@ -131,6 +150,9 @@ namespace ViewerTest.UI.Images
             _query
                 .Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
                 .Returns(entities);
+            _query
+                .Setup(mock => mock.GetGroup(It.IsAny<IEntity>()))
+                .Returns(new IntValue(null));
             _thumbnailFactory
                 .SetupSequence(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))
                 .Returns(thumbnail1.Object)
@@ -138,13 +160,21 @@ namespace ViewerTest.UI.Images
                 .Returns(thumbnail3.Object);
 
             _evaluator.Run();
-            var items = _evaluator.Update().Select(view => view.Data).ToArray();
+            _evaluator.ProcessChanges();
+            var items = _evaluator.Update()
+                .SelectMany(pair => pair.Value.Items)
+                .Select(view => view.Data)
+                .ToArray();
             CollectionAssert.AreEqual(entities, items);
 
             entities[2].ChangePath("test0");
             _entities.Raise(mock => mock.Moved += null, new EntityMovedEventArgs("test3", entities[2]));
 
-            items = _evaluator.Update().Select(view => view.Data).ToArray();
+            _evaluator.ProcessChanges();
+            items = _evaluator.Update()
+                .SelectMany(pair => pair.Value.Items)
+                .Select(view => view.Data)
+                .ToArray();
             Assert.AreEqual(entities[2], items[0]);
             Assert.AreEqual(entities[0], items[1]);
             Assert.AreEqual(entities[1], items[2]);
@@ -160,15 +190,23 @@ namespace ViewerTest.UI.Images
             };
             var thumbnail1 = new Mock<ILazyThumbnail>();
             var thumbnail2 = new Mock<ILazyThumbnail>();
-            _query.Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
+            _query
+                .Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
                 .Returns(entities);
+            _query
+                .Setup(mock => mock.GetGroup(It.IsAny<IEntity>()))
+                .Returns(new IntValue(null));
             _thumbnailFactory
                 .SetupSequence(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))
                 .Returns(thumbnail1.Object)
                 .Returns(thumbnail2.Object);
 
             _evaluator.Run();
-            var items = _evaluator.Update().Select(view => view.Data).ToArray();
+            _evaluator.ProcessChanges();
+            var items = _evaluator.Update()
+                .SelectMany(pair => pair.Value.Items)
+                .Select(view => view.Data)
+                .ToArray();
             CollectionAssert.AreEqual(entities, items);
             
             _fileWatcher.Raise(mock => mock.Renamed += null, new RenamedEventArgs(
@@ -177,7 +215,11 @@ namespace ViewerTest.UI.Images
                 "test0", 
                 Path.GetFileName(entities[1].Path)));
 
-            items = _evaluator.Update().Select(view => view.Data).ToArray();
+            _evaluator.ProcessChanges();
+            items = _evaluator.Update()
+                .SelectMany(pair => pair.Value.Items)
+                .Select(view => view.Data)
+                .ToArray();
             Assert.AreEqual(entities[1], items[0]);
             Assert.AreEqual(entities[0], items[1]);
             Assert.AreEqual(PathUtils.NormalizePath("test0"), entities[1].Path);

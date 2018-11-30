@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -188,7 +188,13 @@ namespace Viewer.UI.Images.Layout
                 return null; // the location is in an empty space between items
             }
 
-            return element.Item.Items[row * ColumnCount + column];
+            var index = row * ColumnCount + column;
+            if (index >= element.Item.Items.Count)
+            {
+                return null;
+            }
+
+            return element.Item.Items[index];
         }
 
         public override IEnumerable<LayoutElement<EntityView>> GetItemsIn(Rectangle bounds)

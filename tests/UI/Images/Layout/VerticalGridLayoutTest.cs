@@ -133,6 +133,13 @@ namespace ViewerTest.UI.Images.Layout
         }
 
         [TestMethod]
+        public void GetItemAt_EmptySpaceInTheLastRow()
+        {
+            var item = _layout.GetItemAt(new Point(300, 190));
+            Assert.IsNull(item);
+        }
+
+        [TestMethod]
         public void GetGroupsIn_EmptyBounds()
         {
             var groups = _layout.GetGroupsIn(Rectangle.Empty).ToList();

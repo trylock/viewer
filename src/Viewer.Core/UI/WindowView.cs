@@ -49,9 +49,20 @@ namespace Viewer.Core.UI
 
             if (DockPanel != null)
             {
+                var form = DockPanel.FindForm();
+                if (form != null)
+                {
+                    form.FormClosing += FormOnFormClosing;
+                }
+
                 DockPanel.ActiveContentChanged -= DockPanelOnActiveContentChanged;
                 DockPanel.ActiveContentChanged += DockPanelOnActiveContentChanged;
             }
+        }
+
+        private void FormOnFormClosing(object sender, FormClosingEventArgs e)
+        {
+            Close();
         }
 
         protected override void OnClosed(EventArgs e)

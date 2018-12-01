@@ -38,7 +38,7 @@ namespace Viewer.UI.Images
             set
             {
                 _itemSize = value;
-                Layout.ThumbnailAreaSize = _itemSize;
+                ControlLayout.ThumbnailAreaSize = _itemSize;
                 UpdateScrollableSize();
             }
         }
@@ -61,17 +61,17 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Layout of this component
         /// </summary>
-        public ImagesLayout Layout { get; set; }
+        public ImagesLayout ControlLayout { get; set; }
         
         /// <summary>
         /// Items to show in the component
         /// </summary>
         public SortedDictionary<BaseValue, Group> Items
         {
-            get => Layout.Groups;
+            get => ControlLayout.Groups;
             set
             {
-                Layout.Groups = value;
+                ControlLayout.Groups = value;
                 UpdateScrollableSize();
                 Refresh();
             }
@@ -101,13 +101,13 @@ namespace Viewer.UI.Images
             NameHeight = Font.Height * 2;
             NameSpace = Font.Height;
 
-            Layout = new VerticalGridLayout
+            ControlLayout = new VerticalGridLayout
             {
                 GroupLabelSize = new Size(0, 30),
                 ItemPadding = new Padding(5, 5, 5, 5 + NameHeight + NameSpace),
                 ItemMargin = new Padding(5)
             };
-            Layout.Resize(ClientSize);
+            ControlLayout.Resize(ClientSize);
 
             SetStyle(ControlStyles.DoubleBuffer, true);
 
@@ -130,7 +130,7 @@ namespace Viewer.UI.Images
 
         public IEnumerable<EntityView> GetItemsIn(Rectangle bounds)
         {
-            return Layout.GetItemsIn(bounds).Select(element => element.Item);
+            return ControlLayout.GetItemsIn(bounds).Select(element => element.Item);
         }
 
         /// <summary>
@@ -140,12 +140,12 @@ namespace Viewer.UI.Images
         /// <returns>Item at <paramref name="location"/> or null if there is no item</returns>
         public EntityView GetItemAt(Point location)
         {
-            return Layout.GetItemAt(location);
+            return ControlLayout.GetItemAt(location);
         }
 
         public Rectangle GetNameBounds(EntityView item)
         {
-            var bounds = Layout.GetItemBounds(item);
+            var bounds = ControlLayout.GetItemBounds(item);
             return new Rectangle(GetNameLocation(bounds), GetNameSize(bounds));
         }
 
@@ -166,7 +166,7 @@ namespace Viewer.UI.Images
 
         public void EnsureItemVisible(EntityView item)
         {
-            var bounds = Layout.GetItemBounds(item);
+            var bounds = ControlLayout.GetItemBounds(item);
             if (bounds.IsEmpty)
             {
                 return; // item has not been found
@@ -194,16 +194,16 @@ namespace Viewer.UI.Images
         public Point GetNameLocation(Rectangle cellBounds)
         {
             return new Point(
-                cellBounds.X + Layout.ItemPadding.Left,
+                cellBounds.X + ControlLayout.ItemPadding.Left,
                 cellBounds.Y + (cellBounds.Height - NameHeight) + 
-                    NameSpace - Layout.ItemPadding.Top
+                    NameSpace - ControlLayout.ItemPadding.Top
             );
         }
 
         public Size GetNameSize(Rectangle cellBounds)
         {
             return new Size(
-                cellBounds.Width - Layout.ItemPadding.Horizontal,
+                cellBounds.Width - ControlLayout.ItemPadding.Horizontal,
                 NameHeight
             );
         }
@@ -264,7 +264,7 @@ namespace Viewer.UI.Images
         {
             // update invalid items
             var clipBounds = UnprojectBounds(e.ClipRectangle);
-            var elements = Layout.GetItemsIn(clipBounds);
+            var elements = ControlLayout.GetItemsIn(clipBounds);
 
             using (var background = new SolidBrush(Color.FromArgb(unchecked((int) 0xFFeeeef2))))
             {
@@ -355,10 +355,10 @@ namespace Viewer.UI.Images
 
         private void UpdateScrollableSize()
         {
-            Layout.Resize(ClientSize);
+            ControlLayout.Resize(ClientSize);
             AutoScrollMinSize = new Size(
                 0, // we don't want to have a horizontal scroll bar
-                Layout.GetSize().Height
+                ControlLayout.GetSize().Height
             );
         }
     }

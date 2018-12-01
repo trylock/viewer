@@ -232,7 +232,7 @@ namespace Viewer.UI.Images.Layout
                 {
                     // the last row has fewer cells
                     var columnCount = maxColumn;
-                    var remainder = element.Item.Items.Count % columnCount;
+                    var remainder = element.Item.Items.Count % ColumnCount;
                     if (i + 1 == rowCount && remainder != 0)
                     {
                         columnCount = Math.Min(remainder, columnCount);

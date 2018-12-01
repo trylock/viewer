@@ -225,6 +225,17 @@ namespace ViewerTest.UI.Images.Layout
             var expectedItems = _layout.Groups[new IntValue(0)].Items.ToArray();
             CollectionAssert.AreEqual(expectedItems, items);
         }
+        
+        [TestMethod]
+        public void GetItemsIn_TheLastRowIfItIsNotFull()
+        {
+            var items = _layout
+                .GetItemsIn(new Rectangle(290, 190, 10, 10))
+                .Select(element => element.Item)
+                .ToArray();
+            
+            Assert.AreEqual(0, items.Length);
+        }
 
         [TestMethod]
         public void GetItemBounds_NullItem()
@@ -258,6 +269,5 @@ namespace ViewerTest.UI.Images.Layout
             Assert.AreEqual(210, bounds.Width);
             Assert.AreEqual(130, bounds.Height);
         }
-
     }
 }

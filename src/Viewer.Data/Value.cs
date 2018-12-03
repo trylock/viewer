@@ -210,7 +210,7 @@ namespace Viewer.Data
 
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return Value?.GetHashCode() ?? 0;
         }
 
         public override string ToString() => Value == null ? "null" : "\"" + Value + "\"";
@@ -303,7 +303,7 @@ namespace Viewer.Data
 
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return Value?.GetHashCode() ?? 0;
         }
 
         public override string ToString() => Value?.ToString() ?? "null";

@@ -77,7 +77,7 @@ namespace ViewerTest.UI.Images
             var groups = _evaluator.Update();
             Assert.AreEqual(1, groups.Count);
 
-            var items = groups[new IntValue(null)].Items;
+            var items = groups[0].Items;
             Assert.AreEqual(2, items.Count);
             Assert.AreEqual(entity1, items[0].Data);
             Assert.AreEqual(entity2, items[1].Data);
@@ -113,7 +113,7 @@ namespace ViewerTest.UI.Images
             _evaluator.ProcessChanges();
             var groups = _evaluator.Update();
             Assert.AreEqual(1, groups.Count);
-            var items = groups[new IntValue(null)].Items;
+            var items = groups[0].Items;
             Assert.AreEqual(3, items.Count);
 
             _fileWatcher.Raise(mock => mock.Deleted += null, 
@@ -125,7 +125,7 @@ namespace ViewerTest.UI.Images
             groups = _evaluator.Update();
             Assert.AreEqual(1, groups.Count);
 
-            items = groups[new IntValue(null)].Items;
+            items = groups[0].Items;
             Assert.AreEqual(1, items.Count);
             Assert.AreEqual(entities[1], items[0].Data);
             Assert.AreEqual(thumbnail2.Object, items[0].Thumbnail);
@@ -162,7 +162,7 @@ namespace ViewerTest.UI.Images
             _evaluator.Run();
             _evaluator.ProcessChanges();
             var items = _evaluator.Update()
-                .SelectMany(pair => pair.Value.Items)
+                .SelectMany(pair => pair.Items)
                 .Select(view => view.Data)
                 .ToArray();
             CollectionAssert.AreEqual(entities, items);
@@ -172,7 +172,7 @@ namespace ViewerTest.UI.Images
 
             _evaluator.ProcessChanges();
             items = _evaluator.Update()
-                .SelectMany(pair => pair.Value.Items)
+                .SelectMany(pair => pair.Items)
                 .Select(view => view.Data)
                 .ToArray();
             Assert.AreEqual(entities[2], items[0]);
@@ -204,7 +204,7 @@ namespace ViewerTest.UI.Images
             _evaluator.Run();
             _evaluator.ProcessChanges();
             var items = _evaluator.Update()
-                .SelectMany(pair => pair.Value.Items)
+                .SelectMany(pair => pair.Items)
                 .Select(view => view.Data)
                 .ToArray();
             CollectionAssert.AreEqual(entities, items);
@@ -217,7 +217,7 @@ namespace ViewerTest.UI.Images
 
             _evaluator.ProcessChanges();
             items = _evaluator.Update()
-                .SelectMany(pair => pair.Value.Items)
+                .SelectMany(pair => pair.Items)
                 .Select(view => view.Data)
                 .ToArray();
             Assert.AreEqual(entities[1], items[0]);

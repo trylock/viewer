@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -23,7 +24,7 @@ namespace Viewer.UI.Images
 {
     /// <inheritdoc />
     /// <summary>
-    /// This query progress starts watching changes in all query folders.
+    /// This query progress starts watching changes in all query folders. 
     /// </summary>
     internal class FolderQueryProgress : IProgress<QueryProgressReport>
     {
@@ -57,10 +58,37 @@ namespace Viewer.UI.Images
     /// in the file system and update the result accordingly.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This object is responsible for collection returned from the <see cref="Update"/> method.
     /// <see cref="Dispose"/>ing this object will dispose items in this collection. The caller
     /// must not use the collection after calling <see cref="Dispose"/> except for the
     /// <see cref="EntityView.Data"/> property of items in the collection.
+    /// </para>
+    ///
+    /// <para>
+    /// Query evaluation works in 3 stages:
+    /// <list type="number">
+    /// <item>
+    /// <description>Find files from the query result set</description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Group and sort values in the query result set. This is done in batches rather than for
+    /// individual items since that will yield better performance.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Show photos to the user (this is done on the UI thread, see <see cref="Update"/>)
+    /// </description>
+    /// </item>
+    /// </list>
+    ///
+    /// These stages are executed on separate threads so that they don't block each other. Data
+    /// between (1) and (2) is shared using queues. Data between (2) and (3) is shared using
+    /// additional back buffer which is updated in the 2nd stage and swaped with the front buffer
+    /// in the 3rd stage to avoid race conditions.
+    /// </para>
     /// </remarks>
     public class QueryEvaluator : IDisposable
     {
@@ -72,10 +100,17 @@ namespace Viewer.UI.Images
         private readonly ILazyThumbnailFactory _thumbnailFactory;
 
         // state
-        private SortedDictionary<BaseValue, Group> _viewsBack;
-        private SortedDictionary<BaseValue, Group> _viewsFront;
-        private readonly ConcurrentSortedSet<EntityView> _added;
+        private List<Group> _viewsBack;
+        private List<Group> _viewsFront;
         private readonly ConcurrentQueue<Request> _requests = new ConcurrentQueue<Request>();
+        private readonly AutoResetEvent _processBatch = new AutoResetEvent(false);
+        private Thread _batchProcessingThread;
+
+        /// <summary>
+        /// Number of pending requests in <see cref="_requests"/>. This property is accessed and
+        /// written to from multiple threads.
+        /// </summary>
+        private int _requestCount;
 
         /// <summary>
         /// Minimal time between a failed load operation and its retry
@@ -87,31 +122,83 @@ namespace Viewer.UI.Images
         /// </summary>
         private const int MaxRetryCount = 4;
 
-        private enum RequestType
+        private abstract class Request
         {
-            Modify,
-            Remove,
-            Move
-        }
-
-        private struct Request
-        {
-            public RequestType Type { get; }
-            public string Path { get; }
-            public string NewPath { get; }
-
-            public Request(RequestType type, string path)
+            /// <summary>
+            /// Return path of an existing entity (entity which has already been shown to the user)
+            /// which this request modifies.
+            /// </summary>
+            /// <returns>Modified path or null</returns>
+            public virtual string GetModifiedPath()
             {
-                Type = type;
-                Path = path;
-                NewPath = null;
+                return null;
             }
 
-            public Request(string oldPath, string newPath)
+            public virtual EntityView GetAddedView()
             {
-                Type = RequestType.Move;
-                Path = oldPath;
-                NewPath = newPath;
+                return null;
+            }
+        }
+        
+        private sealed class AddRequest : Request
+        {
+            public EntityView Value { get; }
+
+            public AddRequest(EntityView value)
+            {
+                Value = value ?? throw new ArgumentNullException(nameof(value));
+            }
+
+            public override EntityView GetAddedView()
+            {
+                return Value;
+            }
+        }
+
+        private sealed class ModifyRequest : Request
+        {
+            public IEntity Value { get; }
+
+            public ModifyRequest(IEntity value)
+            {
+                Value = value ?? throw new ArgumentNullException(nameof(value));
+            }
+
+            public override string GetModifiedPath()
+            {
+                return Value.Path;
+            }
+        }
+
+        private sealed class RemoveRequest : Request
+        {
+            public string Path { get; }
+
+            public RemoveRequest(string path)
+            {
+                Path = path ?? throw new ArgumentNullException(nameof(path));
+            }
+
+            public override string GetModifiedPath()
+            {
+                return Path;
+            }
+        }
+
+        private sealed class MoveRequest : Request
+        {
+            public string OldPath { get; }
+            public string NewPath { get; }
+
+            public MoveRequest(string oldPath, string newPath)
+            {
+                OldPath = oldPath ?? throw new ArgumentNullException(nameof(oldPath));
+                NewPath = newPath ?? throw new ArgumentNullException(nameof(newPath));
+            }
+
+            public override string GetModifiedPath()
+            {
+                return OldPath;
             }
         }
 
@@ -140,10 +227,6 @@ namespace Viewer.UI.Images
         /// </summary>
         public Task LoadTask { get; private set; } = Task.CompletedTask;
 
-        private Thread _batchProcessingThread;
-        private readonly AutoResetEvent _isNotified = new AutoResetEvent(false);
-        private int _changeCount;
-
         public QueryEvaluator(
             IFileWatcherFactory fileWatcherFactory, 
             ILazyThumbnailFactory thumbnailFactory, 
@@ -158,9 +241,8 @@ namespace Viewer.UI.Images
             // initialize internal structures
             Cancellation = new CancellationTokenSource();
             Comparer = new EntityViewComparer(Query.Comparer);
-            _viewsBack = new SortedDictionary<BaseValue, Group>();
-            _viewsFront = new SortedDictionary<BaseValue, Group>();
-            _added = new ConcurrentSortedSet<EntityView>(Comparer);
+            _viewsBack = new List<Group>();
+            _viewsFront = new List<Group>();
 
             // register event handlers
             _fileWatcher.Renamed += FileWatcherOnRenamed;
@@ -175,19 +257,19 @@ namespace Viewer.UI.Images
         
         private void EntitiesOnDeleted(object sender, Data.EntityEventArgs e)
         {
-            AddRequest(new Request(RequestType.Remove, e.Value.Path));
+            EnqueueRequest(new RemoveRequest(e.Value.Path));
         }
 
         private void EntitiesOnMoved(object sender, EntityMovedEventArgs e)
         {
             // We have already changed entity's path, just have to make sure the list is still
             // sorted.
-            AddRequest(new Request(RequestType.Modify, e.Value.Path));
+            EnqueueRequest(new ModifyRequest(e.Value));
         }
 
         private void EntitiesOnChanged(object sender, Data.EntityEventArgs e)
         {
-            AddRequest(new Request(RequestType.Modify, e.Value.Path));
+            EnqueueRequest(new ModifyRequest(e.Value));
         }
 
         private static bool IsEntityEvent(FileSystemEventArgs e)
@@ -203,7 +285,7 @@ namespace Viewer.UI.Images
             if (!IsEntityEvent(e))
                 return; // skip this event
             var path = PathUtils.NormalizePath(e.FullPath);
-            AddRequest(new Request(RequestType.Remove, path));
+            EnqueueRequest(new RemoveRequest(path));
         }
 
         private void FileWatcherOnRenamed(object sender, RenamedEventArgs e)
@@ -214,7 +296,7 @@ namespace Viewer.UI.Images
                 return; // skip this event
             var oldPath = PathUtils.NormalizePath(e.OldFullPath);
             var newPath = PathUtils.NormalizePath(e.FullPath);
-            AddRequest(new Request(oldPath, newPath));
+            EnqueueRequest(new MoveRequest(oldPath, newPath));
         }
 
         private async void FileWatcherOnCreated(object sender, FileSystemEventArgs e)
@@ -264,26 +346,19 @@ namespace Viewer.UI.Images
             if (entity != null && Query.Match(entity))
             {
                 var thumbnail = _thumbnailFactory.Create(entity, Cancellation.Token);
-                AddView(new EntityView(entity, thumbnail));
+                var view = new EntityView(entity, thumbnail);
+                EnqueueRequest(new AddRequest(view));
             }
         }
 
         #endregion
 
-        private void AddRequest(Request req)
+        private void EnqueueRequest(Request req)
         {
             _requests.Enqueue(req);
-            var value = Interlocked.Increment(ref _changeCount);
+            var value = Interlocked.Increment(ref _requestCount);
             if ((value % 100) == 0)
-                _isNotified.Set();
-        }
-
-        private void AddView(EntityView item)
-        {
-            _added.Add(item);
-            var value = Interlocked.Increment(ref _changeCount);
-            if ((value % 100) == 0)
-                _isNotified.Set();
+                _processBatch.Set();
         }
 
         /// <summary>
@@ -331,13 +406,13 @@ namespace Viewer.UI.Images
             foreach (var entity in Query.Execute(options))
             {
                 var thumbnail = _thumbnailFactory.Create(entity, Cancellation.Token);
-                AddView(new EntityView(entity, thumbnail));
+                EnqueueRequest(new AddRequest(new EntityView(entity, thumbnail)));
             }
         }
 
         /// <summary>
         /// List of removed entities waiting to be disposed (by an <see cref="Update"/> call).
-        /// We can't disposed them on a background thread because it is being used by the UI
+        /// We can't disposed them on a background thread because they are shared with the UI
         /// thread.
         /// </summary>
         /// <remarks>
@@ -350,141 +425,120 @@ namespace Viewer.UI.Images
         {
             while (!_isEnd)
             {
-                _isNotified.WaitOne(TimeSpan.FromMilliseconds(2000));
+                _processBatch.WaitOne(TimeSpan.FromMilliseconds(200));
                 
                 lock (_viewsBack)
                 {
                     ProcessChanges();
                 }
             }
-            _isNotified.Dispose();
+            _processBatch.Dispose();
+        }
+
+        private List<EntityView> GetOrAddList(
+            BaseValue key,
+            Dictionary<BaseValue, List<EntityView>> index)
+        {
+            if (!index.TryGetValue(key, out var list))
+            {
+                list = new List<EntityView>();
+                index.Add(key, list);
+            }
+
+            return list;
         }
 
         public void ProcessChanges()
         {
-            // index all requests using a local hash table
-            var index = new Dictionary<string, Request>(
-                StringComparer.CurrentCultureIgnoreCase);
+            var index = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             var added = new Dictionary<BaseValue, List<EntityView>>();
             while (_requests.TryDequeue(out var req))
             {
-                index[req.Path] = req;
-            }
-
-            // group added items
-            var addedSnapshot = _added.Consume();
-            foreach (var item in addedSnapshot)
-            {
-                var key = Query.GetGroup(item.Data);
-                if (!added.TryGetValue(key, out var list))
+                // group added views
+                var item = req.GetAddedView();
+                if (item != null)
                 {
-                    list = new List<EntityView>();
-                    added.Add(key, list);
-                }
-                list.Add(item);
-            }
-
-            // apply all changes to the local copy
-            var removedGroups = new List<BaseValue>();
-            foreach (var pair in _viewsBack)
-            {
-                // find items added to this group
-                var group = pair.Value;
-                if (!added.TryGetValue(group.Key, out var addedToThisGroup))
-                {
-                    addedToThisGroup = new List<EntityView>();
+                    var key = Query.GetGroup(item.Data);
+                    var list = GetOrAddList(key, added);
+                    list.Add(item);
                 }
 
-                // process all changes
-                ProcessGroup(group, index, addedToThisGroup);
-
-                // check if we should remove this group 
-                if (group.Items.Count <= 0)
+                // index modification requests
+                var path = req.GetModifiedPath();
+                if (path != null)
                 {
-                    removedGroups.Add(group.Key);
+                    index[path] = req;
                 }
             }
 
-            // remove empty groups
-            foreach (var key in removedGroups)
+            // apply changes to the data in the back buffer
+            var groupHead = 0;
+            for (var i = 0; i < _viewsBack.Count; ++i)
             {
-                _viewsBack.Remove(key);
-            }
+                Trace.Assert(groupHead <= i, $"{nameof(groupHead)} <= {nameof(i)}");
+                var group = _viewsBack[i];
 
-            // add new groups
-            foreach (var pair in added)
-            {
-                if (_viewsBack.ContainsKey(pair.Key))
+                // update items in the group
+                var head = 0;
+                for (var j = 0; j < group.Items.Count; ++j)
                 {
-                    continue;
-                }
-
-                _viewsBack.Add(pair.Key, new Group(pair.Key)
-                {
-                    Items = pair.Value
-                });
-            }
-        }
-
-        private void ProcessGroup(
-            Group group, 
-            Dictionary<string, Request> changes, 
-            List<EntityView> added)
-        {
-            // process all items in this group
-            var modified = new List<EntityView>();
-            var head = 0;
-            for (var i = 0; i < group.Items.Count; ++i)
-            {
-                Trace.Assert(head <= i);
-
-                var item = group.Items[i];
-                if (!changes.TryGetValue(item.FullPath, out var req))
-                {
-                    group.Items[head] = item;
-                    ++head;
-                }
-                else if (req.Type == RequestType.Remove)
-                {
-                    // we will remove and dispose all items at once after the loop
-                    lock (_removed)
+                    Trace.Assert(head <= j, $"{nameof(head)} <= {nameof(j)}");
+                    var item = group.Items[j];
+                    if (!index.TryGetValue(item.FullPath, out var req))
+                    {
+                        // this item has not changed
+                        group.Items[head] = item;
+                        ++head;
+                    }
+                    else if (req is RemoveRequest)
                     {
                         _removed.Add(item);
                     }
+                    else if (req is MoveRequest moveReq)
+                    {
+                        item.Data.ChangePath(moveReq.NewPath);
+                        var key = Query.GetGroup(item.Data);
+                        var list = GetOrAddList(key, added);
+                        list.Add(item);
+                    }
+                    else if (req is ModifyRequest modReq)
+                    {
+                        item = new EntityView(modReq.Value, item.Thumbnail);
+                        var key = Query.GetGroup(item.Data);
+                        var list = GetOrAddList(key, added);
+                        list.Add(item);
+                    }
                 }
-                else if (req.Type == RequestType.Modify)
-                {
-                    // we will remember all modified items, sort them and merge them back
-                    // later.
-                    modified.Add(item);
-                }
-                else // if (type == RequestType.Move)
-                {
-                    item.Data.ChangePath(req.NewPath);
-                    modified.Add(item);
-                }
-            }
-            group.Items.RemoveRange(head, group.Items.Count - head);
+                group.Items.RemoveRange(head, group.Items.Count - head);
 
-            // re-add modified entities
-            if (modified.Count > 0)
-            {
-                modified.Sort(Comparer);
-                added = added.Merge(modified, Comparer);
-            }
+                // add new items to this group
+                if (added.TryGetValue(group.Key, out var addedList))
+                {
+                    addedList.Sort(Comparer);
+                    group.Items.Merge(addedList, Comparer);
+                    // remove the group so that only brand new groups will remain in the map
+                    added.Remove(group.Key);
+                }
 
-            if (added.Count > 0)
-            {
-                group.Items = group.Items.Merge(added, Comparer);
+                // remove the group if it is empty
+                if (group.Items.Count > 0)
+                {
+                    _viewsBack[groupHead] = group;
+                    ++groupHead;
+                }
             }
+            _viewsBack.RemoveRange(groupHead, _viewsBack.Count - groupHead);
+
+            // add new groups
+            throw new NotImplementedException();
         }
-
+        
         /// <summary>
         /// Update current collection. It takes all changes made so far and applies them to
         /// the local collection of <see cref="EntityView"/>s. 
         /// </summary>
         /// <returns>Modified collection</returns>
-        public SortedDictionary<BaseValue, Group> Update()
+        public List<Group> Update()
         {
             var entered = Monitor.TryEnter(_viewsBack, TimeSpan.FromMilliseconds(20));
             if (!entered)
@@ -504,7 +558,7 @@ namespace Viewer.UI.Images
                 _viewsFront.Clear();
                 foreach (var item in _viewsBack)
                 {
-                    _viewsFront.Add(item.Key, item.Value);
+                    _viewsFront.Add(item);
                 }
 
                 return _viewsFront;
@@ -531,16 +585,16 @@ namespace Viewer.UI.Images
             _fileWatcher.Dispose();
 
             _isEnd = true;
-            _isNotified.Set();
+            _processBatch.Set();
 
             // cancel current loading operation
             Cancellation.Cancel();
             LoadTask.ContinueWith(parent =>
             {
                 Cancellation.Dispose();
-                foreach (var pair in _viewsBack)
+                foreach (var group in _viewsBack)
                 {
-                    pair.Value.Dispose();
+                    group.Dispose();
                 }
                 _viewsBack = null;
                 _viewsFront = null;

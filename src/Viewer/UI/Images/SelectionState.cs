@@ -255,7 +255,7 @@ namespace Viewer.UI.Images
             _currentSelection.Clear();
 
             var isStart = false;
-            var views = _view.Items.SelectMany(pair => pair.Value.Items);
+            var views = _view.Items.SelectMany(pair => pair.Items);
             foreach (var view in views)
             {
                 if (!isStart)
@@ -323,7 +323,7 @@ namespace Viewer.UI.Images
         {
             if (_view.Items.Count == 0)
                 return null;
-            return _view.Items.First().Value.Items.FirstOrDefault();
+            return _view.Items.First().Items.FirstOrDefault();
         }
 
         private void CaptureAnchorItem(EntityView item)
@@ -409,7 +409,7 @@ namespace Viewer.UI.Images
             if (e.Control && e.KeyCode == Keys.A)
             {
                 _currentSelection.Clear();
-                _currentSelection.UnionWith(_view.Items.SelectMany(pair => pair.Value.Items));
+                _currentSelection.UnionWith(_view.Items.SelectMany(pair => pair.Items));
                 SetGlobalSelection();
                 SetSelectedItemsState();
             }
@@ -429,7 +429,7 @@ namespace Viewer.UI.Images
                     target = GetFirstItem();
                     break;
                 case Keys.End when _view.Items.Count > 0:
-                    target = _view.Items.Last().Value.Items.LastOrDefault();
+                    target = _view.Items.Last().Items.LastOrDefault();
                     break;
                 case Keys.PageUp:
                     target = _view.FindFirstItemAbove(activeItem);

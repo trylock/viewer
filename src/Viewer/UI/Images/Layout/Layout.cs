@@ -50,8 +50,7 @@ namespace Viewer.UI.Images.Layout
 
     internal abstract class ImagesLayout
     {
-        public SortedDictionary<BaseValue, Group> Groups { get; set; } = 
-            new SortedDictionary<BaseValue, Group>();
+        public List<Group> Groups { get; set; } = new List<Group>();
 
         /// <summary>
         /// Size of the area for a thumbnail

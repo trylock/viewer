@@ -147,7 +147,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// List of items to show 
         /// </summary>
-        SortedDictionary<BaseValue, Group> Items { get; set; }
+        List<Group> Items { get; set; }
 
         /// <summary>
         /// Update all visible items in the <see cref="Items"/> collection.

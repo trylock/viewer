@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core;
+using Viewer.Data;
 
 namespace Viewer.UI.Images.Layout
 {
@@ -51,9 +52,8 @@ namespace Viewer.UI.Images.Layout
             }
 
             var result = new Size(ClientSize.Width, 0);
-            foreach (var pair in Groups)
+            foreach (var group in Groups)
             {
-                var group = pair.Value;
                 result.Height += MeasureGroupHeight(group);
             }
 
@@ -69,11 +69,11 @@ namespace Viewer.UI.Images.Layout
 
             // find group of the item
             var top = 0;
-            Group group = null;
+            Group itemGroup = null;
             int itemIndex = -1;
-            foreach (var pair in Groups)
+            foreach (var group in Groups)
             {
-                group = pair.Value;
+                itemGroup = group;
                 itemIndex = group.Items.IndexOf(item);
                 if (itemIndex >= 0)
                     break;
@@ -81,7 +81,7 @@ namespace Viewer.UI.Images.Layout
             }
 
             // check if the item is in a non-collapsed group
-            if (itemIndex < 0 || group.IsCollapsed)
+            if (itemIndex < 0 || itemGroup.IsCollapsed)
                 return Rectangle.Empty;
 
             // find bounds of the item within the group
@@ -127,9 +127,9 @@ namespace Viewer.UI.Images.Layout
             Group group = null;
             bool found = false;
             var bounds = new Rectangle(0, 0, ClientSize.Width, 0);
-            foreach (var pair in Groups)
+            foreach (var item in Groups)
             {
-                group = pair.Value;
+                group = item;
                 bounds.Height = MeasureGroupHeight(group);
                 if (bounds.Y + bounds.Height > location.Y)
                 {
@@ -276,9 +276,8 @@ namespace Viewer.UI.Images.Layout
             }
 
             var top = 0;
-            foreach (var pair in Groups)
+            foreach (var group in Groups)
             {
-                Group group = pair.Value;
                 var height = MeasureGroupHeight(group);
                 var groupBounds = new Rectangle(0, top, ClientSize.Width, height);
                 if (bounds.IntersectsWith(groupBounds))

@@ -53,12 +53,12 @@ namespace ViewerTest.UI.Images.Layout
                 largeGroup.Items.Add(new EntityView(null, null));
             }
 
-            _layout.Groups = new SortedDictionary<BaseValue, Group>
+            _layout.Groups = new List<Group>
             {
-                { smallGroup.Key, smallGroup },
-                { emptyGroup.Key, emptyGroup },
-                { largeCollapsedGroup.Key, largeCollapsedGroup },
-                { largeGroup.Key, largeGroup },
+                smallGroup,
+                emptyGroup,
+                largeCollapsedGroup,
+                largeGroup,
             };
         }
 
@@ -101,7 +101,7 @@ namespace ViewerTest.UI.Images.Layout
             var item = _layout.GetItemAt(new Point(130, 145));
             Assert.IsNotNull(item);
 
-            var expectedItem = _layout.Groups[new IntValue(0)].Items[0];
+            var expectedItem = _layout.Groups[0].Items[0];
             Assert.AreEqual(expectedItem, item);
         }
 
@@ -111,7 +111,7 @@ namespace ViewerTest.UI.Images.Layout
             var item = _layout.GetItemAt(new Point(130, 270));
             Assert.IsNotNull(item);
 
-            var expectedItem = _layout.Groups[new IntValue(0)].Items[3];
+            var expectedItem = _layout.Groups[0].Items[3];
             Assert.AreEqual(expectedItem, item);
         }
 
@@ -128,7 +128,7 @@ namespace ViewerTest.UI.Images.Layout
             var item = _layout.GetItemAt(new Point(790, 70));
             Assert.IsNotNull(item);
 
-            var expectedItem = _layout.Groups[new IntValue(0)].Items[2];
+            var expectedItem = _layout.Groups[0].Items[2];
             Assert.AreEqual(expectedItem, item);
         }
 
@@ -155,7 +155,7 @@ namespace ViewerTest.UI.Images.Layout
                 .Select(element => element.Item)
                 .ToArray();
 
-            var expectedGroup = _layout.Groups[new IntValue(0)];
+            var expectedGroup = _layout.Groups[0];
             CollectionAssert.AreEqual(new[]{ expectedGroup }, groups);
         }
 
@@ -167,7 +167,7 @@ namespace ViewerTest.UI.Images.Layout
                 .Select(element => element.Item)
                 .ToArray();
 
-            var expectedGroup = _layout.Groups[new IntValue(0)];
+            var expectedGroup = _layout.Groups[0];
             CollectionAssert.AreEqual(new[] { expectedGroup }, groups);
         }
 
@@ -181,8 +181,8 @@ namespace ViewerTest.UI.Images.Layout
 
             var expectedGroups = new[]
             {
-                _layout.Groups[new IntValue(1)],
-                _layout.Groups[new IntValue(2)],
+                _layout.Groups[1],
+                _layout.Groups[2],
             };
             CollectionAssert.AreEqual(expectedGroups, groups);
         }
@@ -210,7 +210,7 @@ namespace ViewerTest.UI.Images.Layout
                 .Select(element => element.Item)
                 .ToArray();
 
-            var expectedItems = _layout.Groups[new IntValue(3)].Items.Skip(18).ToArray();
+            var expectedItems = _layout.Groups[3].Items.Skip(18).ToArray();
             CollectionAssert.AreEqual(expectedItems, items);
         }
 
@@ -222,7 +222,7 @@ namespace ViewerTest.UI.Images.Layout
                 .Select(element => element.Item)
                 .ToArray();
 
-            var expectedItems = _layout.Groups[new IntValue(0)].Items.ToArray();
+            var expectedItems = _layout.Groups[0].Items.ToArray();
             CollectionAssert.AreEqual(expectedItems, items);
         }
         
@@ -254,7 +254,7 @@ namespace ViewerTest.UI.Images.Layout
         [TestMethod]
         public void GetItemBounds_ItemInCollapsedGroup()
         {
-            var item = _layout.Groups[new IntValue(2)].Items[2];
+            var item = _layout.Groups[2].Items[2];
             var bounds = _layout.GetItemBounds(item);
             Assert.IsTrue(bounds.IsEmpty);
         }
@@ -262,7 +262,7 @@ namespace ViewerTest.UI.Images.Layout
         [TestMethod]
         public void GetItemBounds_VisibleItem()
         {
-            var item = _layout.Groups[new IntValue(3)].Items[4];
+            var item = _layout.Groups[3].Items[4];
             var bounds = _layout.GetItemBounds(item);
             Assert.AreEqual(270, bounds.X);
             Assert.AreEqual(570, bounds.Y);

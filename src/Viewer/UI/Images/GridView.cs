@@ -68,7 +68,7 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Items to show in the component
         /// </summary>
-        public SortedDictionary<BaseValue, Group> Items
+        public List<Group> Items
         {
             get => ControlLayout.Groups;
             set

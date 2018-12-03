@@ -271,13 +271,13 @@ namespace Viewer.UI.Images
             }
         }
 
-        public SortedDictionary<BaseValue, Group> Items
+        public List<Group> Items
         {
             get => _view.Items;
             set
             {
                 _view.Items = value;
-                var itemCount = value?.Sum(group => group.Value.Items.Count) ?? 0;
+                var itemCount = value?.Sum(group => group.Items.Count) ?? 0;
                 StatusLabel.Visible = itemCount <= 0;
             }
         }

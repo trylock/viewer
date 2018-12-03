@@ -248,7 +248,7 @@ namespace Viewer.UI.Images
             }
 
             var items = View.Items
-                .SelectMany(pair => pair.Value.Items)
+                .SelectMany(pair => pair.Items)
                 .Select(item => item.Data)
                 .OfType<FileEntity>()
                 .ToList();
@@ -276,7 +276,7 @@ namespace Viewer.UI.Images
                 // update item count
                 if (ItemCountLabel != null)
                 {
-                    var itemCount = View.Items.Sum(pair => pair.Value.Items.Count);
+                    var itemCount = View.Items.Sum(pair => pair.Items.Count);
                     ItemCountLabel.Text = string.Format(Resources.ItemCount_Label, itemCount);
                 }
             }
@@ -453,7 +453,7 @@ namespace Viewer.UI.Images
             if (view.Data is FileEntity fileEntity)
             {
                 var items = View.Items
-                    .SelectMany(pair => pair.Value.Items)
+                    .SelectMany(pair => pair.Items)
                     .Select(item => item.Data)
                     .OfType<FileEntity>()
                     .ToList();

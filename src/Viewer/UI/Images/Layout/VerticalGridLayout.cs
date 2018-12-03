@@ -268,5 +268,19 @@ namespace Viewer.UI.Images.Layout
                 top += height;
             }
         }
+
+        public override IEnumerable<LayoutElement<Group>> GetGroupLabelsIn(Rectangle bounds)
+        {
+            foreach (var element in GetGroupsIn(bounds))
+            {
+                var labelBounds = new Rectangle(
+                    element.Bounds.Location, 
+                    new Size(element.Bounds.Width, LabelSizeWithMargin.Height));
+                if (bounds.Contains(labelBounds))
+                {
+                    yield return new LayoutElement<Group>(labelBounds, element.Item);
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -142,5 +142,12 @@ namespace Viewer.UI.Images.Layout
         /// <param name="bounds"></param>
         /// <returns></returns>
         public abstract IEnumerable<LayoutElement<Group>> GetGroupsIn(Rectangle bounds);
+
+        /// <summary>
+        /// Find all group labels in <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds"></param>
+        /// <returns></returns>
+        public abstract IEnumerable<LayoutElement<Group>> GetGroupLabelsIn(Rectangle bounds);
     }
 }

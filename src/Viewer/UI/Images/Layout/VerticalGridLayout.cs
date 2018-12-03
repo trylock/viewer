@@ -244,7 +244,23 @@ namespace Viewer.UI.Images.Layout
 
         public override Group GetGroupLabelAt(Point location)
         {
-            throw new NotImplementedException();
+            var element = FindGroup(location);
+            if (element == null)
+            {
+                return null;
+            }
+
+            var labelBounds = new Rectangle(
+                GroupLabelMargin.Left + element.Bounds.X, 
+                GroupLabelMargin.Top + element.Bounds.Y,
+                element.Bounds.Width - GroupLabelMargin.Horizontal, 
+                GroupLabelSize.Height);
+            if (labelBounds.Contains(location))
+            {
+                return element.Item;
+            }
+
+            return null;
         }
 
         public override IEnumerable<LayoutElement<Group>> GetGroupsIn(Rectangle bounds)

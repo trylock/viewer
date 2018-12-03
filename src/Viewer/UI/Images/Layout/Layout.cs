@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -67,6 +67,16 @@ namespace Viewer.UI.Images.Layout
         /// Inner space in each item
         /// </summary>
         public Padding ItemPadding { get; set; }
+
+        /// <summary>
+        /// Size of the label of each group
+        /// </summary>
+        public Size GroupLabelSize { get; set; }
+
+        /// <summary>
+        /// Space around group label
+        /// </summary>
+        public Padding GroupLabelMargin { get; set; }
 
         /// <summary>
         /// Size of the client area in which this layout is used

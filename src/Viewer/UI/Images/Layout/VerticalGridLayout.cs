@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,16 +11,6 @@ namespace Viewer.UI.Images.Layout
 {
     internal class VerticalGridLayout : ImagesLayout
     {
-        /// <summary>
-        /// Size of the label of each group
-        /// </summary>
-        public Size GroupLabelSize { get; set; }
-
-        /// <summary>
-        /// Space around group label
-        /// </summary>
-        public Padding GroupLabelMargin { get; set; }
-        
         private Size LabelSizeWithMargin => new Size(
             GroupLabelSize.Width + GroupLabelMargin.Horizontal,
             GroupLabelSize.Height + GroupLabelMargin.Vertical);

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Forms;
 using Viewer.Core;
 using Viewer.Data;
 using Viewer.Images;
+using Viewer.Properties;
 using Viewer.UI.Images.Layout;
 
 namespace Viewer.UI.Images
@@ -103,7 +105,7 @@ namespace Viewer.UI.Images
 
             ControlLayout = new VerticalGridLayout
             {
-                GroupLabelSize = new Size(0, 30),
+                GroupLabelSize = new Size(0, Font.Height * 3),
                 ItemPadding = new Padding(5, 5, 5, 5 + NameHeight + NameSpace),
                 ItemMargin = new Padding(5)
             };
@@ -276,6 +278,11 @@ namespace Viewer.UI.Images
                 PaintItem(e.Graphics, element);
             }
 
+            foreach (var element in ControlLayout.GetGroupLabelsIn(clipBounds))
+            {
+                PaintGroupLabel(e.Graphics, element);
+            }
+
             // update selection 
             if (!SelectionBounds.IsEmpty)
             {
@@ -286,6 +293,96 @@ namespace Viewer.UI.Images
                     e.Graphics.FillRectangle(brush, selectionBounds);
                     e.Graphics.DrawRectangle(pen, selectionBounds);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Draw group label
+        /// </summary>
+        /// <param name="graphics">Graphics context</param>
+        /// <param name="element">Group and its label bounds</param>
+        private void PaintGroupLabel(Graphics graphics, LayoutElement<Group> element)
+        {
+            var bounds = ProjectBounds(element.Bounds);
+            var group = element.Item;
+
+            var name = group.Key.IsNull ? "Default" : group.Key.ToString(CultureInfo.CurrentCulture);
+            var label = string.Format(Resources.Group_Label, name, element.Item.Items.Count);
+            
+            PointF offset = new PointF(0, 0);
+            using (var iconPen = new Pen(Color.FromArgb(unchecked((int)0xFF6d6d8d))))
+            using (var separatorPen = new Pen(Color.FromArgb(unchecked((int)0xFFd4d4de))))
+            using (var textBrush = new SolidBrush(Color.FromArgb(unchecked((int)0xFF272768))))
+            using (var activeBrush = new SolidBrush(Color.FromArgb(unchecked((int)0xFFf9f9fb))))
+            using (var font = new Font(Font.FontFamily, 1.25f * Font.Size))
+            {
+                // draw background
+                var cursorLocation = UnprojectLocation(PointToClient(MousePosition));
+                var boundsWithoutMargin = new Rectangle(
+                    element.Bounds.X + ControlLayout.GroupLabelMargin.Left,
+                    element.Bounds.Y + ControlLayout.GroupLabelMargin.Top,
+                    element.Bounds.Width - ControlLayout.GroupLabelMargin.Horizontal,
+                    element.Bounds.Height - ControlLayout.GroupLabelMargin.Vertical);
+                if (boundsWithoutMargin.Contains(cursorLocation))
+                {
+                    graphics.FillRectangle(activeBrush, ProjectBounds(boundsWithoutMargin));
+                }
+
+                // draw collapsed state icon
+                var icon = VectorIcons.GoForwardIcon;
+                var iconHeight = font.Height * 0.8f;
+                var iconBounds = icon.GetBounds();
+
+                var state = graphics.Save();
+                try
+                {
+                    // translate icon origin to [0, 0]
+                    graphics.TranslateTransform(
+                        -iconBounds.X - iconBounds.Width / 2,
+                        -iconBounds.Y - iconBounds.Height / 2, MatrixOrder.Append);
+                    // scale the icon to the label size 
+                    graphics.ScaleTransform(
+                        iconHeight / 2f / iconBounds.Width,
+                        iconHeight / iconBounds.Height, MatrixOrder.Append);
+                    graphics.RotateTransform(group.IsCollapsed ? 0 : 90, MatrixOrder.Append);
+                    // translate the icon back to the group label position
+                    graphics.TranslateTransform(
+                        bounds.X + ControlLayout.GroupLabelMargin.Left + iconHeight,
+                        bounds.Y + ControlLayout.GroupLabelMargin.Top + ControlLayout.GroupLabelSize.Height / 2, MatrixOrder.Append);
+                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    graphics.DrawPath(iconPen, icon);
+
+                    offset.X += iconHeight;
+                }
+                finally
+                {
+                    graphics.Restore(state);
+                }
+
+                // draw group label
+                var measure = graphics.MeasureString(label, font);
+                offset.X += bounds.X + ControlLayout.GroupLabelMargin.Left + iconHeight;
+                offset.Y += bounds.Y +
+                            ControlLayout.GroupLabelMargin.Top +
+                            ControlLayout.GroupLabelSize.Height / 2 -
+                            measure.Height / 2 + 1;
+                graphics.DrawString(
+                    label,
+                    font,
+                    textBrush,
+                    offset.X,
+                    offset.Y);
+
+                // draw filler line
+                offset.Y += measure.Height / 2;
+                offset.X += measure.Width + Font.Height;
+                if (offset.X >= ClientSize.Width - Font.Height)
+                    return; // the line is completely hidden
+                graphics.DrawLine(separatorPen,
+                    offset.X,
+                    offset.Y,
+                    ClientSize.Width - Font.Height,
+                    offset.Y);
             }
         }
 

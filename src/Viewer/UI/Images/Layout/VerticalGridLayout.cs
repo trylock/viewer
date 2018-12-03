@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -125,17 +125,22 @@ namespace Viewer.UI.Images.Layout
                 return null;
 
             Group group = null;
+            bool found = false;
             var bounds = new Rectangle(0, 0, ClientSize.Width, 0);
             foreach (var pair in Groups)
             {
                 group = pair.Value;
                 bounds.Height = MeasureGroupHeight(group);
                 if (bounds.Y + bounds.Height > location.Y)
+                {
+                    found = true;
                     break;
+                }
+
                 bounds.Y += bounds.Height;
             }
 
-            if (group == null)
+            if (group == null || !found)
             {
                 return null; // location is below all groups
             }
@@ -198,7 +203,7 @@ namespace Viewer.UI.Images.Layout
                     element.Bounds.Height - LabelSizeWithMargin.Height);
                 localBounds.Intersect(gridBounds);
 
-                if (localBounds.IsEmpty)
+                if (localBounds.IsEmpty || element.Item.IsCollapsed)
                     continue;
 
                 // find start and end row/column

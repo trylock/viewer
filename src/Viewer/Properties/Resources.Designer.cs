@@ -383,6 +383,15 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1:N0}).
+        /// </summary>
+        internal static string Group_Label {
+            get {
+                return ResourceManager.GetString("Group_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon ImagesComponentIcon {

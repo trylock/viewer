@@ -359,6 +359,17 @@ namespace Viewer.UI.Images
             }
 
             var location = _view.UnprojectLocation(e.Location);
+
+            // if we have clicked on a group label
+            var group = _view.ControlLayout.GetGroupLabelAt(location);
+            if (group != null)
+            {
+                group.IsCollapsed = !group.IsCollapsed;
+                _view.UpdateItems();
+                return;
+            }
+
+            // if we have clicked on an item
             var item = _view.GetItemAt(location);
             if (item != null)
             {

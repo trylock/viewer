@@ -1295,5 +1295,20 @@ namespace ViewerTest.Query
             listener.Verify(mock => mock.OnCompilerError(1, 7, "Query view cycle detected (a -> a)"));
             listener.Verify(mock => mock.AfterCompilation(), Times.Once);
         }
+
+        [TestMethod]
+        public void Compile_SyntaxErrorInPredicateRule()
+        {
+            const string query = "select \"a\" where a >! 2";
+            
+            var listener = new Mock<IQueryErrorListener>();
+            var result = _compiler.Compile(new StringReader(query), listener.Object);
+
+            Assert.IsNotNull(result);
+            
+            listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 20, It.IsAny<string>()));
+            listener.Verify(mock => mock.AfterCompilation(), Times.Once);
+        }
     }
 }

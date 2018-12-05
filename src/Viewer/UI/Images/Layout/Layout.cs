@@ -25,6 +25,18 @@ namespace Viewer.UI.Images.Layout
             Key = key;
         }
 
+        /// <summary>
+        /// Copy values from <paramref name="other"/> group. The items collection is also
+        /// copied but only a shallow copy is created (i.e., elements are *not* copied).
+        /// </summary>
+        /// <param name="other"></param>
+        public Group(Group other)
+        {
+            Key = other.Key;
+            Items = new List<EntityView>(other.Items);
+            IsCollapsed = other.IsCollapsed;
+        }
+
         public void Dispose()
         {
             foreach (var item in Items)

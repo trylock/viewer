@@ -101,6 +101,7 @@ namespace Viewer.UI.Images
 
         // state
         private readonly object _backBufferLock = new object();
+        private bool _isBackBufferDirty = false;
         private List<Group> _backBuffer;
         private List<Group> _frontBuffer;
         private readonly ConcurrentQueue<Request> _requests = new ConcurrentQueue<Request>();
@@ -471,79 +472,89 @@ namespace Viewer.UI.Images
                     index[path] = req;
                 }
             }
-
+            
             // apply changes to the data in the back buffer
-            var groupHead = 0;
-            for (var i = 0; i < _backBuffer.Count; ++i)
+            if (index.Count > 0)
             {
-                Trace.Assert(groupHead <= i, $"{nameof(groupHead)} <= {nameof(i)}");
-                var group = _backBuffer[i];
-
-                // update items in the group
-                var head = 0;
-                for (var j = 0; j < group.Items.Count; ++j)
+                var groupHead = 0;
+                for (var i = 0; i < _backBuffer.Count; ++i)
                 {
-                    Trace.Assert(head <= j, $"{nameof(head)} <= {nameof(j)}");
-                    var item = group.Items[j];
-                    if (!index.TryGetValue(item.FullPath, out var req))
+                    Trace.Assert(groupHead <= i, $"{nameof(groupHead)} <= {nameof(i)}");
+                    var group = _backBuffer[i];
+
+                    // update items in the group
+                    var head = 0;
+                    for (var j = 0; j < group.Items.Count; ++j)
                     {
-                        // this item has not changed
-                        group.Items[head] = item;
-                        ++head;
+                        Trace.Assert(head <= j, $"{nameof(head)} <= {nameof(j)}");
+                        var item = group.Items[j];
+                        if (!index.TryGetValue(item.FullPath, out var req))
+                        {
+                            // this item has not changed
+                            group.Items[head] = item;
+                            ++head;
+                        }
+                        else if (req is RemoveRequest)
+                        {
+                            _removed.Add(item);
+                        }
+                        else if (req is MoveRequest moveReq)
+                        {
+                            item.Data.ChangePath(moveReq.NewPath);
+                            var key = Query.GetGroup(item.Data);
+                            var list = GetOrAddList(key, added);
+                            list.Add(item);
+                        }
+                        else if (req is ModifyRequest modReq)
+                        {
+                            item = new EntityView(modReq.Value, item.Thumbnail);
+                            var key = Query.GetGroup(item.Data);
+                            var list = GetOrAddList(key, added);
+                            list.Add(item);
+                        }
                     }
-                    else if (req is RemoveRequest)
+
+                    group.Items.RemoveRange(head, group.Items.Count - head);
+
+                    // add new items to this group
+                    if (added.TryGetValue(group.Key, out var addedList))
                     {
-                        _removed.Add(item);
+                        addedList.Sort(Comparer);
+                        group.Items = group.Items.Merge(addedList, Comparer);
+                        // remove the group so that only brand new groups will remain in the map
+                        added.Remove(group.Key);
                     }
-                    else if (req is MoveRequest moveReq)
+
+                    // remove the group if it is empty
+                    if (group.Items.Count > 0)
                     {
-                        item.Data.ChangePath(moveReq.NewPath);
-                        var key = Query.GetGroup(item.Data);
-                        var list = GetOrAddList(key, added);
-                        list.Add(item);
-                    }
-                    else if (req is ModifyRequest modReq)
-                    {
-                        item = new EntityView(modReq.Value, item.Thumbnail);
-                        var key = Query.GetGroup(item.Data);
-                        var list = GetOrAddList(key, added);
-                        list.Add(item);
+                        _backBuffer[groupHead] = group;
+                        ++groupHead;
                     }
                 }
-                group.Items.RemoveRange(head, group.Items.Count - head);
 
-                // add new items to this group
-                if (added.TryGetValue(group.Key, out var addedList))
-                {
-                    addedList.Sort(Comparer);
-                    group.Items = group.Items.Merge(addedList, Comparer);
-                    // remove the group so that only brand new groups will remain in the map
-                    added.Remove(group.Key);
-                }
-
-                // remove the group if it is empty
-                if (group.Items.Count > 0)
-                {
-                    _backBuffer[groupHead] = group;
-                    ++groupHead;
-                }
+                _backBuffer.RemoveRange(groupHead, _backBuffer.Count - groupHead);
             }
-            _backBuffer.RemoveRange(groupHead, _backBuffer.Count - groupHead);
 
             // add new groups
-            var brandNewGroups = added
-                .Select(pair => new Group(pair.Key)
-                {
-                    Items = pair.Value 
-                })
-                .ToList();
-            brandNewGroups.Sort();
-            foreach (var group in brandNewGroups)
+            if (added.Count > 0)
             {
-                group.Items.Sort(Comparer);
+                var brandNewGroups = added
+                    .Select(pair => new Group(pair.Key)
+                    {
+                        Items = pair.Value
+                    })
+                    .ToList();
+                brandNewGroups.Sort();
+                foreach (var group in brandNewGroups)
+                {
+                    group.Items.Sort(Comparer);
+                }
+
+                _backBuffer = _backBuffer.Merge(brandNewGroups, Comparer<Group>.Default);
             }
 
-            _backBuffer = _backBuffer.Merge(brandNewGroups, Comparer<Group>.Default);
+            _isBackBufferDirty = index.Count > 0 || added.Count > 0;
         }
         
         /// <summary>
@@ -561,6 +572,13 @@ namespace Viewer.UI.Images
 
             try
             {
+                if (!_isBackBufferDirty)
+                {
+                    return _frontBuffer;
+                }
+
+                _isBackBufferDirty = false;
+
                 // dispose removed items
                 foreach (var item in _removed)
                 {
@@ -571,7 +589,7 @@ namespace Viewer.UI.Images
                 _frontBuffer.Clear();
                 foreach (var item in _backBuffer)
                 {
-                    _frontBuffer.Add(item);
+                    _frontBuffer.Add(new Group(item));
                 }
 
                 return _frontBuffer;

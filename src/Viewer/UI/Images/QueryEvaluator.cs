@@ -100,8 +100,9 @@ namespace Viewer.UI.Images
         private readonly ILazyThumbnailFactory _thumbnailFactory;
 
         // state
-        private List<Group> _viewsBack;
-        private List<Group> _viewsFront;
+        private readonly object _backBufferLock = new object();
+        private List<Group> _backBuffer;
+        private List<Group> _frontBuffer;
         private readonly ConcurrentQueue<Request> _requests = new ConcurrentQueue<Request>();
         private readonly AutoResetEvent _processBatch = new AutoResetEvent(false);
         private Thread _batchProcessingThread;
@@ -241,8 +242,8 @@ namespace Viewer.UI.Images
             // initialize internal structures
             Cancellation = new CancellationTokenSource();
             Comparer = new EntityViewComparer(Query.Comparer);
-            _viewsBack = new List<Group>();
-            _viewsFront = new List<Group>();
+            _backBuffer = new List<Group>();
+            _frontBuffer = new List<Group>();
 
             // register event handlers
             _fileWatcher.Renamed += FileWatcherOnRenamed;
@@ -416,7 +417,7 @@ namespace Viewer.UI.Images
         /// thread.
         /// </summary>
         /// <remarks>
-        /// Access to this property is guarded by a lock on <see cref="_viewsBack"/>.
+        /// Access to this property is guarded by a lock on <see cref="_backBufferLock"/>.
         /// </remarks>
         private readonly List<EntityView> _removed = new List<EntityView>();
         private volatile bool _isEnd = false;
@@ -427,7 +428,7 @@ namespace Viewer.UI.Images
             {
                 _processBatch.WaitOne(TimeSpan.FromMilliseconds(200));
                 
-                lock (_viewsBack)
+                lock (_backBufferLock)
                 {
                     ProcessChanges();
                 }
@@ -473,10 +474,10 @@ namespace Viewer.UI.Images
 
             // apply changes to the data in the back buffer
             var groupHead = 0;
-            for (var i = 0; i < _viewsBack.Count; ++i)
+            for (var i = 0; i < _backBuffer.Count; ++i)
             {
                 Trace.Assert(groupHead <= i, $"{nameof(groupHead)} <= {nameof(i)}");
-                var group = _viewsBack[i];
+                var group = _backBuffer[i];
 
                 // update items in the group
                 var head = 0;
@@ -515,7 +516,7 @@ namespace Viewer.UI.Images
                 if (added.TryGetValue(group.Key, out var addedList))
                 {
                     addedList.Sort(Comparer);
-                    group.Items.Merge(addedList, Comparer);
+                    group.Items = group.Items.Merge(addedList, Comparer);
                     // remove the group so that only brand new groups will remain in the map
                     added.Remove(group.Key);
                 }
@@ -523,14 +524,26 @@ namespace Viewer.UI.Images
                 // remove the group if it is empty
                 if (group.Items.Count > 0)
                 {
-                    _viewsBack[groupHead] = group;
+                    _backBuffer[groupHead] = group;
                     ++groupHead;
                 }
             }
-            _viewsBack.RemoveRange(groupHead, _viewsBack.Count - groupHead);
+            _backBuffer.RemoveRange(groupHead, _backBuffer.Count - groupHead);
 
             // add new groups
-            throw new NotImplementedException();
+            var brandNewGroups = added
+                .Select(pair => new Group(pair.Key)
+                {
+                    Items = pair.Value 
+                })
+                .ToList();
+            brandNewGroups.Sort();
+            foreach (var group in brandNewGroups)
+            {
+                group.Items.Sort(Comparer);
+            }
+
+            _backBuffer = _backBuffer.Merge(brandNewGroups, Comparer<Group>.Default);
         }
         
         /// <summary>
@@ -540,10 +553,10 @@ namespace Viewer.UI.Images
         /// <returns>Modified collection</returns>
         public List<Group> Update()
         {
-            var entered = Monitor.TryEnter(_viewsBack, TimeSpan.FromMilliseconds(20));
+            var entered = Monitor.TryEnter(_backBufferLock, TimeSpan.FromMilliseconds(20));
             if (!entered)
             {
-                return _viewsFront;
+                return _frontBuffer;
             }
 
             try
@@ -555,17 +568,17 @@ namespace Viewer.UI.Images
                 }
                 _removed.Clear();
 
-                _viewsFront.Clear();
-                foreach (var item in _viewsBack)
+                _frontBuffer.Clear();
+                foreach (var item in _backBuffer)
                 {
-                    _viewsFront.Add(item);
+                    _frontBuffer.Add(item);
                 }
 
-                return _viewsFront;
+                return _frontBuffer;
             }
             finally
             {
-                Monitor.Exit(_viewsBack);
+                Monitor.Exit(_backBufferLock);
             }
         }
         
@@ -592,12 +605,12 @@ namespace Viewer.UI.Images
             LoadTask.ContinueWith(parent =>
             {
                 Cancellation.Dispose();
-                foreach (var group in _viewsBack)
+                foreach (var group in _backBuffer)
                 {
                     group.Dispose();
                 }
-                _viewsBack = null;
-                _viewsFront = null;
+                _backBuffer = null;
+                _frontBuffer = null;
             });
         }
     }

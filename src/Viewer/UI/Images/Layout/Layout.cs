@@ -12,7 +12,7 @@ using Viewer.Data;
 
 namespace Viewer.UI.Images.Layout
 {
-    public class Group : IDisposable
+    public class Group : IDisposable, IComparable<Group>
     {
         public BaseValue Key { get; }
 
@@ -32,6 +32,15 @@ namespace Viewer.UI.Images.Layout
                 item.Dispose();
             }
             Items.Clear();
+        }
+
+        public int CompareTo(Group other)
+        {
+            if (ReferenceEquals(this, other))
+                return 0;
+            if (ReferenceEquals(null, other))
+                return 1;
+            return Comparer<BaseValue>.Default.Compare(Key, other.Key);
         }
     }
 

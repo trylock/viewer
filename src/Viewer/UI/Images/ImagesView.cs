@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -396,6 +396,12 @@ namespace Viewer.UI.Images
             ProcessMouseMove?.Invoke(sender,
                 new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
             
+            var label = _view.ControlLayout.GetGroupLabelAt(location);
+            if (label != null)
+            {
+                _view.Invalidate();
+            }
+
             if (_isDragging)
             {
                 const int threshold = BeginDragThreshold * BeginDragThreshold;

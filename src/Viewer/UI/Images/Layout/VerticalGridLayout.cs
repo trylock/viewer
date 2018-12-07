@@ -425,7 +425,7 @@ namespace Viewer.UI.Images.Layout
                 var labelBounds = new Rectangle(
                     element.Bounds.Location, 
                     new Size(element.Bounds.Width, LabelSizeWithMargin.Height));
-                if (bounds.Contains(labelBounds))
+                if (bounds.IntersectsWith(labelBounds))
                 {
                     yield return new LayoutElement<Group>(labelBounds, element.Item);
                 }

@@ -269,5 +269,13 @@ namespace ViewerTest.UI.Images.Layout
             Assert.AreEqual(210, bounds.Width);
             Assert.AreEqual(130, bounds.Height);
         }
+
+        [TestMethod]
+        public void GetGroupLabelsIn_ReturnPartiallyVisibleLabels()
+        {
+            var elements = _layout.GetGroupLabelsIn(new Rectangle(new Point(10, 10), new Size(100, 100)));
+            var groups = elements.Select(element => element.Item).ToArray();
+            CollectionAssert.AreEqual(new[]{ _layout.Groups[0] }, groups);
+        }
     }
 }

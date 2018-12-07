@@ -472,6 +472,10 @@ namespace Viewer.UI.Images
                     index[path] = req;
                 }
             }
+
+            // When the UI thread acquires the lock, it should update the front buffer only if
+            // there has been changes. Otherwise, it would block the UI for too long on each update.
+            _isBackBufferDirty = index.Count > 0 || added.Count > 0;
             
             // apply changes to the data in the back buffer
             if (index.Count > 0)
@@ -515,16 +519,7 @@ namespace Viewer.UI.Images
                     }
 
                     group.Items.RemoveRange(head, group.Items.Count - head);
-
-                    // add new items to this group
-                    if (added.TryGetValue(group.Key, out var addedList))
-                    {
-                        addedList.Sort(Comparer);
-                        group.Items = group.Items.Merge(addedList, Comparer);
-                        // remove the group so that only brand new groups will remain in the map
-                        added.Remove(group.Key);
-                    }
-
+                    
                     // remove the group if it is empty
                     if (group.Items.Count > 0)
                     {
@@ -539,22 +534,35 @@ namespace Viewer.UI.Images
             // add new groups
             if (added.Count > 0)
             {
-                var brandNewGroups = added
+                // merge items of existing groups
+                for (var i = 0; i < _backBuffer.Count; ++i)
+                {
+                    var group = _backBuffer[i];
+                    if (!added.TryGetValue(group.Key, out var list))
+                    {
+                        continue;
+                    }
+
+                    group.Items.Sort(Comparer);
+                    group.Items = group.Items.Merge(list, Comparer);
+                    added.Remove(group.Key);
+                }
+
+                // add brand new groups
+                var addedGroups = added
                     .Select(pair => new Group(pair.Key)
                     {
                         Items = pair.Value
                     })
                     .ToList();
-                brandNewGroups.Sort();
-                foreach (var group in brandNewGroups)
+                addedGroups.Sort();
+                foreach (var group in addedGroups)
                 {
                     group.Items.Sort(Comparer);
                 }
 
-                _backBuffer = _backBuffer.Merge(brandNewGroups, Comparer<Group>.Default);
+                _backBuffer = _backBuffer.Merge(addedGroups, Comparer<Group>.Default);
             }
-
-            _isBackBufferDirty = index.Count > 0 || added.Count > 0;
         }
         
         /// <summary>

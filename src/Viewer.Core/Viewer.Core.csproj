@@ -57,6 +57,7 @@
     <Compile Include="Collections\ConcurrentSortedSet.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\BinaryHeap.cs" />
+    <Compile Include="Collections\ListExtensions.cs" />
     <Compile Include="Collections\SubsetCollection.cs" />
     <Compile Include="ExternalApplication.cs" />
     <Compile Include="IComponent.cs" />

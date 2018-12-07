@@ -127,6 +127,7 @@
     <Compile Include="Collections\BinaryHeapTest.cs" />
     <Compile Include="Collections\BitmapTest.cs" />
     <Compile Include="Collections\EnumerableExtensionsTest.cs" />
+    <Compile Include="Collections\ListExtensionsTest.cs" />
     <Compile Include="Core\AggregateProgressTest.cs" />
     <Compile Include="Core\RectangleExtensionsTest.cs" />
     <Compile Include="Core\RetryTest.cs" />

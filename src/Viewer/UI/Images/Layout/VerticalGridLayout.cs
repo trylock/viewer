@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core;
+using Viewer.Core.Collections;
 using Viewer.Data;
 
 namespace Viewer.UI.Images.Layout
@@ -43,6 +44,68 @@ namespace Viewer.UI.Images.Layout
                 (ClientSize.Width + ItemMargin.Horizontal) / (ItemSize.Width + ItemMargin.Horizontal),
                 1
             );
+        
+        /// <summary>
+        /// Location of each group
+        /// </summary>
+        private readonly List<Point> _groupLocation = new List<Point>();
+
+        private Point GetGroupLocation(int index)
+        {
+            // make sure we have group locations precomputed
+            if (_groupLocation.Count != Groups.Count)
+            {
+                RecomputeGroupLocations();
+            }
+
+            return _groupLocation[index];
+        }
+
+        /// <summary>
+        /// Make sure values in the <see cref="_groupLocation"/> array are correct.
+        /// </summary>
+        private void RecomputeGroupLocations()
+        {
+            if (Groups == null)
+            {
+                _groupLocation.Clear();
+                return; // nothing else to do if the layout is empty
+            }
+
+            // make sure there is enough space for group location
+            var newLength = Groups.Count;
+            var oldLength = _groupLocation.Count;
+            var lengthDiff = newLength - oldLength;
+            if (lengthDiff > 0)
+            {
+                _groupLocation.AddRange(Enumerable.Repeat(new Point(), lengthDiff));
+            }
+            else
+            {
+                _groupLocation.RemoveRange(_groupLocation.Count + lengthDiff, -lengthDiff);
+            }
+
+            // if there are no groups, we are done
+            if (_groupLocation.Count == 0)
+            {
+                return;
+            }
+
+            // recompute group location
+            _groupLocation[0] = Point.Empty;
+            for (var i = 0; i < _groupLocation.Count - 1; ++i)
+            {
+                _groupLocation[i + 1] = new Point(
+                    0, 
+                    _groupLocation[i].Y + MeasureGroupHeight(Groups[i]));
+            }
+        }
+
+        protected override void OnLayoutChanged()
+        {
+            base.OnLayoutChanged();
+            RecomputeGroupLocations();
+        }
 
         public override Size GetSize()
         {
@@ -94,6 +157,12 @@ namespace Viewer.UI.Images.Layout
                 ItemSize.Height);
         }
 
+        /// <summary>
+        /// Measure height of given group. It takes into account the group label and all items.
+        /// If the group <see cref="Group.IsCollapsed"/>, height of the items is not counted.
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
         private int MeasureGroupHeight(Group group)
         {
             // group label
@@ -115,49 +184,90 @@ namespace Viewer.UI.Images.Layout
             return height;
         }
 
-        private LayoutElement<Group> FindGroup(Point location)
+        private class VerticalPointComparer : IComparer<Point>
+        {
+            public int Compare(Point x, Point y)
+            {
+                return Comparer<int>.Default.Compare(x.Y, y.Y);
+            }
+        }
+        
+        /// <summary>
+        /// Find group at <paramref name="location"/>
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns>
+        /// Group index or -1 if there is no group at <paramref name="location"/>
+        /// </returns>
+        private int FindGroupIndex(Point location)
         {
             if (Groups == null)
-                return null;
+                return -1;
             if (location.X < 0 || location.X > ClientSize.Width)
-                return null;
+                return -1;
             if (location.Y < 0)
+                return -1;
+
+            // find group using a binary search
+            location = new Point(
+                location.X, 
+                // if the location is at a boundary of 2 groups, we want to find the second 
+                // group (the one which is lower)
+                location.Y + 1
+            );
+            var index = _groupLocation.LowerBound(location, new VerticalPointComparer()) - 1;
+            if (index < 0)
+                return index;
+
+            // check if the point is below all groups
+            var maxY = GetGroupLocation(index).Y + MeasureGroupHeight(Groups[index]);
+            if (location.Y > maxY)
+            {
+                return -1;
+            }
+            return index;
+        }
+
+        /// <summary>
+        /// Find group at <paramref name="location"/>. Group area includes its label with all
+        /// margins around it and the area for photo grid of this group.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns>
+        /// Group at <paramref name="location"/> together with its bounding rectangle
+        /// </returns>
+        private LayoutElement<Group> FindGroup(Point location)
+        {
+            var index = FindGroupIndex(location);
+            if (index < 0)
+            {
                 return null;
-
-            Group group = null;
-            bool found = false;
-            var bounds = new Rectangle(0, 0, ClientSize.Width, 0);
-            foreach (var item in Groups)
-            {
-                group = item;
-                bounds.Height = MeasureGroupHeight(group);
-                if (bounds.Y + bounds.Height > location.Y)
-                {
-                    found = true;
-                    break;
-                }
-
-                bounds.Y += bounds.Height;
             }
 
-            if (group == null || !found)
-            {
-                return null; // location is below all groups
-            }
-
+            var group = Groups[index];
+            var bounds = new Rectangle(
+                GetGroupLocation(index), 
+                new Size(ClientSize.Width, MeasureGroupHeight(group)));
+            
             return new LayoutElement<Group>(bounds, group);
         }
 
-        private Point TransformToGroup(LayoutElement<Group> element, Point location)
+        /// <summary>
+        /// Transform <paramref name="location"/> to coordinates of <paramref name="element"/>
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        private Point ToGroupCoordinates(LayoutElement<Group> element, Point location)
         {
             return new Point(
                 location.X - element.Bounds.X,
                 location.Y - element.Bounds.Y - GroupLabelSize.Height - GroupLabelMargin.Vertical);
         }
 
-        private Rectangle TransformToGroup(LayoutElement<Group> element, Rectangle bounds)
+        private Rectangle ToGroupCoordinates(LayoutElement<Group> element, Rectangle bounds)
         {
-            return new Rectangle(TransformToGroup(element, bounds.Location), bounds.Size);
+            return new Rectangle(ToGroupCoordinates(element, bounds.Location), bounds.Size);
         }
 
         public override EntityView GetItemAt(Point location)
@@ -168,7 +278,7 @@ namespace Viewer.UI.Images.Layout
                 return null;
             }
 
-            var localPoint = TransformToGroup(element, location);
+            var localPoint = ToGroupCoordinates(element, location);
             if (localPoint.X < 0 || localPoint.Y < 0)
             {
                 return null;
@@ -196,7 +306,7 @@ namespace Viewer.UI.Images.Layout
         {
             foreach (var element in GetGroupsIn(bounds))
             {
-                var localBounds = TransformToGroup(element, bounds);
+                var localBounds = ToGroupCoordinates(element, bounds);
                 var gridBounds = new Rectangle(
                     0, 0,
                     ClientSize.Width, 
@@ -275,17 +385,36 @@ namespace Viewer.UI.Images.Layout
                 yield break;
             }
 
-            var top = 0;
-            foreach (var group in Groups)
-            {
-                var height = MeasureGroupHeight(group);
-                var groupBounds = new Rectangle(0, top, ClientSize.Width, height);
-                if (bounds.IntersectsWith(groupBounds))
-                {
-                    yield return new LayoutElement<Group>(groupBounds, group);
-                }
+            // find bounds intersection with the grid 
+            if (bounds.X < 0)
+                bounds.Width = Math.Max(bounds.Width + bounds.X, 0);
+            if (bounds.Y < 0)
+                bounds.Height = Math.Max(bounds.Height + bounds.Y, 0);
 
-                top += height;
+            if (bounds.IsEmpty)
+            {
+                yield break;
+            }
+
+            bounds.Location = new Point(Math.Max(bounds.X, 0), Math.Max(bounds.Y, 0));
+            
+            var index = FindGroupIndex(bounds.Location);
+            if (index < 0)
+            {
+                yield break;
+            }
+            
+            // return all groups in the bounds
+            for (; index < Groups.Count; ++index)
+            {
+                var group = Groups[index];
+                var height = MeasureGroupHeight(group);
+                var groupBounds = new Rectangle(
+                    GetGroupLocation(index), 
+                    new Size(ClientSize.Width, height));
+                if (!groupBounds.IntersectsWith(bounds))
+                    break;
+                yield return new LayoutElement<Group>(groupBounds, group);
             }
         }
 

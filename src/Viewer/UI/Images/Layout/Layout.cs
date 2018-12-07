@@ -14,10 +14,19 @@ namespace Viewer.UI.Images.Layout
 {
     public class Group : IDisposable, IComparable<Group>
     {
+        /// <summary>
+        /// Common kye of items in this group
+        /// </summary>
         public BaseValue Key { get; }
 
+        /// <summary>
+        /// All items in this group
+        /// </summary>
         public List<EntityView> Items { get; set; } = new List<EntityView>();
 
+        /// <summary>
+        /// true iff this group is collapsed
+        /// </summary>
         public bool IsCollapsed { get; set; }
 
         public Group(BaseValue key)
@@ -69,9 +78,24 @@ namespace Viewer.UI.Images.Layout
         }
     }
 
+    /// <summary>
+    /// This class manages layout of a thumbnail grid. It maintains an efficient datastructure
+    /// which allows for fast spatial range queries on the layout. This is necessary because 
+    /// there can be thousands of photos and photo groups at a time.
+    /// </summary>
     internal abstract class ImagesLayout
     {
-        public List<Group> Groups { get; set; } = new List<Group>();
+        private List<Group> _groups = new List<Group>();
+
+        public List<Group> Groups
+        {
+            get => _groups;
+            set
+            {
+                _groups = value;
+                OnLayoutChanged();
+            }
+        }
 
         /// <summary>
         /// Size of the area for a thumbnail
@@ -110,6 +134,20 @@ namespace Viewer.UI.Images.Layout
         public virtual void Resize(Size clientSize)
         {
             ClientSize = new Size(Math.Max(clientSize.Width, 0), Math.Max(clientSize.Height, 0));
+        }
+
+        /// <summary>
+        /// Negate the <see cref="Group.IsCollapsed"/> property.
+        /// </summary>
+        /// <param name="group"></param>
+        public virtual void ToggleCollapse(Group group)
+        {
+            group.IsCollapsed = !group.IsCollapsed;
+            OnLayoutChanged();
+        }
+
+        protected virtual void OnLayoutChanged()
+        {
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
@@ -364,7 +364,7 @@ namespace Viewer.UI.Images
             var group = _view.ControlLayout.GetGroupLabelAt(location);
             if (group != null)
             {
-                group.IsCollapsed = !group.IsCollapsed;
+                _view.ControlLayout.ToggleCollapse(group);
                 _view.UpdateItems();
                 return;
             }
@@ -395,7 +395,7 @@ namespace Viewer.UI.Images
             var location = _view.UnprojectLocation(e.Location);
             ProcessMouseMove?.Invoke(sender,
                 new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
-            
+
             var label = _view.ControlLayout.GetGroupLabelAt(location);
             if (label != null)
             {

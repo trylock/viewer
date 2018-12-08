@@ -45,20 +45,9 @@ namespace Viewer.UI.Images.Layout
                 1
             );
         
-        /// <summary>
-        /// Location of each group
-        /// </summary>
-        private readonly List<Point> _groupLocation = new List<Point>();
-
         private Point GetGroupLocation(int index)
         {
-            // make sure we have group locations precomputed
-            if (_groupLocation.Count != Groups.Count)
-            {
-                RecomputeGroupLocations();
-            }
-
-            return _groupLocation[index];
+            return Groups[index].View.Location;
         }
 
         /// <summary>
@@ -66,38 +55,20 @@ namespace Viewer.UI.Images.Layout
         /// </summary>
         private void RecomputeGroupLocations()
         {
-            if (Groups == null)
+            if (Groups == null || Groups.Count <= 0)
             {
-                _groupLocation.Clear();
                 return; // nothing else to do if the layout is empty
             }
-
-            // make sure there is enough space for group location
-            var newLength = Groups.Count;
-            var oldLength = _groupLocation.Count;
-            var lengthDiff = newLength - oldLength;
-            if (lengthDiff > 0)
-            {
-                _groupLocation.AddRange(Enumerable.Repeat(new Point(), lengthDiff));
-            }
-            else
-            {
-                _groupLocation.RemoveRange(_groupLocation.Count + lengthDiff, -lengthDiff);
-            }
-
-            // if there are no groups, we are done
-            if (_groupLocation.Count == 0)
-            {
-                return;
-            }
-
+            
             // recompute group location
-            _groupLocation[0] = Point.Empty;
-            for (var i = 0; i < _groupLocation.Count - 1; ++i)
+            Groups[0].View.Location = Point.Empty;
+            for (var i = 0; i < Groups.Count - 1; ++i)
             {
-                _groupLocation[i + 1] = new Point(
+                var prevView = Groups[i].View;
+                var nextView = Groups[i + 1].View;
+                nextView.Location = new Point(
                     0, 
-                    _groupLocation[i].Y + MeasureGroupHeight(Groups[i]));
+                    prevView.Location.Y + MeasureGroupHeight(Groups[i]));
             }
         }
 
@@ -184,11 +155,11 @@ namespace Viewer.UI.Images.Layout
             return height;
         }
 
-        private class VerticalPointComparer : IComparer<Point>
+        private class VerticalPointComparer : IComparer<Group>
         {
-            public int Compare(Point x, Point y)
+            public int Compare(Group x, Group y)
             {
-                return Comparer<int>.Default.Compare(x.Y, y.Y);
+                return Comparer<int?>.Default.Compare(x?.View.Location.Y, y?.View.Location.Y);
             }
         }
         
@@ -215,7 +186,9 @@ namespace Viewer.UI.Images.Layout
                 // group (the one which is lower)
                 location.Y + 1
             );
-            var index = _groupLocation.LowerBound(location, new VerticalPointComparer()) - 1;
+            var dummyGroup = new Group(new IntValue(null));
+            dummyGroup.View.Location = location;
+            var index = Groups.LowerBound(dummyGroup, new VerticalPointComparer()) - 1;
             if (index < 0)
                 return index;
 

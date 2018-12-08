@@ -262,6 +262,7 @@ namespace Viewer.UI.Images
             {
                 View.Items = _queryEvaluator.Update();
                 View.ItemSize = CurrentItemSize;
+                View.UpdateItems();
 
                 // update query evaluation status
                 if (StatusLabel != null)
@@ -280,8 +281,6 @@ namespace Viewer.UI.Images
                     ItemCountLabel.Text = string.Format(Resources.ItemCount_Label, itemCount);
                 }
             }
-
-            View.UpdateItems();
         }
         
         private void View_BeginDragItems(object sender, EventArgs e)

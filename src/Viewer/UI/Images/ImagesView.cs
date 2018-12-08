@@ -24,7 +24,7 @@ namespace Viewer.UI.Images
     internal partial class ImagesView : WindowView, IImagesView
     {
         private GridView _view;
-
+        
         public ImagesView()
         {
             InitializeComponent();
@@ -38,7 +38,7 @@ namespace Viewer.UI.Images
             ViewerForm.Theme.ApplyTo(PickDirectoryContextMenu);
         }
 
-        private void RegisterView(Control view)
+        private void RegisterView(GridView view)
         {
             view.DragDrop += GridView_DragDrop;
             view.DragOver += GridView_DragOver;
@@ -52,6 +52,11 @@ namespace Viewer.UI.Images
             view.KeyUp += GridView_KeyUp;
             view.Resize += GridView_Resize;
             view.PreviewKeyDown += GridView_PreviewKeyDown;
+            view.GroupLabelControl.MouseDown += GroupLabel_MouseDown;
+
+            Controls.Add(view.GroupLabelControl);
+            view.GroupLabelControl.Location = view.Location;
+            view.GroupLabelControl.BringToFront();
         }
 
         #region ISelectionView
@@ -361,10 +366,10 @@ namespace Viewer.UI.Images
             var location = _view.UnprojectLocation(e.Location);
 
             // if we have clicked on a group label
-            var group = _view.ControlLayout.GetGroupLabelAt(location);
-            if (group != null)
+            var element = _view.ControlLayout.GetGroupLabelAt(location);
+            if (element != null)
             {
-                _view.ControlLayout.ToggleCollapse(group);
+                _view.ControlLayout.ToggleCollapse(element.Item);
                 _view.UpdateItems();
                 return;
             }
@@ -379,6 +384,18 @@ namespace Viewer.UI.Images
 
             ProcessMouseDown?.Invoke(sender, 
                 new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
+        }
+        
+        private void GroupLabel_MouseDown(object sender, MouseEventArgs e)
+        {
+            var element = _view.ControlLayout.GetGroupAt(_view.UnprojectLocation(Point.Empty));
+            if (element == null)
+            {
+                return;
+            }
+            _view.ControlLayout.ToggleCollapse(element.Item);
+            _view.EnsureGroupVisible(element.Item);
+            _view.UpdateItems();
         }
 
         private void GridView_MouseUp(object sender, MouseEventArgs e)
@@ -396,10 +413,15 @@ namespace Viewer.UI.Images
             ProcessMouseMove?.Invoke(sender,
                 new MouseEventArgs(e.Button, e.Clicks, location.X, location.Y, e.Delta));
 
-            var label = _view.ControlLayout.GetGroupLabelAt(location);
-            if (label != null)
+            // update group labels around mouse cursor
+            var element = _view.ControlLayout.GetGroupLabelAt(location);
+            if (element != null)
             {
-                _view.Invalidate();
+                var bounds = element.Bounds;
+                bounds.Inflate(
+                    _view.ControlLayout.GroupLabelSize.Width * 2,
+                    _view.ControlLayout.GroupLabelSize.Height * 2);
+                _view.Invalidate(_view.ProjectBounds(bounds));
             }
 
             if (_isDragging)

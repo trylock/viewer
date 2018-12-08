@@ -134,18 +134,22 @@ namespace Viewer.UI.Images.Layout
         /// </summary>
         public Padding GroupLabelMargin { get; set; }
 
+        private Rectangle _clientBounds;
+        
         /// <summary>
-        /// Size of the client area in which this layout is used
+        /// Bounding box of the layout area which is currently visible to user.
         /// </summary>
-        /// <remarks>
-        /// Layout can be larger than the client size. In that case, the client should draw
-        /// scroll bars accordingly.
-        /// </remarks>
-        public Size ClientSize { get; private set; }
-
-        public virtual void Resize(Size clientSize)
+        public Rectangle ClientBounds
         {
-            ClientSize = new Size(Math.Max(clientSize.Width, 0), Math.Max(clientSize.Height, 0));
+            get => _clientBounds;
+            set
+            {
+                _clientBounds = new Rectangle(
+                    value.Location,
+                    new Size(Math.Max(value.Width, 0), Math.Max(value.Height, 0))
+                );
+                OnLayoutChanged();
+            }
         }
 
         /// <summary>
@@ -204,7 +208,7 @@ namespace Viewer.UI.Images.Layout
         /// Group of the group label at <paramref name="location"/> or null if there is no
         /// group label at <paramref name="location"/>
         /// </returns>
-        public abstract Group GetGroupLabelAt(Point location);
+        public abstract LayoutElement<Group> GetGroupLabelAt(Point location);
 
         /// <summary>
         /// Find all group in <paramref name="bounds"/>
@@ -212,6 +216,13 @@ namespace Viewer.UI.Images.Layout
         /// <param name="bounds"></param>
         /// <returns></returns>
         public abstract IEnumerable<LayoutElement<Group>> GetGroupsIn(Rectangle bounds);
+
+        /// <summary>
+        /// Find a group at <paramref name="location"/>
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns>Group with its bounding rectangle or null</returns>
+        public abstract LayoutElement<Group> GetGroupAt(Point location);
 
         /// <summary>
         /// Find all group labels in <paramref name="bounds"/>.

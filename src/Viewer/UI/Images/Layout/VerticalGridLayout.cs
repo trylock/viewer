@@ -28,7 +28,7 @@ namespace Viewer.UI.Images.Layout
         /// Stretched item size (it tries to fill the whole layout in the horizontal axis)
         /// </summary>
         public Size CellSize => new Size(
-            (ClientSize.Width + ItemMargin.Horizontal) / ColumnCount - ItemMargin.Horizontal,
+            (ClientBounds.Width + ItemMargin.Horizontal) / ColumnCount - ItemMargin.Horizontal,
             ItemSize.Height
         );
 
@@ -41,7 +41,8 @@ namespace Viewer.UI.Images.Layout
         /// </summary>
         private int ColumnCount => 
             Math.Max(
-                (ClientSize.Width + ItemMargin.Horizontal) / (ItemSize.Width + ItemMargin.Horizontal),
+                (ClientBounds.Width + ItemMargin.Horizontal) / 
+                    (ItemSize.Width + ItemMargin.Horizontal),
                 1
             );
         
@@ -87,7 +88,7 @@ namespace Viewer.UI.Images.Layout
 
             var lastGroup = Groups[Groups.Count - 1];
             var result = new Size(
-                ClientSize.Width, 
+                ClientBounds.Width, 
                 lastGroup.View.Location.Y + MeasureGroupHeight(lastGroup));
             return result;
         }
@@ -172,7 +173,7 @@ namespace Viewer.UI.Images.Layout
         {
             if (Groups == null)
                 return -1;
-            if (location.X < 0 || location.X > ClientSize.Width)
+            if (location.X < 0 || location.X > ClientBounds.Width)
                 return -1;
             if (location.Y < 0)
                 return -1;
@@ -218,7 +219,7 @@ namespace Viewer.UI.Images.Layout
             var group = Groups[index];
             var bounds = new Rectangle(
                 GetGroupLocation(index), 
-                new Size(ClientSize.Width, MeasureGroupHeight(group)));
+                new Size(ClientBounds.Width, MeasureGroupHeight(group)));
             
             return new LayoutElement<Group>(bounds, group);
         }
@@ -282,7 +283,7 @@ namespace Viewer.UI.Images.Layout
                 var localBounds = ToGroupCoordinates(element, bounds);
                 var gridBounds = new Rectangle(
                     0, 0,
-                    ClientSize.Width, 
+                    ClientBounds.Width, 
                     element.Bounds.Height - LabelSizeWithMargin.Height);
                 localBounds.Intersect(gridBounds);
 
@@ -330,7 +331,7 @@ namespace Viewer.UI.Images.Layout
             }
         }
 
-        public override Group GetGroupLabelAt(Point location)
+        public override LayoutElement<Group> GetGroupLabelAt(Point location)
         {
             var element = FindGroup(location);
             if (element == null)
@@ -345,7 +346,7 @@ namespace Viewer.UI.Images.Layout
                 GroupLabelSize.Height);
             if (labelBounds.Contains(location))
             {
-                return element.Item;
+                return new LayoutElement<Group>(labelBounds, element.Item);
             }
 
             return null;
@@ -384,11 +385,16 @@ namespace Viewer.UI.Images.Layout
                 var height = MeasureGroupHeight(group);
                 var groupBounds = new Rectangle(
                     GetGroupLocation(index), 
-                    new Size(ClientSize.Width, height));
+                    new Size(ClientBounds.Width, height));
                 if (!groupBounds.IntersectsWith(bounds))
                     break;
                 yield return new LayoutElement<Group>(groupBounds, group);
             }
+        }
+
+        public override LayoutElement<Group> GetGroupAt(Point location)
+        {
+            return FindGroup(location);
         }
 
         public override IEnumerable<LayoutElement<Group>> GetGroupLabelsIn(Rectangle bounds)
@@ -398,6 +404,7 @@ namespace Viewer.UI.Images.Layout
                 var labelBounds = new Rectangle(
                     element.Bounds.Location, 
                     new Size(element.Bounds.Width, LabelSizeWithMargin.Height));
+
                 if (bounds.IntersectsWith(labelBounds))
                 {
                     yield return new LayoutElement<Group>(labelBounds, element.Item);

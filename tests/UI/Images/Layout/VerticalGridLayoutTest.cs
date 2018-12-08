@@ -27,8 +27,8 @@ namespace ViewerTest.UI.Images.Layout
                 ItemMargin = new Padding(5, 10, 5, 10),
                 ItemPadding = new Padding(5),
                 ThumbnailAreaSize = new Size(200, 120),
+                ClientBounds = new Rectangle(0, 0, 800, 600),
             };
-            _layout.Resize(new Size(800, 0));
 
             var smallGroup = new Group(new IntValue(0));
             var emptyGroup = new Group(new IntValue(1));
@@ -72,7 +72,7 @@ namespace ViewerTest.UI.Images.Layout
             item = _layout.GetItemAt(new Point(-1, -1));
             Assert.IsNull(item);
 
-            item = _layout.GetItemAt(new Point(_layout.ClientSize.Width + 1, 0));
+            item = _layout.GetItemAt(new Point(_layout.ClientBounds.Width + 1, 0));
             Assert.IsNull(item);
         }
         

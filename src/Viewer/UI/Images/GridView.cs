@@ -19,6 +19,9 @@ using Viewer.UI.Images.Layout;
 
 namespace Viewer.UI.Images
 {
+    /// <summary>
+    /// The sole purpose of this control is to draw whichever layout it gets.
+    /// </summary>
     internal partial class GridView : UserControl
     {
         /// <summary>
@@ -46,6 +49,8 @@ namespace Viewer.UI.Images
         }
 
         private Size _itemSize;
+
+        private Rectangle _selectionBounds;
 
         /// <summary>
         /// Bounds of a selection 
@@ -79,7 +84,14 @@ namespace Viewer.UI.Images
             }
         }
 
-        private Rectangle _selectionBounds;
+        /// <summary>
+        /// Control which is used to draw current group label
+        /// </summary>
+        /// <remarks>
+        /// This control is added to the parent control so that it is not affected by current
+        /// scroll position.
+        /// </remarks>
+        public Control GroupLabelControl { get; }
         
         #region Graphics settings
 
@@ -96,22 +108,39 @@ namespace Viewer.UI.Images
 
         #endregion
 
+        private class DoubleBufferedControl : Control
+        {
+            public DoubleBufferedControl()
+            {
+                DoubleBuffered = true;
+            }
+        }
+
         public GridView()
         {
             InitializeComponent();
 
+            // setup current group label control
+            GroupLabelControl = new DoubleBufferedControl
+            {
+                Location = new Point(0, 0),
+                Size = new Size(800, 30)
+            };
+            GroupLabelControl.Paint += GroupLabelControl_Paint;
+
+            // setup control layout
             NameHeight = Font.Height * 2;
             NameSpace = Font.Height;
-
             ControlLayout = new VerticalGridLayout
             {
                 GroupLabelSize = new Size(0, Font.Height * 3),
                 ItemPadding = new Padding(5, 5, 5, 5 + NameHeight + NameSpace),
                 ItemMargin = new Padding(5)
             };
-            ControlLayout.Resize(ClientSize);
+            UpdateClientBounds();
 
-            SetStyle(ControlStyles.DoubleBuffer, true);
+            MouseWheel += GridView_MouseWheel;
+            Scroll += GridView_Scroll;
 
             _highlightFillColor = Color.FromArgb(226, 241, 255);
             _highlightStrokeColor = Color.FromArgb(221, 232, 248);
@@ -128,6 +157,7 @@ namespace Viewer.UI.Images
         public void UpdateItems()
         {
             UpdateScrollableSize();
+            Invalidate();
         }
 
         public IEnumerable<EntityView> GetItemsIn(Rectangle bounds)
@@ -178,6 +208,12 @@ namespace Viewer.UI.Images
             var transformed = viewport.EnsureContains(bounds);
             AutoScrollPosition = transformed.Location;
 
+            Invalidate();
+        }
+
+        public void EnsureGroupVisible(Group group)
+        {
+            AutoScrollPosition = group.View.Location;
             Invalidate();
         }
 
@@ -264,7 +300,7 @@ namespace Viewer.UI.Images
 
         private void GridView_Paint(object sender, PaintEventArgs e)
         {
-            // update invalid items
+            // update invalid area
             var clipBounds = UnprojectBounds(e.ClipRectangle);
             var elements = ControlLayout.GetItemsIn(clipBounds);
 
@@ -272,12 +308,14 @@ namespace Viewer.UI.Images
             {
                 e.Graphics.FillRectangle(background, e.ClipRectangle);
             }
-
+            
+            // draw thumbnails
             foreach (var element in elements)
             {
                 PaintItem(e.Graphics, element);
             }
 
+            // draw group labels
             foreach (var element in ControlLayout.GetGroupLabelsIn(clipBounds))
             {
                 PaintGroupLabel(e.Graphics, element);
@@ -313,6 +351,7 @@ namespace Viewer.UI.Images
             using (var iconPen = new Pen(Color.FromArgb(unchecked((int)0xFF6d6d8d))))
             using (var separatorPen = new Pen(Color.FromArgb(unchecked((int)0xFFd4d4de))))
             using (var textBrush = new SolidBrush(Color.FromArgb(unchecked((int)0xFF272768))))
+            using (var defaultBrush = new SolidBrush(Color.FromArgb(unchecked((int)0xFFeeeef2))))
             using (var activeBrush = new SolidBrush(Color.FromArgb(unchecked((int)0xFFf9f9fb))))
             using (var font = new Font(Font.FontFamily, 1.25f * Font.Size))
             {
@@ -326,6 +365,10 @@ namespace Viewer.UI.Images
                 if (boundsWithoutMargin.Contains(cursorLocation))
                 {
                     graphics.FillRectangle(activeBrush, ProjectBounds(boundsWithoutMargin));
+                }
+                else
+                {
+                    graphics.FillRectangle(defaultBrush, ProjectBounds(boundsWithoutMargin));
                 }
 
                 // draw collapsed state icon
@@ -444,19 +487,59 @@ namespace Viewer.UI.Images
             graphics.DrawImage(thumbnail, new Rectangle(thumbnailLocation, thumbnailSize));
         }
 
+        private void GroupLabelControl_Paint(object sender, PaintEventArgs e)
+        {
+            var location = UnprojectLocation(Point.Empty);
+            var element = ControlLayout.GetGroupAt(location);
+            if (element == null)
+            {
+                return;
+            }
+            
+            PaintGroupLabel(e.Graphics, new LayoutElement<Group>(
+                new Rectangle(UnprojectLocation(Point.Empty), GroupLabelControl.Size), 
+                element.Item));
+        }
+
+        private void GridView_MouseWheel(object sender, MouseEventArgs e)
+        {
+            GroupLabelControl.Invalidate();
+        }
+        
+        private void GridView_Scroll(object sender, ScrollEventArgs e)
+        {
+            GroupLabelControl.Invalidate();
+        }
+
         private void GridView_Resize(object sender, EventArgs e)
         {
             UpdateScrollableSize();
             Refresh();
         }
 
+        private void UpdateClientBounds()
+        {
+            ControlLayout.ClientBounds = new Rectangle(
+                new Point(-AutoScrollPosition.X, -AutoScrollPosition.Y),
+                ClientSize
+            );
+        }
+
+        private void UpdateLabelSize()
+        {
+            GroupLabelControl.Width = ClientSize.Width;
+            GroupLabelControl.Height = ControlLayout.GroupLabelSize.Height;
+            GroupLabelControl.Refresh();
+        }
+
         private void UpdateScrollableSize()
         {
-            ControlLayout.Resize(ClientSize);
+            UpdateLabelSize();
             AutoScrollMinSize = new Size(
                 0, // we don't want to have a horizontal scroll bar
                 ControlLayout.GetSize().Height
             );
+            UpdateClientBounds();
         }
     }
 }

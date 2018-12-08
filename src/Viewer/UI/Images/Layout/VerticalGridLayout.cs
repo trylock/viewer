@@ -51,7 +51,7 @@ namespace Viewer.UI.Images.Layout
         }
 
         /// <summary>
-        /// Make sure values in the <see cref="_groupLocation"/> array are correct.
+        /// Make sure group locations are computed correctly for all groups
         /// </summary>
         private void RecomputeGroupLocations()
         {
@@ -80,17 +80,15 @@ namespace Viewer.UI.Images.Layout
 
         public override Size GetSize()
         {
-            if (Groups == null)
+            if (Groups == null || Groups.Count <= 0)
             {
                 return Size.Empty;
             }
 
-            var result = new Size(ClientSize.Width, 0);
-            foreach (var group in Groups)
-            {
-                result.Height += MeasureGroupHeight(group);
-            }
-
+            var lastGroup = Groups[Groups.Count - 1];
+            var result = new Size(
+                ClientSize.Width, 
+                lastGroup.View.Location.Y + MeasureGroupHeight(lastGroup));
             return result;
         }
 

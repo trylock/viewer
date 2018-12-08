@@ -32,10 +32,8 @@ namespace ViewerTest.UI.Images.Layout
 
             var smallGroup = new Group(new IntValue(0));
             var emptyGroup = new Group(new IntValue(1));
-            var largeCollapsedGroup = new Group(new IntValue(2))
-            {
-                IsCollapsed = true
-            };
+            var largeCollapsedGroup = new Group(new IntValue(2));
+            largeCollapsedGroup.View.IsCollapsed = true;
             var largeGroup = new Group(new IntValue(3));
             
             for (var i = 0; i < 4; ++i)

@@ -413,7 +413,7 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// List of removed entities waiting to be disposed (by an <see cref="Update"/> call).
+        /// List of removed views waiting to be disposed (by an <see cref="Update"/> call).
         /// We can't disposed them on a background thread because they are shared with the UI
         /// thread.
         /// </summary>
@@ -556,9 +556,9 @@ namespace Viewer.UI.Images
                     })
                     .ToList();
                 addedGroups.Sort();
-                foreach (var group in addedGroups)
+                foreach (var view in addedGroups)
                 {
-                    group.Items.Sort(Comparer);
+                    view.Items.Sort(Comparer);
                 }
 
                 _backBuffer = _backBuffer.Merge(addedGroups, Comparer<Group>.Default);

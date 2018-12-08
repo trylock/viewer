@@ -12,6 +12,19 @@ using Viewer.Data;
 
 namespace Viewer.UI.Images.Layout
 {
+    public class GroupView
+    {
+        /// <summary>
+        /// true iff the group is collapsed
+        /// </summary>
+        public bool IsCollapsed { get; set; }
+
+        /// <summary>
+        /// Current location of this group
+        /// </summary>
+        public Point Location { get; set; }
+    }
+
     public class Group : IDisposable, IComparable<Group>
     {
         /// <summary>
@@ -25,9 +38,9 @@ namespace Viewer.UI.Images.Layout
         public List<EntityView> Items { get; set; } = new List<EntityView>();
 
         /// <summary>
-        /// true iff this group is collapsed
+        /// State of the UI object
         /// </summary>
-        public bool IsCollapsed { get; set; }
+        public GroupView View { get; } = new GroupView();
 
         public Group(BaseValue key)
         {
@@ -35,15 +48,15 @@ namespace Viewer.UI.Images.Layout
         }
 
         /// <summary>
-        /// Copy values from <paramref name="other"/> group. The items collection is also
-        /// copied but only a shallow copy is created (i.e., elements are *not* copied).
+        /// Create a new group with values from <paramref name="other"/>. The items collection
+        /// is copied (only a shallow copy is created). The rest of the properties are shared.
         /// </summary>
         /// <param name="other"></param>
         public Group(Group other)
         {
             Key = other.Key;
             Items = new List<EntityView>(other.Items);
-            IsCollapsed = other.IsCollapsed;
+            View = other.View;
         }
 
         public void Dispose()
@@ -52,7 +65,6 @@ namespace Viewer.UI.Images.Layout
             {
                 item.Dispose();
             }
-            Items.Clear();
         }
 
         public int CompareTo(Group other)
@@ -137,12 +149,12 @@ namespace Viewer.UI.Images.Layout
         }
 
         /// <summary>
-        /// Negate the <see cref="Group.IsCollapsed"/> property.
+        /// Negate the <see cref="GroupView.IsCollapsed"/> property.
         /// </summary>
         /// <param name="group"></param>
         public virtual void ToggleCollapse(Group group)
         {
-            group.IsCollapsed = !group.IsCollapsed;
+            group.View.IsCollapsed = !group.View.IsCollapsed;
             OnLayoutChanged();
         }
 

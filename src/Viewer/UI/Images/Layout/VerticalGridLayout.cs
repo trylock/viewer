@@ -144,7 +144,7 @@ namespace Viewer.UI.Images.Layout
             }
 
             // check if the item is in a non-collapsed group
-            if (itemIndex < 0 || itemGroup.IsCollapsed)
+            if (itemIndex < 0 || itemGroup.View.IsCollapsed)
                 return Rectangle.Empty;
 
             // find bounds of the item within the group
@@ -159,7 +159,7 @@ namespace Viewer.UI.Images.Layout
 
         /// <summary>
         /// Measure height of given group. It takes into account the group label and all items.
-        /// If the group <see cref="Group.IsCollapsed"/>, height of the items is not counted.
+        /// If the group <see cref="GroupView.IsCollapsed"/>, height of the items is not counted.
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
@@ -169,7 +169,7 @@ namespace Viewer.UI.Images.Layout
             int height = LabelSizeWithMargin.Height;
 
             // group content
-            if (!group.IsCollapsed)
+            if (!group.View.IsCollapsed)
             {
                 var rowCount = group.Items.Count.RoundUpDiv(ColumnCount);
                 height += rowCount * (ItemSize.Height + ItemMargin.Vertical);
@@ -273,7 +273,7 @@ namespace Viewer.UI.Images.Layout
         public override EntityView GetItemAt(Point location)
         {
             var element = FindGroup(location);
-            if (element == null || element.Item.IsCollapsed) 
+            if (element == null || element.Item.View.IsCollapsed) 
             {
                 return null;
             }
@@ -293,19 +293,21 @@ namespace Viewer.UI.Images.Layout
                 return null; // the location is in an empty space between items
             }
 
+            Group group = element.Item;
             var index = row * ColumnCount + column;
-            if (index >= element.Item.Items.Count)
+            if (index >= group.Items.Count)
             {
                 return null;
             }
 
-            return element.Item.Items[index];
+            return group.Items[index];
         }
 
         public override IEnumerable<LayoutElement<EntityView>> GetItemsIn(Rectangle bounds)
         {
             foreach (var element in GetGroupsIn(bounds))
             {
+                Group group = element.Item;
                 var localBounds = ToGroupCoordinates(element, bounds);
                 var gridBounds = new Rectangle(
                     0, 0,
@@ -313,7 +315,7 @@ namespace Viewer.UI.Images.Layout
                     element.Bounds.Height - LabelSizeWithMargin.Height);
                 localBounds.Intersect(gridBounds);
 
-                if (localBounds.IsEmpty || element.Item.IsCollapsed)
+                if (localBounds.IsEmpty || group.View.IsCollapsed)
                     continue;
 
                 // find start and end row/column
@@ -328,7 +330,7 @@ namespace Viewer.UI.Images.Layout
                 var maxRow = localBounds.Bottom / CellSizeWithMargin.Height + 1;
 
                 // make sure to only iterate over cells in the grid
-                var rowCount = element.Item.Items.Count.RoundUpDiv(ColumnCount);
+                var rowCount = group.Items.Count.RoundUpDiv(ColumnCount);
                 maxColumn = Math.Min(maxColumn, ColumnCount);
                 maxRow = Math.Min(maxRow, rowCount);
 
@@ -337,7 +339,7 @@ namespace Viewer.UI.Images.Layout
                 {
                     // the last row has fewer cells
                     var columnCount = maxColumn;
-                    var remainder = element.Item.Items.Count % ColumnCount;
+                    var remainder = group.Items.Count % ColumnCount;
                     if (i + 1 == rowCount && remainder != 0)
                     {
                         columnCount = Math.Min(remainder, columnCount);
@@ -345,7 +347,7 @@ namespace Viewer.UI.Images.Layout
 
                     for (var j = minColumn; j < columnCount; ++j)
                     {
-                        var item = element.Item.Items[i * ColumnCount + j];
+                        var item = group.Items[i * ColumnCount + j];
                         var itemBounds = new Rectangle(
                             j * CellSizeWithMargin.Width, 
                             i * CellSizeWithMargin.Height + element.Bounds.Top + LabelSizeWithMargin.Height,
@@ -407,7 +409,7 @@ namespace Viewer.UI.Images.Layout
             // return all groups in the bounds
             for (; index < Groups.Count; ++index)
             {
-                var group = Groups[index];
+                Group group = Groups[index];
                 var height = MeasureGroupHeight(group);
                 var groupBounds = new Rectangle(
                     GetGroupLocation(index), 

@@ -304,10 +304,10 @@ namespace Viewer.UI.Images
         private void PaintGroupLabel(Graphics graphics, LayoutElement<Group> element)
         {
             var bounds = ProjectBounds(element.Bounds);
-            var group = element.Item;
+            Group group = element.Item;
 
             var name = group.Key.IsNull ? "Default" : group.Key.ToString(CultureInfo.CurrentCulture);
-            var label = string.Format(Resources.Group_Label, name, element.Item.Items.Count);
+            var label = string.Format(Resources.Group_Label, name, group.Items.Count);
             
             PointF offset = new PointF(0, 0);
             using (var iconPen = new Pen(Color.FromArgb(unchecked((int)0xFF6d6d8d))))
@@ -344,7 +344,7 @@ namespace Viewer.UI.Images
                     graphics.ScaleTransform(
                         iconHeight / 2f / iconBounds.Width,
                         iconHeight / iconBounds.Height, MatrixOrder.Append);
-                    graphics.RotateTransform(group.IsCollapsed ? 0 : 90, MatrixOrder.Append);
+                    graphics.RotateTransform(group.View.IsCollapsed ? 0 : 90, MatrixOrder.Append);
                     // translate the icon back to the group label position
                     graphics.TranslateTransform(
                         bounds.X + ControlLayout.GroupLabelMargin.Left + iconHeight,

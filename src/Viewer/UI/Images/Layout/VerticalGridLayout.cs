@@ -411,5 +411,51 @@ namespace Viewer.UI.Images.Layout
                 }
             }
         }
+
+        public override Point AlignLocation(Point location, bool roundUp)
+        {
+            // clamp location to the grid area
+            var size = GetSize();
+            location.X = Math.Max(Math.Min(location.X, size.Width), 0);
+            location.Y = Math.Max(Math.Min(location.Y, size.Height), 0);
+
+            // align location
+            var element = GetGroupAt(location);
+            if (element == null)
+            {
+                return location;
+            }
+            
+            var coords = ToGroupCoordinates(element, location);
+            if (coords.Y < 0)
+            {
+                if (!roundUp)
+                {
+                    return new Point(
+                        location.X,
+                        Math.Max(element.Bounds.Y - CellSize.Height, 0));
+                }
+
+                coords.Y = 0;
+            }
+
+            var rowIndex = coords.Y / CellSizeWithMargin.Height;
+            if (roundUp)
+            {
+                ++rowIndex;
+            }
+
+            var top = element.Bounds.Y + 
+                      LabelSizeWithMargin.Height + 
+                      rowIndex * CellSizeWithMargin.Height;
+            if (roundUp)
+            {
+                top -= ItemMargin.Vertical;
+            }
+            
+            return new Point(
+                location.X, 
+                top);
+        }
     }
 }

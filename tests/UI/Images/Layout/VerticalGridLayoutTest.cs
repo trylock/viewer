@@ -275,5 +275,35 @@ namespace ViewerTest.UI.Images.Layout
             var groups = elements.Select(element => element.Item).ToArray();
             CollectionAssert.AreEqual(new[]{ _layout.Groups[0] }, groups);
         }
+
+        [TestMethod]
+        public void AlignLocation_PointAboveTheGrid()
+        {
+            var location = _layout.AlignLocation(new Point(10, -100), false);
+            Assert.AreEqual(new Point(10, 0), location);
+
+            location = _layout.AlignLocation(new Point(10, -100), true);
+            Assert.AreEqual(new Point(10, 165), location);
+        }
+
+        [TestMethod]
+        public void AlignLocation_PointInGridLabel()
+        {
+            var location = _layout.AlignLocation(new Point(10, 10), false);
+            Assert.AreEqual(new Point(10, 0), location);
+
+            location = _layout.AlignLocation(new Point(10, 10), true);
+            Assert.AreEqual(new Point(10, 165), location);
+        }
+
+        [TestMethod]
+        public void AlignLocation_PointInTheFirstRow()
+        {
+            var location = _layout.AlignLocation(new Point(15, 40), false);
+            Assert.AreEqual(new Point(15, 35), location);
+
+            location = _layout.AlignLocation(new Point(15, 40), true);
+            Assert.AreEqual(new Point(15, 165), location);
+        }
     }
 }

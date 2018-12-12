@@ -550,6 +550,11 @@ namespace Viewer.UI.Images
 
         private void UpdateLabelSize()
         {
+            if (GroupLabelControl == null)
+            {
+                return;
+            }
+
             GroupLabelControl.Width = ClientSize.Width;
             GroupLabelControl.Height = ControlLayout.GroupLabelSize.Height;
             GroupLabelControl.Refresh();
@@ -557,6 +562,11 @@ namespace Viewer.UI.Images
 
         private void UpdateScrollableSize()
         {
+            if (ControlLayout == null)
+            {
+                return;
+            }
+
             UpdateLabelSize();
             AutoScrollMinSize = new Size(
                 0, // we don't want to have a horizontal scroll bar

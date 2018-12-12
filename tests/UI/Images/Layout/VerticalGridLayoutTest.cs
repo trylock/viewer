@@ -264,7 +264,7 @@ namespace ViewerTest.UI.Images.Layout
             var bounds = _layout.GetItemBounds(item);
             Assert.AreEqual(270, bounds.X);
             Assert.AreEqual(570, bounds.Y);
-            Assert.AreEqual(210, bounds.Width);
+            Assert.AreEqual(260, bounds.Width);
             Assert.AreEqual(130, bounds.Height);
         }
 

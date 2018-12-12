@@ -123,8 +123,8 @@ namespace Viewer.UI.Images.Layout
             return new Rectangle(
                 column * CellSizeWithMargin.Width, 
                 row * CellSizeWithMargin.Height + top + LabelSizeWithMargin.Height,
-                ItemSize.Width,
-                ItemSize.Height);
+                CellSize.Width,
+                CellSize.Height);
         }
 
         /// <summary>

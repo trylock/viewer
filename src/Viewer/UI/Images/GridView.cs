@@ -140,7 +140,6 @@ namespace Viewer.UI.Images
             UpdateClientBounds();
 
             MouseWheel += GridView_MouseWheel;
-            Scroll += GridView_Scroll;
 
             _highlightFillColor = Color.FromArgb(226, 241, 255);
             _highlightStrokeColor = Color.FromArgb(221, 232, 248);
@@ -503,11 +502,11 @@ namespace Viewer.UI.Images
 
         private void GridView_MouseWheel(object sender, MouseEventArgs e)
         {
-            GroupLabelControl.Invalidate();
-        }
-        
-        private void GridView_Scroll(object sender, ScrollEventArgs e)
-        {
+            if (e.Delta <= -120 || e.Delta >= 120)
+            {
+                AlignScrollLocation(e.Delta < 0);
+            }
+
             GroupLabelControl.Invalidate();
         }
 
@@ -515,6 +514,30 @@ namespace Viewer.UI.Images
         {
             UpdateScrollableSize();
             Refresh();
+        }
+
+        private void AlignScrollLocation(bool alignLowerBoundary)
+        {
+            var location = UnprojectLocation(Point.Empty);
+            if (alignLowerBoundary)
+            {
+                location.Y += ClientSize.Height;
+            }
+
+            location = ControlLayout.AlignLocation(location, alignLowerBoundary);
+
+            // transform location of the lower boundary back up
+            // add space for group label
+            if (alignLowerBoundary)
+            {
+                location.Y -= ClientSize.Height;
+            }
+            else
+            {
+                location.Y -= GroupLabelControl.Height;
+            }
+            
+            AutoScrollPosition = location;
         }
 
         private void UpdateClientBounds()

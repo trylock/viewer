@@ -140,6 +140,7 @@ namespace Viewer.UI.Images
             UpdateClientBounds();
 
             MouseWheel += GridView_MouseWheel;
+            Scroll += GridView_Scroll;
 
             _highlightFillColor = Color.FromArgb(226, 241, 255);
             _highlightStrokeColor = Color.FromArgb(221, 232, 248);
@@ -508,6 +509,16 @@ namespace Viewer.UI.Images
             }
 
             GroupLabelControl.Invalidate();
+        }
+        
+        private void GridView_Scroll(object sender, ScrollEventArgs e)
+        {
+            var newGroup = ControlLayout.GetGroupAt(new Point(0, e.NewValue));
+            var oldGroup = ControlLayout.GetGroupAt(new Point(0, e.OldValue));
+            if (newGroup != oldGroup)
+            {
+                GroupLabelControl.Invalidate();
+            }
         }
 
         private void GridView_Resize(object sender, EventArgs e)

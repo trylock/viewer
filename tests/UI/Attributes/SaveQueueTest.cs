@@ -84,9 +84,13 @@ namespace ViewerTest.UI.Attributes
                 mock.Verify(it => it.Revert(), Times.Never);
             }
             
-            _taskLoader.Verify(mock => mock.CreateLoader(It.IsAny<string>(), It.IsAny<CancellationTokenSource>()), Times.Once);
-            // the progress controller mock is setup up so that is returns 0, thus each save operation
-            // should set it to 1
+            _taskLoader.Verify(mock => 
+                mock.CreateLoader(
+                    It.IsAny<string>(), 
+                    It.IsAny<CancellationTokenSource>()), Times.AtLeastOnce);
+            _progressController.Verify(mock => mock.Close(), Times.AtLeastOnce);
+            // the progress controller mock is setup up so that it returns 0. Each save
+            // operation should therefore set it to 1
             _progressController.VerifySet(mock => mock.TotalTaskCount = 1, Times.Exactly(mocks.Length));
             _progressController.Verify(mock => mock.Close(), Times.Once);
         }

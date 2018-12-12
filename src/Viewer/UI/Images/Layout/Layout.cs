@@ -230,5 +230,14 @@ namespace Viewer.UI.Images.Layout
         /// <param name="bounds"></param>
         /// <returns></returns>
         public abstract IEnumerable<LayoutElement<Group>> GetGroupLabelsIn(Rectangle bounds);
+
+        /// <summary>
+        /// Move <paramref name="location"/> so that it is at the start of an element in this
+        /// layout (e.g. group label, grid row etc.)
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="roundUp">true iff location should be rounded up</param>
+        /// <returns></returns>
+        public abstract Point AlignLocation(Point location, bool roundUp);
     }
 }

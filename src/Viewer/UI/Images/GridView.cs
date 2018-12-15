@@ -210,6 +210,11 @@ namespace Viewer.UI.Images
                 return; // item has not been found
             }
 
+            // if the item is at the top of the viewport, we should leave space for group label
+            bounds.Y -= GroupLabelControl.Height;
+            bounds.Height += GroupLabelControl.Height;
+
+            // transform viewport bounds and set new scroll position
             var viewport = UnprojectBounds(new Rectangle(Point.Empty, ClientSize));
             var transformed = viewport.EnsureContains(bounds);
             AutoScrollPosition = transformed.Location;

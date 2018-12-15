@@ -183,7 +183,13 @@ namespace Viewer.UI.Images
 
         public EntityView FindItem(EntityView currentItem, Point delta)
         {
-            throw new NotImplementedException();
+            var element = ControlLayout.FindItem(currentItem, delta);
+            if (element == null)
+            {
+                return currentItem;
+            }
+
+            return element.Item;
         }
 
         public EntityView FindFirstItemAbove(EntityView currentItem)

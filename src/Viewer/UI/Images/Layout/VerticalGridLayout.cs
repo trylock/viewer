@@ -93,26 +93,8 @@ namespace Viewer.UI.Images.Layout
             return result;
         }
 
-        public override Rectangle GetItemBounds(EntityView item)
+        private Rectangle GetItemBounds(Group itemGroup, int itemIndex)
         {
-            if (item == null || Groups == null)
-            {
-                return Rectangle.Empty;
-            }
-
-            // find group of the item
-            var top = 0;
-            Group itemGroup = null;
-            int itemIndex = -1;
-            foreach (var group in Groups)
-            {
-                itemGroup = group;
-                itemIndex = group.Items.IndexOf(item);
-                if (itemIndex >= 0)
-                    break;
-                top += MeasureGroupHeight(group);
-            }
-
             // check if the item is in a non-collapsed group
             if (itemIndex < 0 || itemGroup.View.IsCollapsed)
                 return Rectangle.Empty;
@@ -121,10 +103,30 @@ namespace Viewer.UI.Images.Layout
             var row = itemIndex / ColumnCount;
             var column = itemIndex % ColumnCount;
             return new Rectangle(
-                column * CellSizeWithMargin.Width, 
-                row * CellSizeWithMargin.Height + top + LabelSizeWithMargin.Height,
+                column * CellSizeWithMargin.Width,
+                row * CellSizeWithMargin.Height + 
+                    itemGroup.View.Location.Y + 
+                    LabelSizeWithMargin.Height,
                 CellSize.Width,
                 CellSize.Height);
+        }
+
+        public override Rectangle GetItemBounds(EntityView item)
+        {
+            if (item == null || Groups == null)
+            {
+                return Rectangle.Empty;
+            }
+
+            // find group of the item
+            var group = Groups.Find(g => g.Items.Contains(item));
+            if (group == null)
+            {
+                return Rectangle.Empty;
+            }
+
+            var itemIndex = group.Items.IndexOf(item);
+            return GetItemBounds(group, itemIndex);
         }
 
         /// <summary>
@@ -456,6 +458,59 @@ namespace Viewer.UI.Images.Layout
             return new Point(
                 location.X, 
                 top);
+        }
+
+        public override LayoutElement<EntityView> FindItem(EntityView source, Point direction)
+        {
+            var groupIndex = Groups.FindIndex(g => g.Items.Contains(source));
+            if (groupIndex < 0)
+            {
+                return null; // the source is not in the grid
+            }
+
+            var group = Groups[groupIndex];
+            var sourceIndex = group.Items.IndexOf(source);
+            var index = sourceIndex + ColumnCount * direction.Y + direction.X;
+
+            // move up to the next group
+            while ((index < 0 || group.View.IsCollapsed) && groupIndex > 0)
+            {
+                --groupIndex;
+                group = Groups[groupIndex];
+
+                if (!group.View.IsCollapsed)
+                {
+                    var gridItemCount = group.Items.Count.AlignUp(ColumnCount);
+                    index = Math.Min(gridItemCount + index, group.Items.Count - 1);
+                }
+            }
+
+            // move down to the next group
+            while ((index >= group.Items.Count || group.View.IsCollapsed) && 
+                   groupIndex + 1 < Groups.Count)
+            {
+                if (!group.View.IsCollapsed)
+                {
+                    var gridItemCount = group.Items.Count.AlignUp(ColumnCount);
+                    index = index - gridItemCount;
+                    if (index < 0)
+                    {
+                        index = group.Items.Count - 1;
+                        break;
+                    }
+                }
+
+                ++groupIndex;
+                group = Groups[groupIndex];
+            }
+
+            if (index < 0 || index >= group.Items.Count)
+            {
+                return null;
+            }
+
+            var bounds = GetItemBounds(group, index);
+            return new LayoutElement<EntityView>(bounds, group.Items[index]);
         }
     }
 }

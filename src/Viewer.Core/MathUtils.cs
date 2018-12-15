@@ -34,6 +34,30 @@ namespace Viewer.Core
             // at this point, exactly one is negative so the divison will be correct
             return num / denom;
         }
+        
+        /// <summary>
+        /// Align <paramref name="value"/> up to the nearest multiple of
+        /// <paramref name="baseNumber"/>.
+        /// </summary>
+        /// <param name="value">Value to align</param>
+        /// <param name="baseNumber">Multiple to which </param>
+        /// <returns></returns>
+        public static int AlignUp(this int value, int baseNumber)
+        {
+            return value + (baseNumber - (value % baseNumber)) % baseNumber;
+        }
+
+        /// <summary>
+        /// Align <paramref name="value"/> up to the nearest multiple of
+        /// <paramref name="baseNumber"/>.
+        /// </summary>
+        /// <param name="value">Value to align</param>
+        /// <param name="baseNumber">Multiple to which </param>
+        /// <returns></returns>
+        public static int AlignDown(this int value, int baseNumber)
+        {
+            return value - (value % baseNumber);
+        }
 
         /// <summary>
         /// Compute linear interpolation between <paramref name="min"/> and <paramref name="max"/> using <paramref name="param"/> as a weight.

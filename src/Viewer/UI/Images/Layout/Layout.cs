@@ -239,5 +239,16 @@ namespace Viewer.UI.Images.Layout
         /// <param name="roundUp">true iff location should be rounded up</param>
         /// <returns></returns>
         public abstract Point AlignLocation(Point location, bool roundUp);
+
+        /// <summary>
+        /// Find item in <paramref name="direction"/> from <paramref name="source"/>
+        /// </summary>
+        /// <param name="source">Source item</param>
+        /// <param name="direction">Move direction</param>
+        /// <returns>
+        /// Neighbor of <paramref name="source"/>. If no item is found at queries location,
+        /// null will be returned.
+        /// </returns>
+        public abstract LayoutElement<EntityView> FindItem(EntityView source, Point direction);
     }
 }

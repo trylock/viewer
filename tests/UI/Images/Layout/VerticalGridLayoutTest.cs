@@ -305,5 +305,59 @@ namespace ViewerTest.UI.Images.Layout
             location = _layout.AlignLocation(new Point(15, 40), true);
             Assert.AreEqual(new Point(15, 165), location);
         }
+
+        [TestMethod]
+        public void FindItem_ToTheLeftOfTheFirstItem()
+        {
+            var element = _layout.FindItem(_layout.Groups[0].Items[0], new Point(-1, 0));
+            Assert.IsNull(element);
+        }
+
+        [TestMethod]
+        public void FindItem_ToTheRightOfTheFirstItem()
+        {
+            var element = _layout.FindItem(_layout.Groups[0].Items[0], new Point(1, 0));
+            Assert.AreEqual(new Rectangle(270, 35, 260, 130), element.Bounds);
+            Assert.AreEqual(_layout.Groups[0].Items[1], element.Item);
+        }
+
+        [TestMethod]
+        public void FindItem_AboveTheFirstItem()
+        {
+            var element = _layout.FindItem(_layout.Groups[0].Items[0], new Point(0, -1));
+            Assert.IsNull(element);
+        }
+
+        [TestMethod]
+        public void FindItem_BelowTheFirstItem()
+        {
+            var element = _layout.FindItem(_layout.Groups[0].Items[0], new Point(0, 1));
+            Assert.AreEqual(new Rectangle(0, 185, 260, 130), element.Bounds);
+            Assert.AreEqual(_layout.Groups[0].Items[3], element.Item);
+        }
+
+        [TestMethod]
+        public void FindItem_BelowTheGroup()
+        {
+            var element = _layout.FindItem(_layout.Groups[0].Items[3], new Point(0, 1));
+            Assert.AreEqual(new Rectangle(0, 420, 260, 130), element.Bounds);
+            Assert.AreEqual(_layout.Groups[3].Items[0], element.Item);
+        }
+
+        [TestMethod]
+        public void FindItem_AboveTheFirstItemInAGroup()
+        {
+            var element = _layout.FindItem(_layout.Groups[3].Items[2], new Point(0, -1));
+            Assert.AreEqual(new Rectangle(0, 185, 260, 130), element.Bounds);
+            Assert.AreEqual(_layout.Groups[0].Items[3], element.Item);
+        }
+
+        [TestMethod]
+        public void FindItem_BelowTheItemWhichIsNotInTheLastRow()
+        {
+            var element = _layout.FindItem(_layout.Groups[0].Items[2], new Point(0, 1));
+            Assert.AreEqual(new Rectangle(0, 185, 260, 130), element.Bounds);
+            Assert.AreEqual(_layout.Groups[0].Items[3], element.Item);
+        }
     }
 }

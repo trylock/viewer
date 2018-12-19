@@ -73,7 +73,7 @@ namespace ViewerTest.UI.Images
 
             _evaluator.Run();
 
-            _evaluator.ProcessChanges();
+            _evaluator.ProcessRequests();
             var groups = _evaluator.Update();
             Assert.AreEqual(1, groups.Count);
 
@@ -110,7 +110,7 @@ namespace ViewerTest.UI.Images
 
             _evaluator.Run();
             
-            _evaluator.ProcessChanges();
+            _evaluator.ProcessRequests();
             var groups = _evaluator.Update();
             Assert.AreEqual(1, groups.Count);
             var items = groups[0].Items;
@@ -121,7 +121,7 @@ namespace ViewerTest.UI.Images
             _fileWatcher.Raise(mock => mock.Deleted += null,
                 new FileSystemEventArgs(WatcherChangeTypes.Deleted, Path.GetDirectoryName(entities[0].Path), Path.GetFileName(entities[0].Path)));
 
-            _evaluator.ProcessChanges();
+            _evaluator.ProcessRequests();
             groups = _evaluator.Update();
             Assert.AreEqual(1, groups.Count);
 
@@ -160,7 +160,7 @@ namespace ViewerTest.UI.Images
                 .Returns(thumbnail3.Object);
 
             _evaluator.Run();
-            _evaluator.ProcessChanges();
+            _evaluator.ProcessRequests();
             var items = _evaluator.Update()
                 .SelectMany(pair => pair.Items)
                 .Select(view => view.Data)
@@ -170,7 +170,7 @@ namespace ViewerTest.UI.Images
             entities[2].ChangePath("test0");
             _entities.Raise(mock => mock.Moved += null, new EntityMovedEventArgs("test3", entities[2]));
 
-            _evaluator.ProcessChanges();
+            _evaluator.ProcessRequests();
             items = _evaluator.Update()
                 .SelectMany(pair => pair.Items)
                 .Select(view => view.Data)
@@ -202,7 +202,7 @@ namespace ViewerTest.UI.Images
                 .Returns(thumbnail2.Object);
 
             _evaluator.Run();
-            _evaluator.ProcessChanges();
+            _evaluator.ProcessRequests();
             var items = _evaluator.Update()
                 .SelectMany(pair => pair.Items)
                 .Select(view => view.Data)
@@ -215,7 +215,7 @@ namespace ViewerTest.UI.Images
                 "test0", 
                 Path.GetFileName(entities[1].Path)));
 
-            _evaluator.ProcessChanges();
+            _evaluator.ProcessRequests();
             items = _evaluator.Update()
                 .SelectMany(pair => pair.Items)
                 .Select(view => view.Data)

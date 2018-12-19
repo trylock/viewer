@@ -105,8 +105,6 @@ namespace Viewer.UI.Images
         private List<Group> _backBuffer;
         private List<Group> _frontBuffer;
         private readonly ConcurrentQueue<Request> _requests = new ConcurrentQueue<Request>();
-        private readonly AutoResetEvent _processBatch = new AutoResetEvent(false);
-        private Thread _batchProcessingThread;
 
         /// <summary>
         /// Number of pending requests in <see cref="_requests"/>. This property is accessed and
@@ -355,12 +353,33 @@ namespace Viewer.UI.Images
 
         #endregion
 
+        private Task _backProcessingTask = Task.CompletedTask;
+
+        /// <summary>
+        /// Minimal number of requests after which a processing thread is created.
+        /// </summary>
+        private const int MinimalBatchSize = 100;
+
         private void EnqueueRequest(Request req)
         {
             _requests.Enqueue(req);
             var value = Interlocked.Increment(ref _requestCount);
-            if ((value % 100) == 0)
-                _processBatch.Set();
+            if ((value % MinimalBatchSize) == 0)
+                TryProcessChangesAsync();
+        }
+
+        private Task TryProcessChangesAsync()
+        {
+            if (!_backProcessingTask.IsCompleted)
+            {
+                return null;
+            }
+
+            _backProcessingTask = _backProcessingTask.ContinueWith(_ =>
+            {
+                ProcessRequests();
+            });
+            return _backProcessingTask;
         }
 
         /// <summary>
@@ -380,9 +399,6 @@ namespace Viewer.UI.Images
         /// <returns>Task finished when the whole evaluation ends</returns>
         public Task RunAsync()
         {
-            _batchProcessingThread = new Thread(ProcessRequests);
-            _batchProcessingThread.Start();
-
             LoadTask = Task.Factory.StartNew(
                 Run,
                 Cancellation.Token,
@@ -421,20 +437,14 @@ namespace Viewer.UI.Images
         /// Access to this property is guarded by a lock on <see cref="_backBufferLock"/>.
         /// </remarks>
         private readonly List<EntityView> _removed = new List<EntityView>();
-        private volatile bool _isEnd = false;
 
-        private void ProcessRequests()
+        public void ProcessRequests()
         {
-            while (!_isEnd)
+            lock (_backBufferLock)
             {
-                _processBatch.WaitOne(TimeSpan.FromMilliseconds(200));
-                
-                lock (_backBufferLock)
-                {
-                    ProcessChanges();
-                }
+                var changes = FetchChanges();
+                ProcessChanges(changes);
             }
-            _processBatch.Dispose();
         }
 
         private List<EntityView> GetOrAddList(
@@ -450,7 +460,24 @@ namespace Viewer.UI.Images
             return list;
         }
 
-        public void ProcessChanges()
+        private class RequestIndex
+        {
+            /// <summary>
+            /// All modifications grouped by file path
+            /// </summary>
+            public Dictionary<string, Request> Modifications { get; set; }
+
+            /// <summary>
+            /// All added entities group by their key (according to the group by clause)
+            /// </summary>
+            public Dictionary<BaseValue, List<EntityView>> Insertions { get; set; }
+        }
+
+        /// <summary>
+        /// Fetch all requests enqueued so far.
+        /// </summary>
+        /// <returns></returns>
+        private RequestIndex FetchChanges()
         {
             var index = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             var added = new Dictionary<BaseValue, List<EntityView>>();
@@ -472,13 +499,21 @@ namespace Viewer.UI.Images
                     index[path] = req;
                 }
             }
+            return new RequestIndex
+            {
+                Modifications = index,
+                Insertions = added
+            };
+        }
 
+        private void ProcessChanges(RequestIndex index)
+        {
             // When the UI thread acquires the lock, it should update the front buffer only if
             // there has been changes. Otherwise, it would block the UI for too long on each update.
-            _isBackBufferDirty = index.Count > 0 || added.Count > 0;
+            _isBackBufferDirty = index.Modifications.Count > 0 || index.Insertions.Count > 0;
             
             // apply changes to the data in the back buffer
-            if (index.Count > 0)
+            if (index.Modifications.Count > 0)
             {
                 var groupHead = 0;
                 for (var i = 0; i < _backBuffer.Count; ++i)
@@ -492,7 +527,7 @@ namespace Viewer.UI.Images
                     {
                         Trace.Assert(head <= j, $"{nameof(head)} <= {nameof(j)}");
                         var item = group.Items[j];
-                        if (!index.TryGetValue(item.FullPath, out var req))
+                        if (!index.Modifications.TryGetValue(item.FullPath, out var req))
                         {
                             // this item has not changed
                             group.Items[head] = item;
@@ -506,14 +541,14 @@ namespace Viewer.UI.Images
                         {
                             item.Data.ChangePath(moveReq.NewPath);
                             var key = Query.GetGroup(item.Data);
-                            var list = GetOrAddList(key, added);
+                            var list = GetOrAddList(key, index.Insertions);
                             list.Add(item);
                         }
                         else if (req is ModifyRequest modReq)
                         {
                             item = new EntityView(modReq.Value, item.Thumbnail);
                             var key = Query.GetGroup(item.Data);
-                            var list = GetOrAddList(key, added);
+                            var list = GetOrAddList(key, index.Insertions);
                             list.Add(item);
                         }
                     }
@@ -532,24 +567,24 @@ namespace Viewer.UI.Images
             }
 
             // add new groups
-            if (added.Count > 0)
+            if (index.Insertions.Count > 0)
             {
                 // merge items of existing groups
                 for (var i = 0; i < _backBuffer.Count; ++i)
                 {
                     var group = _backBuffer[i];
-                    if (!added.TryGetValue(group.Key, out var list))
+                    if (!index.Insertions.TryGetValue(group.Key, out var list))
                     {
                         continue;
                     }
 
                     group.Items.Sort(Comparer);
                     group.Items = group.Items.Merge(list, Comparer);
-                    added.Remove(group.Key);
+                    index.Insertions.Remove(group.Key);
                 }
 
                 // add brand new groups
-                var addedGroups = added
+                var addedGroups = index.Insertions
                     .Select(pair => new Group(pair.Key)
                     {
                         Items = pair.Value
@@ -582,6 +617,9 @@ namespace Viewer.UI.Images
             {
                 if (!_isBackBufferDirty)
                 {
+                    // check if there are any changes
+                    // if there are, start processing them on a separate thread
+                    TryProcessChangesAsync();
                     return _frontBuffer;
                 }
 
@@ -622,9 +660,6 @@ namespace Viewer.UI.Images
 
             // stop watching file changes
             _fileWatcher.Dispose();
-
-            _isEnd = true;
-            _processBatch.Set();
 
             // cancel current loading operation
             Cancellation.Cancel();

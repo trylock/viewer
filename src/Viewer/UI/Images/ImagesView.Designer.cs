@@ -242,8 +242,6 @@
             this._thumbnailGridView.Location = new System.Drawing.Point(0, 29);
             this._thumbnailGridView.Margin = new System.Windows.Forms.Padding(2);
             this._thumbnailGridView.Name = "GridView";
-            this._thumbnailGridView.NameHeight = 30;
-            this._thumbnailGridView.NameSpace = 5;
             this._thumbnailGridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
             this._thumbnailGridView.Size = new System.Drawing.Size(626, 324);
             this._thumbnailGridView.TabIndex = 2;

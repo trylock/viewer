@@ -29,12 +29,12 @@ namespace Viewer.UI.Images
         /// <summary>
         /// Height of the area for file name
         /// </summary>
-        public int NameHeight { get; set; }
+        public int NameHeight => Font.Height * 2;
 
         /// <summary>
         /// Space between the thumbnail and the name label
         /// </summary>
-        public int NameSpace { get; set; }
+        public int NameSpace => Font.Height / 2;
 
         /// <summary>
         /// Size of a cell in the grid
@@ -131,8 +131,6 @@ namespace Viewer.UI.Images
             GroupLabelControl.Paint += GroupLabelControl_Paint;
 
             // setup control layout
-            NameHeight = Font.Height * 2;
-            NameSpace = Font.Height;
             ControlLayout = new VerticalGridLayout
             {
                 GroupLabelSize = new Size(0, Font.Height * 3),

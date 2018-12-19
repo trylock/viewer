@@ -289,28 +289,42 @@ namespace Viewer.Query
             return _source.Match(entity);
         }
 
+        /// <summary>
+        /// Transform leaf nodes of <paramref name="node"/> query using the
+        /// <paramref name="transformation"/> function.
+        /// </summary>
+        /// <param name="node">Query to transform</param>
+        /// <param name="transformation">Transformation</param>
+        /// <returns>New transformed query</returns>
         private IExecutableQuery ModifyQueryLeafs(
             IExecutableQuery node, 
             Func<SimpleQuery, SimpleQuery> transformation)
         {
-            if (node is SimpleQuery simpleQuery)
+            for (;;)
             {
-                return transformation(simpleQuery);
+                if (node is SimpleQuery simpleQuery)
+                {
+                    return transformation(simpleQuery);
+                }
+                else if (node is Query query)
+                {
+                    node = query._source;
+                    continue;
+                }
+
+                var op = (BinaryQueryOperator) node;
+                var left = ModifyQueryLeafs(op.First, transformation);
+
+                if (op.GetType() == typeof(UnionQuery))
+                    return new UnionQuery(left, ModifyQueryLeafs(op.Second, transformation));
+                else if (op.GetType() == typeof(IntersectQuery))
+                    return new IntersectQuery(left, ModifyQueryLeafs(op.Second, transformation));
+                else if (op.GetType() == typeof(ExceptQuery)) return new ExceptQuery(left, op.Second);
+
+                return null;
             }
-
-            var op = (BinaryQueryOperator) node;
-            var left = ModifyQueryLeafs(op.First, transformation);
-
-            if (op.GetType() == typeof(UnionQuery))
-                return new UnionQuery(left, ModifyQueryLeafs(op.Second, transformation));
-            else if (op.GetType() == typeof(IntersectQuery))
-                return new IntersectQuery(left, ModifyQueryLeafs(op.Second, transformation));
-            else if (op.GetType() == typeof(ExceptQuery))
-                return new ExceptQuery(left, op.Second);
-
-            return null;
         }
-        
+
         public IQuery WithComparer(IComparer<IEntity> comparer, string comparerText)
         {
             var query = ModifyQueryLeafs(_source, value => value.WithComparer(comparer, comparerText));

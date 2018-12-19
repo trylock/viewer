@@ -17,6 +17,7 @@ using Viewer.Data.Storage;
 using Viewer.IO;
 using Viewer.Query;
 using Viewer.Query.Execution;
+using Attribute = Viewer.Data.Attribute;
 
 namespace ViewerTest.Query.Execution
 { 
@@ -66,10 +67,13 @@ namespace ViewerTest.Query.Execution
         private class ResultSet : IReadOnlyList<IEntity>
         {
             private readonly List<IEntity> _entities = new List<IEntity>();
-            
-            public ResultSet(IEnumerable<IEntity> entities)
+
+            public IExecutableQuery Query { get; }
+
+            public ResultSet(IEnumerable<IEntity> entities, IExecutableQuery query)
             {
                 _entities.AddRange(entities);
+                Query = query;
             }
             
             public string[] GetPaths()
@@ -103,7 +107,7 @@ namespace ViewerTest.Query.Execution
         private ResultSet Execute(string query)
         {
             var compiledQuery = Compile(query);
-            return new ResultSet(compiledQuery.Execute(new ExecutionOptions()));
+            return new ResultSet(compiledQuery.Execute(new ExecutionOptions()), compiledQuery);
         }
 
         private static readonly string BaseDir = Path.Combine(
@@ -325,6 +329,33 @@ namespace ViewerTest.Query.Execution
             Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item4.jpg"));
             Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item5.jpg"));
             Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item6.jpg"));
+        }
+
+        [TestMethod]
+        public void UnfoldNestedQuery()
+        {
+            var result = Execute("select (select \"" + BaseDir + "/a\" union select \"" + BaseDir + "/b\") order by attr2");
+
+            Assert.AreEqual(10, result.Count);
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item4.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item5.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/a/item6.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b/item7.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b/item8.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b/item9.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b/item10.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b/item11.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b/item12.jpg"));
+            Assert.IsTrue(result.ContainsFileAt(BaseDir + "/b/c"));
+
+            var entity1 = new FileEntity("test")
+                .SetAttribute(new Attribute("attr2", new IntValue(1), AttributeSource.Custom));
+            var entity2 = new FileEntity("test")
+                .SetAttribute(new Attribute("attr2", new IntValue(2), AttributeSource.Custom));
+            Assert.IsTrue(result.Query.Comparer.Compare(entity1, entity2) < 0);
+            Assert.IsTrue(result.Query.Comparer.Compare(entity2, entity1) > 0);
+            Assert.IsTrue(result.Query.Comparer.Compare(entity1, entity1) == 0);
+            Assert.IsTrue(result.Query.Comparer.Compare(entity2, entity2) == 0);
         }
     }
 }

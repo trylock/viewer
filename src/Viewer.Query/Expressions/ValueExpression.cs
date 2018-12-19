@@ -20,6 +20,12 @@ namespace Viewer.Query.Expressions
             new ConstantExpression(0, 0, new IntValue(1));
 
         /// <summary>
+        /// An expression which is always null (or false if compiled as predicate)
+        /// </summary>
+        public static ValueExpression Null { get; } = 
+            new ConstantExpression(0, 0, new IntValue(null));
+
+        /// <summary>
         /// Line in the query on which this value expression starts
         /// </summary>
         public int Line { get; }

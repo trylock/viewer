@@ -31,14 +31,72 @@ namespace Viewer.Query.Execution
 
         // properties
         private readonly IFileFinder _fileFinder;
-        private readonly Func<IEntity, bool> _compiledPredicate;
+        private Func<IEntity, bool> _compiledPredicate;
+        private Func<IEntity, BaseValue> _compiledGroupFunc;
 
         private static readonly FileAttributes HiddenFlags = FileAttributes.System | 
                                                              FileAttributes.Temporary;
-        
-        public string Text { get; }
-        public ValueExpression Predicate { get; }
-        public IComparer<IEntity> Comparer { get; }
+
+        /// <summary>
+        /// Compile predicate on demand
+        /// </summary>
+        private Func<IEntity, bool> CompiledPredicate
+        {
+            get
+            {
+                if (_compiledPredicate == null)
+                {
+                    _compiledPredicate = Predicate.CompilePredicate(_runtime);
+                }
+
+                return _compiledPredicate;
+            }
+        }
+
+        /// <summary>
+        /// Compile group function on demand
+        /// </summary>
+        private Func<IEntity, BaseValue> CompiledGroupFunction
+        {
+            get
+            {
+                if (_compiledGroupFunc == null)
+                {
+                    _compiledGroupFunc = GroupFunction.CompileFunction(_runtime);
+                }
+
+                return _compiledGroupFunc;
+            }
+        }
+
+        /// <summary>
+        /// Textual representation of the query
+        /// </summary>
+        public string Text => ToString();
+
+        /// <summary>
+        /// Query predicate
+        /// </summary>
+        public ValueExpression Predicate { get; private set; } = ValueExpression.True;
+
+        /// <summary>
+        /// Group by expression
+        /// </summary>
+        public ValueExpression GroupFunction { get; private set; } = ValueExpression.Null;
+
+        /// <summary>
+        /// Query result comparer
+        /// </summary>
+        public IComparer<IEntity> Comparer { get; private set; } = EntityComparer.Default;
+
+        /// <summary>
+        /// Query comparer text
+        /// </summary>
+        public string ComparerText { get; private set; } = "";
+
+        /// <summary>
+        /// List of searched folder path patterns
+        /// </summary>
         public IEnumerable<PathPattern> Patterns => Enumerable.Repeat(_fileFinder.Pattern, 1);
 
         public SimpleQuery(
@@ -46,38 +104,63 @@ namespace Viewer.Query.Execution
             IFileSystem fileSystem,
             IRuntime runtime,
             IPriorityComparerFactory priorityComparerFactory,
-            string pattern,
-            ValueExpression predicate,
-            IComparer<IEntity> comparer,
-            string comparerText)
+            string pattern)
         {
             _runtime = runtime;
             _fileSystem = fileSystem;
             _entityManager = entityManager;
             _priorityComparerFactory = priorityComparerFactory;
-
             _fileFinder = _fileSystem.CreateFileFinder(pattern);
-            Predicate = predicate;
-            _compiledPredicate = Predicate.CompilePredicate(_runtime);
-            Comparer = comparer;
+        }
 
+        /// <summary>
+        /// Copy constructor. This does not copy computed values such as compiled predicate
+        /// so that the predicate can be changed and recompiled later.
+        /// </summary>
+        /// <param name="other">Other simple query</param>
+        private SimpleQuery(SimpleQuery other)
+        {
+            _runtime = other._runtime;
+            _fileSystem = other._fileSystem;
+            _entityManager = other._entityManager;
+            _priorityComparerFactory = other._priorityComparerFactory;
+            _fileFinder = other._fileFinder;
+            Predicate = other.Predicate;
+            Comparer = other.Comparer;
+            ComparerText = other.ComparerText;
+            GroupFunction = other.GroupFunction;
+        }
+
+        /// <summary>
+        /// Get string representation of this simple query.
+        /// </summary>
+        /// <returns>
+        /// String representation of the query. It is always a valid query.
+        /// </returns>
+        public override string ToString()
+        {
             var text = $"select \"{_fileFinder.Pattern.Text}\"";
             if (Predicate != ValueExpression.True)
             {
                 text += $" where {Predicate}";
             }
 
-            if (!string.IsNullOrWhiteSpace(comparerText))
+            if (!string.IsNullOrWhiteSpace(ComparerText))
             {
-                text += $" order by {comparerText}";
+                text += $" order by {ComparerText}";
             }
 
-            Text = text;
+            if (GroupFunction != ValueExpression.Null)
+            {
+                text += $" group by {GroupFunction}";
+            }
+
+            return text;
         }
 
         public BaseValue GetGroup(IEntity entity)
         {
-            return new IntValue(null);
+            return CompiledGroupFunction(entity);
         }
 
         public IEnumerable<IEntity> Execute(IProgress<QueryProgressReport> progress, CancellationToken cancellationToken)
@@ -122,7 +205,7 @@ namespace Viewer.Query.Execution
 
                     options.Progress.Report(new QueryProgressReport(ReportType.EndLoading, file.Path));
 
-                    if (entity != null && _compiledPredicate(entity))
+                    if (entity != null && CompiledPredicate(entity))
                     {
                         yield return entity;
                     }
@@ -146,9 +229,11 @@ namespace Viewer.Query.Execution
             {
                 return false;
             }
-
-            return _compiledPredicate(entity);
+            
+            return CompiledPredicate(entity);
         }
+
+        #region Immutable factory functions
 
         /// <summary>
         /// Create a new simple query with a different comparer
@@ -158,9 +243,11 @@ namespace Viewer.Query.Execution
         /// <returns></returns>
         public SimpleQuery WithComparer(IComparer<IEntity> comparer, string text)
         {
-            return new SimpleQuery(
-                _entityManager, _fileSystem, _runtime, _priorityComparerFactory, 
-                _fileFinder.Pattern.Text, Predicate, comparer, text);
+            return new SimpleQuery(this)
+            {
+                Comparer = comparer,
+                ComparerText = text
+            };
         }
 
         /// <summary>
@@ -170,15 +257,39 @@ namespace Viewer.Query.Execution
         /// <returns>New simple query</returns>
         public SimpleQuery AppendPredicate(ValueExpression predicate)
         {
+            if (Predicate == ValueExpression.True)
+            {
+                return new SimpleQuery(this)
+                {
+                    Predicate = predicate
+                };
+            }
+
             var newPredicate = new AndExpression(
-                predicate.Line, 
-                predicate.Column, 
-                Predicate, 
+                predicate.Line,
+                predicate.Column,
+                Predicate,
                 predicate);
-            return new SimpleQuery(
-                _entityManager, _fileSystem, _runtime, _priorityComparerFactory,
-                _fileFinder.Pattern.Text, newPredicate, Comparer, null);
+            return new SimpleQuery(this)
+            {
+                Predicate = newPredicate
+            };
         }
+
+        /// <summary>
+        /// Create a new simple query with a different group by expression
+        /// </summary>
+        /// <param name="expression">New group by expression</param>
+        /// <returns>New simple query</returns>
+        public SimpleQuery WithGroupFunction(ValueExpression expression)
+        {
+            return new SimpleQuery(this)
+            {
+                GroupFunction = expression
+            };
+        }
+
+        #endregion
 
         private bool IsValidPath(string path)
         {

@@ -26,17 +26,16 @@ namespace ViewerTest.Query.Execution
         private Mock<IPriorityComparerFactory> _priorityComparerFactory;
         private Mock<IReadableAttributeStorage> _reader;
         
-        private SimpleQuery Create(string pattern, ValueExpression predicate, IComparer<IEntity> comparer)
+        private SimpleQuery Create(string pattern)
         {
-            return new SimpleQuery(
+            var query = new SimpleQuery(
                 _entityManager.Object,
                 _fileSystem.Object,
                 _runtime.Object,
                 _priorityComparerFactory.Object,
-                pattern,
-                predicate, 
-                comparer, ""
+                pattern
             );
+            return query;
         }
 
         private ValueExpression CreatePredicate(Func<IEntity, bool> func)
@@ -72,7 +71,7 @@ namespace ViewerTest.Query.Execution
         public void Execute_NoMatchingDirectories()
         {
             var predicate = CreatePredicate(entity => true);
-            var query = Create("test", predicate, EntityComparer.Default);
+            var query = Create("test").AppendPredicate(predicate);
 
             Assert.AreEqual("select \"test\" where predicate", query.Text);
 
@@ -91,7 +90,7 @@ namespace ViewerTest.Query.Execution
             {
                 return entity.GetAttribute("a") == null;
             });
-            var query = Create("test", predicate, EntityComparer.Default);
+            var query = Create("test").AppendPredicate(predicate);
 
             Assert.AreEqual("select \"test\" where predicate", query.Text);
 
@@ -139,6 +138,28 @@ namespace ViewerTest.Query.Execution
             Assert.AreEqual(result[0], results[0]);
             Assert.IsInstanceOfType(result[1], typeof(DirectoryEntity));
             Assert.AreEqual(result[1].Path, results[2].Path);
+        }
+
+        [TestMethod]
+        public void Group_GroupByExpression()
+        {
+            var expression = new Mock<ValueExpression>();
+            expression
+                .Setup(mock => mock.ToString())
+                .Returns("x + 1");
+            expression
+                .Setup(mock => mock.CompileFunction(It.IsAny<IRuntime>()))
+                .Returns(entity => new IntValue(entity.GetValue<IntValue>("x")?.Value + 1));
+            var query = Create("test").WithGroupFunction(expression.Object);
+
+            Assert.AreEqual("select \"test\" group by x + 1", query.Text);
+
+            var entity1 = new FileEntity("test");
+            var entity2 = new FileEntity("test")
+                .SetAttribute(new Attribute("x", new IntValue(2), AttributeSource.Custom));
+
+            Assert.IsNull(((IntValue)query.GetGroup(entity1)).Value);
+            Assert.AreEqual(3, ((IntValue)query.GetGroup(entity2)).Value);
         }
     }
 }

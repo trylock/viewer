@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -184,6 +185,15 @@ namespace Viewer.Query
         IQuery WithComparer(IComparer<IEntity> comparer, string comparerText);
 
         /// <summary>
+        /// Set a new group by expression
+        /// </summary>
+        /// <param name="expression">
+        /// Expression by which all items from the query result set are grouped together
+        /// </param>
+        /// <returns></returns>
+        IQuery WithGroup(ValueExpression expression);
+
+        /// <summary>
         /// Copy this query but set a new textual representation.
         /// </summary>
         /// <param name="text">New textual representation of this query</param>
@@ -307,6 +317,12 @@ namespace Viewer.Query
             return new Query(_runtime, _priorityComparerFactory, query, _text);
         }
 
+        public IQuery WithGroup(ValueExpression expression)
+        {
+            var query = ModifyQueryLeafs(_source, value => value.WithGroupFunction(expression));
+            return new Query(_runtime, _priorityComparerFactory, query, _text);
+        }
+
         public IQuery Where(ValueExpression expression)
         {
             var query = ModifyQueryLeafs(_source, value => value.AppendPredicate(expression));
@@ -396,10 +412,7 @@ namespace Viewer.Query
                 _fileSystem, 
                 _runtime,
                 _priorityComparerFactory,
-                pattern, 
-                ValueExpression.True, 
-                EntityComparer.Default, 
-                ""
+                pattern
             ), null);
         }
 

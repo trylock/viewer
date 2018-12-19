@@ -14,7 +14,7 @@ intersection: queryFactor (INTERSECT queryFactor)*;
 queryFactor: query | LPAREN queryExpression RPAREN;
 
 // query
-query: unorderedQuery optionalOrderBy;
+query: unorderedQuery optionalOrderBy optionalGroupBy;
 
 unorderedQuery: SELECT source optionalWhere;
 
@@ -29,6 +29,9 @@ optionalOrderBy: ORDER BY orderByList | ;
 orderByList: orderByKey (PARAM_DELIMITER orderByKey)*;
 
 orderByKey: comparison DIRECTION?;
+
+// GROUP BY
+optionalGroupBy: GROUP BY predicate | ;
 
 // expressions
 predicate: conjunction (OR conjunction)*;

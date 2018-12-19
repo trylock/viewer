@@ -42,6 +42,9 @@ namespace ViewerTest.Query
                 .Setup(mock => mock.Union(It.IsAny<IExecutableQuery>()))
                 .Returns(_query.Object);
             _query
+                .Setup(mock => mock.WithGroup(It.IsAny<ValueExpression>()))
+                .Returns(_query.Object);
+            _query
                 .Setup(mock => mock.WithComparer(It.IsAny<IComparer<IEntity>>(), It.IsAny<string>()))
                 .Returns(_query.Object);
             _query
@@ -83,6 +86,12 @@ namespace ViewerTest.Query
             return It.Is<ValueExpression>(expression =>
                 testPredicateFunction(expression.CompilePredicate(_runtime.Object)) 
             );
+        }
+
+        private ValueExpression CheckFunction(Func<Func<IEntity, BaseValue>, bool> testFunction)
+        {
+            return It.Is<ValueExpression>(expression => 
+                testFunction(expression.CompileFunction(_runtime.Object)));
         }
 
         [TestMethod]
@@ -1294,6 +1303,22 @@ namespace ViewerTest.Query
             listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
             listener.Verify(mock => mock.OnCompilerError(1, 7, "Query view cycle detected (a -> a)"));
             listener.Verify(mock => mock.AfterCompilation(), Times.Once);
+        }
+
+        [TestMethod]
+        public void Compile_SimpleGroupBy()
+        {
+            _compiler.Compile(new StringReader("select \"a\" group by attr"), new NullQueryErrorListener());
+
+            var entity1 = new FileEntity("test")
+                .SetAttribute(new Attribute("attr1", new IntValue(1), AttributeSource.Custom));
+            var entity2 = new FileEntity("test")
+                .SetAttribute(new Attribute("attr", new IntValue(24), AttributeSource.Custom));
+
+            _query.Verify(mock => mock.WithGroup(CheckFunction(f => 
+                f(entity1).IsNull &&
+                ((IntValue)f(entity2)).Value == 24
+            )));
         }
     }
 }

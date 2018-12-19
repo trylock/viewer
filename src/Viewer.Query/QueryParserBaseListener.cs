@@ -168,6 +168,18 @@ public partial class QueryParserBaseListener : IQueryParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitOrderByKey([NotNull] QueryParser.OrderByKeyContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="QueryParser.optionalGroupBy"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterOptionalGroupBy([NotNull] QueryParser.OptionalGroupByContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="QueryParser.optionalGroupBy"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitOptionalGroupBy([NotNull] QueryParser.OptionalGroupByContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="QueryParser.predicate"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

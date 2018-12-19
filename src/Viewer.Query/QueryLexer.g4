@@ -6,6 +6,8 @@ WHERE: W H E R E;
 
 ORDER: O R D E R;
 
+GROUP: G R O U P;
+
 BY: B Y;
 
 AND: A N D;

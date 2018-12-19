@@ -142,6 +142,16 @@ public interface IQueryParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitOrderByKey([NotNull] QueryParser.OrderByKeyContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="QueryParser.optionalGroupBy"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOptionalGroupBy([NotNull] QueryParser.OptionalGroupByContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="QueryParser.optionalGroupBy"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOptionalGroupBy([NotNull] QueryParser.OptionalGroupByContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="QueryParser.predicate"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

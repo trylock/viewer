@@ -394,6 +394,23 @@ namespace Viewer.Query
             _comparers.Push(new EntityComparer(new List<SortParameter>{ key }));
         }
 
+        public void EnterOptionalGroupBy(QueryParser.OptionalGroupByContext context)
+        {
+        }
+
+        public void ExitOptionalGroupBy(QueryParser.OptionalGroupByContext context)
+        {
+            if (context.GROUP() == null)
+            {
+                return; // there is no GROUP BY clause
+            }
+
+            var query = _queries.Pop();
+            var expression = _expressions.Pop();
+            query = query.WithGroup(expression);
+            _queries.Push(query);
+        }
+
         #endregion
 
         #region Value expression

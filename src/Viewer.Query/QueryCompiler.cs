@@ -806,7 +806,12 @@ namespace Viewer.Query
             RecognitionException e)
         {
             _queryErrorListener.OnCompilerError(line, charPositionInLine, msg);
-            throw new ParseCanceledException(e);
+
+            // if we can't make sense of the input, there is no good way to recover from it
+            if (e is NoViableAltException)
+            {
+                throw new ParseCanceledException(e);
+            }
         }
     }
 
@@ -920,9 +925,7 @@ namespace Viewer.Query
             var tokenStream = new CommonTokenStream(lexer);
             var errorListener = new ParserErrorListener(queryErrorListener);
             var parser = new QueryParser(tokenStream);
-            parser.BuildParseTree = false;
             parser.AddErrorListener(errorListener);
-            parser.AddParseListener(compiler);
 
             // parse and compile the query
             if (!parameters.IsRecursiveCall)
@@ -933,7 +936,8 @@ namespace Viewer.Query
             IQuery result;
             try
             {
-                parser.entry();
+                var tree = parser.entry();
+                ParseTreeWalker.Default.Walk(compiler, tree);
                 result = compiler.Finish();
 
                 if (result == null)

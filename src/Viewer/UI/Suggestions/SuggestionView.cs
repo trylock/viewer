@@ -244,6 +244,9 @@ namespace Viewer.UI.Suggestions
 
             _suggestionControl.UpdateClientSize();
             ItemsChanged?.Invoke(this, EventArgs.Empty);
+
+            // the SelectedIndex setter will ensure that the index is still valid
+            SelectedIndex = SelectedIndex;
         }
 
         /// <summary>
@@ -370,7 +373,7 @@ namespace Viewer.UI.Suggestions
         private void AcceptSelectedSuggestion()
         {
             Hide();
-            if (SelectedIndex < 0)
+            if (SelectedIndex < 0 || SelectedIndex >= _items.Count)
             {
                 return;
             }

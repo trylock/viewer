@@ -296,7 +296,7 @@ namespace Viewer.UI.Images
         public void UpdateItems()
         {
             _view.UpdateItems();
-            Refresh();
+            Invalidate();
         }
         
         public void BeginDragDrop(IDataObject data, DragDropEffects effect)

@@ -80,7 +80,7 @@ namespace Viewer.UI.Images
             {
                 ControlLayout.Groups = value;
                 UpdateScrollableSize();
-                Refresh();
+                Invalidate();
             }
         }
 
@@ -535,7 +535,7 @@ namespace Viewer.UI.Images
         private void GridView_Resize(object sender, EventArgs e)
         {
             UpdateScrollableSize();
-            Refresh();
+            Invalidate();
         }
 
         private void AlignScrollLocation(bool alignLowerBoundary)
@@ -579,7 +579,7 @@ namespace Viewer.UI.Images
 
             GroupLabelControl.Width = ClientSize.Width;
             GroupLabelControl.Height = ControlLayout.GroupLabelSize.Height;
-            GroupLabelControl.Refresh();
+            GroupLabelControl.Invalidate();
         }
 
         private void UpdateScrollableSize()

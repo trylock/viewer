@@ -54,7 +54,7 @@
             this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.StatusLabel = new System.Windows.Forms.Label();
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.GridView = new Viewer.UI.Images.GridView();
+            this._thumbnailGridView = new Viewer.UI.Images.ThumbnailGridView();
             this.HistoryView = new Viewer.UI.Images.HistoryView();
             this.MoveTimer = new System.Windows.Forms.Timer(this.components);
             this.ItemContextMenu.SuspendLayout();
@@ -233,20 +233,20 @@
             // 
             // GridView
             // 
-            this.GridView.AllowDrop = true;
-            this.GridView.AutoScroll = true;
-            this.GridView.ContextMenuStrip = this.ItemContextMenu;
-            this.GridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GridView.Items = null;
-            this.GridView.ItemSize = new System.Drawing.Size(0, 0);
-            this.GridView.Location = new System.Drawing.Point(0, 29);
-            this.GridView.Margin = new System.Windows.Forms.Padding(2);
-            this.GridView.Name = "GridView";
-            this.GridView.NameHeight = 30;
-            this.GridView.NameSpace = 5;
-            this.GridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.GridView.Size = new System.Drawing.Size(626, 324);
-            this.GridView.TabIndex = 2;
+            this._thumbnailGridView.AllowDrop = true;
+            this._thumbnailGridView.AutoScroll = true;
+            this._thumbnailGridView.ContextMenuStrip = this.ItemContextMenu;
+            this._thumbnailGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._thumbnailGridView.Items = null;
+            this._thumbnailGridView.ItemSize = new System.Drawing.Size(0, 0);
+            this._thumbnailGridView.Location = new System.Drawing.Point(0, 29);
+            this._thumbnailGridView.Margin = new System.Windows.Forms.Padding(2);
+            this._thumbnailGridView.Name = "GridView";
+            this._thumbnailGridView.NameHeight = 30;
+            this._thumbnailGridView.NameSpace = 5;
+            this._thumbnailGridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this._thumbnailGridView.Size = new System.Drawing.Size(626, 324);
+            this._thumbnailGridView.TabIndex = 2;
             // 
             // HistoryView
             // 
@@ -272,7 +272,7 @@
             this.ClientSize = new System.Drawing.Size(626, 353);
             this.ContextMenuStrip = this.ItemContextMenu;
             this.Controls.Add(this.StatusLabel);
-            this.Controls.Add(this.GridView);
+            this.Controls.Add(this._thumbnailGridView);
             this.Controls.Add(this.HistoryView);
             this.Controls.Add(this.NameTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -310,7 +310,7 @@
         private System.Windows.Forms.ContextMenuStrip PickDirectoryContextMenu;
         private System.Windows.Forms.ToolStripMenuItem PasteMenuItem;
         private System.Windows.Forms.ToolStripMenuItem UpMenuItem;
-        private GridView GridView;
+        private ThumbnailGridView _thumbnailGridView;
         private HistoryView HistoryView;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.Timer MoveTimer;

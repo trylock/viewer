@@ -1,6 +1,6 @@
 ﻿namespace Viewer.UI.Images
 {
-    partial class GridView
+    partial class ThumbnailGridView
     {
         /// <summary> 
         /// Required designer variable.
@@ -38,7 +38,7 @@
             this.AutoScroll = true;
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "GridView";
+            this.Name = "ThumbnailGridView";
             this.Size = new System.Drawing.Size(551, 406);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridView_Paint);
             this.Resize += new System.EventHandler(this.GridView_Resize);

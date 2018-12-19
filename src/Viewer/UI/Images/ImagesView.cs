@@ -23,7 +23,7 @@ namespace Viewer.UI.Images
 {
     internal partial class ImagesView : WindowView, IImagesView
     {
-        private GridView _view;
+        private ThumbnailGridView _view;
         
         public ImagesView()
         {
@@ -32,13 +32,13 @@ namespace Viewer.UI.Images
             PreviousMenuItem.ShortcutKeyDisplayString = "Alt + Left, MB4";
             NextMenuItem.ShortcutKeyDisplayString = "Alt + Right, MB5";
             
-            RegisterView(GridView);
-            _view = GridView;
+            RegisterView(_thumbnailGridView);
+            _view = _thumbnailGridView;
 
             ViewerForm.Theme.ApplyTo(PickDirectoryContextMenu);
         }
 
-        private void RegisterView(GridView view)
+        private void RegisterView(ThumbnailGridView view)
         {
             view.DragDrop += GridView_DragDrop;
             view.DragOver += GridView_DragOver;
@@ -603,8 +603,8 @@ namespace Viewer.UI.Images
             // update scroll position
             double speed = Math.Sign(mouseLocation.Y) * deltaTime.TotalMilliseconds;
             speed *= MathUtils.Lerp(0.1, 10, distance * distance);
-            GridView.AutoScrollPosition = new Point(0, 
-                -GridView.AutoScrollPosition.Y + (int) speed);
+            _thumbnailGridView.AutoScrollPosition = new Point(0, 
+                -_thumbnailGridView.AutoScrollPosition.Y + (int) speed);
 
             // trigger an artificial MouseMove event to force the selection to update
             var uiCoords = _view.UnprojectLocation(mouseLocation);

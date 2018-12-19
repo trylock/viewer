@@ -21,8 +21,10 @@ namespace Viewer.UI.Images
 {
     /// <summary>
     /// The sole purpose of this control is to draw whichever layout it gets.
+    /// Logic of this control is handeled entirely by its parent control
+    /// (<see cref="ImagesView"/>)
     /// </summary>
-    internal partial class GridView : UserControl
+    internal partial class ThumbnailGridView : UserControl
     {
         /// <summary>
         /// Height of the area for file name
@@ -116,7 +118,7 @@ namespace Viewer.UI.Images
             }
         }
 
-        public GridView()
+        public ThumbnailGridView()
         {
             InitializeComponent();
 

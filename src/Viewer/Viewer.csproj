@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -78,6 +78,7 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.4.5.8\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
     </Reference>
@@ -215,11 +216,11 @@
     </Compile>
     <Compile Include="UI\Forms\ButtonCell.cs" />
     <Compile Include="UI\Forms\DateTimeCell.cs" />
-    <Compile Include="UI\Images\GridView.cs">
+    <Compile Include="UI\Images\ThumbnailGridView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Images\GridView.Designer.cs">
-      <DependentUpon>GridView.cs</DependentUpon>
+    <Compile Include="UI\Images\ThumbnailGridView.Designer.cs">
+      <DependentUpon>ThumbnailGridView.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Images\ImagesComponent.cs" />
     <Compile Include="UI\Images\LazyThumbnail.cs" />
@@ -317,8 +318,8 @@
     <EmbeddedResource Include="UI\Suggestions\SuggestionView.resx">
       <DependentUpon>SuggestionView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Images\GridView.resx">
-      <DependentUpon>GridView.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Images\ThumbnailGridView.resx">
+      <DependentUpon>ThumbnailGridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Images\HistoryView.resx">
       <DependentUpon>HistoryView.cs</DependentUpon>

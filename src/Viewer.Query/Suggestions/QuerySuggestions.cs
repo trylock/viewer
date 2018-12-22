@@ -77,6 +77,7 @@ namespace Viewer.Query.Suggestions
                 new StaticTokenSuggestionProvider(QueryLexer.SELECT, keyword, new []{ "select" }),
                 new StaticTokenSuggestionProvider(QueryLexer.WHERE, keyword, new []{ "where" }),
                 new StaticTokenSuggestionProvider(QueryLexer.ORDER, keyword, new []{ "order by" }),
+                new StaticTokenSuggestionProvider(QueryLexer.GROUP, keyword, new []{ "group by" }),
                 new StaticTokenSuggestionProvider(QueryLexer.BY, keyword, new []{ "by" }),
                 new StaticTokenSuggestionProvider(QueryLexer.UNION_EXCEPT, keyword, new []{ "union", "except" }),
                 new StaticTokenSuggestionProvider(QueryLexer.INTERSECT, keyword, new []{ "intersect" }),

@@ -353,7 +353,11 @@ namespace Viewer.UI.Images
 
         #endregion
 
-        private Task _backProcessingTask = Task.CompletedTask;
+        /// <summary>
+        /// Current task which processes all changes to the query result set (sorting,
+        /// grouping items etc.).
+        /// </summary>
+        private Task _batchProcessingTask = Task.CompletedTask;
 
         /// <summary>
         /// Minimal number of requests after which a processing thread is created.
@@ -370,16 +374,16 @@ namespace Viewer.UI.Images
 
         private Task TryProcessChangesAsync()
         {
-            if (!_backProcessingTask.IsCompleted)
+            if (!_batchProcessingTask.IsCompleted)
             {
                 return null;
             }
 
-            _backProcessingTask = _backProcessingTask.ContinueWith(_ =>
+            _batchProcessingTask = _batchProcessingTask.ContinueWith(_ =>
             {
                 ProcessRequests();
             });
-            return _backProcessingTask;
+            return _batchProcessingTask;
         }
 
         /// <summary>
@@ -393,10 +397,11 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Evaluate the query on a differet thread. Found entities will be added to a waiting queue.
-        /// Use <see cref="Update"/> to get all entities loaded so far.
+        /// Evaluate the query on a differet thread. Found entities will be added to a waiting
+        /// queue. Use <see cref="Update"/> to get all entities loaded so far.
         /// </summary>
         /// <returns>Task finished when the whole evaluation ends</returns>
+        /// <seealso cref="Run"/>
         public Task RunAsync()
         {
             LoadTask = Task.Factory.StartNew(
@@ -409,12 +414,15 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Load the query synchronously. <see cref="Cancellation"/> is used for cancellation token,
-        /// <see cref="Progress"/> is used for progress. See <see cref="RunAsync"/>.
+        /// Load the query synchronously. <see cref="Cancellation"/> is used for cancellation
+        /// token, <see cref="Progress"/> is used for reporting progress.
         /// </summary>
+        /// <seealso cref="RunAsync"/>
         public void Run()
         {
-            var progress = AggregateProgress.Create(Progress, new FolderQueryProgress(_fileWatcher));
+            var progress = AggregateProgress.Create(
+                Progress, 
+                new FolderQueryProgress(_fileWatcher));
             var options = new ExecutionOptions
             {
                 CancellationToken = Cancellation.Token,
@@ -508,9 +516,11 @@ namespace Viewer.UI.Images
 
         private void ProcessChanges(RequestIndex index)
         {
-            // When the UI thread acquires the lock, it should update the front buffer only if
-            // there has been changes. Otherwise, it would block the UI for too long on each update.
-            _isBackBufferDirty = index.Modifications.Count > 0 || index.Insertions.Count > 0;
+            // When the UI thread acquires the lock, it should update the front
+            // buffer only if there has been changes. Otherwise, it would block
+            // the UI for too long on each update.
+            _isBackBufferDirty = index.Modifications.Count > 0 || 
+                                 index.Insertions.Count > 0;
             
             // apply changes to the data in the back buffer
             if (index.Modifications.Count > 0)

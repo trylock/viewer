@@ -144,11 +144,17 @@ namespace Viewer.UI.Images.Layout
             get => _clientBounds;
             set
             {
+                var oldBounds = _clientBounds;
                 _clientBounds = new Rectangle(
                     value.Location,
                     new Size(Math.Max(value.Width, 0), Math.Max(value.Height, 0))
                 );
-                OnLayoutChanged();
+
+                // only update the layout if the bounds have changed
+                if (_clientBounds != oldBounds)
+                {
+                    OnLayoutChanged();
+                }
             }
         }
 

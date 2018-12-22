@@ -129,7 +129,7 @@ namespace Viewer.QueryRuntime
         public BaseValue Call(IExecutionContext arguments)
         {
             var time = arguments.Get<DateTimeValue>(0);
-            return new StringValue(time.Value.Humanize());
+            return new StringValue(time.Value?.Humanize());
         }
     }
 }

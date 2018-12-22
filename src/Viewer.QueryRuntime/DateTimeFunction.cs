@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Data;
 using Viewer.Query;
+using Humanizer;
 
 namespace Viewer.QueryRuntime
 {
@@ -16,13 +17,14 @@ namespace Viewer.QueryRuntime
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This function expects this format: <c>yyyy-M-d H:m:s</c> (see list below). The time is
-    /// assumed to be in the timezone of the local computer. Leading zeroes in month, day, hour,
-    /// minute and second are optional (i.e., "2018-08-01 09-05-01" is the same as "2018-8-1 9-5-1").
+    /// This function expects following format: <c>yyyy-M-d H:m:s</c> (see list below). The time
+    /// is assumed to be in the timezone of the local computer. Leading zeroes in month, day,
+    /// hour, minute and second are optional (i.e., <c>"2018-08-01 09-05-01"</c> is the same as
+    /// <c>"2018-8-1 9-5-1"</c>).
     /// </para>
     /// <para>
-    /// Moverover, a special string <c>now</c> (case insensitive) can be passed to the function and
-    /// it returns current (local) time.
+    /// Moverover, a special string <c>now</c> (case insensitive) can be passed to the function
+    /// and it returns current (local) time.
     /// </para>
     /// <list type="bullet">
     ///     <item>
@@ -107,5 +109,27 @@ namespace Viewer.QueryRuntime
     public sealed class DateFunction : FunctionAlias<DateTimeFunction>
     {
         public override string Name => "date";
+    }
+
+    /// <summary>
+    /// Format a <see cref="DateTimeValue"/> as a human readable string. This function is
+    /// suitable as an operator in the group by clause.
+    /// </summary>
+    /// <example>
+    /// If you run the function for <c>DateTime.Now.AddDays(-18)</c>, it will return
+    /// <c>"18 days ago"</c>
+    /// </example>
+    [Export(typeof(IFunction))]
+    public class TimeElapsedFunction : IFunction
+    {
+        public string Name => "TimeElapsed";
+
+        public IReadOnlyList<TypeId> Arguments => new[] { TypeId.DateTime };
+
+        public BaseValue Call(IExecutionContext arguments)
+        {
+            var time = arguments.Get<DateTimeValue>(0);
+            return new StringValue(time.Value.Humanize());
+        }
     }
 }

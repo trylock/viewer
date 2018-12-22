@@ -17,7 +17,7 @@ using Viewer.UI.Images;
 namespace ViewerTest.UI.Images
 {
     [TestClass]
-    public class LazyImageTest
+    public class LazyThumbnailTest
     {
         private IEntity _entity;
         private Size _thumbnailSize;
@@ -222,6 +222,57 @@ namespace ViewerTest.UI.Images
                 Times.Once);
             _thumbnailLoader.Verify(mock => mock.LoadNativeThumbnailAsync(_entity, size, CancellationToken.None),
                 Times.Once);
+        }
+
+        [TestMethod]
+        public void GetCurrent_UsingThumbnailIsSafeAfterDisposing()
+        {
+            var image = new Bitmap(1, 1);
+            var task = Task.FromResult(new Thumbnail(image, image.Size));
+            _thumbnailLoader
+                .Setup(mock => mock.LoadEmbeddedThumbnailAsync(_entity, _thumbnailSize, It.IsAny<CancellationToken>()))
+                .Returns(task);
+
+            var current = _thumbnail.GetCurrent(_thumbnailSize);
+            current = _thumbnail.GetCurrent(_thumbnailSize);
+
+            Assert.AreEqual(image, current);
+            _thumbnail.Dispose();
+
+            _thumbnailLoader
+                .Setup(mock => mock.LoadEmbeddedThumbnailAsync(_entity, _thumbnailSize, It.IsAny<CancellationToken>()))
+                .Returns(Task.Delay(50000).ContinueWith(_ => new Thumbnail(image, image.Size)));
+
+            current = _thumbnail.GetCurrent(_thumbnailSize);
+            Assert.AreEqual(current, PhotoThumbnail.Default);
+        }
+
+        [TestMethod]
+        public async Task GetCurrent_DisposeDuringLoading()
+        {
+            var image = new Bitmap(1, 1);
+            var task = Task.Delay(500).ContinueWith(_ => new Thumbnail(image, image.Size));
+            _thumbnailLoader
+                .Setup(mock => mock.LoadEmbeddedThumbnailAsync(_entity, _thumbnailSize, It.IsAny<CancellationToken>()))
+                .Returns(task);
+
+            var current = _thumbnail.GetCurrent(_thumbnailSize);
+
+            Assert.AreEqual(PhotoThumbnail.Default, current);
+            _thumbnail.Dispose();
+
+            var newImage = new Bitmap(1, 1);
+            _thumbnailLoader
+                .Setup(mock => mock.LoadEmbeddedThumbnailAsync(_entity, _thumbnailSize, It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(new Thumbnail(newImage, newImage.Size)));
+
+            current = _thumbnail.GetCurrent(_thumbnailSize);
+            Assert.AreEqual(newImage, current);
+
+            await task;
+
+            // make sure the image has been disposed
+            Assert.ThrowsException<ArgumentException>(() => image.Clone());
         }
     }
 }

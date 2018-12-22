@@ -195,7 +195,9 @@ namespace Viewer.UI.Images
             return _current;
         }
 
-        private async Task<Thumbnail> LoadNativeThumbnailDelayedAsync(Size thumbnailAreaSize, TimeSpan delay)
+        private async Task<Thumbnail> LoadNativeThumbnailDelayedAsync(
+            Size thumbnailAreaSize, 
+            TimeSpan delay)
         {
             await Task.Delay(delay, _cancellationToken).ConfigureAwait(false);
             return await LoadNativeThumbnailAsync(thumbnailAreaSize);
@@ -203,7 +205,10 @@ namespace Viewer.UI.Images
 
         private Task<Thumbnail> LoadEmbeddedThumbnailAsync(Size thumbnailAreaSize)
         {
-            return _thumbnailLoader.LoadEmbeddedThumbnailAsync(_entity, thumbnailAreaSize, _cancellationToken);
+            return _thumbnailLoader.LoadEmbeddedThumbnailAsync(
+                _entity, 
+                thumbnailAreaSize, 
+                _cancellationToken);
         }
 
         private Task<Thumbnail> LoadNativeThumbnailAsync(Size thumbnailAreaSize)
@@ -220,7 +225,10 @@ namespace Viewer.UI.Images
                    originalImageSize.Height >= thumbnailAreaSize.Height;
         }
         
-        public PhotoThumbnail(IThumbnailLoader thumbnailLoader, IEntity entity, CancellationToken cancellationToken)
+        public PhotoThumbnail(
+            IThumbnailLoader thumbnailLoader, 
+            IEntity entity, 
+            CancellationToken cancellationToken)
         {
             _cancellationToken = cancellationToken;
             _thumbnailLoader = thumbnailLoader;
@@ -259,6 +267,8 @@ namespace Viewer.UI.Images
             {
                 current?.Dispose();
             }
+
+            _current = Default;
         }
 
         private void DisposeLoading()
@@ -270,6 +280,7 @@ namespace Viewer.UI.Images
                     p.Result.ThumbnailImage?.Dispose();
                 }
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            _loadingType = LoadingType.None;
         }
     }
 }

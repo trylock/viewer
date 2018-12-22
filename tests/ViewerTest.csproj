@@ -168,7 +168,7 @@
     <Compile Include="UI\Images\Layout\VerticalGridLayoutTest.cs" />
     <Compile Include="UI\Images\SelectionStateTest.cs" />
     <Compile Include="UI\Images\ThumbnailLoaderTest.cs" />
-    <Compile Include="UI\Images\LazyImageTest.cs" />
+    <Compile Include="UI\Images\LazyThumbnailTest.cs" />
     <Compile Include="UI\Images\QueryEvaluatorTest.cs" />
     <Compile Include="Images\ThumbnailGeneratorTest.cs" />
     <Compile Include="UI\Presentation\ImageWindowTest.cs" />

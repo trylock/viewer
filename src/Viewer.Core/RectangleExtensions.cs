@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace Viewer.Core
         }
 
         /// <summary>
-        /// Move rectangle <paramref name="rectangle"/> in <paramref name="container"/>
+        /// Move rectangle <paramref name="rectangle"/> to <paramref name="container"/>
         /// </summary>
         /// <param name="rectangle"></param>
         /// <param name="container"></param>
@@ -90,6 +91,61 @@ namespace Viewer.Core
                 container.Y - delta.Y,
                 container.Width,
                 container.Height);
+        }
+        
+        /// <summary>
+        /// Compute set minus on 2 rectangles.
+        /// </summary>
+        /// <param name="self">Left hand side of the minus operator</param>
+        /// <param name="other">Right hand size of the minus operator</param>
+        /// <returns>
+        /// Area which is in <paramref name="self"/> but not in <paramref name="other"/>.
+        /// It is returned as list of rectangles. At most 4 rectangles will be returned.
+        /// </returns>
+        public static IEnumerable<Rectangle> Except(
+            this Rectangle self, 
+            Rectangle other)
+        {
+            // compute intersection
+            var intersection = Rectangle.Intersect(self, other);
+            if (intersection.IsEmpty || other.Size.IsEmpty)
+            {
+                yield return self;
+                yield break;
+            }
+
+            var left = Rectangle.FromLTRB(self.Left, self.Top, intersection.Left, self.Bottom);
+            var right = Rectangle.FromLTRB(intersection.Right, self.Top, self.Right, self.Bottom);
+            var bottom = Rectangle.FromLTRB(
+                intersection.Left, 
+                intersection.Bottom, 
+                intersection.Right, 
+                self.Bottom);
+            var top = Rectangle.FromLTRB(
+                intersection.Left, 
+                self.Top, 
+                intersection.Right, 
+                intersection.Top);
+
+            if (left.Area() > 0)
+            {
+                yield return left;
+            }
+
+            if (right.Area() > 0)
+            {
+                yield return right;
+            }
+
+            if (top.Area() > 0)
+            {
+                yield return top;
+            }
+
+            if (bottom.Area() > 0)
+            {
+                yield return bottom;
+            }
         }
     }
 }

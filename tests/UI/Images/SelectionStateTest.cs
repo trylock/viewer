@@ -109,6 +109,7 @@ namespace ViewerTest.UI.Images
             _selection
                 .SetupSequence(mock => mock.GetEnumerator())
                 .Returns(new List<IEntity>{}.GetEnumerator())
+                .Returns(new List<IEntity> { items[0].Data }.GetEnumerator())
                 .Returns(new List<IEntity> { items[0].Data }.GetEnumerator());
 
             // click on the first item to select it

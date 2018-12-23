@@ -368,7 +368,13 @@ namespace Viewer.UI.Images
             else
             {
                 CaptureActiveItem(item);
-                ProcessItemSelection(item, e.Button.HasFlag(MouseButtons.Left));
+
+                if (item.State != EntityViewState.Selected ||
+                    _view.ModifierKeyState.HasFlag(Keys.Control) ||
+                    _view.ModifierKeyState.HasFlag(Keys.Shift))
+                {
+                    ProcessItemSelection(item, e.Button.HasFlag(MouseButtons.Left));
+                }
             }
         }
 
@@ -400,6 +406,14 @@ namespace Viewer.UI.Images
                 if (item != null && !_view.ModifierKeyState.HasFlag(Keys.Shift))
                 {
                     CaptureAnchorItem(item);
+                }
+
+                if (item != null && 
+                    item.State == EntityViewState.Selected && 
+                    _selection.Count() > 1 &&
+                    _view.ModifierKeyState == 0)
+                {
+                    ProcessItemSelection(item, true);
                 }
             }
         }

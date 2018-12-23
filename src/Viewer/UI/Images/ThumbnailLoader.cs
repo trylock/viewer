@@ -52,20 +52,21 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="entity">Entity for which you want to load an embedded thumbnail</param>
         /// <param name="thumbnailAreaSize">
-        ///     Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this area.
+        /// Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this
+        /// area.
         /// </param>
         /// <param name="cancellationToken">Cancellation token of the load operation.</param>
         /// <returns>
-        ///     <para>Task finished when the thumbnail is loaded.</para>
-        ///     <para>
-        ///         If <paramref name="entity"/> does not have an embedded thumbnail, this function
-        ///         returns immediately with a completed task where <see cref="Thumbnail.ThumbnailImage"/>
-        ///         is null and <see cref="Thumbnail.OriginalSize"/> is <see cref="Size.Empty"/>.
-        ///     </para>
+        /// <para>Task finished when the thumbnail is loaded.</para>
+        /// <para>
+        /// If <paramref name="entity"/> does not have an embedded thumbnail, this function
+        /// returns immediately with a completed task where <see cref="Thumbnail.ThumbnailImage"/>
+        /// is null and <see cref="Thumbnail.OriginalSize"/> is <see cref="Size.Empty"/>.
+        /// </para>
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
         /// <seealso cref="IImageLoader.LoadThumbnailAsync(IEntity, CancellationToken)">
-        ///     For the list of possible exceptions returned by the task.
+        /// For the list of possible exceptions returned by the task.
         /// </seealso>
         /// <seealso cref="IThumbnailGenerator.GetThumbnail">
         ///     For the list of possible exceptions returned by the task.
@@ -89,12 +90,13 @@ namespace Viewer.UI.Images
         /// </remarks>
         /// <param name="entity">Entity whose file will be loaded.</param>
         /// <param name="thumbnailAreaSize">
-        ///     Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this area.
+        /// Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this area.
         /// </param>
         /// <param name="cancellationToken">Cancellation token of the load operation.</param>
         /// <returns>
-        ///     Task finished when the thumbnail is loaded. See <see cref="IImageLoader.LoadImage(IEntity)"/>
-        ///     for the list of possible exceptions returned by this task.
+        /// Task finished when the thumbnail is loaded. See
+        /// <see cref="IImageLoader.LoadImage(IEntity)"/> for the list of possible exceptions
+        /// returned by this task.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
         /// <seealso cref="IFileSystem.ReadAllBytes"/>
@@ -131,9 +133,11 @@ namespace Viewer.UI.Images
         private Task _loadQueue = Task.CompletedTask;
 
         /// <summary>
-        /// Degree of parallelism for tasks which decode jpeg images and generate thumbnails from them.
+        /// Degree of parallelism for tasks which decode jpeg images and generate thumbnails from
+        /// them.
         /// </summary>
-        private readonly SemaphoreSlim _loaderCount = new SemaphoreSlim(Environment.ProcessorCount);
+        private readonly SemaphoreSlim _loaderCount = 
+            new SemaphoreSlim(Environment.ProcessorCount);
 
         /// <summary>
         /// Request to generate a thumbnail from the original image of <see cref="Entity"/>.
@@ -148,7 +152,10 @@ namespace Viewer.UI.Images
             public IEntity Entity { get; }
             public Size ThumbnailAreaSize { get; }
 
-            public LoadRequest(IEntity entity, Size thumbnailAreaSize, CancellationToken cancellationToken)
+            public LoadRequest(
+                IEntity entity, 
+                Size thumbnailAreaSize, 
+                CancellationToken cancellationToken)
             {
                 Entity = entity;
                 ThumbnailAreaSize = thumbnailAreaSize;
@@ -157,8 +164,8 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
-        /// Quality of thumbnails saved to the cache storage. This number has to be between 0 and 100.
-        /// See <see cref="SKPixmap.Encode(SKWStream, SKBitmap, SKEncodedImageFormat, int)"/>
+        /// Quality of thumbnails saved to the cache storage. This number has to be between 0 and
+        /// 100. See <see cref="SKPixmap.Encode(SKWStream, SKBitmap, SKEncodedImageFormat, int)"/>
         /// </summary>
         public const int SavedThumbnailQuaity = 75;
 
@@ -205,7 +212,8 @@ namespace Viewer.UI.Images
                 // the entity does have an embedded thumbnail
                 using (var thumbnail = _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize))
                 {
-                    return new Thumbnail(thumbnail.ToBitmap(), new Size(image.Width, image.Height));
+                    var imageSize = new Size(image.Width, image.Height);
+                    return new Thumbnail(thumbnail.ToBitmap(), imageSize);
                 }
             }
         }
@@ -223,7 +231,8 @@ namespace Viewer.UI.Images
 
             // pick next load request once the previous request has finished
             // note: we intentionally don't wait for the task returned by ProcessNextRequestAsync()
-            _loadQueue = _loadQueue.ContinueWith(_ => ProcessNextRequestAsync(), TaskContinuationOptions.None);
+            _loadQueue = _loadQueue.ContinueWith(_ => ProcessNextRequestAsync(), 
+                TaskContinuationOptions.None);
             
             return task;
         }
@@ -294,11 +303,13 @@ namespace Viewer.UI.Images
             {
                 req.Cancellation.ThrowIfCancellationRequested();
 
-                using (var thumbnail = _thumbnailGenerator.GetThumbnail(original, req.ThumbnailAreaSize))
+                using (var thumbnail = _thumbnailGenerator.GetThumbnail(
+                    original, req.ThumbnailAreaSize))
                 {
                     req.Cancellation.ThrowIfCancellationRequested();
                     SaveThumbnail(req.Entity, thumbnail);
-                    var result = new Thumbnail(thumbnail.ToBitmap(), new Size(original.Width, original.Height));
+                    var originalSize = new Size(original.Width, original.Height);
+                    var result = new Thumbnail(thumbnail.ToBitmap(), originalSize);
                     return result;
                 }
             }

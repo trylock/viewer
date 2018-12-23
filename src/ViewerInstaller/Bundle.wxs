@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
-  <Bundle Name="Viewer" Version="1.2.1.0" Manufacturer="trylock" UpgradeCode="2c734e2d-7905-4ce4-b183-4163c29e3e0a">
+  <Bundle Name="Viewer" Version="1.3.0.0" Manufacturer="trylock" UpgradeCode="2c734e2d-7905-4ce4-b183-4163c29e3e0a">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
       <bal:WixStandardBootstrapperApplication LicenseUrl="" />
     </BootstrapperApplicationRef>

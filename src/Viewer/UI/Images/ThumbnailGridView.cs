@@ -194,12 +194,38 @@ namespace Viewer.UI.Images
 
         public EntityView FindFirstItemAbove(EntityView currentItem)
         {
-            throw new NotImplementedException();
+            if (ControlLayout.Groups.Count <= 0)
+            {
+                return currentItem;
+            }
+
+            // + 1 for current item
+            var direction = new Point(0, -ControlLayout.ViewportRowCount + 1);
+            var element = ControlLayout.FindItem(currentItem, direction);
+            if (element == null)
+            {
+                return ControlLayout.Groups[0].Items[0];
+            }
+
+            return element.Item;
         }
 
         public EntityView FindLastItemBelow(EntityView currentItem)
         {
-            throw new NotImplementedException();
+            if (ControlLayout.Groups.Count <= 0)
+            {
+                return currentItem;
+            }
+
+            // + 1 for current item
+            var direction = new Point(0, ControlLayout.ViewportRowCount - 1);
+            var element = ControlLayout.FindItem(currentItem, direction);
+            if (element == null)
+            {
+                return ControlLayout.Groups.Last().Items.Last();
+            }
+
+            return element.Item;
         }
 
         public void EnsureItemVisible(EntityView item)

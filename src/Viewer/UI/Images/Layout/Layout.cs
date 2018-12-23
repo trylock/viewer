@@ -159,6 +159,16 @@ namespace Viewer.UI.Images.Layout
         }
 
         /// <summary>
+        /// Number of columns visible in the viewport
+        /// </summary>
+        public abstract int ViewportColumnCount { get; }
+
+        /// <summary>
+        /// Number of rows visible in the viewport
+        /// </summary>
+        public abstract int ViewportRowCount { get; }
+
+        /// <summary>
         /// Negate the <see cref="GroupView.IsCollapsed"/> property.
         /// </summary>
         /// <param name="group"></param>

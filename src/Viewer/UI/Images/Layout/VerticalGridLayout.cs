@@ -45,7 +45,22 @@ namespace Viewer.UI.Images.Layout
                     (ItemSize.Width + ItemMargin.Horizontal),
                 1
             );
-        
+
+        public override int ViewportColumnCount => ColumnCount;
+
+        public override int ViewportRowCount
+        {
+            get
+            {
+                // there is always at least 1 group label visible in the viewport
+                var labelCount = GetGroupLabelsIn(ClientBounds).Count();
+                var areaForThumbnails = ClientBounds.Height + 
+                                        ItemMargin.Vertical - 
+                                        labelCount * LabelSizeWithMargin.Height;
+                return areaForThumbnails.RoundUpDiv(CellSizeWithMargin.Height);
+            }
+        }
+
         private Point GetGroupLocation(int index)
         {
             return Groups[index].View.Location;

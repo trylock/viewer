@@ -24,11 +24,13 @@ namespace Viewer.UI.Images
     {
         /// <summary>
         /// Returns currently loaded thumbnail or null if there is none. This will start loading
-        /// a new thumbnail if a better thumbnail is available. This method is non-blocking. This
-        /// method returns currently loaded image Even if a loading operation is in progress.
+        /// a new thumbnail if a better thumbnail is available. It is a non-blocking method. This
+        /// method returns currently loaded image even if a loading operation is in progress.
         /// </summary>
         /// <param name="thumbnailAreaSize">Size of the area for this thumbnail.</param>
-        /// <returns>Currently loaded thumbnail or null if no thumbnail is currently loaded.</returns>
+        /// <returns>
+        /// Currently loaded thumbnail or null if no thumbnail is currently loaded.
+        /// </returns>
         Image GetCurrent(Size thumbnailAreaSize);
     }
 
@@ -38,7 +40,9 @@ namespace Viewer.UI.Images
         /// Create lazy thumbnail for given entity
         /// </summary>
         /// <param name="entity"></param>
-        /// <param name="cancellationToken">Cancellation token used to cancel thumbnail loading tasks.</param>
+        /// <param name="cancellationToken">
+        /// Cancellation token used to cancel thumbnail loading tasks.
+        /// </param>
         /// <returns></returns>
         ILazyThumbnail Create(IEntity entity, CancellationToken cancellationToken);
     }
@@ -177,7 +181,7 @@ namespace Viewer.UI.Images
                 {
                     // check whether it has failed due to the file being opened by another process
                     var isFileBusy = _loading.Exception?.InnerExceptions
-                                         .Any(item => item.GetType() == typeof(IOException)) ?? false;
+                                     .Any(item => item.GetType() == typeof(IOException)) ?? false;
                     if (isFileBusy)
                     {
                         // retry after a set amount of time
@@ -252,7 +256,8 @@ namespace Viewer.UI.Images
         /// <inheritdoc />
         /// <summary>
         /// Dispose current and loading thumbnail images.
-        /// This does **not** cancel any pending loading operation. Use <see cref="CancellationTokenSource"/> to cancel loading operations.
+        /// This does **not** cancel any pending loading operation. Use
+        /// <see cref="CancellationTokenSource"/> to cancel loading operations.
         /// </summary>
         public void Dispose()
         {

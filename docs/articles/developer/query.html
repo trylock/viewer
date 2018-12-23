@@ -124,14 +124,14 @@
 
 <h2 id="compilation">Compilation</h2>
 <p>Expressions in the <code>where</code> part and the <code>order by</code> part of the query are compiled to a C# code using <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/">Expression Trees</a>. Since we don't know the type of an attribute, many decisions have to be made at runtime. The generated code will therefore mostly just call runtime functions. Expression trees are used mainly for convenience (no need to write an interpreter).</p>
-<p>The compiled function takes an <a class="xref" href="../../api/Viewer.Data.IEntity.html">entity</a> and returns a <a class="xref" href="../../api/Viewer.Data.BaseValue.html">value</a>. If the returned value in the <code>where</code> part of a query is null (i.e., <a class="xref" href="../../api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_IsNull">IsNull</a> is true), it is interpreted as <code>false</code> (i.e., the entity is not included in the result).</p>
+<p>The compiled function takes an <a href="xref:Viewer.Data.IEntity">entity</a> and returns a <a href="xref:Viewer.Data.BaseValue">value</a>. If the returned value in the <code>where</code> part of a query is null (i.e., <a href="xref:Viewer.Data.BaseValue#Viewer_Data_BaseValue_IsNull">IsNull</a> is true), it is interpreted as <code>false</code> (i.e., the entity is not included in the result).</p>
 <h2 id="execution">Execution</h2>
-<p>Queries are executed lazily by calling the <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Execute</a> method. It returns an enumerator which loads entities. Even queries which contain <code>UNION</code>, <code>EXCEPT</code> and <code>INTERSECT</code> operators are evaluated lazily. This is possible due to the <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Match</a> method which can determine statically (i.e., without looking at any other entity) whether or not an entity matches given query.</p>
+<p>Queries are executed lazily by calling the <a href="xref:Viewer.Query.IExecutableQuery">Execute</a> method. It returns an enumerator which loads entities. Even queries which contain <code>UNION</code>, <code>EXCEPT</code> and <code>INTERSECT</code> operators are evaluated lazily. This is possible due to the <a href="xref:Viewer.Query.IExecutableQuery">Match</a> method which can determine statically (i.e., without looking at any other entity) whether or not an entity matches given query.</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p>Returned entities are not sorted. If we were to sort the values before returning them, we would have to first find all photos.</p>
 </div>
-<p>The <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Execute</a> method supports standard cancellation and progress even though it is not an async method and it executes completely synchronously.</p>
+<p>The <a href="xref:Viewer.Query.IExecutableQuery">Execute</a> method supports standard cancellation and progress even though it is not an async method and it executes completely synchronously.</p>
 <h2 id="optimizations">Optimizations</h2>
 <p>As discussed in the section about <a href="data.html">data representation</a>, attributes are stored in custom JPEG segments. This means that whenever we want to load attributes a photo, we just have to load first few disk blocks. Usually, the number of read blocks is fairly small. In my data, it is around 10 disk blocks although this can vary based on used camera and programs which also store custom metadata to JPEG segments. Unfortunately, when we want to read many photos, the blocks are far apart since, at best, there is the encoded image data in-between 2 attribute segments. This is especially problematic on HDDs where seek time and rotational delay are included with each random access.</p>
 <h3 id="indexing">Indexing</h3>
@@ -166,7 +166,7 @@ intersection: queryFactor (INTERSECT queryFactor)*;
 queryFactor: query | LPAREN queryExpression RPAREN;
 
 // query
-query: unorderedQuery optionalOrderBy;
+query: unorderedQuery optionalOrderBy optionalGroupBy;
 
 unorderedQuery: SELECT source optionalWhere;
 
@@ -181,6 +181,9 @@ optionalOrderBy: ORDER BY orderByList | ;
 orderByList: orderByKey (PARAM_DELIMITER orderByKey)*;
 
 orderByKey: comparison DIRECTION?;
+
+// GROUP BY
+optionalGroupBy: GROUP BY predicate | ;
 
 // expressions
 predicate: conjunction (OR conjunction)*;
@@ -206,7 +209,7 @@ argumentList: comparison (PARAM_DELIMITER comparison)* | ;
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/groupby/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

@@ -72,9 +72,6 @@ namespace Viewer.Query
 
         public IQuery Finish()
         {
-            if (IsHalted)
-                return null;
-
             var query = _queries.Pop();
             Trace.Assert(query != null, "query != null");
             Trace.Assert(_queries.Count == 0, "_queries.Count == 0");
@@ -156,9 +153,6 @@ namespace Viewer.Query
 
         public void ExitQueryExpression(QueryParser.QueryExpressionContext context)
         {
-            if (IsHalted)
-                return;
-
             var operators = context.UNION_EXCEPT();
 
             CompileLeftAssociativeOperator(operators, _queries, (op, left, right) =>
@@ -186,9 +180,6 @@ namespace Viewer.Query
 
         public void ExitIntersection(QueryParser.IntersectionContext context)
         {
-            if (IsHalted)
-                return;
-
             CompileLeftAssociativeOperator(
                 context.INTERSECT(),
                 _queries, 
@@ -205,7 +196,7 @@ namespace Viewer.Query
 
         #endregion
 
-        #region Simple query (SELECT, WHERE, ORDER BY)
+        #region Simple query (SELECT, WHERE, ORDER BY, GROUP BY)
 
         // All methods in this group are either no-ops or they pop one query from the _queries
         // stack, transform it and push the transfromed query back to the _queries stack.
@@ -234,9 +225,6 @@ namespace Viewer.Query
 
         public void ExitSource(QueryParser.SourceContext context)
         {
-            if (IsHalted)
-                return;
-
             string viewIdentifier = null;
             var viewIdentifierToken = context.ID();
             if (viewIdentifierToken != null)
@@ -317,9 +305,6 @@ namespace Viewer.Query
 
         public void ExitOptionalWhere(QueryParser.OptionalWhereContext context)
         {
-            if (IsHalted)
-                return;
-
             if (context.WHERE() != null)
             {
                 var query = _queries.Pop();
@@ -334,9 +319,6 @@ namespace Viewer.Query
 
         public void ExitOptionalOrderBy(QueryParser.OptionalOrderByContext context)
         {
-            if (IsHalted)
-                return;
-
             if (context.ORDER() != null)
             {
                 var query = _queries.Pop();
@@ -357,9 +339,6 @@ namespace Viewer.Query
 
         public void ExitOrderByList(QueryParser.OrderByListContext context)
         {
-            if (IsHalted)
-                return;
-
             CompileLeftAssociativeOperator(
                 context.PARAM_DELIMITER(), 
                 _comparers, 
@@ -372,9 +351,6 @@ namespace Viewer.Query
 
         public void ExitOrderByKey(QueryParser.OrderByKeyContext context)
         {
-            if (IsHalted)
-                return;
-
             // parse direction
             var sortDirection = 1;
             var directionString = context.DIRECTION()?.Symbol.Text;
@@ -426,9 +402,6 @@ namespace Viewer.Query
 
         public void ExitPredicate(QueryParser.PredicateContext context)
         {
-            if (IsHalted)
-                return;
-
             CompileLeftAssociativeOperator(context.OR(), _expressions, 
                 (op, left, right) => 
                     new OrExpression(op.Symbol.Line, op.Symbol.Column, left, right));
@@ -440,9 +413,6 @@ namespace Viewer.Query
 
         public void ExitConjunction(QueryParser.ConjunctionContext context)
         {
-            if (IsHalted)
-                return;
-
             CompileLeftAssociativeOperator(context.AND(), _expressions,
                 (op, left, right) =>
                     new AndExpression(op.Symbol.Line, op.Symbol.Column, left, right));
@@ -454,9 +424,6 @@ namespace Viewer.Query
 
         public void ExitLiteral(QueryParser.LiteralContext context)
         {
-            if (IsHalted)
-                return;
-
             var op = context.NOT();
             if (op == null)
             {
@@ -473,9 +440,6 @@ namespace Viewer.Query
 
         public void ExitComparison(QueryParser.ComparisonContext context)
         {
-            if (IsHalted)
-                return;
-
             var opToken = context.REL_OP();
             if (opToken == null)
             {
@@ -520,9 +484,6 @@ namespace Viewer.Query
 
         public void ExitExpression(QueryParser.ExpressionContext context)
         {
-            if (IsHalted)
-                return;
-
             CompileLeftAssociativeOperator(context.ADD_SUB(), _expressions, 
                 (opNode, left, right) =>
                 {
@@ -549,9 +510,6 @@ namespace Viewer.Query
 
         public void ExitMultiplication(QueryParser.MultiplicationContext context)
         {
-            if (IsHalted)
-                return;
-
             CompileLeftAssociativeOperator(context.MULT_DIV(), _expressions,
                 (opNode, left, right) =>
                 {
@@ -579,9 +537,6 @@ namespace Viewer.Query
 
         public void ExitFactor(QueryParser.FactorContext context)
         {
-            if (IsHalted)
-                return;
-
             BaseValue constantValue = null;
 
             // parse INT
@@ -651,8 +606,6 @@ namespace Viewer.Query
                         identifier,
                         parameters));
                 }
-
-                return;
             }
 
             // otherwise, this is a subexpression => it is already on the stack
@@ -666,9 +619,6 @@ namespace Viewer.Query
         /// <param name="context"></param>
         public void EnterArgumentList(QueryParser.ArgumentListContext context)
         {
-            if (IsHalted)
-                return;
-
             _expressionsFrameStart.Push(_expressions.Count);
         }
 
@@ -738,8 +688,6 @@ namespace Viewer.Query
             return token.Text.Substring(trimStart, token.Text.Length - trimStart - trimEnd);
         }
         
-        private bool IsHalted { get; set; }
-        
         private void ReportError(int line, int column, string message)
         {
             _errorListener.OnCompilerError(line, column, message);
@@ -783,7 +731,7 @@ namespace Viewer.Query
 
         private void HaltCompilation()
         {
-            IsHalted = true;
+            throw new ParseCanceledException();
         }
     }
     

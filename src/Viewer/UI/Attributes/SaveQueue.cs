@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Viewer.Data;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.UI.Errors;
 using Viewer.UI.Tasks;
@@ -56,7 +57,7 @@ namespace Viewer.UI.Attributes
 
         public SaveState(ITaskLoader taskLoader)
         {
-            ProgressController = taskLoader.CreateLoader(Resources.SavingChanges_Label, Cancellation);
+            ProgressController = taskLoader.CreateLoader(Strings.SavingChanges_Label, Cancellation);
         }
 
         public void Dispose()

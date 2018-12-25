@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.IO;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.UI.Tasks;
 using FileNotFoundException = System.IO.FileNotFoundException;
@@ -161,7 +162,7 @@ namespace Viewer.UI.Explorer
             }
 
             var cancellation = new CancellationTokenSource();
-            var progress = _taskLoader.CreateLoader(Resources.CopyingFiles_Label, cancellation);
+            var progress = _taskLoader.CreateLoader(Strings.CopyingFiles_Label, cancellation);
             try
             {
                 await Task.Run(() =>

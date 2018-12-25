@@ -19,6 +19,7 @@ using Viewer.IO;
 using Viewer.Query;
 using Viewer.Core.UI;
 using Viewer.Data.Properties;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.UI.Explorer;
 using Viewer.UI.Forms;
@@ -278,7 +279,7 @@ namespace Viewer.UI.Images
                 if (ItemCountLabel != null)
                 {
                     var itemCount = View.Items.Sum(pair => pair.Items.Count);
-                    ItemCountLabel.Text = string.Format(Resources.ItemCount_Label, itemCount);
+                    ItemCountLabel.Text = string.Format(Strings.ItemCount_Label, itemCount);
                 }
             }
         }

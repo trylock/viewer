@@ -61,103 +61,12 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty Attribute Name.
-        /// </summary>
-        internal static string AttributeNameEmpty_Label {
-            get {
-                return ResourceManager.GetString("AttributeNameEmpty_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Attribute name must not be empty.
-        /// </summary>
-        internal static string AttributeNameEmpty_Message {
-            get {
-                return ResourceManager.GetString("AttributeNameEmpty_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon AttributesComponentIcon {
             get {
                 object obj = ResourceManager.GetObject("AttributesComponentIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clipboard Busy.
-        /// </summary>
-        internal static string ClipboardIsBusy_Label {
-            get {
-                return ResourceManager.GetString("ClipboardIsBusy_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to System clipboard cannot be opened. Try again later. System error: {0}.
-        /// </summary>
-        internal static string ClipboardIsBusy_Message {
-            get {
-                return ResourceManager.GetString("ClipboardIsBusy_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Confirm Delete.
-        /// </summary>
-        internal static string ConfirmDelete_Label {
-            get {
-                return ResourceManager.GetString("ConfirmDelete_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do you really want to delete:
-        ///{0}.
-        /// </summary>
-        internal static string ConfirmDelete_Message {
-            get {
-                return ResourceManager.GetString("ConfirmDelete_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All {0} files will be permanently deleted. Do you want to continue?.
-        /// </summary>
-        internal static string ConfirmDeleteAll_Message {
-            get {
-                return ResourceManager.GetString("ConfirmDeleteAll_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Replace file.
-        /// </summary>
-        internal static string ConfirmReplace_Label {
-            get {
-                return ResourceManager.GetString("ConfirmReplace_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File {0} already exists. Do you want to replace it?.
-        /// </summary>
-        internal static string ConfirmReplace_Message {
-            get {
-                return ResourceManager.GetString("ConfirmReplace_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copying files.
-        /// </summary>
-        internal static string CopyingFiles_Label {
-            get {
-                return ResourceManager.GetString("CopyingFiles_Label", resourceCulture);
             }
         }
         
@@ -182,57 +91,12 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Directory Not Found.
-        /// </summary>
-        internal static string DirectoryNotFound_Label {
-            get {
-                return ResourceManager.GetString("DirectoryNotFound_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Directory {0} was not found..
-        /// </summary>
-        internal static string DirectoryNotFound_Message {
-            get {
-                return ResourceManager.GetString("DirectoryNotFound_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap DirectoryThumbnail {
             get {
                 object obj = ResourceManager.GetObject("DirectoryThumbnail", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Duplicate attribute name.
-        /// </summary>
-        internal static string DuplicateAttributeName_Label {
-            get {
-                return ResourceManager.GetString("DuplicateAttributeName_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Duplicate attribute name: {0}.
-        /// </summary>
-        internal static string DuplicateAttributeName_Message {
-            get {
-                return ResourceManager.GetString("DuplicateAttributeName_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Empty.
-        /// </summary>
-        internal static string Empty_Label {
-            get {
-                return ResourceManager.GetString("Empty_Label", resourceCulture);
             }
         }
         
@@ -277,7 +141,7 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /select,&quot;{0}&quot;.
+        ///   Looks up a localized string similar to /select,.
         /// </summary>
         internal static string ExplorerOpenFolderArguments {
             get {
@@ -295,103 +159,6 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Explorer.
-        /// </summary>
-        internal static string ExplorerWindowName {
-            get {
-                return ResourceManager.GetString("ExplorerWindowName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to Move.
-        /// </summary>
-        internal static string FailedToMove_Label {
-            get {
-                return ResourceManager.GetString("FailedToMove_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Faild to move {0} to {1}. 
-        ///
-        ///{0} was not found or {1} aready exists..
-        /// </summary>
-        internal static string FailedToMove_Message {
-            get {
-                return ResourceManager.GetString("FailedToMove_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed To Open File.
-        /// </summary>
-        internal static string FailedToOpenFile_Label {
-            get {
-                return ResourceManager.GetString("FailedToOpenFile_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} 
-        ///could not be opened. 
-        ///
-        ///{1} 
-        ///
-        ///Do you want to try again?.
-        /// </summary>
-        internal static string FailedToOpenFile_Message {
-            get {
-                return ResourceManager.GetString("FailedToOpenFile_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File In Use.
-        /// </summary>
-        internal static string FileInUse_Label {
-            get {
-                return ResourceManager.GetString("FileInUse_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File {0} is open in another application..
-        /// </summary>
-        internal static string FileInUse_Message {
-            get {
-                return ResourceManager.GetString("FileInUse_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File Not Found.
-        /// </summary>
-        internal static string FileNotFound_Label {
-            get {
-                return ResourceManager.GetString("FileNotFound_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File {0} was not found..
-        /// </summary>
-        internal static string FileNotFound_Message {
-            get {
-                return ResourceManager.GetString("FileNotFound_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} ({1:N0}).
-        /// </summary>
-        internal static string Group_Label {
-            get {
-                return ResourceManager.GetString("Group_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon ImagesComponentIcon {
@@ -402,75 +169,12 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid File Name.
-        /// </summary>
-        internal static string InvalidFileName_Label {
-            get {
-                return ResourceManager.GetString("InvalidFileName_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &quot;{0}&quot; is not a valid file name. File name must not be empty and it must not contain characters: {1}.
-        /// </summary>
-        internal static string InvalidFileName_Message {
-            get {
-                return ResourceManager.GetString("InvalidFileName_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Path must not be empty..
-        /// </summary>
-        internal static string InvalidPath_Empty_Message {
-            get {
-                return ResourceManager.GetString("InvalidPath_Empty_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid Path.
-        /// </summary>
-        internal static string InvalidPath_Label {
-            get {
-                return ResourceManager.GetString("InvalidPath_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} is not a valid path..
-        /// </summary>
-        internal static string InvalidPath_Message {
-            get {
-                return ResourceManager.GetString("InvalidPath_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0:N0} items .
-        /// </summary>
-        internal static string ItemCount_Label {
-            get {
-                return ResourceManager.GetString("ItemCount_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ItemCountStatus {
             get {
                 object obj = ResourceManager.GetObject("ItemCountStatus", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to %userprofile%/Documents/Viewer/layout.xml.
-        /// </summary>
-        internal static string LayoutFilePath {
-            get {
-                return ResourceManager.GetString("LayoutFilePath", resourceCulture);
             }
         }
         
@@ -495,39 +199,12 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading ....
-        /// </summary>
-        internal static string Loading_Label {
-            get {
-                return ResourceManager.GetString("Loading_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap MessageIcon {
             get {
                 object obj = ResourceManager.GetObject("MessageIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to BUTTON4.
-        /// </summary>
-        internal static string MouseButton4_Label {
-            get {
-                return ResourceManager.GetString("MouseButton4_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to BUTTON5.
-        /// </summary>
-        internal static string MouseButton5_Label {
-            get {
-                return ResourceManager.GetString("MouseButton5_Label", resourceCulture);
             }
         }
         
@@ -542,53 +219,6 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path too long..
-        /// </summary>
-        internal static string PathTooLong_Label {
-            get {
-                return ResourceManager.GetString("PathTooLong_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Path is too long:
-        ///
-        ///{0}.
-        /// </summary>
-        internal static string PathTooLong_Message {
-            get {
-                return ResourceManager.GetString("PathTooLong_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} / {1}.
-        /// </summary>
-        internal static string PresentationPosition_Label {
-            get {
-                return ResourceManager.GetString("PresentationPosition_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} ({1}%).
-        /// </summary>
-        internal static string Progess_Title {
-            get {
-                return ResourceManager.GetString("Progess_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}% complete ({1} / {2}).
-        /// </summary>
-        internal static string Progress_Label {
-            get {
-                return ResourceManager.GetString("Progress_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon QueryComponentIcon {
@@ -599,39 +229,12 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Query result.
-        /// </summary>
-        internal static string QueryResultWindowName {
-            get {
-                return ResourceManager.GetString("QueryResultWindowName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Refresh {
             get {
                 object obj = ResourceManager.GetObject("Refresh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File In Use.
-        /// </summary>
-        internal static string RetryFileInUse_Label {
-            get {
-                return ResourceManager.GetString("RetryFileInUse_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File is opened by another application and cannot be opened. Please close the external application and try again..
-        /// </summary>
-        internal static string RetryFileInUse_Message {
-            get {
-                return ResourceManager.GetString("RetryFileInUse_Message", resourceCulture);
             }
         }
         
@@ -666,48 +269,12 @@ namespace Viewer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as View ....
-        /// </summary>
-        internal static string SaveAsView_Label {
-            get {
-                return ResourceManager.GetString("SaveAsView_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Saving Changes.
-        /// </summary>
-        internal static string SavingChanges_Label {
-            get {
-                return ResourceManager.GetString("SavingChanges_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap SearchStatus {
             get {
                 object obj = ResourceManager.GetObject("SearchStatus", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0:N0} items selected .
-        /// </summary>
-        internal static string SelectedItemCount_Label {
-            get {
-                return ResourceManager.GetString("SelectedItemCount_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Viewer.xml.
-        /// </summary>
-        internal static string SettingsFilePath {
-            get {
-                return ResourceManager.GetString("SettingsFilePath", resourceCulture);
             }
         }
         
@@ -728,33 +295,6 @@ namespace Viewer.Properties {
             get {
                 object obj = ResourceManager.GetObject("ThumbnailSize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unauthorized access.
-        /// </summary>
-        internal static string UnauthorizedAccess_Label {
-            get {
-                return ResourceManager.GetString("UnauthorizedAccess_Label", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You don&apos;t have permission to access: {0}.
-        /// </summary>
-        internal static string UnauthorizedAccess_Message {
-            get {
-                return ResourceManager.GetString("UnauthorizedAccess_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Version: {0}.
-        /// </summary>
-        internal static string Version_Label {
-            get {
-                return ResourceManager.GetString("Version_Label", resourceCulture);
             }
         }
         

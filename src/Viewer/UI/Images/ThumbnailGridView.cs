@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using Viewer.Core;
 using Viewer.Data;
 using Viewer.Images;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.UI.Images.Layout;
 
@@ -382,7 +383,7 @@ namespace Viewer.UI.Images
             Group group = element.Item;
 
             var name = group.Key.IsNull ? "Default" : group.Key.ToString(CultureInfo.CurrentCulture);
-            var label = string.Format(Resources.Group_Label, name, group.Items.Count);
+            var label = string.Format(Strings.Group_Label, name, group.Items.Count);
             
             PointF offset = new PointF(0, 0);
             using (var iconPen = new Pen(Color.FromArgb(unchecked((int)0xFF6d6d8d))))

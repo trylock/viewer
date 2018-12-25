@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Localization;
 using Viewer.Properties;
 
 namespace Viewer.UI.About
@@ -19,7 +20,7 @@ namespace Viewer.UI.About
         {
             InitializeComponent();
 
-            VersionLabel.Text = string.Format(Resources.Version_Label, Assembly.GetExecutingAssembly().GetName().Version);
+            VersionLabel.Text = string.Format(Strings.Version_Label, Assembly.GetExecutingAssembly().GetName().Version);
         }
 
         private void Icon8Link_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

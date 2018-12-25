@@ -121,105 +121,20 @@
   <data name="ErrorIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ErrorIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ExplorerWindowName" xml:space="preserve">
-    <value>Explorer</value>
-  </data>
   <data name="MessageIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MessageIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ConfirmDelete_Label" xml:space="preserve">
-    <value>Confirm Delete</value>
-  </data>
-  <data name="DirectoryNotFound_Label" xml:space="preserve">
-    <value>Directory Not Found</value>
   </data>
   <data name="DefaultThumbnail" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DefaultThumbnail.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DirectoryNotFound_Message" xml:space="preserve">
-    <value>Directory {0} was not found.</value>
-  </data>
-  <data name="UnauthorizedAccess_Label" xml:space="preserve">
-    <value>Unauthorized access</value>
-  </data>
   <data name="RightArrowIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RightArrowIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Progress_Label" xml:space="preserve">
-    <value>{0}% complete ({1} / {2})</value>
-    <comment>{0} is replaced with percentage (int with 1 or 2 digits), {1} is replaced with the number of finished tasks and {2} is replaced with the number of total tasks</comment>
   </data>
   <data name="WarningIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\WarningIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ExplorerProcessName" xml:space="preserve">
-    <value>explorer.exe</value>
-    <comment>Name of the system file explorer program</comment>
-  </data>
-  <data name="ConfirmDeleteAll_Message" xml:space="preserve">
-    <value>All {0} files will be permanently deleted. Do you want to continue?</value>
-  </data>
-  <data name="FileNotFound_Message" xml:space="preserve">
-    <value>File {0} was not found.</value>
-  </data>
-  <data name="InvalidFileName_Label" xml:space="preserve">
-    <value>Invalid File Name</value>
-  </data>
-  <data name="PathTooLong_Label" xml:space="preserve">
-    <value>Path too long.</value>
-  </data>
-  <data name="AttributeNameEmpty_Label" xml:space="preserve">
-    <value>Empty Attribute Name</value>
-  </data>
-  <data name="CopyingFiles_Label" xml:space="preserve">
-    <value>Copying files</value>
-  </data>
-  <data name="AttributeNameEmpty_Message" xml:space="preserve">
-    <value>Attribute name must not be empty</value>
-  </data>
-  <data name="ItemCount_Label" xml:space="preserve">
-    <value>{0:N0} items </value>
-  </data>
-  <data name="ExplorerOpenFolderArguments" xml:space="preserve">
-    <value>/select,"{0}"</value>
-    <comment>Command line argumnets for ExplorerProcessName which will open folder {0}</comment>
-  </data>
-  <data name="FileInUse_Message" xml:space="preserve">
-    <value>File {0} is open in another application.</value>
-  </data>
-  <data name="QueryResultWindowName" xml:space="preserve">
-    <value>Query result</value>
-  </data>
-  <data name="FileNotFound_Label" xml:space="preserve">
-    <value>File Not Found</value>
-  </data>
-  <data name="InvalidFileName_Message" xml:space="preserve">
-    <value>"{0}" is not a valid file name. File name must not be empty and it must not contain characters: {1}</value>
-    <comment>{0} is the invalid name, {1} is a list of invalid characters that must not be used in a file name</comment>
-  </data>
-  <data name="FailedToMove_Label" xml:space="preserve">
-    <value>Failed to Move</value>
-  </data>
-  <data name="UnauthorizedAccess_Message" xml:space="preserve">
-    <value>You don't have permission to access: {0}</value>
-  </data>
-  <data name="FailedToMove_Message" xml:space="preserve">
-    <value>Faild to move {0} to {1}. 
-
-{0} was not found or {1} aready exists.</value>
-  </data>
-  <data name="DuplicateAttributeName_Message" xml:space="preserve">
-    <value>Duplicate attribute name: {0}</value>
-  </data>
   <data name="Save" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ConfirmDelete_Message" xml:space="preserve">
-    <value>Do you really want to delete:
-{0}</value>
-  </data>
-  <data name="DuplicateAttributeName_Label" xml:space="preserve">
-    <value>Duplicate attribute name</value>
   </data>
   <data name="Directory" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Directory.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -227,36 +142,14 @@
   <data name="LeftArrowIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LeftArrowIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="PathTooLong_Message" xml:space="preserve">
-    <value>Path is too long:
-
-{0}</value>
-  </data>
   <data name="Open" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="FileInUse_Label" xml:space="preserve">
-    <value>File In Use</value>
   </data>
   <data name="Start" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Start.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DirectoryThumbnail" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DirectoryThumbnail.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SavingChanges_Label" xml:space="preserve">
-    <value>Saving Changes</value>
-  </data>
-  <data name="LayoutFilePath" xml:space="preserve">
-    <value>%userprofile%/Documents/Viewer/layout.xml</value>
-    <comment>Path to the file where the layout will be stored. Names in between % will be expanded as environment variables</comment>
-  </data>
-  <data name="Progess_Title" xml:space="preserve">
-    <value>{0} ({1}%)</value>
-    <comment>{0} is the task name, {1} is the progress percentage </comment>
-  </data>
-  <data name="SettingsFilePath" xml:space="preserve">
-    <value>Viewer.xml</value>
   </data>
   <data name="AttributesComponentIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AttributesComponentIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -276,33 +169,6 @@
   <data name="QueryComponentIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\QueryComponentIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SaveAsView_Label" xml:space="preserve">
-    <value>Save as View ...</value>
-  </data>
-  <data name="Version_Label" xml:space="preserve">
-    <value>Version: {0}</value>
-  </data>
-  <data name="PresentationPosition_Label" xml:space="preserve">
-    <value>{0} / {1}</value>
-  </data>
-  <data name="RetryFileInUse_Label" xml:space="preserve">
-    <value>File In Use</value>
-  </data>
-  <data name="RetryFileInUse_Message" xml:space="preserve">
-    <value>File is opened by another application and cannot be opened. Please close the external application and try again.</value>
-  </data>
-  <data name="FailedToOpenFile_Label" xml:space="preserve">
-    <value>Failed To Open File</value>
-  </data>
-  <data name="FailedToOpenFile_Message" xml:space="preserve">
-    <value>{0} 
-could not be opened. 
-
-{1} 
-
-Do you want to try again?</value>
-    <comment>{0} is the file path, {1} is an error message</comment>
-  </data>
   <data name="ItemCountStatus" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StatusBar\ItemCountStatus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -315,47 +181,8 @@ Do you want to try again?</value>
   <data name="ThumbnailSize" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StatusBar\ThumbnailSize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ClipboardIsBusy_Label" xml:space="preserve">
-    <value>Clipboard Busy</value>
-  </data>
-  <data name="ClipboardIsBusy_Message" xml:space="preserve">
-    <value>System clipboard cannot be opened. Try again later. System error: {0}</value>
-    <comment>{0} is the system error message</comment>
-  </data>
-  <data name="SelectedItemCount_Label" xml:space="preserve">
-    <value>{0:N0} items selected </value>
-  </data>
   <data name="View" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Query\View.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="InvalidPath_Empty_Message" xml:space="preserve">
-    <value>Path must not be empty.</value>
-  </data>
-  <data name="InvalidPath_Label" xml:space="preserve">
-    <value>Invalid Path</value>
-  </data>
-  <data name="InvalidPath_Message" xml:space="preserve">
-    <value>{0} is not a valid path.</value>
-    <comment>{0} is the invalid path</comment>
-  </data>
-  <data name="Loading_Label" xml:space="preserve">
-    <value>Loading ...</value>
-  </data>
-  <data name="Empty_Label" xml:space="preserve">
-    <value>Empty</value>
-  </data>
-  <data name="MouseButton4_Label" xml:space="preserve">
-    <value>BUTTON4</value>
-  </data>
-  <data name="MouseButton5_Label" xml:space="preserve">
-    <value>BUTTON5</value>
-  </data>
-  <data name="ConfirmReplace_Label" xml:space="preserve">
-    <value>Replace file</value>
-  </data>
-  <data name="ConfirmReplace_Message" xml:space="preserve">
-    <value>File {0} already exists. Do you want to replace it?</value>
-    <comment>{0} is a file path to the file which should be replaced</comment>
   </data>
   <data name="LeftArrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Images\LeftArrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -363,8 +190,10 @@ Do you want to try again?</value>
   <data name="RightArrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Images\RightArrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Group_Label" xml:space="preserve">
-    <value>{0} ({1:N0})</value>
-    <comment>{0} is the group name, {1} is the group size</comment>
+  <data name="ExplorerOpenFolderArguments" xml:space="preserve">
+    <value>/select,</value>
+  </data>
+  <data name="ExplorerProcessName" xml:space="preserve">
+    <value>explorer.exe</value>
   </data>
 </root>

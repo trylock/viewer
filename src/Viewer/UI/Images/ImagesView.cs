@@ -15,6 +15,7 @@ using Viewer.Core;
 using Viewer.Properties;
 using Viewer.Core.UI;
 using Viewer.Data;
+using Viewer.Localization;
 using Viewer.UI.Forms;
 using Viewer.UI.Images.Layout;
 using WeifenLuo.WinFormsUI.Docking;
@@ -625,7 +626,7 @@ namespace Viewer.UI.Images
 
         public override void BeginLoading()
         {
-            StatusLabel.Text = Resources.Loading_Label;
+            StatusLabel.Text = Strings.Loading_Label;
             ++_loadingCount;
         }
 
@@ -638,7 +639,7 @@ namespace Viewer.UI.Images
             }
             var itemCount = Items?.Count ?? 0;
             StatusLabel.Visible = itemCount <= 0;
-            StatusLabel.Text = Resources.Empty_Label;
+            StatusLabel.Text = Strings.Empty_Label;
         }
     }
 }

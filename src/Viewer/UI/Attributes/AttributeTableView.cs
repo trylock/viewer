@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.UI.Forms;
 using Viewer.UI.Suggestions;
@@ -158,8 +159,8 @@ namespace Viewer.UI.Attributes
         public void AttributeNameIsNotUnique(string name)
         {
             MessageBox.Show(
-                string.Format(Resources.DuplicateAttributeName_Message, name),
-                Resources.DuplicateAttributeName_Label,
+                string.Format(Strings.DuplicateAttributeName_Message, name),
+                Strings.DuplicateAttributeName_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -167,8 +168,8 @@ namespace Viewer.UI.Attributes
         public void AttributeNameIsEmpty()
         {
             MessageBox.Show(
-                Resources.AttributeNameEmpty_Message, 
-                Resources.AttributeNameEmpty_Label, 
+                Strings.AttributeNameEmpty_Message,
+                Strings.AttributeNameEmpty_Label, 
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }

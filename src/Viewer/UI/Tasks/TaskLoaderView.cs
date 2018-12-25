@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.Core.UI;
+using Viewer.Localization;
 using Viewer.Properties;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -84,10 +85,10 @@ namespace Viewer.UI.Tasks
             var progress = (int) (TaskProgressBar.Value / (double) TaskProgressBar.Maximum * 100);
             TaskProgressBar.Value = finishedCount;
             TaskNameLabel.Text = name;
-            ProgressLabel.Text = string.Format(Resources.Progress_Label, progress, finishedCount, totalCount);
+            ProgressLabel.Text = string.Format(Strings.Progress_Label, progress, finishedCount, totalCount);
 
             // update the title
-            Text = string.Format(Resources.Progess_Title, OperationName, progress);
+            Text = string.Format(Strings.Progess_Title, OperationName, progress);
         }
 
         private void TaskLoaderView_FormClosing(object sender, FormClosingEventArgs e)

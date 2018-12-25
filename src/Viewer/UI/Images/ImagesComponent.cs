@@ -11,6 +11,7 @@ using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.Query;
 using Viewer.UI.Explorer;
@@ -74,7 +75,7 @@ namespace Viewer.UI.Images
         {
             var selectionCount = _selection.Count();
             _selectionCountLabel.Text = selectionCount > 0
-                ? string.Format(Resources.SelectedItemCount_Label, selectionCount)
+                ? string.Format(Strings.SelectedItemCount_Label, selectionCount)
                 : "";
         }
 

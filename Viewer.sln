@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2026
@@ -22,6 +22,8 @@ EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "ViewerSetup", "src\ViewerSetup\ViewerSetup.wixproj", "{F46A6D53-5726-4079-AD9C-DE96A69E08A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewerTheme", "src\ViewerTheme\ViewerTheme.csproj", "{B3E6903B-4CFD-4EBF-BB8B-7F312E8C2E36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer.Localization", "src\Viewer.Localization\Viewer.Localization.csproj", "{5ADFB845-D447-4CD9-A068-206892A355AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

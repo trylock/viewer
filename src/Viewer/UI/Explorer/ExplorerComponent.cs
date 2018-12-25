@@ -8,6 +8,7 @@ using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.IO;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.Query;
 using WeifenLuo.WinFormsUI.Docking;
@@ -45,7 +46,8 @@ namespace Viewer.UI.Explorer
 
         public override void OnStartup(IViewerApplication app)
         {
-            app.AddMenuItem(new []{ "View", Resources.ExplorerWindowName }, () => ShowExplorer(), Resources.ExplorerComponentIcon.ToBitmap());
+            app.AddMenuItem(new []{ "View", Strings.ExplorerWindowName }, 
+                () => ShowExplorer(), Resources.ExplorerComponentIcon.ToBitmap());
             app.AddLayoutDeserializeCallback(Deserialize);
         }
 

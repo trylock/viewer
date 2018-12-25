@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Viewer.IO;
+using Viewer.Localization;
 using Viewer.Properties;
 
 namespace Viewer.UI.Explorer
@@ -112,8 +113,8 @@ namespace Viewer.UI.Explorer
         public void UnauthorizedAccess(string path)
         {
             MessageBox.Show(
-                string.Format(Resources.UnauthorizedAccess_Message, path),
-                Resources.UnauthorizedAccess_Label,
+                string.Format(Strings.UnauthorizedAccess_Message, path),
+                Strings.UnauthorizedAccess_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -121,8 +122,8 @@ namespace Viewer.UI.Explorer
         public void DirectoryNotFound(string path)
         {
             MessageBox.Show(
-                string.Format(Resources.DirectoryNotFound_Message, path),
-                Resources.DirectoryNotFound_Label,
+                string.Format(Strings.DirectoryNotFound_Message, path),
+                Strings.DirectoryNotFound_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -130,8 +131,8 @@ namespace Viewer.UI.Explorer
         public void InvalidFileName(string fileName)
         {
             MessageBox.Show(
-                string.Format(Resources.InvalidFileName_Message, fileName, PathUtils.GetInvalidFileCharacters()),
-                Resources.InvalidFileName_Label,
+                string.Format(Strings.InvalidFileName_Message, fileName, PathUtils.GetInvalidFileCharacters()),
+                Strings.InvalidFileName_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -140,9 +141,9 @@ namespace Viewer.UI.Explorer
         {
             MessageBox.Show(
                 string.IsNullOrEmpty(path.Trim())
-                    ? string.Format(Resources.InvalidPath_Message, path)
-                    : Resources.InvalidPath_Empty_Message,
-                Resources.InvalidPath_Label,
+                    ? string.Format(Strings.InvalidPath_Message, path)
+                    : Strings.InvalidPath_Empty_Message,
+                Strings.InvalidPath_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -150,8 +151,8 @@ namespace Viewer.UI.Explorer
         public bool ConfirmDelete(string fullPath)
         {
             var result = MessageBox.Show(
-                string.Format(Resources.ConfirmDelete_Message, fullPath),
-                Resources.ConfirmDelete_Label,
+                string.Format(Strings.ConfirmDelete_Message, fullPath),
+                Strings.ConfirmDelete_Label,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);
@@ -161,8 +162,8 @@ namespace Viewer.UI.Explorer
         public DialogResult ConfirmReplace(string fileName)
         {
             var result = MessageBox.Show(
-                string.Format(Resources.ConfirmReplace_Message, fileName),
-                Resources.ConfirmReplace_Label,
+                string.Format(Strings.ConfirmReplace_Message, fileName),
+                Strings.ConfirmReplace_Label,
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);
@@ -189,8 +190,8 @@ namespace Viewer.UI.Explorer
             }
 
             var result = MessageBox.Show(
-                string.Format(Resources.ConfirmDeleteAll_Message, count),
-                Resources.ConfirmDelete_Label,
+                string.Format(Strings.ConfirmDeleteAll_Message, count),
+                Strings.ConfirmDelete_Label,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);
@@ -200,8 +201,8 @@ namespace Viewer.UI.Explorer
         public void FailedToMove(string sourcePath, string destinationPath)
         {
             MessageBox.Show(
-                string.Format(Resources.FailedToMove_Message, sourcePath, destinationPath),
-                Resources.FailedToMove_Label,
+                string.Format(Strings.FailedToMove_Message, sourcePath, destinationPath),
+                Strings.FailedToMove_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -209,8 +210,8 @@ namespace Viewer.UI.Explorer
         public void PathTooLong(string path)
         {
             MessageBox.Show(
-                string.Format(Resources.PathTooLong_Message, path), 
-                Resources.PathTooLong_Label, 
+                string.Format(Strings.PathTooLong_Message, path),
+                Strings.PathTooLong_Label, 
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -218,8 +219,8 @@ namespace Viewer.UI.Explorer
         public void FileNotFound(string filePath)
         {
             MessageBox.Show(
-                string.Format(Resources.FileNotFound_Message, filePath),
-                Resources.FileNotFound_Label,
+                string.Format(Strings.FileNotFound_Message, filePath),
+                Strings.FileNotFound_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -227,8 +228,8 @@ namespace Viewer.UI.Explorer
         public void FileInUse(string filePath)
         {
             MessageBox.Show(
-                string.Format(Resources.FileInUse_Message, filePath),
-                Resources.FileInUse_Label,
+                string.Format(Strings.FileInUse_Message, filePath),
+                Strings.FileInUse_Label,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
@@ -236,8 +237,8 @@ namespace Viewer.UI.Explorer
         public bool FailedToOpenFile(string filePath, string error)
         {
             return MessageBox.Show(
-                string.Format(Resources.FailedToOpenFile_Message, filePath, error),
-                Resources.FailedToOpenFile_Label,
+                string.Format(Strings.FailedToOpenFile_Message, filePath, error),
+                Strings.FailedToOpenFile_Label,
                 MessageBoxButtons.RetryCancel,
                 MessageBoxIcon.Warning) == DialogResult.Retry;
         }
@@ -245,8 +246,8 @@ namespace Viewer.UI.Explorer
         public void ClipboardIsBusy(string errorMessage)
         {
             MessageBox.Show(
-               string.Format(Resources.ClipboardIsBusy_Message, errorMessage),
-               Resources.ClipboardIsBusy_Label,
+               string.Format(Strings.ClipboardIsBusy_Message, errorMessage),
+               Strings.ClipboardIsBusy_Label,
                MessageBoxButtons.OK,
                MessageBoxIcon.Warning);
         }

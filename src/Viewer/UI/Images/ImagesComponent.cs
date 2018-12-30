@@ -167,6 +167,7 @@ namespace Viewer.UI.Images
                 _presenter.SetThumbnailSize(_thumbnailSize.Value);
                 _presenter.StatusLabel = _statusLabel;
                 _presenter.ItemCountLabel = _itemCountLabel;
+                _presenter.View.Text = Strings.Photos_Label;
                 _presenter.View.CloseView += (sender, args) =>
                 {
                     _presenter.Dispose();

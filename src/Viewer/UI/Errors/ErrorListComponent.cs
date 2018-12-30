@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Viewer.Properties;
 using Viewer.Core;
 using Viewer.Core.UI;
+using Viewer.Localization;
 using WeifenLuo.WinFormsUI.Docking;
 using IComponent = Viewer.Core.IComponent;
 
@@ -18,8 +19,6 @@ namespace Viewer.UI.Errors
     [Export(typeof(IComponent))]
     public class ErrorListComponent : Component
     {
-        public const string Name = "Error List";
-
         private readonly IErrorList _errorList;
         
         private ErrorListPresenter _errorListPresenter;
@@ -37,7 +36,9 @@ namespace Viewer.UI.Errors
 
         public override void OnStartup(IViewerApplication app)
         {
-            app.AddMenuItem(new []{ "View", Name }, () => ShowErrorList(), Resources.ErrorListIcon.ToBitmap());
+            app.AddMenuItem(new []{ Strings.View_Label, Strings.ErrorList_Label },
+                () => ShowErrorList(), 
+                Resources.ErrorListIcon.ToBitmap());
 
             app.AddLayoutDeserializeCallback(Deserialize);
         }

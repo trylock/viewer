@@ -8,6 +8,7 @@ using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.UI.Errors;
 using WeifenLuo.WinFormsUI.Docking;
@@ -44,8 +45,12 @@ namespace Viewer.UI.Attributes
         public override void OnStartup(IViewerApplication app)
         {
             // add the component to the menu
-            app.AddMenuItem(new []{ "View", "Attributes" }, () => ShowAttributes(), Resources.AttributesComponentIcon.ToBitmap());
-            app.AddMenuItem(new[] { "View", "Exif" }, () => ShowExif(), Resources.ExifComponentIcon.ToBitmap());
+            app.AddMenuItem(new []{ Strings.View_Label, Strings.Attributes_label }, 
+                () => ShowAttributes(), 
+                Resources.AttributesComponentIcon.ToBitmap());
+            app.AddMenuItem(new[] { Strings.View_Label, "Exif" }, 
+                () => ShowExif(), 
+                Resources.ExifComponentIcon.ToBitmap());
 
             app.AddLayoutDeserializeCallback(Deserialize);
         }
@@ -80,7 +85,7 @@ namespace Viewer.UI.Attributes
             {
                 _userAttrPresenter = CreateAttributesPresenter();
                 _userAttrPresenter.SetType(AttributeViewType.Custom);
-                _userAttrPresenter.View.Text = "Attributes";
+                _userAttrPresenter.View.Text = Strings.Attributes_label;
                 _userAttrPresenter.View.CloseView += (sender, args) =>
                 {
                     _userAttrPresenter.Dispose();
@@ -98,7 +103,7 @@ namespace Viewer.UI.Attributes
         private IDockContent ShowAttributes()
         {
             var attributes = GetAttributes();
-            attributes.View.Text = "Attributes";
+            attributes.View.Text = Strings.Attributes_label;
             attributes.View.Show(Application.Panel, DockState.DockRight);
             return attributes.View;
         }

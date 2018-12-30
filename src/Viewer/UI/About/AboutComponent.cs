@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
+using Viewer.Localization;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Viewer.UI.About
@@ -15,12 +16,12 @@ namespace Viewer.UI.About
     {
         public override void OnStartup(IViewerApplication app)
         {
-            app.AddMenuItem(new[] { "Help", "Documentation" }, () =>
+            app.AddMenuItem(new[] { Strings.Help_Label, Strings.Documentation_Label }, () =>
             {
                 Process.Start("https://trylock.github.io/viewer/articles/intro.html");
             }, null);
 
-            app.AddMenuItem(new []{ "Help", "About" }, () =>
+            app.AddMenuItem(new []{ Strings.Help_Label, Strings.About_Label }, () =>
             {
                 var form = new AboutForm();
                 form.ShowDialog();

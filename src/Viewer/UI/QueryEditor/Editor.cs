@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.IO;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.Query;
 using Viewer.Query.Suggestions;
@@ -230,6 +231,7 @@ namespace Viewer.UI.QueryEditor
                 _querySuggestions, 
                 this);
 
+            editor.View.Text = Strings.Query_Label;
             editor.View.CloseView += (sender, args) =>
             {
                 _windows.Remove(editor);

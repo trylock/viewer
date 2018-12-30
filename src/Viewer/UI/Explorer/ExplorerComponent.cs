@@ -46,7 +46,7 @@ namespace Viewer.UI.Explorer
 
         public override void OnStartup(IViewerApplication app)
         {
-            app.AddMenuItem(new []{ "View", Strings.ExplorerWindowName }, 
+            app.AddMenuItem(new []{ Strings.View_Label, Strings.ExplorerWindowName }, 
                 () => ShowExplorer(), Resources.ExplorerComponentIcon.ToBitmap());
             app.AddLayoutDeserializeCallback(Deserialize);
         }
@@ -73,6 +73,7 @@ namespace Viewer.UI.Explorer
                     _fileSystem,
                     _explorer, 
                     _clipboard);
+                _presenter.View.Text = Strings.ExplorerWindowName;
                 _presenter.View.CloseView += (sender, args) =>
                 {
                     _presenter.Dispose();

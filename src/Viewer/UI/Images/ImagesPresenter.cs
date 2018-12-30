@@ -6,12 +6,14 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Humanizer;
 using Viewer.Core;
 using Viewer.Data;
 using Viewer.Images;
@@ -279,7 +281,7 @@ namespace Viewer.UI.Images
                 if (ItemCountLabel != null)
                 {
                     var itemCount = View.Items.Sum(pair => pair.Items.Count);
-                    ItemCountLabel.Text = string.Format(Strings.ItemCount_Label, itemCount);
+                    ItemCountLabel.Text = itemCount + " " + Strings.ItemCount_Label;
                 }
             }
         }

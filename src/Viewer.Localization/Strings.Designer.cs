@@ -61,6 +61,15 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string About_Label {
+            get {
+                return ResourceManager.GetString("About_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty Attribute Name.
         /// </summary>
         public static string AttributeNameEmpty_Label {
@@ -75,6 +84,15 @@ namespace Viewer.Localization {
         public static string AttributeNameEmpty_Message {
             get {
                 return ResourceManager.GetString("AttributeNameEmpty_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attributes.
+        /// </summary>
+        public static string Attributes_label {
+            get {
+                return ResourceManager.GetString("Attributes_label", resourceCulture);
             }
         }
         
@@ -170,6 +188,15 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Documentation.
+        /// </summary>
+        public static string Documentation_Label {
+            get {
+                return ResourceManager.GetString("Documentation_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate attribute name.
         /// </summary>
         public static string DuplicateAttributeName_Label {
@@ -193,6 +220,15 @@ namespace Viewer.Localization {
         public static string Empty_Label {
             get {
                 return ResourceManager.GetString("Empty_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error List.
+        /// </summary>
+        public static string ErrorList_Label {
+            get {
+                return ResourceManager.GetString("ErrorList_Label", resourceCulture);
             }
         }
         
@@ -249,6 +285,15 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string File_Label {
+            get {
+                return ResourceManager.GetString("File_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File In Use.
         /// </summary>
         public static string FileInUse_Label {
@@ -290,6 +335,15 @@ namespace Viewer.Localization {
         public static string Group_Label {
             get {
                 return ResourceManager.GetString("Group_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        public static string Help_Label {
+            get {
+                return ResourceManager.GetString("Help_Label", resourceCulture);
             }
         }
         
@@ -339,7 +393,7 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0:N0} items .
+        ///   Looks up a localized string similar to items.
         /// </summary>
         public static string ItemCount_Label {
             get {
@@ -395,6 +449,24 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Photos.
+        /// </summary>
+        public static string Photos_Label {
+            get {
+                return ResourceManager.GetString("Photos_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presentation.
+        /// </summary>
+        public static string Presentation_Label {
+            get {
+                return ResourceManager.GetString("Presentation_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} / {1}.
         /// </summary>
         public static string PresentationPosition_Label {
@@ -418,6 +490,15 @@ namespace Viewer.Localization {
         public static string Progress_Label {
             get {
                 return ResourceManager.GetString("Progress_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Query.
+        /// </summary>
+        public static string Query_Label {
+            get {
+                return ResourceManager.GetString("Query_Label", resourceCulture);
             }
         }
         
@@ -476,6 +557,15 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string Settings_Label {
+            get {
+                return ResourceManager.GetString("Settings_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unauthorized access.
         /// </summary>
         public static string UnauthorizedAccess_Label {
@@ -499,6 +589,15 @@ namespace Viewer.Localization {
         public static string Version_Label {
             get {
                 return ResourceManager.GetString("Version_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string View_Label {
+            get {
+                return ResourceManager.GetString("View_Label", resourceCulture);
             }
         }
     }

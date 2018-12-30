@@ -12,6 +12,7 @@ using NLog;
 using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.IO;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.Query;
 using Viewer.UI.Explorer;
@@ -73,7 +74,7 @@ namespace Viewer.UI.QueryEditor
             }
 
             // add application menus
-            app.AddMenuItem(new []{ "View", "Query" }, () =>
+            app.AddMenuItem(new []{ Strings.View_Label, Strings.Query_Label }, () =>
             {
                 _editor
                     .OpenNew()

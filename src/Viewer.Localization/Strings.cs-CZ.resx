@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About_Label" xml:space="preserve">
+    <value>O aplikaci</value>
+  </data>
   <data name="AttributeNameEmpty_Label" xml:space="preserve">
     <value>Prázdné jméno atributu</value>
   </data>
   <data name="AttributeNameEmpty_Message" xml:space="preserve">
     <value>Jméno atributu nesmí být prázdné</value>
+  </data>
+  <data name="Attributes_label" xml:space="preserve">
+    <value>Atributy</value>
   </data>
   <data name="ClipboardIsBusy_Label" xml:space="preserve">
     <value>Schránka je zaneprázdněna</value>
@@ -156,6 +162,9 @@
   <data name="DirectoryNotFound_Message" xml:space="preserve">
     <value>Adresář {0} nebyl nalezen.</value>
   </data>
+  <data name="Documentation_Label" xml:space="preserve">
+    <value>Dokumentace</value>
+  </data>
   <data name="DuplicateAttributeName_Label" xml:space="preserve">
     <value>Duplicitní jméno atributu</value>
   </data>
@@ -164,6 +173,9 @@
   </data>
   <data name="Empty_Label" xml:space="preserve">
     <value>Prázdné</value>
+  </data>
+  <data name="ErrorList_Label" xml:space="preserve">
+    <value>Seznam chyb</value>
   </data>
   <data name="ExplorerWindowName" xml:space="preserve">
     <value>Složky</value>
@@ -200,9 +212,17 @@ Chcete operaci zkusit znovu?</value>
   <data name="FileNotFound_Message" xml:space="preserve">
     <value>Soubor {0} nebyl nalezen.</value>
   </data>
+  <data name="File_Label" xml:space="preserve">
+    <value>Soubor</value>
+    <comment>File lablel in the main application menu</comment>
+  </data>
   <data name="Group_Label" xml:space="preserve">
     <value>{0} ({1:N0})</value>
     <comment>{0} is the group name, {1} is the group size</comment>
+  </data>
+  <data name="Help_Label" xml:space="preserve">
+    <value>Pomoc</value>
+    <comment>Help label in the main application menu</comment>
   </data>
   <data name="InvalidFileName_Label" xml:space="preserve">
     <value>Neplatné jméno souboru</value>
@@ -222,7 +242,7 @@ Chcete operaci zkusit znovu?</value>
     <comment>{0} is the invalid path</comment>
   </data>
   <data name="ItemCount_Label" xml:space="preserve">
-    <value>{0:N0} položek</value>
+    <value>položek</value>
   </data>
   <data name="Loading_Label" xml:space="preserve">
     <value>Načítám ...</value>
@@ -241,8 +261,14 @@ Chcete operaci zkusit znovu?</value>
 
 {0}</value>
   </data>
+  <data name="Photos_Label" xml:space="preserve">
+    <value>Fotky</value>
+  </data>
   <data name="PresentationPosition_Label" xml:space="preserve">
     <value>{0} / {1}</value>
+  </data>
+  <data name="Presentation_Label" xml:space="preserve">
+    <value>Prezentace</value>
   </data>
   <data name="Progess_Title" xml:space="preserve">
     <value>{0} ({1}%)</value>
@@ -254,6 +280,9 @@ Chcete operaci zkusit znovu?</value>
   </data>
   <data name="QueryResultWindowName" xml:space="preserve">
     <value>Výsledek dotazu</value>
+  </data>
+  <data name="Query_Label" xml:space="preserve">
+    <value>Dotaz</value>
   </data>
   <data name="RetryFileInUse_Label" xml:space="preserve">
     <value>Soubor je otevřený v jiné aplikaci</value>
@@ -270,6 +299,9 @@ Chcete operaci zkusit znovu?</value>
   <data name="SelectedItemCount_Label" xml:space="preserve">
     <value>{0:N0} vybraných položek</value>
   </data>
+  <data name="Settings_Label" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
   <data name="UnauthorizedAccess_Label" xml:space="preserve">
     <value>Nepovolený přístup</value>
   </data>
@@ -278,5 +310,9 @@ Chcete operaci zkusit znovu?</value>
   </data>
   <data name="Version_Label" xml:space="preserve">
     <value>Verze: {0}</value>
+  </data>
+  <data name="View_Label" xml:space="preserve">
+    <value>Zobraz</value>
+    <comment>View label in the main application menu</comment>
   </data>
 </root>

@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About_Label" xml:space="preserve">
+    <value>About</value>
+  </data>
   <data name="AttributeNameEmpty_Label" xml:space="preserve">
     <value>Empty Attribute Name</value>
   </data>
   <data name="AttributeNameEmpty_Message" xml:space="preserve">
     <value>Attribute name must not be empty</value>
+  </data>
+  <data name="Attributes_label" xml:space="preserve">
+    <value>Attributes</value>
   </data>
   <data name="ClipboardIsBusy_Label" xml:space="preserve">
     <value>Clipboard Busy</value>
@@ -156,6 +162,9 @@
   <data name="DirectoryNotFound_Message" xml:space="preserve">
     <value>Directory {0} was not found.</value>
   </data>
+  <data name="Documentation_Label" xml:space="preserve">
+    <value>Documentation</value>
+  </data>
   <data name="DuplicateAttributeName_Label" xml:space="preserve">
     <value>Duplicate attribute name</value>
   </data>
@@ -164,6 +173,9 @@
   </data>
   <data name="Empty_Label" xml:space="preserve">
     <value>Empty</value>
+  </data>
+  <data name="ErrorList_Label" xml:space="preserve">
+    <value>Error List</value>
   </data>
   <data name="ExplorerWindowName" xml:space="preserve">
     <value>Explorer</value>
@@ -200,9 +212,17 @@ Do you want to try again?</value>
   <data name="FileNotFound_Message" xml:space="preserve">
     <value>File {0} was not found.</value>
   </data>
+  <data name="File_Label" xml:space="preserve">
+    <value>File</value>
+    <comment>File lablel in the main application menu</comment>
+  </data>
   <data name="Group_Label" xml:space="preserve">
     <value>{0} ({1:N0})</value>
     <comment>{0} is the group name, {1} is the group size</comment>
+  </data>
+  <data name="Help_Label" xml:space="preserve">
+    <value>Help</value>
+    <comment>Help label in the main application menu</comment>
   </data>
   <data name="InvalidFileName_Label" xml:space="preserve">
     <value>Invalid File Name</value>
@@ -222,7 +242,7 @@ Do you want to try again?</value>
     <comment>{0} is the invalid path</comment>
   </data>
   <data name="ItemCount_Label" xml:space="preserve">
-    <value>{0:N0} items </value>
+    <value>items</value>
   </data>
   <data name="Loading_Label" xml:space="preserve">
     <value>Loading ...</value>
@@ -241,8 +261,14 @@ Do you want to try again?</value>
 
 {0}</value>
   </data>
+  <data name="Photos_Label" xml:space="preserve">
+    <value>Photos</value>
+  </data>
   <data name="PresentationPosition_Label" xml:space="preserve">
     <value>{0} / {1}</value>
+  </data>
+  <data name="Presentation_Label" xml:space="preserve">
+    <value>Presentation</value>
   </data>
   <data name="Progess_Title" xml:space="preserve">
     <value>{0} ({1}%)</value>
@@ -254,6 +280,9 @@ Do you want to try again?</value>
   </data>
   <data name="QueryResultWindowName" xml:space="preserve">
     <value>Query result</value>
+  </data>
+  <data name="Query_Label" xml:space="preserve">
+    <value>Query</value>
   </data>
   <data name="RetryFileInUse_Label" xml:space="preserve">
     <value>File In Use</value>
@@ -270,6 +299,9 @@ Do you want to try again?</value>
   <data name="SelectedItemCount_Label" xml:space="preserve">
     <value>{0:N0} items selected </value>
   </data>
+  <data name="Settings_Label" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="UnauthorizedAccess_Label" xml:space="preserve">
     <value>Unauthorized access</value>
   </data>
@@ -278,5 +310,9 @@ Do you want to try again?</value>
   </data>
   <data name="Version_Label" xml:space="preserve">
     <value>Version: {0}</value>
+  </data>
+  <data name="View_Label" xml:space="preserve">
+    <value>View</value>
+    <comment>View label in the main application menu</comment>
   </data>
 </root>

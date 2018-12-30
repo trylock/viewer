@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
 using Viewer.Core.UI;
+using Viewer.Localization;
 
 namespace Viewer.UI.UserSettings
 {
@@ -19,7 +20,7 @@ namespace Viewer.UI.UserSettings
             base.OnStartup(app);
             
             app.AddLayoutDeserializeCallback(Deserialize);
-            app.AddMenuItem(new []{ "File", "Settings" }, OpenSettings, null);
+            app.AddMenuItem(new []{ Strings.File_Label, Strings.Settings_Label }, OpenSettings, null);
         }
 
         private IWindowView Deserialize(string persiststring)

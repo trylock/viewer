@@ -83,9 +83,6 @@ namespace Viewer
         private void InitializeMenu()
         {
             _viewerMenu = new MenuStrip();
-            _viewerMenu.Items.Add(new ToolStripMenuItem("File"));
-            _viewerMenu.Items.Add(new ToolStripMenuItem("View"));
-            _viewerMenu.Items.Add(new ToolStripMenuItem("Help"));
             Panel.Theme.ApplyTo(_viewerMenu);
             Controls.Add(_viewerMenu);
         }

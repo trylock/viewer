@@ -117,142 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Icon8CopyrightNoticeLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Icon8CopyrightNoticeLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="Icon8CopyrightNoticeLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 78</value>
-  </data>
   <data name="Icon8CopyrightNoticeLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 13</value>
-  </data>
-  <data name="Icon8CopyrightNoticeLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+    <value>84, 13</value>
   </data>
   <data name="Icon8CopyrightNoticeLabel.Text" xml:space="preserve">
-    <value>Icons downloaded from:</value>
-  </data>
-  <data name="&gt;&gt;Icon8CopyrightNoticeLabel.Name" xml:space="preserve">
-    <value>Icon8CopyrightNoticeLabel</value>
-  </data>
-  <data name="&gt;&gt;Icon8CopyrightNoticeLabel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;Icon8CopyrightNoticeLabel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;Icon8CopyrightNoticeLabel.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="Icon8Link.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <data name="Icon8Link.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+    <value>Ikony stažené z:</value>
   </data>
   <data name="Icon8Link.Location" type="System.Drawing.Point, System.Drawing">
-    <value>136, 78</value>
-  </data>
-  <data name="Icon8Link.Size" type="System.Drawing.Size, System.Drawing">
-    <value>61, 13</value>
-  </data>
-  <data name="Icon8Link.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="Icon8Link.Text" xml:space="preserve">
-    <value>icons8.com</value>
-  </data>
-  <data name="&gt;&gt;Icon8Link.Name" xml:space="preserve">
-    <value>Icon8Link</value>
-  </data>
-  <data name="&gt;&gt;Icon8Link.Type" xml:space="preserve">
-    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;Icon8Link.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;Icon8Link.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="ApplicationNameLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="ApplicationNameLabel.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 12pt</value>
-  </data>
-  <data name="ApplicationNameLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 13</value>
+    <value>109, 78</value>
   </data>
   <data name="ApplicationNameLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>170, 20</value>
-  </data>
-  <data name="ApplicationNameLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+    <value>193, 20</value>
   </data>
   <data name="ApplicationNameLabel.Text" xml:space="preserve">
-    <value>Multifilter Photo Viewer</value>
-  </data>
-  <data name="&gt;&gt;ApplicationNameLabel.Name" xml:space="preserve">
-    <value>ApplicationNameLabel</value>
-  </data>
-  <data name="&gt;&gt;ApplicationNameLabel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;ApplicationNameLabel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;ApplicationNameLabel.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="VersionLabel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="VersionLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 37</value>
-  </data>
-  <data name="VersionLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>45, 13</value>
-  </data>
-  <data name="VersionLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="VersionLabel.Text" xml:space="preserve">
-    <value>Version:</value>
-  </data>
-  <data name="&gt;&gt;VersionLabel.Name" xml:space="preserve">
-    <value>VersionLabel</value>
-  </data>
-  <data name="&gt;&gt;VersionLabel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;VersionLabel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;VersionLabel.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>224, 109</value>
+    <value>Multifiltrový prohlížeč fotek</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>About</value>
-  </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>AboutForm</value>
-  </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>O aplikaci</value>
   </data>
 </root>

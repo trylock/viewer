@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.Icon8CopyrightNoticeLabel = new System.Windows.Forms.Label();
             this.Icon8Link = new System.Windows.Forms.LinkLabel();
             this.ApplicationNameLabel = new System.Windows.Forms.Label();
@@ -36,50 +37,30 @@
             // 
             // Icon8CopyrightNoticeLabel
             // 
-            this.Icon8CopyrightNoticeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.Icon8CopyrightNoticeLabel.AutoSize = true;
-            this.Icon8CopyrightNoticeLabel.Location = new System.Drawing.Point(19, 78);
+            resources.ApplyResources(this.Icon8CopyrightNoticeLabel, "Icon8CopyrightNoticeLabel");
             this.Icon8CopyrightNoticeLabel.Name = "Icon8CopyrightNoticeLabel";
-            this.Icon8CopyrightNoticeLabel.Size = new System.Drawing.Size(120, 13);
-            this.Icon8CopyrightNoticeLabel.TabIndex = 0;
-            this.Icon8CopyrightNoticeLabel.Text = "Icons downloaded from:";
             // 
             // Icon8Link
             // 
-            this.Icon8Link.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.Icon8Link.AutoSize = true;
-            this.Icon8Link.Location = new System.Drawing.Point(136, 78);
+            resources.ApplyResources(this.Icon8Link, "Icon8Link");
             this.Icon8Link.Name = "Icon8Link";
-            this.Icon8Link.Size = new System.Drawing.Size(61, 13);
-            this.Icon8Link.TabIndex = 1;
             this.Icon8Link.TabStop = true;
-            this.Icon8Link.Text = "icons8.com";
             this.Icon8Link.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Icon8Link_LinkClicked);
             // 
             // ApplicationNameLabel
             // 
-            this.ApplicationNameLabel.AutoSize = true;
-            this.ApplicationNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ApplicationNameLabel.Location = new System.Drawing.Point(15, 13);
+            resources.ApplyResources(this.ApplicationNameLabel, "ApplicationNameLabel");
             this.ApplicationNameLabel.Name = "ApplicationNameLabel";
-            this.ApplicationNameLabel.Size = new System.Drawing.Size(170, 20);
-            this.ApplicationNameLabel.TabIndex = 2;
-            this.ApplicationNameLabel.Text = "Multifilter Photo Viewer";
             // 
             // VersionLabel
             // 
-            this.VersionLabel.AutoSize = true;
-            this.VersionLabel.Location = new System.Drawing.Point(19, 37);
+            resources.ApplyResources(this.VersionLabel, "VersionLabel");
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(45, 13);
-            this.VersionLabel.TabIndex = 3;
-            this.VersionLabel.Text = "Version:";
             // 
             // AboutForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(211, 109);
             this.Controls.Add(this.VersionLabel);
             this.Controls.Add(this.ApplicationNameLabel);
             this.Controls.Add(this.Icon8Link);
@@ -88,7 +69,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutForm";
-            this.Text = "About";
+            this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();
 

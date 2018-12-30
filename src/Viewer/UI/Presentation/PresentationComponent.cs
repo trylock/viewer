@@ -9,6 +9,7 @@ using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Images;
+using Viewer.Localization;
 using Viewer.UI.Explorer;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -57,7 +58,9 @@ namespace Viewer.UI.Presentation
                 return _presenter;
             }
 
-            _presenter = new PresentationPresenter(new PresentationView(), _selection, _imageLoader, _dialogView);
+            _presenter = new PresentationPresenter(
+                new PresentationView(), _selection, _imageLoader, _dialogView);
+            _presenter.View.Text = Strings.Presentation_Label;
             _presenter.View.CloseView += (s, args) =>
             {
                 _presenter.Dispose();

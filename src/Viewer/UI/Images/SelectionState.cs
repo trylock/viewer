@@ -264,6 +264,11 @@ namespace Viewer.UI.Images
                     {
                         isStart = true;
                         _currentSelection.Add(view);
+
+                        if (item == _rangeSelectAnchorItem)
+                        {
+                            break;
+                        }
                     }
                 }
                 else

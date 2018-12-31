@@ -165,6 +165,9 @@
   <data name="Documentation_Label" xml:space="preserve">
     <value>Dokumentace</value>
   </data>
+  <data name="Done_Label" xml:space="preserve">
+    <value>Hotovo.</value>
+  </data>
   <data name="DuplicateAttributeName_Label" xml:space="preserve">
     <value>Duplicitní jméno atributu</value>
   </data>
@@ -246,6 +249,10 @@ Chcete operaci zkusit znovu?</value>
   </data>
   <data name="Loading_Label" xml:space="preserve">
     <value>Načítám ...</value>
+  </data>
+  <data name="Loading_Message" xml:space="preserve">
+    <value>{0:N0}: {1}</value>
+    <comment>{0} is number of searched files, {1} is full path to current file/folder </comment>
   </data>
   <data name="MouseButton4_Label" xml:space="preserve">
     <value>Tlačítko myši 4</value>

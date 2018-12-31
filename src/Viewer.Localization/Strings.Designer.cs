@@ -197,6 +197,15 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Done..
+        /// </summary>
+        public static string Done_Label {
+            get {
+                return ResourceManager.GetString("Done_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate attribute name.
         /// </summary>
         public static string DuplicateAttributeName_Label {
@@ -407,6 +416,15 @@ namespace Viewer.Localization {
         public static string Loading_Label {
             get {
                 return ResourceManager.GetString("Loading_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:N0}: {1}.
+        /// </summary>
+        public static string Loading_Message {
+            get {
+                return ResourceManager.GetString("Loading_Message", resourceCulture);
             }
         }
         

@@ -165,6 +165,9 @@
   <data name="Documentation_Label" xml:space="preserve">
     <value>Documentation</value>
   </data>
+  <data name="Done_Label" xml:space="preserve">
+    <value>Done.</value>
+  </data>
   <data name="DuplicateAttributeName_Label" xml:space="preserve">
     <value>Duplicate attribute name</value>
   </data>
@@ -246,6 +249,10 @@ Do you want to try again?</value>
   </data>
   <data name="Loading_Label" xml:space="preserve">
     <value>Loading ...</value>
+  </data>
+  <data name="Loading_Message" xml:space="preserve">
+    <value>{0:N0}: {1}</value>
+    <comment>{0} is number of searched files, {1} is full path to current file/folder </comment>
   </data>
   <data name="MouseButton4_Label" xml:space="preserve">
     <value>BUTTON4</value>

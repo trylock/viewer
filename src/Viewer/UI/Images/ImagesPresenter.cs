@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -273,8 +273,8 @@ namespace Viewer.UI.Images
                     var loadingFile = _queryEvaluator.Progress.LoadingFile;
                     var loadedCount = _queryEvaluator.Progress.FileCount;
                     StatusLabel.Text = loadingFile != null ? 
-                        $"{loadedCount:N0}: {loadingFile}" : 
-                        "Done.";
+                        string.Format(Strings.Loading_Message, loadedCount, loadingFile) :
+                        Strings.Done_Label;
                 }
 
                 // update item count
@@ -473,7 +473,7 @@ namespace Viewer.UI.Images
         {
             if (StatusLabel != null)
             {
-                StatusLabel.Text = "Done.";
+                StatusLabel.Text = Strings.Done_Label;
             }
 
             if (ItemCountLabel != null)

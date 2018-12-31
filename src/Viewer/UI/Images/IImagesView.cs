@@ -220,6 +220,14 @@ namespace Viewer.UI.Images
         /// </summary>
         /// <param name="item">Item which should be visible</param>
         void EnsureItemVisible(EntityView item);
+
+        /// <summary>
+        /// Get group which is currently at the mouse cursor.
+        /// </summary>
+        /// <returns>
+        /// Group under mouse cursor or null if there is no group under the mouse cursor.
+        /// </returns>
+        Group GetCurrentGroup();
     }
 
     internal interface IFileDropView

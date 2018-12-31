@@ -107,6 +107,13 @@ namespace Viewer.UI.Images
             _view.EnsureItemVisible(item);
         }
 
+        public Group GetCurrentGroup()
+        {
+            var location = _view.PointToClient(MousePosition);
+            var element = _view.ControlLayout.GetGroupAt(_view.UnprojectLocation(location));
+            return element?.Item;
+        }
+
         #endregion
 
         #region IPolledView

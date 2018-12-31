@@ -79,8 +79,17 @@ namespace Viewer.Data
         IEntity Set(IEntity entity);
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// An entity which represents a folder in file system.
+    /// </summary>
     public sealed class DirectoryEntity : IEntity
     {
+        /// <summary>
+        /// Name of the attribute which returns path to the parent directory
+        /// </summary>
+        public const string DirectoryName = "Directory";
+
         public string Path { get; private set; }
 
         public DirectoryEntity(string path)
@@ -90,6 +99,15 @@ namespace Viewer.Data
 
         public Attribute GetAttribute(string name)
         {
+            if (name == DirectoryName)
+            {
+                var parent = System.IO.Path.GetDirectoryName(Path) ?? Path;
+                var parentName = PathUtils.GetLastPart(parent);
+                return new Attribute(
+                    name,
+                    new StringValue(parentName), 
+                    AttributeSource.Metadata);
+            }
             return null;
         }
 

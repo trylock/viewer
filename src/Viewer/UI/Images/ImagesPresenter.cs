@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Collections.Generic;
@@ -225,7 +225,9 @@ namespace Viewer.UI.Images
         /// Set thumbnail size and update the view.
         /// </summary>
         /// <param name="thumbnailSize">Thumbnail size in the [0, 1] range</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="thumbnailSize"/> is not in the [0, 1] range</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="thumbnailSize"/> is not in the [0, 1] range
+        /// </exception>
         public void SetThumbnailSize(double thumbnailSize)
         {
             if (thumbnailSize < 0 || thumbnailSize > 1)
@@ -545,6 +547,17 @@ namespace Viewer.UI.Images
                 return new List<string>();
             }
 
+            // find folders in current group
+            var group = View.GetCurrentGroup();
+            if (group != null)
+            {
+                return group.Items
+                    .Select(item => Path.GetDirectoryName(item.FullPath))
+                    .Distinct()
+                    .ToList();
+            }
+
+            // the result set is probably empty, return all searched folders
             return _queryEvaluator.GetSearchedDirectories().ToList();
         }
 
@@ -559,14 +572,16 @@ namespace Viewer.UI.Images
                 var folders = FindAllFolders();
                 if (folders.Count < 1)
                 {
-                    return;
+                    return; // there is no destination folder, this is a no-op
                 }
                 if (folders.Count == 1)
                 {
+                    // copy/move the file right away
                     destinationDirectory = folders.First();
                 }
                 else
                 {
+                    // make user pick where to copy/move the files
                     try
                     {
                         destinationDirectory = await View.PickDirectoryAsync(folders);

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MetadataExtractor.Formats.Jpeg;
+using Viewer.IO;
 
 namespace Viewer.Data.Formats
 {
@@ -25,11 +26,13 @@ namespace Viewer.Data.Formats
 
         public FileAttributeReader(FileInfo fileInfo)
         {
+            var directoryName = fileInfo.Directory?.Name ?? "";
+            directoryName = directoryName.Trim(PathUtils.PathSeparators);
             _attributes = new[]
             {
                 new Attribute(FileName, new StringValue(fileInfo.Name), AttributeSource.Metadata),
                 new Attribute(FileSize, new IntValue((int)fileInfo.Length), AttributeSource.Metadata),
-                new Attribute(Directory, new StringValue(fileInfo.Directory.Name), AttributeSource.Metadata),
+                new Attribute(Directory, new StringValue(directoryName), AttributeSource.Metadata),
                 new Attribute(LastAccessTime, new DateTimeValue(fileInfo.LastAccessTime), AttributeSource.Metadata),
                 new Attribute(LastWriteTime, new DateTimeValue(fileInfo.LastWriteTime), AttributeSource.Metadata), 
                 new Attribute(CreationTime, new DateTimeValue(fileInfo.CreationTime), AttributeSource.Metadata), 

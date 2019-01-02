@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Data;
+using Viewer.Data.Formats;
 using Viewer.Images;
 using Viewer.Localization;
 using Viewer.UI.Explorer;
@@ -21,6 +24,7 @@ namespace Viewer.UI.Presentation
     {
         private readonly ISelection _selection;
         private readonly IImageLoader _imageLoader;
+        private readonly IEntityManager _entities;
         private readonly IFileSystemErrorView _dialogView;
         
         private PresentationPresenter _presenter;
@@ -29,8 +33,10 @@ namespace Viewer.UI.Presentation
         public PresentationComponent(
             ISelection selection,
             IImageLoader imageLoader,
+            IEntityManager entities,
             IFileSystemErrorView dialogView)
         {
+            _entities = entities;
             _selection = selection;
             _imageLoader = imageLoader;
             _dialogView = dialogView;
@@ -39,6 +45,59 @@ namespace Viewer.UI.Presentation
         public override void OnStartup(IViewerApplication app)
         {
             app.AddLayoutDeserializeCallback(Deserialize);
+        }
+
+        public override async void OnInitialized()
+        {
+            base.OnInitialized();
+            
+            if (Application.Arguments.Length <= 1)
+            {
+                return;
+            }
+
+            // if this is a path to a jpeg file, try to open it 
+            var path = Application.Arguments[1];
+            var extension = Path.GetExtension(path);
+            if (!string.Equals(extension, ".jpg", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(extension, ".jpeg", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            try
+            {
+                var entity = await Task.Run(() => _entities.GetEntity(path));
+                await OpenAsync(Enumerable.Repeat(entity, 1), 0);
+            }
+            catch (ArgumentException) // invalid path
+            {
+                // ignore
+            }
+            catch (InvalidDataFormatException)
+            {
+                // ignore
+            }
+            catch (PathTooLongException)
+            {
+                _dialogView.PathTooLong(path);
+            }
+            catch (IOException e)
+            {
+                _dialogView.FailedToOpenFile(path, e.Message);
+            }
+            catch (NotSupportedException)
+            {
+                // ignore
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _dialogView.UnauthorizedAccess(path);
+            }
+            catch (SecurityException)
+            {
+                _dialogView.UnauthorizedAccess(path);
+            }
         }
 
         private IWindowView Deserialize(string persiststring)

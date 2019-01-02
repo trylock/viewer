@@ -321,6 +321,12 @@
     <EmbeddedResource Include="UI\Explorer\DirectoryTreeView.resx">
       <DependentUpon>DirectoryTreeView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Images\HistoryView.cs-CZ.resx">
+      <DependentUpon>HistoryView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Images\ImagesView.cs-CZ.resx">
+      <DependentUpon>ImagesView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Suggestions\SuggestionView.resx">
       <DependentUpon>SuggestionView.cs</DependentUpon>
     </EmbeddedResource>

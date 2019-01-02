@@ -315,6 +315,9 @@ Chcete operaci zkusit znovu?</value>
   <data name="UnauthorizedAccess_Message" xml:space="preserve">
     <value>Nepovolený přístup: {0}</value>
   </data>
+  <data name="Ungrouped_Label" xml:space="preserve">
+    <value>Neseskupeno</value>
+  </data>
   <data name="Version_Label" xml:space="preserve">
     <value>Verze: {0}</value>
   </data>

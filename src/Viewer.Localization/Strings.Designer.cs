@@ -602,6 +602,15 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ungrouped.
+        /// </summary>
+        public static string Ungrouped_Label {
+            get {
+                return ResourceManager.GetString("Ungrouped_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version: {0}.
         /// </summary>
         public static string Version_Label {

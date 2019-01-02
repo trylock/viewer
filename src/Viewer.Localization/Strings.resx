@@ -315,6 +315,9 @@ Do you want to try again?</value>
   <data name="UnauthorizedAccess_Message" xml:space="preserve">
     <value>You don't have permission to access: {0}</value>
   </data>
+  <data name="Ungrouped_Label" xml:space="preserve">
+    <value>Ungrouped</value>
+  </data>
   <data name="Version_Label" xml:space="preserve">
     <value>Version: {0}</value>
   </data>

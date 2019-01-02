@@ -382,7 +382,9 @@ namespace Viewer.UI.Images
             var bounds = ProjectBounds(element.Bounds);
             Group group = element.Item;
 
-            var name = group.Key.IsNull ? "Default" : group.Key.ToString(CultureInfo.CurrentCulture);
+            var name = group.Key.IsNull ? 
+                Strings.Ungrouped_Label : 
+                group.Key.ToString(CultureInfo.CurrentCulture);
             var label = string.Format(Strings.Group_Label, name, group.Items.Count);
             
             PointF offset = new PointF(0, 0);

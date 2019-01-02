@@ -283,7 +283,7 @@ namespace Viewer.UI.Images
                 if (ItemCountLabel != null)
                 {
                     var itemCount = View.Items.Sum(pair => pair.Items.Count);
-                    ItemCountLabel.Text = itemCount + " " + Strings.ItemCount_Label;
+                    ItemCountLabel.Text = itemCount.ToString("N0") + " " + Strings.ItemCount_Label;
                 }
             }
         }

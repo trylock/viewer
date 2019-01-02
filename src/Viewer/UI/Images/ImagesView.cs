@@ -29,9 +29,6 @@ namespace Viewer.UI.Images
         public ImagesView()
         {
             InitializeComponent();
-
-            PreviousMenuItem.ShortcutKeyDisplayString = "Alt + Left, MB4";
-            NextMenuItem.ShortcutKeyDisplayString = "Alt + Right, MB5";
             
             RegisterView(_thumbnailGridView);
             _view = _thumbnailGridView;

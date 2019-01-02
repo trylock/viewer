@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImagesView));
+            Viewer.UI.Images.Layout.VerticalGridLayout verticalGridLayout1 = new Viewer.UI.Images.Layout.VerticalGridLayout();
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.ItemContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,30 +51,29 @@
             this.RenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PollTimer = new System.Windows.Forms.Timer(this.components);
             this.ShowCodeToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.BackToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.StatusLabel = new System.Windows.Forms.Label();
             this.PickDirectoryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this._thumbnailGridView = new Viewer.UI.Images.ThumbnailGridView();
             this.HistoryView = new Viewer.UI.Images.HistoryView();
+            this.BackToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.ForwardToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.MoveTimer = new System.Windows.Forms.Timer(this.components);
             this.ItemContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // NameTextBox
             // 
-            this.NameTextBox.Location = new System.Drawing.Point(53, 32);
-            this.NameTextBox.Margin = new System.Windows.Forms.Padding(2);
+            resources.ApplyResources(this.NameTextBox, "NameTextBox");
             this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(87, 20);
-            this.NameTextBox.TabIndex = 0;
-            this.NameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.NameTextBox.Visible = false;
+            this.ShowCodeToolTip.SetToolTip(this.NameTextBox, resources.GetString("NameTextBox.ToolTip"));
+            this.BackToolTip.SetToolTip(this.NameTextBox, resources.GetString("NameTextBox.ToolTip1"));
+            this.ForwardToolTip.SetToolTip(this.NameTextBox, resources.GetString("NameTextBox.ToolTip2"));
             this.NameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NameTextBox_KeyDown);
             this.NameTextBox.Leave += new System.EventHandler(this.NameTextBox_Leave);
             // 
             // ItemContextMenu
             // 
+            resources.ApplyResources(this.ItemContextMenu, "ItemContextMenu");
             this.ItemContextMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ItemContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenMenuItem,
@@ -93,119 +93,149 @@
             this.DeleteMenuItem,
             this.RenameMenuItem});
             this.ItemContextMenu.Name = "ItemContextMenu";
-            this.ItemContextMenu.Size = new System.Drawing.Size(181, 276);
+            this.ShowCodeToolTip.SetToolTip(this.ItemContextMenu, resources.GetString("ItemContextMenu.ToolTip"));
+            this.BackToolTip.SetToolTip(this.ItemContextMenu, resources.GetString("ItemContextMenu.ToolTip1"));
+            this.ForwardToolTip.SetToolTip(this.ItemContextMenu, resources.GetString("ItemContextMenu.ToolTip2"));
             // 
             // OpenMenuItem
             // 
+            resources.ApplyResources(this.OpenMenuItem, "OpenMenuItem");
             this.OpenMenuItem.Name = "OpenMenuItem";
-            this.OpenMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.OpenMenuItem.Text = "Open";
             this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
+            resources.ApplyResources(this.toolStripSeparator5, "toolStripSeparator5");
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // toolStripSeparator3
             // 
+            resources.ApplyResources(this.toolStripSeparator3, "toolStripSeparator3");
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // RefreshMenuItem
             // 
+            resources.ApplyResources(this.RefreshMenuItem, "RefreshMenuItem");
             this.RefreshMenuItem.Name = "RefreshMenuItem";
-            this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.RefreshMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.RefreshMenuItem.Text = "Refresh";
             // 
             // ShowQueryMenuItem
             // 
+            resources.ApplyResources(this.ShowQueryMenuItem, "ShowQueryMenuItem");
             this.ShowQueryMenuItem.Name = "ShowQueryMenuItem";
-            this.ShowQueryMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
-            this.ShowQueryMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.ShowQueryMenuItem.Text = "Show Query";
             this.ShowQueryMenuItem.Click += new System.EventHandler(this.ShowQueryMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
+            resources.ApplyResources(this.toolStripSeparator4, "toolStripSeparator4");
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
             // 
             // UpMenuItem
             // 
+            resources.ApplyResources(this.UpMenuItem, "UpMenuItem");
             this.UpMenuItem.Name = "UpMenuItem";
-            this.UpMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Up)));
-            this.UpMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.UpMenuItem.Text = "Up";
             this.UpMenuItem.Click += new System.EventHandler(this.UpMenuItem_Click);
             // 
             // PreviousMenuItem
             // 
+            resources.ApplyResources(this.PreviousMenuItem, "PreviousMenuItem");
             this.PreviousMenuItem.Name = "PreviousMenuItem";
-            this.PreviousMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Left)));
-            this.PreviousMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.PreviousMenuItem.Text = "Previous";
             this.PreviousMenuItem.Click += new System.EventHandler(this.PreviousMenuItem_Click);
             // 
             // NextMenuItem
             // 
+            resources.ApplyResources(this.NextMenuItem, "NextMenuItem");
             this.NextMenuItem.Name = "NextMenuItem";
-            this.NextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Right)));
-            this.NextMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.NextMenuItem.Text = "Next";
             this.NextMenuItem.Click += new System.EventHandler(this.NextMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
+            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // PasteMenuItem
             // 
+            resources.ApplyResources(this.PasteMenuItem, "PasteMenuItem");
             this.PasteMenuItem.Name = "PasteMenuItem";
-            this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.PasteMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.PasteMenuItem.Text = "Paste";
             this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
             // 
             // CopyMenuItem
             // 
+            resources.ApplyResources(this.CopyMenuItem, "CopyMenuItem");
             this.CopyMenuItem.Name = "CopyMenuItem";
-            this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.CopyMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.CopyMenuItem.Text = "Copy";
             // 
             // CutMenuItem
             // 
+            resources.ApplyResources(this.CutMenuItem, "CutMenuItem");
             this.CutMenuItem.Name = "CutMenuItem";
-            this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.CutMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.CutMenuItem.Text = "Cut";
             // 
             // toolStripSeparator2
             // 
+            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // DeleteMenuItem
             // 
+            resources.ApplyResources(this.DeleteMenuItem, "DeleteMenuItem");
             this.DeleteMenuItem.Name = "DeleteMenuItem";
-            this.DeleteMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.DeleteMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.DeleteMenuItem.Text = "Delete";
             // 
             // RenameMenuItem
             // 
+            resources.ApplyResources(this.RenameMenuItem, "RenameMenuItem");
             this.RenameMenuItem.Name = "RenameMenuItem";
-            this.RenameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.RenameMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.RenameMenuItem.Text = "Rename";
             this.RenameMenuItem.Click += new System.EventHandler(this.RenameMenuItem_Click);
             // 
             // PollTimer
             // 
             this.PollTimer.Tick += new System.EventHandler(this.PollTimer_Tick);
+            // 
+            // StatusLabel
+            // 
+            resources.ApplyResources(this.StatusLabel, "StatusLabel");
+            this.StatusLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.StatusLabel.Name = "StatusLabel";
+            this.BackToolTip.SetToolTip(this.StatusLabel, resources.GetString("StatusLabel.ToolTip"));
+            this.ForwardToolTip.SetToolTip(this.StatusLabel, resources.GetString("StatusLabel.ToolTip1"));
+            this.ShowCodeToolTip.SetToolTip(this.StatusLabel, resources.GetString("StatusLabel.ToolTip2"));
+            // 
+            // PickDirectoryContextMenu
+            // 
+            resources.ApplyResources(this.PickDirectoryContextMenu, "PickDirectoryContextMenu");
+            this.PickDirectoryContextMenu.Name = "PickDirectoryContextMenu";
+            this.ShowCodeToolTip.SetToolTip(this.PickDirectoryContextMenu, resources.GetString("PickDirectoryContextMenu.ToolTip"));
+            this.BackToolTip.SetToolTip(this.PickDirectoryContextMenu, resources.GetString("PickDirectoryContextMenu.ToolTip1"));
+            this.ForwardToolTip.SetToolTip(this.PickDirectoryContextMenu, resources.GetString("PickDirectoryContextMenu.ToolTip2"));
+            // 
+            // _thumbnailGridView
+            // 
+            resources.ApplyResources(this._thumbnailGridView, "_thumbnailGridView");
+            this._thumbnailGridView.AllowDrop = true;
+            this._thumbnailGridView.ContextMenuStrip = this.ItemContextMenu;
+            verticalGridLayout1.ClientBounds = new System.Drawing.Rectangle(0, 0, 626, 324);
+            verticalGridLayout1.GroupLabelMargin = new System.Windows.Forms.Padding(0);
+            verticalGridLayout1.GroupLabelSize = new System.Drawing.Size(0, 39);
+            verticalGridLayout1.Groups = null;
+            verticalGridLayout1.ItemMargin = new System.Windows.Forms.Padding(5);
+            verticalGridLayout1.ItemPadding = new System.Windows.Forms.Padding(5, 5, 5, 37);
+            verticalGridLayout1.ThumbnailAreaSize = new System.Drawing.Size(0, 0);
+            this._thumbnailGridView.ControlLayout = verticalGridLayout1;
+            this._thumbnailGridView.Items = null;
+            this._thumbnailGridView.ItemSize = new System.Drawing.Size(0, 0);
+            this._thumbnailGridView.Name = "_thumbnailGridView";
+            this._thumbnailGridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.BackToolTip.SetToolTip(this._thumbnailGridView, resources.GetString("_thumbnailGridView.ToolTip"));
+            this.ForwardToolTip.SetToolTip(this._thumbnailGridView, resources.GetString("_thumbnailGridView.ToolTip1"));
+            this.ShowCodeToolTip.SetToolTip(this._thumbnailGridView, resources.GetString("_thumbnailGridView.ToolTip2"));
+            // 
+            // HistoryView
+            // 
+            resources.ApplyResources(this.HistoryView, "HistoryView");
+            this.HistoryView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
+            this.HistoryView.CanGoBackInHistory = false;
+            this.HistoryView.CanGoForwardInHistory = false;
+            this.HistoryView.Name = "HistoryView";
+            this.ShowCodeToolTip.SetToolTip(this.HistoryView, resources.GetString("HistoryView.ToolTip"));
+            this.BackToolTip.SetToolTip(this.HistoryView, resources.GetString("HistoryView.ToolTip1"));
+            this.ForwardToolTip.SetToolTip(this.HistoryView, resources.GetString("HistoryView.ToolTip2"));
             // 
             // BackToolTip
             // 
@@ -215,48 +245,6 @@
             // 
             this.ForwardToolTip.ToolTipTitle = "Forward to";
             // 
-            // StatusLabel
-            // 
-            this.StatusLabel.AutoSize = true;
-            this.StatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.StatusLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.StatusLabel.Location = new System.Drawing.Point(247, 170);
-            this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(72, 25);
-            this.StatusLabel.TabIndex = 1;
-            this.StatusLabel.Text = "Empty";
-            // 
-            // PickDirectoryContextMenu
-            // 
-            this.PickDirectoryContextMenu.Name = "PickDirectoryContextMenu";
-            this.PickDirectoryContextMenu.Size = new System.Drawing.Size(61, 4);
-            // 
-            // GridView
-            // 
-            this._thumbnailGridView.AllowDrop = true;
-            this._thumbnailGridView.AutoScroll = true;
-            this._thumbnailGridView.ContextMenuStrip = this.ItemContextMenu;
-            this._thumbnailGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._thumbnailGridView.Items = null;
-            this._thumbnailGridView.ItemSize = new System.Drawing.Size(0, 0);
-            this._thumbnailGridView.Location = new System.Drawing.Point(0, 29);
-            this._thumbnailGridView.Margin = new System.Windows.Forms.Padding(2);
-            this._thumbnailGridView.Name = "GridView";
-            this._thumbnailGridView.SelectionBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this._thumbnailGridView.Size = new System.Drawing.Size(626, 324);
-            this._thumbnailGridView.TabIndex = 2;
-            // 
-            // HistoryView
-            // 
-            this.HistoryView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
-            this.HistoryView.CanGoBackInHistory = false;
-            this.HistoryView.CanGoForwardInHistory = false;
-            this.HistoryView.Dock = System.Windows.Forms.DockStyle.Top;
-            this.HistoryView.Location = new System.Drawing.Point(0, 0);
-            this.HistoryView.Name = "HistoryView";
-            this.HistoryView.Size = new System.Drawing.Size(626, 29);
-            this.HistoryView.TabIndex = 3;
-            // 
             // MoveTimer
             // 
             this.MoveTimer.Enabled = true;
@@ -265,18 +253,17 @@
             // 
             // ImagesView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(626, 353);
             this.ContextMenuStrip = this.ItemContextMenu;
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this._thumbnailGridView);
             this.Controls.Add(this.HistoryView);
             this.Controls.Add(this.NameTextBox);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ImagesView";
-            this.Text = "Images";
+            this.ForwardToolTip.SetToolTip(this, resources.GetString("$this.ToolTip"));
+            this.ShowCodeToolTip.SetToolTip(this, resources.GetString("$this.ToolTip1"));
+            this.BackToolTip.SetToolTip(this, resources.GetString("$this.ToolTip2"));
             this.ItemContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

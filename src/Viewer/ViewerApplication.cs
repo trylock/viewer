@@ -36,8 +36,12 @@ namespace Viewer
 
         public DockPanel Panel => _appForm.Panel;
 
+        public string[] Arguments => Environment.GetCommandLineArgs();
+
         [ImportingConstructor]
-        public ViewerApplication(ViewerForm appForm, [ImportMany] IComponent[] components)
+        public ViewerApplication(
+            ViewerForm appForm, 
+            [ImportMany] IComponent[] components)
         {
             _components = components;
             _appForm = appForm;

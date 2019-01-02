@@ -18,7 +18,12 @@ namespace Viewer.Core
         /// Main application dock panel
         /// </summary>
         DockPanel Panel { get; }
-        
+
+        /// <summary>
+        /// Parameters passed to the application as comand line arguments
+        /// </summary>
+        string[] Arguments { get; }
+
         /// <summary>
         /// Initialize components of the application
         /// </summary>

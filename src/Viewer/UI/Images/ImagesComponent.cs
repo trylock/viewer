@@ -11,6 +11,7 @@ using Viewer.Core;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.IO;
 using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.Query;
@@ -94,7 +95,7 @@ namespace Viewer.UI.Images
             app.AddLayoutDeserializeCallback(Deserialize);
 
             // add staus bar items
-            _statusLabel = app.CreateStatusBarItem("Done.", Resources.SearchStatus, ToolStripItemAlignment.Left);
+            _statusLabel = app.CreateStatusBarItem(Strings.Done_Label, Resources.SearchStatus, ToolStripItemAlignment.Left);
             _selectionCountLabel = app.CreateStatusBarItem("", null, ToolStripItemAlignment.Right);
             _itemCountLabel = app.CreateStatusBarItem("", null, ToolStripItemAlignment.Right);
             _thumbnailSize = app.CreateStatusBarSlider("", Resources.ThumbnailSize, ToolStripItemAlignment.Right);
@@ -105,7 +106,7 @@ namespace Viewer.UI.Images
             _selection.Changed += SelectionOnChanged;
             _queryHistory.QueryExecuted += StateOnQueryExecuted;
         }
-        
+
         private void ThumbnailSizeOnValueChanged(object sender, EventArgs e)
         {
             _presenter?.SetThumbnailSize(_thumbnailSize.Value);

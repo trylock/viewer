@@ -41,7 +41,8 @@ namespace Viewer.UI.UserSettings
                 !string.IsNullOrWhiteSpace(View.Programs[View.Programs.Count - 1].Command))
             {
                 var views = programs.ToList();
-                views.Add(new ExternalApplication());
+                // add an empty editable row to add new programs
+                views.Add(new ExternalApplication()); 
                 View.Programs = views;
             }
         }

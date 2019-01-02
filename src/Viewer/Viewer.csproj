@@ -354,6 +354,9 @@
     <EmbeddedResource Include="UI\Tasks\TaskLoaderView.resx">
       <DependentUpon>TaskLoaderView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\UserSettings\SettingsView.cs-CZ.resx">
+      <DependentUpon>SettingsView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\UserSettings\SettingsView.resx">
       <DependentUpon>SettingsView.cs</DependentUpon>
     </EmbeddedResource>

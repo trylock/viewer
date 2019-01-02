@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsView));
             this.ProgramsLabel = new System.Windows.Forms.Label();
             this.ProgramsGridView = new Viewer.UI.Forms.BufferedDataGridView();
             this.SelectFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -36,27 +37,18 @@
             // 
             // ProgramsLabel
             // 
-            this.ProgramsLabel.AutoSize = true;
-            this.ProgramsLabel.Location = new System.Drawing.Point(13, 9);
+            resources.ApplyResources(this.ProgramsLabel, "ProgramsLabel");
             this.ProgramsLabel.Name = "ProgramsLabel";
-            this.ProgramsLabel.Size = new System.Drawing.Size(51, 13);
-            this.ProgramsLabel.TabIndex = 1;
-            this.ProgramsLabel.Text = "Programs";
             // 
             // ProgramsGridView
             // 
-            this.ProgramsGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.ProgramsGridView, "ProgramsGridView");
             this.ProgramsGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.ProgramsGridView.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
             this.ProgramsGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ProgramsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.ProgramsGridView.Location = new System.Drawing.Point(12, 28);
             this.ProgramsGridView.Name = "ProgramsGridView";
             this.ProgramsGridView.RowHeadersVisible = false;
-            this.ProgramsGridView.Size = new System.Drawing.Size(653, 369);
-            this.ProgramsGridView.TabIndex = 0;
             this.ProgramsGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.ProgramsGridView_CellBeginEdit);
             this.ProgramsGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProgramsGridView_CellValueChanged);
             this.ProgramsGridView.CurrentCellDirtyStateChanged += new System.EventHandler(this.ProgramsGridView_CurrentCellDirtyStateChanged);
@@ -64,18 +56,16 @@
             // 
             // SelectFileDialog
             // 
-            this.SelectFileDialog.Filter = "Executable files|*.exe|All files|*.*";
+            resources.ApplyResources(this.SelectFileDialog, "SelectFileDialog");
             // 
             // SettingsView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(242)))));
-            this.ClientSize = new System.Drawing.Size(677, 409);
             this.Controls.Add(this.ProgramsLabel);
             this.Controls.Add(this.ProgramsGridView);
             this.Name = "SettingsView";
-            this.Text = "Settings";
             ((System.ComponentModel.ISupportInitialize)(this.ProgramsGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -52,7 +52,7 @@ namespace Viewer.Core.UI
                 var form = DockPanel.FindForm();
                 if (form != null)
                 {
-                    form.FormClosing += FormOnFormClosing;
+                    form.FormClosing += ApplicationFormOnFormClosing;
                 }
 
                 DockPanel.ActiveContentChanged -= DockPanelOnActiveContentChanged;
@@ -60,14 +60,36 @@ namespace Viewer.Core.UI
             }
         }
 
-        private void FormOnFormClosing(object sender, FormClosingEventArgs e)
+        private void ApplicationFormOnFormClosing(object sender, FormClosingEventArgs e)
         {
+            // make sure the CloseView is called
             Close();
         }
 
         protected override void OnClosed(EventArgs e)
         {
             DockPanel.ActiveContentChanged -= DockPanelOnActiveContentChanged;
+
+            #region DockPanelSuite Fix: reselecting the first tab after closing a pane
+
+            // find position of the active pane
+            var pane = DockPanel.ActivePane;
+            var index = pane?.Contents.IndexOf(this) ?? -1; 
+
+            // activate the nearest content
+            if (index >= 0 && DockPanel.ActiveDocument == this)
+            {
+                Debug.Assert(pane != null, "pane != null");
+                
+                index = Math.Max(index - 1, 0);
+                if (index + 1 < pane.Contents.Count)
+                {
+                    pane.Contents[index].DockHandler.Activate();
+                }
+            }
+
+            #endregion
+
             base.OnClosed(e);
         }
 

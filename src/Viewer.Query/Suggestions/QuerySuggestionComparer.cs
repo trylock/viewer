@@ -21,7 +21,8 @@ namespace Viewer.Query.Suggestions
             { TypeId.DateTime.ToString(), 0 },
             { AttributeNameSuggestionProvider.CategoryName, 1 },
             { MetadataAttributeSuggestionProvider.CategoryName, 2 },
-            { "Keyword", 3 },
+            { FunctionSuggestionProvider.CategoryName, 3 },
+            { "Keyword", 4 },
         };
 
         private static readonly string[] KeywordOrder =
@@ -35,7 +36,7 @@ namespace Viewer.Query.Suggestions
             {
                 return value;
             }
-
+            
             return int.MaxValue;
         }
 

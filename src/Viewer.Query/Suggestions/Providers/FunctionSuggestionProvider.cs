@@ -12,7 +12,7 @@ namespace Viewer.Query.Suggestions.Providers
     /// </summary>
     internal class FunctionSuggestionProvider : ISuggestionProvider
     {
-        public const string Category = "Function";
+        public const string CategoryName = "Function";
 
         private readonly IRuntime _runtime;
 
@@ -48,7 +48,7 @@ namespace Viewer.Query.Suggestions.Providers
                 .Where(name => !_blackList.Contains(name))
                 .Distinct()
                 .Where(name => name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                .Select(name => new FunctionSuggestion(state.Caret, name, Category));
+                .Select(name => new FunctionSuggestion(state.Caret, name, CategoryName));
         }
     }
 

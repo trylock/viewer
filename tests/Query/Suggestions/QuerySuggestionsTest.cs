@@ -11,12 +11,14 @@ using Viewer.IO;
 using Viewer.Query;
 using Viewer.Query.Suggestions;
 using Viewer.Query.Suggestions.Providers;
+using Viewer.QueryRuntime;
 
 namespace ViewerTest.Query.Suggestions
 {
     [TestClass]
     public class QuerySuggestionsTest
     {
+        private Mock<IRuntime> _runtime;
         private Mock<IFileFinder> _fileFinder;
         private Mock<IFileSystem> _fileSystem;
         private Mock<IAttributeCache> _attributeCache;
@@ -26,10 +28,18 @@ namespace ViewerTest.Query.Suggestions
         [TestInitialize]
         public void Setup()
         {
+            _runtime = new Mock<IRuntime>();
             _fileFinder = new Mock<IFileFinder>();
             _fileSystem = new Mock<IFileSystem>();
             _views = new Mock<IQueryViewRepository>();
             _attributeCache = new Mock<IAttributeCache>();
+
+            _runtime
+                .Setup(mock => mock.Functions)
+                .Returns(new List<IFunction>
+                {
+                    new DateTimeFunction()
+                });
 
             _suggestions = new QuerySuggestions(new ISuggestionProviderFactory[]
             {
@@ -37,6 +47,7 @@ namespace ViewerTest.Query.Suggestions
                 new AttributeNameSuggestionProviderFactory(_attributeCache.Object),
                 new AttributeValueSuggestionProviderFactory(_attributeCache.Object),
                 new DirectorySuggestionProviderFactory(_fileSystem.Object),
+                new FunctionSuggestionProviderFactory(_runtime.Object), 
             }, new StateCollectorFactory());
         }
 
@@ -211,10 +222,11 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions("select test where ");
 
-            Assert.AreEqual(3, suggestions.Count);
+            Assert.AreEqual(4, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where not"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where attr1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where attr2"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select test where DateTime()"));
         }
 
         [TestMethod]
@@ -240,9 +252,10 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions("select test where a + ");
 
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a + test1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a + test2"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select test where a + DateTime()"));
         }
 
         [TestMethod]
@@ -381,10 +394,11 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions(query);
 
-            Assert.AreEqual(3, suggestions.Count);
+            Assert.AreEqual(4, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (not"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (attr1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (attr2"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (DateTime()"));
         }
 
         [TestMethod]
@@ -442,9 +456,10 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions("select view where a = \"value\" and ");
 
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" and a"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" and not"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" and DateTime()"));
         }
 
         [TestMethod]
@@ -462,8 +477,9 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions("select view where a = \"value\" order by ");
             
-            Assert.AreEqual(1, suggestions.Count);
+            Assert.AreEqual(2, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" order by a"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" order by DateTime()"));
         }
 
         [TestMethod]
@@ -510,10 +526,11 @@ namespace ViewerTest.Query.Suggestions
             const string query = "select view where (test or )";
             var suggestions = ComputeSuggestions(query, query.Length - 1);
 
-            Assert.AreEqual(3, suggestions.Count);
+            Assert.AreEqual(4, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (test or attr1)"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (test or attr2)"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (test or not)"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where (test or DateTime())"));
         }
 
         [TestMethod]
@@ -525,9 +542,10 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions("select all where `complex id` = ");
 
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where `complex id` = \"string\""));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where `complex id` = 1"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where `complex id` = DateTime()"));
         }
 
         [TestMethod]
@@ -543,9 +561,10 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions("select all where not a = ");
 
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not a = 1"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not a = 2"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not a = DateTime()"));
         }
 
         [TestMethod]
@@ -561,9 +580,42 @@ namespace ViewerTest.Query.Suggestions
             
             var suggestions = ComputeSuggestions("select all where a >= ");
 
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where a >= date(\"2018-10-27 19:23:00\")"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select all where a >= date(\"2015-01-26 01:21:00\")"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where a >= DateTime()"));
+        }
+
+        [TestMethod]
+        public void Compute_FunctionSuggestionWontAddDoubleParentheses()
+        {
+            const string query = "select all where (";
+            var suggestions = ComputeSuggestions(query, query.Length - 1);
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where DateTime("));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not("));
+
+            // make sure we moved caret after the first parenthesis
+            var suggestion = suggestions.OfType<FunctionSuggestion>().First();
+            var result = suggestion.Apply();
+            Assert.AreEqual(result.Query.Length, result.Caret);
+        }
+
+        [TestMethod]
+        public void Compute_FunctionSuggestionWontAddDoubleParentheses2()
+        {
+            const string query = "select all where ()";
+            var suggestions = ComputeSuggestions(query, query.Length - 2);
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where DateTime()"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select all where not()"));
+
+            // make sure we moved caret after the first parenthesis
+            var suggestion = suggestions.OfType<FunctionSuggestion>().First();
+            var result = suggestion.Apply();
+            Assert.AreEqual(result.Query.Length - 1, result.Caret);
         }
     }
 }

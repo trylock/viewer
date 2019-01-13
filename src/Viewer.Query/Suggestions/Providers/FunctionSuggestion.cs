@@ -46,6 +46,10 @@ namespace Viewer.Query.Suggestions.Providers
                 query = state.Query.Insert(state.Caret, "()");
                 parentesisPosition = state.Caret + 1;
             }
+            else
+            {
+                ++parentesisPosition; // move after the first parenthesis
+            }
             
             // move the caret to parentheses
             return new QueryEditorState(query, parentesisPosition);

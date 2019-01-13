@@ -12,10 +12,13 @@ using Antlr4.Runtime.Misc;
 
 namespace Viewer.Query.Suggestions
 {
+    /// <summary>
+    /// Find possible states (path of nonterminals + expected tokens) at caret token in the input.
+    /// </summary>
     public interface IStateCollector
     {
         /// <summary>
-        /// Add a listener used during the <see cref="Collect"/> method.
+        /// Add a listener called in the <see cref="Collect"/> method.
         /// </summary>
         /// <param name="listener"></param>
         void AddListener(ISuggestionListener listener);
@@ -46,6 +49,8 @@ namespace Viewer.Query.Suggestions
         private readonly List<IToken> _tokens;
 
         private ISuggestionListener Listener => this;
+
+        #region ISuggestionListener: Aggregate listener
 
         public StateCollector(List<IToken> tokens, Parser parser)
         {
@@ -82,6 +87,8 @@ namespace Viewer.Query.Suggestions
             }
         }
 
+        #endregion
+
         /// <summary>
         /// Cache of the <see cref="TraverseState"/> method results.
         /// </summary>
@@ -111,6 +118,13 @@ namespace Viewer.Query.Suggestions
             return new SuggestionState(caret, _result);
         }
 
+        /// <summary>
+        /// Search paths leading to the caret token from <paramref name="state"/> given
+        /// <see cref="_tokens"/> as its input.
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="tokenIndex"></param>
+        /// <returns>Indices in the <see cref="_tokens"/> array where the </returns>
         private IEnumerable<int> TraverseState(ATNState state, int tokenIndex)
         {
             // don't traverse the same state at the same position twice

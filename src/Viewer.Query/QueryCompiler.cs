@@ -459,9 +459,11 @@ namespace Viewer.Query
                 case "<=":
                     value = new LessThanOrEqualOperator(op.Line, op.Column, left, right);
                     break;
+                case "<>":
                 case "!=":
                     value = new NotEqualOperator(op.Line, op.Column, left, right);
                     break;
+                case "==":
                 case "=":
                     value = new EqualOperator(op.Line, op.Column, left, right);
                     break;

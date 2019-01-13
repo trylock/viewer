@@ -1321,6 +1321,7 @@ namespace ViewerTest.Query
             )));
         }
         
+        [TestMethod]
         public void Compile_SyntaxErrorInPredicateRule()
         {
             const string query = "select \"a\" where a >! 2";
@@ -1333,6 +1334,66 @@ namespace ViewerTest.Query
             listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
             listener.Verify(mock => mock.OnCompilerError(1, 20, It.IsAny<string>()));
             listener.Verify(mock => mock.AfterCompilation(), Times.Once);
+        }
+
+        [TestMethod]
+        public void Compile_AlternativeEqualsOperator()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(42))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new StringValue("42"), new IntValue(42))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(42), new IntValue(42))))
+                .Returns(new IntValue(42));
+
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where test == 42"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(pred => 
+                !pred(new FileEntity("test")) &&
+                !pred(new FileEntity("test")
+                    .SetAttribute(
+                        new Attribute("test", new StringValue("42"), AttributeSource.Custom))) &&
+                pred(new FileEntity("test")
+                    .SetAttribute(
+                        new Attribute("test", new IntValue(42), AttributeSource.Custom)))
+            )));
+        }
+
+        [TestMethod]
+        public void Compile_AlternativeNotEqualsOperator()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("!=", Context(new IntValue(null), new IntValue(42))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("!=", Context(new StringValue("42"), new IntValue(42))))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("!=", Context(new IntValue(42), new IntValue(42))))
+                .Returns(new IntValue(null));
+
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where test <> 42"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(pred =>
+                !pred(new FileEntity("test")) &&
+                pred(new FileEntity("test")
+                    .SetAttribute(
+                        new Attribute("test", new StringValue("42"), AttributeSource.Custom))) &&
+                !pred(new FileEntity("test")
+                    .SetAttribute(
+                        new Attribute("test", new IntValue(42), AttributeSource.Custom)))
+            )));
         }
     }
 }

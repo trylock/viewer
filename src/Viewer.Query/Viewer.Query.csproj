@@ -123,6 +123,8 @@
     <Compile Include="Suggestions\CaretToken.cs" />
     <Compile Include="Suggestions\CaretTokenSource.cs" />
     <Compile Include="Suggestions\Providers\DirectorySuggestionProvider.cs" />
+    <Compile Include="Suggestions\Providers\FunctionSuggestion.cs" />
+    <Compile Include="Suggestions\Providers\FunctionSuggestionProvider.cs" />
     <Compile Include="Suggestions\Providers\IdentifierSuggestion.cs" />
     <Compile Include="Suggestions\Providers\MetadataAttributeSuggestionProvider.cs" />
     <Compile Include="Suggestions\Providers\StaticTokenSuggestionProvider.cs" />

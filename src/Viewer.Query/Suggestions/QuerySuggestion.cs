@@ -16,7 +16,8 @@ namespace Viewer.Query.Suggestions
         public string Query { get; }
 
         /// <summary>
-        /// Caret position in <see cref="Query"/> ([0..<see cref="Query"/>.<see cref="string.Length"/>])
+        /// Caret position in <see cref="Query"/>
+        /// ([0..<see cref="Query"/>.<see cref="string.Length"/>])
         /// </summary>
         public int Caret { get; }
 
@@ -79,7 +80,7 @@ namespace Viewer.Query.Suggestions
     /// <see cref="Apply"/> method of a no-op suggestion does not do anything. It just displys
     /// <see cref="Name"/>.
     /// </summary>
-    public class NopSuggestion : IQuerySuggestion
+    public sealed class NopSuggestion : IQuerySuggestion
     {
         private readonly CaretToken _caret;
 
@@ -112,6 +113,16 @@ namespace Viewer.Query.Suggestions
         public string Name { get; }
         public string Category { get; }
 
+        /// <summary>
+        /// Create a new replace suggestion
+        /// </summary>
+        /// <param name="caretToken">Position in the input which will be changed</param>
+        /// <param name="value">
+        /// New value which will replace current token at <paramref name="caretToken"/> upon
+        /// calling the <see cref="Apply"/> method.
+        /// </param>
+        /// <param name="name">Suggestion name shown to the user</param>
+        /// <param name="category">Suggestion category shown to the user</param>
         public ReplaceSuggestion(CaretToken caretToken, string value, string name, string category)
         {
             _caret = caretToken;
@@ -120,7 +131,7 @@ namespace Viewer.Query.Suggestions
             Category = category;
         }
 
-        public QueryEditorState Apply()
+        public virtual QueryEditorState Apply()
         {
             var query = _caret.InputStream.GetText(new Interval(0, _caret.InputStream.Size));
             var insertIndex = _caret.StartIndex;

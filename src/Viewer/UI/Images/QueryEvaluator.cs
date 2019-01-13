@@ -428,7 +428,7 @@ namespace Viewer.UI.Images
                 CancellationToken = Cancellation.Token,
                 Progress = progress
             };
-
+            
             foreach (var entity in Query.Execute(options))
             {
                 var thumbnail = _thumbnailFactory.Create(entity, Cancellation.Token);

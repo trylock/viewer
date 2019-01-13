@@ -611,6 +611,15 @@ namespace Viewer.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User Attribute.
+        /// </summary>
+        public static string UserAttribute_Label {
+            get {
+                return ResourceManager.GetString("UserAttribute_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version: {0}.
         /// </summary>
         public static string Version_Label {

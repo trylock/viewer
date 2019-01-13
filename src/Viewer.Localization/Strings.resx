@@ -318,6 +318,9 @@ Do you want to try again?</value>
   <data name="Ungrouped_Label" xml:space="preserve">
     <value>Ungrouped</value>
   </data>
+  <data name="UserAttribute_Label" xml:space="preserve">
+    <value>User Attribute</value>
+  </data>
   <data name="Version_Label" xml:space="preserve">
     <value>Version: {0}</value>
   </data>

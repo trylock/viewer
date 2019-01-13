@@ -318,6 +318,9 @@ Chcete operaci zkusit znovu?</value>
   <data name="Ungrouped_Label" xml:space="preserve">
     <value>Neseskupeno</value>
   </data>
+  <data name="UserAttribute_Label" xml:space="preserve">
+    <value>Uživatelský atribut</value>
+  </data>
   <data name="Version_Label" xml:space="preserve">
     <value>Verze: {0}</value>
   </data>

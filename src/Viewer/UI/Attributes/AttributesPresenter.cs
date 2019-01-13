@@ -13,6 +13,7 @@ using Viewer.Core.Collections;
 using Viewer.Core.UI;
 using Viewer.Data;
 using Viewer.Data.Storage;
+using Viewer.Localization;
 using Viewer.Properties;
 using Viewer.UI.Errors;
 using Viewer.UI.Explorer;
@@ -409,7 +410,7 @@ namespace Viewer.UI.Attributes
                 // load suggestions
                 foreach (var name in _attributeCache.GetNames(value))
                 {
-                    items.Add(new Suggestion(name, "User attribute", null));
+                    items.Add(new Suggestion(name, Strings.UserAttribute_Label, null));
                 }
 
                 return items;

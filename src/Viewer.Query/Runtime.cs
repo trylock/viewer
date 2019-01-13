@@ -11,6 +11,11 @@ namespace Viewer.Query
     public interface IRuntime
     {
         /// <summary>
+        /// All functions available to query runtime.
+        /// </summary>
+        IEnumerable<IFunction> Functions { get; }
+
+        /// <summary>
         /// Convert <paramref name="value"/> to <paramref name="resultType"/>.
         /// </summary>
         /// <param name="value">Value to convert</param>
@@ -55,7 +60,8 @@ namespace Viewer.Query
     [Export(typeof(IRuntime))]
     public class Runtime : IRuntime
     {
-        private readonly Dictionary<string, List<IFunction>> _functions = new Dictionary<string, List<IFunction>>();
+        private readonly Dictionary<string, List<IFunction>> _functions = 
+            new Dictionary<string, List<IFunction>>();
         private readonly IValueConverter _converter;
         private readonly IQueryErrorListener _queryErrorListener;
 
@@ -82,6 +88,8 @@ namespace Viewer.Query
                 }
             }
         }
+
+        public IEnumerable<IFunction> Functions => _functions.SelectMany(item => item.Value);
 
         public BaseValue ConvertTo(BaseValue value, TypeId resultType)
         {

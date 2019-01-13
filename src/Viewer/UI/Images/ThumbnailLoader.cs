@@ -69,7 +69,7 @@ namespace Viewer.UI.Images
         /// For the list of possible exceptions returned by the task.
         /// </seealso>
         /// <seealso cref="IThumbnailGenerator.GetThumbnail">
-        ///     For the list of possible exceptions returned by the task.
+        /// For the list of possible exceptions returned by the task.
         /// </seealso>
         Task<Thumbnail> LoadEmbeddedThumbnailAsync(
             IEntity entity, 
@@ -127,7 +127,7 @@ namespace Viewer.UI.Images
         private readonly IFileSystem _fileSystem;
 
         /// <summary>
-        /// Chained tasks which process I/O operations for <see cref="LoadRequest"/>s in the
+        /// Chained tasks which processes I/O operations for <see cref="LoadRequest"/>s in the
         /// <see cref="_requests"/> list.
         /// </summary>
         private Task _loadQueue = Task.CompletedTask;

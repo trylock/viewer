@@ -48,17 +48,18 @@ namespace Viewer.Images
         }
         
         /// <summary>
-        /// Calculate the largest image size such that it fits in <paramref name="thumbnailAreaSize"/> and 
-        /// preserves the aspect ratio of <paramref name="originalSize"/>
+        /// Calculate the largest image size such that it fits in
+        /// <paramref name="thumbnailAreaSize"/> and preserves the aspect ratio of
+        /// <paramref name="originalSize"/>.
         /// </summary>
         /// <param name="originalSize">Actual size of the image</param>
         /// <param name="thumbnailAreaSize">Size of the area where the image will be drawn</param>
         /// <returns>
-        ///     Size of the resized image s.t. it fits in <paramref name="thumbnailAreaSize"/> 
-        ///     and preserves the aspect ratio of <paramref name="originalSize"/>
+        /// Size of the resized image s.t. it fits in <paramref name="thumbnailAreaSize"/> 
+        /// and preserves the aspect ratio of <paramref name="originalSize"/>
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        ///     Arguments contain negative size or <paramref name="originalSize"/>.Height is 0
+        /// Arguments contain negative size or <paramref name="originalSize"/>.Height is 0
         /// </exception>
         public static Size GetThumbnailSize(Size originalSize, Size thumbnailAreaSize)
         {
@@ -71,11 +72,13 @@ namespace Viewer.Images
             var thumbnailAspectRatio = thumbnailAreaSize.Width / (double) thumbnailAreaSize.Height;
             if (originalAspectRatio >= thumbnailAspectRatio)
             {
-                thumbnailAreaSize.Height = Math.Max((int)(thumbnailAreaSize.Width / originalAspectRatio), 1);
+                thumbnailAreaSize.Height = Math.Max(
+                    (int)(thumbnailAreaSize.Width / originalAspectRatio), 1);
             }
             else
             {
-                thumbnailAreaSize.Width = Math.Max((int)(thumbnailAreaSize.Height * originalAspectRatio), 1);
+                thumbnailAreaSize.Width = Math.Max(
+                    (int)(thumbnailAreaSize.Height * originalAspectRatio), 1);
             }
 
             return thumbnailAreaSize;

@@ -489,14 +489,14 @@ namespace Viewer.UI.Images.Layout
             // check if the queries are in different rows
             var topA = FindRowInGroup(new Point(0, queryA.Top), true);
             var topB = FindRowInGroup(new Point(0, queryB.Top), true);
-            if (topA.Group.Item != topB.Group.Item || topA.Row != topB.Row)
+            if (topA.Group?.Item != topB.Group?.Item || topA.Row != topB.Row)
             {
                 return false;
             }
 
             var bottomA = FindRowInGroup(new Point(0, queryA.Bottom), false);
             var bottomB = FindRowInGroup(new Point(0, queryB.Bottom), false);
-            return bottomA.Group.Item == bottomB.Group.Item && bottomA.Row == bottomB.Row;
+            return bottomA.Group?.Item == bottomB.Group?.Item && bottomA.Row == bottomB.Row;
         }
 
         /// <summary>

@@ -30,7 +30,7 @@
         {
             this.SuspendLayout();
             // 
-            // GridView
+            // ThumbnailGridView
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -43,7 +43,6 @@
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.GridView_Paint);
             this.Resize += new System.EventHandler(this.GridView_Resize);
             this.ResumeLayout(false);
-
         }
 
         #endregion

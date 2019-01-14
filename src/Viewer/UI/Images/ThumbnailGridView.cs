@@ -38,6 +38,11 @@ namespace Viewer.UI.Images
         public int NameSpace => Font.Height / 2;
 
         /// <summary>
+        /// Grid cell padding
+        /// </summary>
+        private Padding ItemPadding => new Padding(5);
+
+        /// <summary>
         /// Size of a cell in the grid
         /// </summary>
         public Size ItemSize
@@ -135,11 +140,15 @@ namespace Viewer.UI.Images
             ControlLayout = new VerticalGridLayout
             {
                 GroupLabelSize = new Size(0, Font.Height * 3),
-                ItemPadding = new Padding(5, 5, 5, 5 + NameHeight + NameSpace),
+                ItemPadding = new Padding(
+                    ItemPadding.Left, 
+                    ItemPadding.Top, 
+                    ItemPadding.Right, 
+                    ItemPadding.Bottom + NameHeight + NameSpace),
                 ItemMargin = new Padding(5)
             };
             UpdateClientBounds();
-
+            
             MouseWheel += GridView_MouseWheel;
             Scroll += GridView_Scroll;
 
@@ -271,8 +280,8 @@ namespace Viewer.UI.Images
         {
             return new Point(
                 cellBounds.X + ControlLayout.ItemPadding.Left,
-                cellBounds.Y + (cellBounds.Height - NameHeight) + 
-                    NameSpace - ControlLayout.ItemPadding.Top
+                cellBounds.Y + ControlLayout.ItemPadding.Top + 
+                    ControlLayout.ThumbnailAreaSize.Height + NameSpace
             );
         }
 
@@ -505,6 +514,8 @@ namespace Viewer.UI.Images
             var nameSize = GetNameSize(bounds);
             using (var nameForamt = new StringFormat {Alignment = StringAlignment.Center})
             {
+                nameForamt.Trimming = StringTrimming.EllipsisCharacter;
+
                 graphics.DrawString(
                     item.Name,
                     Font,

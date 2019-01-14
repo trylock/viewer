@@ -8,6 +8,7 @@ using System.Net.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Viewer.Core;
 using Viewer.Core.Collections;
 using Viewer.Data;
 
@@ -60,6 +61,11 @@ namespace Viewer.UI.Images
         /// Origin point of current range select 
         /// </summary>
         private Point _rangeOrigin;
+
+        /// <summary>
+        /// Target point of current range select
+        /// </summary>
+        private Point _rangeTarget;
 
         /// <summary>
         /// true iff range select is active 
@@ -154,8 +160,39 @@ namespace Viewer.UI.Images
 
         #region Range selection
 
+        /// <summary>
+        /// Find minimal rectangle which contains both <paramref name="a"/> and <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">Point in rectangle</param>
+        /// <param name="b">Point in rectangle</param>
+        /// <returns>
+        /// Minimal rectangle which contains both <paramref name="a"/> and <paramref name="b"/>
+        /// </returns>
+        private static Rectangle RectangleFromPoints(Point a, Point b)
+        {
+            var minX = Math.Min(a.X, b.X);
+            var maxX = Math.Max(a.X, b.X);
+            var minY = Math.Min(a.Y, b.Y);
+            var maxY = Math.Max(a.Y, b.Y);
+            return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        private bool HasRangeSelectionChanged(Point location)
+        {
+            if (!_isRangeSelect)
+            {
+                return true;
+            }
+
+            var oldBounds = RectangleFromPoints(_rangeOrigin, _rangeTarget);
+            var newBounds = RectangleFromPoints(_rangeOrigin, location);
+            return !_view.ItemLayout.AreSameQueries(oldBounds, newBounds);
+        }
+
         private void ProcessRangeSelection(Point location, bool showRangeSelection)
         {
+            _rangeTarget = location;
+
             // reset current selection
             ResetSelectedItemsState();
 
@@ -387,7 +424,14 @@ namespace Viewer.UI.Images
         {
             if (_isRangeSelect)
             {
-                ProcessRangeSelection(e.Location, true);
+                if (HasRangeSelectionChanged(e.Location))
+                {
+                    ProcessRangeSelection(e.Location, true);
+                }
+                else // update only the selection rectangle
+                {
+                    _view.ShowSelection(RectangleFromPoints(_rangeOrigin, e.Location));
+                }
             }
         }
 

@@ -257,6 +257,21 @@ namespace Viewer.UI.Images.Layout
         public abstract Point AlignLocation(Point location, bool roundUp);
 
         /// <summary>
+        /// Check if <paramref name="queryA"/> contains the same items as <paramref name="queryB"/>
+        /// </summary>
+        /// <param name="queryA"></param>
+        /// <param name="queryB"></param>
+        /// <returns>
+        /// true iff the set of items in <paramref name="queryA"/> is same as the set of
+        /// items in <paramref name="queryB"/>
+        ///
+        /// > [!NOTE]
+        /// > This test does not have to be exact but it should not return ture if the queries
+        /// > are different.
+        /// </returns>
+        public abstract bool AreSameQueries(Rectangle queryA, Rectangle queryB);
+
+        /// <summary>
         /// Find item in <paramref name="direction"/> from <paramref name="source"/>
         /// </summary>
         /// <param name="source">Source item</param>

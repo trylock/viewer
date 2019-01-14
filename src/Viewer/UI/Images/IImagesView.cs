@@ -150,6 +150,11 @@ namespace Viewer.UI.Images
         List<Group> Items { get; set; }
 
         /// <summary>
+        /// Current layout of the view which can be used to make range queries on items in the view
+        /// </summary>
+        ImagesLayout ItemLayout { get; }
+
+        /// <summary>
         /// Update all visible items in the <see cref="Items"/> collection.
         /// </summary>
         void UpdateItems();

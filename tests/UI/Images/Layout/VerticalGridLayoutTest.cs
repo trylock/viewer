@@ -359,5 +359,77 @@ namespace ViewerTest.UI.Images.Layout
             Assert.AreEqual(new Rectangle(0, 185, 260, 130), element.Bounds);
             Assert.AreEqual(_layout.Groups[0].Items[3], element.Item);
         }
+
+        [TestMethod]
+        public void AreSameQueries_SameQueriesOneStartsInAGap()
+        {
+            var result = _layout.AreSameQueries(
+                Rectangle.FromLTRB(265, 40, 530, 80),
+                Rectangle.FromLTRB(275, 40, 530, 80));
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void AreSameQueries_SameQueriesOneEndsInAGap()
+        {
+            var result = _layout.AreSameQueries(
+                Rectangle.FromLTRB(265, 40, 541, 80),
+                Rectangle.FromLTRB(265, 40, 555, 80));
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void AreSameQueries_TheFirstColumnIsDifferent()
+        {
+            var result = _layout.AreSameQueries(
+                Rectangle.FromLTRB(260, 40, 530, 80),
+                Rectangle.FromLTRB(275, 40, 530, 80));
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void AreSameQueries_TheLastColumnIsDifferent()
+        {
+            var result = _layout.AreSameQueries(
+                Rectangle.FromLTRB(275, 40, 540, 80),
+                Rectangle.FromLTRB(275, 40, 541, 80));
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void AreSameQueries_SameQueriesOneEndsInGapBetweenRows()
+        {
+            var result = _layout.AreSameQueries(
+                new Rectangle(100, 10, 50, 50),
+                new Rectangle(100, 10, 50, 160));
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void AreSameQueries_QueriesDifferInBottomRow()
+        {
+            var result = _layout.AreSameQueries(
+                new Rectangle(100, 10, 50, 174),
+                new Rectangle(100, 10, 50, 175));
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void AreSameQueries_QueriesDifferInTopRow()
+        {
+            var result = _layout.AreSameQueries(
+                Rectangle.FromLTRB(10, 185, 10, 200),
+                Rectangle.FromLTRB(10, 165, 10, 200));
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void AreSameQueries_SameQueriesOneIsInRowGap()
+        {
+            var result = _layout.AreSameQueries(
+                Rectangle.FromLTRB(10, 185, 10, 200),
+                Rectangle.FromLTRB(10, 166, 10, 200));
+            Assert.IsTrue(result);
+        }
     }
 }

@@ -297,7 +297,9 @@ namespace Viewer.UI.Images
             get => _view.ItemSize;
             set => _view.ItemSize = value;
         }
-        
+
+        public ImagesLayout ItemLayout => _view.ControlLayout;
+
         public void UpdateItems()
         {
             _view.UpdateItems();

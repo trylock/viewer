@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -473,6 +474,85 @@ namespace Viewer.UI.Images.Layout
             return new Point(
                 location.X, 
                 top);
+        }
+
+        public override bool AreSameQueries(Rectangle queryA, Rectangle queryB)
+        {
+            // check if the queries are in different columns
+            var columnA = GetColumnRange(queryA);
+            var columnB = GetColumnRange(queryB);
+            if (columnA.Min != columnB.Min || columnA.Max != columnB.Max)
+            {
+                return false;
+            }
+
+            // check if the queries are in different rows
+            var topA = FindRowInGroup(new Point(0, queryA.Top), true);
+            var topB = FindRowInGroup(new Point(0, queryB.Top), true);
+            if (topA.Group.Item != topB.Group.Item || topA.Row != topB.Row)
+            {
+                return false;
+            }
+
+            var bottomA = FindRowInGroup(new Point(0, queryA.Bottom), false);
+            var bottomB = FindRowInGroup(new Point(0, queryB.Bottom), false);
+            return bottomA.Group.Item == bottomB.Group.Item && bottomA.Row == bottomB.Row;
+        }
+
+        /// <summary>
+        /// Find row of <paramref name="location"/> is group at that location.
+        /// </summary>
+        /// <param name="location">Queries point</param>
+        /// <param name="roundUp">
+        /// If true and <paramref name="location"/> is in a gap between rows, the bottom row
+        /// will be returned.
+        /// </param>
+        /// <returns></returns>
+        private (LayoutElement<Group> Group, int Row) FindRowInGroup(Point location, bool roundUp)
+        {
+            var layoutSize = GetSize();
+            location.X = location.X.Clamp(0, layoutSize.Width);
+            location.Y = location.Y.Clamp(0, layoutSize.Height);
+
+            var group = FindGroup(location);
+            if (group == null)
+            {
+                return (null, -1);
+            }
+
+            // transform location to the group
+            var groupLocation = ToGroupCoordinates(group, location);
+            groupLocation.Y = groupLocation.Y.Clamp(0, group.Bounds.Height);
+
+            var row = groupLocation.Y / CellSizeWithMargin.Height;
+            if (roundUp && groupLocation.Y % CellSizeWithMargin.Height > CellSize.Height)
+            {
+                ++row;
+            }
+
+            return (group, row);
+        }
+
+        /// <summary>
+        /// Find range of columns which are in <paramref name="bounds"/>.
+        /// </summary>
+        /// <param name="bounds"></param>
+        /// <returns></returns>
+        private (int Min, int Max) GetColumnRange(Rectangle bounds)
+        {
+            var min = bounds.Left / CellSizeWithMargin.Width;
+            var max = bounds.Right.RoundUpDiv(CellSizeWithMargin.Width);
+            if (bounds.Left % CellSizeWithMargin.Width > CellSize.Width)
+            {
+                ++min; // the left corner is in a gap
+            }
+
+            if (bounds.Right % CellSizeWithMargin.Width > CellSize.Width)
+            {
+                --max; // the right corner is in a gap
+            }
+
+            return (min, max);
         }
 
         public override LayoutElement<EntityView> FindItem(EntityView source, Point direction)

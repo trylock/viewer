@@ -18,7 +18,7 @@ namespace Viewer.UI.Suggestions
     /// This form shows suggestions in a custom draw control. 
     /// </summary>
     /// <example>
-    /// This example attaches this control to a text box and loads suggestions as the text in
+    /// This example attaches the control to a text box and loads suggestions as the text in
     /// the text box changes:
     /// 
     /// > [!IMPORTANT]
@@ -37,8 +37,9 @@ namespace Viewer.UI.Suggestions
     /// </code>
     ///
     /// > [!NOTE]
-    /// > The <see cref="ShowAtCurrentControl"/> method will only show suggestions if the Items
-    /// > list is not empty. If there is no control attached, this will be a no-op.
+    /// > The <see cref="ShowAtCurrentControl(System.Drawing.Point)"/> method will only show
+    /// > suggestions if the Items list is not empty. If there is no control attached, this will
+    /// > be a no-op.
     /// </example>
     internal partial class SuggestionView : Form
     {
@@ -60,12 +61,8 @@ namespace Viewer.UI.Suggestions
                     OnItemsChanged();
                     return;
                 }
-                
-                foreach (var item in value)
-                {
-                    _items.Add(item);
-                }
-                
+
+                _items.AddRange(value);
                 OnItemsChanged();
             }
         }

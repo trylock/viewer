@@ -310,7 +310,11 @@ namespace Viewer.UI.Images
                     .Async(() => CheckAndAdd(e.FullPath))
                     .WithAttempts(MaxRetryCount)
                     .WithDelay(RetryDelay)
+                    .WithCancellationToken(Cancellation.Token)
                     .WhenExactly<IOException>();
+            }
+            catch (OperationCanceledException)
+            {
             }
             catch (IOException ex)
             {
@@ -655,7 +659,7 @@ namespace Viewer.UI.Images
                 Monitor.Exit(_backBufferLock);
             }
         }
-        
+
         /// <inheritdoc />
         /// <summary>
         /// Dispose this evaluator and all system resources used by this evaluator.

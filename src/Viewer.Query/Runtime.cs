@@ -68,7 +68,7 @@ namespace Viewer.Query
         [ImportingConstructor]
         public Runtime(
             IValueConverter converter, 
-            IQueryErrorListener queryErrorListener,
+            [Import(typeof(AggregateQueryErrorListener))] IQueryErrorListener queryErrorListener,
             [ImportMany] IFunction[] functions)
         {
             _converter = converter;

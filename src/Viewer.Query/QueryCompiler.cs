@@ -841,8 +841,8 @@ namespace Viewer.Query
         public QueryCompiler(
             IQueryFactory queryFactory, 
             IRuntime runtime, 
-            IQueryViewRepository queryViewRepository, 
-            IQueryErrorListener queryErrorListener)
+            IQueryViewRepository queryViewRepository,
+            [Import(typeof(AggregateQueryErrorListener))] IQueryErrorListener queryErrorListener)
         {
             _queryFactory = queryFactory;
             _runtime = runtime;

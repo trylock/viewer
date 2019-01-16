@@ -1395,5 +1395,80 @@ namespace ViewerTest.Query
                         new Attribute("test", new IntValue(42), AttributeSource.Custom)))
             )));
         }
+
+        [TestMethod]
+        public void Compile_MissingOperandInMultiplication()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(null), new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(1), new IntValue(null))))
+                .Returns(new IntValue(null));
+
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where a * "), 
+                new NullQueryErrorListener());
+            
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(pred => 
+                !pred(new FileEntity("test")) &&
+                !pred(new FileEntity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom)))
+            )));
+        }
+
+        [TestMethod]
+        public void Compile_MissingOperandInMultiplicationChain()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(null), new IntValue(2))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(9), new IntValue(2))))
+                .Returns(new IntValue(18));
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(1), new IntValue(2))))
+                .Returns(new IntValue(2));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(null), new IntValue(3))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(18), new IntValue(3))))
+                .Returns(new IntValue(6));
+            _runtime
+                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(2), new IntValue(3))))
+                .Returns(new IntValue(0));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(null), new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(6), new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(0), new IntValue(null))))
+                .Returns(new IntValue(null));
+
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(6), new IntValue(null))))
+                .Returns(new IntValue(null));
+
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where 6 = a * 2 / 3 *"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(pred =>
+                !pred(new FileEntity("test")) &&
+                !pred(new FileEntity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))) &&
+                !pred(new FileEntity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(9), AttributeSource.Custom)))
+            )));
+        }
     }
 }

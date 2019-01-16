@@ -95,12 +95,13 @@ namespace Viewer.Query
         {
             if (operators.Length <= 0)
                 return;
-
+            
             // fetch operands
             var operands = new List<T>
             {
                 stack.Pop()
             };
+
             for (var i = 0; i < operators.Length; ++i)
             {
                 operands.Add(stack.Pop());
@@ -109,7 +110,7 @@ namespace Viewer.Query
             // make sure we apply operators from left to right 
             operands.Reverse();
 
-            // apply operators
+            // apply operators 
             var result = operands[0];
             for (var i = 0; i < operators.Length; ++i)
             {
@@ -583,6 +584,7 @@ namespace Viewer.Query
                 identifier = ParseComplexIdentifier(identifierToken.Symbol);
             }
             
+            // this is an ID or a function call
             if (identifierToken != null)
             {
                 if (context.LPAREN() == null) // attribute access
@@ -608,11 +610,25 @@ namespace Viewer.Query
                         identifier,
                         parameters));
                 }
+
+                return;
+            }
+
+            // if there is a missing factor (in an invalid query)
+            if (context.LPAREN() == null)
+            {
+                var token = context.Stop;
+                ValueExpression expr = new ConstantExpression(
+                    token.Line, 
+                    token.Column, 
+                    new IntValue(null));
+
+                _expressions.Push(expr);
             }
 
             // otherwise, this is a subexpression => it is already on the stack
         }
-        
+
         /// <summary>
         /// In this method we remember the "return address" of a function. That is, a place
         /// in the _expressions stack where we should return after the function call. To put

@@ -16,6 +16,7 @@ namespace Viewer.Query.Expressions
         T Visit(SubtractionExpression expr);
         T Visit(MultiplicationExpression expr);
         T Visit(DivisionExpression expr);
+        T Visit(UnaryMinusExpression expr);
 
         T Visit(LessThanOperator expr);
         T Visit(LessThanOrEqualOperator expr);
@@ -81,6 +82,12 @@ namespace Viewer.Query.Expressions
         {
             expr.Left.Accept(this);
             expr.Right.Accept(this);
+            return true;
+        }
+
+        public virtual bool Visit(UnaryMinusExpression expr)
+        {
+            expr.Parameter.Accept(this);
             return true;
         }
 

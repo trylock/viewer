@@ -9,7 +9,7 @@ using Viewer.Data;
 using Viewer.Query;
 using Viewer.Query.Expressions;
 
-namespace ViewerTest.Query.QueryExpression
+namespace ViewerTest.Query.Expressions
 {
     [TestClass]
     public class ConstantReductionVisitorTest
@@ -437,6 +437,30 @@ namespace ViewerTest.Query.QueryExpression
 
             var constant = (ConstantExpression)reduced;
             Assert.IsTrue(constant.Value.IsNull);
+            Assert.AreEqual(0, constant.Line);
+            Assert.AreEqual(0, constant.Column);
+        }
+
+        [TestMethod]
+        public void Reduce_UnaryMinusWithConstantOperand()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("-",
+                    It.Is<IExecutionContext>(context =>
+                        context.Line == 0 &&
+                        context.Column == 0 &&
+                        context.Count == 1 &&
+                        context[0].Equals(new IntValue(1))
+                    )))
+                .Returns(new IntValue(-1));
+
+            var expr = new UnaryMinusExpression(0, 0, new ConstantExpression(0, 4, new IntValue(1)));
+            var reduced = expr.Accept(_visitor);
+
+            Assert.IsInstanceOfType(reduced, typeof(ConstantExpression));
+
+            var constant = (ConstantExpression)reduced;
+            Assert.AreEqual(-1, ((IntValue)constant.Value).Value);
             Assert.AreEqual(0, constant.Line);
             Assert.AreEqual(0, constant.Column);
         }

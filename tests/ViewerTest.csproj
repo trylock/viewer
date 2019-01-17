@@ -156,7 +156,7 @@
     <Compile Include="Query\Execution\IntegrationTest.cs" />
     <Compile Include="Query\Execution\SimpleQueryTest.cs" />
     <Compile Include="Query\QueryCompilerTest.cs" />
-    <Compile Include="Query\QueryExpression\ConstantReductionVisitorTest.cs" />
+    <Compile Include="Query\Expressions\ConstantReductionVisitorTest.cs" />
     <Compile Include="Query\QueryTest.cs" />
     <Compile Include="Query\RuntimeTest.cs" />
     <Compile Include="Query\Suggestions\QuerySuggestionsTest.cs" />

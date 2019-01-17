@@ -7,6 +7,22 @@ using Viewer.Query;
 
 namespace Viewer.QueryRuntime
 {
+            [Export(typeof(IFunction))]
+        public class IntValueUnaryMinusFunction : IFunction
+        {
+            public string Name => "-";
+
+            public IReadOnlyList<TypeId> Arguments { get; } = new[]
+            {
+                TypeId.Integer
+            };
+
+            public BaseValue Call(IExecutionContext context)
+            {
+                var value = context.Get<IntValue>(0);
+                return new IntValue(-value.Value);
+            }
+        }
                 [Export(typeof(IFunction))]
             public class IntValueAdditionFunction : IFunction
             {
@@ -91,6 +107,22 @@ namespace Viewer.QueryRuntime
                     return new IntValue(lhs.Value / rhs.Value);
                 }
             }
+            [Export(typeof(IFunction))]
+        public class RealValueUnaryMinusFunction : IFunction
+        {
+            public string Name => "-";
+
+            public IReadOnlyList<TypeId> Arguments { get; } = new[]
+            {
+                TypeId.Real
+            };
+
+            public BaseValue Call(IExecutionContext context)
+            {
+                var value = context.Get<RealValue>(0);
+                return new RealValue(-value.Value);
+            }
+        }
                 [Export(typeof(IFunction))]
             public class RealValueAdditionFunction : IFunction
             {
@@ -172,6 +204,7 @@ namespace Viewer.QueryRuntime
                 }
             }
     
+
     [Export(typeof(IFunction))]
     public class StringValueAdditionFunction : IFunction
     {

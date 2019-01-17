@@ -122,6 +122,17 @@ namespace Viewer.Query.Expressions
             return result.Constant;
         }
 
+        public ValueExpression Visit(UnaryMinusExpression expr)
+        {
+            var result = ProcessUnaryOperator(expr);
+            if (result == null)
+            {
+                return expr;
+            }
+
+            return result;
+        }
+
         public ValueExpression Visit(LessThanOperator expr)
         {
             var result = ProcessBinaryOperator(expr);
@@ -212,6 +223,32 @@ namespace Viewer.Query.Expressions
             return (result.Constant, result.Children[0], result.Children[1]);
         }
 
+        private ConstantExpression ProcessUnaryOperator(UnaryOperatorExpression expr)
+        {
+            var result = ReduceFunction(expr.Name, expr);
+            return result.Constant;
+        }
+
+        /// <summary>
+        /// This method takes children expressions of <paramref name="expr"/> as parameters to
+        /// a function named <paramref name="name"/>. If all children of <paramref name="expr"/>
+        /// are reducible to constant expressions, this function will reduce the whole function
+        /// call to a constant expressions. Otherwise, it will only recude all reducible
+        /// children subexpressions.
+        /// </summary>
+        /// <param name="name">Name of the function</param>
+        /// <param name="expr">
+        /// Expression whose children subexpressions will be regarded as function parameters.
+        /// </param>
+        /// <returns>
+        /// <para>
+        /// If all subexpressions of <paramref name="expr"/> are reducible to constants, the
+        /// first returned value is the whole reduced function call. Otherwise, the first part
+        /// is null.
+        /// </para>
+        /// 
+        /// <para>Reduced subexpression</para>
+        /// </returns>
         private (
             ConstantExpression Constant, 
             List<ValueExpression> Children) ReduceFunction(string name, ValueExpression expr)

@@ -21,6 +21,27 @@ namespace Viewer.QueryRuntime
 
     for (var i = 0; i < types.Length; ++i)
     {
+        // unary minus
+    #>
+        [Export(typeof(IFunction))]
+        public class <#= types[i] #>UnaryMinusFunction : IFunction
+        {
+            public string Name => "-";
+
+            public IReadOnlyList<TypeId> Arguments { get; } = new[]
+            {
+                TypeId.<#= typeId[i] #>
+            };
+
+            public BaseValue Call(IExecutionContext context)
+            {
+                var value = context.Get<<#= types[i] #>>(0);
+                return new <#= types[i] #>(-value.Value);
+            }
+        }
+    <#
+
+        // binary operators
         for (var j = 0; j < operators.Length; ++j)
         {
     #>
@@ -54,6 +75,7 @@ namespace Viewer.QueryRuntime
         }
     }
     #>
+
 
     [Export(typeof(IFunction))]
     public class StringValueAdditionFunction : IFunction

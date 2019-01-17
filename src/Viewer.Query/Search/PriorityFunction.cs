@@ -90,6 +90,11 @@ namespace Viewer.Query.Search
                 return ComputeFunction(expr);
             }
 
+            public Bitmap Visit(UnaryMinusExpression expr)
+            {
+                return expr.Parameter.Accept(this);
+            }
+
             public Bitmap Visit(LessThanOperator expr)
             {
                 return ComputeFunction(expr);

@@ -1470,5 +1470,84 @@ namespace ViewerTest.Query
                     .SetAttribute(new Attribute("a", new IntValue(9), AttributeSource.Custom)))
             )));
         }
+        
+        [TestMethod]
+        public void Compile_UnaryMinusInFrontOfConstant()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("-", Context(new IntValue(42))))
+                .Returns(new IntValue(-42));
+
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where -42"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(pred =>
+                pred(new FileEntity("test")) &&
+                pred(new FileEntity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom)))
+            )));
+
+            _runtime.Verify(mock => mock.FindAndCall("-", Context(new IntValue(42))));
+        }
+
+        [TestMethod]
+        public void Compile_UnaryMinusInFrontOfIdentifier()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("-", Context(new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("-", Context(new IntValue(42))))
+                .Returns(new IntValue(-42));
+
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where -a"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(pred =>
+                !pred(new FileEntity("test")) &&
+                pred(new FileEntity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(42), AttributeSource.Custom)))
+            )));
+
+            _runtime.Verify(mock => mock.FindAndCall("-", Context(new IntValue(null))));
+            _runtime.Verify(mock => mock.FindAndCall("-", Context(new IntValue(42))));
+        }
+
+        [TestMethod]
+        public void Compile_UnaryMinusInFrontOfFunctionCall()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("f", Context(new IntValue(1), new StringValue("test"), new RealValue(3.14159))))
+                .Returns(new IntValue(1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("-", Context(new IntValue(1))))
+                .Returns(new IntValue(-1));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(null), new IntValue(-1))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(-1), new IntValue(-1))))
+                .Returns(new IntValue(1));
+
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where a = -f(1, \"test\", 3.14159)"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(pred =>
+                !pred(new FileEntity("test")) &&
+                pred(new FileEntity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(-1), AttributeSource.Custom)))
+            )));
+            
+            _runtime.Verify(mock => mock.FindAndCall("-", Context(new IntValue(1))));
+        }
     }
 }

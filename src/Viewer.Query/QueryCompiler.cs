@@ -614,6 +614,22 @@ namespace Viewer.Query
                 return;
             }
 
+            // if this is a unary minus
+            var unaryOperator = context.ADD_SUB();
+            if (unaryOperator != null)
+            {
+                if (unaryOperator.Symbol.Text == "-")
+                {
+                    var parameter = _expressions.Pop();
+                    _expressions.Push(new UnaryMinusExpression(
+                        unaryOperator.Symbol.Line,
+                        unaryOperator.Symbol.Column,
+                        parameter));
+                }
+
+                return;
+            }
+
             // if there is a missing factor (in an invalid query)
             if (context.LPAREN() == null)
             {

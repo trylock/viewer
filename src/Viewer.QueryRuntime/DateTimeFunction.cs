@@ -122,6 +122,19 @@ namespace Viewer.QueryRuntime
     [Export(typeof(IFunction))]
     public class TimeElapsedFunction : IFunction
     {
+        private class TimeElapsedFormatter : IValueFormatter<DateTimeValue>
+        {
+            public string Format(DateTimeValue value)
+            {
+                return value.Value?.Humanize();
+            }
+
+            public string Format(DateTimeValue value, CultureInfo culture)
+            {
+                return value.Value?.Humanize();
+            }
+        }
+
         public string Name => "TimeElapsed";
 
         public IReadOnlyList<TypeId> Arguments => new[] { TypeId.DateTime };
@@ -129,7 +142,7 @@ namespace Viewer.QueryRuntime
         public BaseValue Call(IExecutionContext arguments)
         {
             var time = arguments.Get<DateTimeValue>(0);
-            return new StringValue(time.Value?.Humanize());
+            return new FormattedDateTimeValue(time, new TimeElapsedFormatter());
         }
     }
 }

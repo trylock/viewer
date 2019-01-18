@@ -59,8 +59,6 @@ namespace Viewer.Data
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != GetType())
-                return false;
             return Equals((BaseValue)obj);
         }
 
@@ -98,7 +96,7 @@ namespace Viewer.Data
         public abstract T Accept<T>(IValueVisitor<T> visitor);
     }
 
-    public sealed class IntValue : BaseValue
+    public class IntValue : BaseValue
     {
         public int? Value { get; }
 
@@ -117,9 +115,9 @@ namespace Viewer.Data
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-            if (other.GetType() != GetType())
+            if (!(other is IntValue converted))
                 return false;
-            return Value == ((IntValue)other).Value;
+            return Value == converted.Value;
         }
 
         public override int GetHashCode()
@@ -141,7 +139,7 @@ namespace Viewer.Data
         }
     }
 
-    public sealed class RealValue : BaseValue
+    public class RealValue : BaseValue
     {
         public double? Value { get; }
 
@@ -160,9 +158,9 @@ namespace Viewer.Data
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-            if (other.GetType() != GetType())
+            if (!(other is RealValue converted))
                 return false;
-            return Value == ((RealValue)other).Value;
+            return Value == converted.Value;
         }
 
         public override int GetHashCode()
@@ -184,7 +182,7 @@ namespace Viewer.Data
         }
     }
 
-    public sealed class StringValue : BaseValue
+    public class StringValue : BaseValue
     {
         public string Value { get; }
 
@@ -203,9 +201,9 @@ namespace Viewer.Data
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-            if (other.GetType() != GetType())
+            if (!(other is StringValue converted))
                 return false;
-            return Value == ((StringValue)other).Value;
+            return Value == converted.Value;
         }
 
         public override int GetHashCode()
@@ -227,7 +225,7 @@ namespace Viewer.Data
         }
     }
 
-    public sealed class DateTimeValue : BaseValue
+    public class DateTimeValue : BaseValue
     {
         /// <summary>
         /// Format of a DateTime value in string
@@ -256,9 +254,9 @@ namespace Viewer.Data
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-            if (other.GetType() != GetType())
+            if (!(other is DateTimeValue converted))
                 return false;
-            return Value == ((DateTimeValue)other).Value;
+            return Value == converted.Value;
         }
 
         public override int GetHashCode()
@@ -283,7 +281,7 @@ namespace Viewer.Data
         }
     }
 
-    public sealed class ImageValue : BaseValue
+    public class ImageValue : BaseValue
     {
         public byte[] Value { get; }
 

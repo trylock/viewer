@@ -142,6 +142,7 @@
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentUtilsTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterTest.cs" />
+    <Compile Include="Data\FormattedValueTest.cs" />
     <Compile Include="Data\Storage\CachedAttributeStorageTest.cs" />
     <Compile Include="Data\Storage\FileSystemAttributeStorageTest.cs" />
     <Compile Include="Data\Storage\SqliteAttributeStorageTest.cs" />

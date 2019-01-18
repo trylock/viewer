@@ -37,7 +37,7 @@ namespace Viewer.UI.Images
 
         public void Report(QueryProgressReport value)
         {
-            if (value.Type == ReportType.Folder)
+            if (value.Type == ReportType.FolderFound)
             {
                 var path = PathUtils.NormalizePath(value.FilePath);
                 try
@@ -492,7 +492,7 @@ namespace Viewer.UI.Images
         private RequestIndex FetchChanges()
         {
             var index = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
-            var added = new Dictionary<BaseValue, List<EntityView>>();
+            var added = new Dictionary<BaseValue, List<EntityView>>(ValueStringEqualityComparer.Default);
             while (_requests.TryDequeue(out var req))
             {
                 // group added views

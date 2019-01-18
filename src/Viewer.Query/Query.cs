@@ -319,7 +319,8 @@ namespace Viewer.Query
                     return new UnionQuery(left, ModifyQueryLeafs(op.Second, transformation));
                 else if (op.GetType() == typeof(IntersectQuery))
                     return new IntersectQuery(left, ModifyQueryLeafs(op.Second, transformation));
-                else if (op.GetType() == typeof(ExceptQuery)) return new ExceptQuery(left, op.Second);
+                else if (op.GetType() == typeof(ExceptQuery))
+                    return new ExceptQuery(left, ModifyQueryLeafs(op.Second, transformation));
 
                 return null;
             }

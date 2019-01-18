@@ -585,6 +585,10 @@ namespace Viewer.UI.Images
             {
                 location.Y += ClientSize.Height;
             }
+            else
+            {
+                location.Y += GroupLabelControl.Height;
+            }
 
             location = ControlLayout.AlignLocation(location, alignLowerBoundary);
 

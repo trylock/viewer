@@ -12,15 +12,16 @@ using Viewer.UI.Errors;
 namespace Viewer.UI.QueryEditor
 {
     [Export(typeof(IQueryErrorListener))]
-    public class QueryQueryErrorListener : IQueryErrorListener
+    public class QueryErrorListener : IQueryErrorListener
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IErrorList _errorList;
-        private readonly ConcurrentDictionary<string, bool> _reportedRuntimeErrors = new ConcurrentDictionary<string, bool>();
+        private readonly ConcurrentDictionary<string, bool> _reportedRuntimeErrors = 
+            new ConcurrentDictionary<string, bool>();
 
         [ImportingConstructor]
-        public QueryQueryErrorListener(IErrorList errorList)
+        public QueryErrorListener(IErrorList errorList)
         {
             _errorList = errorList;
         }
@@ -50,7 +51,7 @@ namespace Viewer.UI.QueryEditor
             // Runtime errors can be reported for many entities. We only want to report each
             // error once to the user.
             var errorKey = line + ";" + column + ";" + errorMessage;
-            if (_reportedRuntimeErrors.ContainsKey(errorKey))
+            if (!_reportedRuntimeErrors.TryAdd(errorKey, true))
             {
                 return;
             }
@@ -65,7 +66,6 @@ namespace Viewer.UI.QueryEditor
                 Group = "Query",
                 Type = LogType.Warning
             });
-            _reportedRuntimeErrors[errorKey] = true;
         }
         
         public void AfterCompilation()

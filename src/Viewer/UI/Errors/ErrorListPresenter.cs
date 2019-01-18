@@ -50,7 +50,7 @@ namespace Viewer.UI.Errors
             }));
         }
 
-        private void View_Retry(object sender, RetryEventArgs e)
+        private void View_Retry(object sender, ErrorListEntryEventArgs e)
         {
             var entry = e.Entry;
             _errorList.Remove(entry);

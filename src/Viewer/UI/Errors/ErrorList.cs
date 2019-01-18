@@ -47,6 +47,11 @@ namespace Viewer.UI.Errors
         public Retry RetryOperation { get; set; }
 
         /// <summary>
+        /// Operation triggered upon activating this error list entry (e.g. when user clicks on it)
+        /// </summary>
+        public Action<ErrorListEntry> ActivateOperation { get; set; } = _ => { };
+
+        /// <summary>
         /// Line in an input where the error occurs
         /// </summary>
         public int Line { get; set; }
@@ -55,6 +60,11 @@ namespace Viewer.UI.Errors
         /// Column in an input where the error occurs
         /// </summary>
         public int Column { get; set; }
+
+        public override string ToString()
+        {
+            return $"[{Line}][{Column}][{Type}][{Group}] {Message}";
+        }
     }
 
     public class LogEventArgs : EventArgs

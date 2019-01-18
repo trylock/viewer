@@ -73,6 +73,7 @@ namespace Viewer.UI.Errors
             this.LogEntryGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LogEntryGridView.Size = new System.Drawing.Size(567, 215);
             this.LogEntryGridView.TabIndex = 0;
+            this.LogEntryGridView.DoubleClick += new System.EventHandler(this.LogEntryGridView_DoubleClick);
             // 
             // TypeColumn
             // 

@@ -13,6 +13,7 @@ using Viewer.Core.UI;
 using Viewer.Properties;
 using Viewer.UI.Errors;
 using Viewer.UI.Forms;
+using Viewer.UI.Images;
 
 namespace Viewer.UI.Errors
 {
@@ -32,9 +33,11 @@ namespace Viewer.UI.Errors
 
         #region View
 
-        public event EventHandler<RetryEventArgs> Retry;
+        public event EventHandler<ErrorListEntryEventArgs> Retry;
+        public event EventHandler<ErrorListEntryEventArgs> ActivateEntry;
 
-        public IEnumerable<ErrorListEntry> Entries { get; set; } = Enumerable.Empty<ErrorListEntry>();
+        public IEnumerable<ErrorListEntry> Entries { get; set; } = 
+            Enumerable.Empty<ErrorListEntry>();
 
         public void UpdateEntries()
         {
@@ -78,7 +81,7 @@ namespace Viewer.UI.Errors
                 {
                     if (localEntry.RetryOperation != null)
                     {
-                        Retry?.Invoke(this, new RetryEventArgs(localEntry));
+                        Retry?.Invoke(this, new ErrorListEntryEventArgs(localEntry));
                         LogEntryGridView.Rows.Remove(row);
                     }
                 };
@@ -90,5 +93,22 @@ namespace Viewer.UI.Errors
         }
 
         #endregion
+
+        private void LogEntryGridView_DoubleClick(object sender, EventArgs e)
+        {
+            var rowIndex = LogEntryGridView.CurrentCell?.RowIndex ?? -1;
+            if (rowIndex < 0)
+            {
+                return;
+            }
+
+            var entry = Entries.ElementAtOrDefault(rowIndex);
+            if (entry == null)
+            {
+                return;
+            }
+
+            ActivateEntry?.Invoke(this, new ErrorListEntryEventArgs(entry));
+        }
     }
 }

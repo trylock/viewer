@@ -117,196 +117,166 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="GoBackButton.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
-  <data name="$this.ToolTip2" xml:space="preserve">
-    <value />
-  </data>
-  <data name="&gt;&gt;GoUpButton.Type" xml:space="preserve">
-    <value>Viewer.UI.Forms.VectorButton, Viewer, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="GoForwardButton.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
-  <data name="GoForwardButton.ToolTip" xml:space="preserve">
-    <value>Alt + →, Mouse Button 5</value>
-  </data>
-  <data name="&gt;&gt;GoForwardButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="GoUpButton.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
-  <data name="&gt;&gt;GoUpButton.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="GoForwardButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>30, 3</value>
-  </data>
-  <data name="GoBackButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 24</value>
-  </data>
-  <data name="GoBackButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
   <data name="HistoryComboBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>82, 4</value>
-  </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="GoUpButton.ToolTip" xml:space="preserve">
-    <value>Alt + ↑</value>
-  </data>
-  <data name="&gt;&gt;GoBackButton.Type" xml:space="preserve">
-    <value>Viewer.UI.Forms.VectorButton, Viewer, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;GoBackButton.Name" xml:space="preserve">
-    <value>GoBackButton</value>
-  </data>
-  <data name="&gt;&gt;BackTooltip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="GoBackButton.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="GoUpButton.ToolTip1" xml:space="preserve">
-    <value />
-  </data>
-  <data name="&gt;&gt;GoUpButton.Name" xml:space="preserve">
-    <value>GoUpButton</value>
-  </data>
-  <data name="HistoryComboBox.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="GoForwardButton.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;UpTooltip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;GoBackButton.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;HistoryComboBox.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="GoForwardButton.ToolTip1" xml:space="preserve">
-    <value>Alt + →, Mouse Button 5</value>
-  </data>
-  <data name="GoForwardButton.Text" xml:space="preserve">
-    <value>vectorButton1</value>
-  </data>
-  <data name="&gt;&gt;BackTooltip.Name" xml:space="preserve">
-    <value>BackTooltip</value>
-  </data>
-  <data name="GoBackButton.ToolTip2" xml:space="preserve">
-    <value />
-  </data>
-  <data name="&gt;&gt;GoBackButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>688, 28</value>
-  </data>
-  <data name="&gt;&gt;HistoryComboBox.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="GoUpButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 24</value>
   </data>
   <data name="HistoryComboBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>603, 21</value>
   </data>
-  <data name="GoBackButton.Text" xml:space="preserve">
-    <value>vectorButton1</value>
-  </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>HistoryView</value>
-  </data>
-  <data name="&gt;&gt;HistoryComboBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="GoBackButton.ToolTip" xml:space="preserve">
-    <value>Alt + ←, Mouse Button 4</value>
-  </data>
-  <data name="&gt;&gt;GoUpButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="HistoryComboBox.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
-  </data>
-  <data name="&gt;&gt;GoForwardButton.Name" xml:space="preserve">
-    <value>GoForwardButton</value>
-  </data>
-  <data name="&gt;&gt;ForwardTooltip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="GoUpButton.ToolTip2" xml:space="preserve">
-    <value>Alt + ↑</value>
-  </data>
-  <data name="HistoryComboBox.ToolTip2" xml:space="preserve">
-    <value />
-  </data>
-  <data name="GoBackButton.ToolTip1" xml:space="preserve">
-    <value />
-  </data>
-  <data name="GoForwardButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 24</value>
-  </data>
-  <data name="&gt;&gt;UpTooltip.Name" xml:space="preserve">
-    <value>UpTooltip</value>
-  </data>
-  <data name="&gt;&gt;GoForwardButton.Type" xml:space="preserve">
-    <value>Viewer.UI.Forms.VectorButton, Viewer, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="GoForwardButton.ToolTip2" xml:space="preserve">
-    <value />
-  </data>
-  <data name="GoUpButton.Text" xml:space="preserve">
-    <value>vectorButton1</value>
-  </data>
-  <data name="&gt;&gt;GoForwardButton.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="$this.ToolTip1" xml:space="preserve">
-    <value />
-  </data>
-  <data name="HistoryComboBox.ToolTip1" xml:space="preserve">
-    <value />
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
-  <data name="GoUpButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>55, 3</value>
-  </data>
-  <data name="&gt;&gt;ForwardTooltip.Name" xml:space="preserve">
-    <value>ForwardTooltip</value>
-  </data>
-  <data name="GoUpButton.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
   </data>
   <data name="&gt;&gt;HistoryComboBox.Name" xml:space="preserve">
     <value>HistoryComboBox</value>
   </data>
-  <data name="$this.ToolTip" xml:space="preserve">
-    <value />
+  <data name="&gt;&gt;HistoryComboBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;HistoryComboBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;HistoryComboBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <metadata name="BackTooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="GoBackButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="GoBackButton.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>5, 5, 5, 5</value>
+  </data>
+  <data name="GoBackButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="GoBackButton.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="GoBackButton.Text" xml:space="preserve">
+    <value>vectorButton1</value>
+  </data>
+  <data name="GoBackButton.ToolTip" xml:space="preserve">
+    <value>Alt + ←, Mouse Button 4</value>
+  </data>
+  <data name="&gt;&gt;GoBackButton.Name" xml:space="preserve">
+    <value>GoBackButton</value>
+  </data>
+  <data name="&gt;&gt;GoBackButton.Type" xml:space="preserve">
+    <value>Viewer.UI.Forms.VectorButton, Viewer, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GoBackButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;GoBackButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="GoForwardButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>30, 3</value>
+  </data>
+  <data name="GoForwardButton.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>5, 5, 5, 5</value>
+  </data>
+  <data name="GoForwardButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="GoForwardButton.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="GoForwardButton.Text" xml:space="preserve">
+    <value>vectorButton1</value>
+  </data>
+  <data name="GoForwardButton.ToolTip" xml:space="preserve">
+    <value>Alt + →, Mouse Button 5</value>
   </data>
   <metadata name="ForwardTooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>132, 17</value>
   </metadata>
+  <data name="GoForwardButton.ToolTip1" xml:space="preserve">
+    <value>Alt + →, Mouse Button 5</value>
+  </data>
+  <data name="&gt;&gt;GoForwardButton.Name" xml:space="preserve">
+    <value>GoForwardButton</value>
+  </data>
+  <data name="&gt;&gt;GoForwardButton.Type" xml:space="preserve">
+    <value>Viewer.UI.Forms.VectorButton, Viewer, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GoForwardButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;GoForwardButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="GoUpButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>55, 3</value>
+  </data>
+  <data name="GoUpButton.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>5, 5, 5, 5</value>
+  </data>
+  <data name="GoUpButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="GoUpButton.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="GoUpButton.Text" xml:space="preserve">
+    <value>vectorButton1</value>
+  </data>
+  <data name="GoUpButton.ToolTip" xml:space="preserve">
+    <value>Alt + ↑</value>
+  </data>
   <metadata name="UpTooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>266, 17</value>
   </metadata>
+  <data name="GoUpButton.ToolTip1" xml:space="preserve">
+    <value>Alt + ↑</value>
+  </data>
+  <data name="&gt;&gt;GoUpButton.Name" xml:space="preserve">
+    <value>GoUpButton</value>
+  </data>
+  <data name="&gt;&gt;GoUpButton.Type" xml:space="preserve">
+    <value>Viewer.UI.Forms.VectorButton, Viewer, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GoUpButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;GoUpButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="BackTooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>688, 28</value>
+  </data>
+  <data name="&gt;&gt;BackTooltip.Name" xml:space="preserve">
+    <value>BackTooltip</value>
+  </data>
+  <data name="&gt;&gt;BackTooltip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ForwardTooltip.Name" xml:space="preserve">
+    <value>ForwardTooltip</value>
+  </data>
+  <data name="&gt;&gt;ForwardTooltip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;UpTooltip.Name" xml:space="preserve">
+    <value>UpTooltip</value>
+  </data>
+  <data name="&gt;&gt;UpTooltip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>HistoryView</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

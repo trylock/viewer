@@ -30,18 +30,18 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HistoryView));
-            Viewer.UI.Forms.StateStyles stateStyles7 = new Viewer.UI.Forms.StateStyles();
-            Viewer.UI.Forms.Styles styles7 = new Viewer.UI.Forms.Styles();
-            Viewer.UI.Forms.StateStyles stateStyles8 = new Viewer.UI.Forms.StateStyles();
-            Viewer.UI.Forms.Styles styles8 = new Viewer.UI.Forms.Styles();
-            Viewer.UI.Forms.StateStyles stateStyles9 = new Viewer.UI.Forms.StateStyles();
-            Viewer.UI.Forms.Styles styles9 = new Viewer.UI.Forms.Styles();
-            Viewer.UI.Forms.StateStyles stateStyles10 = new Viewer.UI.Forms.StateStyles();
-            Viewer.UI.Forms.Styles styles10 = new Viewer.UI.Forms.Styles();
-            Viewer.UI.Forms.StateStyles stateStyles11 = new Viewer.UI.Forms.StateStyles();
-            Viewer.UI.Forms.Styles styles11 = new Viewer.UI.Forms.Styles();
-            Viewer.UI.Forms.StateStyles stateStyles12 = new Viewer.UI.Forms.StateStyles();
-            Viewer.UI.Forms.Styles styles12 = new Viewer.UI.Forms.Styles();
+            Viewer.UI.Forms.StateStyles stateStyles1 = new Viewer.UI.Forms.StateStyles();
+            Viewer.UI.Forms.Styles styles1 = new Viewer.UI.Forms.Styles();
+            Viewer.UI.Forms.StateStyles stateStyles2 = new Viewer.UI.Forms.StateStyles();
+            Viewer.UI.Forms.Styles styles2 = new Viewer.UI.Forms.Styles();
+            Viewer.UI.Forms.StateStyles stateStyles3 = new Viewer.UI.Forms.StateStyles();
+            Viewer.UI.Forms.Styles styles3 = new Viewer.UI.Forms.Styles();
+            Viewer.UI.Forms.StateStyles stateStyles4 = new Viewer.UI.Forms.StateStyles();
+            Viewer.UI.Forms.Styles styles4 = new Viewer.UI.Forms.Styles();
+            Viewer.UI.Forms.StateStyles stateStyles5 = new Viewer.UI.Forms.StateStyles();
+            Viewer.UI.Forms.Styles styles5 = new Viewer.UI.Forms.Styles();
+            Viewer.UI.Forms.StateStyles stateStyles6 = new Viewer.UI.Forms.StateStyles();
+            Viewer.UI.Forms.Styles styles6 = new Viewer.UI.Forms.Styles();
             this.HistoryComboBox = new System.Windows.Forms.ComboBox();
             this.BackTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.GoBackButton = new Viewer.UI.Forms.VectorButton();
@@ -53,111 +53,104 @@
             // 
             // HistoryComboBox
             // 
-            resources.ApplyResources(this.HistoryComboBox, "HistoryComboBox");
             this.HistoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.HistoryComboBox.FormattingEnabled = true;
+            resources.ApplyResources(this.HistoryComboBox, "HistoryComboBox");
             this.HistoryComboBox.Name = "HistoryComboBox";
-            this.ForwardTooltip.SetToolTip(this.HistoryComboBox, resources.GetString("HistoryComboBox.ToolTip"));
-            this.BackTooltip.SetToolTip(this.HistoryComboBox, resources.GetString("HistoryComboBox.ToolTip1"));
-            this.UpTooltip.SetToolTip(this.HistoryComboBox, resources.GetString("HistoryComboBox.ToolTip2"));
             this.HistoryComboBox.SelectedIndexChanged += new System.EventHandler(this.HistoryComboBox_SelectedIndexChanged);
             this.HistoryComboBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HistoryComboBox_KeyDown);
             // 
             // BackTooltip
             // 
-            this.BackTooltip.ToolTipTitle = "Předchozí dotaz";
+            this.BackTooltip.ToolTipTitle = "Previous query";
             // 
             // GoBackButton
             // 
-            resources.ApplyResources(this.GoBackButton, "GoBackButton");
-            styles7.FillColor = System.Drawing.Color.Empty;
-            styles7.IsFillEnabled = false;
-            styles7.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
-            styles7.StrokeColor = System.Drawing.Color.Empty;
-            styles7.StrokeWidth = 0;
-            stateStyles7.Disabled = styles7;
-            stateStyles7.Hover = styles7;
-            stateStyles7.Normal = styles7;
-            this.GoBackButton.ButtonStyles = stateStyles7;
+            styles1.FillColor = System.Drawing.Color.Empty;
+            styles1.IsFillEnabled = false;
+            styles1.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            styles1.StrokeColor = System.Drawing.Color.Empty;
+            styles1.StrokeWidth = 0;
+            stateStyles1.Disabled = styles1;
+            stateStyles1.Hover = styles1;
+            stateStyles1.Normal = styles1;
+            this.GoBackButton.ButtonStyles = stateStyles1;
             this.GoBackButton.Image = null;
-            styles8.FillColor = System.Drawing.Color.Black;
-            styles8.IsFillEnabled = false;
-            styles8.LineJoin = System.Drawing.Drawing2D.LineJoin.Bevel;
-            styles8.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(65)))), ((int)(((byte)(65)))), ((int)(((byte)(65)))));
-            styles8.StrokeWidth = 2;
-            stateStyles8.Disabled = styles8;
-            stateStyles8.Hover = styles8;
-            stateStyles8.Normal = styles8;
-            this.GoBackButton.ImageStyles = stateStyles8;
+            styles2.FillColor = System.Drawing.Color.Black;
+            styles2.IsFillEnabled = false;
+            styles2.LineJoin = System.Drawing.Drawing2D.LineJoin.Bevel;
+            styles2.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(65)))), ((int)(((byte)(65)))), ((int)(((byte)(65)))));
+            styles2.StrokeWidth = 2;
+            stateStyles2.Disabled = styles2;
+            stateStyles2.Hover = styles2;
+            stateStyles2.Normal = styles2;
+            this.GoBackButton.ImageStyles = stateStyles2;
+            resources.ApplyResources(this.GoBackButton, "GoBackButton");
             this.GoBackButton.Name = "GoBackButton";
             this.BackTooltip.SetToolTip(this.GoBackButton, resources.GetString("GoBackButton.ToolTip"));
-            this.ForwardTooltip.SetToolTip(this.GoBackButton, resources.GetString("GoBackButton.ToolTip1"));
-            this.UpTooltip.SetToolTip(this.GoBackButton, resources.GetString("GoBackButton.ToolTip2"));
             this.GoBackButton.Click += new System.EventHandler(this.GoBackButton_Click);
             // 
             // GoForwardButton
             // 
-            resources.ApplyResources(this.GoForwardButton, "GoForwardButton");
-            styles9.FillColor = System.Drawing.Color.Empty;
-            styles9.IsFillEnabled = false;
-            styles9.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
-            styles9.StrokeColor = System.Drawing.Color.Empty;
-            styles9.StrokeWidth = 0;
-            stateStyles9.Disabled = styles9;
-            stateStyles9.Hover = styles9;
-            stateStyles9.Normal = styles9;
-            this.GoForwardButton.ButtonStyles = stateStyles9;
+            styles3.FillColor = System.Drawing.Color.Empty;
+            styles3.IsFillEnabled = false;
+            styles3.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            styles3.StrokeColor = System.Drawing.Color.Empty;
+            styles3.StrokeWidth = 0;
+            stateStyles3.Disabled = styles3;
+            stateStyles3.Hover = styles3;
+            stateStyles3.Normal = styles3;
+            this.GoForwardButton.ButtonStyles = stateStyles3;
             this.GoForwardButton.Image = null;
-            styles10.FillColor = System.Drawing.Color.Black;
-            styles10.IsFillEnabled = true;
-            styles10.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
-            styles10.StrokeColor = System.Drawing.Color.Empty;
-            styles10.StrokeWidth = 0;
-            stateStyles10.Disabled = styles10;
-            stateStyles10.Hover = styles10;
-            stateStyles10.Normal = styles10;
-            this.GoForwardButton.ImageStyles = stateStyles10;
+            styles4.FillColor = System.Drawing.Color.Black;
+            styles4.IsFillEnabled = true;
+            styles4.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            styles4.StrokeColor = System.Drawing.Color.Empty;
+            styles4.StrokeWidth = 0;
+            stateStyles4.Disabled = styles4;
+            stateStyles4.Hover = styles4;
+            stateStyles4.Normal = styles4;
+            this.GoForwardButton.ImageStyles = stateStyles4;
+            resources.ApplyResources(this.GoForwardButton, "GoForwardButton");
             this.GoForwardButton.Name = "GoForwardButton";
             this.BackTooltip.SetToolTip(this.GoForwardButton, resources.GetString("GoForwardButton.ToolTip"));
             this.ForwardTooltip.SetToolTip(this.GoForwardButton, resources.GetString("GoForwardButton.ToolTip1"));
-            this.UpTooltip.SetToolTip(this.GoForwardButton, resources.GetString("GoForwardButton.ToolTip2"));
             this.GoForwardButton.Click += new System.EventHandler(this.GoForwardButton_Click);
             // 
             // GoUpButton
             // 
-            resources.ApplyResources(this.GoUpButton, "GoUpButton");
-            styles11.FillColor = System.Drawing.Color.Empty;
-            styles11.IsFillEnabled = false;
-            styles11.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
-            styles11.StrokeColor = System.Drawing.Color.Empty;
-            styles11.StrokeWidth = 0;
-            stateStyles11.Disabled = styles11;
-            stateStyles11.Hover = styles11;
-            stateStyles11.Normal = styles11;
-            this.GoUpButton.ButtonStyles = stateStyles11;
+            styles5.FillColor = System.Drawing.Color.Empty;
+            styles5.IsFillEnabled = false;
+            styles5.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            styles5.StrokeColor = System.Drawing.Color.Empty;
+            styles5.StrokeWidth = 0;
+            stateStyles5.Disabled = styles5;
+            stateStyles5.Hover = styles5;
+            stateStyles5.Normal = styles5;
+            this.GoUpButton.ButtonStyles = stateStyles5;
             this.GoUpButton.Image = null;
-            styles12.FillColor = System.Drawing.Color.Black;
-            styles12.IsFillEnabled = true;
-            styles12.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
-            styles12.StrokeColor = System.Drawing.Color.Empty;
-            styles12.StrokeWidth = 0;
-            stateStyles12.Disabled = styles12;
-            stateStyles12.Hover = styles12;
-            stateStyles12.Normal = styles12;
-            this.GoUpButton.ImageStyles = stateStyles12;
+            styles6.FillColor = System.Drawing.Color.Black;
+            styles6.IsFillEnabled = true;
+            styles6.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
+            styles6.StrokeColor = System.Drawing.Color.Empty;
+            styles6.StrokeWidth = 0;
+            stateStyles6.Disabled = styles6;
+            stateStyles6.Hover = styles6;
+            stateStyles6.Normal = styles6;
+            this.GoUpButton.ImageStyles = stateStyles6;
+            resources.ApplyResources(this.GoUpButton, "GoUpButton");
             this.GoUpButton.Name = "GoUpButton";
             this.BackTooltip.SetToolTip(this.GoUpButton, resources.GetString("GoUpButton.ToolTip"));
-            this.ForwardTooltip.SetToolTip(this.GoUpButton, resources.GetString("GoUpButton.ToolTip1"));
-            this.UpTooltip.SetToolTip(this.GoUpButton, resources.GetString("GoUpButton.ToolTip2"));
+            this.UpTooltip.SetToolTip(this.GoUpButton, resources.GetString("GoUpButton.ToolTip1"));
             this.GoUpButton.Click += new System.EventHandler(this.GoUpButton_Click);
             // 
             // ForwardTooltip
             // 
-            this.ForwardTooltip.ToolTipTitle = "Následující dotaz";
+            this.ForwardTooltip.ToolTipTitle = "Next query";
             // 
             // UpTooltip
             // 
-            this.UpTooltip.ToolTipTitle = "Rodičovský adresář";
+            this.UpTooltip.ToolTipTitle = "Parent directory";
             // 
             // HistoryView
             // 
@@ -169,9 +162,6 @@
             this.Controls.Add(this.GoBackButton);
             this.Controls.Add(this.HistoryComboBox);
             this.Name = "HistoryView";
-            this.UpTooltip.SetToolTip(this, resources.GetString("$this.ToolTip"));
-            this.BackTooltip.SetToolTip(this, resources.GetString("$this.ToolTip1"));
-            this.ForwardTooltip.SetToolTip(this, resources.GetString("$this.ToolTip2"));
             this.Layout += new System.Windows.Forms.LayoutEventHandler(this.HistoryView_Layout);
             this.ResumeLayout(false);
 

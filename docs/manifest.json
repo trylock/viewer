@@ -12,7 +12,7 @@
           "hash": "c7UV8A/N3LF6+I9+sKLw3g=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -24,7 +24,7 @@
           "hash": "Whi9GBOBWZRYtfH7BGjBHQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -36,7 +36,7 @@
           "hash": "7SQaRPUivVId8hJyKmtl0g=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -48,7 +48,7 @@
           "hash": "OXfxpCVOM0j01zcrxBff8g=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -63,7 +63,7 @@
           "hash": "JSF8fdprYsjCN5JOo0pGeg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -90,7 +90,7 @@
           "hash": "bBOJRImt2qQ11oiAFJeEkw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -111,10 +111,10 @@
       "output": {
         ".html": {
           "relative_path": "articles/developer/query.html",
-          "hash": "npsjv8ExF3O6HbnT/Z0djQ=="
+          "hash": "hzk1VYWZSm+TdilaDMzPJg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -126,7 +126,7 @@
           "hash": "kO+uHvNVqgRfB94JyHrSAg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -150,7 +150,7 @@
           "hash": "vzuI31DyJept/swf9umHCQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -295,7 +295,7 @@
           "hash": "jaGxG3p+Cp++LJAfYdpx7w=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     }
   ],
@@ -315,13 +315,13 @@
           "can_incremental": true,
           "incrementalPhase": "build"
         },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": true,
-          "incrementalPhase": "build"
-        },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
           "incrementalPhase": "build"
         }
       }

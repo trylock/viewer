@@ -198,7 +198,7 @@ expression: multiplication (ADD_SUB multiplication)*;
 
 multiplication: factor (MULT_DIV factor)*;
 
-factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID  (LPAREN argumentList RPAREN)? | ID (LPAREN argumentList RPAREN)?;
+factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID  (LPAREN argumentList RPAREN)? | ID (LPAREN argumentList RPAREN)? | ADD_SUB factor;
 
 argumentList: comparison (PARAM_DELIMITER comparison)* | ;
 </code></pre></article>
@@ -209,7 +209,7 @@ argumentList: comparison (PARAM_DELIMITER comparison)* | ;
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/groupby/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

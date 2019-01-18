@@ -178,4 +178,26 @@ namespace Viewer.Data
             return Comparer<string>.Default.Compare(xValue, yValue);
         }
     }
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Compare 2 <see cref="T:Viewer.Data.BaseValue" />s based on their string representations.
+    /// </summary>
+    public class ValueStringEqualityComparer : IEqualityComparer<BaseValue>
+    {
+        private static IEqualityComparer<string> Comparer => StringComparer.CurrentCulture;
+
+        public static ValueStringEqualityComparer Default { get; } =
+            new ValueStringEqualityComparer();
+
+        public bool Equals(BaseValue x, BaseValue y)
+        {
+            return Comparer.Equals(x?.ToString(), y?.ToString());
+        }
+
+        public int GetHashCode(BaseValue obj)
+        {
+            return Comparer.GetHashCode(obj?.ToString());
+        }
+    }
 }

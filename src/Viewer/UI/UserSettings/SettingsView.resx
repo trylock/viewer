@@ -117,62 +117,62 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="ProgramsLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>51, 13</value>
-  </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>SettingsView</value>
-  </data>
-  <data name="ProgramsGridView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 28</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ProgramsGridView.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>Viewer.Core.UI.WindowView, Viewer.Core, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;ProgramsGridView.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;ProgramsLabel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;ProgramsLabel.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;ProgramsLabel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="ProgramsGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>653, 369</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="ProgramsLabel.Text" xml:space="preserve">
-    <value>Programs</value>
-  </data>
-  <data name="&gt;&gt;SelectFileDialog.Name" xml:space="preserve">
-    <value>SelectFileDialog</value>
-  </data>
-  <data name="&gt;&gt;ProgramsLabel.Name" xml:space="preserve">
-    <value>ProgramsLabel</value>
-  </data>
   <data name="ProgramsLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ProgramsLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="ProgramsLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ProgramsLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="ProgramsLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>5, 5, 5, 5</value>
+  </data>
+  <data name="ProgramsLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>51, 13</value>
   </data>
   <data name="ProgramsLabel.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ProgramsGridView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
+  <data name="ProgramsLabel.Text" xml:space="preserve">
+    <value>Programs</value>
   </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
+  <data name="&gt;&gt;ProgramsLabel.Name" xml:space="preserve">
+    <value>ProgramsLabel</value>
+  </data>
+  <data name="&gt;&gt;ProgramsLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ProgramsLabel.Parent" xml:space="preserve">
+    <value>ProgramsTab</value>
+  </data>
+  <data name="&gt;&gt;ProgramsLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <metadata name="SelectFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="SelectFileDialog.Filter" xml:space="preserve">
+    <value>Executable files|*.exe|All files|*.*</value>
+  </data>
+  <data name="ProgramsGridView.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="ProgramsGridView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 16</value>
+  </data>
+  <data name="ProgramsGridView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>663, 364</value>
+  </data>
+  <data name="ProgramsGridView.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;ProgramsGridView.Name" xml:space="preserve">
     <value>ProgramsGridView</value>
@@ -181,27 +181,138 @@
     <value>Viewer.UI.Forms.BufferedDataGridView, Viewer, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;ProgramsGridView.Parent" xml:space="preserve">
+    <value>ProgramsTab</value>
+  </data>
+  <data name="&gt;&gt;ProgramsGridView.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ProgramsTab.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="ProgramsTab.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="ProgramsTab.Size" type="System.Drawing.Size, System.Drawing">
+    <value>669, 383</value>
+  </data>
+  <data name="ProgramsTab.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="ProgramsTab.Text" xml:space="preserve">
+    <value>Programs</value>
+  </data>
+  <data name="&gt;&gt;ProgramsTab.Name" xml:space="preserve">
+    <value>ProgramsTab</value>
+  </data>
+  <data name="&gt;&gt;ProgramsTab.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ProgramsTab.Parent" xml:space="preserve">
+    <value>SettingsTabs</value>
+  </data>
+  <data name="&gt;&gt;ProgramsTab.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ScrollSnappingCheckBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="ScrollSnappingCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 6</value>
+  </data>
+  <data name="ScrollSnappingCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 17</value>
+  </data>
+  <data name="ScrollSnappingCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="ScrollSnappingCheckBox.Text" xml:space="preserve">
+    <value>Scroll Snapping</value>
+  </data>
+  <data name="&gt;&gt;ScrollSnappingCheckBox.Name" xml:space="preserve">
+    <value>ScrollSnappingCheckBox</value>
+  </data>
+  <data name="&gt;&gt;ScrollSnappingCheckBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ScrollSnappingCheckBox.Parent" xml:space="preserve">
+    <value>ThumbnailGridTab</value>
+  </data>
+  <data name="&gt;&gt;ScrollSnappingCheckBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ThumbnailGridTab.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="ThumbnailGridTab.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="ThumbnailGridTab.Size" type="System.Drawing.Size, System.Drawing">
+    <value>669, 383</value>
+  </data>
+  <data name="ThumbnailGridTab.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="ThumbnailGridTab.Text" xml:space="preserve">
+    <value>Thumbnail Grid</value>
+  </data>
+  <data name="&gt;&gt;ThumbnailGridTab.Name" xml:space="preserve">
+    <value>ThumbnailGridTab</value>
+  </data>
+  <data name="&gt;&gt;ThumbnailGridTab.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ThumbnailGridTab.Parent" xml:space="preserve">
+    <value>SettingsTabs</value>
+  </data>
+  <data name="&gt;&gt;ThumbnailGridTab.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="SettingsTabs.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="SettingsTabs.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="SettingsTabs.Size" type="System.Drawing.Size, System.Drawing">
+    <value>677, 409</value>
+  </data>
+  <data name="SettingsTabs.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;SettingsTabs.Name" xml:space="preserve">
+    <value>SettingsTabs</value>
+  </data>
+  <data name="&gt;&gt;SettingsTabs.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;SettingsTabs.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="SelectFileDialog.Filter" xml:space="preserve">
-    <value>Executable files|*.exe|All files|*.*</value>
+  <data name="&gt;&gt;SettingsTabs.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="ProgramsLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 9</value>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>677, 409</value>
   </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="&gt;&gt;SelectFileDialog.Name" xml:space="preserve">
+    <value>SelectFileDialog</value>
+  </data>
   <data name="&gt;&gt;SelectFileDialog.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>cs-CZ</value>
-  </metadata>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="SelectFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>SettingsView</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>Viewer.Core.UI.WindowView, Viewer.Core, Version=1.3.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
 </root>

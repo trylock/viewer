@@ -556,7 +556,10 @@ namespace Viewer.UI.Images
         {
             if (e.Delta <= -120 || e.Delta >= 120)
             {
-                AlignScrollLocation(e.Delta < 0);
+                if (Settings.Default.ThumbnailGridScrollSnapping)
+                {
+                    AlignScrollLocation(e.Delta < 0);
+                }
             }
 
             GroupLabelControl.Invalidate();

@@ -24,6 +24,7 @@ namespace Viewer.UI.UserSettings
         #region ISettingsView 
 
         public event EventHandler ProgramsChanged;
+        public event EventHandler ThumbnailGridSettingsChanged;
 
         private List<ExternalApplication> _programs;
         public List<ExternalApplication> Programs
@@ -38,6 +39,12 @@ namespace Viewer.UI.UserSettings
 
                 RestoreSelectedProgram();
             }
+        }
+
+        public bool ScrollSnapping
+        {
+            get => ScrollSnappingCheckBox.Checked;
+            set => ScrollSnappingCheckBox.Checked = value;
         }
 
         private ExternalApplication _lastSelectedProgram;
@@ -120,6 +127,11 @@ namespace Viewer.UI.UserSettings
 
             var path = SelectFileDialog.FileName;
             ProgramsGridView[e.ColumnIndex, e.RowIndex].Value = path;
+        }
+
+        private void ScrollSnappingCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            ThumbnailGridSettingsChanged?.Invoke(sender, e);
         }
     }
 }

@@ -17,8 +17,18 @@ namespace Viewer.UI.UserSettings
         event EventHandler ProgramsChanged;
 
         /// <summary>
+        /// Event occurs whenever one of thumbnail setting changes.
+        /// </summary>
+        event EventHandler ThumbnailGridSettingsChanged;
+
+        /// <summary>
         /// List of external applications which can be run with files as their arguments
         /// </summary>
         List<ExternalApplication> Programs { get; set; }
+
+        /// <summary>
+        /// If true, scroll snapping will be enabled
+        /// </summary>
+        bool ScrollSnapping { get; set; }
     }
 }

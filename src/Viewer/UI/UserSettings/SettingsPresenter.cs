@@ -22,6 +22,7 @@ namespace Viewer.UI.UserSettings
             var programs = Settings.Default.ExternalApplications.ToList();
             programs.Add(new ExternalApplication()); // editable new application
             View.Programs = programs;
+            View.ScrollSnapping = Settings.Default.ThumbnailGridScrollSnapping;
 
             SubscribeTo(View, "View");
         }
@@ -45,6 +46,11 @@ namespace Viewer.UI.UserSettings
                 views.Add(new ExternalApplication()); 
                 View.Programs = views;
             }
+        }
+
+        private void View_ThumbnailGridSettingsChanged(object sender, EventArgs e)
+        {
+            Settings.Default.ThumbnailGridScrollSnapping = View.ScrollSnapping;
         }
     }
 }

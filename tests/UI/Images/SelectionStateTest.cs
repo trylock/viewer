@@ -10,6 +10,7 @@ using Moq;
 using Viewer.Data;
 using Viewer.UI;
 using Viewer.UI.Images;
+using Viewer.UI.Images.Layout;
 
 namespace ViewerTest.UI.Images
 {
@@ -18,13 +19,22 @@ namespace ViewerTest.UI.Images
     {
         private Mock<ISelection> _selection;
         private Mock<ISelectionView> _view;
+        private Mock<ImagesLayout> _layout;
         private SelectionState _state;
 
         [TestInitialize]
         public void Setup()
         {
+            _layout = new Mock<ImagesLayout>();
+            _layout
+                .Setup(mock => mock.AreSameQueries(It.IsAny<Rectangle>(), It.IsAny<Rectangle>()))
+                .Returns(false);
+
             _selection = new Mock<ISelection>();
             _view = new Mock<ISelectionView>();
+            _view
+                .Setup(mock => mock.ItemLayout)
+                .Returns(_layout.Object);
             _state = new SelectionState(_view.Object, _selection.Object);
         }
 
@@ -72,6 +82,7 @@ namespace ViewerTest.UI.Images
             _view.Verify(mock => mock.UpdateItems(), Times.Exactly(3));
             
             _view.Verify(mock => mock.ModifierKeyState, Times.AtLeastOnce);
+            _view.Verify(mock => mock.ItemLayout, Times.AtLeastOnce);
             _view.VerifyNoOtherCalls();
 
             // verify that view items have been update properly

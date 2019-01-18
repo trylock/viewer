@@ -77,6 +77,10 @@ namespace Viewer.UI.Images.Layout
         }
     }
 
+    /// <summary>
+    /// Item in the layout together with its bouding rectangle.
+    /// </summary>
+    /// <typeparam name="T">Type of the item</typeparam>
     internal class LayoutElement<T>
     {
         public Rectangle Bounds { get; }
@@ -267,7 +271,7 @@ namespace Viewer.UI.Images.Layout
         ///
         /// > [!NOTE]
         /// > This test does not have to be exact but it should not return ture if the queries
-        /// > are different.
+        /// > are different (i.e., implementation which always returns false is valid)
         /// </returns>
         public abstract bool AreSameQueries(Rectangle queryA, Rectangle queryB);
 

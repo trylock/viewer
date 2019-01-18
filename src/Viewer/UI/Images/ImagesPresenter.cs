@@ -272,10 +272,10 @@ namespace Viewer.UI.Images
                 // update query evaluation status
                 if (StatusLabel != null)
                 {
-                    var loadingFile = _queryEvaluator.Progress.LoadingFile;
+                    var loadingPath = _queryEvaluator.Progress.LoadingPath;
                     var loadedCount = _queryEvaluator.Progress.FileCount;
-                    StatusLabel.Text = loadingFile != null ? 
-                        string.Format(Strings.Loading_Message, loadedCount, loadingFile) :
+                    StatusLabel.Text = loadingPath != null ? 
+                        string.Format(Strings.Loading_Message, loadedCount, loadingPath) :
                         Strings.Done_Label;
                 }
 

@@ -341,12 +341,12 @@ namespace Viewer.Query.Execution
             CancellationToken token,
             IComparer<string> searchOrder)
         {
-            foreach (var dir in EnumerateDirectories(searchOrder))
+            foreach (var dir in EnumerateDirectories(searchOrder, progress))
             {
                 token.ThrowIfCancellationRequested();
-
+                
                 // report that we have found a new folder
-                progress.Report(new QueryProgressReport(ReportType.Folder, dir));
+                progress.Report(new QueryProgressReport(ReportType.FolderFound, dir));
 
                 foreach (var file in EnumerateFiles(dir))
                 {
@@ -454,9 +454,14 @@ namespace Viewer.Query.Execution
             return null;
         }
 
-        private IEnumerable<string> EnumerateDirectories(IComparer<string> searchOrder)
+        private IEnumerable<string> EnumerateDirectories(
+            IComparer<string> searchOrder,
+            IProgress<QueryProgressReport> progress)
         {
-            return _fileFinder.GetDirectories(searchOrder);
+            return _fileFinder.GetDirectories(searchOrder, new Progress<string>(path =>
+            {
+                progress.Report(new QueryProgressReport(ReportType.SearchFolder, path));
+            }));
         }
     }
 }

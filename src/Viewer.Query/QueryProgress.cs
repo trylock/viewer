@@ -33,9 +33,18 @@ namespace Viewer.Query
         EndExecution,
 
         /// <summary>
+        /// Reports that we are currently searching a folder. The differnece between this and
+        /// <see cref="FolderFound"/>
+        /// </summary>
+        SearchFolder,
+
+        [Obsolete("Use FolderFound instead.")]
+        Folder,
+
+        /// <summary>
         /// Reports that a new folder has been discovered
         /// </summary>
-        Folder,
+        FolderFound = Folder
     }
 
     /// <summary>
@@ -80,8 +89,13 @@ namespace Viewer.Query
 
     /// <inheritdoc />
     /// <summary>
-    /// Query progress computes statistics on the fly and provides a real time look into query execution.
-    /// This class is thread safe.
+    /// Query progress computes statistics on the fly and provides a real time look into query
+    /// execution. This class is thread safe.
+    ///
+    /// > [!IMPORTANT]
+    /// > Due to possible multithreaded nature of query execution, all properties can
+    /// > change a lot. Avoid multiple reads of properties. Following code snippet
+    /// > contains a **race condition**: `if (LoadingFile != null) func(LoadingFile)`
     /// </summary>
     public class QueryProgress : IProgress<QueryProgressReport>
     {
@@ -93,18 +107,29 @@ namespace Viewer.Query
         public string LoadingFile { get; set; }
 
         /// <summary>
+        /// Path to a file/folde which is currently being laoded.
+        /// </summary>
+        public string LoadingPath { get; set; }
+
+        /// <summary>
         /// Current number of searched files.
         /// </summary>
         public long FileCount => Interlocked.Read(ref _fileCount);
-        
+
         public void Report(QueryProgressReport value)
         {
             switch (value.Type)
             {
                 case ReportType.EndExecution:
                     LoadingFile = null;
+                    LoadingPath = null;
+                    break;
+                case ReportType.FolderFound:
+                case ReportType.SearchFolder:
+                    LoadingPath = value.FilePath;
                     break;
                 case ReportType.BeginLoading:
+                    LoadingPath = value.FilePath;
                     LoadingFile = value.FilePath;
                     break;
                 case ReportType.EndLoading:

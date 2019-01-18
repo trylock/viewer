@@ -71,6 +71,21 @@ namespace Viewer.IO
         IEnumerable<string> GetDirectories(IComparer<string> directoryComparer);
 
         /// <summary>
+        /// Find all directories which match <see cref="Pattern"/>. Directories are searched in
+        /// order given by <paramref name="directoryComparer"/>.
+        /// </summary>
+        /// <param name="directoryComparer">
+        /// Directory comparer which is used to sort the searched directories.
+        /// </param>
+        /// <param name="progress">
+        /// Reports all searched directories (not just directories matched by the pattern)
+        /// </param>
+        /// <returns>Found directories</returns>
+        IEnumerable<string> GetDirectories(
+            IComparer<string> directoryComparer, 
+            IProgress<string> progress);
+
+        /// <summary>
         /// Test whether <paramref name="path"/> matches <see cref="Pattern"/>.
         /// </summary>
         /// <param name="path">Path to test</param>
@@ -135,16 +150,28 @@ namespace Viewer.IO
         
         public IEnumerable<string> GetDirectories(IComparer<string> directoryComparer)
         {
-            return FindAll(directoryComparer);
+            return GetDirectories(directoryComparer, new Progress<string>());
         }
 
+        public IEnumerable<string> GetDirectories(
+            IComparer<string> directoryComparer, 
+            IProgress<string> progress)
+        {
+            return FindAll(directoryComparer, progress);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Compare search algorithm state paths using provided path comparer
+        /// </summary>
         private class StateComparer : IComparer<State>
         {
             private readonly IComparer<string> _pathComparer;
 
             public StateComparer(IComparer<string> pathComparer)
             {
-                _pathComparer = pathComparer ?? throw new ArgumentNullException(nameof(pathComparer));
+                _pathComparer = pathComparer ?? 
+                                throw new ArgumentNullException(nameof(pathComparer));
             }
 
             public int Compare(State x, State y)
@@ -167,7 +194,15 @@ namespace Viewer.IO
             }
         }
 
-        private IEnumerable<string> FindAll(IComparer<string> pathComparer)
+        /// <summary>
+        /// Find all folders which match <see cref="Pattern"/>.
+        /// </summary>
+        /// <param name="pathComparer">Search order</param>
+        /// <param name="progress">Reports all searched directory paths</param>
+        /// <returns>Folders which match <see cref="Pattern"/></returns>
+        private IEnumerable<string> FindAll(
+            IComparer<string> pathComparer, 
+            IProgress<string> progress)
         {
             var comparer = new StateComparer(pathComparer);
             var parts = Pattern.GetParts().ToList();
@@ -195,6 +230,8 @@ namespace Viewer.IO
             while (states.Count > 0)
             {
                 var state = states.Dequeue();
+                progress.Report(state.Path);
+
                 if (state.MatchedPartCount >= parts.Count)
                 {
                     if (!visited.Contains(state.Path))

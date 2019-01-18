@@ -95,7 +95,9 @@ namespace ViewerTest.Query.Execution
             Assert.AreEqual("select \"test\" where predicate", query.Text);
 
             _fileFinder
-                .Setup(mock => mock.GetDirectories(It.IsAny<IComparer<string>>()))
+                .Setup(mock => mock.GetDirectories(
+                    It.IsAny<IComparer<string>>(), 
+                    It.IsAny<IProgress<string>>()))
                 .Returns(new[]
                 {
                     "a/b", "a/c"

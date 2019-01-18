@@ -12,9 +12,6 @@ namespace Viewer.UI.Presentation
     /// </summary>
     public interface IPresentation
     {
-        [Obsolete("Use OpenAsync. It has almost the same implementation but returns a task.")]
-        void Open(IEnumerable<IEntity> entities, int activeIndex);
-
         /// <summary>
         /// Open presentation of <paramref name="entities"/> where <paramref name="activeIndex"/>
         /// is the index of an active entity in <paramref name="entities"/>..

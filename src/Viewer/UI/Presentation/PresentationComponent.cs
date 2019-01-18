@@ -142,11 +142,6 @@ namespace Viewer.UI.Presentation
             await _presenter.ShowEntityAsync(entities.ToList(), index);
         }
         
-        public async void Open(IEnumerable<IEntity> entities, int activeIndex)
-        {
-            await OpenAsync(entities, activeIndex);
-        }
-
         public async Task OpenAsync(IEnumerable<IEntity> entities, int activeIndex)
         {
             await ShowPresentationAsync(entities, activeIndex);

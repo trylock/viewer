@@ -31,7 +31,7 @@
             this.MessageLabel = new System.Windows.Forms.Label();
             this.SaveButton = new System.Windows.Forms.Button();
             this.RevertButton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelDecisionButton = new System.Windows.Forms.Button();
             this.DecisionPanel = new System.Windows.Forms.Panel();
             this.IconPictureBox = new System.Windows.Forms.PictureBox();
             this.DecisionPanel.SuspendLayout();
@@ -68,21 +68,21 @@
             this.RevertButton.UseVisualStyleBackColor = true;
             this.RevertButton.Click += new System.EventHandler(this.RevertButton_Click);
             // 
-            // CancelButton
+            // CancelDecisionButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(221, 8);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 3;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.CancelDecisionButton.Location = new System.Drawing.Point(221, 8);
+            this.CancelDecisionButton.Name = "CancelDecisionButton";
+            this.CancelDecisionButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelDecisionButton.TabIndex = 3;
+            this.CancelDecisionButton.Text = "Cancel";
+            this.CancelDecisionButton.UseVisualStyleBackColor = true;
+            this.CancelDecisionButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // DecisionPanel
             // 
             this.DecisionPanel.BackColor = System.Drawing.SystemColors.Control;
             this.DecisionPanel.Controls.Add(this.SaveButton);
-            this.DecisionPanel.Controls.Add(this.CancelButton);
+            this.DecisionPanel.Controls.Add(this.CancelDecisionButton);
             this.DecisionPanel.Controls.Add(this.RevertButton);
             this.DecisionPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.DecisionPanel.Location = new System.Drawing.Point(0, 66);
@@ -127,7 +127,7 @@
         private System.Windows.Forms.Label MessageLabel;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Button RevertButton;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelDecisionButton;
         private System.Windows.Forms.Panel DecisionPanel;
         private System.Windows.Forms.PictureBox IconPictureBox;
     }

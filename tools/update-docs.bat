@@ -6,8 +6,8 @@ IF errorlevel 1 (
     exit /B
 )
 
-docfx src/docs/docfx.json
-git add src/docs
-git add docs
+docfx %~dp0/../src/docs/docfx.json
+git add %~dp0/../src/docs
+git add %~dp0/../docs
 git commit -m "Update documentation"
 echo Done

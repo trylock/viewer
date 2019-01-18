@@ -88,6 +88,14 @@ namespace Viewer.Properties
         }
 
         [UserScopedSetting]
+        [DefaultSettingValue("true")]
+        public bool ThumbnailGridScrollSnapping
+        {
+            get => (bool) this["ThumbnailGridScrollSnapping"];
+            set => this["ThumbnailGridScrollSnapping"] = value;
+        }
+
+        [UserScopedSetting]
         [DefaultSettingValue(@"<?xml version=""1.0"" encoding=""utf-8""?>
 <!--DockPanel configuration file. Author: Weifen Luo, all rights reserved.-->
 <!--!!! AUTOMATICALLY GENERATED FILE. DO NOT MODIFY !!!-->

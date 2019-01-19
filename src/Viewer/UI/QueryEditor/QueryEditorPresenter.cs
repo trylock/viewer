@@ -56,11 +56,15 @@ namespace Viewer.UI.QueryEditor
 
         private bool _isDisposed;
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _isDisposed = true;
-            _queryCompiler.Views.Changed -= QueryViewsOnChanged;
-            base.Dispose();
+            if (disposing)
+            {
+                _isDisposed = true;
+                _queryCompiler.Views.Changed -= QueryViewsOnChanged;
+            }
+
+            base.Dispose(disposing);
         }
 
         private void QueryViewsOnChanged(object sender, EventArgs e)

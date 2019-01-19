@@ -24,11 +24,15 @@ namespace Viewer.UI.Errors
             _errorList.EntriesRemoved += LogOnEntriesRemoved;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            base.Dispose();
-            _errorList.EntryAdded -= LogOnEntryAdded;
-            _errorList.EntriesRemoved -= LogOnEntriesRemoved;
+            if (disposing)
+            {
+                _errorList.EntryAdded -= LogOnEntryAdded;
+                _errorList.EntriesRemoved -= LogOnEntriesRemoved;
+            }
+
+            base.Dispose(disposing);
         }
 
         private void LogOnEntryAdded(object sender, LogEventArgs e)

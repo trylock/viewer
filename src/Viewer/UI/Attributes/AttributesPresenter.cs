@@ -77,14 +77,17 @@ namespace Viewer.UI.Attributes
 
         private bool _isDisposed;
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _isDisposed = true;
-            _queryHistory.BeforeQueryExecuted -= QueryHistory_BeforeQueryExecuted;
-            _attributes.Selection.BeforeChanged -= Selection_BeforeChanged;
-            _attributes.Selection.Changed -= Selection_Changed;
+            if (disposing)
+            {
+                _isDisposed = true;
+                _queryHistory.BeforeQueryExecuted -= QueryHistory_BeforeQueryExecuted;
+                _attributes.Selection.BeforeChanged -= Selection_BeforeChanged;
+                _attributes.Selection.Changed -= Selection_Changed;
+            }
 
-            base.Dispose();
+            base.Dispose(disposing);
         }
         
         private void UpdateAttributes()

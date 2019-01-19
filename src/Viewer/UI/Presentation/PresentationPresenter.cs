@@ -50,13 +50,17 @@ namespace Viewer.UI.Presentation
 
         private bool _isDisposed;
         
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _isDisposed = true;
-            View.Picture?.Dispose();
-            View.Picture = null; // make sure no code can access the disposed image
-            _window.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                _isDisposed = true;
+                View.Picture?.Dispose();
+                View.Picture = null; // make sure no code can access the disposed image
+                _window.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
 
         public async Task ShowEntityAsync(IReadOnlyList<IEntity> entities, int index)

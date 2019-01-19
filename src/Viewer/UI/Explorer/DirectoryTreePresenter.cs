@@ -63,11 +63,15 @@ namespace Viewer.UI.Explorer
 
         private bool _isDisposed = false;
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _isDisposed = true;
-            _state.QueryExecuted -= StateOnQueryExecuted;
-            base.Dispose();
+            if (disposing)
+            {
+                _isDisposed = true;
+                _state.QueryExecuted -= StateOnQueryExecuted;
+            }
+
+            base.Dispose(disposing);
         }
         
         private void StateOnQueryExecuted(object sender, QueryEventArgs e)

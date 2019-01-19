@@ -93,15 +93,24 @@ namespace Viewer.Core.UI
             _subscriptions.Add(lifetime);
             return lifetime;
         }
-        
-        public virtual void Dispose()
+
+        protected virtual void Dispose(bool disposing)
         {
-            foreach (var subscription in _subscriptions)
+            if (disposing)
             {
-                subscription.Unsubscribe();
+                foreach (var subscription in _subscriptions)
+                {
+                    subscription.Unsubscribe();
+                }
+                View.Dispose();
+                View = null;
             }
-            View.Dispose();
-            View = null;
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

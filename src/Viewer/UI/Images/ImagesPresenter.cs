@@ -148,14 +148,18 @@ namespace Viewer.UI.Images
             View.Items = null; // the items have been disposed by the query evaluator
         }
         
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _isDisposed = true;
-            _selection.Dispose();
-            DisposeQuery();
-            Settings.Default.PropertyChanged -= Settings_PropertyChanged;
-            _queryHistory.QueryExecuted -= QueryHistory_QueryExecuted;
-            base.Dispose();
+            if (disposing)
+            {
+                _isDisposed = true;
+                _selection.Dispose();
+                DisposeQuery();
+                Settings.Default.PropertyChanged -= Settings_PropertyChanged;
+                _queryHistory.QueryExecuted -= QueryHistory_QueryExecuted;
+            }
+
+            base.Dispose(disposing);
         }
         
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -73,6 +73,12 @@ namespace Viewer.Query
 
         public IQuery Finish()
         {
+            // there is an error and we can't compile at least a part of the query
+            if (_queries.Count <= 0)
+            {
+                return null;
+            }
+
             var query = _queries.Pop();
             Trace.Assert(query != null, "query != null");
             Trace.Assert(_queries.Count == 0, "_queries.Count == 0");
@@ -111,7 +117,7 @@ namespace Viewer.Query
             // make sure we apply operators from left to right 
             operands.Reverse();
 
-            // apply operators 
+            // apply operators
             var result = operands[0];
             for (var i = 0; i < operators.Length; ++i)
             {
@@ -328,6 +334,12 @@ namespace Viewer.Query
         {
             if (context.WHERE() != null)
             {
+                if (_expressions.Count <= 0)
+                {
+                    // the predicate is invalid and we can't compile any part of it
+                    return; 
+                }
+
                 var query = _queries.Pop();
                 var predicate = _expressions.Pop();
                 _queries.Push(query.Where(predicate));
@@ -397,7 +409,8 @@ namespace Viewer.Query
 
         public void ExitOptionalGroupBy(QueryParser.OptionalGroupByContext context)
         {
-            if (context.GROUP() == null)
+            if (context.GROUP() == null ||
+                _expressions.Count <= 0)
             {
                 return; // there is no GROUP BY clause
             }

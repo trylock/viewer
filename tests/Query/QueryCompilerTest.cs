@@ -1752,5 +1752,45 @@ namespace ViewerTest.Query
 
             _factory.Verify(mock => mock.CreateQuery("a"), Times.Once);
         }
+
+        [TestMethod]
+        public void Compile_InvalidTokens()
+        {
+            var result = _compiler.Compile(
+                new StringReader("+ * /"),
+                new NullQueryErrorListener());
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_InvalidWhere()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where * "),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_InvalidOrderBy()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" order by * "),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_InvalidGroupBy()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" group by *"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
     }
 }

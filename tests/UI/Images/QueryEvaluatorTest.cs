@@ -224,5 +224,47 @@ namespace ViewerTest.UI.Images
             Assert.AreEqual(entities[0], items[1]);
             Assert.AreEqual(PathUtils.NormalizePath("test0"), entities[1].Path);
         }
+
+        [TestMethod]
+        public void Update_SortAddedItems()
+        {
+            var thumbnail = new Mock<ILazyThumbnail>();
+            _thumbnailFactory
+                .Setup(mock => mock.Create(It.IsAny<IEntity>(), It.IsAny<CancellationToken>()))
+                .Returns(thumbnail.Object);
+            
+            _query
+                .Setup(mock => mock.GetGroup(It.IsAny<IEntity>()))
+                .Returns(new IntValue(null));
+
+            // add the first item
+            var entity0 = new FileEntity("test0");
+            _query
+                .Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
+                .Returns(new[] { entity0 });
+
+            _evaluator.Run();
+            _evaluator.ProcessRequests();
+
+            // add 2 items in a different order
+            var entity1 = new FileEntity("test1");
+            var entity2 = new FileEntity("test2");
+
+            _query
+                .Setup(mock => mock.Execute(It.IsAny<ExecutionOptions>()))
+                .Returns(new[] { entity2, entity1 });
+
+            _evaluator.Run();
+            _evaluator.ProcessRequests();
+
+            var groups = _evaluator.Update();
+            Assert.AreEqual(1, groups.Count);
+
+            var items = groups[0].Items;
+            Assert.AreEqual(3, items.Count);
+            Assert.AreEqual(entity0, items[0].Data);
+            Assert.AreEqual(entity1, items[1].Data);
+            Assert.AreEqual(entity2, items[2].Data);
+        }
     }
 }

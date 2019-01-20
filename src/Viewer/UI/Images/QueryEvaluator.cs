@@ -459,7 +459,7 @@ namespace Viewer.UI.Images
             }
         }
 
-        private List<EntityView> GetOrAddList(
+        private static List<EntityView> GetOrAddList(
             BaseValue key,
             Dictionary<BaseValue, List<EntityView>> index)
         {
@@ -591,8 +591,8 @@ namespace Viewer.UI.Images
                     {
                         continue;
                     }
-
-                    group.Items.Sort(Comparer);
+                    
+                    list.Sort(Comparer);
                     group.Items = group.Items.Merge(list, Comparer);
                     index.Insertions.Remove(group.Key);
                 }

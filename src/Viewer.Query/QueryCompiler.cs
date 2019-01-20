@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Viewer.Data;
@@ -189,6 +190,14 @@ namespace Viewer.Query
 
         public void EnterQueryFactor(QueryParser.QueryFactorContext context)
         {
+            if (context.ChildCount <= 0)
+            {
+                var symbol = context.Start;
+                ReportError(
+                    symbol.Line,
+                    symbol.Column,
+                    $"Missing subquery.");
+            }
         }
 
         public void ExitQueryFactor(QueryParser.QueryFactorContext context)
@@ -226,6 +235,17 @@ namespace Viewer.Query
 
         public void ExitSource(QueryParser.SourceContext context)
         {
+            // if this is an invalid (sub)query
+            if (context.ChildCount <= 0)
+            {
+                var symbol = context.Start;
+                ReportError(
+                    symbol.Line,
+                    symbol.Column,
+                    $"Missing pattern.");
+                return;
+            }
+
             string viewIdentifier = null;
             var viewIdentifierToken = context.ID();
             if (viewIdentifierToken != null)
@@ -425,6 +445,17 @@ namespace Viewer.Query
 
         public void ExitLiteral(QueryParser.LiteralContext context)
         {
+            // if this is an invalid query
+            if (context.ChildCount != 1 && context.ChildCount != 2)
+            {
+                var symbol = context.Start;
+                _expressions.Push(new ConstantExpression(
+                    symbol.Line, 
+                    symbol.Column, 
+                    new IntValue(null)));
+                return;
+            }
+            
             var op = context.NOT();
             if (op == null)
             {
@@ -859,7 +890,7 @@ namespace Viewer.Query
             return result;
         }
     }
-
+    
     [Export(typeof(IQueryCompiler))]
     public class QueryCompiler : IQueryCompiler
     {

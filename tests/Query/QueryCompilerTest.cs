@@ -1142,6 +1142,20 @@ namespace ViewerTest.Query
         }
 
         [TestMethod]
+        public void Compile_UnknownViewInSubquery()
+        {
+            var listener = new Mock<IQueryErrorListener>();
+            var result = _compiler.Compile(new StringReader("select (select \"a\" union select testView) order by b"), listener.Object);
+
+            Assert.IsNull(result);
+
+            listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
+            listener.Verify(mock => mock.OnCompilerError(1, 32, "Unknown view 'testView'"), Times.Once);
+            listener.Verify(mock => mock.AfterCompilation(), Times.Once);
+            listener.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
         public void Compile_InvalidPathCharactersInPattern()
         {
             var listener = new Mock<IQueryErrorListener>();
@@ -1548,6 +1562,195 @@ namespace ViewerTest.Query
             )));
             
             _runtime.Verify(mock => mock.FindAndCall("-", Context(new IntValue(1))));
+        }
+
+        [TestMethod]
+        public void Compile_MissingOperandInAnd()
+        {
+            _runtime
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(null), new IntValue(null))))
+                .Returns(new IntValue(null));
+            _runtime
+                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(-1), new IntValue(null))))
+                .Returns(new IntValue(null));
+
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where a and"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.Where(CheckPredicate(pred =>
+                !pred(new FileEntity("test")) &&
+                !pred(new FileEntity("test")
+                    .SetAttribute(new Attribute("a", new IntValue(-1), AttributeSource.Custom)))
+            )));
+        }
+
+        [TestMethod]
+        public void Compile_JustSelect()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select"),
+                new NullQueryErrorListener());
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_MissingPredicate()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_MissingOrderBy()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" order by"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_JustOrderByDirection()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" order by desc"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_MissingGroupBy()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" group by"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_MainOperatorKeywords()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where order by group by"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_SelectInSubquery()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select (select \"a\" union select) order by DateTaken"),
+                new NullQueryErrorListener());
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_InvalidOrder()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" group by c order by a where b"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _query.Verify(mock => mock.WithGroup(It.IsAny<ValueExpression>()), Times.Once);
+            _query.Verify(mock => mock.Where(It.IsAny<ValueExpression>()), Times.Never);
+            _query.Verify(mock => mock.WithComparer(It.IsAny<IComparer<IEntity>>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Compile_JustParentheses()
+        {
+            var result = _compiler.Compile(
+                new StringReader("()"),
+                new NullQueryErrorListener());
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_LiterallyEmpty()
+        {
+            var result = _compiler.Compile(
+                new StringReader(""),
+                new NullQueryErrorListener());
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_MissingOperandInUnion()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select (select \"a\" union) order by b"),
+                new NullQueryErrorListener());
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_MissingOperandInIntersect()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select (select \"a\" intersect) order by b"),
+                new NullQueryErrorListener());
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_MissingOperandInExcept()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select (select \"a\" except) order by b"),
+                new NullQueryErrorListener());
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_MissingOperandForUnaryMinus()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where -"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_JustParenthesesInPredicate()
+        {
+            var result = _compiler.Compile(
+                new StringReader("select \"a\" where ()"),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void Compile_InvalidTokenAtTheStart()
+        {
+            var result = _compiler.Compile(
+                new StringReader("+ select \"a\""),
+                new NullQueryErrorListener());
+
+            Assert.IsNotNull(result);
+
+            _factory.Verify(mock => mock.CreateQuery("a"), Times.Once);
         }
     }
 }

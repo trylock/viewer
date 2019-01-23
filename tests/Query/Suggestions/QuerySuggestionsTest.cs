@@ -617,5 +617,27 @@ namespace ViewerTest.Query.Suggestions
             var result = suggestion.Apply();
             Assert.AreEqual(result.Query.Length - 1, result.Caret);
         }
+
+        [TestMethod]
+        public void Compute_SuggestionsInABigQuery()
+        {
+            _attributeCache
+                .Setup(mock => mock.GetNames(""))
+                .Returns(new[] { "a" });
+            _attributeCache
+                .Setup(mock => mock.GetValues("a"))
+                .Returns(new List<BaseValue>
+                {
+                    new StringValue("value")
+                });
+
+            const string query =
+                "select (select view where a = \"value\" and b or not c order by DateTaken desc group by TimeElapsed(LastAccessTime)) where not d order by ";
+            var suggestions = ComputeSuggestions(query);
+
+            Assert.AreEqual(2, suggestions.Count);
+            Assert.IsTrue(ContainsSuggestion(suggestions, query + "a"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, query + "DateTime()"));
+        }
     }
 }

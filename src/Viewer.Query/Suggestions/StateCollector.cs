@@ -50,8 +50,6 @@ namespace Viewer.Query.Suggestions
 
         private ISuggestionListener Listener => this;
 
-        #region ISuggestionListener: Aggregate listener
-
         public StateCollector(List<IToken> tokens, Parser parser)
         {
             _tokens = tokens;
@@ -63,6 +61,8 @@ namespace Viewer.Query.Suggestions
             _listeners.Add(listener);
         }
 
+        #region ISuggestionListener: Aggregate listener
+        
         void ISuggestionListener.MatchToken(IToken token, IReadOnlyList<int> rules)
         {
             foreach (var listener in _listeners)
@@ -112,7 +112,7 @@ namespace Viewer.Query.Suggestions
             _result = new List<FollowList>();
             _rulePath = new Stack<int>();
             _traverseStateCache.Clear();
-
+            
             TraverseState(_parser.Atn.ruleToStartState[0], 0);
 
             return new SuggestionState(caret, _result);
@@ -124,7 +124,9 @@ namespace Viewer.Query.Suggestions
         /// </summary>
         /// <param name="state"></param>
         /// <param name="tokenIndex"></param>
-        /// <returns>Indices in the <see cref="_tokens"/> array where the </returns>
+        /// <returns>
+        /// Indices in the <see cref="_tokens"/> array where the parsing will continue
+        /// </returns>
         private IEnumerable<int> TraverseState(ATNState state, int tokenIndex)
         {
             // don't traverse the same state at the same position twice
@@ -148,6 +150,14 @@ namespace Viewer.Query.Suggestions
             }
         }
 
+        /// <summary>
+        /// Traverse rule subgraph of the ATN
+        /// </summary>
+        /// <param name="startState">Rule start state</param>
+        /// <param name="tokenIndex">Position in the input</param>
+        /// <returns>
+        /// Indices in the <see cref="_tokens"/> array where the parsing will continue
+        /// </returns>
         private List<int> TraverseStateImpl(ATNState startState, int tokenIndex)
         {
             if (_tokens.Count <= tokenIndex)
@@ -162,7 +172,6 @@ namespace Viewer.Query.Suggestions
             var stack = new Stack<(ATNState State, int TokenIndex)>();
             stack.Push((startState, tokenIndex));
             
-            // TODO: traversing all alternatives is overkill for (almost) an LL(1) language
             while (stack.Count > 0)
             {
                 var (state, inputPosition) = stack.Pop();
@@ -234,7 +243,8 @@ namespace Viewer.Query.Suggestions
                         // follow transition
                         if (transition is NotSetTransition)
                         {
-                            label = label.Complement(IntervalSet.Of(0, _parser.Atn.maxTokenType));
+                            label = label.Complement(
+                                IntervalSet.Of(0, _parser.Atn.maxTokenType));
                         }
 
                         if (label.Contains(lookahead.Type))

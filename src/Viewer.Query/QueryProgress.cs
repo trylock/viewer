@@ -34,7 +34,7 @@ namespace Viewer.Query
 
         /// <summary>
         /// Reports that we are currently searching a folder. The differnece between this and
-        /// <see cref="FolderFound"/>
+        /// <see cref="FolderFound"/> is that the folder does not have to match query pattern.
         /// </summary>
         SearchFolder,
 

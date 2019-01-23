@@ -73,12 +73,6 @@ namespace Viewer.Query
 
         public IQuery Finish()
         {
-            // there is an error and we can't compile at least a part of the query
-            if (_queries.Count <= 0)
-            {
-                return null;
-            }
-
             var query = _queries.Pop();
             Trace.Assert(query != null, "query != null");
             Trace.Assert(_queries.Count == 0, "_queries.Count == 0");
@@ -111,8 +105,16 @@ namespace Viewer.Query
 
             for (var i = 0; i < operators.Length; ++i)
             {
+                if (stack.Count <= 0)
+                {
+                    break;
+                }
                 operands.Add(stack.Pop());
             }
+
+            Trace.Assert(
+                operands.Count == operators.Length + 1, 
+                "operands.Count == operators.Length + 1");
 
             // make sure we apply operators from left to right 
             operands.Reverse();
@@ -241,17 +243,6 @@ namespace Viewer.Query
 
         public void ExitSource(QueryParser.SourceContext context)
         {
-            // if this is an invalid (sub)query
-            if (context.ChildCount <= 0)
-            {
-                var symbol = context.Start;
-                ReportError(
-                    symbol.Line,
-                    symbol.Column,
-                    $"Missing pattern.");
-                return;
-            }
-
             string viewIdentifier = null;
             var viewIdentifierToken = context.ID();
             if (viewIdentifierToken != null)
@@ -409,8 +400,7 @@ namespace Viewer.Query
 
         public void ExitOptionalGroupBy(QueryParser.OptionalGroupByContext context)
         {
-            if (context.GROUP() == null ||
-                _expressions.Count <= 0)
+            if (context.GROUP() == null)
             {
                 return; // there is no GROUP BY clause
             }
@@ -458,17 +448,6 @@ namespace Viewer.Query
 
         public void ExitLiteral(QueryParser.LiteralContext context)
         {
-            // if this is an invalid query
-            if (context.ChildCount != 1 && context.ChildCount != 2)
-            {
-                var symbol = context.Start;
-                _expressions.Push(new ConstantExpression(
-                    symbol.Line, 
-                    symbol.Column, 
-                    new IntValue(null)));
-                return;
-            }
-            
             var op = context.NOT();
             if (op == null)
             {
@@ -490,7 +469,7 @@ namespace Viewer.Query
             {
                 return;
             }
-
+            
             var op = opToken.Symbol;
             var right = _expressions.Pop();
             var left = _expressions.Pop();
@@ -670,20 +649,6 @@ namespace Viewer.Query
                         unaryOperator.Symbol.Column,
                         parameter));
                 }
-
-                return;
-            }
-
-            // if there is a missing factor (in an invalid query)
-            if (context.LPAREN() == null)
-            {
-                var token = context.Stop;
-                ValueExpression expr = new ConstantExpression(
-                    token.Line, 
-                    token.Column, 
-                    new IntValue(null));
-
-                _expressions.Push(expr);
             }
 
             // otherwise, this is a subexpression => it is already on the stack
@@ -832,12 +797,7 @@ namespace Viewer.Query
             RecognitionException e)
         {
             _queryErrorListener.OnCompilerError(line, charPositionInLine, msg);
-
-            // if we can't make sense of the input, there is no good way to recover from it
-            if (e is NoViableAltException)
-            {
-                throw new ParseCanceledException(e);
-            }
+            throw new ParseCanceledException(e);
         }
     }
 

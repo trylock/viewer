@@ -1343,7 +1343,7 @@ namespace ViewerTest.Query
             var listener = new Mock<IQueryErrorListener>();
             var result = _compiler.Compile(new StringReader(query), listener.Object);
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
             
             listener.Verify(mock => mock.BeforeCompilation(), Times.Once);
             listener.Verify(mock => mock.OnCompilerError(1, 20, It.IsAny<string>()));
@@ -1413,76 +1413,21 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_MissingOperandInMultiplication()
         {
-            _runtime
-                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(null), new IntValue(null))))
-                .Returns(new IntValue(null));
-            _runtime
-                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(1), new IntValue(null))))
-                .Returns(new IntValue(null));
-
             var result = _compiler.Compile(
                 new StringReader("select \"a\" where a * "), 
                 new NullQueryErrorListener());
             
-            Assert.IsNotNull(result);
-
-            _query.Verify(mock => mock.Where(CheckPredicate(pred => 
-                !pred(new FileEntity("test")) &&
-                !pred(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom)))
-            )));
+            Assert.IsNull(result);
         }
 
         [TestMethod]
         public void Compile_MissingOperandInMultiplicationChain()
         {
-            _runtime
-                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(null), new IntValue(2))))
-                .Returns(new IntValue(null));
-            _runtime
-                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(9), new IntValue(2))))
-                .Returns(new IntValue(18));
-            _runtime
-                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(1), new IntValue(2))))
-                .Returns(new IntValue(2));
-
-            _runtime
-                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(null), new IntValue(3))))
-                .Returns(new IntValue(null));
-            _runtime
-                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(18), new IntValue(3))))
-                .Returns(new IntValue(6));
-            _runtime
-                .Setup(mock => mock.FindAndCall("/", Context(new IntValue(2), new IntValue(3))))
-                .Returns(new IntValue(0));
-
-            _runtime
-                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(null), new IntValue(null))))
-                .Returns(new IntValue(null));
-            _runtime
-                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(6), new IntValue(null))))
-                .Returns(new IntValue(null));
-            _runtime
-                .Setup(mock => mock.FindAndCall("*", Context(new IntValue(0), new IntValue(null))))
-                .Returns(new IntValue(null));
-
-            _runtime
-                .Setup(mock => mock.FindAndCall("=", Context(new IntValue(6), new IntValue(null))))
-                .Returns(new IntValue(null));
-
             var result = _compiler.Compile(
                 new StringReader("select \"a\" where 6 = a * 2 / 3 *"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
-
-            _query.Verify(mock => mock.Where(CheckPredicate(pred =>
-                !pred(new FileEntity("test")) &&
-                !pred(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(1), AttributeSource.Custom))) &&
-                !pred(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(9), AttributeSource.Custom)))
-            )));
+            Assert.IsNull(result);
         }
         
         [TestMethod]
@@ -1567,24 +1512,11 @@ namespace ViewerTest.Query
         [TestMethod]
         public void Compile_MissingOperandInAnd()
         {
-            _runtime
-                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(null), new IntValue(null))))
-                .Returns(new IntValue(null));
-            _runtime
-                .Setup(mock => mock.FindAndCall("and", Context(new IntValue(-1), new IntValue(null))))
-                .Returns(new IntValue(null));
-
             var result = _compiler.Compile(
                 new StringReader("select \"a\" where a and"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
-
-            _query.Verify(mock => mock.Where(CheckPredicate(pred =>
-                !pred(new FileEntity("test")) &&
-                !pred(new FileEntity("test")
-                    .SetAttribute(new Attribute("a", new IntValue(-1), AttributeSource.Custom)))
-            )));
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1604,7 +1536,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" where"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1614,7 +1546,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" order by"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1624,7 +1556,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" order by desc"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1634,7 +1566,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" group by"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1644,7 +1576,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" where order by group by"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1664,11 +1596,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" group by c order by a where b"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
-
-            _query.Verify(mock => mock.WithGroup(It.IsAny<ValueExpression>()), Times.Once);
-            _query.Verify(mock => mock.Where(It.IsAny<ValueExpression>()), Times.Never);
-            _query.Verify(mock => mock.WithComparer(It.IsAny<IComparer<IEntity>>(), It.IsAny<string>()), Times.Never);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1728,7 +1656,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" where -"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1738,7 +1666,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" where ()"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1748,9 +1676,7 @@ namespace ViewerTest.Query
                 new StringReader("+ select \"a\""),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
-
-            _factory.Verify(mock => mock.CreateQuery("a"), Times.Once);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1770,7 +1696,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" where * "),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1780,7 +1706,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" order by * "),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -1790,7 +1716,7 @@ namespace ViewerTest.Query
                 new StringReader("select \"a\" group by *"),
                 new NullQueryErrorListener());
 
-            Assert.IsNotNull(result);
+            Assert.IsNull(result);
         }
     }
 }

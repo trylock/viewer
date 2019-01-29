@@ -354,19 +354,26 @@ namespace ViewerTest.IO
         }
 
         [TestMethod]
+        public void GetParentDirectoryPattern_PathWithSpecialCharacters()
+        {
+            Assert.IsTrue(ArePatternsEqual("a", new PathPattern("a/**/x*/../b/../././../d").GetParent().Text));
+        }
+
+        [TestMethod]
         public void GetParentDirectoryPattern_RecursivePatternAtTheEnd()
         {
-            Assert.IsTrue(ArePatternsEqual("**/..", new PathPattern("**").GetParent().Text));
-            Assert.IsTrue(ArePatternsEqual("a/**/..", new PathPattern("a/**").GetParent().Text));
-            Assert.IsTrue(ArePatternsEqual("a/**/..", new PathPattern("a\\**").GetParent().Text));
+            Assert.IsTrue(ArePatternsEqual("**", new PathPattern("**").GetParent().Text));
+            Assert.IsTrue(ArePatternsEqual("a", new PathPattern("a/**").GetParent().Text));
+            Assert.IsTrue(ArePatternsEqual("a", new PathPattern("a\\**").GetParent().Text));
         }
 
         [TestMethod]
         public void GetParentDirectoryPattern_ParrentDirectoryAtTheEnd()
         {
-            Assert.IsTrue(ArePatternsEqual("**/../..", new PathPattern("**/..").GetParent().Text));
-            Assert.IsTrue(ArePatternsEqual("**/../..", new PathPattern("**/../").GetParent().Text));
-            Assert.IsTrue(ArePatternsEqual("**/../..", new PathPattern("**\\..\\").GetParent().Text));
+            Assert.IsTrue(ArePatternsEqual("**", new PathPattern("**/..").GetParent().Text));
+            Assert.IsTrue(ArePatternsEqual("**", new PathPattern("**/../").GetParent().Text));
+            Assert.IsTrue(ArePatternsEqual("**", new PathPattern("**/../..").GetParent().Text));
+            Assert.IsTrue(ArePatternsEqual("**", new PathPattern("**\\..\\").GetParent().Text));
         }
     }
 }

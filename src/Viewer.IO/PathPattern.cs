@@ -17,6 +17,21 @@ namespace Viewer.IO
     public class PathPattern
     {
         /// <summary>
+        /// Pattern which matches parent directory
+        /// </summary>
+        public const string ParentDirectoryPattern = "..";
+
+        /// <summary>
+        /// Pattern which matches current directory
+        /// </summary>
+        public const string CurrentDirectoryPattern = ".";
+
+        /// <summary>
+        /// Pattern which matches 0..n arbitrary subdirectories
+        /// </summary>
+        public const string RecursivePattern = "**";
+
+        /// <summary>
         /// Textual representation of this pattern
         /// </summary>
         public string Text { get; }
@@ -26,6 +41,10 @@ namespace Viewer.IO
         /// <summary>
         /// Create a new path pattern from its textual representation.
         /// </summary>
+        /// <remarks>
+        /// The pattern regex is compiled on demand so that this constructor is
+        /// relatively inexpensive.
+        /// </remarks>
         /// <param name="pattern">Path pattern</param>
         public PathPattern(string pattern)
         {
@@ -36,7 +55,7 @@ namespace Viewer.IO
             if (pattern.IndexOfAny(invalidCharacters) >= 0)
                 throw new ArgumentException(nameof(pattern) + " contains invalid characters.");
             
-            Text = pattern.Replace('\\', '/');
+            Text = NormalizePath(pattern);
             _regex = new Lazy<Regex>(() => CompileRegex(Text));
         }
 
@@ -47,6 +66,36 @@ namespace Viewer.IO
         public override string ToString()
         {
             return Text;
+        }
+
+        /// <summary>
+        /// Replace directory name separators with / (forward slash), interpret .. and .
+        /// </summary>
+        /// <param name="path">Path to normalize</param>
+        /// <returns>Normalized path</returns>
+        private static string NormalizePath(string path)
+        {
+            var parts = new Stack<string>();
+            foreach (var part in Split(path))
+            {
+                if (part == ParentDirectoryPattern)
+                {
+                    if (parts.Count > 1) // do not remove the last part
+                    {
+                        parts.Pop();
+                    }
+                }
+                else if (part == CurrentDirectoryPattern)
+                {
+                    // skip
+                }
+                else
+                {
+                    parts.Push(part);
+                }
+            }
+
+            return string.Join("/", parts.Reverse());
         }
 
         /// <summary>
@@ -64,9 +113,9 @@ namespace Viewer.IO
             var parts = PathUtils.Split(pattern);
             foreach (var part in parts)
             {
-                if (part == "**")
+                if (part == RecursivePattern)
                 {
-                    if (lastPart != "**")
+                    if (lastPart != RecursivePattern)
                     {
                         yield return part;
                     }
@@ -95,13 +144,13 @@ namespace Viewer.IO
         {
             var sb = new StringBuilder();
             sb.Append("^");
-            var parts = Split(pattern).ToArray();
-            for (var i = 0; i < parts.Length; ++i)
+            var parts = Split(pattern).ToList();
+            for (var i = 0; i < parts.Count; ++i)
             {
                 var part = parts[i];
-                if (part == "**")
+                if (part == RecursivePattern)
                 {
-                    if (parts.Length == 1) // the whole pattern is "**"
+                    if (parts.Count == 1) // the whole pattern is "**"
                     {
                         sb.Append(@"(([^/\\]+[/\\])*([^/\\]+))?");
                     }
@@ -110,7 +159,7 @@ namespace Viewer.IO
                         // the pattern starts with "**" but this is not the last part
                         sb.Append(@"([^/\\]+[/\\])*");
                     }
-                    else if (i == parts.Length - 1)
+                    else if (i == parts.Count - 1)
                     {
                         // the pattern ends with "**" but this is not the first part
                         sb.Append(@"([/\\][^/\\]+)*");
@@ -134,12 +183,12 @@ namespace Viewer.IO
                     }
                     else
                     {
-                    var partPattern = part
-                        .Replace("*", @"[^/\\]*")
-                        .Replace("?", @"[^/\\]");
-                    sb.Append(partPattern);
+                        var partPattern = part
+                            .Replace("*", @"[^/\\]*")
+                            .Replace("?", @"[^/\\]");
+                        sb.Append(partPattern);
+                    }
                 }
-            }
             }
             sb.Append(@"[/\\]*$");
             return sb.ToString();
@@ -207,40 +256,58 @@ namespace Viewer.IO
         {
             return _regex.Value.IsMatch(path);
         }
-        
+
         /// <summary>
-        /// Get parent directories path pattern. This function takes into account special
-        /// pattern characters. Specifically, it can deal with patterns of type "a/b/**".
+        /// Get parent directories path pattern. The last part of the pattern is removed.
+        /// This applies even to the ** pattern.
+        /// <example>
+        /// <code>
+        /// GetPattern("a/b") -> "a"
+        /// GetPattern("a/b?c") -> "a"
+        /// GetPattern("a/b*c") -> "a"
+        /// GetPattern("a/**") -> "a"
+        /// GetPattern("a") -> "a"
+        /// </code>
+        /// </example>
         /// </summary>
         /// <returns>
-        /// Pattern which matches all parent directories of folders in <see name="Text"/>.
+        /// Pattern without the last part or null if <see cref="Text"/> is empty or null.
         /// </returns>
         public PathPattern GetParent()
         {
             if (string.IsNullOrWhiteSpace(Text))
                 return null;
 
-            var parts = Split(Text).ToList();
-            if (parts.Count <= 0)
+            // remove the last pattern part 
+            // note, it won't be . or .. since pattern path is normalized
+            var sb = new StringBuilder();
+            using (var enumerator = Split(Text).GetEnumerator())
             {
-                return null;
-            }
+                var hasNext = enumerator.MoveNext();
+                var isFirst = true;
 
-            if (parts.Count == 1 && parts[0] != "**" && parts[0] != "..")
-            {
-                return new PathPattern(parts[0]);
-            }
+                while (hasNext)
+                {
+                    var value = enumerator.Current;
+                    hasNext = enumerator.MoveNext();
 
-            if (parts[parts.Count - 1] == "**" || parts[parts.Count - 1] == "..")
-            {
-                parts.Add("..");
+                    // if this is not the last part or this is the first part
+                    // i.e., the first part won't be removed no matter what
+                    if (hasNext || isFirst)
+                    {
+                        sb.Append(value);
+                        sb.Append('/');
+                    }
+                    isFirst = false;
+                }
             }
-            else
-            {
-                parts.RemoveAt(parts.Count - 1);
-            }
-
-            return new PathPattern(string.Join(Path.DirectorySeparatorChar.ToString(), parts));
+            
+            Trace.Assert(sb.Length > 0, "sb.Length > 0");
+            
+            // remove the last /
+            sb.Remove(sb.Length - 1, 1);
+            
+            return new PathPattern(sb.ToString());
         }
 
         /// <summary>
@@ -277,7 +344,9 @@ namespace Viewer.IO
         /// Check whether given path contains a special pattern character
         /// </summary>
         /// <param name="path">Tested path</param>
-        /// <returns>true iff <paramref name="path"/> contains a special pattern character</returns>
+        /// <returns>
+        /// true iff <paramref name="path"/> contains a special pattern character
+        /// </returns>
         public static bool ContainsSpecialCharacters(string path)
         {
             return path.Contains('*') || path.Contains('?');

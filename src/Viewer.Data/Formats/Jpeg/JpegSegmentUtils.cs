@@ -108,7 +108,9 @@ namespace Viewer.Data.Formats.Jpeg
         /// </summary>
         /// <param name="segment">JPEG segment</param>
         /// <param name="type">Expected type</param>
-        /// <param name="header">Expected header</param>
+        /// <param name="header">
+        /// Expected header including terminating 0 characters.
+        /// </param>
         /// <returns>true iff the segment has given type and header</returns>
         public static bool MatchSegment(JpegSegment segment, JpegSegmentType type, string header)
         {

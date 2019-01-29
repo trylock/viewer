@@ -30,7 +30,9 @@ namespace Viewer.Data.Formats.Jpeg
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="tmpFileName">Path to a file to which we'll write.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// JPEG segment writer which will write to <paramref name="tmpFileName"/>
+        /// </returns>
         public IJpegSegmentWriter CreateFromPath(string filePath, out string tmpFileName)
         {
             FileStream input = null;

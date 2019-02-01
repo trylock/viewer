@@ -136,12 +136,14 @@
     <Compile Include="Data\Formats\Attributes\AttributeReaderTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeWriterTest.cs" />
     <Compile Include="Data\Formats\Exif\ExifAttributeParserTest.cs" />
-    <Compile Include="Data\Formats\Exif\ExifAttributeReaderTest.cs" />
+    <Compile Include="Data\Formats\Exif\ExifJpegSerializerTest.cs" />
     <Compile Include="Data\Formats\Exif\ExifMetadataTest.cs" />
     <Compile Include="Data\Formats\Exif\ThumbnailExifAttributeParserTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentReaderTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentUtilsTest.cs" />
     <Compile Include="Data\Formats\Jpeg\JpegSegmentWriterTest.cs" />
+    <Compile Include="Data\Formats\Xmp\XmpJpegSerializerTest.cs" />
+    <Compile Include="Data\Formats\Xmp\XmpUserAttributeReaderWriterTest.cs" />
     <Compile Include="Data\StorageIntegrationTest.cs" />
     <Compile Include="Data\Storage\CachedAttributeStorageTest.cs" />
     <Compile Include="Data\Storage\FileSystemAttributeStorageTest.cs" />

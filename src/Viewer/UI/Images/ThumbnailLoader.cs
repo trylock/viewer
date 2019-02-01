@@ -302,7 +302,7 @@ namespace Viewer.UI.Images
             using (original)
             {
                 req.Cancellation.ThrowIfCancellationRequested();
-
+                
                 using (var thumbnail = _thumbnailGenerator.GetThumbnail(
                     original, req.ThumbnailAreaSize))
                 {
@@ -332,7 +332,7 @@ namespace Viewer.UI.Images
 
                 var value = new ImageValue(dataStrem.ToArray());
                 var newEntity = entity.SetAttribute(new Attribute(
-                    ExifAttributeReaderFactory.Thumbnail,
+                    ExifJpegSerializer.Thumbnail,
                     value, AttributeSource.Metadata));
                 _storage.StoreThumbnail(newEntity);
             }

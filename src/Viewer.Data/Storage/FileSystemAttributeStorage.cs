@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,42 +27,22 @@ namespace Viewer.Data.Storage
     public class FileSystemAttributeStorage : IAttributeStorage
     {
         private readonly IFileSystem _fileSystem;
-        private readonly IJpegSegmentReaderFactory _segmentReaderFactory;
-        private readonly IJpegSegmentWriterFactory _segmentWriterFactory;
-        private readonly IAttributeWriterFactory _attrWriterFactory;
-        private readonly IEnumerable<IAttributeReaderFactory> _attrReaderFactories;
+        private readonly IAttributeSerializer[] _serializers;
 
         /// <summary>
         /// Create a file system attribute storage
         /// </summary>
         /// <param name="fileSystem">A service used to access file system.</param>
-        /// <param name="segmentReaderFactory">
-        /// Factory which creates <see cref="IJpegSegmentReader"/> to read JPEG segments from a file.
-        /// </param>
-        /// <param name="segmentWriterFactory">
-        /// Factory which creates <see cref="IJpegSegmentWriter"/> to write JPEG segments to a file.
-        /// </param>
-        /// <param name="attrWriterFactory">
-        /// Factory which creates <see cref="IAttributeWriter"/> to write attributes to the Attributes
-        /// segment.
-        /// </param>
-        /// <param name="attrReaderFactories">
-        /// List of factories which create <see cref="IAttributeReader"/> to read attributes from
-        /// various JPEG segments.
+        /// <param name="serializers">
+        /// All available attribute serializers
         /// </param>
         [ImportingConstructor]
         public FileSystemAttributeStorage(
             IFileSystem fileSystem,
-            IJpegSegmentReaderFactory segmentReaderFactory,
-            IJpegSegmentWriterFactory segmentWriterFactory,
-            IAttributeWriterFactory attrWriterFactory,
-            [ImportMany] IAttributeReaderFactory[] attrReaderFactories)
+            [ImportMany] IAttributeSerializer[] serializers)
         {
             _fileSystem = fileSystem;
-            _segmentReaderFactory = segmentReaderFactory;
-            _segmentWriterFactory = segmentWriterFactory;
-            _attrReaderFactories = attrReaderFactories;
-            _attrWriterFactory = attrWriterFactory;
+            _serializers = serializers;
         }
         
         public IReadableAttributeStorage CreateReader()
@@ -71,22 +52,7 @@ namespace Viewer.Data.Storage
 
         /// <inheritdoc />
         /// <summary>
-        /// Load attributes from given file.
-        /// Read algorithm:
-        /// <list type="number">
-        ///     <item>
-        ///         <description>
-        ///         read all JPEG segments to memory (using reaader returned by
-        ///         <see cref="IJpegSegmentReaderFactory"/>)
-        ///         </description>
-        ///     </item>
-        ///     <item>
-        ///         <description>
-        ///         decode data in JPEG segments (using readers returned by all
-        ///         <see cref="IAttributeReaderFactory"/>) to attributes
-        ///         </description>
-        ///     </item>
-        /// </list>
+        /// Load attributes from given file. The first capable serializer is used.
         /// </summary>
         /// <param name="path">Path to a file</param>
         /// <returns>Collection of attributes read from the file</returns>
@@ -101,23 +67,30 @@ namespace Viewer.Data.Storage
                 {
                     return new DirectoryEntity(path);
                 }
-
-                // read all JPEG segments to memory
-                IEntity entity = new FileEntity(path);
+                
                 var fileInfo = new FileInfo(path);
-                var segments = ReadJpegSegments(path);
 
-                // read attributes from all sources and add them to the collection
-                foreach (var factory in _attrReaderFactories)
+                // read all attributes from the file
+                IEnumerable<Attribute> attributes = Enumerable.Empty<Attribute>();
+                using (var input = _fileSystem.OpenRead(path))
                 {
-                    var attrReader = factory.CreateFromSegments(fileInfo, segments);
-                    for (;;)
+                    foreach (var serializer in _serializers)
                     {
-                        var attr = attrReader.Read();
-                        if (attr == null)
-                            break;
-                        entity = entity.SetAttribute(attr);
+                        if (!serializer.CanRead(fileInfo))
+                        {
+                            continue;
+                        }
+
+                        var result = serializer.Deserialize(fileInfo, input);
+                        attributes = attributes.Concat(result);
                     }
+                }
+
+                // add attributes to a new entity
+                IEntity entity = new FileEntity(path);
+                foreach (var attribute in attributes)
+                {
+                    entity.SetAttribute(attribute);
                 }
 
                 return entity;
@@ -132,62 +105,35 @@ namespace Viewer.Data.Storage
             }
         }
 
-        private List<JpegSegment> ReadJpegSegments(string path)
-        {
-            using (var segmentReader = _segmentReaderFactory.CreateFromPath(path))
-            {
-                return segmentReader
-                    .Where(segment => segment.Type == JpegSegmentType.App1)
-                    .ToList();
-            }
-        }
-        
         public void Store(IEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            string tmpFileName;
-            using (var segmentReader = _segmentReaderFactory.CreateFromPath(entity.Path))
-            using (var segmentWriter = _segmentWriterFactory.CreateFromPath(entity.Path, out tmpFileName))
+            // find capable serializer
+            var file = new FileInfo(entity.Path);
+            var serialzier = _serializers.FirstOrDefault(item => item.CanWrite(file));
+            if (serialzier == null)
             {
-                // copy all but attribute segments
-                for (;;)
-                {
-                    var segment = segmentReader.ReadSegment();
-                    if (segment == null)
-                        break;
+                throw new InvalidDataFormatException(0, 
+                    $"Unsupported file format: {entity.Path}");
+            }
 
-                    if (IsAttributeSegment(segment) ||
-                        segment.Type == JpegSegmentType.Sos)
-                    {
-                        continue;
-                    }
-
-                    segmentWriter.WriteSegment(segment);
-                }
-
-                // serialize attributes to JpegSegments
-                var serialized = Serialize(entity);
-                var segments = JpegSegmentUtils.SplitSegmentData(serialized, JpegSegmentType.App1,
-                    AttributeReader.JpegSegmentHeader);
-
-                // write attribute segments
-                foreach (var segment in segments)
-                {
-                    segmentWriter.WriteSegment(segment);
-                }
-
-                // write SOS segment and image data (including the EOI segment at the end)
-                segmentWriter.Finish(segmentReader.BaseStream);
+            // create a temporary file and serialize all attributes there
+            string tmpFilePath = null;
+            using (var input = _fileSystem.OpenRead(entity.Path))
+            using (var output = _fileSystem.CreateTemporaryFile(entity.Path, out tmpFilePath))
+            {
+                serialzier.Serialize(file, input, output, entity);
             }
 
             // replace the original file with the modified file
-            _fileSystem.ReplaceFile(tmpFileName, entity.Path, null);
+            _fileSystem.ReplaceFile(tmpFilePath, entity.Path, null);
         }
-
+        
         public void StoreThumbnail(IEntity entity)
         {
+            // this check is only included to be consistent with the API specification
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
         }
@@ -231,27 +177,7 @@ namespace Viewer.Data.Storage
                 throw new ArgumentOutOfRangeException(nameof(entity));
             }
         }
-
-        private byte[] Serialize(IEnumerable<Attribute> attrs)
-        {
-            using (var serialized = new MemoryStream())
-            {
-                var writer = _attrWriterFactory.Create(serialized);
-                foreach (var attr in attrs)
-                {
-                    writer.Write(attr);
-                }
-
-                return serialized.ToArray();
-            }
-        }
         
-        private static bool IsAttributeSegment(JpegSegment segment)
-        {
-            const string header = AttributeReader.JpegSegmentHeader;
-            return JpegSegmentUtils.MatchSegment(segment, JpegSegmentType.App1, header);
-        }
-
         public void Dispose()
         {
         }

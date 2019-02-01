@@ -11,6 +11,7 @@ using MetadataExtractor.Formats.Jpeg;
 using MetadataExtractor.IO;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Data.Formats.Exif;
+using Viewer.Data.Formats.Jpeg;
 using Directory = MetadataExtractor.Directory;
 
 namespace Viewer.Data.Formats.Exif
@@ -48,45 +49,8 @@ namespace Viewer.Data.Formats.Exif
         }
     }
 
-    public class ExifAttributeReader : IAttributeReader
-    {
-        private ExifMetadata _exif;
-
-        private IList<IExifAttributeParser> _tags;
-
-        private int _index;
-
-        /// <summary>
-        /// Create exif attribute reader from parsed exif segment.
-        /// </summary>
-        /// <param name="exif">Parsed exif segment</param>
-        /// <param name="tags">List of tags to read from the exif</param>
-        public ExifAttributeReader(ExifMetadata exif, IList<IExifAttributeParser> tags)
-        {
-            _exif = exif;
-            _tags = tags;
-        }
-
-        public Attribute Read()
-        {
-            while (_index < _tags.Count)
-            {
-                var tag = _tags[_index++];
-                var attr = tag.Parse(_exif);
-                if (attr != null)
-                    return attr;
-            }
-
-            return null;
-        }
-
-        public void Dispose()
-        {
-        }
-    }
-
-    [Export(typeof(IAttributeReaderFactory))]
-    public class ExifAttributeReaderFactory : IAttributeReaderFactory
+    [Export(typeof(IJpegSerializer))]
+    public class ExifJpegSerializer : IJpegSerializer
     {
         private readonly IList<IExifAttributeParser> _tags;
 
@@ -106,7 +70,26 @@ namespace Viewer.Data.Formats.Exif
         public const string FocalLength = "FocalLength";
         public const string MaxAperture = "MaxAperture";
 
-        public ExifAttributeReaderFactory()
+        public IEnumerable<string> MetadataAttributes
+        {
+            get
+            {
+                yield return Width;
+                yield return Height;
+                yield return DateTaken;
+                yield return Orientation;
+                yield return Thumbnail;
+                yield return CameraModel;
+                yield return CameraMaker;
+                yield return ExposureTime;
+                yield return FStop;
+                yield return ExposureBias;
+                yield return FocalLength;
+                yield return MaxAperture;
+            }
+        }
+
+        public ExifJpegSerializer()
         {
             _tags = new List<IExifAttributeParser>
             {
@@ -128,44 +111,32 @@ namespace Viewer.Data.Formats.Exif
             };
         }
 
-        public IEnumerable<string> MetadataAttributeNames
-        {
-            get
-            {
-                yield return Width;
-                yield return Height;
-                yield return DateTaken;
-                yield return Orientation;
-                yield return Thumbnail;
-                yield return CameraModel;
-                yield return CameraMaker;
-                yield return ExposureTime;
-                yield return FStop;
-                yield return ExposureBias;
-                yield return FocalLength;
-                yield return MaxAperture;
-            }
-        }
-
-        public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)
+        public IEnumerable<Attribute> Deserialize(IReadOnlyList<JpegSegment> segments)
         {
             var exifReader = new ExifReader();
-            foreach (var segment in segments)
+            var exifSegment = segments.FirstOrDefault(segment => 
+                segment.MatchSegment(JpegSegmentType.App1, ExifHeader));
+            if (exifSegment == null)
             {
-                if (IsExifSegment(segment))
+                yield break;
+            }
+
+            var directories = exifReader.Extract(new ByteArrayReader(exifSegment.Bytes, ExifHeader.Length));
+            var exif = new ExifMetadata(exifSegment, directories);
+            foreach (var parser in _tags)
+            {
+                var attribute = parser.Parse(exif);
+                if (attribute != null)
                 {
-                    var directories = exifReader.Extract(new ByteArrayReader(segment.Bytes, ExifHeader.Length));
-                    return new ExifAttributeReader(new ExifMetadata(segment, directories), _tags);
+                    yield return attribute;
                 }
             }
-            
-            return new ExifAttributeReader(new ExifMetadata(null, null), _tags);
         }
 
-        private bool IsExifSegment(JpegSegment segment)
+        public List<JpegSegment> Serialize(IReadOnlyList<JpegSegment> segments, IEnumerable<Attribute> attributes)
         {
-            return segment.Type == JpegSegmentType.App1 &&
-                   Encoding.UTF8.GetString(segment.Bytes, 0, ExifHeader.Length) == ExifHeader;
+            // Exif attributes are read-only
+            return new List<JpegSegment>(segments);
         }
     }
 }

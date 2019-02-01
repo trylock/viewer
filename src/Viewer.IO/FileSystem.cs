@@ -207,6 +207,23 @@ namespace Viewer.IO
         /// Whenever a new file is discovered, <see cref="ISearchListener.OnFile"/> is called.
         /// </param>
         void Search(string path, ISearchListener listener);
+
+        /// <summary>
+        /// A thread-safe method to create a temporary file for <paramref name="path"/>
+        /// which is on the same medium as <paramref name="path"/>
+        /// </summary>
+        /// <param name="path">Path for which the temporary file will be created</param>
+        /// <param name="tempFilePath">Path to the temporary file</param>
+        /// <returns>Opened temporary file</returns>
+        Stream CreateTemporaryFile(string path, out string tempFilePath);
+
+        /// <summary>
+        /// Open file at <paramref name="path"/> for reading.
+        /// </summary>
+        /// <param name="path">Path to a file</param>
+        /// <returns>Opened file</returns>
+        /// <inheritdoc cref="FileStream(string, FileMode, FileAccess)"/>
+        Stream OpenRead(string path);
     }
 
     [Export(typeof(IFileSystem))]
@@ -340,6 +357,42 @@ namespace Viewer.IO
                     }
                 }
             }
+        }
+
+        private readonly Random _random = new Random();
+
+        public Stream CreateTemporaryFile(string path, out string tmpFilePath)
+        {
+            FileStream stream = null;
+            for (; ; )
+            {
+                int number;
+                lock (_random)
+                {
+                    number = _random.Next();
+                }
+
+                try
+                {
+                    tmpFilePath = path + ".tmp." + number;
+                    stream = new FileStream(tmpFilePath, 
+                        FileMode.OpenOrCreate, 
+                        FileAccess.Write, 
+                        FileShare.Read);
+                    break;
+                }
+                catch (IOException)
+                {
+                    // generate another name
+                }
+            }
+
+            return stream;
+        }
+
+        public Stream OpenRead(string path)
+        {
+            return new FileStream(path, FileMode.Open, FileAccess.Read);
         }
     }
 }

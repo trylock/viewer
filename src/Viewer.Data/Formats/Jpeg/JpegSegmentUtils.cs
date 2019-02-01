@@ -16,7 +16,8 @@ namespace Viewer.Data.Formats.Jpeg
         public const long MaxSegmentSize = 0xFFFF - 2;
 
         /// <summary>
-        /// Copy segment data from multiple segments without header to a single array.
+        /// Copy segment data from multiple segments to a single array.
+        /// Segment header will be removed.
         /// </summary>
         /// <param name="segments">All segments</param>
         /// <param name="type">Type of segments to copy</param>
@@ -112,7 +113,7 @@ namespace Viewer.Data.Formats.Jpeg
         /// Expected header including terminating 0 characters.
         /// </param>
         /// <returns>true iff the segment has given type and header</returns>
-        public static bool MatchSegment(JpegSegment segment, JpegSegmentType type, string header)
+        public static bool MatchSegment(this JpegSegment segment, JpegSegmentType type, string header)
         {
             if (segment.Type != type || segment.Bytes.Length < header.Length)
             {

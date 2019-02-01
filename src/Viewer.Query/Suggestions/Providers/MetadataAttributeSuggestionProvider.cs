@@ -51,9 +51,9 @@ namespace Viewer.Query.Suggestions.Providers
 
         [ImportingConstructor]
         public MetadataAttributeSuggestionProviderFactory(
-            [ImportMany] IAttributeReaderFactory[] readers)
+            [ImportMany] IAttributeSerializer[] serializers)
         {
-            _names = readers.SelectMany(reader => reader.MetadataAttributeNames).ToList();
+            _names = serializers.SelectMany(reader => reader.MetadataAttributes).ToList();
         }
 
         public ISuggestionProvider Create(IStateCollector collector)

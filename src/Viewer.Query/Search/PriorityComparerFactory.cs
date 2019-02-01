@@ -35,11 +35,11 @@ namespace Viewer.Query.Search
         [ImportingConstructor]
         public PriorityComparerFactory(
             IAttributeStatisticsFactory attributeStatisticsFactory, 
-            [ImportMany] IEnumerable<IAttributeReaderFactory> attrReaderFactories)
+            [ImportMany] IEnumerable<IAttributeSerializer> serializers)
         {
             _attributeStatisticsFactory = attributeStatisticsFactory;
             _metadataAttributeNames = new HashSet<string>(
-                attrReaderFactories.SelectMany(item => item.MetadataAttributeNames));
+                serializers.SelectMany(item => item.MetadataAttributes));
         }
 
         public IComparer<string> Create(ValueExpression expression)

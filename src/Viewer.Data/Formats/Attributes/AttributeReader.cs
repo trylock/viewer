@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MetadataExtractor.Formats.Jpeg;
+using MetadataExtractor.Formats.Xmp;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Data.Formats.Jpeg;
 
@@ -41,7 +44,7 @@ namespace Viewer.Data.Formats.Attributes
     /// - name (String)
     /// - Value (int32, String, Double or DateTime - depends on the type value)
     /// </remarks>
-    public class AttributeReader : IAttributeReader
+    public class AttributeReader : IDisposable, IEnumerable<Attribute>
     {
         /// <summary>
         /// Name of a JPEG segment with attribute data.
@@ -126,20 +129,24 @@ namespace Viewer.Data.Formats.Attributes
 
             return Encoding.UTF8.GetString(buffer.ToArray());
         }
-    }
 
-    /// <summary>
-    /// Create attribute reader of the custom attribute segments.
-    /// </summary>
-    [Export(typeof(IAttributeReaderFactory))]
-    public class AttributeReaderFactory : IAttributeReaderFactory
-    {
-        public IEnumerable<string> MetadataAttributeNames => Enumerable.Empty<string>();
-
-        public IAttributeReader CreateFromSegments(FileInfo file, IEnumerable<JpegSegment> segments)
+        public IEnumerator<Attribute> GetEnumerator()
         {
-            var data = JpegSegmentUtils.JoinSegmentData(segments, JpegSegmentType.App1, AttributeReader.JpegSegmentHeader);
-            return new AttributeReader(new BinaryReader(new MemoryStream(data)));
+            for (;;)
+            {
+                var attribute = Read();
+                if (attribute == null)
+                {
+                    break;
+                }
+
+                yield return attribute;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

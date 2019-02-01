@@ -24,9 +24,8 @@ namespace Viewer.Data.Formats.Jpeg
 
         /// <summary>
         /// Finish writing JPEG segment.
-        /// Copy unchanged image data starting at current position in dataStream 
-        /// including the End of Image segment.
-        /// segment after them.
+        /// First, it will add SOS header, then it copies the image data including the
+        /// End of Image segment.
         /// <param name="input">Stream with image data</param>
         /// </summary>
         void Finish(Stream input);

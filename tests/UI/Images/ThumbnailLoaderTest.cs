@@ -184,7 +184,7 @@ namespace ViewerTest.UI.Images
             Assert.IsFalse(thumbnailImage.IsDisposed);
             var image = await _loader.LoadNativeThumbnailAsync(entity, new Size(1, 1), CancellationToken.None);
             
-            Assert.IsNotNull(entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail));
+            Assert.IsNotNull(entity.GetValue<ImageValue>(ExifJpegSerializer.Thumbnail));
             Assert.IsTrue(originalImage.IsDisposed);
             Assert.IsTrue(thumbnailImage.IsDisposed);
         }
@@ -216,7 +216,7 @@ namespace ViewerTest.UI.Images
             }
 
             Assert.AreEqual("test", exception);
-            Assert.IsNull(entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail));
+            Assert.IsNull(entity.GetValue<ImageValue>(ExifJpegSerializer.Thumbnail));
             Assert.IsTrue(originalImage.IsDisposed);
         }
 
@@ -242,7 +242,7 @@ namespace ViewerTest.UI.Images
             }
 
             Assert.AreEqual("loader exception", exception);
-            Assert.IsNull(entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail));
+            Assert.IsNull(entity.GetValue<ImageValue>(ExifJpegSerializer.Thumbnail));
         }
 
         [TestMethod]
@@ -264,7 +264,7 @@ namespace ViewerTest.UI.Images
             }
 
             Assert.AreEqual("IO exception", exception);
-            Assert.IsNull(entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail));
+            Assert.IsNull(entity.GetValue<ImageValue>(ExifJpegSerializer.Thumbnail));
         }
 
         [TestMethod]
@@ -301,7 +301,7 @@ namespace ViewerTest.UI.Images
             }
             
             Assert.IsTrue(isCanceled);
-            Assert.IsNull(entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail));
+            Assert.IsNull(entity.GetValue<ImageValue>(ExifJpegSerializer.Thumbnail));
             Assert.IsTrue(originalImage.IsDisposed);
             Assert.IsTrue(thumbnailImage.IsDisposed);
         }
@@ -335,7 +335,7 @@ namespace ViewerTest.UI.Images
             }
 
             Assert.IsTrue(isCanceled);
-            Assert.IsNull(entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail));
+            Assert.IsNull(entity.GetValue<ImageValue>(ExifJpegSerializer.Thumbnail));
             Assert.IsTrue(originalImage.IsDisposed);
         }
 

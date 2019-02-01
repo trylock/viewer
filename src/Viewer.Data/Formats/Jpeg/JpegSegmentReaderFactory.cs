@@ -12,21 +12,19 @@ namespace Viewer.Data.Formats.Jpeg
     public interface IJpegSegmentReaderFactory
     {
         /// <summary>
-        /// Create JpegSegmentReader from given file path.
+        /// Create JPEG segment reader from stream
         /// </summary>
-        /// <param name="filePath">Path to a file</param>
+        /// <param name="input">Stream with JPEG data</param>
         /// <returns>JPEG segment reader</returns>
-        IJpegSegmentReader CreateFromPath(string filePath);
+        IJpegSegmentReader CreateFromStream(Stream input);
     }
 
     [Export(typeof(IJpegSegmentReaderFactory))]
     public class JpegSegmentReaderFactory : IJpegSegmentReaderFactory
     {
-        public IJpegSegmentReader CreateFromPath(string filePath)
+        public IJpegSegmentReader CreateFromStream(Stream input)
         {
-            return new JpegSegmentReader(
-                new BinaryReader(
-                    new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 0x1000, FileOptions.SequentialScan)));
+            return new JpegSegmentReader(new BinaryReader(input));
         }
     }
 }

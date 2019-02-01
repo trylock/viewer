@@ -37,17 +37,17 @@ namespace ViewerTest.Data.Storage
         public void Setup()
         {
             var factory = new SQLiteConnectionFactory(new FileSystem(), "test.db");
-
-            var attributeReader = new Mock<IAttributeReader>();
-            attributeReader.Setup(mock => mock.Read()).Returns<Attribute>(null);
-
-            var attributeReaderFactory = new Mock<IAttributeReaderFactory>();
-            attributeReaderFactory
-                .Setup(mock => mock.CreateFromSegments(It.IsAny<FileInfo>(), It.IsAny<IEnumerable<JpegSegment>>()))
-                .Returns(attributeReader.Object);
+            
+            var fileMetadataSerializer = new Mock<IAttributeSerializer>();
+            fileMetadataSerializer
+                .Setup(mock => mock.Deserialize(It.IsAny<FileInfo>(), It.IsAny<Stream>()))
+                .Returns(Enumerable.Empty<Attribute>());
 
             _configuration = new ConfigurationMock();
-            _storage = new SqliteAttributeStorage(factory, _configuration, attributeReaderFactory.Object);
+            _storage = new SqliteAttributeStorage(
+                factory, 
+                _configuration, 
+                fileMetadataSerializer.Object);
         }
 
         [TestCleanup]

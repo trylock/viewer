@@ -56,6 +56,7 @@
     <Reference Include="MetadataExtractor, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MetadataExtractor.2.0.0\lib\net45\MetadataExtractor.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.4.5.8\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -90,6 +91,15 @@
     </Compile>
     <Compile Include="Attribute.cs" />
     <Compile Include="AttributeCache.cs" />
+    <Compile Include="Formats\Attributes\AttributeJpegSerializer.cs" />
+    <Compile Include="Formats\Attributes\AttributeWriter.cs" />
+    <Compile Include="Formats\IAttributeSerializer.cs" />
+    <Compile Include="Formats\IJpegSerializer.cs" />
+    <Compile Include="Formats\Jpeg\JpegAttributeSerializer.cs" />
+    <Compile Include="Formats\Xmp\XmpBase.cs" />
+    <Compile Include="Formats\Xmp\XmpJpegSerializer.cs" />
+    <Compile Include="Formats\Xmp\XmpUserAttributeReader.cs" />
+    <Compile Include="Formats\Xmp\XmpUserAttributeWriter.cs" />
     <Compile Include="SQLite\Attributes.cs" />
     <Compile Include="SQLite\AttributeStatistics.cs" />
     <Compile Include="SQLite\Files.cs" />
@@ -100,16 +110,11 @@
     <Compile Include="EntityComparer.cs" />
     <Compile Include="EntityManager.cs" />
     <Compile Include="Formats\Attributes\AttributeReader.cs" />
-    <Compile Include="Formats\Attributes\AttributeWriter.cs" />
     <Compile Include="Formats\Exif\ExifAttributeParser.cs" />
-    <Compile Include="Formats\Exif\ExifAttributeReader.cs" />
+    <Compile Include="Formats\Exif\ExifJpegSerializer.cs" />
     <Compile Include="Formats\Exif\IExifAttributeParser.cs" />
     <Compile Include="Formats\Exif\ThumbnaiExifAttributeParser.cs" />
-    <Compile Include="Formats\FileAttributeReader.cs" />
-    <Compile Include="Formats\IAttributeReader.cs" />
-    <Compile Include="Formats\IAttributeReaderFactory.cs" />
-    <Compile Include="Formats\IAttributeWriter.cs" />
-    <Compile Include="Formats\IAttributeWriterFactory.cs" />
+    <Compile Include="Formats\FileMetadataAttributeSerializer.cs" />
     <Compile Include="Formats\InvalidDataFormatException.cs" />
     <Compile Include="Formats\Jpeg\JpegSegmentReader.cs" />
     <Compile Include="Formats\Jpeg\JpegSegmentReaderFactory.cs" />

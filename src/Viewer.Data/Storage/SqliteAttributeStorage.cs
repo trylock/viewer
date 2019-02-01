@@ -73,15 +73,15 @@ namespace Viewer.Data.Storage
         private readonly Dictionary<string, Request> _requests;
         private readonly SQLiteConnectionFactory _connectionFactory;
         private readonly IStorageConfiguration _configuration;
-        private readonly IAttributeReaderFactory _fileAttributeReaderFactory;
+        private readonly IAttributeSerializer _fileMetadataSerializer;
         
         [ImportingConstructor]
         public SqliteAttributeStorage(
             SQLiteConnectionFactory connectionFactory, 
             IStorageConfiguration configuration,
-            [Import(typeof(FileAttributeReaderFactory))] IAttributeReaderFactory fileAttributesReaderFactory)
+            [Import(typeof(FileMetadataAttributeSerializer))] IAttributeSerializer fileMetadataSerializer)
         {
-            _fileAttributeReaderFactory = fileAttributesReaderFactory;
+            _fileMetadataSerializer = fileMetadataSerializer;
             _connectionFactory = connectionFactory;
             _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             _configuration = configuration;
@@ -201,16 +201,7 @@ namespace Viewer.Data.Storage
             var fileAttributes = new List<Attribute>();
             try
             {
-                var attributes = _fileAttributeReaderFactory.CreateFromSegments(fi, Enumerable.Empty<JpegSegment>());
-                for (;;)
-                {
-                    var attr = attributes.Read();
-                    if (attr == null)
-                    {
-                        break;
-                    }
-                    fileAttributes.Add(attr);
-                }
+                fileAttributes.AddRange(_fileMetadataSerializer.Deserialize(fi, null));
             }
             catch (FileNotFoundException)
             {
@@ -289,7 +280,7 @@ namespace Viewer.Data.Storage
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var thumbnail = entity.GetAttribute(ExifAttributeReaderFactory.Thumbnail);
+            var thumbnail = entity.GetAttribute(ExifJpegSerializer.Thumbnail);
             var thumbnailValue = thumbnail?.Value as ImageValue;
             if (thumbnailValue == null || thumbnailValue.IsNull)
             {

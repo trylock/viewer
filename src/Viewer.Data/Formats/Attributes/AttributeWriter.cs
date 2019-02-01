@@ -15,7 +15,7 @@ namespace Viewer.Data.Formats.Attributes
     /// Write attributes to a binary format.
     /// For more info on the format, see the <see cref="AttributeReader"/> class.
     /// </summary>
-    public class AttributeWriter : IAttributeWriter
+    public class AttributeWriter : IDisposable
     {
         private class WriterVisitor : IValueVisitor, IDisposable
         {
@@ -39,12 +39,12 @@ namespace Viewer.Data.Formats.Attributes
 
             void IValueVisitor.Visit(IntValue attr)
             {
-                Writer.Write((int) attr.Value);
+                Writer.Write((int)attr.Value);
             }
 
             void IValueVisitor.Visit(RealValue attr)
             {
-                Writer.Write((double) attr.Value);
+                Writer.Write((double)attr.Value);
             }
 
             void IValueVisitor.Visit(StringValue attr)
@@ -75,7 +75,7 @@ namespace Viewer.Data.Formats.Attributes
         }
 
         private readonly WriterVisitor _writer;
-        
+
         public AttributeWriter(BinaryWriter writer)
         {
             _writer = new WriterVisitor(writer);
@@ -87,22 +87,13 @@ namespace Viewer.Data.Formats.Attributes
             {
                 return;
             }
-            
+
             _writer.Write(attr);
         }
-        
+
         public void Dispose()
         {
             _writer.Dispose();
-        }
-    }
-
-    [Export(typeof(IAttributeWriterFactory))]
-    public class AttributeWriterFactory : IAttributeWriterFactory
-    {
-        public IAttributeWriter Create(Stream output)
-        {
-            return new AttributeWriter(new BinaryWriter(output));
         }
     }
 }

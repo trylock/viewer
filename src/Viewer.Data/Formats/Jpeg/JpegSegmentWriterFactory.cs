@@ -14,50 +14,20 @@ namespace Viewer.Data.Formats.Jpeg
         /// <summary>
         /// Create JPEG segment writer from path to a file.
         /// </summary>
-        /// <param name="path">Path to a file from which we read.</param>
-        /// <param name="tmpFileName">Path to a file to which we write.</param>
+        /// <param name="input">Stream with original data</param>
+        /// <param name="output">Stream where the new data will be written to</param>
         /// <returns>Writer</returns>
-        IJpegSegmentWriter CreateFromPath(string path, out string tmpFileName);
+        IJpegSegmentWriter CreateFromStream(Stream input, Stream output);
     }
     
     [Export(typeof(IJpegSegmentWriterFactory))]
     public class JpegSegmentWriterFactory : IJpegSegmentWriterFactory
     {
-        private readonly Random _random = new Random();
-
-        /// <summary>
-        /// Create a temporary file for given file path
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <param name="tmpFileName">Path to a file to which we'll write.</param>
-        /// <returns>
-        /// JPEG segment writer which will write to <paramref name="tmpFileName"/>
-        /// </returns>
-        public IJpegSegmentWriter CreateFromPath(string filePath, out string tmpFileName)
+        public IJpegSegmentWriter CreateFromStream(Stream input, Stream output)
         {
-            FileStream input = null;
-            for (;;)
-            {
-                try
-                {
-                    var number = 0;
-                    lock (_random)
-                    {
-                        number = _random.Next();
-                    }
-                    
-                    tmpFileName = filePath + ".tmp." + number;
-                    input = new FileStream(tmpFileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-                    break;
-                }
-                catch (IOException)
-                {
-                    // generate a new name
-                }
-            }
-            long expectedLength = new FileInfo(filePath).Length;
-            input.SetLength(expectedLength);
-            return new JpegSegmentWriter(new BinaryWriter(input));
+            long expectedLength = input.Length;
+            output.SetLength(expectedLength);
+            return new JpegSegmentWriter(new BinaryWriter(output));
         }
     }
 }

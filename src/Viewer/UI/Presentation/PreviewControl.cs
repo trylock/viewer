@@ -166,8 +166,8 @@ namespace Viewer.UI.Presentation
                 _needsRepaint = !_lastTransform.Values.SequenceEqual(currentTransform.Values);
                 _lastTransform = currentTransform;
                 _repaintSchedule = DateTime.Now + RepaintDelay;
-
-                paint.FilterQuality = _needsRepaint ? SKFilterQuality.None : SKFilterQuality.High;
+                
+                paint.FilterQuality = _needsRepaint ? SKFilterQuality.None : SKFilterQuality.Medium;
 
                 canvas.DrawBitmap(Picture, 
                     SKRect.Create(pictureSize.ToSKSize()), 

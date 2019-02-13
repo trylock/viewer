@@ -33,14 +33,16 @@ namespace Viewer.Images
 
             var originalSize = new Size(originalImage.Width, originalImage.Height);
             var thumbnailSize = GetThumbnailSize(originalSize, thumbnailArea);
-            var thumbnail = new SKBitmap(thumbnailSize.Width, thumbnailSize.Height);
+            SKBitmap thumbnail = null;
             try
             {
-                originalImage.Resize(thumbnail, SKBitmapResizeMethod.Mitchell);
+                thumbnail = originalImage.Resize(
+                    new SKImageInfo(thumbnailSize.Width, thumbnailSize.Height), 
+                    SKFilterQuality.High);
             }
             catch (Exception)
             {
-                thumbnail.Dispose();
+                thumbnail?.Dispose();
                 throw;
             }
 

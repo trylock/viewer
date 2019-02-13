@@ -51,6 +51,19 @@ namespace Viewer.UI.Images
         }
     }
 
+    internal class DrawEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Item to be drawn
+        /// </summary>
+        public EntityView View { get; set; }
+
+        /// <summary>
+        /// State of the entity view to be drawn. Event handlers can modify this value.
+        /// </summary>
+        public EntityViewState State { get; set; } = EntityViewState.None;
+    }
+
     /// <inheritdoc />
     /// <summary>
     /// Arguments used in the <see cref="E:Viewer.UI.Images.IImagesView.OnDrop" /> event.
@@ -143,6 +156,11 @@ namespace Viewer.UI.Images
         /// Event occurs whenever user releases a keyboard key
         /// </summary>
         event KeyEventHandler HandleKeyUp;
+
+        /// <summary>
+        /// Event occurs whenever an item is to be drawn.
+        /// </summary>
+        event EventHandler<DrawEventArgs> ItemDraw;
 
         /// <summary>
         /// List of items to show 

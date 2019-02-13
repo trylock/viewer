@@ -10,13 +10,25 @@ namespace Viewer.UI.Images
 {
     public enum EntityViewState
     {
+        /// <summary>
+        /// The default state.
+        /// </summary>
         None,
-        Active,
-        Selected,
+
+        /// <summary>
+        /// This item is selected.
+        /// </summary>
+        Selected
     }
 
+    /// <summary>
+    /// View of an item in the thumbnail grid
+    /// </summary>
     public sealed class EntityView : IDisposable
     {
+        /// <summary>
+        /// Name of this view shown to the user
+        /// </summary>
         public string Name
         {
             get
@@ -30,9 +42,19 @@ namespace Viewer.UI.Images
             }
         }
 
+        /// <summary>
+        /// Full path to the file of this view
+        /// </summary>
         public string FullPath => Data.Path;
-        public EntityViewState State { get; set; } = EntityViewState.None;
+
+        /// <summary>
+        /// Thumbnail of this view
+        /// </summary>
         public ILazyThumbnail Thumbnail { get; }
+
+        /// <summary>
+        /// View data
+        /// </summary>
         public IEntity Data { get; }
 
         public EntityView(IEntity data, ILazyThumbnail thumbnail)
@@ -96,5 +118,4 @@ namespace Viewer.UI.Images
             return _entityComparer.Compare(x.Data, y.Data);
         }
     }
-
 }

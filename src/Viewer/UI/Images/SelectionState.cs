@@ -19,7 +19,7 @@ namespace Viewer.UI.Images
     /// </summary>
     /// <remarks>
     /// This class contains selection logic for any thumbnail grid. It does not assume much
-    /// about its view. The view interface should be easily implementable by any photos view.
+    /// about its view. 
     /// </remarks>
     internal class SelectionState : IEnumerable<EntityView>, IDisposable
     {
@@ -32,7 +32,7 @@ namespace Viewer.UI.Images
         public event EventHandler ActiveItemChanged;
 
         /// <summary>
-        /// The last item which user interacted with.
+        /// The last item which user interacted with. This is used for range selection
         /// </summary>
         public EntityView ActiveItem { get; private set; }
 
@@ -89,8 +89,9 @@ namespace Viewer.UI.Images
             _view.HandleKeyDown += View_HandleKeyDown;
             _view.ViewActivated += View_ViewActivated;
             _view.ViewDeactivated += View_ViewDeactivated;
+            _view.ItemDraw += View_ItemDraw;
         }
-        
+
         public void Dispose()
         {
             _view.ProcessMouseDown -= View_ProcessMouseDown;
@@ -99,6 +100,7 @@ namespace Viewer.UI.Images
             _view.HandleKeyDown -= View_HandleKeyDown;
             _view.ViewActivated -= View_ViewActivated;
             _view.ViewDeactivated -= View_ViewDeactivated;
+            _view.ItemDraw -= View_ItemDraw;
         }
 
         public void Clear()
@@ -124,23 +126,7 @@ namespace Viewer.UI.Images
         {
             return GetEnumerator();
         }
-
-        private void ResetSelectedItemsState()
-        {
-            foreach (var item in _currentSelection)
-            {
-                item.State = EntityViewState.None;
-            }
-        }
-
-        private void SetSelectedItemsState()
-        {
-            foreach (var item in _currentSelection)
-            {
-                item.State = EntityViewState.Selected;
-            }
-        }
-
+        
         /// <summary>
         /// Replace global selection (<see cref="ISelection"/>) with current selection
         /// (<see cref="_currentSelection"/>)
@@ -193,10 +179,7 @@ namespace Viewer.UI.Images
         {
             _rangeTarget = location;
 
-            // reset current selection
-            ResetSelectedItemsState();
-
-            if (!_isRangeSelect)
+            if (!_isRangeSelect) // start range selection
             {
                 _isRangeSelect = true;
                 _rangeOrigin = location;
@@ -208,13 +191,10 @@ namespace Viewer.UI.Images
                 }
                 _previousSelection.UnionWith(_currentSelection);
             }
-            else
+            else // update range selection
             {
-                var minX = Math.Min(location.X, _rangeOrigin.X);
-                var maxX = Math.Max(location.X, _rangeOrigin.X);
-                var minY = Math.Min(location.Y, _rangeOrigin.Y);
-                var maxY = Math.Max(location.Y, _rangeOrigin.Y);
-                var bounds = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+                // calculate range selection bounding rectangle
+                var bounds = RectangleFromPoints(location, _rangeOrigin);
 
                 // update selection
                 _currentSelection.Clear();
@@ -240,10 +220,18 @@ namespace Viewer.UI.Images
             }
 
             SetGlobalSelection();
-            SetSelectedItemsState();
             _view.UpdateItems();
         }
 
+        /// <summary>
+        /// Combine <see cref="_previousSelection"/> and all items in <paramref name="bounds"/>
+        /// using the symetric difference strategy.
+        /// </summary>
+        /// <remarks>
+        /// The result is stored in <see cref="_currentSelection"/>. The caller should
+        /// clear all items from <see cref="_currentSelection"/> before calling this method.
+        /// </remarks>
+        /// <param name="bounds">Seletion bounds</param>
         private void ProcessSymetricDifferenceSelection(Rectangle bounds)
         {
             var items = _view.GetItemsIn(bounds);
@@ -251,6 +239,15 @@ namespace Viewer.UI.Images
             _currentSelection.SymmetricExceptWith(items);
         }
 
+        /// <summary>
+        /// Combine <see cref="_previousSelection"/> and all items in <paramref name="bounds"/>
+        /// using the union strategy.
+        /// </summary>
+        /// <remarks>
+        /// The result is stored in <see cref="_currentSelection"/>. The caller should
+        /// clear all items from <see cref="_currentSelection"/> before calling this method.
+        /// </remarks>
+        /// <param name="bounds">Seletion bounds</param>
         private void ProcessUnionSelection(Rectangle bounds)
         {
             var items = _view.GetItemsIn(bounds);
@@ -258,12 +255,25 @@ namespace Viewer.UI.Images
             _currentSelection.UnionWith(items);
         }
 
+        /// <summary>
+        /// Combine <see cref="_previousSelection"/> and all items in <paramref name="bounds"/>
+        /// using the replace strategy.
+        /// </summary>
+        /// <remarks>
+        /// The result is stored in <see cref="_currentSelection"/>. The caller should
+        /// clear all items from <see cref="_currentSelection"/> before calling this method.
+        /// </remarks>
+        /// <param name="bounds">Seletion bounds</param>
         private void ProcessReplaceSelection(Rectangle bounds)
         {
             var items = _view.GetItemsIn(bounds);
             _currentSelection.UnionWith(items);
         }
 
+        /// <summary>
+        /// Finish range selection at <paramref name="location"/>.
+        /// </summary>
+        /// <param name="location">The last position of current range selection.</param>
         private void EndRangeSelection(Point location)
         {
             ProcessRangeSelection(location, false);
@@ -328,9 +338,6 @@ namespace Viewer.UI.Images
 
         private void ProcessItemSelection(EntityView item, bool resetSelectedItem)
         {
-            var isItemInSelection = item.State == EntityViewState.Selected;
-            ResetSelectedItemsState();
-
             // update selection
             if (resetSelectedItem)
             {
@@ -347,7 +354,7 @@ namespace Viewer.UI.Images
                     ProcessReplaceItemSelection(item);
                 }
             }
-            else if (!isItemInSelection)
+            else if (!_currentSelection.Contains(item))
             {
                 ProcessReplaceItemSelection(item);
             }
@@ -355,7 +362,6 @@ namespace Viewer.UI.Images
             SetGlobalSelection();
 
             // update view
-            SetSelectedItemsState();
             _view.UpdateItems();
         }
 
@@ -411,7 +417,7 @@ namespace Viewer.UI.Images
             {
                 CaptureActiveItem(item);
 
-                if (item.State != EntityViewState.Selected ||
+                if (!_currentSelection.Contains(item) ||
                     _view.ModifierKeyState.HasFlag(Keys.Control) ||
                     _view.ModifierKeyState.HasFlag(Keys.Shift))
                 {
@@ -439,14 +445,13 @@ namespace Viewer.UI.Images
         {
             if (_isRangeSelect)
             {
-                EndRangeSelection(e.Location);
+                EndRangeSelection(e.Location); 
             }
             else 
             {
                 var item = _view.GetItemAt(e.Location);
                 if (item == null && e.Button == MouseButtons.Right)
                 {
-                    ResetSelectedItemsState();
                     _currentSelection.Clear();
                     SetGlobalSelection();
                     _view.UpdateItems();
@@ -458,7 +463,7 @@ namespace Viewer.UI.Images
                 }
 
                 if (item != null && 
-                    item.State == EntityViewState.Selected && 
+                    _currentSelection.Contains(item) && 
                     _selection.Count() > 1 &&
                     _view.ModifierKeyState == 0)
                 {
@@ -474,7 +479,6 @@ namespace Viewer.UI.Images
                 _currentSelection.Clear();
                 _currentSelection.UnionWith(_view.Items.SelectMany(pair => pair.Items));
                 SetGlobalSelection();
-                SetSelectedItemsState();
             }
 
             // get current active item
@@ -528,6 +532,14 @@ namespace Viewer.UI.Images
             }
 
             _view.EnsureItemVisible(target);
+        }
+        
+        private void View_ItemDraw(object sender, DrawEventArgs e)
+        {
+            if (_currentSelection.Contains(e.View))
+            {
+                e.State = EntityViewState.Selected;
+            }
         }
     }
 }

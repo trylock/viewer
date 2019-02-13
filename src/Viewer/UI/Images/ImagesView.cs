@@ -63,6 +63,11 @@ namespace Viewer.UI.Images
         public event MouseEventHandler ProcessMouseDown;
         public event MouseEventHandler ProcessMouseMove;
         public event EventHandler ProcessMouseLeave;
+        public event EventHandler<DrawEventArgs> ItemDraw
+        {
+            add => _view.ItemDraw += value;
+            remove => _view.ItemDraw -= value;
+        }
 
         public void ShowSelection(Rectangle bounds)
         {

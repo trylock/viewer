@@ -85,11 +85,6 @@ namespace ViewerTest.UI.Images
             _view.Verify(mock => mock.ItemLayout, Times.AtLeastOnce);
             _view.VerifyNoOtherCalls();
 
-            // verify that view items have been update properly
-            Assert.AreEqual(EntityViewState.Selected, items[0].State);
-            Assert.AreEqual(EntityViewState.Selected, items[1].State);
-            Assert.AreEqual(EntityViewState.None, items[2].State);
-
             // verify that global selection has been updated properly
             _selection.Verify(mock => mock.GetEnumerator(), Times.AtLeastOnce);
             _selection.Verify(mock => mock.Replace(It.Is<IEnumerable<IEntity>>(entities => 
@@ -129,19 +124,12 @@ namespace ViewerTest.UI.Images
             
             _view.Verify(mock => mock.GetItemAt(new Point(5, 5)), Times.Exactly(2));
             _view.Verify(mock => mock.UpdateItems(), Times.Once);
-            Assert.AreEqual(EntityViewState.Selected, items[0].State);
-            Assert.AreEqual(EntityViewState.None, items[1].State);
-            Assert.AreEqual(EntityViewState.None, items[2].State);
 
             // right mouse button in an empty space at (10, 10)
             _view.Raise(view => view.ProcessMouseDown += null, this, new MouseEventArgs(MouseButtons.Right, 0, 10, 10, 0));
 
             _view.Verify(mock => mock.GetItemAt(new Point(10, 10)), Times.Once);
-
-            Assert.AreEqual(EntityViewState.Selected, items[0].State);
-            Assert.AreEqual(EntityViewState.None, items[1].State);
-            Assert.AreEqual(EntityViewState.None, items[2].State);
-
+            
             // release mouse button in an empty space at (10, 10)
             _view.Raise(view => view.ProcessMouseUp += null, this, new MouseEventArgs(MouseButtons.Right, 0, 10, 10, 0));
 
@@ -150,12 +138,7 @@ namespace ViewerTest.UI.Images
             
             _view.Verify(mock => mock.ModifierKeyState, Times.AtLeastOnce);
             _view.VerifyNoOtherCalls();
-
-            // verify that view items have been update properly
-            Assert.AreEqual(EntityViewState.None, items[0].State);
-            Assert.AreEqual(EntityViewState.None, items[1].State);
-            Assert.AreEqual(EntityViewState.None, items[2].State);
-
+            
             // verify that global selection has been updated properly
             _selection.Verify(mock => mock.GetEnumerator(), Times.AtLeastOnce);
             _selection.Verify(mock => mock.Replace(It.Is<IEnumerable<IEntity>>(entities =>

@@ -92,6 +92,8 @@ namespace Viewer.UI.Images
             }
         }
 
+        public event EventHandler<DrawEventArgs> ItemDraw;
+
         /// <summary>
         /// Control which is used to draw current group label
         /// </summary>
@@ -102,11 +104,7 @@ namespace Viewer.UI.Images
         public Control GroupLabelControl { get; }
         
         #region Graphics settings
-
-        private readonly Color _highlightFillColor;
-        private readonly Color _highlightStrokeColor;
-        private readonly int _highlightedItemBorderSize = 1;
-
+        
         private readonly Color _selectedFillColor;
         private readonly Color _selectedStrokeColor;
         private readonly int _selectedItemBorderSize = 1;
@@ -151,9 +149,6 @@ namespace Viewer.UI.Images
             
             MouseWheel += GridView_MouseWheel;
             Scroll += GridView_Scroll;
-
-            _highlightFillColor = Color.FromArgb(226, 241, 255);
-            _highlightStrokeColor = Color.FromArgb(221, 232, 248);
 
             _selectedFillColor = Color.FromArgb(218, 231, 251);
             _selectedStrokeColor = Color.FromArgb(194, 208, 229);
@@ -487,22 +482,19 @@ namespace Viewer.UI.Images
             // clear grid cell area
             graphics.FillRectangle(Brushes.White, bounds);
 
+            // determine how the item will be drawn
             var drawBounds = bounds;
-            if ((item.State & EntityViewState.Selected) != 0)
+            var args = new DrawEventArgs
+            {
+                View = element.Item
+            };
+            ItemDraw?.Invoke(this, args);
+
+            if (args.State == EntityViewState.Selected)
             {
                 // draw selection 
                 using (var brush = new SolidBrush(_selectedFillColor))
                 using (var pen = new Pen(_selectedStrokeColor, _selectedItemBorderSize))
-                {
-                    graphics.FillRectangle(brush, drawBounds);
-                    graphics.DrawRectangle(pen, drawBounds);
-                }
-            }
-            else if ((item.State & EntityViewState.Active) != 0)
-            {
-                // draw highlight
-                using (var brush = new SolidBrush(_highlightFillColor))
-                using (var pen = new Pen(_highlightStrokeColor, _highlightedItemBorderSize))
                 {
                     graphics.FillRectangle(brush, drawBounds);
                     graphics.DrawRectangle(pen, drawBounds);

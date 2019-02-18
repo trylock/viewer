@@ -4,7 +4,7 @@ The `Viewer` namespace contains a GUI application written in Windows Forms. It u
 
 ## Components
 
-The GUI code uses the MVP pattern. Each window has a [Presenter](xref:Viewer.Core.UI.Presenter) of some [IWindowView](xref:Viewer.Core.UI.IWindowView). Views are more or less passive. They have a set of events and methods which change the view. Typically, a presenter gets its view in constructor, registers its event handlers and calls view methods to change it in response to the events.
+The GUI code uses the MVP pattern. Each window has a [Presenter](xref:Viewer.Core.UI.Presenter`1) of some [IWindowView](xref:Viewer.Core.UI.IWindowView). Views are more or less passive. They have a set of events and methods which change the view. Typically, a presenter gets its view in constructor, registers its event handlers and calls view methods to change it in response to the events.
 
 ## Images 
 

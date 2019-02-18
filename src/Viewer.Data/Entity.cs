@@ -129,7 +129,8 @@ namespace Viewer.Data
 
         public IEntity ChangePath(string path)
         {
-            return new DirectoryEntity(Path);
+            Path = PathUtils.NormalizePath(path);
+            return this;
         }
 
         public IEntity Clone()

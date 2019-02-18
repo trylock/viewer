@@ -157,7 +157,7 @@ namespace Viewer.Data
         /// </summary>
         /// <param name="path">Path to a file to load</param>
         /// <returns>Loaded entity</returns>
-        /// <seealso cref="IAttributeStorage.Load"/>
+        /// <seealso cref="IReadableAttributeStorage.Load"/>
         IEntity GetEntity(string path);
 
         /// <summary>

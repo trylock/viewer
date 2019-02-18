@@ -250,26 +250,35 @@ namespace ViewerTest.Data
                 }
                 Thread.Sleep(delayTime);
 
-                var entity = _storage.Load(TestDataDir + "/empty.jpg");
+                try
+                {
+                    var entity = _storage.Load(TestDataDir + "/empty.jpg");
 
-                // i = 0 is writer, others are readers
-                if (i == 0)
-                {
-                    foreach (var attr in tags)
+                    // i = 0 is writer, others are readers
+                    if (i == 0)
                     {
-                        entity.SetAttribute(attr.Value);
+                        foreach (var attr in tags)
+                        {
+                            entity.SetAttribute(attr.Value);
+                        }
+
+                        _storage.Store(entity);
                     }
-                    _storage.Store(entity);
+                    else // reader
+                    {
+                        // it either sees all attributes written to the file, or none of them
+                        var attributes = entity
+                            .Where(attr => attr.Source == AttributeSource.Custom)
+                            .ToList();
+                        var hasAllTags = attributes.All(attr => tags[attr.Name].Equals(attr)) &&
+                                         attributes.Count == tags.Count;
+                        var doesNotHaveAnyTag = !attributes.Any(attr => tags[attr.Name].Equals(attr));
+                        Assert.IsTrue(hasAllTags || doesNotHaveAnyTag);
+                    }
                 }
-                else // reader
+                catch (IOException e) when (e.GetType() == typeof(IOException))
                 {
-                    // it either sees all attributes written to the file, or none of them
-                    var attributes = entity
-                        .Where(attr => attr.Source == AttributeSource.Custom)
-                        .ToList();
-                    var hasAllTags = attributes.All(attr => tags[attr.Name].Equals(attr)) && attributes.Count == tags.Count;
-                    var doesNotHaveAnyTag = !attributes.Any(attr => tags[attr.Name].Equals(attr));
-                    Assert.IsTrue(hasAllTags || doesNotHaveAnyTag);
+                    // a thread tried to read the file while it is being replaced, this is ok
                 }
             });
 
@@ -307,34 +316,42 @@ namespace ViewerTest.Data
                 }
                 Thread.Sleep(delayTime);
 
-                var entity = _storage.Load(TestDataDir + "/empty.jpg");
-
-                // writer
-                if (i % 2 == 0)
+                try
                 {
-                    foreach (var attr in tags)
-                    {
-                        entity.SetAttribute(attr.Value);
-                    }
+                    var entity = _storage.Load(TestDataDir + "/empty.jpg");
 
-                    try
+                    // writer
+                    if (i % 2 == 0)
                     {
-                        _storage.Store(entity);
+                        foreach (var attr in tags)
+                        {
+                            entity.SetAttribute(attr.Value);
+                        }
+
+                        try
+                        {
+                            _storage.Store(entity);
+                        }
+                        catch (IOException)
+                        {
+                            // file is busy
+                        }
                     }
-                    catch (IOException)
+                    else // reader
                     {
-                        // file is busy
+                        // it either sees all attributes written to the file, or none of them
+                        var attributes = entity
+                            .Where(attr => attr.Source == AttributeSource.Custom)
+                            .ToList();
+                        var hasAllTags = attributes.All(attr => tags[attr.Name].Equals(attr)) &&
+                                         attributes.Count == tags.Count;
+                        var doesNotHaveAnyTag = !attributes.Any(attr => tags[attr.Name].Equals(attr));
+                        Assert.IsTrue(hasAllTags || doesNotHaveAnyTag);
                     }
                 }
-                else // reader
+                catch (IOException e) when (e.GetType() == typeof(IOException))
                 {
-                    // it either sees all attributes written to the file, or none of them
-                    var attributes = entity
-                        .Where(attr => attr.Source == AttributeSource.Custom)
-                        .ToList();
-                    var hasAllTags = attributes.All(attr => tags[attr.Name].Equals(attr)) && attributes.Count == tags.Count;
-                    var doesNotHaveAnyTag = !attributes.Any(attr => tags[attr.Name].Equals(attr));
-                    Assert.IsTrue(hasAllTags || doesNotHaveAnyTag);
+                    // a thread tried to read the file while it is being replaced, this is ok
                 }
             });
 

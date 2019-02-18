@@ -80,6 +80,8 @@ namespace Viewer.UI.QueryEditor
                     .OpenNew()
                     .Show(Application.Panel, DockState.Document);
             }, Resources.QueryComponentIcon.ToBitmap());
+
+            // deserialize editor windows
             app.AddLayoutDeserializeCallback(Deserialize);
         }
         

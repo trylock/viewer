@@ -8,7 +8,7 @@
     <title>Query Language </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Query Language ">
-    <meta name="generator" content="docfx 2.37.2.0">
+    <meta name="generator" content="docfx 2.40.11.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -44,15 +44,15 @@
                   <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
                 </div>
               </form>
+                
                 <ul class="nav level1 navbar-nav">
-                  <li class="active">
-                    <a href="../../articles/intro.html" title="Articles" class="active">Articles</a>
-                  </li>
-                  <li class="">
-                    <a href="../../api/index.html" title="API Documentation" class="">API Documentation</a>
-                  </li>
-                </ul>
-            </div>
+                      <li>
+                          <a href="../../articles/intro.html" title="Articles">Articles</a>
+                      </li>
+                      <li>
+                          <a href="../../api/index.html" title="API Documentation">API Documentation</a>
+                      </li>
+                </ul>    </div>
           </div>
         </nav>
         
@@ -153,7 +153,7 @@ where DateTaken &gt;= date(&quot;2018-08-01&quot;) and DateTaken &lt;= date(&quo
 order by DateTaken desc
 </code></pre>
 <h2 id="select"><code>select</code></h2>
-<p>Each query starts with the <code>select</code> keyword after which can be a directory path pattern. This pattern determines which directories will be searched. It can contain some special characters (for API, see <a href="xref:Viewer.IO.FileFinder">FileFinder</a>):</p>
+<p>Each query starts with the <code>select</code> keyword after which can be a directory path pattern. This pattern determines which directories will be searched. It can contain some special characters (for API, see <a class="xref" href="../../api/Viewer.IO.FileFinder.html">FileFinder</a>):</p>
 <ol>
 <li><code>*</code>: matches a sequence of characters except for a directory separator (<code>/</code> or <code>\</code>). For example, <code>x</code> <code>xa</code>, <code>xab</code> are all matched by <code>x*</code>. On the other hand, it does not match <code>ya</code> since that does not start with <code>x</code>, nor does it match <code>xa/b</code> since that contains a directory separator.</li>
 <li><code>?</code>: matches any character except for a directory separator. For example, the pattern <code>a?b</code> matches <code>axb</code>, <code>ayb</code> but it does not match <code>ab</code> or <code>axyb</code> since <code>?</code> has to be replace with exactly one character.</li>
@@ -176,7 +176,7 @@ order by DateTaken desc
 <p>There is no boolean type. Instead, all values can be <code>null</code> which means the value is missing and this is interpreted as <code>false</code>.</p>
 <p>To get value of an attribute in a query expression, simply type its name (e.g. <code>city</code> will evaluate as a value of the attribute named <code>city</code> or <code>null</code> if there is no attribute named <code>city</code>).</p>
 <h3 id="functions">Functions</h3>
-<p>Function has a name and parameters. It takes the parameters and produces a single value as a result. In a query, you call a function by typing its name followed by arguments in parentheses separated by comma (e.g. <code>func(1, &quot;test&quot;)</code> would call function called <code>func</code> with 2 parameters: a number <code>1</code> and a string <code>&quot;test&quot;</code>). There are several functions in current implementation (see <a href="xref:Viewer.Query.IFunction">IFunction</a> if you want to implement a custom function).</p>
+<p>Function has a name and parameters. It takes the parameters and produces a single value as a result. In a query, you call a function by typing its name followed by arguments in parentheses separated by comma (e.g. <code>func(1, &quot;test&quot;)</code> would call function called <code>func</code> with 2 parameters: a number <code>1</code> and a string <code>&quot;test&quot;</code>). There are several functions in current implementation (see <a class="xref" href="../../api/Viewer.Query.IFunction.html">IFunction</a> if you want to implement a custom function).</p>
 <h3 id="comparison-operators">Comparison operators</h3>
 <p>Values can be compared using the following operators. Comparison operators are non-associative (i.e., <del><code>1 = 2 = 3</code></del> is not allowed, you can only compare 2 values).</p>
 <ul>
@@ -229,7 +229,7 @@ order by DateTaken desc
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/optimizations/src/docs/articles/user/query.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/release_143/src/docs/articles/user/query.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

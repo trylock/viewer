@@ -8,7 +8,7 @@
     <title>Viewer.Query </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Viewer.Query ">
-    <meta name="generator" content="docfx 2.37.2.0">
+    <meta name="generator" content="docfx 2.40.11.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -44,15 +44,15 @@
                   <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
                 </div>
               </form>
+                
                 <ul class="nav level1 navbar-nav">
-                  <li class="active">
-                    <a href="../../articles/intro.html" title="Articles" class="active">Articles</a>
-                  </li>
-                  <li class="">
-                    <a href="../../api/index.html" title="API Documentation" class="">API Documentation</a>
-                  </li>
-                </ul>
-            </div>
+                      <li>
+                          <a href="../../articles/intro.html" title="Articles">Articles</a>
+                      </li>
+                      <li>
+                          <a href="../../api/index.html" title="API Documentation">API Documentation</a>
+                      </li>
+                </ul>    </div>
           </div>
         </nav>
         
@@ -124,14 +124,14 @@
 
 <h2 id="compilation">Compilation</h2>
 <p>Expressions in the <code>where</code> part and the <code>order by</code> part of the query are compiled to a C# code using <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/">Expression Trees</a>. Since we don't know the type of an attribute, many decisions have to be made at runtime. The generated code will therefore mostly just call runtime functions. Expression trees are used mainly for convenience (no need to write an interpreter).</p>
-<p>The compiled function takes an <a href="xref:Viewer.Data.IEntity">entity</a> and returns a <a href="xref:Viewer.Data.BaseValue">value</a>. If the returned value in the <code>where</code> part of a query is null (i.e., <a href="xref:Viewer.Data.BaseValue#Viewer_Data_BaseValue_IsNull">IsNull</a> is true), it is interpreted as <code>false</code> (i.e., the entity is not included in the result).</p>
+<p>The compiled function takes an <a class="xref" href="../../api/Viewer.Data.IEntity.html">entity</a> and returns a <a class="xref" href="../../api/Viewer.Data.BaseValue.html">value</a>. If the returned value in the <code>where</code> part of a query is null (i.e., <a class="xref" href="../../api/Viewer.Data.BaseValue.html#Viewer_Data_BaseValue_IsNull">IsNull</a> is true), it is interpreted as <code>false</code> (i.e., the entity is not included in the result).</p>
 <h2 id="execution">Execution</h2>
-<p>Queries are executed lazily by calling the <a href="xref:Viewer.Query.IExecutableQuery">Execute</a> method. It returns an enumerator which loads entities. Even queries which contain <code>UNION</code>, <code>EXCEPT</code> and <code>INTERSECT</code> operators are evaluated lazily. This is possible due to the <a href="xref:Viewer.Query.IExecutableQuery">Match</a> method which can determine statically (i.e., without looking at any other entity) whether or not an entity matches given query.</p>
+<p>Queries are executed lazily by calling the <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Execute</a> method. It returns an enumerator which loads entities. Even queries which contain <code>UNION</code>, <code>EXCEPT</code> and <code>INTERSECT</code> operators are evaluated lazily. This is possible due to the <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Match</a> method which can determine statically (i.e., without looking at any other entity) whether or not an entity matches given query.</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p>Returned entities are not sorted. If we were to sort the values before returning them, we would have to first find all photos.</p>
 </div>
-<p>The <a href="xref:Viewer.Query.IExecutableQuery">Execute</a> method supports standard cancellation and progress even though it is not an async method and it executes completely synchronously.</p>
+<p>The <a class="xref" href="../../api/Viewer.Query.IExecutableQuery.html">Execute</a> method supports standard cancellation and progress even though it is not an async method and it executes completely synchronously.</p>
 <h2 id="optimizations">Optimizations</h2>
 <p>As discussed in the section about <a href="data.html">data representation</a>, attributes are stored in custom JPEG segments. This means that whenever we want to load attributes a photo, we just have to load first few disk blocks. Usually, the number of read blocks is fairly small. In my data, it is around 10 disk blocks although this can vary based on used camera and programs which also store custom metadata to JPEG segments. Unfortunately, when we want to read many photos, the blocks are far apart since, at best, there is the encoded image data in-between 2 attribute segments. This is especially problematic on HDDs where seek time and rotational delay are included with each random access.</p>
 <h3 id="indexing">Indexing</h3>
@@ -146,7 +146,7 @@
 <p>The compiler will automatically flatten nested queries (including query views). Conditions in the <code>where</code> clause are joined using the <code>and</code> operator. Order of the outer query is used (for example: <code>select (select a order by b) order by c</code> will be ordered by <code>c</code> only).</p>
 <h3 id="set-operators">Set operators</h3>
 <p>One of the goals of the query evaluator is to deliver the first photo to the user as fast as possible. It achives this goal in many ways. For example, found photos are returnd in an arbitrary order and are sorted incrementally. Another challenge for the evaluator, in this sense, are most of the set operators (namely <code>intersect</code> and <code>except</code>). A naïve way of evaluating a query of type <code>A intersect B</code> would first evaluate <code>A</code>, then evaluate <code>B</code> and only return files which have been found by both queries. One major disadvatage is that if <code>A</code> has to search many files and most of them are not in the query result set, the user will have to wait a long time. We can make an optimization which would load files from both queries at the same time in a round-robin fashion (i.e., load the next file from <code>A</code> then load the next file from <code>B</code> and repeat). There is an even better way.</p>
-<p>Given attributes of a photo and its path, the evaluator can determine whether it belogs to the result set of some query without reading any other files. For simple queries, we can create a regular expression whose language is exactly the set of paths to folders searched by given path pattern. Query predicate can easily be evaluated on loaded attributes. To determine whether a file is in an <code>intersection</code>, we check whether it is in both subqueries. <code>union</code> can be satisfied if it is in either subquery and for <code>except</code> it has to be in the first subquery but not in the second one. In the previous section <a href="#Nested-queries">Nested queries</a> we have discused how are nested queries transformed to queries without nested subqueries. Thus, by induction, we can do this with zero additional I/O for every query.</p>
+<p>Given attributes of a photo and its path, the evaluator can determine whether it belogs to the result set of some query without reading any other files. For simple queries, we can create a regular expression whose language is exactly the set of paths to folders searched by given path pattern. Query predicate can easily be evaluated on loaded attributes. To determine whether a file is in an <code>intersection</code>, we check whether it is in both subqueries. <code>union</code> can be satisfied if it is in either subquery and for <code>except</code> it has to be in the first subquery but not in the second one. In the previous section <a href="#nested-queries">Nested queries</a> we have discused how are nested queries transformed to queries without nested subqueries. Thus, by induction, we can do this with zero additional I/O for every query.</p>
 <p>Consider a query <code>A except B</code>. Let us denote <code>n</code> the number of files searched during evaluation of <code>A</code> and <code>m</code> the number of files searched during the evaluation of <code>B</code>. An interesting consequence of the algorithm described in previous paragraph is that we can evaluate the <code>A except B</code> query while only searching <code>n</code> files (instead of <code>n + m</code>).</p>
 <h2 id="grammar">Grammar</h2>
 <p>The program uses ANTLR4 to generate query parser and lexer.</p>
@@ -209,7 +209,7 @@ argumentList: comparison (PARAM_DELIMITER comparison)* | ;
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/release_143/src/docs/articles/developer/query.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

@@ -5,11 +5,11 @@
   "files": [
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/benchmarks.Configuration.yml",
+      "source_relative_path": "api/Viewer.Component.yml",
       "output": {
         ".html": {
-          "relative_path": "api/benchmarks.Configuration.html",
-          "hash": "c7UV8A/N3LF6+I9+sKLw3g=="
+          "relative_path": "api/Viewer.Component.html",
+          "hash": "OXevGcD51haKrzrZdWEKRw=="
         }
       },
       "is_incremental": true,
@@ -17,11 +17,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/benchmarks.ErrorListener.yml",
+      "source_relative_path": "api/Viewer.Core.AggregateProgress-1.yml",
       "output": {
         ".html": {
-          "relative_path": "api/benchmarks.ErrorListener.html",
-          "hash": "Whi9GBOBWZRYtfH7BGjBHQ=="
+          "relative_path": "api/Viewer.Core.AggregateProgress-1.html",
+          "hash": "UVLqKNLyHqQWoPkTzRqtvQ=="
         }
       },
       "is_incremental": true,
@@ -29,11 +29,4187 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/benchmarks.yml",
+      "source_relative_path": "api/Viewer.Core.AggregateProgress.yml",
       "output": {
         ".html": {
-          "relative_path": "api/benchmarks.html",
-          "hash": "7SQaRPUivVId8hJyKmtl0g=="
+          "relative_path": "api/Viewer.Core.AggregateProgress.html",
+          "hash": "TKOuqq8vMpEXIWnsaVHsSw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.Collections.BinaryHeap-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.Collections.BinaryHeap-1.html",
+          "hash": "T6P+cHW1Ve1QmJslY5auQA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.Collections.Bitmap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.Collections.Bitmap.html",
+          "hash": "M9F/XfGgdxY8H6GdVf7mPA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.Collections.EnumerableExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.Collections.EnumerableExtensions.html",
+          "hash": "PwfDTGsVfkrNQzNjahL9Dw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.Collections.ListExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.Collections.ListExtensions.html",
+          "hash": "jvb+i50QARrTjQc4+3bGRQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.Collections.SubsetCollection-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.Collections.SubsetCollection-1.html",
+          "hash": "IozjobZ5WBfAUQaNRuCaIA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.Collections.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.Collections.html",
+          "hash": "1vZG4BdZYKvON8hB+FRrqA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.DeserializeCallback.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.DeserializeCallback.html",
+          "hash": "puZ8/P4gcvmy8OAlxNDP2Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.ExternalApplication.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.ExternalApplication.html",
+          "hash": "rtI4T9XR4cF1GieveNEiMw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.IComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.IComponent.html",
+          "hash": "ky/OoT2n2MMXhY9JlSCT/g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.IViewerApplication.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.IViewerApplication.html",
+          "hash": "w9hNFFy3DzL63rn9sBVuZg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.MathUtils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.MathUtils.html",
+          "hash": "0SIjd3T1sDAt3qmXi6AGuQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.PointExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.PointExtensions.html",
+          "hash": "2s7HBXK994/i0yX8FCH7Yw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.RectangleExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.RectangleExtensions.html",
+          "hash": "wtHwKTmVD9IfD3+U/0gQbg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.Retry-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.Retry-1.html",
+          "hash": "UzOwa69DvooZLwmrfOovEA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.Retry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.Retry.html",
+          "hash": "2jVfsR08TOGTtVpixW0+2g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.ClipboardFileDrop.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.ClipboardFileDrop.html",
+          "hash": "hB2aJuBKVvQ2gVMp6wyH6Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.ClipboardService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.ClipboardService.html",
+          "hash": "ZWawi/SmJp1WrMi5u8ql4A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.ControlExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.ControlExtensions.html",
+          "hash": "MGr9WXCFJxG0G4PGoWl36g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.IClipboardService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.IClipboardService.html",
+          "hash": "ApR5Xf5cs7t6Ein6iLWmig=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.IStatusBarItem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.IStatusBarItem.html",
+          "hash": "qmNLufSouPrrnIph0QeoeQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.IStatusBarSlider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.IStatusBarSlider.html",
+          "hash": "hh+KsMvyI62xM/NjWdYpwg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.IWindowView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.IWindowView.html",
+          "hash": "zJtZ0zD0aoo3pm23pSyTcQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.InheritedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.InheritedEvent.html",
+          "hash": "L2FbwqbGs0ACPCTpR4KK0A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.MovedOnScreenEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.MovedOnScreenEvent.html",
+          "hash": "nZ7YJLqo+j/L0LIgvl3Gvg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.ParentFormDeactivated.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.ParentFormDeactivated.html",
+          "hash": "6QpLnGKOvxFQ9lsYiJotHA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.Presenter-1.AutoEventSubscription.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.Presenter-1.AutoEventSubscription.html",
+          "hash": "Vsn7sZcF9QwM3Ek5YqqKVg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.Presenter-1.SubscriptionLifetime.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.Presenter-1.SubscriptionLifetime.html",
+          "hash": "tnklr2d/uL2ZyCqF6mB0aw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.Presenter-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.Presenter-1.html",
+          "hash": "7c0kGyWqDJBsU6F351I3Zw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.WindowView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.WindowView.html",
+          "hash": "7C90Ts2JZiDnpiKVuSV1mQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.UI.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.UI.html",
+          "hash": "aemJ73ik9WmvOkVNcg5qlw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Core.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Core.html",
+          "hash": "Hqmo0vhnn9aqYKIi727RrA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Attribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Attribute.html",
+          "hash": "2RfWXn1ZnYY0PwiUER8mYA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.AttributeCache.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.AttributeCache.html",
+          "hash": "izIg5q8T2ZJbguAk2svEjw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.AttributeSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.AttributeSource.html",
+          "hash": "JqzG9fBdFL54KtoYDzITIg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.BaseValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.BaseValue.html",
+          "hash": "InSP+IgFODS5XzkvTLx1rg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.DateTimeValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.DateTimeValue.html",
+          "hash": "ufL2ujW8R1Cw4Dh7IKZYXw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.DirectoryEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.DirectoryEntity.html",
+          "hash": "og/AZq2h4zSNU2LCP954mw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.EntityComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.EntityComparer.html",
+          "hash": "Ut60p6Jgo2YaHTDRDX/+Eg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.EntityEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.EntityEventArgs.html",
+          "hash": "BMB/yTkv4Uw37rZTdcmmQw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.EntityManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.EntityManager.html",
+          "hash": "TXCofTnH5T7UOQeBNSk+wQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.EntityMovedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.EntityMovedEventArgs.html",
+          "hash": "ACA2DtAHJb4AuXSbpiNuqw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.EntityPathEqualityComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.EntityPathEqualityComparer.html",
+          "hash": "dW6qGXKmGwHoiaUa2y+59w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.FileEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.FileEntity.html",
+          "hash": "F85Wig00Os5n6YaZvreAsA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Attributes.AttributeReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Attributes.AttributeReader.html",
+          "hash": "XmgmqiZFN7okKR19fdRTUQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Attributes.AttributeReaderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Attributes.AttributeReaderFactory.html",
+          "hash": "uHNXH5YknYkiWnoY8p7y/w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Attributes.AttributeType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Attributes.AttributeType.html",
+          "hash": "tKqjigA7wh22/xlUoRJOAA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Attributes.AttributeWriter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Attributes.AttributeWriter.html",
+          "hash": "c40lDVtkivIboxN/dfC84w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Attributes.AttributeWriterFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Attributes.AttributeWriterFactory.html",
+          "hash": "2cMGbvwjMJo+GckD8OUOtw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Attributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Attributes.html",
+          "hash": "f+3ONfsvLTCC8iIOEIqIhw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Exif.ExifAttributeParser-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Exif.ExifAttributeParser-1.html",
+          "hash": "oaH+SOA9xeM5OUdAioOQDA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Exif.ExifAttributeReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Exif.ExifAttributeReader.html",
+          "hash": "P44HTbA9/wNyGeTQeLZD+A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Exif.ExifAttributeReaderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Exif.ExifAttributeReaderFactory.html",
+          "hash": "0SLCJPfgzOr/E2lJIXxujQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Exif.ExifMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Exif.ExifMetadata.html",
+          "hash": "ONFrDeceALq1lsObTkgMhg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Exif.IExifAttributeParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Exif.IExifAttributeParser.html",
+          "hash": "ztNDOfB1CCSAnvuM381Ehg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Exif.IExifMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Exif.IExifMetadata.html",
+          "hash": "HpejcrVl66p3cKirdcinYA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Exif.ThumbnaiExifAttributeParser-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Exif.ThumbnaiExifAttributeParser-1.html",
+          "hash": "3LKR2oaCo0+rpLas9PLZ6g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Exif.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Exif.html",
+          "hash": "KFcXY9aHrYDUWDGmId+OhA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.FileAttributeReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.FileAttributeReader.html",
+          "hash": "h03CxojxWheGV6C+TuF07g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.FileAttributeReaderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.FileAttributeReaderFactory.html",
+          "hash": "wFfXqLb1Y8kK+MgHUvtXhg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.IAttributeReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.IAttributeReader.html",
+          "hash": "ehQCXY5hy03aufyFIhzeoA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.IAttributeReaderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.IAttributeReaderFactory.html",
+          "hash": "Fz7004lEH+TqugJbUzEupQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.IAttributeWriter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.IAttributeWriter.html",
+          "hash": "xk0X/0u9Mpoc+X5Afe9OJQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.IAttributeWriterFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.IAttributeWriterFactory.html",
+          "hash": "F7Sm/JwsNxOVC/ODvgUCHA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.InvalidDataFormatException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.InvalidDataFormatException.html",
+          "hash": "NC30wHldnb6vWbZ46VTUfw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.IJpegSegmentReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.IJpegSegmentReader.html",
+          "hash": "dg45oieaEnwV7x+RzlKbqg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.IJpegSegmentReaderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.IJpegSegmentReaderFactory.html",
+          "hash": "2p3EH7jQrNqzElyH5zJ8Mw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.IJpegSegmentWriter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.IJpegSegmentWriter.html",
+          "hash": "krzYdvhj91/GUXAhK39itw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.IJpegSegmentWriterFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.IJpegSegmentWriterFactory.html",
+          "hash": "z9A2hjEFB31Sb8GtTfIopA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentReader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentReader.html",
+          "hash": "HoH236DW0hnNDFolsPQ0Gw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentReaderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentReaderFactory.html",
+          "hash": "nYIyOU8MQNJ+nys2P/sTKw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentUtils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentUtils.html",
+          "hash": "a9UlnGdCYaB6iBUtL/UWJA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentWriter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentWriter.html",
+          "hash": "yFDyyisr6Z3R/6RUgLu74Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentWriterFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.JpegSegmentWriterFactory.html",
+          "hash": "cZl1wK2B+Ivuc81JZrAFxg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.Jpeg.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.Jpeg.html",
+          "hash": "QittRcHrzI4xLtqRFVtHmQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Formats.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Formats.html",
+          "hash": "KdoK9f7HXG1FCKnkZP7BOA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.IAttributeCache.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.IAttributeCache.html",
+          "hash": "+N1B+FEeTOd69jZ4zcX0vw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.IEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.IEntity.html",
+          "hash": "QAUu/RExk7PHR8nKWJfPvA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.IEntityManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.IEntityManager.html",
+          "hash": "hfDpda2gmxrdnWJ4ZvEFxA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.IModifiedEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.IModifiedEntity.html",
+          "hash": "RDWAnMUbPjCvj+ypxtv7Ag=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.IValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.IValueConverter.html",
+          "hash": "GilZKCgN53BpUphl8qrDjQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.IValueVisitor-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.IValueVisitor-1.html",
+          "hash": "h/pKbWDPeLxBkza8zmJEdg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.IValueVisitor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.IValueVisitor.html",
+          "hash": "YX5QFj4MggVcga4YVdijwg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.ImageValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.ImageValue.html",
+          "hash": "KR+ras/cFVNNo0xrfCNksA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.IntValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.IntValue.html",
+          "hash": "H/PtwL0PKXK1cei1aUc8AQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.RealValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.RealValue.html",
+          "hash": "VCPXMG9IiRHWNivbHnXsHA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.AttributeStatisticsFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.AttributeStatisticsFactory.html",
+          "hash": "gAyRUaRFF7AAf/to2l9Q5g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.AttributeSubtreeStatistics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.AttributeSubtreeStatistics.html",
+          "hash": "GNZZd2vppBVN5KRg5OMMWA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.Attributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.Attributes.html",
+          "hash": "SKi41lnoILIX/cXdtgXlgQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.Files.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.Files.html",
+          "hash": "k7ZZZ/r7xVOR8ixJdoOXEA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.GetParentPathFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.GetParentPathFunction.html",
+          "hash": "fKmzAJ8RsGXpcMeB3W2JYw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.IAttributeStatistics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.IAttributeStatistics.html",
+          "hash": "xBiH08nvX7SjUsimdN6P8w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.IAttributeStatisticsFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.IAttributeStatisticsFactory.html",
+          "hash": "Cs8wNSWiiE5+mzILyzn2jg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.IAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.IAttributes.html",
+          "hash": "KEkiIKua6exFJ6j6ptHarA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.IFiles.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.IFiles.html",
+          "hash": "sho8Ca0/bxlYmBx6lU0iHQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.InvariantCulture.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.InvariantCulture.html",
+          "hash": "X/sztW3fWPJE1OObBpkh5Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.InvariantCultureIgnoreCase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.InvariantCultureIgnoreCase.html",
+          "hash": "Cw0Tivg8IOAaVb+q7WQB4Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.LoadEntityQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.LoadEntityQuery.html",
+          "hash": "TdNeSuWLHAOYTf3u/TpbkQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.SQLiteConnectionFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.SQLiteConnectionFactory.html",
+          "hash": "rRWmh3xXw3CdvExe9AiFzA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SQLite.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SQLite.html",
+          "hash": "QCtunhaDgNOZLYL8N3GGDg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.SortParameter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.SortParameter.html",
+          "hash": "v9I8PyUOiFk8kHslemD1EA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.CachedAttributeStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.CachedAttributeStorage.html",
+          "hash": "FvUvi2Oysf7cUFV4n+hq2g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.FileSystemAttributeStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.FileSystemAttributeStorage.html",
+          "hash": "JYYWS13C0rb7VcElPbSK7g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.IAttributeStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.IAttributeStorage.html",
+          "hash": "/ayAIsijSq5BqhKzpSHdkg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.IDeferredAttributeStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.IDeferredAttributeStorage.html",
+          "hash": "x4c5bcEPbpG1SzRBEiZw1A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.IReadableAttributeStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.IReadableAttributeStorage.html",
+          "hash": "Z3gnZGpvC/FkfaEIvZgNew=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.IStorageConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.IStorageConfiguration.html",
+          "hash": "RLsdnVv7nVa5Z0p5qzVZOQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.MemoryAttributeStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.MemoryAttributeStorage.html",
+          "hash": "N8lGTTpN3pi/Se4FOyjJrg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.ReadableStorageProxy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.ReadableStorageProxy.html",
+          "hash": "JzSKw0zYJWZBy4QF3CXeEg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.SqliteAttributeStorage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.SqliteAttributeStorage.html",
+          "hash": "wvRnD1NVdE0m1ZXRl6IBbg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.Storage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.Storage.html",
+          "hash": "brWHFh2qbE+AAmQj1Opogw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.StringValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.StringValue.html",
+          "hash": "A7I6zKy3WUUmsGsBbBh78g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.TypeId.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.TypeId.html",
+          "hash": "7KkNHDLGYaakYv88PXfvOQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.ValueComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.ValueComparer.html",
+          "hash": "hBSP4fCGVGuyirwY5efh1w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.ValueConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.ValueConverter.html",
+          "hash": "kAjUFZodH6vv6N5T/DU8bQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.ValueStringEqualityComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.ValueStringEqualityComparer.html",
+          "hash": "sKZ+4YfBnQTImKGqdsdKnQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Data.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Data.html",
+          "hash": "iRKtWWYKCte+d6SsKxigsA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.FileFinder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.FileFinder.html",
+          "hash": "rOxkl92xxsE5b/fatvfkdQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.FileSystem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.FileSystem.html",
+          "hash": "bZ2srlaYlzfSV9wk+gaEKQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.FileWatcherFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.FileWatcherFactory.html",
+          "hash": "F7kZxq+XsZ+n4ixwbTplgg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.IFileFinder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.IFileFinder.html",
+          "hash": "2y4E0nfuGIVuE59aKHG9Ag=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.IFileSystem.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.IFileSystem.html",
+          "hash": "+frFwJFD7E01ZtfdPekSFQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.IFileWatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.IFileWatcher.html",
+          "hash": "LkDZsdTkEiNz/3cVgx2QqA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.IFileWatcherFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.IFileWatcherFactory.html",
+          "hash": "/BGWcroB0fcfjhgXRbMC2A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.ISearchListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.ISearchListener.html",
+          "hash": "vbXRQ6WgAirnvcKpJ0wknw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.PathPattern.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.PathPattern.html",
+          "hash": "h96Kgvkvvcz97my3qsZKcw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.PathUtils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.PathUtils.html",
+          "hash": "KSA8D40bgOAW/sC7OlxFNA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.SearchControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.SearchControl.html",
+          "hash": "ZrD2+Js9/exhburs9wO3Mw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.IO.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.IO.html",
+          "hash": "d6QRl62E108vV0MlVe68Cg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Images.IImageLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Images.IImageLoader.html",
+          "hash": "BfOwIzbWptqLviZJKO2smg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Images.IThumbnailGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Images.IThumbnailGenerator.html",
+          "hash": "KHbV1uNzFJs0EYVr6zGRZg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Images.ImageLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Images.ImageLoader.html",
+          "hash": "MXU7WT60Kwu8A5zmQ3yDQw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Images.ThumbnailGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Images.ThumbnailGenerator.html",
+          "hash": "M+qQaUnPvgILVcg/M6mINg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Images.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Images.html",
+          "hash": "19Ph8N8RWFcwkWHu5Oovpg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Localization.Strings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Localization.Strings.html",
+          "hash": "qbrScn37JOaxqFZd28Ngwg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Localization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Localization.html",
+          "hash": "2AYIxl3KLCk/U/WoDmVUSg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.AggregateQueryErrorListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.AggregateQueryErrorListener.html",
+          "hash": "PagexJc7maEZfCUL+NGwnw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.EmptyQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.EmptyQuery.html",
+          "hash": "8nuCUtl+uojqXzU0aSGm2A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Execution.ExecutionOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Execution.ExecutionOptions.html",
+          "hash": "LSfKm39Scq63au8taP/FQg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Execution.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Execution.html",
+          "hash": "G1Jn3xNgn6uicEc+d3NLsA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.ExecutionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.ExecutionContext.html",
+          "hash": "SyIxe4CZNpDDeEtq20aOQw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.FunctionAlias-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.FunctionAlias-1.html",
+          "hash": "2xRMvEGQslZSvrA1F2Cbjg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IExecutableQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IExecutableQuery.html",
+          "hash": "KFMdyD8H1GmGDXtFfrD0pA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IExecutionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IExecutionContext.html",
+          "hash": "nVpAzcvUuyikhFTk+0/G8A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IFunction.html",
+          "hash": "BEy/6pwfH+wFnnOrE51Jfw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IQueryCompiler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IQueryCompiler.html",
+          "hash": "dzNvKQcjvEnYebLy2pkL+w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IQueryErrorListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IQueryErrorListener.html",
+          "hash": "MFYlT5gcgv0KGYXuILQnyg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IQueryFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IQueryFactory.html",
+          "hash": "Y/AK54iMAdR+lmiK7CNY+w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IQueryParserListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IQueryParserListener.html",
+          "hash": "L7E3LS2kMlS4yJcugW79YA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IQueryParserVisitor-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IQueryParserVisitor-1.html",
+          "hash": "OuwpzVFzudQRvcTQEgLZzQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IQueryViewRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IQueryViewRepository.html",
+          "hash": "ekqCl38SkPkLT8SDQWRoIw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.IRuntime.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.IRuntime.html",
+          "hash": "yqu4gdeYifDXULS+SqMpRw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.MemoryQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.MemoryQuery.html",
+          "hash": "YCObiyLoyJNew4rr9IkaJA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.NullQueryErrorListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.NullQueryErrorListener.html",
+          "hash": "spzxCDDizTs1+W4p+aPhoQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.NullQueryProgress.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.NullQueryProgress.html",
+          "hash": "IUNS3I0ndC6WSi5SKPgH0g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryCompiler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryCompiler.html",
+          "hash": "Z8XICwIM2NXQwwgHQZKdXg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryLexer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryLexer.html",
+          "hash": "RDiHM3U7CiPtQOnkmLyYfA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.ArgumentListContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.ArgumentListContext.html",
+          "hash": "tjd+q8KsAZGLKEzCyHVu/Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.ComparisonContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.ComparisonContext.html",
+          "hash": "NTcNwyCVi0/JFIG4AEaU2A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.ConjunctionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.ConjunctionContext.html",
+          "hash": "VEFXD1TpkiiEK1Lfk/cuzA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.EntryContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.EntryContext.html",
+          "hash": "8lp6nsiMSWtVoIuOeIxopw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.ExpressionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.ExpressionContext.html",
+          "hash": "8Z2+0IX4pJZ8iJVZvFuEcg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.FactorContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.FactorContext.html",
+          "hash": "zz8+ZOlC5fhYWYsllR/+rA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.IntersectionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.IntersectionContext.html",
+          "hash": "Hdu0n2hL4KB4xNcWSEWfhw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.LiteralContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.LiteralContext.html",
+          "hash": "ZxPEO/GQYjWycY06xK2/gA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.MultiplicationContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.MultiplicationContext.html",
+          "hash": "ZsY7NkSigRfUhw1UHg/gjQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.OptionalGroupByContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.OptionalGroupByContext.html",
+          "hash": "5Jjm/X3KBhmdK67mkIqHxw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.OptionalOrderByContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.OptionalOrderByContext.html",
+          "hash": "yjN7jZH2f3eUNxaC8091lA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.OptionalWhereContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.OptionalWhereContext.html",
+          "hash": "xAfwATUSWNNSmbqdhhTaYg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.OrderByKeyContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.OrderByKeyContext.html",
+          "hash": "s6VxMm5/Wyv68PD3wYUkjQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.OrderByListContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.OrderByListContext.html",
+          "hash": "AmvHCeoMuZu+5d+yDRCtlA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.PredicateContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.PredicateContext.html",
+          "hash": "5PBnoIvFjpTvg+3IIshpYw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.QueryContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.QueryContext.html",
+          "hash": "WWPruDzt922obtu26OSwjg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.QueryExpressionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.QueryExpressionContext.html",
+          "hash": "9RIZGnw/P1v4nP5JrsSoQw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.QueryFactorContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.QueryFactorContext.html",
+          "hash": "SYURosi3/FHeanrDktPAvw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.SourceContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.SourceContext.html",
+          "hash": "9dGT6ET8Pe8pnY52XC2O2g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.UnorderedQueryContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.UnorderedQueryContext.html",
+          "hash": "FotYUdfWXQ7nxC6CE2c6uw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParser.html",
+          "hash": "0G3K3/kYCldh0zgX7c1GyQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParserBaseListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParserBaseListener.html",
+          "hash": "YGNRnNBFZkvXgocMAkl0vw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryParserBaseVisitor-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryParserBaseVisitor-1.html",
+          "hash": "K6RgzBtoU170WxHh+VLRHQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryProgress.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryProgress.html",
+          "hash": "1x6Lov2rA9mq5rBcXMwXsw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryProgressReport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryProgressReport.html",
+          "hash": "9ThBwiWRaQvXznRlwuQXLw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryTextComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryTextComparer.html",
+          "hash": "pNa7+0py751kAGasa1niWg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryView.html",
+          "hash": "bsWsKVxVtMjyerZHhLj6IA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.QueryViewRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.QueryViewRepository.html",
+          "hash": "9nLCJ6yImS5x4N82Jbtgbw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.ReportType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.ReportType.html",
+          "hash": "g83hS9gRRtnMbf5Q0V3FBQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Runtime.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Runtime.html",
+          "hash": "ml620IoEPk9NZjxF5kzx6w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.CaretToken.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.CaretToken.html",
+          "hash": "J1WxsCh0/R1Qmuld6fRL3A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.FollowList.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.FollowList.html",
+          "hash": "CpjrLyKx+UqYchclckFXzw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.IQuerySuggestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.IQuerySuggestion.html",
+          "hash": "OD6cJpQG3kxGUGHnjC6dQw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.IQuerySuggestions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.IQuerySuggestions.html",
+          "hash": "/65XcA1j8uJmsbFWUcK7fQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.IStateCollector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.IStateCollector.html",
+          "hash": "JUpDfM/xNih/D4WnrfZarA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.IStateCollectorFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.IStateCollectorFactory.html",
+          "hash": "VNCc5TMF7kzlIsRlVEWkDA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.ISuggestionListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.ISuggestionListener.html",
+          "hash": "6XzbS/s7d8IJ38wlHAPA+w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.NopSuggestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.NopSuggestion.html",
+          "hash": "Pr5gfRulVTmMefljgZ7mtQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.AttributeNameSuggestionProviderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.AttributeNameSuggestionProviderFactory.html",
+          "hash": "sAbwdUFmZwBW/aVyOdn4HQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.AttributeValueSuggestionProviderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.AttributeValueSuggestionProviderFactory.html",
+          "hash": "b1g1Ed5ZXPQyW9s4lNkxvg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.DirectorySuggestionProviderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.DirectorySuggestionProviderFactory.html",
+          "hash": "zQiZbNwOXiOk6tCvKqdrhQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.FunctionSuggestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.FunctionSuggestion.html",
+          "hash": "UvzfXs6DM7l2EhWfDinAcw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.FunctionSuggestionProviderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.FunctionSuggestionProviderFactory.html",
+          "hash": "TE7iCW2RtvE568T5MKqTBQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.ISuggestionProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.ISuggestionProvider.html",
+          "hash": "s02jkPMANN2EoGy8Lmsctw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.ISuggestionProviderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.ISuggestionProviderFactory.html",
+          "hash": "vZhdDXqxeEkLFpZIlyaFzA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.IdentifierSuggestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.IdentifierSuggestion.html",
+          "hash": "Kle/AbrzBdlr2llHT9okpg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.MetadataAttributeSuggestionProviderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.MetadataAttributeSuggestionProviderFactory.html",
+          "hash": "49C2TPa9J/RWBenAe5LhWw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.ValueSuggestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.ValueSuggestion.html",
+          "hash": "TyEJ/wv7r5GhVYzB47ISFg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.ViewSuggestionProviderFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.ViewSuggestionProviderFactory.html",
+          "hash": "jBqC5MKlBkMG3h8fVf16yA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.Providers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.Providers.html",
+          "hash": "82f4joqLvpMJSNOadUSZ8A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.QueryEditorState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.QueryEditorState.html",
+          "hash": "aUeRysytAwxK2pf1JKu07g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.QuerySuggestionComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.QuerySuggestionComparer.html",
+          "hash": "dR6a/gMnkslDrgRc9E87cQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.QuerySuggestionNameComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.QuerySuggestionNameComparer.html",
+          "hash": "3HSWpSeLhhskier9wA6b5Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.QuerySuggestions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.QuerySuggestions.html",
+          "hash": "4o9ktmPNSQKAmk/XfUTxEA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.ReplaceSuggestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.ReplaceSuggestion.html",
+          "hash": "ni4e/MJ/wBg5Y1QKwEna/w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.StateCollector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.StateCollector.html",
+          "hash": "hHw06dSTR+fkFy3cJlfCkw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.StateCollectorFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.StateCollectorFactory.html",
+          "hash": "iztWU6Lu+GQ6AxeuNINCuQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.SuggestionState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.SuggestionState.html",
+          "hash": "awLGGM2zYStw3uWJ+Vd1/A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.Suggestions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.Suggestions.html",
+          "hash": "Q8BlsSveNYp0PtLf2mrV/w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.Query.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.Query.html",
+          "hash": "rkbgZzA8PnOQgVujx+85IA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.AndDateTimeValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.AndDateTimeValueFunction.html",
+          "hash": "yOrDZgnS6szt0i2HsqxQQA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.AndIntValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.AndIntValueFunction.html",
+          "hash": "N4PcQZEgLqJMlnnh9nGO0A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.AndRealValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.AndRealValueFunction.html",
+          "hash": "DghXDrHALsarkhlX9bZDDg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.AndStringValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.AndStringValueFunction.html",
+          "hash": "jTVOpvI23nM4zBr4vPDCEQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateFunction.html",
+          "hash": "A1Rw3a6o+TEkLIJHsZ6cCg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateTimeFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateTimeFunction.html",
+          "hash": "CBcQcUgTpdlaCLHhdAUfRQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateTimeIdentityFunciton.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateTimeIdentityFunciton.html",
+          "hash": "HLbY0uUR/6zRzbWZuqAodQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateTimeValueEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateTimeValueEqualFunction.html",
+          "hash": "JzRRkSenp7Tw1xHnXjE+pQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateTimeValueGreaterThanFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateTimeValueGreaterThanFunction.html",
+          "hash": "2nuHU4IjYvB5Jg1P2d+CHw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateTimeValueGreaterThanOrEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateTimeValueGreaterThanOrEqualFunction.html",
+          "hash": "C1fz2MslgOfBFZQtI2vCgA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateTimeValueLessThanFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateTimeValueLessThanFunction.html",
+          "hash": "veUkHqDYk+MDxz+Ml3FHZw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateTimeValueLessThanOrEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateTimeValueLessThanOrEqualFunction.html",
+          "hash": "ni1De5Lgdd8e6HAu/ZeWLw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.DateTimeValueNotEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.DateTimeValueNotEqualFunction.html",
+          "hash": "gX/Or4rzEE2QjladqHT+yA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueAdditionFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueAdditionFunction.html",
+          "hash": "oDHG4+ln6A/Yna5WppijaQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueDivisionFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueDivisionFunction.html",
+          "hash": "/jvVzmAuMuVgoTifr1SzhA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueEqualFunction.html",
+          "hash": "mFR3kJ6iFarZeIOOmbdLqw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueGreaterThanFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueGreaterThanFunction.html",
+          "hash": "GkYBAkaxJvgB/rcnmXTWgA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueGreaterThanOrEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueGreaterThanOrEqualFunction.html",
+          "hash": "qnu0fszQVpy5X3RAWj51KQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueLessThanFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueLessThanFunction.html",
+          "hash": "c/jhQyXksc2D1ihXGvKOjQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueLessThanOrEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueLessThanOrEqualFunction.html",
+          "hash": "TUAaBNdyN77Nwsq8jK70SQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueMultiplicationFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueMultiplicationFunction.html",
+          "hash": "Km3qJnVi8yeBRAUo7jtAOg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueNotEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueNotEqualFunction.html",
+          "hash": "iPBcnbK1cXhZDiVBRwU33w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueSubtractionFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueSubtractionFunction.html",
+          "hash": "nD2MEtt0dVVs6EQh7/5btA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.IntValueUnaryMinusFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.IntValueUnaryMinusFunction.html",
+          "hash": "DAUlKkEL0lG/FgW9CM2ZeA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.NotDateTimeValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.NotDateTimeValueFunction.html",
+          "hash": "bz9BL2JSDrBF9lpE7ZuEzw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.NotIntValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.NotIntValueFunction.html",
+          "hash": "087mvklEjxV9PQnBHAxiBQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.NotRealValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.NotRealValueFunction.html",
+          "hash": "W+NChPmCt0vXCNyLLMTIfw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.NotStringValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.NotStringValueFunction.html",
+          "hash": "RLY643HpH23xS6nlPTKhWw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.OrDateTimeValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.OrDateTimeValueFunction.html",
+          "hash": "FQlutKFBfj0hH3LiBGUclw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.OrIntValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.OrIntValueFunction.html",
+          "hash": "RGZpdYvXysZWnSAnKmZ3gA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.OrRealValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.OrRealValueFunction.html",
+          "hash": "05fHSCME+9lrZwv1RvfCaQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.OrStringValueFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.OrStringValueFunction.html",
+          "hash": "HUaXZv3U744JD67toH0/Vg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueAdditionFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueAdditionFunction.html",
+          "hash": "2A4TYzHcuCRdPk11RqsiMQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueDivisionFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueDivisionFunction.html",
+          "hash": "jTVl68yAJFoBjWYH86Ygnw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueEqualFunction.html",
+          "hash": "N2RcE8xDSuc9Cd1gwzPiGw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueGreaterThanFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueGreaterThanFunction.html",
+          "hash": "4yq2tuF2YR3f0jFfj2wdIA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueGreaterThanOrEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueGreaterThanOrEqualFunction.html",
+          "hash": "mx5/Esuszd/C57lZSldeaQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueLessThanFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueLessThanFunction.html",
+          "hash": "zrkarP+wdXjwbxCRLz1dpw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueLessThanOrEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueLessThanOrEqualFunction.html",
+          "hash": "bZ3TUZorSc8Y99Be0pNvjA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueMultiplicationFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueMultiplicationFunction.html",
+          "hash": "JJEWz1KbLXXf+lTYJEEvtA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueNotEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueNotEqualFunction.html",
+          "hash": "NZRAvpYtsyWhTT6cQtvnlg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueSubtractionFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueSubtractionFunction.html",
+          "hash": "IQFJsWwi0dG+sQS/8LhFMg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.RealValueUnaryMinusFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.RealValueUnaryMinusFunction.html",
+          "hash": "GD0G7K1Lfirkal7lQTPE9Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.StringValueAdditionFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.StringValueAdditionFunction.html",
+          "hash": "GW2Z4hq9mPLvSbA9FFfVxA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.StringValueEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.StringValueEqualFunction.html",
+          "hash": "OEj0LrDwEJL+2v+xo4FV9w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.StringValueGreaterThanFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.StringValueGreaterThanFunction.html",
+          "hash": "jiSTjbdXsU0AjhYxONqhhA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.StringValueGreaterThanOrEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.StringValueGreaterThanOrEqualFunction.html",
+          "hash": "VNBcUAU2GwEnbtwvpyOgaw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.StringValueLessThanFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.StringValueLessThanFunction.html",
+          "hash": "kKN4nFsJaL9q7pvNqYg8FQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.StringValueLessThanOrEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.StringValueLessThanOrEqualFunction.html",
+          "hash": "n6xk3AYiT+YbjOe0eecRvg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.StringValueNotEqualFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.StringValueNotEqualFunction.html",
+          "hash": "OHiDywoUZCduObqtrspKdA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.TimeElapsedFunction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.TimeElapsedFunction.html",
+          "hash": "8UMl2LW5FS1DUxalb2DKhQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.QueryRuntime.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.QueryRuntime.html",
+          "hash": "PK16FkNaBXMJFYvHOS7UrA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.About.AboutComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.About.AboutComponent.html",
+          "hash": "SyGppsz/PICUwylfF+Rt7g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.About.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.About.html",
+          "hash": "7fab37kjvV1lSlMKSrB+dg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Attributes.AttributeGroup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Attributes.AttributeGroup.html",
+          "hash": "QBIVIOGGdk674xgtlwGjtA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Attributes.AttributeManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Attributes.AttributeManager.html",
+          "hash": "gZMioPe5TriTGdPc+bWnNg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Attributes.AttributesComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Attributes.AttributesComponent.html",
+          "hash": "+ZFqS3DglrW8YJ9CAvg2qQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Attributes.IAttributeManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Attributes.IAttributeManager.html",
+          "hash": "QMpa67/BT2Ls2VUFu+tPyw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Attributes.ISaveQueue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Attributes.ISaveQueue.html",
+          "hash": "588zqeU1MrKe9OuUyiMQvA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Attributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Attributes.html",
+          "hash": "Wev9/TRLiS6AlttD4BNyXA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.BeforeChangedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.BeforeChangedEventArgs.html",
+          "hash": "VH/MvXnFB/6u0XXVd5OTsw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.BeforeQueryExecutedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.BeforeQueryExecutedEventArgs.html",
+          "hash": "z67vJnDIgf+5l90w2bxUQg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Errors.ErrorList.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Errors.ErrorList.html",
+          "hash": "zl8fvZY94b1AZNBY2VWNSw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Errors.ErrorListComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Errors.ErrorListComponent.html",
+          "hash": "IGfi6k3Qzv382xC+F4cF/w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Errors.ErrorListEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Errors.ErrorListEntry.html",
+          "hash": "0E2r2l9ncn7N86repNc6Ag=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Errors.IErrorList.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Errors.IErrorList.html",
+          "hash": "4mzPqa2pAIXvFI6IbrNp/g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Errors.LogEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Errors.LogEventArgs.html",
+          "hash": "M6lsOKDOz4zIM1g7kUtWMg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Errors.LogType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Errors.LogType.html",
+          "hash": "oiMK8uGyuGfnwRuCJsiqug=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Errors.Retry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Errors.Retry.html",
+          "hash": "t+n354V4L/l+QnRfl2/23Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Errors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Errors.html",
+          "hash": "6lHqXiQ+NIzGShw7QNXo3A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Explorer.Explorer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Explorer.Explorer.html",
+          "hash": "NPnvnM/ghz0v0gDgq/VlLQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Explorer.ExplorerComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Explorer.ExplorerComponent.html",
+          "hash": "LayQmzDgoz6sQiisuqNwIQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Explorer.FileSystemErrorView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Explorer.FileSystemErrorView.html",
+          "hash": "iPc1jb8RAi6rrjWptnzhYA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Explorer.IExplorer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Explorer.IExplorer.html",
+          "hash": "Iac3Ii99oHdpl2N9xpuIKA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Explorer.IFileSystemErrorView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Explorer.IFileSystemErrorView.html",
+          "hash": "ZKK1pUk2bA/8Z38RCgSyDQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Explorer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Explorer.html",
+          "hash": "W3v2lPcdxjFkV1N23Faqog=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Forms.BufferedDataGridView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Forms.BufferedDataGridView.html",
+          "hash": "fGrG7XfdlwbFdDzZEKxY0Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Forms.BufferedTreeView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Forms.BufferedTreeView.html",
+          "hash": "+IGsDYHH4eWayHRhoVXMMg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Forms.ButtonCell.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Forms.ButtonCell.html",
+          "hash": "20ckchZr92M8j6gwDhZpXQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Forms.DateTimeCell.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Forms.DateTimeCell.html",
+          "hash": "1rf2ZotJMWhFtQwP5+WIyg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Forms.DateTimeEditingControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Forms.DateTimeEditingControl.html",
+          "hash": "kPaPUW8AYxHZjFWOX9HPtw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Forms.SliderControl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Forms.SliderControl.html",
+          "hash": "4dhdcE9cHq34vXTiUAMRLQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Forms.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Forms.html",
+          "hash": "JKind9RdbEWWFXup12tvJA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.IQueryHistory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.IQueryHistory.html",
+          "hash": "y/q8hztj+iwVJRa4jJcZeQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.ISelection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.ISelection.html",
+          "hash": "0brp2ZuuNZIeqdBf0fzpsg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.DirectoryThumbnail.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.DirectoryThumbnail.html",
+          "hash": "AC6Y1vKWHPnaUCCEEqcRNw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.EntityView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.EntityView.html",
+          "hash": "sobeYBGFXwsnmghbLFYANA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.EntityViewComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.EntityViewComparer.html",
+          "hash": "4QCcmf8Sq7MREjypZi9tzA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.EntityViewPathComparer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.EntityViewPathComparer.html",
+          "hash": "bpiOVYqthIVNzdLdpP39Aw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.EntityViewState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.EntityViewState.html",
+          "hash": "V5AoW4grqLLFHm0MkkG0/Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.ILazyThumbnail.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.ILazyThumbnail.html",
+          "hash": "ie3w6DnWbVQSdOM0hKyP9g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.ILazyThumbnailFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.ILazyThumbnailFactory.html",
+          "hash": "kDmrN/v7+cJwqL68WNPVTQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.IQueryEvaluatorFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.IQueryEvaluatorFactory.html",
+          "hash": "qzPcufNK5IRzbBXqJ7WdRw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.IThumbnailLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.IThumbnailLoader.html",
+          "hash": "wyV8VHCdenObATtX09QLig=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.ImagesComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.ImagesComponent.html",
+          "hash": "Uq5QWT8SArCaUV5JmIb1iA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.Layout.Group.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.Layout.Group.html",
+          "hash": "g94Yj7VA5IQE43m2fJAi1w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.Layout.GroupView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.Layout.GroupView.html",
+          "hash": "kYqaJ95uTEAwhvApVA/iYg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.Layout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.Layout.html",
+          "hash": "81PLOf550bylDeop+TUmdg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.PhotoThumbnail.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.PhotoThumbnail.html",
+          "hash": "blhAgOAcyadYNpO6MFyiPg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.QueryEvaluator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.QueryEvaluator.html",
+          "hash": "qa7i2oYJnqiyR5WH43/7hQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.QueryEvaluatorFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.QueryEvaluatorFactory.html",
+          "hash": "bt6UsHIY9IzuNcbUJNahTQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.Thumbnail.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.Thumbnail.html",
+          "hash": "aWj3t+6xlWabvrAaoIkK/g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.ThumbnailFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.ThumbnailFactory.html",
+          "hash": "ImncKECoIoHIYQJmis5ZLA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.ThumbnailLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.ThumbnailLoader.html",
+          "hash": "E4iCz9daxjoOUrtgHTgRHw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Images.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Images.html",
+          "hash": "OSOIgBQ0BtdmYSAiuFpIig=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Presentation.IPresentation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Presentation.IPresentation.html",
+          "hash": "12mIfkPnj5lRjjRIEcIB/w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Presentation.PresentationComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Presentation.PresentationComponent.html",
+          "hash": "8UZVZinBGK0d6RaJJGMYIQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Presentation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Presentation.html",
+          "hash": "8FS4zSg9l5bN/nK5kxma8g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryEditor.Editor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryEditor.Editor.html",
+          "hash": "6I8z928jlg8hgARjmSfolw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryEditor.IEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryEditor.IEditor.html",
+          "hash": "dAnkKHYvCcc6W4N9mT5w8A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryEditor.IQueryViewManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryEditor.IQueryViewManager.html",
+          "hash": "rgdfgvKpcUGEfftWqQImbA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryEditor.QueryEditorComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryEditor.QueryEditorComponent.html",
+          "hash": "9eSAZisYyQBy6lp8pejj4Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryEditor.QueryErrorListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryEditor.QueryErrorListener.html",
+          "hash": "inKLNi5wr3jeL/S1ihgatg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryEditor.QueryViewManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryEditor.QueryViewManager.html",
+          "hash": "pqPfHGOPOVp141z+VREkgw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryEditor.html",
+          "hash": "eBZ4n3/66/eI3YFAyowFfw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryEventArgs.html",
+          "hash": "9m5ZU7MzE1Ikhw/GAodimw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.QueryHistory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.QueryHistory.html",
+          "hash": "rqvo4u67JbIl6gUp5E2kww=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Selection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Selection.html",
+          "hash": "X1gaBUu7qU2adBv+K8Y7+g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Tasks.ILoadingProgress.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Tasks.ILoadingProgress.html",
+          "hash": "M/6lqJ2Ko3pi5W3pcORw6g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Tasks.IProgressController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Tasks.IProgressController.html",
+          "hash": "3DqdI5oWwcgTjPVaPQtalA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Tasks.ITaskLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Tasks.ITaskLoader.html",
+          "hash": "fDyvOz61/JkumpxxgxWtOw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Tasks.LoadingProgress.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Tasks.LoadingProgress.html",
+          "hash": "OQcCxPOomrTS1sXTGncngw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Tasks.TaskLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Tasks.TaskLoader.html",
+          "hash": "eYY0mMdBuUmI2IpYnKNyvA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.Tasks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.Tasks.html",
+          "hash": "6EcNg6hM1QExbqj/8OVHFQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.UserSettings.UserSettingsComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.UserSettings.UserSettingsComponent.html",
+          "hash": "xCet0XeObgPpSdUrq1WXEg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.UserSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.UserSettings.html",
+          "hash": "Bdes+c3BnuuICodSOvOITw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.UI.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.UI.html",
+          "hash": "yAOeAx2WJXx1+lf703uRRw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.ViewerApplication.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.ViewerApplication.html",
+          "hash": "pk67RCVtYEMfuy0Yv9PBcg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.ViewerForm.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.ViewerForm.html",
+          "hash": "gmMMZllU+82iSpbXFxvm/g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Viewer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Viewer.html",
+          "hash": "Ce91qSWMFwQCoXnpja8O/w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ViewerTheme.ViewerLightTheme.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ViewerTheme.ViewerLightTheme.html",
+          "hash": "5nIRLYRCSMfPzb7Yrk6K8A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ViewerTheme.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ViewerTheme.html",
+          "hash": "l34+4Cf0AYScm5DzySvwTg=="
         }
       },
       "is_incremental": true,
@@ -45,22 +4221,19 @@
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "OXfxpCVOM0j01zcrxBff8g=="
+          "hash": "kTwr1AA5DOVnCr7TVEg7xQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
-      "log_codes": [
-        "UidNotFound"
-      ],
       "type": "Conceptual",
       "source_relative_path": "articles/developer/data.md",
       "output": {
         ".html": {
           "relative_path": "articles/developer/data.html",
-          "hash": "JSF8fdprYsjCN5JOo0pGeg=="
+          "hash": "2od2OOGNJH1MLCRcqATS8A=="
         }
       },
       "is_incremental": true,
@@ -72,22 +4245,19 @@
       "output": {
         ".html": {
           "relative_path": "articles/developer/getting-started.html",
-          "hash": "i+UruNpvQWS8zrQzS8U+0A=="
+          "hash": "ItIEsrx/Ea5vNWAfrA8cqQ=="
         }
       },
       "is_incremental": true,
       "version": ""
     },
     {
-      "log_codes": [
-        "UidNotFound"
-      ],
       "type": "Conceptual",
       "source_relative_path": "articles/developer/gui.md",
       "output": {
         ".html": {
           "relative_path": "articles/developer/gui.html",
-          "hash": "bBOJRImt2qQ11oiAFJeEkw=="
+          "hash": "sPQQH73Rat8s17IzwlwSHg=="
         }
       },
       "is_incremental": true,
@@ -99,10 +4269,10 @@
       "output": {
         ".html": {
           "relative_path": "articles/developer/overview.html",
-          "hash": "4DtaWXtg5TGXH9UkII56yw=="
+          "hash": "KBcjh+pAXcOd6TlhNKZOTQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -111,10 +4281,10 @@
       "output": {
         ".html": {
           "relative_path": "articles/developer/query.html",
-          "hash": "hzk1VYWZSm+TdilaDMzPJg=="
+          "hash": "rZ3HiiorS/W1RyxS4ar9ZA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -123,10 +4293,10 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "qFT24ejcWMv2fyuIAa+cew=="
+          "hash": "b3tKtK5tPtGL2LbMUyvksA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -135,7 +4305,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/user/installation.html",
-          "hash": "DJzxPBWVcGQ2epTgY0n2BQ=="
+          "hash": "pKWUU+lx4PVLtImh5Pw/Wg=="
         }
       },
       "is_incremental": true,
@@ -147,7 +4317,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/user/query.html",
-          "hash": "vzuI31DyJept/swf9umHCQ=="
+          "hash": "k8o0eQcdL/uMalFNZZ32sg=="
         }
       },
       "is_incremental": true,
@@ -159,7 +4329,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/user/ui-overview.html",
-          "hash": "Vb4/sNtyNlPpqqPxUjv52A=="
+          "hash": "U4Hd+C/IwWaZSHhXsuc0jw=="
         }
       },
       "is_incremental": true,
@@ -292,10 +4462,10 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "WQq8XqIVEpipQ2K9AOJbDQ=="
+          "hash": "Tb4lCoABaz0JZaxTtBoR5w=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     }
   ],
@@ -303,26 +4473,36 @@
     {
       "status": {
         "can_incremental": true,
-        "incrementalPhase": "build"
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
       },
       "processors": {
-        "ResourceDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
-        },
         "TocDocumentProcessor": {
           "can_incremental": false,
           "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 351,
+          "skipped_file_count": 351
         },
         "ConceptualDocumentProcessor": {
           "can_incremental": true,
-          "incrementalPhase": "build"
+          "incrementalPhase": "build",
+          "total_file_count": 11,
+          "skipped_file_count": 9
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
         }
       }
     },
@@ -330,7 +4510,9 @@
       "status": {
         "can_incremental": true,
         "details": "Can support incremental post processing.",
-        "incrementalPhase": "postProcessing"
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
       },
       "processors": {}
     }

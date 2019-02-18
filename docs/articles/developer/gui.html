@@ -8,7 +8,7 @@
     <title>Viewer </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Viewer ">
-    <meta name="generator" content="docfx 2.37.2.0">
+    <meta name="generator" content="docfx 2.40.11.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -44,15 +44,15 @@
                   <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
                 </div>
               </form>
+                
                 <ul class="nav level1 navbar-nav">
-                  <li class="active">
-                    <a href="../../articles/intro.html" title="Articles" class="active">Articles</a>
-                  </li>
-                  <li class="">
-                    <a href="../../api/index.html" title="API Documentation" class="">API Documentation</a>
-                  </li>
-                </ul>
-            </div>
+                      <li>
+                          <a href="../../articles/intro.html" title="Articles">Articles</a>
+                      </li>
+                      <li>
+                          <a href="../../api/index.html" title="API Documentation">API Documentation</a>
+                      </li>
+                </ul>    </div>
           </div>
         </nav>
         
@@ -124,14 +124,14 @@
 
 <p>The <code>Viewer</code> namespace contains a GUI application written in Windows Forms. It uses services from all other namespaces and provides a GUI for them.</p>
 <h2 id="components">Components</h2>
-<p>The GUI code uses the MVP pattern. Each window has a <a href="xref:Viewer.Core.UI.Presenter">Presenter</a> of some <a href="xref:Viewer.Core.UI.IWindowView">IWindowView</a>. Views are more or less passive. They have a set of events and methods which change the view. Typically, a presenter gets its view in constructor, registers its event handlers and calls view methods to change it in response to the events.</p>
+<p>The GUI code uses the MVP pattern. Each window has a <a class="xref" href="../../api/Viewer.Core.UI.Presenter-1.html">Presenter</a> of some <a class="xref" href="../../api/Viewer.Core.UI.IWindowView.html">IWindowView</a>. Views are more or less passive. They have a set of events and methods which change the view. Typically, a presenter gets its view in constructor, registers its event handlers and calls view methods to change it in response to the events.</p>
 <h2 id="images">Images</h2>
-<p>The Images component is responsible for evaluating a query and showing its result in a thumbnail grid. Since query returns entities in a random order, it has to sort the result incrementally. This is basically what the <a href="xref:Viewer.UI.Images.QueryEvaluator">QueryEvaluator</a> class does. Additionally, it watches entity changes using <a href="xref:Viewer.Data.IEntityManager">IEntityManager</a> and file changes using <a href="xref:Viewer.IO.IFileWatcher">IFileWatcher</a>.</p>
+<p>The Images component is responsible for evaluating a query and showing its result in a thumbnail grid. Since query returns entities in a random order, it has to sort the result incrementally. This is basically what the <a class="xref" href="../../api/Viewer.UI.Images.QueryEvaluator.html">QueryEvaluator</a> class does. Additionally, it watches entity changes using <a class="xref" href="../../api/Viewer.Data.IEntityManager.html">IEntityManager</a> and file changes using <a class="xref" href="../../api/Viewer.IO.IFileWatcher.html">IFileWatcher</a>.</p>
 <h3 id="thumbnails">Thumbnails</h3>
-<p>Thumbnail grid primarily shows thumbnails of entities. Thumbnails are loaded lazily using <a href="xref:Viewer.UI.Images.ILazyThumbnail">ILazyThumbnail</a>. Main purpose of <a href="xref:Viewer.UI.Images.ILazyThumbnail">ILazyThumbnail</a> is to provide a non-intrusive, non-blocking and easy to use interface for the thumbnail grid view to get a thumbnail.</p>
+<p>Thumbnail grid primarily shows thumbnails of entities. Thumbnails are loaded lazily using <a class="xref" href="../../api/Viewer.UI.Images.ILazyThumbnail.html">ILazyThumbnail</a>. Main purpose of <a class="xref" href="../../api/Viewer.UI.Images.ILazyThumbnail.html">ILazyThumbnail</a> is to provide a non-intrusive, non-blocking and easy to use interface for the thumbnail grid view to get a thumbnail.</p>
 <p>Embedded thumbnail (e.g. in the Exif segment) is loaded as an entity attribute with all other attributes. The program tries to decode this thumbnail first. If it is missing or its dimensions are too small for current thumbnail size, it will try to generate a new thumbnail from the original image. The genrated thumbnail is stored as an attribute of the entity and in the SQLite storage.</p>
 <h3 id="generating-thumbnails">Generating thumbnails</h3>
-<p>Thumbnails are generated using the <a href="xref:Viewer.UI.Images.IThumbnailLoader">IThumbnailLoader</a> class. Embedded thumbnails are decoded on a thread pool thread.</p>
+<p>Thumbnails are generated using the <a class="xref" href="../../api/Viewer.UI.Images.IThumbnailLoader.html">IThumbnailLoader</a> class. Embedded thumbnails are decoded on a thread pool thread.</p>
 <p>Native thumbnails (i.e., thumbnails generated from the original image) use task continuations to define a task graph which synchronizes I/O operations (reading the file from a disk) but it can execute some operations in parallel (decoding the image, generating the thumbnail). Basically, the task graph is very simple:</p>
 <pre><code>load → decode → generate
  ↓
@@ -141,7 +141,7 @@ load → decode → generate
 </code></pre>
 <p>In this diagram, <code>load</code> is a task which loads the whole encoded file into memory. <code>decode</code> and <code>generate</code> are tasks which will decode the loaded JPEG file and generate a thumbnail. Since there could be a lot of waiting <code>decode</code> tasks (which have a rather large memory buffers), they are syncrhonized using a semaphore. Only a set ammount of tasks are allowed to be running at once (at the moment, they are limmited to the number of logical cores).</p>
 <h2 id="explorer">Explorer</h2>
-<p>Explorer is a component which displays a directory tree. It's pretty straightforward. Other components can use its <a href="xref:Viewer.UI.Explorer.IExplorer">IExplorer</a> service. It copies or moves a list of files and creates all necessary UI including a progress bar.</p>
+<p>Explorer is a component which displays a directory tree. It's pretty straightforward. Other components can use its <a class="xref" href="../../api/Viewer.UI.Explorer.IExplorer.html">IExplorer</a> service. It copies or moves a list of files and creates all necessary UI including a progress bar.</p>
 </article>
           </div>
           
@@ -150,7 +150,7 @@ load → decode → generate
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/gui.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/release_143/src/docs/articles/developer/gui.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

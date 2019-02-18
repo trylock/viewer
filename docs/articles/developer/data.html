@@ -8,7 +8,7 @@
     <title>Viewer.Data </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Viewer.Data ">
-    <meta name="generator" content="docfx 2.37.2.0">
+    <meta name="generator" content="docfx 2.40.11.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -44,15 +44,15 @@
                   <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
                 </div>
               </form>
+                
                 <ul class="nav level1 navbar-nav">
-                  <li class="active">
-                    <a href="../../articles/intro.html" title="Articles" class="active">Articles</a>
-                  </li>
-                  <li class="">
-                    <a href="../../api/index.html" title="API Documentation" class="">API Documentation</a>
-                  </li>
-                </ul>
-            </div>
+                      <li>
+                          <a href="../../articles/intro.html" title="Articles">Articles</a>
+                      </li>
+                      <li>
+                          <a href="../../api/index.html" title="API Documentation">API Documentation</a>
+                      </li>
+                </ul>    </div>
           </div>
         </nav>
         
@@ -124,17 +124,17 @@
 
 <p>The application works with attributes stored in JPEG files. This namespace contains classes responsible for loading and storing these attributes in various places and formats.</p>
 <h2 id="data-representation-in-the-program">Data representation in the program</h2>
-<p>The namespace works with entities (see <a href="xref:Viewer.Data.IEntity">IEntity</a>). Entities are collections of <a href="xref:Viewer.Data.Attribute">Attribute</a>s. The application uses <a href="xref:Viewer.Data.FileEntity">FileEntity</a> to represent a file in a file system and <a href="xref:Viewer.Data.DirectoryEntity">DirectoryEntity</a> to represent a directory in a file system. Directory entities don't have attributes (i.e., it is always an empty collection).</p>
-<p>Attributes have a name, a value and a source and they are immutable. Value is any type derived from <a href="xref:Viewer.Data.BaseValue">BaseValue</a>. Source of an attribute designates from where an attribute has been loaded:</p>
+<p>The namespace works with entities (see <a class="xref" href="../../api/Viewer.Data.IEntity.html">IEntity</a>). Entities are collections of <a class="xref" href="../../api/Viewer.Data.Attribute.html">Attribute</a>s. The application uses <a class="xref" href="../../api/Viewer.Data.FileEntity.html">FileEntity</a> to represent a file in a file system and <a class="xref" href="../../api/Viewer.Data.DirectoryEntity.html">DirectoryEntity</a> to represent a directory in a file system. Directory entities don't have attributes (i.e., it is always an empty collection).</p>
+<p>Attributes have a name, a value and a source and they are immutable. Value is any type derived from <a class="xref" href="../../api/Viewer.Data.BaseValue.html">BaseValue</a>. Source of an attribute designates from where an attribute has been loaded:</p>
 <ul>
-<li><a href="xref:Viewer.Data.AttributeSource.Metadata">Metadata</a> for attributes loaded from file metadata such as file system or Exif JPEG segment</li>
-<li><a href="xref:Viewer.Data.AttributeSource.Custom">Custom</a> for attributes added by the user (stored in a custom JPEG segment)</li>
+<li><a class="xref" href="../../api/Viewer.Data.AttributeSource.html#Viewer_Data_AttributeSource_Metadata">Metadata</a> for attributes loaded from file metadata such as file system or Exif JPEG segment</li>
+<li><a class="xref" href="../../api/Viewer.Data.AttributeSource.html#Viewer_Data_AttributeSource_Custom">Custom</a> for attributes added by the user (stored in a custom JPEG segment)</li>
 </ul>
-<p>Values are immutable classes. They can be <code>null</code> regardless of their type. This property is only used in query evaluation. An entity will never have an attribute whose value is null. Instead, if you try to <a href="xref:Viewer.Data.IEntity#Viewer_Data_IEntity_SetAttribute_Viewer_Data_Attribute_">SetAttribute</a> whose value is null, an attribute with the same name will be removed from the entity.</p>
+<p>Values are immutable classes. They can be <code>null</code> regardless of their type. This property is only used in query evaluation. An entity will never have an attribute whose value is null. Instead, if you try to <a class="xref" href="../../api/Viewer.Data.IEntity.html#Viewer_Data_IEntity_SetAttribute_Viewer_Data_Attribute_">SetAttribute</a> whose value is null, an attribute with the same name will be removed from the entity.</p>
 <h2 id="storage">Storage</h2>
-<p><a href="xref:Viewer.Data.Storage.IAttributeStorage">IAttributeStorage</a> represents a place where an entity can be stored. Currently, entities can be stored in their files, SQLite database or in memory.</p>
+<p><a class="xref" href="../../api/Viewer.Data.Storage.IAttributeStorage.html">IAttributeStorage</a> represents a place where an entity can be stored. Currently, entities can be stored in their files, SQLite database or in memory.</p>
 <h3 id="filesystemattributestorage">FileSystemAttributeStorage</h3>
-<p><a href="xref:Viewer.Data.Storage.FileSystemAttributeStorage">FileSystemAttributeStorage</a> can store entities to their files and load them. The data is stored in custom APP1 <a href="https://en.wikipedia.org/wiki/JPEG#Syntax_and_structure">JPEG segments</a>. Attributes are first serialized to a binary format and then split into APP1 JPEG segments. Structure of the JPEG segment is following:</p>
+<p><a class="xref" href="../../api/Viewer.Data.Storage.FileSystemAttributeStorage.html">FileSystemAttributeStorage</a> can store entities to their files and load them. The data is stored in custom APP1 <a href="https://en.wikipedia.org/wiki/JPEG#Syntax_and_structure">JPEG segments</a>. Attributes are first serialized to a binary format and then split into APP1 JPEG segments. Structure of the JPEG segment is following:</p>
 <ul>
 <li>APP1 JPEG segment header (2B): <code>0xFF</code> <code>0xE1</code></li>
 <li>Size of the JPEG segment (2B, big endian, the size includes even the two bytes for the size)</li>
@@ -156,7 +156,7 @@
 </ul>
 <p>An attribute is serialized to:</p>
 <ul>
-<li>type (<code>uint16</code>, (numbers are defined by <a href="xref:Viewer.Data.Formats.Attributes.AttributeType">AttributeType</a>)</li>
+<li>type (<code>uint16</code>, (numbers are defined by <a class="xref" href="../../api/Viewer.Data.Formats.Attributes.AttributeType.html">AttributeType</a>)</li>
 <li>name (<code>string</code>)</li>
 <li>value (format depends on the type, it can be <code>int32</code>, <code>Double</code>, <code>String</code> or <code>DateTime</code>)</li>
 </ul>
@@ -178,7 +178,7 @@
 </ol>
 <p>In the first step, it is important that the temporary file is on the same disk as the original. It makes the 6th step as simple as possible which minimizes the probability of corrupting data in the original file.</p>
 <h3 id="sqliteattributestorage">SqliteAttributeStorage</h3>
-<p><a href="xref:Viewer.Data.Storage.SqliteAttributeStorage">SqliteAttributeStorage</a> is a special <a href="xref:Viewer.Data.Storage.IDeferredAttributeStorage">IDeferredAttributeStorage</a>. This means that write operations can be deferred until the <a href="xref:Viewer.Data.Storage.IDeferredAttributeStorage#Viewer_Data_Storage_IDeferredAttributeStorage_ApplyChanges">ApplyChanges</a> method is called. This is the case for a couple of reasons: (1) it is non-blocking (this storage is used as a cache), (2) batching multiple write operations will speed things up as the overhead won't be included with each operation.</p>
+<p><a class="xref" href="../../api/Viewer.Data.Storage.SqliteAttributeStorage.html">SqliteAttributeStorage</a> is a special <a class="xref" href="../../api/Viewer.Data.Storage.IDeferredAttributeStorage.html">IDeferredAttributeStorage</a>. This means that write operations can be deferred until the <a class="xref" href="../../api/Viewer.Data.Storage.IDeferredAttributeStorage.html#Viewer_Data_Storage_IDeferredAttributeStorage_ApplyChanges">ApplyChanges</a> method is called. This is the case for a couple of reasons: (1) it is non-blocking (this storage is used as a cache), (2) batching multiple write operations will speed things up as the overhead won't be included with each operation.</p>
 <p>The database has a simple schema:</p>
 <pre><code class="lang-SQL">CREATE TABLE IF NOT EXISTS `files` (
 	`id`	INTEGER NOT NULL,
@@ -207,7 +207,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS `attributes_owner_name_index` ON `attributes` 
 </code></pre>
 <p>For each file it stores the last write time of the file and the last access time of the record in the database. Notice that a special collation is used to the path. This collation is implemented in C# so that paths are compares using a unicode aware comparer.</p>
 <h2 id="cachedattributestorage">CachedAttributeStorage</h2>
-<p><a href="xref:Viewer.Data.Storage.CachedAttributeStorage">CachedAttributeStorage</a> combines 2 attribute storages where one of the storage is deferred. The deferred storage is used as a cache. The load operation first checks if it can find the entity in the cache storage. If it can't, it will load it from the main storage and store the result in the cache storage. All modifying operations are done to both storages. These operations are applied to the cache storage on a background thread after a set ammount of changes have been made or after a set ammount of time (so that all changes will be applied within a time limit).</p>
+<p><a class="xref" href="../../api/Viewer.Data.Storage.CachedAttributeStorage.html">CachedAttributeStorage</a> combines 2 attribute storages where one of the storage is deferred. The deferred storage is used as a cache. The load operation first checks if it can find the entity in the cache storage. If it can't, it will load it from the main storage and store the result in the cache storage. All modifying operations are done to both storages. These operations are applied to the cache storage on a background thread after a set ammount of changes have been made or after a set ammount of time (so that all changes will be applied within a time limit).</p>
 </article>
           </div>
           
@@ -216,7 +216,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS `attributes_owner_name_index` ON `attributes` 
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/trylock/viewer/blob/master/src/docs/articles/developer/data.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/trylock/viewer/blob/release_143/src/docs/articles/developer/data.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>

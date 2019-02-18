@@ -11,6 +11,7 @@ using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using MetadataExtractor.Formats.Jpeg;
 using MetadataExtractor.IO;
+using NLog;
 using Viewer.Data.Formats;
 using Viewer.Data.Formats.Attributes;
 using Viewer.Data.Formats.Jpeg;
@@ -25,6 +26,8 @@ namespace Viewer.Data.Storage
     [Export]
     public class FileSystemAttributeStorage : IAttributeStorage
     {
+        private static readonly ILogger Loggger = LogManager.GetCurrentClassLogger();
+
         private readonly IFileSystem _fileSystem;
         private readonly IJpegSegmentReaderFactory _segmentReaderFactory;
         private readonly IJpegSegmentWriterFactory _segmentWriterFactory;
@@ -111,12 +114,19 @@ namespace Viewer.Data.Storage
                 foreach (var factory in _attrReaderFactories)
                 {
                     var attrReader = factory.CreateFromSegments(fileInfo, segments);
-                    for (;;)
+                    try
                     {
-                        var attr = attrReader.Read();
-                        if (attr == null)
-                            break;
-                        entity = entity.SetAttribute(attr);
+                        for (;;)
+                        {
+                            var attr = attrReader.Read();
+                            if (attr == null)
+                                break;
+                            entity = entity.SetAttribute(attr);
+                        }
+                    }
+                    catch (InvalidDataFormatException e)
+                    {
+                        Loggger.Debug(e, "While loading {0}", path);
                     }
                 }
 

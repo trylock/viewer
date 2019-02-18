@@ -22,7 +22,8 @@ namespace Viewer.UI.Images
     }
 
     /// <summary>
-    /// View of an item in the thumbnail grid
+    /// View of an item in the thumbnail grid (<see cref="IEntity"/> +
+    /// its <see cref="ILazyThumbnail"/>)
     /// </summary>
     public sealed class EntityView : IDisposable
     {
@@ -66,25 +67,6 @@ namespace Viewer.UI.Images
         public void Dispose()
         {
             Thumbnail?.Dispose();
-        }
-    }
-
-    public class EntityViewPathComparer : IEqualityComparer<EntityView>
-    {
-        public static EntityViewPathComparer Default { get; } = new EntityViewPathComparer();
-
-        public bool Equals(EntityView x, EntityView y)
-        {
-            if (x == null && y == null)
-                return true;
-            if (x == null || y == null)
-                return false;
-            return x.Data.Path == y.Data.Path;
-        }
-
-        public int GetHashCode(EntityView obj)
-        {
-            return obj.FullPath.GetHashCode();
         }
     }
 

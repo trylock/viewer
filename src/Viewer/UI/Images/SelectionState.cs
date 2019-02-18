@@ -73,10 +73,10 @@ namespace Viewer.UI.Images
         private bool _isRangeSelect;
 
         private readonly HashSet<EntityView> _currentSelection =
-            new HashSet<EntityView>(EntityViewPathComparer.Default);
+            new HashSet<EntityView>();
 
         private readonly HashSet<EntityView> _previousSelection =
-            new HashSet<EntityView>(EntityViewPathComparer.Default);
+            new HashSet<EntityView>();
 
         public SelectionState(ISelectionView view, ISelection selection)
         {

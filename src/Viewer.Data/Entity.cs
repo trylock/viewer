@@ -17,6 +17,7 @@ namespace Viewer.Data
     /// <summary>
     /// Collection of attributes. It represents a file on a disk.
     /// </summary>
+    /// <remarks>Implementations of this interface are mutable.</remarks>
     public interface IEntity : IEnumerable<Attribute>
     {
         /// <summary>

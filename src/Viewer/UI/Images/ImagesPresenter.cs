@@ -409,7 +409,7 @@ namespace Viewer.UI.Images
             }
 
             // delete entities
-            var entitiesInSelection = _selection.Select(item => item.Data);
+            var entitiesInSelection = _selection;
             foreach (var entity in entitiesInSelection)
             {
                 try
@@ -665,7 +665,7 @@ namespace Viewer.UI.Images
         private void View_RunProgram(object sender, ProgramEventArgs e)
         {
             // select files for which the program will run
-            var entities = _selection.Select(view => view.Data);
+            IEnumerable<IEntity> entities = _selection;
             if (!e.Program.RunWithDirectories)
             {
                 entities = entities.OfType<FileEntity>();

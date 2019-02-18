@@ -21,7 +21,7 @@ namespace Viewer.UI.Images
     /// This class contains selection logic for any thumbnail grid. It does not assume much
     /// about its view. 
     /// </remarks>
-    internal class SelectionState : IEnumerable<EntityView>, IDisposable
+    internal class SelectionState : IEnumerable<IEntity>, IDisposable
     {
         private readonly ISelectionView _view;
         private readonly ISelection _selection;
@@ -72,11 +72,11 @@ namespace Viewer.UI.Images
         /// </summary>
         private bool _isRangeSelect;
 
-        private readonly HashSet<EntityView> _currentSelection =
-            new HashSet<EntityView>();
+        private readonly HashSet<IEntity> _currentSelection =
+            new HashSet<IEntity>();
 
-        private readonly HashSet<EntityView> _previousSelection =
-            new HashSet<EntityView>();
+        private readonly HashSet<IEntity> _previousSelection =
+            new HashSet<IEntity>();
 
         public SelectionState(ISelectionView view, ISelection selection)
         {
@@ -114,10 +114,10 @@ namespace Viewer.UI.Images
 
         public IEnumerable<string> GetPathsInSelection()
         {
-            return _currentSelection.Select(view => view.FullPath);
+            return _currentSelection.Select(view => view.Path);
         }
-        
-        public IEnumerator<EntityView> GetEnumerator()
+
+        public IEnumerator<IEntity> GetEnumerator()
         {
             return _currentSelection.GetEnumerator();
         }
@@ -126,7 +126,7 @@ namespace Viewer.UI.Images
         {
             return GetEnumerator();
         }
-        
+
         /// <summary>
         /// Replace global selection (<see cref="ISelection"/>) with current selection
         /// (<see cref="_currentSelection"/>)
@@ -134,7 +134,6 @@ namespace Viewer.UI.Images
         private void SetGlobalSelection()
         {
             var newSelection = _currentSelection
-                .Select(view => view.Data)
                 .ToHashSet(EntityPathEqualityComparer.Default);
             if (newSelection.SetEquals(_selection))
             {
@@ -234,7 +233,7 @@ namespace Viewer.UI.Images
         /// <param name="bounds">Seletion bounds</param>
         private void ProcessSymetricDifferenceSelection(Rectangle bounds)
         {
-            var items = _view.GetItemsIn(bounds);
+            var items = _view.GetItemsIn(bounds).Select(item => item.Data);
             _currentSelection.UnionWith(_previousSelection);
             _currentSelection.SymmetricExceptWith(items);
         }
@@ -250,7 +249,7 @@ namespace Viewer.UI.Images
         /// <param name="bounds">Seletion bounds</param>
         private void ProcessUnionSelection(Rectangle bounds)
         {
-            var items = _view.GetItemsIn(bounds);
+            var items = _view.GetItemsIn(bounds).Select(item => item.Data);
             _currentSelection.UnionWith(_previousSelection);
             _currentSelection.UnionWith(items);
         }
@@ -266,7 +265,7 @@ namespace Viewer.UI.Images
         /// <param name="bounds">Seletion bounds</param>
         private void ProcessReplaceSelection(Rectangle bounds)
         {
-            var items = _view.GetItemsIn(bounds);
+            var items = _view.GetItemsIn(bounds).Select(item => item.Data);
             _currentSelection.UnionWith(items);
         }
 
@@ -287,13 +286,13 @@ namespace Viewer.UI.Images
 
         private void ProcessAdditionalItemSelection(EntityView item)
         {
-            if (_currentSelection.Contains(item))
+            if (_currentSelection.Contains(item.Data))
             {
-                _currentSelection.Remove(item);
+                _currentSelection.Remove(item.Data);
             }
             else
             {
-                _currentSelection.Add(item);
+                _currentSelection.Add(item.Data);
             }
         }
 
@@ -310,7 +309,7 @@ namespace Viewer.UI.Images
                     if (view == item || view == _rangeSelectAnchorItem)
                     {
                         isStart = true;
-                        _currentSelection.Add(view);
+                        _currentSelection.Add(view.Data);
 
                         if (item == _rangeSelectAnchorItem)
                         {
@@ -320,7 +319,7 @@ namespace Viewer.UI.Images
                 }
                 else
                 {
-                    _currentSelection.Add(view);
+                    _currentSelection.Add(view.Data);
 
                     if (view == item || view == _rangeSelectAnchorItem)
                     {
@@ -333,7 +332,7 @@ namespace Viewer.UI.Images
         private void ProcessReplaceItemSelection(EntityView item)
         {
             _currentSelection.Clear();
-            _currentSelection.Add(item);
+            _currentSelection.Add(item.Data);
         }
 
         private void ProcessItemSelection(EntityView item, bool resetSelectedItem)
@@ -354,7 +353,7 @@ namespace Viewer.UI.Images
                     ProcessReplaceItemSelection(item);
                 }
             }
-            else if (!_currentSelection.Contains(item))
+            else if (!_currentSelection.Contains(item.Data))
             {
                 ProcessReplaceItemSelection(item);
             }
@@ -417,7 +416,7 @@ namespace Viewer.UI.Images
             {
                 CaptureActiveItem(item);
 
-                if (!_currentSelection.Contains(item) ||
+                if (!_currentSelection.Contains(item.Data) ||
                     _view.ModifierKeyState.HasFlag(Keys.Control) ||
                     _view.ModifierKeyState.HasFlag(Keys.Shift))
                 {
@@ -463,7 +462,7 @@ namespace Viewer.UI.Images
                 }
 
                 if (item != null && 
-                    _currentSelection.Contains(item) && 
+                    _currentSelection.Contains(item.Data) && 
                     _selection.Count() > 1 &&
                     _view.ModifierKeyState == 0)
                 {
@@ -477,7 +476,9 @@ namespace Viewer.UI.Images
             if (e.Control && e.KeyCode == Keys.A)
             {
                 _currentSelection.Clear();
-                _currentSelection.UnionWith(_view.Items.SelectMany(pair => pair.Items));
+                _currentSelection.UnionWith(_view.Items
+                    .SelectMany(pair => pair.Items)
+                    .Select(item => item.Data));
                 SetGlobalSelection();
             }
 
@@ -536,7 +537,7 @@ namespace Viewer.UI.Images
         
         private void View_ItemDraw(object sender, DrawEventArgs e)
         {
-            if (_currentSelection.Contains(e.View))
+            if (_currentSelection.Contains(e.View.Data))
             {
                 e.State = EntityViewState.Selected;
             }

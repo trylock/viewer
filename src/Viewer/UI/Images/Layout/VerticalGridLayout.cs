@@ -557,14 +557,14 @@ namespace Viewer.UI.Images.Layout
 
         public override LayoutElement<EntityView> FindItem(EntityView source, Point direction)
         {
-            var groupIndex = Groups.FindIndex(g => g.Items.Contains(source));
+            var groupIndex = Groups.FindIndex(g => g.Items.Any(i => i.Data == source.Data));
             if (groupIndex < 0)
             {
                 return null; // the source is not in the grid
             }
 
             var group = Groups[groupIndex];
-            var sourceIndex = group.Items.IndexOf(source);
+            var sourceIndex = group.Items.FindIndex(i => i.Data == source.Data);
             var index = sourceIndex + ColumnCount * direction.Y + direction.X;
 
             // move up to the next group

@@ -18,7 +18,7 @@ namespace Viewer.Data.SQLite
         /// <summary>
         /// Current user version of the schema initialized by the <see cref="Initialize"/> method.
         /// </summary>
-        private const int CurrentVersion = 3;
+        private const int CurrentVersion = 4;
 
         private readonly IFileSystem _fileSystem;
         private readonly string _dataSource;

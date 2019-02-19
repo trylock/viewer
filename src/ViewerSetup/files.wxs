@@ -2,432 +2,432 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="INSTALLFOLDER">
-            <Component Id="cmpD6493198A480101FF6F82F7174D09A71" Guid="{36269C53-E0C5-43E9-B461-065D5C8F163F}">
+            <Component Id="cmpD6493198A480101FF6F82F7174D09A71" Guid="{409AE6F2-0B2C-45C8-92F2-4774BD4611A3}">
                 <File Id="filEB8D53A8C23631C31D5D803F4B315074" KeyPath="yes" Source="$(var.BINFOLDER)\Antlr4.Runtime.Standard.dll" />
             </Component>
-            <Component Id="cmp2EFB3045BC8C5AF14878AA6F189FFA6B" Guid="{FEA56664-DD06-4A48-BA51-213DFDA32B49}">
+            <Component Id="cmp2EFB3045BC8C5AF14878AA6F189FFA6B" Guid="{CBADE1C6-C6EE-4CDD-B8B4-3E1A5DFB6B86}">
                 <File Id="fil881C7292EABE899CFAA2A25EB1052B83" KeyPath="yes" Source="$(var.BINFOLDER)\Antlr4.Runtime.Standard.xml" />
             </Component>
-            <Component Id="cmpE1894166020E41B8A258AA28467DF771" Guid="{F5B67DE7-6843-4522-A1A3-92014CEE5F3C}">
+            <Component Id="cmpE1894166020E41B8A258AA28467DF771" Guid="{58F6400A-64E2-4C79-A097-D442E1153E1F}">
                 <File Id="fil278489AB51E4F297B7F5090488282A24" KeyPath="yes" Source="$(var.BINFOLDER)\atk-sharp.dll" />
             </Component>
-            <Component Id="cmpFBDEADA3E6D5433A3AF8FBE6F20F9D04" Guid="{ADEAFC98-DA46-4766-9431-D9FCA470D5BE}">
+            <Component Id="cmpFBDEADA3E6D5433A3AF8FBE6F20F9D04" Guid="{4DDABB1E-A461-4E01-AF32-0F513DB2E1C3}">
                 <File Id="fil705825C9CE4459CCB09E085F60091D74" KeyPath="yes" Source="$(var.BINFOLDER)\atk-sharp.pdb" />
             </Component>
-            <Component Id="cmpB1C04CF66E83944AA1F8D3DFCDEBF11C" Guid="{3D65B8FE-0D53-42A5-9838-97846C80AA53}">
+            <Component Id="cmpB1C04CF66E83944AA1F8D3DFCDEBF11C" Guid="{6AD37D3E-64FF-41EC-BF1F-F9C04F3DC61C}">
                 <File Id="filCE8DE41CFB8923C4878F95997F089EEC" KeyPath="yes" Source="$(var.BINFOLDER)\gdk-sharp.dll" />
             </Component>
-            <Component Id="cmp8B9B5CC522881D103A6C750FB699779A" Guid="{C097C9F4-1A25-431A-A5B9-B7ED03F7F396}">
+            <Component Id="cmp8B9B5CC522881D103A6C750FB699779A" Guid="{3C4946B0-D4D2-4B2F-9E97-C99037923D5E}">
                 <File Id="fil33AF9C034B288C25CC3A5B210A16206D" KeyPath="yes" Source="$(var.BINFOLDER)\gdk-sharp.pdb" />
             </Component>
-            <Component Id="cmp62F30D2E0A7A2D71AEDE8871AD61EBDF" Guid="{634A82CA-507E-45B9-8FEE-BF301482A774}">
+            <Component Id="cmp62F30D2E0A7A2D71AEDE8871AD61EBDF" Guid="{56E60B04-4597-446C-99C7-47D78668EE15}">
                 <File Id="fil7544CBA41DC1BCB7988FCD9DE7B0B16E" KeyPath="yes" Source="$(var.BINFOLDER)\glib-sharp.dll" />
             </Component>
-            <Component Id="cmp3C57E794515FB33A680F431942C9E316" Guid="{C851BBAD-6F47-4A4A-9F20-27D025D8B31E}">
+            <Component Id="cmp3C57E794515FB33A680F431942C9E316" Guid="{D2C19270-2D74-4DD4-BF94-9D7679556C35}">
                 <File Id="filE72F7D703A186141C77D050480C18785" KeyPath="yes" Source="$(var.BINFOLDER)\glib-sharp.pdb" />
             </Component>
-            <Component Id="cmpB170907AEC4205D58448080E1F8633CE" Guid="{21FFF7AF-EA9C-4EEF-B114-6156AEF0A81F}">
+            <Component Id="cmpB170907AEC4205D58448080E1F8633CE" Guid="{C76F3863-9C73-4600-AD5A-6AAAB7877F52}">
                 <File Id="fil59661727AE85F419AA051E809D480AB6" KeyPath="yes" Source="$(var.BINFOLDER)\gtk-sharp.dll" />
             </Component>
-            <Component Id="cmp6840447846DBB5E011AA827D19819685" Guid="{21C1C5FC-CF3A-4E76-950A-DDD23E7585E4}">
+            <Component Id="cmp6840447846DBB5E011AA827D19819685" Guid="{EBB7FD3F-229D-440B-AEBF-96A60982F649}">
                 <File Id="fil00E6863487BC0C9C868490853E7C496F" KeyPath="yes" Source="$(var.BINFOLDER)\Humanizer.dll" />
             </Component>
-            <Component Id="cmpA8FB73F6692FB7E3262CCEDE06D357B1" Guid="{350DD5A7-882D-418C-9AE5-75EDE81909EA}">
+            <Component Id="cmpA8FB73F6692FB7E3262CCEDE06D357B1" Guid="{4159EDA0-3822-4ACA-846A-066EC62BB3C9}">
                 <File Id="fil8CE81134C80924D4477DB4F10EE9BDD4" KeyPath="yes" Source="$(var.BINFOLDER)\Humanizer.xml" />
             </Component>
-            <Component Id="cmp7A6DB975FC72819EA6FE5836E0FAB4EF" Guid="{C9F6E941-8C7C-4866-9AE5-3DF41B273162}">
+            <Component Id="cmp7A6DB975FC72819EA6FE5836E0FAB4EF" Guid="{D92397C7-4DBD-4B68-8700-6C2B87C39F8B}">
                 <File Id="filD7B08297A759A21ACA2ED5F664EC727D" KeyPath="yes" Source="$(var.BINFOLDER)\libSkiaSharp.dll" />
             </Component>
-            <Component Id="cmp599C92351CD0C78C93182B0BDFF9219C" Guid="{A79FF4A1-041E-4D41-8B9B-23B19C1E8517}">
+            <Component Id="cmp599C92351CD0C78C93182B0BDFF9219C" Guid="{7D8FD7B7-97E9-4C79-B238-032A280CA99D}">
                 <File Id="fil7EED7CF2E1876B630CDA68790C4216A8" KeyPath="yes" Source="$(var.BINFOLDER)\libSkiaSharp.dylib" />
             </Component>
-            <Component Id="cmpFDD409D63AAED0F59378D2207BDBD3E4" Guid="{92879F82-A69F-41D4-ADC8-24EBE447350A}">
+            <Component Id="cmpFDD409D63AAED0F59378D2207BDBD3E4" Guid="{E22EF950-2C06-4829-97B8-5C19D995B977}">
                 <File Id="filE7A9B748F9757568126AA1422131699B" KeyPath="yes" Source="$(var.BINFOLDER)\MetadataExtractor.dll" />
             </Component>
-            <Component Id="cmp97DF18115D02018409BACB7C6480E2FC" Guid="{7C59DC40-14A4-4F2C-A3E6-1A5A81DC349B}">
+            <Component Id="cmp97DF18115D02018409BACB7C6480E2FC" Guid="{67519938-E5EE-426A-8665-FAAA300CA79D}">
                 <File Id="fil2B808BEF583B9D9681D0A9EAA0D3F1E7" KeyPath="yes" Source="$(var.BINFOLDER)\MetadataExtractor.xml" />
             </Component>
-            <Component Id="cmpB7F1EBE42DCB1051B92D42C1EF84E2F9" Guid="{25367602-A9BA-4C6D-9C47-B07C9100C31B}">
+            <Component Id="cmpB7F1EBE42DCB1051B92D42C1EF84E2F9" Guid="{94EE99AF-1914-4FF4-8C4C-233EBCA5B7B6}">
                 <File Id="filA09ADF42C6343B9B7C7780D266455CC4" KeyPath="yes" Source="$(var.BINFOLDER)\NLog.dll" />
             </Component>
-            <Component Id="cmpAF162B14FA6391E4D0D34D9485A3CBEB" Guid="{85416859-1385-49AE-81DF-91EB25C6AE93}">
+            <Component Id="cmpAF162B14FA6391E4D0D34D9485A3CBEB" Guid="{DD1A193F-2DFD-45C8-B0D7-95575FC0BB50}">
                 <File Id="fil938BF1D1B479C73F0CECCBD51683AA0E" KeyPath="yes" Source="$(var.BINFOLDER)\NLog.xml" />
             </Component>
-            <Component Id="cmp36E09C8CF4CF3BB59033A0B44BB42EA3" Guid="{6AE520F8-D20E-4234-946F-4E9F2FEF42BE}">
+            <Component Id="cmp36E09C8CF4CF3BB59033A0B44BB42EA3" Guid="{E92E5D84-ED34-4EEE-B833-B34B9D38D2C7}">
                 <File Id="filA53B9DB094062FF3B44238B15BA30A2F" KeyPath="yes" Source="$(var.BINFOLDER)\pango-sharp.dll" />
             </Component>
-            <Component Id="cmpD12D156178EFFB0E6344620569607A57" Guid="{AD7A6457-2852-46F2-AA3B-2766323383BE}">
+            <Component Id="cmpD12D156178EFFB0E6344620569607A57" Guid="{EA8AD6AD-F6D0-4061-B848-18C13B715B08}">
                 <File Id="fil559DC052545FF6FDEE7FE63E2A8C2EF2" KeyPath="yes" Source="$(var.BINFOLDER)\pango-sharp.pdb" />
             </Component>
-            <Component Id="cmp658C98C0E84723AB62B81DEC00E9BAFA" Guid="{8474E744-8B1A-48B7-91B8-1102C270AC46}">
+            <Component Id="cmp658C98C0E84723AB62B81DEC00E9BAFA" Guid="{D659471C-E111-4BCD-8C81-C9C5ACCEC4E3}">
                 <File Id="filF94A6D023B07951F7D55DC1E2864FCC4" KeyPath="yes" Source="$(var.BINFOLDER)\ScintillaNET.dll" />
             </Component>
-            <Component Id="cmp41D88919D97ABF34D594A4BBF063255F" Guid="{E5D96153-22A6-467F-A4EF-59CF496293B3}">
+            <Component Id="cmp41D88919D97ABF34D594A4BBF063255F" Guid="{40CDE56F-B9AB-4687-8A3D-DE9EE2522D27}">
                 <File Id="fil31ED5844E8ECA47381F5095C2F2A423C" KeyPath="yes" Source="$(var.BINFOLDER)\ScintillaNET.xml" />
             </Component>
-            <Component Id="cmp9143FBEDB0909CDF06ED8DF33E7A8A5E" Guid="{4C0D2191-4FD4-4516-B06B-E54FE02777DF}">
+            <Component Id="cmp9143FBEDB0909CDF06ED8DF33E7A8A5E" Guid="{6CE4CD63-054B-435D-807F-D2260979D76F}">
                 <File Id="fil25B3F878ECBF570C2E9C747E6B044290" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.dll" />
             </Component>
-            <Component Id="cmp06A113DC034CFE861FBCFD6DB9AA56D1" Guid="{FC693598-96D9-49B6-B292-1DEBB6ED951D}">
+            <Component Id="cmp06A113DC034CFE861FBCFD6DB9AA56D1" Guid="{320CF104-F9F2-46C9-BC6B-C61D09A519B1}">
                 <File Id="fil8BDBE6F5D8BA0B0492C38C870D649C7A" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.Desktop.dll" />
             </Component>
-            <Component Id="cmp9A6695FDBF5FD46E06C1A5D310D9D1DC" Guid="{3D93AFFA-67E9-4CDA-929D-E537E4BFD3A5}">
+            <Component Id="cmp9A6695FDBF5FD46E06C1A5D310D9D1DC" Guid="{70D8EE99-99D7-42D7-B0A2-176871D9C874}">
                 <File Id="fil0FD1B6110F0BDAC2455FF81044068B95" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.Desktop.xml" />
             </Component>
-            <Component Id="cmp5B30729EEF3045F9D5E1D8268F6A3F87" Guid="{8736B7B5-7B05-4D57-A2F6-1C69A17BC742}">
+            <Component Id="cmp5B30729EEF3045F9D5E1D8268F6A3F87" Guid="{A85003C1-BD1C-401D-9F02-70F99817A41C}">
                 <File Id="fil650ED93AD2EAE3F1FF991193EE669047" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.Gtk.dll" />
             </Component>
-            <Component Id="cmpD2C92C955102921B5F8A5B90E62BFC54" Guid="{7035E9B2-A8E9-46A3-A8AD-F2150D46BDB5}">
+            <Component Id="cmpD2C92C955102921B5F8A5B90E62BFC54" Guid="{3901906F-34CA-4C63-8F11-AE6D6B63A42E}">
                 <File Id="filD672DF438E13614EA2C2787D6522FE0B" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.Gtk.xml" />
             </Component>
-            <Component Id="cmpD69E947103E51F942BF09FC879FAC0D5" Guid="{8F0FAC48-6413-4079-B5D6-D2504D1D716B}">
+            <Component Id="cmpD69E947103E51F942BF09FC879FAC0D5" Guid="{AEF77487-5CAE-45CD-B74B-D348EDBC2A41}">
                 <File Id="fil05108EE5EA18D295F1AF8988120D5A5C" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.WPF.dll" />
             </Component>
-            <Component Id="cmp263B3D007790C38FAFB5EA92A36235E1" Guid="{7520C6C1-81A5-42D3-A312-FA3D848FB7A2}">
+            <Component Id="cmp263B3D007790C38FAFB5EA92A36235E1" Guid="{20FDF232-C846-43F7-9227-3CDB2A0264E1}">
                 <File Id="filC2A48D5E497D01A1FDA8A5385B32B937" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.Views.WPF.xml" />
             </Component>
-            <Component Id="cmp8B79348984ABCE75C0D3F3F06CCD9D6E" Guid="{6FC18F05-44AD-411C-B882-F8608AD2E1AA}">
+            <Component Id="cmp8B79348984ABCE75C0D3F3F06CCD9D6E" Guid="{A0268234-D96E-44DC-B81F-DFAB1C73019B}">
                 <File Id="fil33CDD20002B901A4769A4B10EF9471ED" KeyPath="yes" Source="$(var.BINFOLDER)\SkiaSharp.xml" />
             </Component>
-            <Component Id="cmp5C82A05FA23F935F2AF47CD1A8E11EF5" Guid="{A554B057-1E01-4072-B46E-E6E95C342948}">
+            <Component Id="cmp5C82A05FA23F935F2AF47CD1A8E11EF5" Guid="{4337FD79-9C61-42CA-A8D5-A7BDF0F20A5D}">
                 <File Id="filE0AB56016BACB84E3B4D8920E3BC3B88" KeyPath="yes" Source="$(var.BINFOLDER)\System.Data.Common.dll" />
             </Component>
-            <Component Id="cmp6B7CE49F5F3A518047B74FB6AC2251C5" Guid="{882C20F3-92E6-45F1-981B-AD7A6B2F2670}">
+            <Component Id="cmp6B7CE49F5F3A518047B74FB6AC2251C5" Guid="{A78630D5-3359-4C82-9F51-B0C27F228F71}">
                 <File Id="fil86030949C08D40073D1F77D572C14B0D" KeyPath="yes" Source="$(var.BINFOLDER)\System.Data.SQLite.dll" />
             </Component>
-            <Component Id="cmpE25D4339F043AE9AF876A4620A6432C9" Guid="{2B52F792-29D8-46BE-AD11-D0049AF932F2}">
+            <Component Id="cmpE25D4339F043AE9AF876A4620A6432C9" Guid="{C75C0C81-78F8-465D-A6AD-82BF261518E9}">
                 <File Id="fil231CA1DE8C286CE1F5188773A945762D" KeyPath="yes" Source="$(var.BINFOLDER)\System.Data.SQLite.dll.config" />
             </Component>
-            <Component Id="cmpB0D00055965EDE11CC624747CE56C686" Guid="{11ACEC08-632A-472C-A86E-DC0F1C77DAF4}">
+            <Component Id="cmpB0D00055965EDE11CC624747CE56C686" Guid="{35F1760D-8A02-4D9D-BC2B-ADF2F8FCEA50}">
                 <File Id="fil1AD5F5CE645B996B33CF1EF5C058BA4F" KeyPath="yes" Source="$(var.BINFOLDER)\System.Data.SQLite.xml" />
             </Component>
-            <Component Id="cmpB3E27F13800A8FF984F132723F98897C" Guid="{219F1F4B-EF2C-493D-845B-97CD8B36F60D}">
+            <Component Id="cmpB3E27F13800A8FF984F132723F98897C" Guid="{967E5400-B3FE-48B6-ADE3-4FC12D453FFF}">
                 <File Id="filDBF3A4F1AEA58FEDB0007DD546ADD630" KeyPath="yes" Source="$(var.BINFOLDER)\System.Diagnostics.StackTrace.dll" />
             </Component>
-            <Component Id="cmp804ACD73DC5E4AF51ACF260299491EAE" Guid="{DE025682-ACC8-409A-9854-1BEC0F308CE9}">
+            <Component Id="cmp804ACD73DC5E4AF51ACF260299491EAE" Guid="{A9E13DAF-CA0D-4BBC-8568-DCC40C04D0DF}">
                 <File Id="filE457FA9EC2AE98FDC3C82D976418C363" KeyPath="yes" Source="$(var.BINFOLDER)\System.Diagnostics.Tracing.dll" />
             </Component>
-            <Component Id="cmp2ECBD4EE80FB56B111EAB04A7922F75E" Guid="{9D111A51-FB46-439E-BF44-23AF5B5ECD22}">
+            <Component Id="cmp2ECBD4EE80FB56B111EAB04A7922F75E" Guid="{69AB45F2-83D8-42E4-AADA-B1F43AE30891}">
                 <File Id="filBCE4D84B0CA5B233C74110483CAD4D62" KeyPath="yes" Source="$(var.BINFOLDER)\System.Globalization.Extensions.dll" />
             </Component>
-            <Component Id="cmpC8D343DED6ECA227B78780388C7AA77C" Guid="{5C75AD33-85D7-4560-83D1-FF32C266188A}">
+            <Component Id="cmpC8D343DED6ECA227B78780388C7AA77C" Guid="{5ADF6E90-7555-4CE0-AE0B-666F2A14E848}">
                 <File Id="fil8C21BB6ED9A67550B3F3EE8EF35E5A89" KeyPath="yes" Source="$(var.BINFOLDER)\System.IO.Compression.dll" />
             </Component>
-            <Component Id="cmpBA5ABAFBBC1B2CC2232B3287ABE89965" Guid="{C9400666-D877-4447-B635-0AB9578797AD}">
+            <Component Id="cmpBA5ABAFBBC1B2CC2232B3287ABE89965" Guid="{15AB6CA3-6BB8-413A-851F-ACC3AE916A9A}">
                 <File Id="fil7D48B04FDEE4653060C375A94010A762" KeyPath="yes" Source="$(var.BINFOLDER)\System.Net.Http.dll" />
             </Component>
-            <Component Id="cmp35FB771C91E6D09AC7AD31EA6BD82D48" Guid="{52D6FC4F-F85E-4128-9E5C-D6A456597904}">
+            <Component Id="cmp35FB771C91E6D09AC7AD31EA6BD82D48" Guid="{B86A4D43-CE3B-4FD0-BD39-F64AAFB63DA1}">
                 <File Id="fil823B0C5D79C138C9B43DE503AE851AF3" KeyPath="yes" Source="$(var.BINFOLDER)\System.Net.Sockets.dll" />
             </Component>
-            <Component Id="cmp552DDD4A29039B8C3A99A908722A24F8" Guid="{AA440859-DE6E-4A68-ACE7-CBFA5628793B}">
+            <Component Id="cmp552DDD4A29039B8C3A99A908722A24F8" Guid="{6C83F146-6987-41E8-953B-1920722E7873}">
                 <File Id="fil4EF07533CCADC5D11E070B55437037C4" KeyPath="yes" Source="$(var.BINFOLDER)\System.Runtime.Serialization.Primitives.dll" />
             </Component>
-            <Component Id="cmpFF30060800C65B79967082C32327291C" Guid="{AE2F2EFB-1501-45ED-BC14-EC6B8517B10C}">
+            <Component Id="cmpFF30060800C65B79967082C32327291C" Guid="{DDCC713D-4BBC-490E-9650-D7B72BE3DC48}">
                 <File Id="filAB211F3F0ECB04AF6C2378C73893A0C8" KeyPath="yes" Source="$(var.BINFOLDER)\System.Security.Cryptography.Algorithms.dll" />
             </Component>
-            <Component Id="cmp2A096C150C80DB6CCD87D4C38C958489" Guid="{757E174A-9F00-4D29-918A-763A3240BA3E}">
+            <Component Id="cmp2A096C150C80DB6CCD87D4C38C958489" Guid="{EE0E0B9A-5A58-4AA9-A80E-36D944CA1A78}">
                 <File Id="filFB2A4DE274D08F22C08A1322C26E75AC" KeyPath="yes" Source="$(var.BINFOLDER)\System.Security.SecureString.dll" />
             </Component>
-            <Component Id="cmp1847EF90CD4FF710D3FD7F535A04B4FF" Guid="{EA1308B3-EC64-4CB7-A91E-01938F57449B}">
+            <Component Id="cmp1847EF90CD4FF710D3FD7F535A04B4FF" Guid="{C6F2C9C4-A386-4E57-BA57-187457597F67}">
                 <File Id="filE727C34A4C970EEE21C677C885EC28B8" KeyPath="yes" Source="$(var.BINFOLDER)\System.Threading.Overlapped.dll" />
             </Component>
-            <Component Id="cmp74AD17100EF04DA9E0B6DB1AFA6D8D5C" Guid="{6C185B98-41DF-4719-BD90-9CE3FD264592}">
+            <Component Id="cmp74AD17100EF04DA9E0B6DB1AFA6D8D5C" Guid="{38849A90-85F2-4C68-8916-781920C21CC0}">
                 <File Id="filB19DBCF818AC2F26DEA82AF27E664FD3" KeyPath="yes" Source="$(var.BINFOLDER)\System.Xml.XPath.XDocument.dll" />
             </Component>
-            <Component Id="cmpE132287DD60A93D95362C6F645A25B76" Guid="{A749A550-4082-4ABA-890E-21E8C5B13781}">
+            <Component Id="cmpE132287DD60A93D95362C6F645A25B76" Guid="{DBE2DFE0-DB9D-412C-AEBB-DA49389D38E0}">
                 <File Id="fil4FB2C704E78CB290ABC440D1EB77F5E7" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Core.dll" />
             </Component>
-            <Component Id="cmp25080C6D4F8BF296ED27814F41808BA3" Guid="{BB678C73-28CB-4B81-A1FF-9A574A1E4F6F}">
+            <Component Id="cmp25080C6D4F8BF296ED27814F41808BA3" Guid="{E37B8862-0B4D-4395-8A5E-0142A0B952D6}">
                 <File Id="fil3E20DDB77B080CC587E0984D5624C8C3" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Core.pdb" />
             </Component>
-            <Component Id="cmp858EE8BBEDD621DE2E3A7EA956266A7F" Guid="{989ED2CF-11EB-4DA8-8B84-D48652F0850A}">
+            <Component Id="cmp858EE8BBEDD621DE2E3A7EA956266A7F" Guid="{B2B09CBB-6713-43A2-9597-E30E187D62BD}">
                 <File Id="fil7CABC2B58E2F41DF1477CBE101A11516" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Data.dll" />
             </Component>
-            <Component Id="cmpED63B6F5B740967AF618AEBC007E7F22" Guid="{BA4D0276-9B00-4987-B4E9-72A8AB95C515}">
+            <Component Id="cmpED63B6F5B740967AF618AEBC007E7F22" Guid="{D2DD25CF-CD83-44E7-8167-1BE6F237A04E}">
                 <File Id="filC5C85E36C380A5B269C84361F74F0F1E" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Data.pdb" />
             </Component>
-            <Component Id="cmp7D5834C583B9F5DA0621DE7ECCC9CE7F" Guid="{FD3CD523-DFBB-47A4-A970-77D3B2A863B4}">
+            <Component Id="cmp7D5834C583B9F5DA0621DE7ECCC9CE7F" Guid="{65331979-32B8-4558-A178-D78260952599}">
                 <File Id="fil9F07C0231A0F6AC09C41EF40191D0D6D" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.exe" />
             </Component>
-            <Component Id="cmpF6508FBC3A59C1BBE374BCB6D63AFB13" Guid="{70FFC7CB-A4C7-429E-BA85-7A8D253CF2A0}">
+            <Component Id="cmpF6508FBC3A59C1BBE374BCB6D63AFB13" Guid="{C8F28476-8211-4EA7-9DB7-B0FD52F8183E}">
                 <File Id="filE77499D1A8EAAA1AAE0176979A924757" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.exe.config" />
             </Component>
-            <Component Id="cmp7184790D29EB289B2DBA12E8F1714A96" Guid="{C30CF78D-264A-407D-833A-499229D2B6EE}">
+            <Component Id="cmp7184790D29EB289B2DBA12E8F1714A96" Guid="{8AA240D4-5C7C-432C-A49C-DC8EE4F78668}">
                 <File Id="fil40C6ABD8D00DDBA5BCC205590223E274" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.IO.dll" />
             </Component>
-            <Component Id="cmp88E7E8D7FF6D7CA72A566A31A5C64F5E" Guid="{E5152F99-776D-436D-985C-30758DAFE715}">
+            <Component Id="cmp88E7E8D7FF6D7CA72A566A31A5C64F5E" Guid="{1BDC6D00-00ED-4201-8A7E-1BCF07C23742}">
                 <File Id="filB86FA111EFC39B7AB75EA6C350855BA7" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.IO.pdb" />
             </Component>
-            <Component Id="cmpE73A8E21821CB5184972AD58644DDFCA" Guid="{7EFB1B10-FE8E-4781-80A1-662421EED71D}">
+            <Component Id="cmpE73A8E21821CB5184972AD58644DDFCA" Guid="{02312959-688A-4AAF-8938-4E30DB74D5F1}">
                 <File Id="fil9628BD31A6D53B29A298E2B9B6A0924A" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Localization.dll" />
             </Component>
-            <Component Id="cmpA60E6C71588F0C7148A046EF9B78D129" Guid="{5A313B22-3D73-4903-B1FA-2E57593155B4}">
+            <Component Id="cmpA60E6C71588F0C7148A046EF9B78D129" Guid="{DAE43ADF-457A-449A-B6EC-2DFFB80BA3A9}">
                 <File Id="fil979FF46970D47AC5BFFBC12FD3CC5044" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Localization.pdb" />
             </Component>
-            <Component Id="cmp2D48773C8BC10C26A92B230834602E20" Guid="{00BC58EB-84AD-497C-AE42-D0BA9083D680}">
+            <Component Id="cmp2D48773C8BC10C26A92B230834602E20" Guid="{18C9767C-69E8-43E6-B833-01F3B9877FA1}">
                 <File Id="filF670BC4649D408A3120CBD0956797550" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.pdb" />
             </Component>
-            <Component Id="cmp3DD9D7A92EA9A807E81D1B516A53C0E2" Guid="{F2F56799-4C44-4BD7-B0A6-13D3D8DD87E1}">
+            <Component Id="cmp3DD9D7A92EA9A807E81D1B516A53C0E2" Guid="{5EC9D348-C08E-4221-A21C-AE1EF4CFB57D}">
                 <File Id="filBB2A89919C7106B0AFEF4388BA2E7AA4" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Query.dll" />
             </Component>
-            <Component Id="cmpBCE0C8295604E855376466BD8A0EAA05" Guid="{5FC04163-5AB0-45E5-B68D-0A400D558B0E}">
+            <Component Id="cmpBCE0C8295604E855376466BD8A0EAA05" Guid="{EA749F44-331E-444B-A72D-AD0DAC60CABF}">
                 <File Id="filA24E5B2DE9D0DC16EBAE2ECB74146471" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.Query.pdb" />
             </Component>
-            <Component Id="cmpCD95BE695A88F4BF026AABC415931EE9" Guid="{854D63A8-7ACD-4EE1-9D74-2C1FDE6609F4}">
+            <Component Id="cmpCD95BE695A88F4BF026AABC415931EE9" Guid="{9903BECD-65C4-4D97-A80B-4E451CC95E4F}">
                 <File Id="fil0BEB104792302E4C67A6F6B512D97567" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.QueryRuntime.dll" />
             </Component>
-            <Component Id="cmp154CEDDEA03E3D2A69519E50E775B21A" Guid="{B69D4B54-251F-4627-9E2C-551731D85D06}">
+            <Component Id="cmp154CEDDEA03E3D2A69519E50E775B21A" Guid="{366E7FA4-4F18-4944-B015-E7107EF0E5A6}">
                 <File Id="filE56DE0BF9E909C098CE63057D9D3E6D5" KeyPath="yes" Source="$(var.BINFOLDER)\Viewer.QueryRuntime.pdb" />
             </Component>
-            <Component Id="cmpB830A132F9B65B4871085DAC9DE1ADE2" Guid="{FB053120-7CBC-488C-9D22-34BBF2C072FE}">
+            <Component Id="cmpB830A132F9B65B4871085DAC9DE1ADE2" Guid="{C0E055AD-8C49-479E-A45F-F899F77CFCF9}">
                 <File Id="fil21551399940EED76C34A4E0C7D653E98" KeyPath="yes" Source="$(var.BINFOLDER)\ViewerTheme.dll" />
             </Component>
-            <Component Id="cmp445999E448019D092BB9CA070BE7A097" Guid="{4132ACB7-DA73-44DE-9565-27BB87753491}">
+            <Component Id="cmp445999E448019D092BB9CA070BE7A097" Guid="{4624EDB6-2EF2-4CDD-8E78-CC1279D151A7}">
                 <File Id="filB5A925C79EE04FB358E6A93719A8823F" KeyPath="yes" Source="$(var.BINFOLDER)\ViewerTheme.pdb" />
             </Component>
-            <Component Id="cmp2C9ADE433A5BF4F58225CCF53E6E4CF8" Guid="{00A4D2B0-3162-40D5-878B-4B5FFBE7B39B}">
+            <Component Id="cmp2C9ADE433A5BF4F58225CCF53E6E4CF8" Guid="{E1440AC9-4A8C-405E-A597-2D8DD9E40F8B}">
                 <File Id="filC0D8F251E1F2B460F224CE244ACA81F1" KeyPath="yes" Source="$(var.BINFOLDER)\WeifenLuo.WinFormsUI.Docking.dll" />
             </Component>
-            <Component Id="cmpAB067D8F5470E21393A8E5750355C312" Guid="{3EFCB396-4577-403E-AE24-A8172B6EDEE9}">
+            <Component Id="cmpAB067D8F5470E21393A8E5750355C312" Guid="{B1F707FA-F109-4F78-B582-F7BC8F430225}">
                 <File Id="filC9218B16CCA3B5408C404B3A7004CD7A" KeyPath="yes" Source="$(var.BINFOLDER)\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll" />
             </Component>
-            <Component Id="cmp7AAD167AF28B00F512B8879F3F0BD93D" Guid="{B0F807A5-E455-4386-B616-8BA59A9B48EF}">
+            <Component Id="cmp7AAD167AF28B00F512B8879F3F0BD93D" Guid="{CACF6EE2-25F4-447B-A7D2-35424C677E24}">
                 <File Id="fil828A7A54ACD0C302B49084D6AD7070D1" KeyPath="yes" Source="$(var.BINFOLDER)\XmpCore.dll" />
             </Component>
-            <Component Id="cmpB3302151149074E9D3D36DDBC64433DD" Guid="{AEB0F9F3-94B2-4948-87D4-A06DE7322835}">
+            <Component Id="cmpB3302151149074E9D3D36DDBC64433DD" Guid="{40877527-EC79-451C-9CBB-7E7D0AB41C11}">
                 <File Id="fil35A8596B82B9221AF5472AC45F3A76EB" KeyPath="yes" Source="$(var.BINFOLDER)\XmpCore.xml" />
             </Component>
             <Directory Id="dir791ABF1D2FEEAD8C04621A25883F0C36" Name="af">
-                <Component Id="cmp23E32C27BAB4EACD847B93AD6632F7DC" Guid="{7B580E5B-E007-4A30-9837-33BB121D8911}">
+                <Component Id="cmp23E32C27BAB4EACD847B93AD6632F7DC" Guid="{BDFDC207-E4EA-4D34-999E-E1B0340B2538}">
                     <File Id="filDA0E073AFCF5156626DE25E7489C2B8C" KeyPath="yes" Source="$(var.BINFOLDER)\af\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir287BEF6301389D2501D7D15A87596D90" Name="ar">
-                <Component Id="cmp6FD3C7A6B225F1F918F24646E1F94EAA" Guid="{A4414604-7231-47DE-B4BA-30B80CA5EAEF}">
+                <Component Id="cmp6FD3C7A6B225F1F918F24646E1F94EAA" Guid="{7AA926FF-BDCC-4A49-9E83-B67D3852BA86}">
                     <File Id="fil0F2688D9ADDE8AF4D7F72B27CFFD3268" KeyPath="yes" Source="$(var.BINFOLDER)\ar\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir56DB19803B9C53B60887781C0DAB6731" Name="bg">
-                <Component Id="cmp0CF58B27635FE279C15D738C315FE33C" Guid="{DFB9B3E4-D7F8-45E9-A51C-2D2D284816AF}">
+                <Component Id="cmp0CF58B27635FE279C15D738C315FE33C" Guid="{7BA69D79-3E72-412B-8917-1448480A26FA}">
                     <File Id="fil2D46609134098A6667A89199C3F616B6" KeyPath="yes" Source="$(var.BINFOLDER)\bg\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir1176E530533C7DF436AD268A52F68549" Name="bn-BD">
-                <Component Id="cmp2C676C65E07616E26F2ECB3BD4BFC7B0" Guid="{4CC37919-9667-4CB3-8FFB-9AB1FD5E68A5}">
+                <Component Id="cmp2C676C65E07616E26F2ECB3BD4BFC7B0" Guid="{6A0A901B-2C55-4681-9692-01E612C8FA9D}">
                     <File Id="fil4C89143EAD079D43D2A532EA995D5E51" KeyPath="yes" Source="$(var.BINFOLDER)\bn-BD\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirB15F4604371D144EAEEAD44FE901D873" Name="cs">
-                <Component Id="cmp14FDBDADBCE1C9CA53B0E3C85FA009D6" Guid="{A15CA338-40E2-49CF-98C7-8A64965A3A4C}">
+                <Component Id="cmp14FDBDADBCE1C9CA53B0E3C85FA009D6" Guid="{0A5F655F-6637-4BB1-91FE-42D8106FE26D}">
                     <File Id="fil660F0ABC88B772ACD63E881AE476B5B5" KeyPath="yes" Source="$(var.BINFOLDER)\cs\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir685A0806E2E8E14FA0BEED541D816845" Name="cs-CZ">
-                <Component Id="cmpABA104EDB91FB421181BD3D1E94BC878" Guid="{FE65CB4F-06B8-4AEB-B03A-A744AFC07B7D}">
+                <Component Id="cmpABA104EDB91FB421181BD3D1E94BC878" Guid="{B4AB0B10-11B0-4A76-B684-EC2C0A9DD877}">
                     <File Id="filEE54636C5324C586314AB9C46E17418A" KeyPath="yes" Source="$(var.BINFOLDER)\cs-CZ\Viewer.Localization.resources.dll" />
                 </Component>
-                <Component Id="cmp9A0EB75CE787AB9C013688539A922C93" Guid="{33DF92B2-775A-4928-9D90-DA5654647FB7}">
+                <Component Id="cmp9A0EB75CE787AB9C013688539A922C93" Guid="{8200D693-F14B-4148-B883-9FB05F28F881}">
                     <File Id="fil191FB4F6583D2A1E0DD4D156A2D58DC2" KeyPath="yes" Source="$(var.BINFOLDER)\cs-CZ\Viewer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirD14FC8A823A878E4AF0649EA144442B1" Name="da">
-                <Component Id="cmpB5330145DB0BC3567B79DD57CE9A5642" Guid="{5E373D02-BCDC-4D77-B155-E2C92254A59D}">
+                <Component Id="cmpB5330145DB0BC3567B79DD57CE9A5642" Guid="{0903F256-B687-4495-8C28-52F7FCF74C62}">
                     <File Id="fil29F5F0FE99ECAD9D3F301DC3C127FEA5" KeyPath="yes" Source="$(var.BINFOLDER)\da\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir242DC17B8DFC53C13CAF172FC08B730A" Name="de">
-                <Component Id="cmp745772A8F68D56992B915A39EA16ECF9" Guid="{3CD56B83-32C7-4C68-B7E8-7AB6FDA384BE}">
+                <Component Id="cmp745772A8F68D56992B915A39EA16ECF9" Guid="{17F58C02-6A8D-470C-A4C7-88D27AD77D18}">
                     <File Id="fil13DA0B8CDAC1967B701DF9A2C982F0D9" KeyPath="yes" Source="$(var.BINFOLDER)\de\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir63D4F0012B1C816B5E32F1DC4F29A909" Name="el">
-                <Component Id="cmpD7D0218940E2303A2FACC24B5CC75855" Guid="{71040D48-3A02-4FE4-8EFB-DA247BE08E40}">
+                <Component Id="cmpD7D0218940E2303A2FACC24B5CC75855" Guid="{4E690F2B-8D7A-4569-991C-CC344CCA0E93}">
                     <File Id="fil57495453BFB8D2E99095C3C56FF62362" KeyPath="yes" Source="$(var.BINFOLDER)\el\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir9AE38F4F5CB5E565E774521E138F44FD" Name="es">
-                <Component Id="cmp8292E538BE891C5DAF3E32853DCCB945" Guid="{4C459F8F-37CC-4D0B-9D66-9BB3D093DC81}">
+                <Component Id="cmp8292E538BE891C5DAF3E32853DCCB945" Guid="{597867C1-96ED-4206-848B-E13DE48D73F4}">
                     <File Id="fil5730611DB469C626C4D4BAF9DC6B9498" KeyPath="yes" Source="$(var.BINFOLDER)\es\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirE645CF78C2D071742BC4B8A6FBD56FD6" Name="fa">
-                <Component Id="cmp4CDC57F13F13244A9E00B5502725B5DF" Guid="{1A5BA266-6DDC-4277-A820-BE59B1EC8F04}">
+                <Component Id="cmp4CDC57F13F13244A9E00B5502725B5DF" Guid="{B52D705C-819C-4BD3-A041-81C911087CFF}">
                     <File Id="fil297BE66D67BBD9C24C46E87159BB1F4A" KeyPath="yes" Source="$(var.BINFOLDER)\fa\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirA9B029A8243C2F241FDE95930E4A7493" Name="fi-FI">
-                <Component Id="cmp3D23E97307471D86D088D5B166022D9D" Guid="{3FCA2616-4C66-4254-AB27-4BF1F784177E}">
+                <Component Id="cmp3D23E97307471D86D088D5B166022D9D" Guid="{054D2884-0C87-4B41-AADA-8754C41A98CA}">
                     <File Id="fil66B476CD9F3CAF20FC41D2C1BCB7AD2A" KeyPath="yes" Source="$(var.BINFOLDER)\fi-FI\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirB55DFDA91FEE7CCCBC65CA7493B75748" Name="fr">
-                <Component Id="cmpB4E5AE32A1B0FCC460ACAFCF8EF3F746" Guid="{E1409AA5-2A4A-4CA3-A71C-29DC48267249}">
+                <Component Id="cmpB4E5AE32A1B0FCC460ACAFCF8EF3F746" Guid="{B54AD139-3A3C-4E1E-A122-3388BB77A7BB}">
                     <File Id="fil20469A00AA7CAA6334B8CF8E20ABB48F" KeyPath="yes" Source="$(var.BINFOLDER)\fr\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir63F77E163272488A7B0FBB01A0C14732" Name="fr-BE">
-                <Component Id="cmpB72D8A0721BABB6D3DF88282C2318361" Guid="{666E4769-5CEE-4F09-974D-6157B01626E5}">
+                <Component Id="cmpB72D8A0721BABB6D3DF88282C2318361" Guid="{7603208C-1F5B-4A3B-94A0-E2A4432BD815}">
                     <File Id="fil8CE83EF24B39B4E6322EC26E7912496B" KeyPath="yes" Source="$(var.BINFOLDER)\fr-BE\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirAF9B04ABC40C29C61683FA9B52965075" Name="he">
-                <Component Id="cmpD1866615A09502CD160C9E5D9203C810" Guid="{4FE9CF48-FA58-4505-A668-A4B3E967FCD7}">
+                <Component Id="cmpD1866615A09502CD160C9E5D9203C810" Guid="{8DEA71B4-6440-49BF-B96B-B41E43D92CC3}">
                     <File Id="filD9A9BAB4700F1F9058F9D7BBA434052A" KeyPath="yes" Source="$(var.BINFOLDER)\he\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirAE28C7719AD45E618800F20CD83A6124" Name="hr">
-                <Component Id="cmpA9B4C985F09ABD72D98F332C261A4955" Guid="{5BC73BAC-AE74-4BF5-A29A-4449A8E256B5}">
+                <Component Id="cmpA9B4C985F09ABD72D98F332C261A4955" Guid="{699BBC94-EE5B-42E4-977D-BD6FE0CBE249}">
                     <File Id="fil7DC4686115A9FBBBEC0ABE4AD3E595B3" KeyPath="yes" Source="$(var.BINFOLDER)\hr\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir937629FDAC3D30087170D6DA46E383A6" Name="hu">
-                <Component Id="cmpC4A9C9FDF901C228B0A39C070DD8CDAA" Guid="{4B90ABF6-5E8D-4F36-A886-6F1F91D3C205}">
+                <Component Id="cmpC4A9C9FDF901C228B0A39C070DD8CDAA" Guid="{C901A106-C1C4-49A6-BB82-F0342739D6BE}">
                     <File Id="filCDFF1414F6ED86E71CF97B72173DB8AD" KeyPath="yes" Source="$(var.BINFOLDER)\hu\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirFBFFC85CCB1C4091C73E9779ED1972BA" Name="id">
-                <Component Id="cmp7E187B00260DB33BF26B87F118285A4B" Guid="{544C1756-9448-4406-B4D6-9FB424599DC0}">
+                <Component Id="cmp7E187B00260DB33BF26B87F118285A4B" Guid="{19E1D018-B1C6-4A00-A9BB-5754F585E097}">
                     <File Id="filB6F26A97526A6B8DA1D3462A1E634E6C" KeyPath="yes" Source="$(var.BINFOLDER)\id\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir45DE18DD71F3E8DD6BE4A0E2B48778C8" Name="it">
-                <Component Id="cmp164E27F37A9F5FCD01C43892683473DC" Guid="{6EF55C37-E029-4186-8C0E-164B98FDFACC}">
+                <Component Id="cmp164E27F37A9F5FCD01C43892683473DC" Guid="{389B3C34-E013-4625-9343-EF8475C0824D}">
                     <File Id="filC8B2456E49564B6BE9A6EA41CFAE6C23" KeyPath="yes" Source="$(var.BINFOLDER)\it\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir997B58958EFAE06BB705E870622AB899" Name="ja">
-                <Component Id="cmp564E0D46202A691863A406818979DB4E" Guid="{D110C3F8-7095-4712-ABD8-6DCFF9B93B95}">
+                <Component Id="cmp564E0D46202A691863A406818979DB4E" Guid="{E16F6039-E5C3-4215-B7A4-E796FFEC4EEF}">
                     <File Id="fil09F9B8835E72BADF5B2028394E6C9EE4" KeyPath="yes" Source="$(var.BINFOLDER)\ja\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir828B0244BE63EA42813A9D05DF5646B9" Name="lv">
-                <Component Id="cmp4F09D772109230C926271F1A81B2A069" Guid="{21FE9356-46E4-4A77-9CA5-7D84EFFA17D6}">
+                <Component Id="cmp4F09D772109230C926271F1A81B2A069" Guid="{DD0D1D3F-D759-433D-B996-7B52658831BC}">
                     <File Id="filFE1F4DE462102FFEA6A6B0A7BED3D576" KeyPath="yes" Source="$(var.BINFOLDER)\lv\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir7B9F03B14B526DA62318E7D77ECBB1F7" Name="ms-MY">
-                <Component Id="cmp0F9928EB8EF475591DEBD01EFEE7CEB6" Guid="{318C30DC-238D-4568-B668-9B7576E57DEA}">
+                <Component Id="cmp0F9928EB8EF475591DEBD01EFEE7CEB6" Guid="{4505A7D6-D76F-4156-8494-B4807176517E}">
                     <File Id="fil971BA13519501C12005852DEF4913EA4" KeyPath="yes" Source="$(var.BINFOLDER)\ms-MY\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir999E29DC2E8F53D3A7DC3ABF29EF2714" Name="mt">
-                <Component Id="cmpBD531525146B4EA4E3709F1088E45BED" Guid="{3FC5F969-8310-4CF5-BD93-8E1EE9917F12}">
+                <Component Id="cmpBD531525146B4EA4E3709F1088E45BED" Guid="{F17D4FE2-E850-44C8-A49D-A3B748DAABB1}">
                     <File Id="filC502B4C90B6B519EA27327DA7DBDC763" KeyPath="yes" Source="$(var.BINFOLDER)\mt\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir1DA6929077756CF515D849B2715177B4" Name="nb">
-                <Component Id="cmpAE5D487D3D2207C8EA734C2E54F41819" Guid="{EE6C225B-3745-412F-AFE2-31590636BAE1}">
+                <Component Id="cmpAE5D487D3D2207C8EA734C2E54F41819" Guid="{E65EEAF5-64CD-4D97-9F44-CA361C33CE76}">
                     <File Id="fil4FBFCB4204A1747BEFDB0C40C236793C" KeyPath="yes" Source="$(var.BINFOLDER)\nb\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirDAB6B60FBDEAE527E832ED82CFC20982" Name="nb-NO">
-                <Component Id="cmpA4533E83BF762E193C8541941FA42291" Guid="{D207D4B6-8D39-4C38-AD45-5FE939FB243A}">
+                <Component Id="cmpA4533E83BF762E193C8541941FA42291" Guid="{A2F0FD7B-4792-4EEB-B814-D61830396208}">
                     <File Id="filEB6562AFB9D61077FE3B383404AE6218" KeyPath="yes" Source="$(var.BINFOLDER)\nb-NO\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir2F3D431E0ED26930C4D37E679C7700A1" Name="nl">
-                <Component Id="cmp5603520B6F3491F3299BB8ED37944BC1" Guid="{48478326-96A0-424D-966D-4242C544B5AE}">
+                <Component Id="cmp5603520B6F3491F3299BB8ED37944BC1" Guid="{4BB8DE07-2965-40ED-8ECD-88C05A5C5447}">
                     <File Id="filC7B3CFB03119BAAB970AC56D72CBA096" KeyPath="yes" Source="$(var.BINFOLDER)\nl\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirB6C57608593BDEA87B90E388CF59E0E8" Name="pl">
-                <Component Id="cmp8C8D37A82C4899DA10A44714FE4D6D3D" Guid="{A43D87EF-631F-48A0-A00B-FA1CAB4FBE17}">
+                <Component Id="cmp8C8D37A82C4899DA10A44714FE4D6D3D" Guid="{3508B1AA-F047-485C-B03E-DBCC136F2C29}">
                     <File Id="filE184681EAFB2C2AADC00150E93178C11" KeyPath="yes" Source="$(var.BINFOLDER)\pl\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir8606A94F8723F2ACAF42032E593433C7" Name="pt">
-                <Component Id="cmp5659458763485967CDEA0588B63B7199" Guid="{0E8357FB-DEA3-412D-BE45-5ED55344E0D8}">
+                <Component Id="cmp5659458763485967CDEA0588B63B7199" Guid="{EFBC2288-E24F-4830-BBA5-ED3A39F4C174}">
                     <File Id="fil28346681164BE2DCC9EBD7E6EFB40AAE" KeyPath="yes" Source="$(var.BINFOLDER)\pt\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirBD3668345143F8EFDFB86A9B73810966" Name="ro">
-                <Component Id="cmp4082860774CFCB730950271C43CF7A13" Guid="{197F0098-02FF-4F0C-8E28-F51DD6168DF9}">
+                <Component Id="cmp4082860774CFCB730950271C43CF7A13" Guid="{CEF78997-2F53-4C40-ABDB-9F56434037BA}">
                     <File Id="filB8077D945F0197B070956888ECEEE02A" KeyPath="yes" Source="$(var.BINFOLDER)\ro\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirE9205C68F964857267FD3312DBFF9A91" Name="ru">
-                <Component Id="cmpDB692B58E595EAEC3D11A935EE526138" Guid="{3AF10705-98C5-4BE7-8B6C-E730CB6DFA07}">
+                <Component Id="cmpDB692B58E595EAEC3D11A935EE526138" Guid="{C7DCCE9F-BDAE-40DB-8EE3-DF43B4D45026}">
                     <File Id="fil9ECD78DD53254A14A8E728522541C726" KeyPath="yes" Source="$(var.BINFOLDER)\ru\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir52134E8375A906043BC963526BFBD7F7" Name="sk">
-                <Component Id="cmpA9C4E0523207686EB6C3F78E3CA27D7B" Guid="{DC41A027-E9B4-4CC8-88BF-D9681579420A}">
+                <Component Id="cmpA9C4E0523207686EB6C3F78E3CA27D7B" Guid="{0D5FDAD6-09A8-4EEE-80EE-1311D987676B}">
                     <File Id="fil1339F228733BED20C73418049066514E" KeyPath="yes" Source="$(var.BINFOLDER)\sk\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirCEA940D2386E504E20828FF8234F4959" Name="sl">
-                <Component Id="cmpA631EDA827FA79E345A87FC079F45837" Guid="{19E4EB9E-649A-4D0C-974C-057B16B7B84D}">
+                <Component Id="cmpA631EDA827FA79E345A87FC079F45837" Guid="{1B7639F4-D169-49A8-A8F4-5458F62C8769}">
                     <File Id="fil1335F208DA57F31B166A13A16B9C2E4B" KeyPath="yes" Source="$(var.BINFOLDER)\sl\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir038C32ABC6CA03746E6F35674B507F47" Name="sr">
-                <Component Id="cmpBA6429CFD725170C043BBA38245E358D" Guid="{9B0598D9-419B-4DFD-AC0F-7E77E43ACFFA}">
+                <Component Id="cmpBA6429CFD725170C043BBA38245E358D" Guid="{26BF1EDA-AB5E-4826-8C1E-566B1446EBB2}">
                     <File Id="fil0851608A8A0878985DA19BD72992E1E4" KeyPath="yes" Source="$(var.BINFOLDER)\sr\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirF1230D6A92702AB59333984C580F7B8E" Name="sr-Latn">
-                <Component Id="cmpA2FD4637AE6B87AB56AD55172A98B560" Guid="{08B5145A-40D7-4C87-BD05-EAAACD5FDA1A}">
+                <Component Id="cmpA2FD4637AE6B87AB56AD55172A98B560" Guid="{3D1A3992-9A15-415B-9CEE-584B4D7B43FD}">
                     <File Id="filABAC6392C1168EB45B7205B9C90DDA1A" KeyPath="yes" Source="$(var.BINFOLDER)\sr-Latn\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir8FBB04D7AB5FE55FCF40758128EC763E" Name="sv">
-                <Component Id="cmp3E47D0E2EFB7DEA03434F31108F1FAE8" Guid="{BAB89091-031E-468A-B7AB-018F285966B5}">
+                <Component Id="cmp3E47D0E2EFB7DEA03434F31108F1FAE8" Guid="{DFB71FBD-72FF-4C2F-B7D2-AF6826AE6F47}">
                     <File Id="fil1B50CD9301F87F3A631BF5C3DA432471" KeyPath="yes" Source="$(var.BINFOLDER)\sv\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirE562A4656FE03253EA39D17E8127BA05" Name="tr">
-                <Component Id="cmp0526DEAC2E43414AA4127B08C959E108" Guid="{2DF10D78-2885-4E49-A7AE-D71FA7CD0DE9}">
+                <Component Id="cmp0526DEAC2E43414AA4127B08C959E108" Guid="{0A134530-6F16-49A5-A582-D7D527D5AA58}">
                     <File Id="filD3C39D43009AB71084F4BE40CA0F8A87" KeyPath="yes" Source="$(var.BINFOLDER)\tr\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir49E41568669FD5F0DE03453A9AD8341A" Name="uk">
-                <Component Id="cmpB1B6066DF4F4D302BFF19CFCE85E1002" Guid="{1AD88640-1A0F-4B9F-87EC-1ECBD43A9A11}">
+                <Component Id="cmpB1B6066DF4F4D302BFF19CFCE85E1002" Guid="{41D08B27-9F62-4121-8E93-D1C21C3FEE23}">
                     <File Id="fil33E249BB9D79B2A6B6264C0EE6300024" KeyPath="yes" Source="$(var.BINFOLDER)\uk\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirC9DC3F510F8359A51446B83FB730F57A" Name="uz-Cyrl-UZ">
-                <Component Id="cmp52CCD178B6A4C7EB078D1173B0AA3CAB" Guid="{7C631A54-CCD7-4120-BA55-7D471B1B668D}">
+                <Component Id="cmp52CCD178B6A4C7EB078D1173B0AA3CAB" Guid="{5EA0C1F7-2719-4C6F-8EF5-5A89B30494E5}">
                     <File Id="fil6C80374D43319AD29E4DD9D434E153E8" KeyPath="yes" Source="$(var.BINFOLDER)\uz-Cyrl-UZ\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir598534A9A725378241C7A1558C1841A7" Name="uz-Latn-UZ">
-                <Component Id="cmpCFE9C3C1DCB5AD29D202694C10982A97" Guid="{29CE650E-69F1-4BCF-8516-C460EBCA1C15}">
+                <Component Id="cmpCFE9C3C1DCB5AD29D202694C10982A97" Guid="{1A8174EE-D3F0-44A8-9251-DCF7E8D44410}">
                     <File Id="filAE64B7F0BD9038300156D80E711FB882" KeyPath="yes" Source="$(var.BINFOLDER)\uz-Latn-UZ\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dirC166903D3DBB1340FEE2407E20E6ADBD" Name="vi">
-                <Component Id="cmpADFC3934BA3AD26BEDBC438ACEE773A3" Guid="{25A9DD1F-A1B0-483D-8A1F-7780063AD123}">
+                <Component Id="cmpADFC3934BA3AD26BEDBC438ACEE773A3" Guid="{AFD19C6D-8853-4687-A633-7CEE4ED87838}">
                     <File Id="fil36BFA1D4E7B8F159F20CE0298971C0BB" KeyPath="yes" Source="$(var.BINFOLDER)\vi\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir43FCCFA109FBF584D9155DCE31E452EB" Name="x64">
-                <Component Id="cmp6420F3C500BCEC22F485A87C1A85B7F4" Guid="{92C14232-EE45-4A7A-8E2E-F100E47B3268}">
+                <Component Id="cmp6420F3C500BCEC22F485A87C1A85B7F4" Guid="{B95D8C58-7287-4416-84BB-2D66A4452731}">
                     <File Id="fil833DA0C23169EFBB3B6C3F1E23A7BB7E" KeyPath="yes" Source="$(var.BINFOLDER)\x64\libSkiaSharp.dll" />
                 </Component>
-                <Component Id="cmp19F6DF8A2ABC78D782D76F1EEC9A5800" Guid="{28D0E8B7-6C35-463E-A860-3D6EB4E65457}">
+                <Component Id="cmp19F6DF8A2ABC78D782D76F1EEC9A5800" Guid="{5BB56335-3714-4435-8B88-B271253C2E90}">
                     <File Id="filC7EA62E1AC64247AFBE682E8631402B8" KeyPath="yes" Source="$(var.BINFOLDER)\x64\SQLite.Interop.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir97F42FF68945B97AAE670945C4FDAE93" Name="x86">
-                <Component Id="cmpB7AE8D67A9DB4F798023D569BD88EC71" Guid="{B479335B-EAD8-435F-A546-95A3C925C9C0}">
+                <Component Id="cmpB7AE8D67A9DB4F798023D569BD88EC71" Guid="{9CEEB2C9-DDEA-4139-9157-A3C6D31D3D84}">
                     <File Id="fil847275AE75F2F6B8498511A1253B3C44" KeyPath="yes" Source="$(var.BINFOLDER)\x86\libSkiaSharp.dll" />
                 </Component>
-                <Component Id="cmp77484AF39EF2F8BD64E876C33A1C3E49" Guid="{A102B11A-1B15-4038-8F72-2D931E4C5BED}">
+                <Component Id="cmp77484AF39EF2F8BD64E876C33A1C3E49" Guid="{652EA07E-86FF-45C2-B6BB-9CA83A56932A}">
                     <File Id="filD2ACACD0EBAF09B1953E9C3793C13C69" KeyPath="yes" Source="$(var.BINFOLDER)\x86\SQLite.Interop.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir8C5E37FA87D1897FFB78337F53EB198C" Name="zh-CN">
-                <Component Id="cmp9FC410AFD8C3A34D91BD0DEB9F1BD1BB" Guid="{90C10BA6-B69D-4197-9FA9-4F0AA6E890BD}">
+                <Component Id="cmp9FC410AFD8C3A34D91BD0DEB9F1BD1BB" Guid="{B94488CE-0B60-4585-8A29-A6C0C9859EFF}">
                     <File Id="filAAB60BFE00E6B20A247581769FFD8B43" KeyPath="yes" Source="$(var.BINFOLDER)\zh-CN\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir4A8DD77DBC79775EC39CACBC8AA06107" Name="zh-Hans">
-                <Component Id="cmpF9D22E15627F6872D9270B964C77FE8B" Guid="{0B50D421-0051-40D4-AA11-B1CEB098E4BB}">
+                <Component Id="cmpF9D22E15627F6872D9270B964C77FE8B" Guid="{C42262BD-ED91-46AD-83E8-C7535CDEF3C8}">
                     <File Id="fil0277F5D2F916804DCF3ADD0A1D988289" KeyPath="yes" Source="$(var.BINFOLDER)\zh-Hans\Humanizer.resources.dll" />
                 </Component>
             </Directory>
             <Directory Id="dir083BC4C92455CD933FA93376E7459C85" Name="zh-Hant">
-                <Component Id="cmpD85A5036D63670654932513EA643F115" Guid="{FF85910B-489A-4F6C-8FF6-A9DF35E7961C}">
+                <Component Id="cmpD85A5036D63670654932513EA643F115" Guid="{BC9291B4-A3BA-43B4-8D00-A94ED1C70A60}">
                     <File Id="fil40204EADFE2DBB73BC50392A7A729672" KeyPath="yes" Source="$(var.BINFOLDER)\zh-Hant\Humanizer.resources.dll" />
                 </Component>
             </Directory>

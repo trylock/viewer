@@ -47,7 +47,7 @@ namespace Viewer.Data.Formats.Jpeg
                     }
                     
                     tmpFileName = filePath + ".tmp." + number;
-                    input = new FileStream(tmpFileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+                    input = new FileStream(tmpFileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read, 1 << 16);
                     break;
                 }
                 catch (IOException)
@@ -55,6 +55,7 @@ namespace Viewer.Data.Formats.Jpeg
                     // generate a new name
                 }
             }
+            
             long expectedLength = new FileInfo(filePath).Length;
             input.SetLength(expectedLength);
             return new JpegSegmentWriter(new BinaryWriter(input));

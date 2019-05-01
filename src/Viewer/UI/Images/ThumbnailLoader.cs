@@ -4,11 +4,16 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.ConcurrencyVisualizer.Instrumentation;
+using Microsoft.VisualBasic.ApplicationServices;
+using PhotoSauce.MagicScaler;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using Viewer.Data;
@@ -167,8 +172,8 @@ namespace Viewer.UI.Images
         /// Quality of thumbnails saved to the cache storage. This number has to be between 0 and
         /// 100. See <see cref="SKPixmap.Encode(SKWStream, SKBitmap, SKEncodedImageFormat, int)"/>
         /// </summary>
-        public const int SavedThumbnailQuaity = 75;
-
+        public const int SavedThumbnailQuality = 80;
+        
         [ImportingConstructor]
         public ThumbnailLoader(
             IImageLoader imageLoader, 
@@ -193,29 +198,20 @@ namespace Viewer.UI.Images
             return LoadEmbeddedThumbnailAsyncImpl(entity, thumbnailAreaSize, cancellationToken);
         }
 
-        private async Task<Thumbnail> LoadEmbeddedThumbnailAsyncImpl(
+        private Task<Thumbnail> LoadEmbeddedThumbnailAsyncImpl(
             IEntity entity, 
             Size thumbnailAreaSize, 
             CancellationToken cancellationToken)
         {
-            using (var image = await _imageLoader.LoadThumbnailAsync(entity, cancellationToken)
-                .ConfigureAwait(false))
+            var data = entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail);
+            if (data == null)
             {
-                // the entity does not have an embedded thumbnail
-                if (image == null)
-                {
-                    return new Thumbnail(null, Size.Empty);
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                // the entity does have an embedded thumbnail
-                using (var thumbnail = _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize))
-                {
-                    var imageSize = new Size(image.Width, image.Height);
-                    return new Thumbnail(thumbnail.ToBitmap(), imageSize);
-                }
+                return Task.FromResult(new Thumbnail(null, Size.Empty));
             }
+
+            return Task.Run(
+                () => Process(data.Value, thumbnailAreaSize, entity, false), 
+                cancellationToken);
         }
         
         public Task<Thumbnail> LoadNativeThumbnailAsync(
@@ -238,6 +234,53 @@ namespace Viewer.UI.Images
         }
 
         /// <summary>
+        /// Decode and resize <paramref name="encodedData"/> so that it fits in
+        /// <paramref name="thumbnailAreaSize"/> but preserves its aspect ratio.
+        /// </summary>
+        /// <param name="encodedData">Encoded image data</param>
+        /// <param name="thumbnailAreaSize">Size of the are for thumbnail</param>
+        /// <returns>Processed thumbnail image</returns>
+        private Thumbnail Process(byte[] encodedData, Size thumbnailAreaSize, IEntity entity, bool save)
+        {
+            using (var input = new MemoryStream(encodedData))
+            {
+                // read image metadata
+                var info = new ImageFileInfo(input);
+                Size original = Size.Empty;
+                if (info.Frames.Length > 0)
+                {
+                    original.Width = info.Frames[0].Width;
+                    original.Height = info.Frames[0].Height;
+                }
+
+                input.Position = 0;
+
+                // create thumbnail image
+                var decoded = _imageLoader.Decode(entity, input, thumbnailAreaSize);
+                try
+                {
+                    // save processed thumbnail
+                    if (save)
+                    {
+                        using (var data = new MemoryStream())
+                        {
+                            decoded.Save(data, ImageFormat.Bmp);
+                            SaveThumbnail(entity, data.ToArray());
+                        }
+                    }
+
+                    // Create thumbnail wrapper
+                    return new Thumbnail(decoded, original);
+                }
+                catch (Exception)
+                {
+                    decoded.Dispose();
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
         /// Load content of an image file synchronously and then decode it asynchronously.
         /// This method blocks until _loaderCount is available.
         /// </summary>
@@ -249,7 +292,11 @@ namespace Viewer.UI.Images
             LoadRequest req = null;
             try
             {
-                req = ConsumeLoadRequest();
+                using (var span = Markers.EnterSpan("Waiting for request"))
+                {
+                    req = ConsumeLoadRequest();
+                }
+
                 Trace.Assert(req != null);
                 if (req.Cancellation.IsCancellationRequested)
                 {
@@ -258,13 +305,20 @@ namespace Viewer.UI.Images
                 }
 
                 // this memory is going to end up on LOH
-                var buffer = LoadFile(req.Entity.Path);
+                byte[] buffer;
+                using (var span = Markers.EnterSpan("Load"))
+                {
+                    buffer = LoadFile(req.Entity.Path);
+                }
 
                 // decode JPEG image, generate a thumbnail from it and save it back as entity
                 // thumbnail in parallel
                 await Task.Run(() =>
                 {
-                    var result = Generate(Decode(buffer, req), req);
+                    req.Cancellation.ThrowIfCancellationRequested();
+
+                    //var result = Generate(Decode(buffer, req), req);
+                    var result = Process(buffer, req.ThumbnailAreaSize, req.Entity, true);
                     req.Completion.SetResult(result);
                 });
             }
@@ -286,51 +340,21 @@ namespace Viewer.UI.Images
         {
             return _fileSystem.ReadAllBytes(path);
         }
-
-        private SKBitmap Decode(byte[] buffer, LoadRequest req)
-        {
-            req.Cancellation.ThrowIfCancellationRequested();
-
-            using (var input = new MemoryStream(buffer))
-            {
-                return _imageLoader.LoadImage(req.Entity, input);
-            }
-        }
-
-        private Thumbnail Generate(SKBitmap original, LoadRequest req)
-        {
-            using (original)
-            {
-                req.Cancellation.ThrowIfCancellationRequested();
-
-                using (var thumbnail = _thumbnailGenerator.GetThumbnail(
-                    original, req.ThumbnailAreaSize))
-                {
-                    req.Cancellation.ThrowIfCancellationRequested();
-                    SaveThumbnail(req.Entity, thumbnail);
-                    var originalSize = new Size(original.Width, original.Height);
-                    var result = new Thumbnail(thumbnail.ToBitmap(), originalSize);
-                    return result;
-                }
-            }
-        }
         
-        private void SaveThumbnail(IEntity entity, SKBitmap thumbnail)
+        private void SaveThumbnail(IEntity entity, byte[] decodedImage)
         {
-            using (var dataStrem = new MemoryStream())
-            using (var outputStream = new SKManagedWStream(dataStrem))
+            using (var output = new MemoryStream())
+            using (var input = new MemoryStream(decodedImage))
             {
-                var isEncoded = SKPixmap.Encode(
-                    outputStream,
-                    thumbnail,
-                    SKEncodedImageFormat.Jpeg,
-                    SavedThumbnailQuaity);
-                if (!isEncoded)
+                MagicImageProcessor.ProcessImage(input, output, new ProcessImageSettings
                 {
-                    return;
-                }
+                    Interpolation = InterpolationSettings.Linear,
+                    SaveFormat = FileFormat.Jpeg,
+                    JpegQuality = SavedThumbnailQuality
+                });
 
-                var value = new ImageValue(dataStrem.ToArray());
+                // update entity thumbnail
+                var value = new ImageValue(output.ToArray());
                 var newEntity = entity.SetAttribute(new Attribute(
                     ExifAttributeReaderFactory.Thumbnail,
                     value, AttributeSource.Metadata));
@@ -346,27 +370,31 @@ namespace Viewer.UI.Images
         {
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
-            
-            lock (_requests) 
-            {
-                // find the request
-                var index = _requests.Count - 1;
-                for (; index >= 0; --index)
-                {
-                    if (_requests[index].Entity.Path == path)
-                    {
-                        break;
-                    }
-                }
-                if (index < 0)
-                {
-                    return;
-                }
 
-                // move it to the start of the collection
-                var request = _requests[index];
-                _requests.RemoveAt(index);
-                _requests.Add(request);
+            using (var span = Markers.EnterSpan("Prioritize"))
+            {
+                lock (_requests)
+                {
+                    // find the request
+                    var index = _requests.Count - 1;
+                    for (; index >= 0; --index)
+                    {
+                        if (_requests[index].Entity.Path == path)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (index < 0)
+                    {
+                        return;
+                    }
+
+                    // move it to the start of the collection
+                    var request = _requests[index];
+                    _requests.RemoveAt(index);
+                    _requests.Add(request);
+                }
             }
         }
 

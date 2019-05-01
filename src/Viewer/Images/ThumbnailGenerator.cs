@@ -38,7 +38,7 @@ namespace Viewer.Images
             {
                 thumbnail = originalImage.Resize(
                     new SKImageInfo(thumbnailSize.Width, thumbnailSize.Height), 
-                    SKFilterQuality.High);
+                    SKFilterQuality.Medium);
             }
             catch (Exception)
             {

@@ -133,6 +133,7 @@
     <Compile Include="Core\AggregateProgressTest.cs" />
     <Compile Include="Core\RectangleExtensionsTest.cs" />
     <Compile Include="Core\RetryTest.cs" />
+    <Compile Include="Data\CachedEntityComparerTest.cs" />
     <Compile Include="Data\EntityManagerTest.cs" />
     <Compile Include="Data\EntityTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeReaderTest.cs" />
@@ -171,11 +172,11 @@
     <Compile Include="UI\Explorer\ExplorerTest.cs" />
     <Compile Include="UI\Images\Layout\VerticalGridLayoutTest.cs" />
     <Compile Include="UI\Images\SelectionStateTest.cs" />
-    <Compile Include="UI\Images\ThumbnailLoaderTest.cs" />
+    <Compile Include="Images\ThumbnailLoaderIntegrationTest.cs" />
+    <Compile Include="Images\ThumbnailLoaderTest.cs" />
     <Compile Include="UI\Images\LazyThumbnailTest.cs" />
     <Compile Include="UI\Images\QueryEvaluatorTest.cs" />
-    <Compile Include="Images\ThumbnailGeneratorTest.cs" />
-    <Compile Include="UI\Presentation\ImageWindowTest.cs" />
+    <Compile Include="Images\ThumbnailTest.cs" />
     <Compile Include="UI\QueryEditor\QueryErrorListenerTest.cs" />
     <Compile Include="UI\QueryHistoryTest.cs" />
     <Compile Include="UI\SelectionTest.cs" />
@@ -216,6 +217,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Query\Execution\data\" />
+    <Folder Include="UI\Presentation\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

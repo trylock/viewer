@@ -153,7 +153,6 @@
     </Compile>
     <Compile Include="Component.cs" />
     <Compile Include="Images\ImageLoader.cs" />
-    <Compile Include="Images\ThumbnailGenerator.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -209,7 +208,7 @@
     <Compile Include="UI\Presentation\IPresentation.cs" />
     <Compile Include="UI\Presentation\ImageWindow.cs" />
     <Compile Include="UI\Presentation\PreviewControl.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\QueryEditor\EditorControl.cs">
       <SubType>Component</SubType>
@@ -260,7 +259,7 @@
     <Compile Include="UI\Errors\ErrorListView.Designer.cs">
       <DependentUpon>ErrorListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Images\ThumbnailLoader.cs" />
+    <Compile Include="Images\ThumbnailLoader.cs" />
     <Compile Include="UI\Presentation\IPresentationView.cs" />
     <Compile Include="UI\Presentation\PresentationComponent.cs" />
     <Compile Include="UI\Presentation\PresentationControl.cs">
@@ -348,9 +347,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Images\ImagesView.cs-CZ.resx">
       <DependentUpon>ImagesView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Presentation\PreviewControl.resx">
-      <DependentUpon>PreviewControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Suggestions\SuggestionView.resx">
       <DependentUpon>SuggestionView.cs</DependentUpon>

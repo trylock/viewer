@@ -222,7 +222,7 @@ namespace Viewer.UI.Forms
             var iconAreaSize = new Size(
                 (int) Math.Max(Width - (Padding.Left + Padding.Right), 0),
                 (int) Math.Max(Height - (Padding.Top + Padding.Bottom), 0));
-            var iconSize = ThumbnailGenerator.GetThumbnailSize(
+            var iconSize = Thumbnail.GetThumbnailSize(
                 new Size((int) bounds.Width, (int) bounds.Height), 
                 iconAreaSize);
 

@@ -523,7 +523,7 @@ namespace Viewer.UI.Images
                 return;
             }
 
-            var thumbnailSize = ThumbnailGenerator.GetThumbnailSize(thumbnail.Size, ItemSize);
+            var thumbnailSize = Thumbnail.GetThumbnailSize(thumbnail.Size, ItemSize);
             var thumbnailLocation = GetThumbnailLocation(bounds, thumbnailSize);
             // we don't really need an interpolation as we are drawing the image in its original size
             graphics.InterpolationMode = InterpolationMode.NearestNeighbor;

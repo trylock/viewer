@@ -32,24 +32,12 @@ namespace Viewer.Images
     public interface IImageLoader
     {
         /// <summary>
-        /// Get image dimensions of <paramref name="entity"/> without any additional I/O.
-        /// The image size is read from image metadata loaded in <paramref name="entity"/>.
+        /// Decode encoded image data from <paramref name="encodedData"/>.
         /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>
-        ///     Dimensions of the original image of entity (i.e., image at <see cref="IEntity.Path"/>).
-        ///     If <paramref name="entity"/> does not contain metadata about its image dimensions,
-        ///     <c>new Size(1, 1)</c> will be returned.
-        /// </returns>
-        Size GetImageSize(IEntity entity);
-
-        /// <summary>
-        /// Decode encoded image data.
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="encodedData"></param>
+        /// <param name="entity">Image metadata</param>
+        /// <param name="encodedData">Stream with encoded JPEG</param>
         /// <param name="areaSize"></param>
-        /// <returns></returns>
+        /// <returns>Decoded image in BMP format</returns>
         /// <exception cref="ArgumentException">
         ///     File <see cref="IEntity.Path"/> does not contain a valid image or
         ///     <see cref="IEntity.Path"/> is an invalid path to a file.
@@ -70,32 +58,20 @@ namespace Viewer.Images
         /// <exception cref="UnauthorizedAccessException">
         ///     Unauthorized access to the file <see cref="IEntity.Path"/>.
         /// </exception>
-        Image Decode(IEntity entity, Stream encodedData, Size areaSize);
+        byte[] Decode(IEntity entity, Stream encodedData, Size areaSize);
 
-        Image GetImage(IEntity entity);
+        /// <summary>
+        /// Decode image of <paramref name="entity"/> from its file.
+        /// </summary>
+        /// <param name="entity">Image metadata</param>
+        /// <returns>Image in BMP format</returns>
+        /// <see cref="Decode(IEntity, Stream, Size)"/>
+        byte[] Decode(IEntity entity);
     }
     
     [Export(typeof(IImageLoader))]
     public class ImageLoader : IImageLoader
     {
-        /// <summary>
-        /// Rotate/flip transformation which fixes image orientation for each possible orientation value.
-        /// Index in this array is a value of the orientation tag as defined in Exif 2.2
-        /// </summary>
-        private readonly RotateFlipType[] _orientationFixTransform =
-        {
-            RotateFlipType.RotateNoneFlipNone,  // invalid orientation value
-
-            RotateFlipType.RotateNoneFlipNone,  // top left
-            RotateFlipType.RotateNoneFlipX,     // top right
-            RotateFlipType.Rotate180FlipNone,   // bottom right
-            RotateFlipType.Rotate180FlipX,      // bottom left
-            RotateFlipType.Rotate90FlipX,       // left top
-            RotateFlipType.Rotate90FlipNone,    // right top
-            RotateFlipType.Rotate270FlipX,      // right bottom
-            RotateFlipType.Rotate270FlipNone,   // left bottom
-        };
-
         private readonly IFileSystem _fileSystem;
 
         [ImportingConstructor]
@@ -115,42 +91,13 @@ namespace Viewer.Images
             return orientationAttr?.Value ?? 1;
         }
 
-        /// <summary>
-        /// Get image transformation which will fix the image orientation
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>Transformation which fixes the image orientation</returns>
-        private RotateFlipType GetTransformation(IEntity entity)
-        {
-            var orientation = GetOrientation(entity);
-            if (orientation < 0 || orientation >= _orientationFixTransform.Length)
-            {
-                return RotateFlipType.RotateNoneFlipNone;
-            }
-
-            return _orientationFixTransform[orientation];
-        }
-
-        public Size GetImageSize(IEntity entity)
-        {
-            var widthAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.Width);
-            var heightAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.Height);
-            
-            var width = widthAttr?.Value ?? 1;
-            var height = heightAttr?.Value ?? 1;
-            var orientation = GetOrientation(entity);
-            return orientation < 5 ? 
-                new Size(width, height) : 
-                new Size(height, width);
-        }
-
-        public Image Decode(IEntity entity, Stream encodedData, Size areaSize)
+        public byte[] Decode(IEntity entity, Stream encodedData, Size areaSize)
         {
             var image = DecodeImage(encodedData, areaSize, GetOrientation(entity));
             return image;
         }
 
-        public Image GetImage(IEntity entity)
+        public byte[] Decode(IEntity entity)
         {
             using (var input = new MemoryStream(_fileSystem.ReadAllBytes(entity.Path)))
             {
@@ -170,7 +117,7 @@ namespace Viewer.Images
             }
         }
 
-        private static Image DecodeImage(Stream input, Size areaSize, int orientation)
+        private static byte[] DecodeImage(Stream input, Size areaSize, int orientation)
         {
             // decode the image
             var processedData = new MemoryStream();
@@ -190,9 +137,7 @@ namespace Viewer.Images
                 pipeline.ExecutePipeline(processedData);
             }
 
-            // convert the processed image to GDI
-            var image = Image.FromStream(new MemoryStream(processedData.ToArray()), false);
-            return image;
+            return processedData.ToArray();
         }
     }
 }

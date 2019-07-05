@@ -203,7 +203,7 @@ namespace Viewer.Images
         /// Quality of thumbnails saved to the cache storage. This number has to be between 0 and
         /// 100. See <see cref="SKPixmap.Encode(SKWStream, SKBitmap, SKEncodedImageFormat, int)"/>
         /// </summary>
-        public const int SavedThumbnailQuality = 80;
+        public const int SavedThumbnailQuality = 85;
         
         [ImportingConstructor]
         public ThumbnailLoader(

@@ -133,7 +133,6 @@
     <Compile Include="Core\AggregateProgressTest.cs" />
     <Compile Include="Core\RectangleExtensionsTest.cs" />
     <Compile Include="Core\RetryTest.cs" />
-    <Compile Include="Data\CachedEntityComparerTest.cs" />
     <Compile Include="Data\EntityManagerTest.cs" />
     <Compile Include="Data\EntityTest.cs" />
     <Compile Include="Data\Formats\Attributes\AttributeReaderTest.cs" />

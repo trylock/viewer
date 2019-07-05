@@ -319,11 +319,11 @@ namespace ViewerTest.IO
 
             var expectedDirectories = new[]
             {
-                "C:/r/b/c", "C:/r/b/b", "C:/r/b/a",
-                "C:/r/b",
-                "C:/r/a/c", "C:/r/a/b", "C:/r/a/a",
-                "C:/r/a",
                 "C:/r",
+                "C:/r/b",
+                "C:/r/b/c", "C:/r/b/b", "C:/r/b/a",
+                "C:/r/a",
+                "C:/r/a/c", "C:/r/a/b", "C:/r/a/a",
             };
             Assert.AreEqual(expectedDirectories.Length, directories.Length);
 

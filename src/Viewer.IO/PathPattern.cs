@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -130,16 +131,17 @@ namespace Viewer.IO
         }
 
         /// <summary>
-        /// Given a path <paramref name="pattern"/>, find a regular expressin which acepts the
+        /// Given a path <paramref name="pattern"/>, find a regular expression which accepts the
         /// same language.
         /// </summary>
         /// <remarks>
-        /// When it comes to directory separators, the returned regexp will allow an arbitrary
-        /// number of them at the end of a path (including no separator at all). Individual folders
-        /// have to be separated with exactly one directory separator.
+        /// The returned regex will allow an arbitrary number of directory separators at the end
+        /// of a path (including no separator at all). Individual folders have to be separated
+        /// with exactly one directory separator. Directory separator can be both / (forward slash)
+        /// and \ (backward slash).
         /// </remarks>
         /// <param name="pattern">Path pattern</param>
-        /// <returns>Equivalent regular expression</returns>
+        /// <returns>Regular expression which accepts the language of matching paths.</returns>
         private static string BuildRegex(string pattern)
         {
             var sb = new StringBuilder();
@@ -201,7 +203,9 @@ namespace Viewer.IO
         /// <returns>Compiled regex</returns>
         private static Regex CompileRegex(string pattern)
         {
-            return new Regex(BuildRegex(pattern), RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            return new Regex(
+                BuildRegex(pattern), 
+                RegexOptions.IgnoreCase | RegexOptions.Compiled);
         }
 
         /// <summary>
@@ -226,7 +230,7 @@ namespace Viewer.IO
                 }
                 else
                 {
-                    // add preceeding relative path 
+                    // add preceding relative path 
                     if (pathBuilder.Length > 0)
                     {
                         var directoryPath = pathBuilder.ToString();
@@ -258,7 +262,7 @@ namespace Viewer.IO
         }
 
         /// <summary>
-        /// Get parent directories path pattern. The last part of the pattern is removed.
+        /// Get parent directory path pattern - the last part of the pattern is removed.
         /// This applies even to the ** pattern.
         /// <example>
         /// <code>

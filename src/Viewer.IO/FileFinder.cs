@@ -199,7 +199,7 @@ namespace Viewer.IO
         /// </summary>
         /// <param name="pathComparer">Search order</param>
         /// <param name="progress">Reports all searched directory paths</param>
-        /// <returns>Folders which match <see cref="Pattern"/></returns>
+        /// <returns>All folders which match <see cref="Pattern"/></returns>
         private IEnumerable<string> FindAll(
             IComparer<string> pathComparer, 
             IProgress<string> progress)
@@ -211,22 +211,24 @@ namespace Viewer.IO
                 yield break;
             }
 
+            // the root directory does not exist 
             var firstPath = parts[0];
             if (!_fileSystem.DirectoryExists(firstPath))
             {
                 yield break;
             }
 
+            // pattern contains only the root directory
             if (parts.Count == 1)
             {
                 yield return firstPath;
                 yield break;
             }
             
-            var visited = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
             var states = new BinaryHeap<State>(comparer);
             states.Enqueue(new State(firstPath, 1));
-
+            
+            // find all directories which match given pattern
             while (states.Count > 0)
             {
                 var state = states.Dequeue();
@@ -234,16 +236,30 @@ namespace Viewer.IO
 
                 if (state.MatchedPartCount >= parts.Count)
                 {
-                    if (!visited.Contains(state.Path))
-                    {
-                        yield return state.Path;
-                        visited.Add(state.Path);
-                    }
+                    // this path has matched the whole pattern => return it
+                    yield return state.Path;
                 }
                 else
                 {
                     var part = parts[state.MatchedPartCount];
-                    if (!PathPattern.ContainsSpecialCharacters(part))
+                    if (part == PathPattern.RecursivePattern)
+                    {
+                        // This part is after the first ** pattern.
+                        // Use a different algorithm: search all directories once and use pattern
+                        // matching to determine whether to include given directory in the result.
+                        if (Pattern.Match(state.Path))
+                        {
+                            yield return state.Path;
+                        }
+
+                        // search all subdirectories exactly once
+                        foreach (var child in EnumerateDirectories(state.Path, null))
+                        {
+                            // MatchedPartCount can be any value >= firstGeneralPatternIndex
+                            states.Enqueue(new State(child, state.MatchedPartCount));
+                        }
+                    }
+                    else if (!PathPattern.ContainsSpecialCharacters(part))
                     {
                         // path part is a relative path without any special characters
                         var path = Path.Combine(state.Path, part);
@@ -251,22 +267,12 @@ namespace Viewer.IO
                         {
                             continue;
                         }
-                        
+
                         states.Add(new State(path, state.MatchedPartCount + 1));
                     }
-                    else if (part == "**")
+                    else // part has to be a simple pattern which does not contain **
                     {
-                        // assume the pattern has been matched
-                        states.Add(new State(state.Path, state.MatchedPartCount + 1));
-
-                        // assume it has not been matched yet
-                        foreach (var dir in EnumerateDirectories(state.Path, null))
-                        {
-                            states.Add(new State(dir, state.MatchedPartCount));
-                        }
-                    }
-                    else
-                    {
+                        Trace.Assert(part != PathPattern.RecursivePattern);
                         foreach (var dir in EnumerateDirectories(state.Path, part))
                         {
                             states.Add(new State(dir, state.MatchedPartCount + 1));

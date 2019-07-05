@@ -596,10 +596,9 @@ namespace Viewer.UI.Images
                     {
                         continue;
                     }
-
-                    var comparer = CachedEntityViewComparer.FromQuery(Query);
-                    list.Sort(comparer);
-                    group.Items = group.Items.Merge(list, comparer);
+                    
+                    list.Sort(Comparer);
+                    group.Items = group.Items.Merge(list, Comparer);
                     index.Insertions.Remove(group.Key);
                 }
 
@@ -613,7 +612,7 @@ namespace Viewer.UI.Images
                 addedGroups.Sort();
                 foreach (var view in addedGroups)
                 {
-                    view.Items.Sort(CachedEntityViewComparer.FromQuery(Query));
+                    view.Items.Sort(Comparer);
                 }
 
                 _backBuffer = _backBuffer.Merge(addedGroups, Comparer<Group>.Default);

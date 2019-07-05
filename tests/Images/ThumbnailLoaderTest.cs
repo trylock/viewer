@@ -58,7 +58,7 @@ namespace ViewerTest.Images
         {
             var entity = new FileEntity("test");
             _fileSystem
-                .Setup(mock => mock.ReadAllBytesAsync(entity.Path))
+                .Setup(mock => mock.ReadAllBytes(entity.Path))
                 .Throws(new Exception("IO exception"));
 
             var exception = "";

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PhotoSauce.MagicScaler;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using Viewer.Core;
@@ -110,7 +111,7 @@ namespace Viewer.UI.Presentation
                 return SKPoint.Empty;
             
             var originalSize = new Size(Picture.Width, Picture.Height);
-            var scaledSize = ThumbnailGenerator.GetThumbnailSize(originalSize, ClientSize);
+            var scaledSize = Thumbnail.GetThumbnailSize(originalSize, ClientSize);
             var zoomedSize = new Size(
                 (int) (scaledSize.Width * Zoom),
                 (int) (scaledSize.Height * Zoom)
@@ -142,7 +143,7 @@ namespace Viewer.UI.Presentation
 
             // calculate scaled image size
             var pictureSize = new Size(Picture.Width, Picture.Height);
-            var pictureDrawSize = ThumbnailGenerator
+            var pictureDrawSize = Thumbnail
                 .GetThumbnailSize(pictureSize, ClientSize)
                 .ToSKSize();
 
@@ -155,7 +156,7 @@ namespace Viewer.UI.Presentation
             canvas.Translate(
                 Origin.X - pictureDrawSize.Width / 2.0f,
                 Origin.Y - pictureDrawSize.Height / 2.0f);
-            
+
             // draw the image
             using (var paint = new SKPaint())
             {

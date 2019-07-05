@@ -126,7 +126,7 @@ namespace Viewer.UI.Images
             View.ItemSize = CurrentItemSize;
             View.ContextOptions = Settings.Default.ExternalApplications;
 
-            // subsribe to events 
+            // subscribe to events 
             _selection.ActiveItemChanged += SelectionState_ActiveItemChanged;
             _queryHistory.QueryExecuted += QueryHistory_QueryExecuted;
             Settings.Default.PropertyChanged += Settings_PropertyChanged;

@@ -26,7 +26,7 @@ namespace Viewer.Query.Suggestions
         /// <param name="caretPosition">Character index of the caret</param>
         /// <param name="separatorTokens">
         /// <para>
-        /// Token types for which if the caret is right after them, they will be interpreted as
+        /// Token types for which if the caret is right after them will be interpreted as
         /// 2 independent tokens. Otherwise, the original token will be replaced with CARET
         /// having the original token as ParentToken.
         /// </para>

@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic.ApplicationServices;
+using PhotoSauce.MagicScaler;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using Viewer.Data;
@@ -18,7 +22,7 @@ using Viewer.Images;
 using Viewer.IO;
 using Attribute = Viewer.Data.Attribute;
 
-namespace Viewer.UI.Images
+namespace Viewer.Images
 {
     public struct Thumbnail
     {
@@ -28,7 +32,7 @@ namespace Viewer.UI.Images
         public Image ThumbnailImage { get; }
 
         /// <summary>
-        /// Size of the original image from wich <see cref="ThumbnailImage"/> is generated.
+        /// Size of the original image from which <see cref="ThumbnailImage"/> is generated.
         /// </summary>
         public Size OriginalSize { get; }
 
@@ -37,22 +41,58 @@ namespace Viewer.UI.Images
             ThumbnailImage = thumbnailImage;
             OriginalSize = originalSize;
         }
+
+        /// <summary>
+        /// Calculate the largest image size such that it fits in
+        /// <paramref name="thumbnailAreaSize"/> and preserves the aspect ratio of
+        /// <paramref name="originalSize"/>.
+        /// </summary>
+        /// <param name="originalSize">Actual size of the image</param>
+        /// <param name="thumbnailAreaSize">Size of the area where the image will be drawn</param>
+        /// <returns>
+        /// Size of the resized image s.t. it fits in <paramref name="thumbnailAreaSize"/> 
+        /// and preserves the aspect ratio of <paramref name="originalSize"/>
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Arguments contain negative size or <paramref name="originalSize"/>.Height is 0
+        /// </exception>
+        public static Size GetThumbnailSize(Size originalSize, Size thumbnailAreaSize)
+        {
+            if (originalSize.Width < 0 || originalSize.Height <= 0)
+                throw new ArgumentOutOfRangeException(nameof(originalSize));
+            if (thumbnailAreaSize.Width < 0 || thumbnailAreaSize.Height < 0)
+                throw new ArgumentOutOfRangeException(nameof(thumbnailAreaSize));
+
+            var originalAspectRatio = originalSize.Width / (double)originalSize.Height;
+            var thumbnailAspectRatio = thumbnailAreaSize.Width / (double)thumbnailAreaSize.Height;
+            if (originalAspectRatio >= thumbnailAspectRatio)
+            {
+                thumbnailAreaSize.Height = Math.Max(
+                    (int)(thumbnailAreaSize.Width / originalAspectRatio), 1);
+            }
+            else
+            {
+                thumbnailAreaSize.Width = Math.Max(
+                    (int)(thumbnailAreaSize.Height * originalAspectRatio), 1);
+            }
+
+            return thumbnailAreaSize;
+        }
     }
 
     /// <summary>
-    /// Thumbnail loader loads thumbnails using <see cref="IImageLoader"/> and resizes them using
-    /// <see cref="IThumbnailGenerator"/>.
+    /// Thumbnail loader loads thumbnails using <see cref="IImageLoader"/> and resizes them.
     /// </summary>
     public interface IThumbnailLoader
     {
         /// <summary>
         /// Load embedded thumbnail of <paramref name="entity"/> and resize it to fit in
-        /// <paramref name="thumbnailAreaSize"/> so that it presrves its aspect ratio. This does
+        /// <paramref name="thumbnailAreaSize"/> so that it preserves its aspect ratio. This does
         /// not trigger any I/O. It uses thumbnail loaded in <paramref name="entity"/>.
         /// </summary>
         /// <param name="entity">Entity for which you want to load an embedded thumbnail</param>
         /// <param name="thumbnailAreaSize">
-        /// Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this
+        /// Area for the thumbnail. Generated thumbnail will be scaled so that it fits in this
         /// area.
         /// </param>
         /// <param name="cancellationToken">Cancellation token of the load operation.</param>
@@ -65,10 +105,7 @@ namespace Viewer.UI.Images
         /// </para>
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
-        /// <seealso cref="IImageLoader.LoadThumbnailAsync(IEntity, CancellationToken)">
-        /// For the list of possible exceptions returned by the task.
-        /// </seealso>
-        /// <seealso cref="IThumbnailGenerator.GetThumbnail">
+        /// <seealso cref="IImageLoader.Decode(IEntity, Stream, Size)">
         /// For the list of possible exceptions returned by the task.
         /// </seealso>
         Task<Thumbnail> LoadEmbeddedThumbnailAsync(
@@ -77,8 +114,8 @@ namespace Viewer.UI.Images
             CancellationToken cancellationToken);
 
         /// <summary>
-        /// Load the original image of <paramref name="entity"/> and and resize it to fit in
-        /// <paramref name="thumbnailAreaSize"/> so that it presrves its aspect ratio. This
+        /// Load the original image of <paramref name="entity"/> and resize it to fit in
+        /// <paramref name="thumbnailAreaSize"/> so that it preserves its aspect ratio. This
         /// function reads the whole file of <paramref name="entity"/> on a background thread.
         /// I/O operations are synchronized and ordered (see <see cref="Prioritize"/>). Other
         /// operations can run in parallel.
@@ -90,18 +127,17 @@ namespace Viewer.UI.Images
         /// </remarks>
         /// <param name="entity">Entity whose file will be loaded.</param>
         /// <param name="thumbnailAreaSize">
-        /// Area for the thumbnail. Generated thumbanil will be scaled so that it fits in this area.
+        /// Area for the thumbnail. Generated thumbnail will be scaled so that it fits in this area.
         /// </param>
         /// <param name="cancellationToken">Cancellation token of the load operation.</param>
         /// <returns>
         /// Task finished when the thumbnail is loaded. See
-        /// <see cref="IImageLoader.LoadImage(IEntity)"/> for the list of possible exceptions
+        /// <see cref="IImageLoader.Decode(IEntity)"/> for the list of possible exceptions
         /// returned by this task.
         /// </returns>
         /// <exception cref="ArgumentNullException"><paramref name="entity"/> is null</exception>
         /// <seealso cref="IFileSystem.ReadAllBytes"/>
-        /// <seealso cref="IImageLoader.LoadImage(IEntity, Stream)" />
-        /// <seealso cref="IThumbnailGenerator.GetThumbnail" />
+        /// <seealso cref="IImageLoader.Decode(IEntity, Stream, Size)" />
         Task<Thumbnail> LoadNativeThumbnailAsync(
             IEntity entity, 
             Size thumbnailAreaSize, 
@@ -109,8 +145,8 @@ namespace Viewer.UI.Images
 
         /// <summary>
         /// Increase priority of given entity so that it is loaded before any other entity
-        /// waiting in the queue. This won't change any priorities if there is no entity with
-        /// <paramref name="path"/> in the waiting queue. This only affects load operations
+        /// waiting in the queue. If <paramref name="path"/> is not in the waiting queue,
+        /// this method will not change the queue order. This method only affects load operations
         /// started by <see cref="LoadNativeThumbnailAsync"/>.
         /// </summary>
         /// <param name="path">Path to an entity to prioritize</param>
@@ -122,7 +158,6 @@ namespace Viewer.UI.Images
     public class ThumbnailLoader : IThumbnailLoader
     {
         private readonly IImageLoader _imageLoader;
-        private readonly IThumbnailGenerator _thumbnailGenerator;
         private readonly IAttributeStorage _storage;
         private readonly IFileSystem _fileSystem;
 
@@ -141,7 +176,8 @@ namespace Viewer.UI.Images
 
         /// <summary>
         /// Request to generate a thumbnail from the original image of <see cref="Entity"/>.
-        /// Disk I/O is synchronized. Request won't compete for bandwidth.
+        /// Disk I/O is synchronized. Requests won't compete for disk. Decoding image and thumbnail
+        /// generation is done in parallel.
         /// </summary>
         private class LoadRequest
         {
@@ -167,18 +203,16 @@ namespace Viewer.UI.Images
         /// Quality of thumbnails saved to the cache storage. This number has to be between 0 and
         /// 100. See <see cref="SKPixmap.Encode(SKWStream, SKBitmap, SKEncodedImageFormat, int)"/>
         /// </summary>
-        public const int SavedThumbnailQuaity = 75;
-
+        public const int SavedThumbnailQuality = 85;
+        
         [ImportingConstructor]
         public ThumbnailLoader(
             IImageLoader imageLoader, 
-            IThumbnailGenerator thumbnailGenerator, 
             IAttributeStorage storage,
             IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
             _imageLoader = imageLoader;
-            _thumbnailGenerator = thumbnailGenerator;
             _storage = storage;
         }
 
@@ -193,29 +227,20 @@ namespace Viewer.UI.Images
             return LoadEmbeddedThumbnailAsyncImpl(entity, thumbnailAreaSize, cancellationToken);
         }
 
-        private async Task<Thumbnail> LoadEmbeddedThumbnailAsyncImpl(
+        private Task<Thumbnail> LoadEmbeddedThumbnailAsyncImpl(
             IEntity entity, 
             Size thumbnailAreaSize, 
             CancellationToken cancellationToken)
         {
-            using (var image = await _imageLoader.LoadThumbnailAsync(entity, cancellationToken)
-                .ConfigureAwait(false))
+            var data = entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail);
+            if (data == null)
             {
-                // the entity does not have an embedded thumbnail
-                if (image == null)
-                {
-                    return new Thumbnail(null, Size.Empty);
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                // the entity does have an embedded thumbnail
-                using (var thumbnail = _thumbnailGenerator.GetThumbnail(image, thumbnailAreaSize))
-                {
-                    var imageSize = new Size(image.Width, image.Height);
-                    return new Thumbnail(thumbnail.ToBitmap(), imageSize);
-                }
+                return Task.FromResult(new Thumbnail(null, Size.Empty));
             }
+
+            return Task.Run(
+                () => Process(data.Value, thumbnailAreaSize, entity, false), 
+                cancellationToken);
         }
         
         public Task<Thumbnail> LoadNativeThumbnailAsync(
@@ -226,6 +251,7 @@ namespace Viewer.UI.Images
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             
+            // create a load request 
             var request = new LoadRequest(entity, thumbnailAreaSize, cancellationToken);
             var task = AddLoadRequest(request);
 
@@ -235,6 +261,46 @@ namespace Viewer.UI.Images
                 TaskContinuationOptions.None);
             
             return task;
+        }
+
+        /// <summary>
+        /// Decode and resize <paramref name="encodedData"/> so that it fits in
+        /// <paramref name="thumbnailAreaSize"/> but preserves its aspect ratio.
+        /// </summary>
+        /// <param name="encodedData">Encoded image data</param>
+        /// <param name="thumbnailAreaSize">Size of the area for thumbnail</param>
+        /// <param name="entity">Image metadata</param>
+        /// <param name="save">If true, the generated thumbnail will be cached</param>
+        /// <returns>Processed thumbnail image</returns>
+        private Thumbnail Process(byte[] encodedData, Size thumbnailAreaSize, IEntity entity, bool save)
+        {
+            using (var input = new MemoryStream(encodedData))
+            {
+                // read image metadata
+                var info = new ImageFileInfo(input);
+                Size original = Size.Empty;
+                if (info.Frames.Length > 0)
+                {
+                    original.Width = info.Frames[0].Width;
+                    original.Height = info.Frames[0].Height;
+                }
+
+                input.Position = 0;
+
+                // create thumbnail image
+                var decoded = _imageLoader.Decode(entity, input, thumbnailAreaSize);
+
+                // save processed thumbnail
+                if (save)
+                {
+                    SaveThumbnail(entity, decoded);
+                }
+
+                // Create thumbnail wrapper
+                return new Thumbnail(
+                    Image.FromStream(new MemoryStream(decoded), false), original);
+
+            }
         }
 
         /// <summary>
@@ -250,6 +316,7 @@ namespace Viewer.UI.Images
             try
             {
                 req = ConsumeLoadRequest();
+
                 Trace.Assert(req != null);
                 if (req.Cancellation.IsCancellationRequested)
                 {
@@ -258,13 +325,15 @@ namespace Viewer.UI.Images
                 }
 
                 // this memory is going to end up on LOH
-                var buffer = LoadFile(req.Entity.Path);
+                byte[] buffer = _fileSystem.ReadAllBytes(req.Entity.Path);
 
                 // decode JPEG image, generate a thumbnail from it and save it back as entity
                 // thumbnail in parallel
                 await Task.Run(() =>
                 {
-                    var result = Generate(Decode(buffer, req), req);
+                    req.Cancellation.ThrowIfCancellationRequested();
+                    
+                    var result = Process(buffer, req.ThumbnailAreaSize, req.Entity, true);
                     req.Completion.SetResult(result);
                 });
             }
@@ -282,55 +351,29 @@ namespace Viewer.UI.Images
             }
         }
 
-        private byte[] LoadFile(string path)
+        /// <summary>
+        /// Cache entity thumbnail. 
+        /// </summary>
+        /// <remarks>
+        /// This operation encodes <paramref name="decodedImage"/> as JPEG and saves the encoded data
+        /// in attribute storage using the <see cref="IAttributeStorage.StoreThumbnail"/> method.
+        /// </remarks>
+        /// <param name="entity">Metadata of the image</param>
+        /// <param name="decodedImage">Decoded image in BMP format</param>
+        private void SaveThumbnail(IEntity entity, byte[] decodedImage)
         {
-            return _fileSystem.ReadAllBytes(path);
-        }
-
-        private SKBitmap Decode(byte[] buffer, LoadRequest req)
-        {
-            req.Cancellation.ThrowIfCancellationRequested();
-
-            using (var input = new MemoryStream(buffer))
+            using (var output = new MemoryStream())
+            using (var input = new MemoryStream(decodedImage))
             {
-                return _imageLoader.LoadImage(req.Entity, input);
-            }
-        }
-
-        private Thumbnail Generate(SKBitmap original, LoadRequest req)
-        {
-            using (original)
-            {
-                req.Cancellation.ThrowIfCancellationRequested();
-
-                using (var thumbnail = _thumbnailGenerator.GetThumbnail(
-                    original, req.ThumbnailAreaSize))
+                MagicImageProcessor.ProcessImage(input, output, new ProcessImageSettings
                 {
-                    req.Cancellation.ThrowIfCancellationRequested();
-                    SaveThumbnail(req.Entity, thumbnail);
-                    var originalSize = new Size(original.Width, original.Height);
-                    var result = new Thumbnail(thumbnail.ToBitmap(), originalSize);
-                    return result;
-                }
-            }
-        }
-        
-        private void SaveThumbnail(IEntity entity, SKBitmap thumbnail)
-        {
-            using (var dataStrem = new MemoryStream())
-            using (var outputStream = new SKManagedWStream(dataStrem))
-            {
-                var isEncoded = SKPixmap.Encode(
-                    outputStream,
-                    thumbnail,
-                    SKEncodedImageFormat.Jpeg,
-                    SavedThumbnailQuaity);
-                if (!isEncoded)
-                {
-                    return;
-                }
+                    Interpolation = InterpolationSettings.Linear,
+                    SaveFormat = FileFormat.Jpeg,
+                    JpegQuality = SavedThumbnailQuality
+                });
 
-                var value = new ImageValue(dataStrem.ToArray());
+                // update entity thumbnail
+                var value = new ImageValue(output.ToArray());
                 var newEntity = entity.SetAttribute(new Attribute(
                     ExifAttributeReaderFactory.Thumbnail,
                     value, AttributeSource.Metadata));
@@ -347,7 +390,7 @@ namespace Viewer.UI.Images
             if (path == null)
                 throw new ArgumentNullException(nameof(path));
             
-            lock (_requests) 
+            lock (_requests)
             {
                 // find the request
                 var index = _requests.Count - 1;
@@ -358,6 +401,7 @@ namespace Viewer.UI.Images
                         break;
                     }
                 }
+
                 if (index < 0)
                 {
                     return;

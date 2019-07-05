@@ -28,7 +28,7 @@ optionalOrderBy: ORDER BY orderByList | ;
 
 orderByList: orderByKey (PARAM_DELIMITER orderByKey)*;
 
-orderByKey: comparison DIRECTION?;
+orderByKey: predicate DIRECTION?;
 
 // GROUP BY
 optionalGroupBy: GROUP BY predicate | ;
@@ -48,4 +48,4 @@ multiplication: factor (MULT_DIV factor)*;
 
 factor: LPAREN predicate RPAREN | INT | REAL | STRING | COMPLEX_ID  (LPAREN argumentList RPAREN)? | ID (LPAREN argumentList RPAREN)? | ADD_SUB factor;
 
-argumentList: comparison (PARAM_DELIMITER comparison)* | ;
+argumentList: comparison (PARAM_DELIMITER predicate)* | ;

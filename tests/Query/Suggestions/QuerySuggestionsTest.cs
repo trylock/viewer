@@ -277,13 +277,15 @@ namespace ViewerTest.Query.Suggestions
         {
             var suggestions = ComputeSuggestions("select test order by attr ");
 
-            Assert.AreEqual(6, suggestions.Count);
+            Assert.AreEqual(8, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr desc"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr asc"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr union"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr intersect"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr except"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr group by"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr or"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select test order by attr and"));
         }
 
         [TestMethod]
@@ -477,9 +479,10 @@ namespace ViewerTest.Query.Suggestions
 
             var suggestions = ComputeSuggestions("select view where a = \"value\" order by ");
             
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" order by a"));
             Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" order by DateTime()"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, "select view where a = \"value\" order by not"));
         }
 
         [TestMethod]
@@ -635,9 +638,10 @@ namespace ViewerTest.Query.Suggestions
                 "select (select view where a = \"value\" and b or not c order by DateTaken desc group by TimeElapsed(LastAccessTime)) where not d order by ";
             var suggestions = ComputeSuggestions(query);
 
-            Assert.AreEqual(2, suggestions.Count);
+            Assert.AreEqual(3, suggestions.Count);
             Assert.IsTrue(ContainsSuggestion(suggestions, query + "a"));
             Assert.IsTrue(ContainsSuggestion(suggestions, query + "DateTime()"));
+            Assert.IsTrue(ContainsSuggestion(suggestions, query + "not"));
         }
     }
 }

@@ -38,17 +38,17 @@ namespace ViewerTest.UI.Images.Layout
             
             for (var i = 0; i < 4; ++i)
             {
-                smallGroup.Items.Add(new EntityView(null, null));
+                smallGroup.Items.Add(new EntityView(new FileEntity("small_group_test" + i), null));
             }
 
             for (var i = 0; i < 130; ++i)
             {
-                largeCollapsedGroup.Items.Add(new EntityView(null, null));
+                largeCollapsedGroup.Items.Add(new EntityView(new FileEntity("collapsed_group_test" + i), null));
             }
 
             for (var i = 0; i < 21; ++i)
             {
-                largeGroup.Items.Add(new EntityView(null, null));
+                largeGroup.Items.Add(new EntityView(new FileEntity("large_group_test" + i), null));
             }
 
             _layout.Groups = new List<Group>

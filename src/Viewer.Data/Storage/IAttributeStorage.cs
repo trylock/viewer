@@ -58,7 +58,7 @@ namespace Viewer.Data.Storage
     /// <summary>
     /// Simple proxy which will only allow users to read attributes from given storage. 
     /// </summary>
-    /// <remarks>It propagates Load method calls to given storage</remarks>
+    /// <remarks>It propagates Load method calls to given storage.</remarks>
     public class ReadableStorageProxy : IReadableAttributeStorage
     {
         private readonly IReadableAttributeStorage _storage;
@@ -94,7 +94,7 @@ namespace Viewer.Data.Storage
     /// </code>
     ///
     /// If you want to load more than 1 entity, you should use the <see cref="CreateReader"/>
-    /// method. The following example shows to to efficiently load all files in a folder:
+    /// method. The following example shows how to efficiently load all files in a folder:
     ///
     /// <code>
     /// IAttributeStorage storage = ...;
@@ -161,7 +161,7 @@ namespace Viewer.Data.Storage
 
     /// <inheritdoc />
     /// <summary>
-    /// Deferred attribute storage can deferr all write requests (everything but
+    /// Deferred attribute storage can defer all write requests (everything but
     /// <see cref="IReadableAttributeStorage.Load" />) for later. Specifically, until
     /// <see cref="ApplyChanges" /> is called.
     /// </summary>

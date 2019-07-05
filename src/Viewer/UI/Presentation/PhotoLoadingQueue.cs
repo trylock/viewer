@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SkiaSharp;
+using SkiaSharp.Views.Desktop;
 using Viewer.Data;
 using Viewer.Images;
 
@@ -67,7 +69,7 @@ namespace Viewer.UI.Presentation
 
                 try
                 {
-                    var image = _imageLoader.LoadImage(entity);
+                    var image = SKBitmap.Decode(_imageLoader.Decode(entity));
 
                     // if the request has been canceled, dispose the image 
                     if (version != _queueVersion)

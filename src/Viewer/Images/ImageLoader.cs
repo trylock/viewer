@@ -9,11 +9,14 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using PhotoSauce.MagicScaler;
 using SkiaSharp;
 using Viewer.Data;
 using Viewer.Data.Formats.Exif;
@@ -29,22 +32,12 @@ namespace Viewer.Images
     public interface IImageLoader
     {
         /// <summary>
-        /// Get image dimensions of <paramref name="entity"/> without any additional I/O.
-        /// The image size is read from image metadata loaded in <paramref name="entity"/>.
+        /// Decode encoded image data from <paramref name="encodedData"/>.
         /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>
-        ///     Dimensions of the original image of entity (i.e., image at <see cref="IEntity.Path"/>).
-        ///     If <paramref name="entity"/> does not contain metadata about its image dimensions,
-        ///     <c>new Size(1, 1)</c> will be returned.
-        /// </returns>
-        Size GetImageSize(IEntity entity);
-
-        /// <summary>
-        /// Load image of an entity entirely to main memory.
-        /// </summary>
-        /// <param name="entity">Entity for which you want to load the image</param>
-        /// <returns>Decoded image of the entity</returns>
+        /// <param name="entity">Image metadata</param>
+        /// <param name="encodedData">Stream with encoded JPEG</param>
+        /// <param name="areaSize"></param>
+        /// <returns>Decoded image in BMP format</returns>
         /// <exception cref="ArgumentException">
         ///     File <see cref="IEntity.Path"/> does not contain a valid image or
         ///     <see cref="IEntity.Path"/> is an invalid path to a file.
@@ -65,49 +58,20 @@ namespace Viewer.Images
         /// <exception cref="UnauthorizedAccessException">
         ///     Unauthorized access to the file <see cref="IEntity.Path"/>.
         /// </exception>
-        SKBitmap LoadImage(IEntity entity);
+        byte[] Decode(IEntity entity, Stream encodedData, Size areaSize);
 
         /// <summary>
-        /// Decode image from a stream.
+        /// Decode image of <paramref name="entity"/> from its file.
         /// </summary>
-        /// <param name="entity">Entity of the image</param>
-        /// <param name="input">Stream with encoded data</param>
-        /// <returns></returns>
-        SKBitmap LoadImage(IEntity entity, Stream input);
-
-        /// <summary>
-        /// Load embeded thumbnail asynchronously.
-        /// The thumbnail is loaded in its original size.
-        /// </summary>
-        /// <param name="entity">Entity to load</param>
-        /// <param name="cancellationToken">Cancellation token of the load operation</param>
-        /// <returns>
-        ///     Task which loads the thumbnail. The task will return null if there is no thumbnail.
-        /// </returns>
-        Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken);
+        /// <param name="entity">Image metadata</param>
+        /// <returns>Image in BMP format</returns>
+        /// <see cref="Decode(IEntity, Stream, Size)"/>
+        byte[] Decode(IEntity entity);
     }
     
     [Export(typeof(IImageLoader))]
     public class ImageLoader : IImageLoader
     {
-        /// <summary>
-        /// Rotate/flip transformation which fixes image orientation for each possible orientation value.
-        /// Index in this array is a value of the orientation tag as defined in Exif 2.2
-        /// </summary>
-        private readonly RotateFlipType[] _orientationFixTransform =
-        {
-            RotateFlipType.RotateNoneFlipNone,  // invalid orientation value
-
-            RotateFlipType.RotateNoneFlipNone,  // top left
-            RotateFlipType.RotateNoneFlipX,     // top right
-            RotateFlipType.Rotate180FlipNone,   // bottom right
-            RotateFlipType.Rotate180FlipX,      // bottom left
-            RotateFlipType.Rotate90FlipX,       // left top
-            RotateFlipType.Rotate90FlipNone,    // right top
-            RotateFlipType.Rotate270FlipX,      // right bottom
-            RotateFlipType.Rotate270FlipNone,   // left bottom
-        };
-        
         private readonly IFileSystem _fileSystem;
 
         [ImportingConstructor]
@@ -124,154 +88,56 @@ namespace Viewer.Images
         private static int GetOrientation(IEntity entity)
         {
             var orientationAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.Orientation);
-            return orientationAttr?.Value ?? 0;
+            return orientationAttr?.Value ?? 1;
         }
 
-        /// <summary>
-        /// Get image transformation which will fix the image orientation
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>Transformation which fixes the image orientation</returns>
-        private RotateFlipType GetTransformation(IEntity entity)
+        public byte[] Decode(IEntity entity, Stream encodedData, Size areaSize)
         {
-            var orientation = GetOrientation(entity);
-            if (orientation < 0 || orientation >= _orientationFixTransform.Length)
-            {
-                return RotateFlipType.RotateNoneFlipNone;
-            }
-
-            return _orientationFixTransform[orientation];
-        }
-
-        public Size GetImageSize(IEntity entity)
-        {
-            var widthAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.Width);
-            var heightAttr = entity.GetValue<IntValue>(ExifAttributeReaderFactory.Height);
-            
-            var width = widthAttr?.Value ?? 1;
-            var height = heightAttr?.Value ?? 1;
-            var orientation = GetOrientation(entity);
-            return orientation < 5 ? 
-                new Size(width, height) : 
-                new Size(height, width);
-        }
-
-        public SKBitmap LoadImage(IEntity entity)
-        {
-            var orientation = GetTransformation(entity);
-            using (var file = new FileStream(entity.Path, FileMode.Open, FileAccess.Read))
-            {
-                var image = DecodeImage(file, orientation);
-                return image;
-            }
-        }
-
-        public SKBitmap LoadImage(IEntity entity, Stream input)
-        {
-            var orientation = GetTransformation(entity);
-            var image = DecodeImage(input, orientation);
+            var image = DecodeImage(encodedData, areaSize, GetOrientation(entity));
             return image;
         }
-        
-        public Task<SKBitmap> LoadThumbnailAsync(IEntity entity, CancellationToken cancellationToken)
-        {
-            // isolate these values for the thread which will generate the thumbnail
-            var orientation = GetTransformation(entity);
-            var thumbnail = entity.GetValue<ImageValue>(ExifAttributeReaderFactory.Thumbnail);
-            if (thumbnail == null)
-            {
-                return Task.FromResult<SKBitmap>(null);
-            }
 
-            return Task.Run(() =>
+        public byte[] Decode(IEntity entity)
+        {
+            using (var input = new MemoryStream(_fileSystem.ReadAllBytes(entity.Path)))
             {
-                using (var inputStream = new MemoryStream(thumbnail.Value))
+                var info = new ImageFileInfo(input);
+                Size original = Size.Empty;
+                if (info.Frames.Length > 0)
                 {
-                    return DecodeImage(inputStream, orientation);
+                    original.Width = info.Frames[0].Width;
+                    original.Height = info.Frames[0].Height;
                 }
-            }, cancellationToken);
-        }
 
-        private static SKBitmap DecodeImage(Stream input, RotateFlipType orientation)
-        {
-            var bitmap = SKBitmap.Decode(input);
-            try
-            {
-                return RotateFlip(bitmap, orientation);
-            }
-            catch (Exception)
-            {
-                bitmap.Dispose();
-                throw;
+                input.Position = 0;
+
+                return Decode(
+                    entity, input,
+                    new Size(original.Width, original.Height));
             }
         }
 
-        private static SKBitmap RotateFlip(SKBitmap bitmap, RotateFlipType rotateFlip)
+        private static byte[] DecodeImage(Stream input, Size areaSize, int orientation)
         {
-            var rotationAngle = 0;
-            var flipX = 1;
-            switch (rotateFlip)
+            // decode the image
+            var processedData = new MemoryStream();
+            using (var pipeline = MagicImageProcessor.BuildPipeline(input, new ProcessImageSettings
             {
-                case RotateFlipType.RotateNoneFlipNone:
-                    break;
-                case RotateFlipType.Rotate90FlipNone:
-                    rotationAngle = 90;
-                    break;
-                case RotateFlipType.Rotate180FlipNone:
-                    rotationAngle = 180;
-                    break;
-                case RotateFlipType.Rotate270FlipNone:
-                    rotationAngle = 270;
-                    break;
-                case RotateFlipType.RotateNoneFlipX:
-                    flipX = -1;
-                    break;
-                case RotateFlipType.Rotate90FlipX:
-                    rotationAngle = 90;
-                    flipX = -1;
-                    break;
-                case RotateFlipType.Rotate180FlipX:
-                    rotationAngle = 180;
-                    flipX = -1;
-                    break;
-                case RotateFlipType.Rotate270FlipX:
-                    rotationAngle = 270;
-                    flipX = -1;
-                    break;
+                Width = areaSize.Width,
+                Height = areaSize.Height,
+                ResizeMode = CropScaleMode.Max,
+                Interpolation = InterpolationSettings.Lanczos,
+                SaveFormat = FileFormat.Bmp,
+                ColorProfileMode = ColorProfileMode.Normalize,
+                OrientationMode = OrientationMode.Ignore // we will use custom transform
+            }))
+            {
+                pipeline.AddTransform(new FormatConversionTransform(PixelFormats.Bgra32bpp));
+                pipeline.AddTransform(new OrientationTransform((Orientation) orientation));
+                pipeline.ExecutePipeline(processedData);
             }
 
-            // don't transform the bitmap if it's not necessary
-            if (flipX == 1 && rotationAngle == 0)
-            {
-                return bitmap;
-            }
-
-            // transform the bitmap according to the rotateFlip value
-            using (bitmap)
-            {
-                var flipDimensions = rotationAngle == 180 || rotationAngle == 0;
-                var transformed = new SKBitmap(
-                    flipDimensions ? bitmap.Width : bitmap.Height,
-                    flipDimensions ? bitmap.Height : bitmap.Width);
-                try
-                {
-                    using (var surface = new SKCanvas(transformed))
-                    {
-                        surface.Translate(transformed.Width / 2.0f, transformed.Height / 2.0f);
-                        surface.Scale(flipX, 1);
-                        surface.RotateDegrees(rotationAngle);
-                        surface.Translate(-bitmap.Width / 2.0f, -bitmap.Height / 2.0f);
-                        surface.DrawBitmap(bitmap, 0, 0);
-                    }
-                }
-                catch (Exception)
-                {
-                    transformed.Dispose();
-                    throw;
-                }
-
-                return transformed;
-            }
+            return processedData.ToArray();
         }
     }
 }

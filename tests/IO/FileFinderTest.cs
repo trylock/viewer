@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
@@ -15,10 +17,20 @@ namespace ViewerTest.IO
     [TestClass]
     public class FileFinderTest
     {
+        private string Normalize(string path)
+        {
+            if (!path.StartsWith("C:"))
+            {
+                path = $"C:/{path}";
+            }
+
+            return path.Replace('\\', '/').Trim('/');
+        }
+
         private bool ArePathsEqual(string first, string second)
         {
-            first = PathUtils.NormalizePath(first);
-            second = PathUtils.NormalizePath(second);
+            first = Normalize(first);
+            second = Normalize(second);
             return string.Equals(first, second, StringComparison.CurrentCultureIgnoreCase);
         }
 
@@ -26,7 +38,99 @@ namespace ViewerTest.IO
         {
             return It.Is<string>(actualValue => ArePathsEqual(actualValue, expectedValue));
         }
-        
+
+        private class Node
+        {
+            public string Name;
+            public string Path;
+            public List<Node> Children = new List<Node>();
+
+            public Node(string path)
+            {
+                Path = path;
+                var lastSlash = Path.LastIndexOf('/');
+                var length = Path.Length - lastSlash - 1;
+                if (lastSlash < 0)
+                {
+                    length = Path.Length;
+                }
+                Name = Path.Substring(lastSlash + 1, length);
+            }
+        }
+
+        /// <summary>
+        /// Setup <paramref name="mock"/> so that it contains all directories in
+        /// <paramref name="dirs"/>
+        /// </summary>
+        /// <param name="mock">Filesystem mock</param>
+        /// <param name="dirs">Directories in the filesystem</param>
+        private void SetupFilesystem(Mock<IFileSystem> mock, params string[] dirs)
+        {
+            // build directory tree
+            var root = new Node("C:");
+            foreach (var dir in dirs)
+            {
+                // split path by directory separators (assume root C:/)
+                var parts = Normalize(dir).Split('/').Skip(1).ToArray();
+                var node = root;
+                foreach (var part in parts)
+                {
+                    // find this subdirectory in the tree
+                    var index = node.Children.FindIndex(val => val.Name == part);
+                    if (index < 0)
+                    {
+                        // if it is not in the tree, create it
+                        index = node.Children.Count;
+                        node.Children.Add(new Node(node.Path + '/' + part));
+                    }
+
+                    // move to the subdirectory
+                    node = node.Children[index];
+                }
+            }
+
+            // setup mock
+            var stack = new Stack<Node>();
+            stack.Push(root);
+
+            while (stack.Count > 0)
+            {
+                var item = stack.Pop();
+
+                // setup this node
+                mock.Setup(system => system.EnumerateDirectories(ItIsPath(item.Path)))
+                    .Returns(item.Children.Select(child => child.Path).ToArray());
+                mock.Setup(system => system.EnumerateDirectories(ItIsPath(item.Path), "*"))
+                    .Returns(item.Children.Select(child => child.Path).ToArray());
+                mock.Setup(system => system.DirectoryExists(ItIsPath(item.Path)))
+                    .Returns(true);
+
+                // setup attributes 
+                mock.Setup(system => system.GetAttributes(ItIsPath(item.Path)))
+                    .Returns(FileAttributes.Directory);
+
+                // setup EnumerateDirectories with pattern
+                mock.Setup(system => system.EnumerateDirectories(ItIsPath(item.Path), It.IsAny<string>()))
+                    .Returns((string path, string pattern) =>
+                    {
+                        pattern = "^" + pattern
+                            .Replace("?", "[^/\\\\]?")
+                            .Replace("*", "[^/\\\\]*") + "$";
+                        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+                        return item.Children
+                            .Where(child => regex.IsMatch(child.Name))
+                            .Select(child => child.Path)
+                            .ToArray();
+                    });
+
+                // build all children
+                foreach (var child in item.Children)
+                {
+                    stack.Push(child);
+                }
+            }
+        }
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void FileFinder_InvalidCharactersInPathPattern()
@@ -62,7 +166,8 @@ namespace ViewerTest.IO
         public void GetDirectories_PathWithoutPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists("C:\\directory\\a\\b\\c\\")).Returns(true);
+            SetupFilesystem(fileSystem, "C:\\directory\\a\\b\\c\\");
+            
             var finder = new FileFinder(fileSystem.Object, "C:/directory/a/b/c");
             var directories = finder.GetDirectories().ToArray();
             Assert.AreEqual(1, directories.Length);
@@ -73,7 +178,7 @@ namespace ViewerTest.IO
         public void GetDirectories_PathWithoutPatternAndNonexistentDirectory()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists("C:\\directory\\a\\b\\c")).Returns(false);
+            SetupFilesystem(fileSystem, "C:\\directory\\a");
 
             var finder = new FileFinder(fileSystem.Object, "C:/directory/a/b/c");
             var directories = finder.GetDirectories().ToArray();
@@ -84,10 +189,7 @@ namespace ViewerTest.IO
         public void GetDirectories_PathWithOneAsteriskPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:\\a\\"))).Returns(true);
-            fileSystem.Setup(mock => mock.EnumerateDirectories(ItIsPath("C:\\a\\"), "b*")).Returns(new[]{ "C:\\a\\ba", "C:\\a\\bba" });
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:\\a\\bba\\c\\"))).Returns(false);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:\\a\\ba\\c\\"))).Returns(true);
+            SetupFilesystem(fileSystem, "C:/a/bba", "C:/a/ba/c");
 
             var finder = new FileFinder(fileSystem.Object, "C:/a/b*/c");
             var directories = finder.GetDirectories().ToArray();
@@ -99,130 +201,86 @@ namespace ViewerTest.IO
         public void GetDirectories_PathWithOneQuestionMarkPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:\\a\\"))).Returns(true);
-            fileSystem.Setup(mock => mock.EnumerateDirectories(ItIsPath("C:\\a\\"), "b?")).Returns(new[] { "C:\\a\\ba", "C:\\a\\bc" });
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:\\a\\ba\\c\\"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:\\a\\bc\\c\\"))).Returns(true);
+            SetupFilesystem(fileSystem, "C:/a/ba/c", "C:/a/bc/c");
 
             var finder = new FileFinder(fileSystem.Object, "C:/a/b?/c");
             var directories = finder.GetDirectories().OrderBy(item => item).ToArray();
             Assert.AreEqual(2, directories.Length);
-            Assert.IsTrue(ArePathsEqual("C:\\a\\ba\\c\\", directories[0]));
-            Assert.IsTrue(ArePathsEqual("C:\\a\\bc\\c\\", directories[1]));
+            Assert.IsTrue(ArePathsEqual("C:/a/ba/c", directories[0]));
+            Assert.IsTrue(ArePathsEqual("C:/a/bc/c", directories[1]));
         }
 
         [TestMethod]
         public void GetDirectories_PathWithGeneralPattern()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:/a"))).Returns(true);
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("C:/a")))
-                .Returns(new[] { "C:/a/b", "C:/a/c", "C:/a/d" });
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:/a/b/b"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:/a/c/b"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:/a/d/b"))).Returns(false);
-            fileSystem.Setup(mock => mock.EnumerateDirectories(ItIsPath("C:/a/b/b"), "*")).Returns(new[] { "C:/a/b/b/x" });
-            fileSystem.Setup(mock => mock.EnumerateDirectories(ItIsPath("C:/a/c/b"), "*")).Returns(new[] { "C:/a/c/b/x" });
-            fileSystem.Setup(mock => mock.EnumerateDirectories(ItIsPath("C:/a/d"))).Returns(new[] { "C:/a/d/e" });
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:/a/d/e/b"))).Returns(true);
-            fileSystem.Setup(mock => mock.EnumerateDirectories(ItIsPath("C:/a/d/e/b"), "*")).Returns(new[] { "C:/a/d/e/b/x" });
+            SetupFilesystem(fileSystem, new[]
+            {
+                "C:/a/d/e/b/x",
+                "C:/a/b/b/x",
+                "C:/a/c/b/x",
+            });
 
             var finder = new FileFinder(fileSystem.Object, "C:/a/**/b/*");
             var directories = finder.GetDirectories().OrderBy(item => item).ToArray();
-            Assert.AreEqual(3, directories.Length);
-            Assert.IsTrue(ArePathsEqual("C:/a/b/b/x", directories[0]));
-            Assert.IsTrue(ArePathsEqual("C:/a/c/b/x", directories[1]));
-            Assert.IsTrue(ArePathsEqual("C:/a/d/e/b/x", directories[2]));
+            Assert.AreEqual(4, directories.Length);
+            Assert.IsTrue(ArePathsEqual("C:/a/b/b", directories[0]));
+            Assert.IsTrue(ArePathsEqual("C:/a/b/b/x", directories[1]));
+            Assert.IsTrue(ArePathsEqual("C:/a/c/b/x", directories[2]));
+            Assert.IsTrue(ArePathsEqual("C:/a/d/e/b/x", directories[3]));
         }
 
         [TestMethod]
         public void GetDirectories_GeneralPatternMatchesEmptyString()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a/b/c"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a/x/b/c"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a/x/y/b/c"))).Returns(true);
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("a")))
-                .Returns(new[]{ "a/b", "a/x" });
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("a/x")))
-                .Returns(new[] { "a/x/y" });
+            SetupFilesystem(fileSystem, "C:/a/b/c", "C:/a/x/b/c", "C:/a/x/y/b/c");
 
-            var finder = new FileFinder(fileSystem.Object, "a/**/b/c");
+            var finder = new FileFinder(fileSystem.Object, "C:/a/**/b/c");
             var directories = finder.GetDirectories().OrderBy(item => item).ToArray();
 
             Assert.AreEqual(3, directories.Length);
-            Assert.IsTrue(ArePathsEqual("a/b/c", directories[0]));
-            Assert.IsTrue(ArePathsEqual("a/x/b/c", directories[1]));
-            Assert.IsTrue(ArePathsEqual("a/x/y/b/c", directories[2]));
+            Assert.IsTrue(ArePathsEqual("C:/a/b/c", directories[0]));
+            Assert.IsTrue(ArePathsEqual("C:/a/x/b/c", directories[1]));
+            Assert.IsTrue(ArePathsEqual("C:/a/x/y/b/c", directories[2]));
         }
 
         [TestMethod]
         public void GetDirectories_IgnoreSystemDirectories()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a/x"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a/y"))).Returns(true);
-            fileSystem.Setup(mock => mock
-                .EnumerateDirectories(ItIsPath("a"), "*"))
-                .Returns(new[] { "a/x", "a/y" });
-            fileSystem
-                .Setup(mock => mock.GetAttributes(ItIsPath("a")))
-                .Returns(FileAttributes.Directory);
-            fileSystem
-                .Setup(mock => mock.GetAttributes(ItIsPath("a/x")))
-                .Returns(FileAttributes.Directory | FileAttributes.System);
-            fileSystem
-                .Setup(mock => mock.GetAttributes(ItIsPath("a/y")))
-                .Returns(FileAttributes.Directory);
+            SetupFilesystem(fileSystem, "C:/a/x", "C:/a/y");
 
-            var finder = new FileFinder(fileSystem.Object, "a/*");
+            // C:/a/x is a system directory => the class should skip it
+            fileSystem
+                .Setup(mock => mock.GetAttributes(ItIsPath("C:/a/x")))
+                .Returns(FileAttributes.Directory | FileAttributes.System);
+
+            var finder = new FileFinder(fileSystem.Object, "C:/a/*");
             var directories = finder.GetDirectories().ToArray();
 
             Assert.AreEqual(1, directories.Length);
-            Assert.IsTrue(ArePathsEqual("a/y", directories[0]));
+            Assert.IsTrue(ArePathsEqual("C:/a/y", directories[0]));
         }
 
         [TestMethod]
         public void GetDirectories_ReturnEachDirectoryExactlyOnce()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a/b"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a/b/b"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("a/b/b/c"))).Returns(true);
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("a")))
-                .Returns(new[]{ "a/b" });
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("a/b")))
-                .Returns(new[] { "a/b/b" });
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("a/b/b")))
-                .Returns(new[] { "a/b/b/c" });
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("a/b/b/c")))
-                .Returns(new string[] {});
+            SetupFilesystem(fileSystem, "C:/a/b/b/c");
 
-            var finder = new FileFinder(fileSystem.Object, "a/**/b/**/c");
+            var finder = new FileFinder(fileSystem.Object, "C:/a/**/b/**/c");
             var directories = finder.GetDirectories().ToArray();
 
             Assert.AreEqual(1, directories.Length);
-            Assert.IsTrue(ArePathsEqual("a/b/b/c", directories[0]));
+            Assert.IsTrue(ArePathsEqual("C:/a/b/b/c", directories[0]));
         }
         
         [TestMethod]
         public void GetDirectories_SuffixDirectoriesWithPathSeparator()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("C:/"))).Returns(true);
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("C:/"), "*"))
-                .Returns(new[] { "C:/a" });
+            SetupFilesystem(fileSystem, "C:/a");
 
             var finder = new FileFinder(fileSystem.Object, "C:/*");
             var directories = finder.GetDirectories().ToArray();
@@ -231,6 +289,8 @@ namespace ViewerTest.IO
             Assert.IsTrue(ArePathsEqual("C:/a", directories[0]));
 
             // Verify that there is a directory separator after "C:" Otherwise, C: would be a relative path
+            // EnumerateDirectories can be called with or without the * pattern
+            // fileSystem.Verify(mock => mock.EnumerateDirectories("C:/"));
             fileSystem.Verify(mock => mock.EnumerateDirectories("C:/", "*"));
         }
 
@@ -246,29 +306,24 @@ namespace ViewerTest.IO
         public void GetDirectories_TraverseFilesInCorrectOrder()
         {
             var fileSystem = new Mock<IFileSystem>();
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("r"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("r/a"))).Returns(true);
-            fileSystem.Setup(mock => mock.DirectoryExists(ItIsPath("r/b"))).Returns(true);
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("r")))
-                .Returns(new[] { "r/a", "r/b" });
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("r/a")))
-                .Returns(new[] { "r/a/a", "r/a/b", "r/a/c" });
-            fileSystem
-                .Setup(mock => mock.EnumerateDirectories(ItIsPath("r/b")))
-                .Returns(new[] { "r/b/a", "r/b/b", "r/b/c" });
+            SetupFilesystem(fileSystem, 
+                "C:/r/a/a", 
+                "C:/r/a/b", 
+                "C:/r/a/c", 
+                "C:/r/b/a", 
+                "C:/r/b/b", 
+                "C:/r/b/c");
 
-            var finder = new FileFinder(fileSystem.Object, "r/**");
+            var finder = new FileFinder(fileSystem.Object, "C:/r/**");
             var directories = finder.GetDirectories(new DescComparer()).ToArray();
 
             var expectedDirectories = new[]
             {
-                "r/b/c", "r/b/b", "r/b/a",
-                "r/b",
-                "r/a/c", "r/a/b", "r/a/a",
-                "r/a",
-                "r",
+                "C:/r",
+                "C:/r/b",
+                "C:/r/b/c", "C:/r/b/b", "C:/r/b/a",
+                "C:/r/a",
+                "C:/r/a/c", "C:/r/a/b", "C:/r/a/a",
             };
             Assert.AreEqual(expectedDirectories.Length, directories.Length);
 

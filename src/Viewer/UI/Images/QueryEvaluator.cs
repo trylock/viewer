@@ -86,7 +86,7 @@ namespace Viewer.UI.Images
     ///
     /// These stages are executed on separate threads so that they don't block each other. Data
     /// between (1) and (2) is shared using queues. Data between (2) and (3) is shared using
-    /// additional back buffer which is updated in the 2nd stage and swaped with the front buffer
+    /// additional back buffer which is updated in the 2nd stage and swapped with the front buffer
     /// in the 3rd stage to avoid race conditions.
     /// </para>
     /// </remarks>
@@ -290,8 +290,8 @@ namespace Viewer.UI.Images
 
         private void FileWatcherOnRenamed(object sender, RenamedEventArgs e)
         {
-            // note: side effect of this check is that it ignores move operations done during the
-            //       FileSystemAttributeStorage.Store call. 
+            // Side effect of this check is that it ignores move operations done during the
+            // FileSystemAttributeStorage.Store call since temporary files don't have .jpg extension. 
             if (!IsEntityEvent(e))
                 return; // skip this event
             var oldPath = PathUtils.NormalizePath(e.OldFullPath);
@@ -364,7 +364,7 @@ namespace Viewer.UI.Images
         private Task _batchProcessingTask = Task.CompletedTask;
 
         /// <summary>
-        /// Minimal number of requests after which a processing thread is created.
+        /// Minimal number of requests after which a <see cref="_batchProcessingTask"/> is created.
         /// </summary>
         private const int MinimalBatchSize = 100;
 
@@ -394,14 +394,14 @@ namespace Viewer.UI.Images
         /// Get all searched folders so far. This can be called even if the query evaluation is
         /// in progress but in that case, only a subset of searched folders will be returned.
         /// </summary>
-        /// <returns>All searched folders so far</returns>
+        /// <returns>All folders which have been searched so far</returns>
         public IEnumerable<string> GetSearchedDirectories()
         {
             return _fileWatcher.GetWatchedDirectories();
         }
 
         /// <summary>
-        /// Evaluate the query on a differet thread. Found entities will be added to a waiting
+        /// Evaluate the query on a different thread. Found entities will be added to a waiting
         /// queue. Use <see cref="Update"/> to get all entities loaded so far.
         /// </summary>
         /// <returns>Task finished when the whole evaluation ends</returns>
@@ -421,6 +421,10 @@ namespace Viewer.UI.Images
         /// Load the query synchronously. <see cref="Cancellation"/> is used for cancellation
         /// token, <see cref="Progress"/> is used for reporting progress.
         /// </summary>
+        /// <remarks>
+        /// Found entities are added to a waiting queue. Use <see cref="Update"/> to get all
+        /// entities loaded so far.
+        /// </remarks>
         /// <seealso cref="RunAsync"/>
         public void Run()
         {
@@ -432,7 +436,7 @@ namespace Viewer.UI.Images
                 CancellationToken = Cancellation.Token,
                 Progress = progress
             };
-            
+
             foreach (var entity in Query.Execute(options))
             {
                 var thumbnail = _thumbnailFactory.Create(entity, Cancellation.Token);
@@ -560,6 +564,7 @@ namespace Viewer.UI.Images
                         }
                         else if (req is ModifyRequest modReq)
                         {
+                            // replace the item but do not throw away its thumbnail
                             item = new EntityView(modReq.Value, item.Thumbnail);
                             var key = Query.GetGroup(item.Data);
                             var list = GetOrAddList(key, index.Insertions);
@@ -591,9 +596,10 @@ namespace Viewer.UI.Images
                     {
                         continue;
                     }
-                    
-                    list.Sort(Comparer);
-                    group.Items = group.Items.Merge(list, Comparer);
+
+                    var comparer = CachedEntityViewComparer.FromQuery(Query);
+                    list.Sort(comparer);
+                    group.Items = group.Items.Merge(list, comparer);
                     index.Insertions.Remove(group.Key);
                 }
 
@@ -607,7 +613,7 @@ namespace Viewer.UI.Images
                 addedGroups.Sort();
                 foreach (var view in addedGroups)
                 {
-                    view.Items.Sort(Comparer);
+                    view.Items.Sort(CachedEntityViewComparer.FromQuery(Query));
                 }
 
                 _backBuffer = _backBuffer.Merge(addedGroups, Comparer<Group>.Default);
@@ -621,7 +627,7 @@ namespace Viewer.UI.Images
         /// <returns>Modified collection</returns>
         public List<Group> Update()
         {
-            var entered = Monitor.TryEnter(_backBufferLock, TimeSpan.FromMilliseconds(20));
+            var entered = Monitor.TryEnter(_backBufferLock);
             if (!entered)
             {
                 return _frontBuffer;

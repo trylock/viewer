@@ -449,6 +449,8 @@ namespace Viewer.UI.Images
             else 
             {
                 var item = _view.GetItemAt(e.Location);
+
+                // right click outside of current selection resets the selection
                 if (item == null && e.Button == MouseButtons.Right)
                 {
                     _currentSelection.Clear();
@@ -456,12 +458,15 @@ namespace Viewer.UI.Images
                     _view.UpdateItems();
                 }
 
+                // capture base item for Shift + Click range select
                 if (item != null && !_view.ModifierKeyState.HasFlag(Keys.Shift))
                 {
                     CaptureAnchorItem(item);
                 }
 
+                // left click at a selected item resets selection
                 if (item != null && 
+                    e.Button == MouseButtons.Left &&
                     _currentSelection.Contains(item.Data) && 
                     _selection.Count() > 1 &&
                     _view.ModifierKeyState == 0)

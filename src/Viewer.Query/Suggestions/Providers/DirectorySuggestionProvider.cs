@@ -37,6 +37,12 @@ namespace Viewer.Query.Suggestions.Providers
             return c == '"' || PathUtils.PathSeparators.Contains(c);
         }
 
+        /// <summary>
+        /// Get range in <paramref name="input"/> with current directory name.
+        /// Current directory name is the name with caret token inside.
+        /// </summary>
+        /// <param name="input">Searched string</param>
+        /// <returns>Half-closed interval of indices [begin, end)</returns>
         private (int StartIndex, int StopIndex) GetDirectoryAtCaret(string input)
         {
             var startIndex = _caret.StartIndex;

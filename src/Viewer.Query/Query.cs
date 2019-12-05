@@ -201,21 +201,21 @@ namespace Viewer.Query
         IQuery WithText(string text);
 
         /// <summary>
-        /// Compue set minus on this query and <paramref name="entities"/>
+        /// Compute set minus on this query and <paramref name="entities"/>
         /// </summary>
         /// <param name="entities">Entities to subtract from this query</param>
         /// <returns>New query</returns>
         IQuery Except(IExecutableQuery entities);
 
         /// <summary>
-        /// Compue set union on this query and <paramref name="entities"/>
+        /// Compute set union on this query and <paramref name="entities"/>
         /// </summary>
         /// <param name="entities">Entities to add to this query</param>
         /// <returns>New query</returns>
         IQuery Union(IExecutableQuery entities);
 
         /// <summary>
-        /// Compue set intersection on this query and <paramref name="entities"/>
+        /// Compute set intersection on this query and <paramref name="entities"/>
         /// </summary>
         /// <param name="entities"></param>
         /// <returns>New query</returns>

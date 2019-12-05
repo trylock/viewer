@@ -24,6 +24,7 @@ namespace Viewer.IO
 
         /// <summary>
         /// Pattern which matches current directory
+        /// 
         /// </summary>
         public const string CurrentDirectoryPattern = ".";
 

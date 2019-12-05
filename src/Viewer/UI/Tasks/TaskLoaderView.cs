@@ -52,7 +52,7 @@ namespace Viewer.UI.Tasks
                 Interlocked.Increment(ref FinishedCount);
             }
 
-            public int TotalTaskCount { get; set; }
+            public int TotalTaskCount { get; set; } = 0;
 
             public void Close()
             {
@@ -82,7 +82,9 @@ namespace Viewer.UI.Tasks
             TaskProgressBar.Maximum = totalCount;
             TaskProgressBar.Value = Math.Min(finishedCount, totalCount);
             
-            var progress = (int) (TaskProgressBar.Value / (double) TaskProgressBar.Maximum * 100);
+            var progress = TaskProgressBar.Maximum == 0 ? 
+                0 :
+                (int) (TaskProgressBar.Value / (double) TaskProgressBar.Maximum * 100);
             TaskProgressBar.Value = finishedCount;
             TaskNameLabel.Text = name;
             ProgressLabel.Text = string.Format(Strings.Progress_Label, progress, finishedCount, totalCount);

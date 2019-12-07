@@ -24,53 +24,14 @@ using Viewer.IO;
 
 namespace Viewer.Data.Storage
 {
+    /// <summary>
+    /// SQLite attribute storage serves as attribute cache.
+    /// </summary>
     [Export]
-    public class SqliteAttributeStorage : IDeferredAttributeStorage
+    public class SqliteAttributeStorage : DeferredAttributeStorage
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
-        private abstract class Request
-        {
-        }
-
-        private sealed class StoreRequest : Request
-        {
-            public IEntity Entity { get; }
-
-            public DateTime LastWriteTime { get; }
-
-            public StoreRequest(IEntity entity, DateTime lastWriteTime)
-            {
-                Entity = entity;
-                LastWriteTime = lastWriteTime;
-            }
-        }
-
-        private sealed class StoreThumbnailRequest : Request
-        {
-            public byte[] Thumbnail { get; }
-
-            public StoreThumbnailRequest(byte[] thumbnail)
-            {
-                Thumbnail = thumbnail;
-            }
-        }
-
-        private sealed class TouchRequest : Request
-        {
-            public DateTime AccessTime { get; }
-
-            public TouchRequest(DateTime accessTime)
-            {
-                AccessTime = accessTime;
-            }
-        }
-
-        private sealed class DeleteRequest : Request
-        {
-        }
-
-        private readonly Dictionary<string, Request> _requests;
         private readonly SQLiteConnectionFactory _connectionFactory;
         private readonly IStorageConfiguration _configuration;
         private readonly IAttributeReaderFactory _fileAttributeReaderFactory;
@@ -83,7 +44,6 @@ namespace Viewer.Data.Storage
         {
             _fileAttributeReaderFactory = fileAttributesReaderFactory;
             _connectionFactory = connectionFactory;
-            _requests = new Dictionary<string, Request>(StringComparer.CurrentCultureIgnoreCase);
             _configuration = configuration;
         }
 
@@ -143,7 +103,7 @@ namespace Viewer.Data.Storage
             }
         }
 
-        public IReadableAttributeStorage CreateReader()
+        public override IReadableAttributeStorage CreateReader()
         {
             return new Reader(this);
         }
@@ -156,45 +116,20 @@ namespace Viewer.Data.Storage
         /// <param name="path">Path to load</param>
         /// <param name="queryGetter">Function which returns load query</param>
         /// <param name="dispose">
-        /// ture iff we should dispose the query returned from <paramref name="queryGetter"/>
+        /// true iff we should dispose the query returned from <paramref name="queryGetter"/>
         /// </param>
         /// <returns>Loaded entity of null</returns>
         private IEntity LoadImpl(string path, Func<LoadEntityQuery> queryGetter, bool dispose)
         {
-            if (path == null)
-                throw new ArgumentNullException(nameof(path));
-
-            path = PathUtils.NormalizePath(path);
-
-            // check if there is a pending change in main memory
-            lock (_requests)
+            // if there is a pending change in memory, return this object instead
+            if (TryLoad(path, out IEntity entity))
             {
-                if (_requests.TryGetValue(path, out var req))
-                {
-                    if (req is StoreRequest store)
-                    {
-                        return store.Entity;
-                    }
-
-                    if (req is DeleteRequest)
-                    {
-                        return null;
-                    }
-
-                    if (req is TouchRequest)
-                    {
-                        _requests[path] = new TouchRequest(DateTime.Now);
-                    }
-                }
-                else
-                {
-                    _requests[path] = new TouchRequest(DateTime.Now);
-                }
+                return entity;
             }
 
-            var fi = new FileInfo(path);
+            // otherwise, load entity from database
+            var fi = new FileInfo(entity.Path);
             var lastWriteTime = fi.LastWriteTime;
-            IEntity entity = new FileEntity(path);
             
             // Get file metadata attributes. These are the only attributes which can change
             // even if the LastWriteTime has not changed.
@@ -250,106 +185,18 @@ namespace Viewer.Data.Storage
             }
         }
 
-        public IEntity Load(string path)
+        public override IEntity Load(string path)
         {
             return LoadImpl(path, 
                 () => new LoadEntityQuery(_connectionFactory.Create()), 
                 dispose: true);
         }
-        
-        private DateTime GetLastWriteTime(string path)
+
+        public override void Move(IEntity entity, string newPath)
         {
-            var lastWriteTime = DateTime.MinValue;
-            try
-            {
-                var fi = new FileInfo(path);
-                lastWriteTime = fi.LastWriteTime;
-            }
-            catch (IOException e)
-            {
-                Logger.Warn(e);
-            }
-            return lastWriteTime;
-        }
-
-        public void Store(IEntity entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            var request = new StoreRequest(entity.Clone(), GetLastWriteTime(entity.Path));
-            lock (_requests)
-            {
-                _requests[entity.Path] = request;
-            }
-        }
-
-        public void StoreThumbnail(IEntity entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            var thumbnail = entity.GetAttribute(ExifAttributeReaderFactory.Thumbnail);
-            var thumbnailValue = thumbnail?.Value as ImageValue;
-            if (thumbnailValue == null || thumbnailValue.IsNull)
+            if (TryMove(entity, ref newPath))
             {
                 return;
-            }
-
-            lock (_requests)
-            {
-                if (_requests.TryGetValue(entity.Path, out var req))
-                {
-                    if (req is DeleteRequest)
-                    {
-                        return; // storing thumbnail of a deleted file, this is no-op
-                    }
-
-                    if (req is StoreRequest store)
-                    {
-                        // update pending entity's thumbnail
-                        store.Entity.SetAttribute(thumbnail);
-                        return;
-                    }
-                }
-                _requests[entity.Path] = new StoreThumbnailRequest(thumbnailValue.Value);
-            }
-        }
-
-        public void Delete(IEntity entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            lock (_requests)
-            {
-                _requests[entity.Path] = new DeleteRequest();
-            }
-        }
-
-        public void Move(IEntity entity, string newPath)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-            if (newPath == null)
-                throw new ArgumentNullException(nameof(newPath));
-
-            newPath = PathUtils.NormalizePath(newPath);
-
-            lock (_requests)
-            {
-                if (_requests.TryGetValue(entity.Path, out var req))
-                {
-                    if (req is DeleteRequest)
-                    {
-                        // the entity has been deleted, this is no-op
-                        return;
-                    }
-
-                    // apply the request to the entity at the new location
-                    _requests.Remove(entity.Path);
-                    _requests[newPath] = req;
-                }
             }
 
             using (var connection = _connectionFactory.Create())
@@ -416,15 +263,10 @@ namespace Viewer.Data.Storage
             }
         }
 
-        public void ApplyChanges()
+        public override void ApplyChanges()
         {
             // consume all requests added so far
-            KeyValuePair<string, Request>[] requests;
-            lock (_requests)
-            {
-                requests = _requests.ToArray();
-                _requests.Clear();
-            }
+            KeyValuePair<string, Request>[] requests = ConsumeRequests();
 
             // don't do anything if there haven't been any changes
             if (requests.Length <= 0)
@@ -517,7 +359,7 @@ namespace Viewer.Data.Storage
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
         }
     }

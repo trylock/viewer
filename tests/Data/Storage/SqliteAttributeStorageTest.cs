@@ -36,6 +36,8 @@ namespace ViewerTest.Data.Storage
         [TestInitialize]
         public void Setup()
         {
+            File.Delete("test.db");
+
             var factory = new SQLiteConnectionFactory(new FileSystem(), "test.db");
 
             var attributeReader = new Mock<IAttributeReader>();

@@ -79,7 +79,7 @@ namespace Viewer.Data.Storage
         /// <list type="number">
         ///     <item>
         ///         <description>
-        ///         read all JPEG segments to memory (using reaader returned by
+        ///         read all JPEG segments to memory (using reader returned by
         ///         <see cref="IJpegSegmentReaderFactory"/>)
         ///         </description>
         ///     </item>

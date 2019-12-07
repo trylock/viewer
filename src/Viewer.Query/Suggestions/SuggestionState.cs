@@ -12,7 +12,7 @@ namespace Viewer.Query.Suggestions
     {
         /// <summary>
         /// Indices of rules which lead to the caret token. They are ordered from the newest
-        /// to the oldest (i.e., rule at index <c>i</c> is the parent or the rule at index
+        /// to the oldest (i.e., rule at index <c>i</c> is the parent of the rule at index
         /// <c>i + 1</c>)
         /// </summary>
         public List<int> RuleIndices { get; set; } = new List<int>();

@@ -16,7 +16,7 @@ namespace Viewer.Query.Suggestions.Providers
         private readonly IAttributeCache _attributeCache;
 
         /// <summary>
-        /// Name of the categroy of suggestions returned by this provider
+        /// Name of the category of suggestions returned by this provider
         /// </summary>
         public const string CategoryName = "User attribute";
 

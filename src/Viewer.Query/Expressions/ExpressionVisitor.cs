@@ -32,7 +32,7 @@ namespace Viewer.Query.Expressions
 
     /// <summary>
     /// Expression visitor without a return value (it has a boolean return value but the default
-    /// implementaion does not use it). The default implementation of the interface will traverse
+    /// implementation does not use it). The default implementation of the interface will traverse
     /// the whole expression tree.
     /// </summary>
     internal abstract class ExpressionVisitor : IExpressionVisitor<bool>

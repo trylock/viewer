@@ -25,12 +25,12 @@ namespace Viewer.Query.Suggestions.Providers
             }
 
             // add () if necessary and move caret in-between the parentheses
-            int parentesisPosition = -1;
+            int parenthesesPosition = -1;
             for (int i = state.Caret; i < state.Query.Length; ++i)
             {
-                if (state.Query[i] == '(') // if there is a parentesis, don't add another pair
+                if (state.Query[i] == '(') // if there is a parenthesis, don't add another pair
                 {
-                    parentesisPosition = i;
+                    parenthesesPosition = i;
                     break;
                 }
                 else if (!char.IsWhiteSpace(state.Query[i]))
@@ -41,18 +41,18 @@ namespace Viewer.Query.Suggestions.Providers
 
             // insert parentheses if necessary
             var query = state.Query;
-            if (parentesisPosition < 0)
+            if (parenthesesPosition < 0)
             {
                 query = state.Query.Insert(state.Caret, "()");
-                parentesisPosition = state.Caret + 1;
+                parenthesesPosition = state.Caret + 1;
             }
             else
             {
-                ++parentesisPosition; // move after the first parenthesis
+                ++parenthesesPosition; // move after the first parenthesis
             }
             
             // move the caret to parentheses
-            return new QueryEditorState(query, parentesisPosition);
+            return new QueryEditorState(query, parenthesesPosition);
         }
     }
 }

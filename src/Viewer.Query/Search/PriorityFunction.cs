@@ -129,7 +129,7 @@ namespace Viewer.Query.Search
             {
                 // Here we assume that a function will be null iff some of its arguments are null.
                 // This will be true for many functions but it fails for some (notably the "or" and
-                // the "not" functions). Logical operators are therefore handeled differently.
+                // the "not" functions). Logical operators are therefore handled differently.
                 var bitmap = new Bitmap(_subsets.Count, true);
                 foreach (var parameter in expr.Children)
                 {

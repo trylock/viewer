@@ -21,7 +21,7 @@ namespace Viewer.Core.Collections
         public int Count { get; }
 
         /// <summary>
-        /// Create a new reseted (each bit is 0) bitmap with <paramref name="size"/> bits.
+        /// Create a new empty (each bit is 0) bitmap with <paramref name="size"/> bits.
         /// </summary>
         /// <param name="size">Number of bits in the bitmap</param>
         public Bitmap(int size)
